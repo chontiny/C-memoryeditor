@@ -1,0 +1,1061 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BCC372DD-2823-459D-9594-C16E777AD292}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ana</RootNamespace>
+    <AssemblyName>Ana</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <PublishUrl>F:\Users\Zachary\Documents\Visual Studio 2015\Projects\AnathenaWeb\release\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Background</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>true</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>http://www.anathena.com/release/</InstallUrl>
+    <UpdateUrl>http://www.anathena.com/release/</UpdateUrl>
+    <SupportUrl>http://www.anathena.com/</SupportUrl>
+    <ErrorReportUrl>http://www.anathena.com/</ErrorReportUrl>
+    <ProductName>Anathena</ProductName>
+    <PublisherName>Anathena</PublisherName>
+    <MinimumRequiredVersion>3.0.0.0</MinimumRequiredVersion>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>3.0.0.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Content\Icons\MainIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EasyHook, Version=2.7.5870.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL" />
+    <Reference Include="KopiLua">
+      <HintPath>..\Lua\KopiLua.dll</HintPath>
+    </Reference>
+    <Reference Include="NLua">
+      <HintPath>..\Lua\NLua.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
+    <Compile Include="Source\ActionScheduler\ActionChannels.cs" />
+    <Compile Include="Source\ActionScheduler\IAction.cs" />
+    <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
+    <Compile Include="Source\Content\Images.cs" />
+    <Compile Include="Source\Controls\HexDecBoxViewModel.cs" />
+    <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
+    <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
+    <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
+    <Compile Include="Source\Engine\Hook\Client\HookClient.cs" />
+    <Compile Include="Source\Engine\Hook\Client\IHookClient.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\DirextXGraphicsInterface.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\BaseDXHook.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DirectXFlags.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX10\DXHookD3D10.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX10\DXHookD3D10_1.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DeviceManager.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXFont.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXHookD3D11.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXImage.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXOverlayEngine.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXSprite.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\RendererBase.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\ScreenAlignedQuadRenderer.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX9\DXHookD3D9.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX9\DXOverlayEngine.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DXGI.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\Elements\Element.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\Elements\ImageElement.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\Elements\TextElement.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\Hook.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\SafeHGlobal.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\GraphicsFactory.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\IGraphicsInterface.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\OpenGL\ConnectorOpenGL.cs" />
+    <Compile Include="Source\Engine\Hook\Server\HookServer.cs" />
+    <Compile Include="Source\Engine\Hook\SpeedHack\ISpeedHackInterface.cs" />
+    <Compile Include="Source\Engine\Hook\SpeedHack\SpeedHackInterface.cs" />
+    <Compile Include="Source\Engine\Hook\Unrandomizer\IUnrandomizerInterface.cs" />
+    <Compile Include="Source\Engine\Input\Controller\ControllerCapture.cs" />
+    <Compile Include="Source\Engine\Input\Controller\IControllerObserver.cs" />
+    <Compile Include="Source\Engine\Input\Controller\IControllerSubject.cs" />
+    <Compile Include="Source\Engine\Input\HotKeys\ControllerHotkey.cs" />
+    <Compile Include="Source\Engine\Input\HotKeys\IHotkey.cs" />
+    <Compile Include="Source\Engine\Input\HotKeys\KeyboardHotkey.cs" />
+    <Compile Include="Source\Engine\Input\HotKeys\MouseHotKey.cs" />
+    <Compile Include="Source\Engine\Input\IInputCapture.cs" />
+    <Compile Include="Source\Engine\Input\IInputManager.cs" />
+    <Compile Include="Source\Engine\Input\InputManager.cs" />
+    <Compile Include="Source\Engine\Input\Keyboard\IKeyboardObserver.cs" />
+    <Compile Include="Source\Engine\Input\Keyboard\IKeyboardSubject.cs" />
+    <Compile Include="Source\Engine\Input\Keyboard\KeyboardCapture.cs" />
+    <Compile Include="Source\Engine\Input\Mouse\IMouseObserver.cs" />
+    <Compile Include="Source\Engine\Input\Mouse\IMouseSubject.cs" />
+    <Compile Include="Source\Engine\Input\Mouse\MouseCapture.cs" />
+    <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
+    <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
+    <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
+    <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
+    <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
+    <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
+    <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
+    <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
+    <Compile Include="Source\Snapshots\Null.cs" />
+    <Compile Include="Source\Snapshots\Prefilters\ChunkLinkedListPrefilter.cs" />
+    <Compile Include="Source\Utils\Hashing.cs" />
+    <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
+    <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorModel.cs" />
+    <Compile Include="Source\Utils\TypeEditors\IEditorViewModel.cs" />
+    <Compile Include="Source\Utils\TypeEditors\IEditorModel.cs" />
+    <Compile Include="Source\Utils\TypeEditors\OffsetEditor\OffsetEditorViewModel.cs" />
+    <Compile Include="Source\Utils\TypeEditors\ScriptEditor\ScriptEditorModel.cs" />
+    <Compile Include="Source\Utils\TypeEditors\ScriptEditor\ScriptEditorViewModel.cs" />
+    <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
+    <Compile Include="Source\Utils\TypeConverters\DynamicConverter.cs" />
+    <Compile Include="Source\Utils\TypeConverters\HotkeyConverter.cs" />
+    <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
+    <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
+    <Compile Include="Source\Utils\TypeEditors\OffsetEditor\OffsetEditorModel.cs" />
+    <Compile Include="Source\Utils\TypeConverters\ValueTypeConverter.cs" />
+    <Compile Include="Source\DotNetExplorer\DotNetExplorerViewModel.cs" />
+    <Compile Include="Source\Engine\AddressResolver\AddressResolver.cs" />
+    <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObject.cs" />
+    <Compile Include="Source\Engine\Architecture\ArchitectureFactory.cs" />
+    <Compile Include="Source\Engine\Architecture\ArchitectureTypes.cs" />
+    <Compile Include="Source\Engine\Architecture\Assembler\AssemblerFactory.cs" />
+    <Compile Include="Source\Engine\Architecture\Assembler\Fasm32Assembler.cs" />
+    <Compile Include="Source\Engine\Architecture\Assembler\IAssembler.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\DisassemblerFactory.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\IDisassembler.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\ArchitectureMode.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\AutoPinner.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Disassembler.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Instruction.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Operand.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\ATTTranslator.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\IntelTranslator.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\SymbolResolverDelegate.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\Translator.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\BitOps.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Decode.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\OpTable.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\RegClass.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Syn.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\SynIntel.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Ud.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Udis86.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdItabEntry.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdItabEntryOperand.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdLookupTableListEntry.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdLval.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdOperand.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdOperandCode.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdOperandSize.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdType.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Vendor.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisassembler.cs" />
+    <Compile Include="Source\Engine\Architecture\IArchitecture.cs" />
+    <Compile Include="Source\Engine\Architecture\Architecture86_64.cs" />
+    <Compile Include="Source\Engine\EngineCore.cs" />
+    <Compile Include="Source\Engine\Graphics\IGraphics.cs" />
+    <Compile Include="Source\Engine\ManagedObjectResolver\IManagedObjectResolver.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\IOperatingSystemAdapter.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\NormalizedFlags.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\NormalizedModule.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\NormalizedRegion.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\OperatingSystemAdapterFactory.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Memory.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Native\Enumerations.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Native\NativeMethods.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Native\Structures.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\WindowsAdapter.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Processes\IProcessObserver.cs" />
+    <Compile Include="Source\Engine\Processes\IProcesses.cs" />
+    <Compile Include="Source\Engine\Processes\NormalizedProcess.cs" />
+    <Compile Include="Source\Engine\Processes\ProcessAdapter.cs" />
+    <Compile Include="Source\Engine\SpeedManipulator\ISpeedManipulator.cs" />
+    <Compile Include="Source\Engine\Unrandomizer\IUnrandomizer.cs" />
+    <Compile Include="Source\LuaEngine\Graphics\LuaGraphicsCore.cs" />
+    <Compile Include="Source\LuaEngine\Graphics\IGraphicsCore.cs" />
+    <Compile Include="Source\LuaEngine\Hook\IHookCore.cs" />
+    <Compile Include="Source\LuaEngine\Hook\LuaHookCore.cs" />
+    <Compile Include="Source\LuaEngine\Input\IInputCore.cs" />
+    <Compile Include="Source\LuaEngine\Input\LuaInputCore.cs" />
+    <Compile Include="Source\LuaEngine\LuaCore.cs" />
+    <Compile Include="Source\LuaEngine\LuaKeywordManager.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\LuaEngine\LuaScript.cs" />
+    <Compile Include="Source\LuaEngine\Memory\IMemoryCore.cs" />
+    <Compile Include="Source\LuaEngine\Memory\LuaMemoryCore.cs" />
+    <Compile Include="Source\Mvvm\Converters\IntPtrToAddressConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
+    <Compile Include="Source\Project\ProjectExplorerViewModel.cs" />
+    <Compile Include="Source\Project\ProjectItems\AddressItem.cs" />
+    <Compile Include="Source\Project\ProjectItems\FolderItem.cs" />
+    <Compile Include="Source\Project\ProjectItems\ProjectItem.cs" />
+    <Compile Include="Source\Project\ProjectItems\ProjectItemViewModel.cs" />
+    <Compile Include="Source\Project\ProjectItems\ScriptItem.cs" />
+    <Compile Include="Source\LuaEngine\LuaTemplates.cs" />
+    <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
+    <Compile Include="Source\Results\ScanResults\IScanResultsObserver.cs" />
+    <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
+    <Compile Include="Source\Results\ScanResults\ScanResultsViewModel.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterModel.cs" />
+    <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterViewModel.cs" />
+    <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorViewModel.cs" />
+    <Compile Include="Source\Scanners\ScannerBase.cs" />
+    <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderViewModel.cs" />
+    <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderModel.cs" />
+    <Compile Include="Source\Scanners\ManualScanner\ManualScannerViewModel.cs" />
+    <Compile Include="Source\Scanners\ManualScanner\ManualScannerModel.cs" />
+    <Compile Include="Source\Scanners\PointerScanner\PointerScannerModel.cs" />
+    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraint.cs" />
+    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintEditor.cs" />
+    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintManager.cs" />
+    <Compile Include="Source\Scanners\ValueCollector\ValueCollectorViewModel.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
+    <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
+    <Compile Include="Source\Snapshots\Prefilters\ISnapshotPrefilter.cs" />
+    <Compile Include="Source\Snapshots\Prefilters\ShallowPointerPrefilter.cs" />
+    <Compile Include="Source\Snapshots\Prefilters\SnapshotPrefilterFactory.cs" />
+    <Compile Include="Source\Snapshots\Snapshot.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Snapshots\SnapshotElement.cs" />
+    <Compile Include="Source\Snapshots\SnapshotManager.cs" />
+    <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
+    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
+    <Compile Include="Source\UserSettings\SettingsViewModel.cs" />
+    <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Utils\Extensions\ArrayExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\IntegerExtensions.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Utils\Extensions\IntPtrExtensions.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Utils\Extensions\ObjectExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\PrimitiveExtensions.cs" />
+    <Compile Include="Source\Utils\ImageLoader.cs" />
+    <Compile Include="Source\Utils\PrimitiveTypes.cs" />
+    <Compile Include="Source\Utils\RepeatedTask.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Utils\Validation\CheckSyntax.cs" />
+    <Compile Include="Source\Utils\Validation\Conversions.cs" />
+    <Compile Include="Source\Utils\VirtualItemProvider\AsyncVirtualizingCollection.cs" />
+    <Compile Include="Source\Utils\VirtualItemProvider\IItemsProvider.cs" />
+    <Compile Include="Source\Utils\VirtualItemProvider\VirtualizingCollection.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="View\HotkeyEditor.xaml.cs">
+      <DependentUpon>HotkeyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PointerScanner.xaml.cs">
+      <DependentUpon>PointerScanner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\OffsetEditor.xaml.cs">
+      <DependentUpon>OffsetEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PointerScanResults.xaml.cs">
+      <DependentUpon>PointerScanResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ScriptEditor.xaml.cs">
+      <DependentUpon>ScriptEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Controls\DarkBrushes.cs" />
+    <Compile Include="View\Controls\Unfinished\HexDecBox.cs" />
+    <Compile Include="View\Controls\HexDecTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="View\Controls\WatermarkTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="View\Controls\WinformsHostingHelper.cs" />
+    <Compile Include="View\InputCorrelator.xaml.cs">
+      <DependentUpon>InputCorrelator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ScanResults.xaml.cs">
+      <DependentUpon>ScanResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProjectExplorer.xaml.cs">
+      <DependentUpon>ProjectExplorer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PropertyViewer.xaml.cs">
+      <DependentUpon>PropertyViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DotNetExplorer.xaml.cs">
+      <DependentUpon>DotNetExplorer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CheatBrowser.xaml.cs">
+      <DependentUpon>CheatBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SnapshotManager.xaml.cs">
+      <DependentUpon>SnapshotManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ManualScanner.xaml.cs">
+      <DependentUpon>ManualScanner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LabelThresholder.xaml.cs">
+      <DependentUpon>LabelThresholder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ChangeCounter.xaml.cs">
+      <DependentUpon>ChangeCounter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProcessSelector.xaml.cs">
+      <DependentUpon>ProcessSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Source\ProcessSelector\ProcessSelectorModel.cs" />
+    <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Docking\PanesStyleSelector.cs" />
+    <Compile Include="View\ViewTemplateSelector.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Docking\PaneViewModel.cs" />
+    <Compile Include="Source\Mvvm\Command\EventToCommand.cs" />
+    <Compile Include="Source\Mvvm\Command\IEventArgsConverter.cs" />
+    <Compile Include="Source\Mvvm\Command\RelayCommand.cs" />
+    <Compile Include="Source\Mvvm\Command\RelayCommandGeneric.cs" />
+    <Compile Include="Source\Mvvm\Helpers\Empty.cs" />
+    <Compile Include="Source\Mvvm\Helpers\IExecuteWithObject.cs" />
+    <Compile Include="Source\Mvvm\Helpers\IExecuteWithObjectAndResult.cs" />
+    <Compile Include="Source\Mvvm\Helpers\WeakAction.cs" />
+    <Compile Include="Source\Mvvm\Helpers\WeakActionGeneric.cs" />
+    <Compile Include="Source\Mvvm\Helpers\WeakFunc.cs" />
+    <Compile Include="Source\Mvvm\Helpers\WeakFuncGeneric.cs" />
+    <Compile Include="Source\Mvvm\ICleanup.cs" />
+    <Compile Include="Source\Mvvm\Messaging\DialogMessage.cs" />
+    <Compile Include="Source\Mvvm\Messaging\GenericMessage.cs" />
+    <Compile Include="Source\Mvvm\Messaging\IMessenger.cs" />
+    <Compile Include="Source\Mvvm\Messaging\MessageBase.cs" />
+    <Compile Include="Source\Mvvm\Messaging\Messenger.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessage.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessageAction.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessageActionGeneric.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessageGeneric.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessageWithCallback.cs" />
+    <Compile Include="Source\Mvvm\Messaging\PropertyChangedMessage.cs" />
+    <Compile Include="Source\Mvvm\Messaging\PropertyChangedMessageBase.cs" />
+    <Compile Include="Source\Mvvm\ObservableObject.cs" />
+    <Compile Include="Source\Mvvm\Threading\DispatcherHelper.cs" />
+    <Compile Include="Source\Mvvm\ViewModelBase.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="View\ViewModelLocator.cs" />
+    <Compile Include="Source\Mvvm\Views\IDialogService.cs" />
+    <Compile Include="Source\Mvvm\Views\INavigationService.cs" />
+    <Compile Include="Source\Docking\ToolViewModel.cs" />
+    <Compile Include="Source\Main\MainViewModel.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Page Include="View\HotkeyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PointerScanner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\OffsetEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PointerScanResults.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ScriptEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Controls\Unfinished\HexDecBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\InputCorrelator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\CheckBoxes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\DropDownContextMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\ScrollViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\DropDown.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\FlatComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Style\DarkBrushes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ScanResults.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Settings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProjectExplorer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PropertyViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DotNetExplorer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CheatBrowser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SnapshotManager.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ManualScanner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\LabelThresholder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ChangeCounter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProcessSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Style\DropDownAutoClose.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Style\VerticalSeparator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Content\Lua.xhsd">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Resource Include="Content\Icons\BlueBlocks1.png" />
+    <Resource Include="Content\Icons\BlueBlocks2.png" />
+    <Resource Include="Content\Icons\BlueBlocks4.png" />
+    <Resource Include="Content\Icons\OrangeBlocks1.png" />
+    <Resource Include="Content\Icons\OrangeBlocks2.png" />
+    <Resource Include="Content\Icons\OrangeBlocks4.png" />
+    <Resource Include="Content\Icons\BlueBlocks8.png" />
+    <Resource Include="Content\Icons\OrangeBlocks8.png" />
+    <Resource Include="Content\Icons\PurpleBlocks1.png" />
+    <Resource Include="Content\Icons\PurpleBlocks2.png" />
+    <Resource Include="Content\Icons\PurpleBlocks4.png" />
+    <Resource Include="Content\Icons\PurpleBlocks8.png" />
+    <Resource Include="Content\Icons\Redo.png" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="Settings.StyleCop" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AnathenaProxy32\AnathenaProxy32.csproj">
+      <Project>{51ac9959-afee-4f91-8a19-03cf0528ab62}</Project>
+      <Name>AnathenaProxy32</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AnathenaProxy64\AnathenaProxy64.csproj">
+      <Project>{65eec6df-ccc8-46ab-b9fb-00d5a624fe94}</Project>
+      <Name>AnathenaProxy64</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AnathenaProxy\AnathenaProxy.csproj">
+      <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
+      <Name>AnathenaProxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AvalonDock\AvalonDock.csproj">
+      <Project>{db81988f-e0f2-45a0-a1fd-8c37f3d35244}</Project>
+      <Name>AvalonDock</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AvalonEdit\AvalonEdit.csproj">
+      <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
+      <Name>AvalonEdit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LiveCharts\Core\LiveCharts.csproj">
+      <Project>{d447642c-a85f-4ab0-96d9-c66cff91aada}</Project>
+      <Name>LiveCharts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LiveCharts\WpfView\WpfCharts.csproj">
+      <Project>{4D253423-AE05-47F6-A59D-9162EC0BB1F2}</Project>
+      <Name>WpfCharts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpCli\SharpCli.csproj">
+      <Project>{4e2d9a17-2195-4a51-aae3-924517440293}</Project>
+      <Name>SharpCli</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Animation\SharpDX.Animation.csproj">
+      <Project>{1b2e7ac4-b206-4268-a782-53b3e3025a43}</Project>
+      <Name>SharpDX.Animation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.D3DCompiler\SharpDX.D3DCompiler.csproj">
+      <Project>{0ff760b5-436b-44e5-8660-696bfa62a77b}</Project>
+      <Name>SharpDX.D3DCompiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Desktop\SharpDX.Desktop.csproj">
+      <Project>{a83e25b7-d5d9-49c0-8fd6-d58213ad1e41}</Project>
+      <Name>SharpDX.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct2D1\SharpDX.Direct2D1.csproj">
+      <Project>{0d4673aa-44f0-4b27-b5ce-9ad5e8c9a730}</Project>
+      <Name>SharpDX.Direct2D1</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct3D11.Effects\SharpDX.Direct3D11.Effects.csproj">
+      <Project>{eff5c0d7-e17a-4eff-bff4-029267b91071}</Project>
+      <Name>SharpDX.Direct3D11.Effects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct3D11\SharpDX.Direct3D11.csproj">
+      <Project>{de53b631-199e-49b8-8b4d-fe9f3d5b28cd}</Project>
+      <Name>SharpDX.Direct3D11</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct3D12\SharpDX.Direct3D12.csproj">
+      <Project>{99391458-fe91-4e52-8e38-486f13a02829}</Project>
+      <Name>SharpDX.Direct3D12</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct3D9\SharpDX.Direct3D9.csproj">
+      <Project>{9d67f045-eb5d-4759-8be4-06d99a20a668}</Project>
+      <Name>SharpDX.Direct3D9</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DirectComposition\SharpDX.DirectComposition.csproj">
+      <Project>{587db362-8ae3-4697-86ac-cad2f1d4f2ef}</Project>
+      <Name>SharpDX.DirectComposition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DirectInput\SharpDX.DirectInput.csproj">
+      <Project>{de89f393-94d0-4a2d-a394-f0933461447b}</Project>
+      <Name>SharpDX.DirectInput</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DirectManipulation\SharpDX.DirectManipulation.csproj">
+      <Project>{24ad5cd6-7091-4be6-85b6-e352eda5fe33}</Project>
+      <Name>SharpDX.DirectManipulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DirectSound\SharpDX.DirectSound.csproj">
+      <Project>{7d3dabe0-4d95-4cdf-b9de-b798660b6ca3}</Project>
+      <Name>SharpDX.DirectSound</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DXGI\SharpDX.DXGI.csproj">
+      <Project>{34134161-c8d8-4cda-9822-ad9d954140b2}</Project>
+      <Name>SharpDX.DXGI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Mathematics\SharpDX.Mathematics.csproj">
+      <Project>{dadc8bf0-b87d-4d2f-b9a8-c243abddfceb}</Project>
+      <Name>SharpDX.Mathematics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.MediaFoundation\SharpDX.MediaFoundation.csproj">
+      <Project>{faa17d46-b46f-45ba-978b-c299855c3b06}</Project>
+      <Name>SharpDX.MediaFoundation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.RawInput\SharpDX.RawInput.csproj">
+      <Project>{149dad81-9c63-42f8-8b0c-500645bad9e3}</Project>
+      <Name>SharpDX.RawInput</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.XAudio2\SharpDX.XAudio2.csproj">
+      <Project>{032c2158-2b94-485c-a32e-b880e63f7f29}</Project>
+      <Name>SharpDX.XAudio2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.XInput\SharpDX.XInput.csproj">
+      <Project>{7dda3633-fb33-4187-8209-093616e50b08}</Project>
+      <Name>SharpDX.XInput</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX\SharpDX.csproj">
+      <Project>{6a41eaf1-67d4-43f0-b6b8-1a1395b07235}</Project>
+      <Name>SharpDX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
+      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
+      <Name>WpfToolkit</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Source\Engine\AddressResolver\Java\" />
+    <Folder Include="Source\Engine\AddressResolver\Python\" />
+    <Folder Include="Source\Mvvm\Behavior\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\Icons\SelectProcess.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\Icons\Cancel.png" />
+    <Resource Include="Content\Icons\Changed.png" />
+    <Resource Include="Content\Icons\CollectValues.png" />
+    <Resource Include="Content\Icons\Decreased.png" />
+    <Resource Include="Content\Icons\DownArrows.png" />
+    <Resource Include="Content\Icons\ENotation.png" />
+    <Resource Include="Content\Icons\Equal.png" />
+    <Resource Include="Content\Icons\GreaterThan.png" />
+    <Resource Include="Content\Icons\GreaterThanOrEqual.png" />
+    <Resource Include="Content\Icons\Home.png" />
+    <Resource Include="Content\Icons\Increased.png" />
+    <Resource Include="Content\Icons\Intersection.png" />
+    <Resource Include="Content\Icons\Invert.png" />
+    <Resource Include="Content\Icons\LeftArrow.png" />
+    <Resource Include="Content\Icons\LessThan.png" />
+    <Resource Include="Content\Icons\LessThanOrEqual.png" />
+    <Resource Include="Content\Icons\LogicalAnd.png" />
+    <Resource Include="Content\Icons\LogicalOr.png" />
+    <EmbeddedResource Include="Content\Icons\MainIcon.ico" />
+    <Resource Include="Content\Icons\MainIconSmall.ico" />
+    <Resource Include="Content\Icons\Merge.png" />
+    <Resource Include="Content\Icons\MinusX.png" />
+    <Resource Include="Content\Icons\MoveDown.png" />
+    <Resource Include="Content\Icons\MoveLeft.png" />
+    <Resource Include="Content\Icons\MoveRight.png" />
+    <Resource Include="Content\Icons\MoveUp.png" />
+    <Resource Include="Content\Icons\Negation.png" />
+    <Resource Include="Content\Icons\New.png" />
+    <Resource Include="Content\Icons\NextScan.png" />
+    <Resource Include="Content\Icons\NotEqual.png" />
+    <Resource Include="Content\Icons\Open.png" />
+    <Resource Include="Content\Icons\PlusX.png" />
+    <Resource Include="Content\Icons\RightArrow.png" />
+    <Resource Include="Content\Icons\Save.png" />
+    <Resource Include="Content\Icons\Stop.png" />
+    <Resource Include="Content\Icons\Unchanged.png" />
+    <Resource Include="Content\Icons\Undo.png" />
+    <Resource Include="Content\Icons\Union.png" />
+    <Resource Include="Content\Icons\UnknownValue.png" />
+    <Resource Include="Content\Icons\X.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <FileAssociation Include=".Hax">
+      <Visible>False</Visible>
+      <Description>Ana Cheat File</Description>
+      <Progid>420</Progid>
+      <DefaultIcon>Content\Icons\MainIcon.ico</DefaultIcon>
+    </FileAssociation>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\Icons\Maximize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\Icons\LeftArrows.png" />
+    <Resource Include="Content\Icons\RightArrows.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\defaultLayout.xml" />
+    <Content Include="Source\EasyHook\EasyHook.dll" />
+    <Content Include="Source\EasyHook\EasyHook32.dll" />
+    <Content Include="Source\EasyHook\EasyHook32Svc.exe" />
+    <Content Include="Source\EasyHook\EasyHook64.dll" />
+    <Content Include="Source\EasyHook\EasyHook64Svc.exe" />
+    <Content Include="Source\EasyHook\EasyLoad32.dll" />
+    <Content Include="Source\EasyHook\EasyLoad64.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="SharpCli">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.Animation">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.D3DCompiler">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.Desktop">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.Direct2D1">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.Direct3D11">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.Direct3D11.Effects">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.Direct3D12">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.Direct3D9">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.DirectComposition">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.DirectInput">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.DirectManipulation">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.DirectSound">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.DXGI">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.Mathematics">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.MediaFoundation">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.RawInput">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.XAudio2">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="SharpDX.XInput">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>START /WAIT cmd /c "$(TargetDir)SharpCli.exe"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>START /WAIT cmd /c "$(TargetDir)SharpCli.exe"</PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
