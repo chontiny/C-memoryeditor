@@ -1049,7 +1049,8 @@
     <PostBuildEvent>START /WAIT cmd /c "$(TargetDir)SharpCli.exe"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>START /WAIT cmd /c "$(TargetDir)SharpCli.exe"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
