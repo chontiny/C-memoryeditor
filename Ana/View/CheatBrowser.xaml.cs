@@ -1,5 +1,6 @@
 ﻿namespace Ana.View
 {
+    using Source.Project;
     using System;
     using System.IO;
     using System.Net;
@@ -88,6 +89,8 @@
 
                 String saveLocation = Path.Combine(SavePath, fileName);
                 File.WriteAllBytes(saveLocation, e.Result);
+
+                ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(saveLocation);
             }
             catch
             {
