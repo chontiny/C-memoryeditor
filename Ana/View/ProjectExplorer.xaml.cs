@@ -31,6 +31,11 @@
             Above,
 
             /// <summary>
+            /// The item is being dropped into the target
+            /// </summary>
+            Into,
+
+            /// <summary>
             /// The item is being dropped below the target
             /// </summary>
             Below
@@ -62,6 +67,7 @@
             {
                 ProjectExplorerViewModel projectExplorerViewModel = this.DataContext as ProjectExplorerViewModel;
                 ProjectItemViewModel item = projectExplorerViewModel.SelectedProjectItem as ProjectItemViewModel;
+
                 if (item != null)
                 {
                     this.projectExplorerTreeView.Focus();
@@ -79,39 +85,43 @@
         {
             try
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
+                if (e.LeftButton != MouseButtonState.Pressed)
                 {
-                    this.DraggedItem = (ProjectItemViewModel)this.projectExplorerTreeView.SelectedItem;
-                    if (this.DraggedItem != null)
-                    {
-                        DragDropEffects finalDropEffect = DragDrop.DoDragDrop(
-                            this.projectExplorerTreeView,
-                            this.projectExplorerTreeView.SelectedValue,
-                            DragDropEffects.Move);
-
-                        // Checking target is not null and item is dragging(moving)
-                        if ((finalDropEffect == DragDropEffects.Move) && this.Target != null)
-                        {
-                            // A Move drop was accepted
-                            if (this.DraggedItem != this.Target)
-                            {
-                                ProjectExplorerViewModel.GetInstance().ProjectRoot.RemoveChildRecursive(this.DraggedItem);
-
-                                if (this.DropMode == DropModes.Above)
-                                {
-                                    this.Target.AddSibling(this.DraggedItem, after: true);
-                                }
-                                else
-                                {
-                                    this.Target.AddSibling(this.DraggedItem, after: false);
-                                }
-
-                                this.Target = null;
-                                this.DraggedItem = null;
-                            }
-                        }
-                    }
+                    return;
                 }
+
+                this.DraggedItem = this.projectExplorerTreeView.SelectedItem as ProjectItemViewModel;
+
+                DragDropEffects finalDropEffect = DragDrop.DoDragDrop(this.projectExplorerTreeView, this.projectExplorerTreeView.SelectedValue, DragDropEffects.Move);
+
+                if (finalDropEffect != DragDropEffects.Move || this.DraggedItem == this.Target || this.DraggedItem == null || this.Target == null)
+                {
+                    return;
+                }
+
+                // Cannot drop a folder into itself
+                if (this.DraggedItem.ContainsChildRecursive(this.Target))
+                {
+                    return;
+                }
+
+                ProjectExplorerViewModel.GetInstance().ProjectRoot.RemoveChildRecursive(this.DraggedItem);
+
+                if (this.DropMode == DropModes.Into)
+                {
+                    this.Target.AddChild(this.DraggedItem);
+                }
+                else if (this.DropMode == DropModes.Above)
+                {
+                    this.Target.AddSibling(this.DraggedItem, after: true);
+                }
+                else if (this.DropMode == DropModes.Below)
+                {
+                    this.Target.AddSibling(this.DraggedItem, after: false);
+                }
+
+                this.Target = null;
+                this.DraggedItem = null;
             }
             catch
             {
@@ -161,9 +171,23 @@
                 ProjectItemViewModel targetItem = ((sender as TreeViewItem).Header as ProjectItemViewModel) as ProjectItemViewModel;
                 if (targetItem != null && this.DraggedItem != null)
                 {
-                    const Int32 ItemHeight = 10;
+                    const Double ItemHeight = 20.0;
+                    const Double DropIntoThreshold = 4.0;
+                    Boolean canDropInto = false;
 
-                    if (e.GetPosition(this).Y > (sender as TreeViewItem).TransformToAncestor(this).Transform(new Point(0, 0)).Y + ItemHeight)
+                    if (targetItem.ProjectItem as FolderItem != null)
+                    {
+                        canDropInto = true;
+                    }
+
+                    Double mouseLocationY = e.GetPosition(this).Y;
+                    Double targetLocation = (sender as TreeViewItem).TransformToAncestor(this).Transform(new Point(0, 0)).Y + (ItemHeight / 2);
+
+                    if (canDropInto && Math.Abs(mouseLocationY - targetLocation) < DropIntoThreshold)
+                    {
+                        this.DropMode = DropModes.Into;
+                    }
+                    else if (mouseLocationY > targetLocation)
                     {
                         this.DropMode = DropModes.Above;
                     }

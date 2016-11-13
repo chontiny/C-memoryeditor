@@ -59,6 +59,33 @@
             }
         }
 
+        /// <summary>
+        /// Builds view models for a loaded project recursively
+        /// </summary>
+        /// <param name="projectItemViewModel">The current project item view model for which the children being constructed</param>
+        public void BuildViewModels()
+        {
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
+            }
+
+            (this.ProjectItem as FolderItem).Children.ForEach(x => this.Children.Add(new ProjectItemViewModel(x, this)));
+            this.Children.ForEach(x => (x as ProjectItemViewModel).BuildViewModels());
+        }
+
+        public Boolean ContainsChildRecursive(ProjectItemViewModel child)
+        {
+            if (this.Children.Contains(child))
+            {
+                return true;
+            }
+            else
+            {
+                return this.Children.Any(x => (x as ProjectItemViewModel).ContainsChildRecursive(child));
+            }
+        }
+
         public void AddChild(ProjectItemViewModel child)
         {
             if (!(this.ProjectItem is FolderItem))

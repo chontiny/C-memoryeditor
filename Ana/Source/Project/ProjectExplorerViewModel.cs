@@ -13,7 +13,6 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using UserSettings;
-
     /// <summary>
     /// View model for the Project Explorer
     /// </summary>
@@ -164,6 +163,9 @@
             }
         }
 
+        /// <summary>
+        /// The root that contains all project items
+        /// </summary>
         public ProjectItemViewModel ProjectRoot
         {
             get
@@ -173,7 +175,7 @@
 
             private set
             {
-                this.ProjectRoot = value;
+                this.projectRoot = value;
                 this.RaisePropertyChanged(nameof(this.ProjectRoot));
             }
         }
@@ -321,6 +323,7 @@
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
                     this.ProjectRoot = new ProjectItemViewModel(serializer.ReadObject(fileStream) as ProjectRoot);
+                    this.ProjectRoot.BuildViewModels();
                     this.HasUnsavedChanges = false;
                 }
             }
@@ -352,7 +355,8 @@
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
                     ProjectRoot importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
-                    importedProjectRoot.Children.ForEach(x => this.ProjectRoot.AddChild(new ProjectItemViewModel(x)));
+                    importedProjectRoot.Children.ForEach(x => (this.ProjectRoot.ProjectItem as ProjectRoot).AddChild(x));
+                    this.ProjectRoot.BuildViewModels();
                     this.HasUnsavedChanges = true;
                 }
             }
