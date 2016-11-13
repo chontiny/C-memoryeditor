@@ -60,13 +60,23 @@
 
         public void AddChild(ProjectItemViewModel child)
         {
-            this.ProjectItem.AddChild(child.ProjectItem);
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
+            }
+
+            (this.ProjectItem as FolderItem).AddChild(child.ProjectItem);
             this.RebuildChildrenFacade();
         }
 
         public void RemoveChild(ProjectItemViewModel child)
         {
-            this.ProjectItem.RemoveChild(child.ProjectItem);
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
+            }
+
+            (this.ProjectItem as FolderItem).RemoveChild(child.ProjectItem);
             this.RebuildChildrenFacade();
         }
 
@@ -83,13 +93,18 @@
 
         public void AddSibling(ProjectItemViewModel projectItemViewModel, Boolean after)
         {
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
+            }
+
             projectItemViewModel.ProjectItem.Parent = this.ProjectItem.Parent;
 
             if (after)
             {
                 if (this.Parent != null)
                 {
-                    (this.Parent as ProjectItemViewModel)?.ProjectItem?.Children?.Insert(Parent.Children.IndexOf(this) + 1, projectItemViewModel.ProjectItem);
+                    ((this.Parent as ProjectItemViewModel)?.ProjectItem as FolderItem)?.Children?.Insert(Parent.Children.IndexOf(this) + 1, projectItemViewModel.ProjectItem);
                 }
                 else
                 {
@@ -100,7 +115,7 @@
             {
                 if (this.Parent != null)
                 {
-                    (this.Parent as ProjectItemViewModel)?.ProjectItem?.Children?.Insert(Parent.Children.IndexOf(this), projectItemViewModel.ProjectItem);
+                    ((this.Parent as ProjectItemViewModel)?.ProjectItem as FolderItem)?.Children?.Insert(Parent.Children.IndexOf(this), projectItemViewModel.ProjectItem);
                 }
                 else
                 {
@@ -118,7 +133,12 @@
 
         protected override void LoadChildren()
         {
-            foreach (ProjectItem child in this.ProjectItem.Children)
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
+            }
+
+            foreach (ProjectItem child in (this.ProjectItem as FolderItem).Children)
             {
                 this.Children.Add(new ProjectItemViewModel(child, this));
             }
@@ -126,8 +146,13 @@
 
         private void RebuildChildrenFacade()
         {
-            this.children = new ObservableCollection<TreeViewItemViewModel>(this.ProjectItem.Children.Select(x => new ProjectItemViewModel(x)));
-            this.ProjectItem.BuildParents(this.ProjectItem.Parent);
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
+            }
+
+            this.children = new ObservableCollection<TreeViewItemViewModel>((this.ProjectItem as FolderItem).Children.Select(x => new ProjectItemViewModel(x)));
+            (this.ProjectItem as FolderItem).BuildParents(this.ProjectItem.Parent);
             this.RaisePropertyChanged(nameof(this.Children));
         }
     }
