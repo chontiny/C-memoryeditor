@@ -783,7 +783,7 @@
     <Resource Include="Content\Icons\LessThanOrEqual.png" />
     <Resource Include="Content\Icons\LogicalAnd.png" />
     <Resource Include="Content\Icons\LogicalOr.png" />
-    <EmbeddedResource Include="Content\Icons\MainIcon.ico" />
+    <Resource Include="Content\Icons\MainIcon.ico" />
     <Resource Include="Content\Icons\MainIconSmall.ico" />
     <Resource Include="Content\Icons\Merge.png" />
     <Resource Include="Content\Icons\MinusX.png" />

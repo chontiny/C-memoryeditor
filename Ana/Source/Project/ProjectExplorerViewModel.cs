@@ -357,11 +357,13 @@
                 {
                     return;
                 }
+
+                filename = this.ProjectFilePath;
             }
 
             try
             {
-                using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
+                using (FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
                     ProjectRoot importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
