@@ -82,15 +82,23 @@
                 return;
             }
 
-            (this.ProjectItem as FolderItem).Parent = (this.projectItem as FolderItem);
+            try
+            {
+                (this.ProjectItem as FolderItem).Parent = (this.projectItem as FolderItem);
 
-            // Do insertion for both view model and underlying project items
-            (this.ProjectItem as FolderItem).Children.Insert(index, child.projectItem);
-            IList<TreeViewItemViewModel> currentChildren = this.Children.ToList();
-            currentChildren.Insert(index, child);
-            this.children = new ObservableCollection<TreeViewItemViewModel>(currentChildren);
+                // Do insertion for both view model and underlying project items
+                (this.ProjectItem as FolderItem).Children.Insert(index, child.projectItem);
+                IList<TreeViewItemViewModel> currentChildren = this.Children.ToList();
+                currentChildren.Insert(index, child);
+                this.children = new ObservableCollection<TreeViewItemViewModel>(currentChildren);
 
-            this.RaisePropertyChanged(nameof(this.Children));
+                this.RaisePropertyChanged(nameof(this.Children));
+            }
+            catch
+            {
+                // If something goes wrong (may never happen), we do not want to lose this item -- add it to our children without insertion
+                this.AddChild(child);
+            }
         }
 
         public void RemoveChildImmediate(ProjectItemViewModel child)
@@ -147,15 +155,6 @@
 
         protected override void LoadChildren()
         {
-            if (!(this.ProjectItem is FolderItem))
-            {
-                return;
-            }
-
-            foreach (ProjectItem child in (this.ProjectItem as FolderItem).Children)
-            {
-                this.Children.Add(new ProjectItemViewModel(child, this));
-            }
         }
     }
     //// End class
