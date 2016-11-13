@@ -59,6 +59,7 @@
 
         public override void Update()
         {
+            this.Children.ForEach(x => x.Update());
         }
 
         /// <summary>

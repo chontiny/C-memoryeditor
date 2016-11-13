@@ -2,7 +2,6 @@
 {
     using Source.Project;
     using Source.Project.ProjectItems;
-    using Source.Utils.Extensions;
     using System;
     using System.Windows;
     using System.Windows.Controls;
@@ -89,8 +88,8 @@
                                 // A Move drop was accepted
                                 if (this.DraggedItem != this.Target)
                                 {
-                                    ProjectExplorerViewModel.GetInstance().ProjectItems.ForEach(x => x.RemoveRecursive(this.DraggedItem));
-                                    this.Target.AddSibling(this.DraggedItem, true);
+                                    ProjectExplorerViewModel.GetInstance().ProjectRoot.RemoveChildRecursive(this.DraggedItem);
+                                    this.Target.AddSibling(this.DraggedItem, after: true);
 
                                     this.Target = null;
                                     this.DraggedItem = null;
