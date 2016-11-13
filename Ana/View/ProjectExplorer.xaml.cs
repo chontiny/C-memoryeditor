@@ -2,7 +2,6 @@
 {
     using Source.Project;
     using Source.Project.ProjectItems;
-    using Source.Utils.Extensions;
     using System;
     using System.Windows;
     using System.Windows.Controls;
@@ -22,9 +21,25 @@
         }
 
         /// <summary>
-        /// Gets or sets the last location the left mouse button was down
+        /// Possible ways the drop may take place
         /// </summary>
-        private Point LastMouseDownLocation { get; set; }
+        private enum DropModes
+        {
+            /// <summary>
+            /// The item is being dropped above the target
+            /// </summary>
+            Above,
+
+            /// <summary>
+            /// The item is being dropped into the target
+            /// </summary>
+            Into,
+
+            /// <summary>
+            /// The item is being dropped below the target
+            /// </summary>
+            Below
+        }
 
         /// <summary>
         /// Gets or sets the item being dragged
@@ -37,21 +52,22 @@
         private ProjectItemViewModel Target { get; set; }
 
         /// <summary>
+        /// Gets or sets the drop mode of the drop action
+        /// </summary>
+        private DropModes DropMode { get; set; }
+
+        /// <summary>
         /// Invoked on a mouse down event in the tree view
         /// </summary>
         /// <param name="sender">Sending object</param>
         /// <param name="e">Event args</param>
         private void ProjectExplorerTreeViewMouseDown(Object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
-            {
-                this.LastMouseDownLocation = e.GetPosition(this.projectExplorerTreeView);
-            }
-
             if (e.ChangedButton == MouseButton.Left && !(e.OriginalSource is Image) && !(e.OriginalSource is TextBlock))
             {
                 ProjectExplorerViewModel projectExplorerViewModel = this.DataContext as ProjectExplorerViewModel;
                 ProjectItemViewModel item = projectExplorerViewModel.SelectedProjectItem as ProjectItemViewModel;
+
                 if (item != null)
                 {
                     this.projectExplorerTreeView.Focus();
@@ -69,36 +85,43 @@
         {
             try
             {
-                if (e.LeftButton == MouseButtonState.Pressed)
+                if (e.LeftButton != MouseButtonState.Pressed)
                 {
-                    Point currentPosition = e.GetPosition(this.projectExplorerTreeView);
-
-                    if ((Math.Abs(currentPosition.X - this.LastMouseDownLocation.X) > 10.0) || (Math.Abs(currentPosition.Y - this.LastMouseDownLocation.Y) > 10.0))
-                    {
-                        this.DraggedItem = (ProjectItemViewModel)this.projectExplorerTreeView.SelectedItem;
-                        if (this.DraggedItem != null)
-                        {
-                            DragDropEffects finalDropEffect = DragDrop.DoDragDrop(
-                                this.projectExplorerTreeView,
-                                this.projectExplorerTreeView.SelectedValue,
-                                DragDropEffects.Move);
-
-                            // Checking target is not null and item is dragging(moving)
-                            if ((finalDropEffect == DragDropEffects.Move) && this.Target != null)
-                            {
-                                // A Move drop was accepted
-                                if (this.DraggedItem != this.Target)
-                                {
-                                    ProjectExplorerViewModel.GetInstance().ProjectItems.ForEach(x => x.RemoveRecursive(this.DraggedItem));
-                                    this.Target.AddSibling(this.DraggedItem, true);
-
-                                    this.Target = null;
-                                    this.DraggedItem = null;
-                                }
-                            }
-                        }
-                    }
+                    return;
                 }
+
+                this.DraggedItem = this.projectExplorerTreeView.SelectedItem as ProjectItemViewModel;
+
+                DragDropEffects finalDropEffect = DragDrop.DoDragDrop(this.projectExplorerTreeView, this.projectExplorerTreeView.SelectedValue, DragDropEffects.Move);
+
+                if (finalDropEffect != DragDropEffects.Move || this.DraggedItem == this.Target || this.DraggedItem == null || this.Target == null)
+                {
+                    return;
+                }
+
+                // Cannot drop a folder into itself
+                if (this.DraggedItem.ContainsChildRecursive(this.Target))
+                {
+                    return;
+                }
+
+                ProjectExplorerViewModel.GetInstance().ProjectRoot.RemoveChildRecursive(this.DraggedItem);
+
+                if (this.DropMode == DropModes.Into)
+                {
+                    this.Target.AddChild(this.DraggedItem);
+                }
+                else if (this.DropMode == DropModes.Above)
+                {
+                    this.Target.AddSibling(this.DraggedItem, after: true);
+                }
+                else if (this.DropMode == DropModes.Below)
+                {
+                    this.Target.AddSibling(this.DraggedItem, after: false);
+                }
+
+                this.Target = null;
+                this.DraggedItem = null;
             }
             catch
             {
@@ -114,20 +137,15 @@
         {
             try
             {
-                Point currentPosition = e.GetPosition(this.projectExplorerTreeView);
-
-                if ((Math.Abs(currentPosition.X - this.LastMouseDownLocation.X) > 10.0) || (Math.Abs(currentPosition.Y - this.LastMouseDownLocation.Y) > 10.0))
+                // Verify that this is a valid drop and then store the drop target
+                ProjectItemViewModel item = ((sender as TreeViewItem).Header as ProjectItemViewModel) as ProjectItemViewModel;
+                if (this.DraggedItem != item)
                 {
-                    // Verify that this is a valid drop and then store the drop target
-                    ProjectItemViewModel item = ((sender as TreeViewItem).Header as ProjectItemViewModel) as ProjectItemViewModel;
-                    if (this.DraggedItem != item)
-                    {
-                        e.Effects = DragDropEffects.Move;
-                    }
-                    else
-                    {
-                        e.Effects = DragDropEffects.None;
-                    }
+                    e.Effects = DragDropEffects.Move;
+                }
+                else
+                {
+                    e.Effects = DragDropEffects.None;
                 }
 
                 e.Handled = true;
@@ -153,8 +171,33 @@
                 ProjectItemViewModel targetItem = ((sender as TreeViewItem).Header as ProjectItemViewModel) as ProjectItemViewModel;
                 if (targetItem != null && this.DraggedItem != null)
                 {
-                    this.Target = targetItem;
+                    const Double ItemHeight = 20.0;
+                    const Double DropIntoThreshold = 4.0;
+                    Boolean canDropInto = false;
+
+                    if (targetItem.ProjectItem as FolderItem != null)
+                    {
+                        canDropInto = true;
+                    }
+
+                    Double mouseLocationY = e.GetPosition(this).Y;
+                    Double targetLocation = (sender as TreeViewItem).TransformToAncestor(this).Transform(new Point(0, 0)).Y + (ItemHeight / 2);
+
+                    if (canDropInto && Math.Abs(mouseLocationY - targetLocation) < DropIntoThreshold)
+                    {
+                        this.DropMode = DropModes.Into;
+                    }
+                    else if (mouseLocationY > targetLocation)
+                    {
+                        this.DropMode = DropModes.Above;
+                    }
+                    else
+                    {
+                        this.DropMode = DropModes.Below;
+                    }
+
                     e.Effects = DragDropEffects.Move;
+                    this.Target = targetItem;
                 }
             }
             catch

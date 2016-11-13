@@ -7,7 +7,6 @@
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.Serialization;
     using Utils.Extensions;
     using Utils.OffsetEditor;
@@ -17,7 +16,6 @@
     /// <summary>
     /// Defines an address that can be added to the project explorer
     /// </summary>
-    [Obfuscation(ApplyToMembers = true, Exclude = true)]
     [DataContract]
     internal class AddressItem : ProjectItem
     {

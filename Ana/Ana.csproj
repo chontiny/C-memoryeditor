@@ -31,11 +31,11 @@
     <ErrorReportUrl>http://www.anathena.com/</ErrorReportUrl>
     <ProductName>Anathena</ProductName>
     <PublisherName>Anathena</PublisherName>
-    <MinimumRequiredVersion>3.0.0.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>3.1.0.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.0.0.0</ApplicationVersion>
+    <ApplicationVersion>3.1.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -205,6 +205,7 @@
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
+    <Compile Include="Source\Project\ProjectItems\ProjectRoot.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
@@ -1049,7 +1050,8 @@
     <PostBuildEvent>START /WAIT cmd /c "$(TargetDir)SharpCli.exe"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>START /WAIT cmd /c "$(TargetDir)SharpCli.exe"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

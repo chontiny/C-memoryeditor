@@ -3,6 +3,7 @@
     using Content;
     using Controls;
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows.Media.Imaging;
@@ -16,7 +17,7 @@
         public ProjectItemViewModel(ProjectItem projectItem, TreeViewItemViewModel parent = null) : base(parent)
         {
             this.projectItem = projectItem;
-            this.RebuildChildrenFacade();
+            this.children = new ObservableCollection<TreeViewItemViewModel>();
         }
 
         public override ObservableCollection<TreeViewItemViewModel> Children
@@ -58,57 +59,120 @@
             }
         }
 
-        public void AddChild(ProjectItemViewModel child)
+        /// <summary>
+        /// Builds view models for a loaded project recursively
+        /// </summary>
+        /// <param name="projectItemViewModel">The current project item view model for which the children being constructed</param>
+        public void BuildViewModels()
         {
-            this.ProjectItem.AddChild(child.ProjectItem);
-            this.RebuildChildrenFacade();
-        }
-
-        public void RemoveChild(ProjectItemViewModel child)
-        {
-            this.ProjectItem.RemoveChild(child.ProjectItem);
-            this.RebuildChildrenFacade();
-        }
-
-        public void RemoveRecursive(ProjectItemViewModel removeTarget)
-        {
-            if (this.ProjectItem.Parent == null)
+            if (!(this.ProjectItem is FolderItem))
             {
-                ProjectExplorerViewModel.GetInstance().ProjectItems.Where(x => x == removeTarget).ForEach(x => ProjectExplorerViewModel.GetInstance().RemoveProjectItem(x));
+                return;
             }
 
-            this.Children.ForEach(x => this.RemoveRecursive(x as ProjectItemViewModel));
-            this.RebuildChildrenFacade();
+            (this.ProjectItem as FolderItem).Children.ForEach(x => this.Children.Add(new ProjectItemViewModel(x, this)));
+            this.Children.ForEach(x => (x as ProjectItemViewModel).BuildViewModels());
         }
 
-        public void AddSibling(ProjectItemViewModel projectItemViewModel, Boolean after)
+        public Boolean ContainsChildRecursive(ProjectItemViewModel child)
         {
-            projectItemViewModel.ProjectItem.Parent = this.ProjectItem.Parent;
-
-            if (after)
+            if (this.Children.Contains(child))
             {
-                if (this.Parent != null)
-                {
-                    (this.Parent as ProjectItemViewModel)?.ProjectItem?.Children?.Insert(Parent.Children.IndexOf(this) + 1, projectItemViewModel.ProjectItem);
-                }
-                else
-                {
-                    ProjectExplorerViewModel.GetInstance().InsertProjectItem(projectItemViewModel, ProjectExplorerViewModel.GetInstance().ProjectItems.IndexOf(this) + 1);
-                }
+                return true;
             }
             else
             {
-                if (this.Parent != null)
-                {
-                    (this.Parent as ProjectItemViewModel)?.ProjectItem?.Children?.Insert(Parent.Children.IndexOf(this), projectItemViewModel.ProjectItem);
-                }
-                else
-                {
-                    ProjectExplorerViewModel.GetInstance().InsertProjectItem(projectItemViewModel, ProjectExplorerViewModel.GetInstance().ProjectItems.IndexOf(this));
-                }
+                return this.Children.Any(x => (x as ProjectItemViewModel).ContainsChildRecursive(child));
+            }
+        }
+
+        public void AddChild(ProjectItemViewModel child)
+        {
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
             }
 
-            this.RebuildChildrenFacade();
+            (this.ProjectItem as FolderItem).Parent = (this.projectItem as FolderItem);
+
+            // Do addition for both view model and underlying project items
+            (this.ProjectItem as FolderItem).AddChild(child.ProjectItem);
+            this.children = new ObservableCollection<TreeViewItemViewModel>(this.Children.Select(x => x).Append(child).ToList());
+
+            this.RaisePropertyChanged(nameof(this.Children));
+        }
+
+        public void InsertChild(ProjectItemViewModel child, Int32 index)
+        {
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
+            }
+
+            try
+            {
+                (this.ProjectItem as FolderItem).Parent = (this.projectItem as FolderItem);
+
+                // Do insertion for both view model and underlying project items
+                (this.ProjectItem as FolderItem).Children.Insert(index, child.projectItem);
+                IList<TreeViewItemViewModel> currentChildren = this.Children.ToList();
+                currentChildren.Insert(index, child);
+                this.children = new ObservableCollection<TreeViewItemViewModel>(currentChildren);
+
+                this.RaisePropertyChanged(nameof(this.Children));
+            }
+            catch
+            {
+                // If something goes wrong (may never happen), we do not want to lose this item -- add it to our children without insertion
+                this.AddChild(child);
+            }
+        }
+
+        public void RemoveChildImmediate(ProjectItemViewModel child)
+        {
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
+            }
+
+            // Do removal for both view model and underlying project items
+            (this.ProjectItem as FolderItem).RemoveChild(child.ProjectItem);
+            this.children = new ObservableCollection<TreeViewItemViewModel>(this.Children.Select(x => x).Where(x => x != child).ToList());
+            this.RaisePropertyChanged(nameof(this.Children));
+        }
+
+        public void RemoveChildRecursive(ProjectItemViewModel removeTarget)
+        {
+            if (!(this.ProjectItem is FolderItem))
+            {
+                return;
+            }
+
+            if (this.Children.Contains(removeTarget))
+            {
+                this.RemoveChildImmediate(removeTarget);
+            }
+            else
+            {
+                this.Children.ForEach(x => (x as ProjectItemViewModel).RemoveChildRecursive(removeTarget));
+            }
+        }
+
+        public void AddSibling(ProjectItemViewModel newItem, Boolean after)
+        {
+            if (this.Parent == null)
+            {
+                return;
+            }
+
+            if (after)
+            {
+                (this.Parent as ProjectItemViewModel).InsertChild(newItem, this.Parent.Children.IndexOf(this) + 1);
+            }
+            else
+            {
+                (this.Parent as ProjectItemViewModel).InsertChild(newItem, this.Parent.Children.IndexOf(this));
+            }
         }
 
         protected override void OnSelected()
@@ -118,17 +182,6 @@
 
         protected override void LoadChildren()
         {
-            foreach (ProjectItem child in this.ProjectItem.Children)
-            {
-                this.Children.Add(new ProjectItemViewModel(child, this));
-            }
-        }
-
-        private void RebuildChildrenFacade()
-        {
-            this.children = new ObservableCollection<TreeViewItemViewModel>(this.ProjectItem.Children.Select(x => new ProjectItemViewModel(x)));
-            this.ProjectItem.BuildParents(this.ProjectItem.Parent);
-            this.RaisePropertyChanged(nameof(this.Children));
         }
     }
     //// End class

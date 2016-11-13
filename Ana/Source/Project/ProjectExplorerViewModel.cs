@@ -7,17 +7,12 @@
     using ProjectItems;
     using PropertyViewer;
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.IO;
-    using System.Linq;
     using System.Runtime.Serialization.Json;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using UserSettings;
-    using Utils.Extensions;
-
     /// <summary>
     /// View model for the Project Explorer
     /// </summary>
@@ -41,9 +36,9 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// The collection of project items
+        /// The project root which contains all project items
         /// </summary>
-        private ReadOnlyCollection<ProjectItemViewModel> projectItems;
+        private ProjectItemViewModel projectRoot;
 
         /// <summary>
         /// The selected project item
@@ -77,8 +72,8 @@
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
             this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
+            this.projectRoot = new ProjectItemViewModel(new ProjectRoot());
             this.IsVisible = true;
-            this.projectItems = new ReadOnlyCollection<ProjectItemViewModel>(new List<ProjectItemViewModel>());
             this.Update();
 
             Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
@@ -169,20 +164,19 @@
         }
 
         /// <summary>
-        /// Gets or sets the collection of project items
+        /// The root that contains all project items
         /// </summary>
-        public ReadOnlyCollection<ProjectItemViewModel> ProjectItems
+        public ProjectItemViewModel ProjectRoot
         {
             get
             {
-                return this.projectItems;
+                return this.projectRoot;
             }
 
-            set
+            private set
             {
-                this.projectItems = value;
-                this.HasUnsavedChanges = true;
-                this.RaisePropertyChanged(nameof(this.ProjectItems));
+                this.projectRoot = value;
+                this.RaisePropertyChanged(nameof(this.ProjectRoot));
             }
         }
 
@@ -214,28 +208,6 @@
         }
 
         /// <summary>
-        /// Removes a project item from the project explorer
-        /// </summary>
-        /// <param name="projectItemViewModel">The project item view model to be removed</param>
-        public void RemoveProjectItem(ProjectItemViewModel projectItemViewModel)
-        {
-            this.ProjectItems = new ReadOnlyCollection<ProjectItemViewModel>(this.ProjectItems.Where(x => x != projectItemViewModel).ToList());
-            this.SelectedProjectItem = null;
-        }
-
-        /// <summary>
-        /// Inserts a project item into the project explorer
-        /// </summary>
-        /// <param name="projectItemViewModel">The project item view model to be removed</param>
-        /// <param name="index">The index of insertion</param>
-        public void InsertProjectItem(ProjectItemViewModel projectItemViewModel, Int32 index)
-        {
-            List<ProjectItemViewModel> newItems = this.ProjectItems.ToList();
-            newItems.Insert(index, projectItemViewModel);
-            this.ProjectItems = new ReadOnlyCollection<ProjectItemViewModel>(newItems);
-        }
-
-        /// <summary>
         /// Adds a specific address to the project explorer
         /// </summary>
         /// <param name="baseAddress">The address</param>
@@ -251,10 +223,9 @@
         /// <param name="projectItem">The project item to add</param>
         public void AddNewProjectItem(ProjectItem projectItem)
         {
-            List<ProjectItemViewModel> newItems = new List<ProjectItemViewModel>(this.ProjectItems);
-
             ProjectItemViewModel folderTarget = this.SelectedProjectItem;
 
+            // Atempt to find the correct folder to place the new item into
             while (folderTarget != null && !(folderTarget.ProjectItem is FolderItem))
             {
                 folderTarget = folderTarget.Parent as ProjectItemViewModel;
@@ -262,14 +233,12 @@
 
             if (folderTarget != null)
             {
-                folderTarget.AddChild(new ProjectItemViewModel(projectItem));
+                folderTarget.AddChild(new ProjectItemViewModel(projectItem, folderTarget));
             }
             else
             {
-                newItems.Add(new ProjectItemViewModel(projectItem));
+                this.projectRoot.AddChild(new ProjectItemViewModel(projectItem, this.projectRoot));
             }
-
-            this.ProjectItems = new ReadOnlyCollection<ProjectItemViewModel>(newItems);
         }
 
         /// <summary>
@@ -301,7 +270,8 @@
         /// </summary>
         private void DeleteSelection()
         {
-            this.RemoveProjectItem(this.SelectedProjectItem);
+            this.ProjectRoot.RemoveChildRecursive(this.SelectedProjectItem);
+            this.SelectedProjectItem = null;
         }
 
         /// <summary>
@@ -325,20 +295,10 @@
             {
                 while (true)
                 {
-                    this.ProjectItems.ForEach(x => this.UpdateRecurse(x));
+                    this.projectRoot.ProjectItem.Update();
                     Thread.Sleep(SettingsViewModel.GetInstance().TableReadInterval);
                 }
             });
-        }
-
-        /// <summary>
-        /// Recursive helper function to update a project item and all children contained by it
-        /// </summary>
-        /// <param name="projectItemViewModel">The project item view model being updated</param>
-        private void UpdateRecurse(ProjectItemViewModel projectItemViewModel)
-        {
-            projectItemViewModel?.Children?.ForEach(x => this.UpdateRecurse(x as ProjectItemViewModel));
-            projectItemViewModel?.ProjectItem?.Update();
         }
 
         /// <summary>
@@ -361,9 +321,9 @@
             {
                 using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
-                    ProjectItem[] projectRoots = serializer.ReadObject(fileStream) as ProjectItem[];
-                    this.ProjectItems = new ReadOnlyCollection<ProjectItemViewModel>(projectRoots.Select(x => new ProjectItemViewModel(x)).ToList());
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                    this.ProjectRoot = new ProjectItemViewModel(serializer.ReadObject(fileStream) as ProjectRoot);
+                    this.ProjectRoot.BuildViewModels();
                     this.HasUnsavedChanges = false;
                 }
             }
@@ -393,11 +353,10 @@
             {
                 using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
-                    ProjectItem[] projectRoots = serializer.ReadObject(fileStream) as ProjectItem[];
-                    List<ProjectItemViewModel> newItems = projectRoots.Select(x => new ProjectItemViewModel(x)).ToList();
-                    newItems.AddRange(this.ProjectItems);
-                    this.ProjectItems = new ReadOnlyCollection<ProjectItemViewModel>(newItems);
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                    ProjectRoot importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
+                    importedProjectRoot.Children.ForEach(x => (this.ProjectRoot.ProjectItem as ProjectRoot).AddChild(x));
+                    this.ProjectRoot.BuildViewModels();
                     this.HasUnsavedChanges = true;
                 }
             }
@@ -422,8 +381,8 @@
             {
                 using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Create, FileAccess.Write))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
-                    serializer.WriteObject(fileStream, this.ProjectItems?.Select(x => x.ProjectItem).ToArray());
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                    serializer.WriteObject(fileStream, this.projectRoot.ProjectItem);
                 }
 
                 this.HasUnsavedChanges = false;

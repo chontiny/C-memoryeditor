@@ -117,7 +117,7 @@
             AllowDrop="True"
             Background="{StaticResource AvalonDock_Expression_BaseColor3}"
             BorderThickness="0"
-            ItemsSource="{Binding ProjectItems, Mode=OneWay}"
+            ItemsSource="{Binding ProjectRoot.Children, Mode=OneWay}"
             MouseDown="ProjectExplorerTreeViewMouseDown">
             <TreeView.ContextMenu>
                 <ContextMenu
