@@ -289,7 +289,8 @@
             switch (this.ResolveType)
             {
                 case AddressResolver.ResolveTypeEnum.Module:
-                    pointer = this.BaseAddress;
+                    pointer = AddressResolver.GetInstance().ResolveModule(this.BaseIdentifier);
+                    pointer = pointer.Add(this.BaseAddress);
                     break;
                 case AddressResolver.ResolveTypeEnum.DotNet:
                     pointer = AddressResolver.GetInstance().ResolveDotNetObject(this.BaseIdentifier);

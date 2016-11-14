@@ -5,7 +5,6 @@
     using Engine.AddressResolver.DotNet;
     using Mvvm;
     using Mvvm.Command;
-    using Scanners.BackgroundScans;
     using Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
@@ -151,7 +150,7 @@
         private void StartBackgroundServices()
         {
             SnapshotPrefilterFactory.GetSnapshotPrefilter(typeof(ChunkLinkedListPrefilter)).BeginPrefilter();
-            PointerCollector.GetInstance().Begin();
+            // PointerCollector.GetInstance().Begin();
             DotNetObjectCollector.GetInstance().Begin();
             AddressResolver.GetInstance().Begin();
         }

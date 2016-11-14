@@ -109,7 +109,7 @@
             if (this.CurrentSnapshot == null || this.CurrentSnapshot.GetRegionCount() <= 0 || this.processedCount >= this.CurrentSnapshot.GetRegionCount())
             {
                 this.processedCount = 0;
-                this.CurrentSnapshot = SnapshotManager.GetInstance().CollectSnapshot(useSettings: false, usePrefilter: false).Clone();
+                this.CurrentSnapshot = SnapshotManager.GetInstance().CollectSnapshot(useSettings: true, usePrefilter: false).Clone();
                 this.FoundPointers = this.ConstructingSet;
                 this.ConstructingSet = new HashSet<IntPtr>();
             }

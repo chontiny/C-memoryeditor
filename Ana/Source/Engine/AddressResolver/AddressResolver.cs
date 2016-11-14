@@ -73,6 +73,20 @@
             return AddressResolver.addressResolverInstance.Value;
         }
 
+        public IntPtr ResolveModule(String identifier)
+        {
+            IntPtr result = IntPtr.Zero;
+
+            IEnumerable<NormalizedModule> modules = this.Modules.Select(x => x)?.Where(x => x.Name.Equals(identifier, StringComparison.OrdinalIgnoreCase));
+
+            if (modules.Count() > 0)
+            {
+                result = modules.First().BaseAddress;
+            }
+
+            return result;
+        }
+
         public IntPtr ResolveDotNetObject(String identifier)
         {
             IntPtr result = IntPtr.Zero;
