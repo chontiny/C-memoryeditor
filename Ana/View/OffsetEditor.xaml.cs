@@ -22,6 +22,7 @@
 
             // Windows Forms hosting -- TODO: Phase this out
             this.OffsetHexDecBox = new HexDecTextBox();
+            this.OffsetHexDecBox.IsHex = true;
             this.OffsetHexDecBox.TextChanged += this.ValueUpdated;
             this.offsetHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.OffsetHexDecBox));
             this.OffsetEditorViewModel.Offsets = offsets == null ? null : new ObservableCollection<Int32>(offsets);

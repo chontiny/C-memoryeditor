@@ -206,7 +206,11 @@
             switch (Type.GetTypeCode(typeof(T)))
             {
                 case TypeCode.Boolean:
-                    bytes = BitConverter.GetBytes((Boolean)(Object)value);
+                case TypeCode.Byte:
+                    bytes = BitConverter.GetBytes((Byte)(Object)value);
+                    break;
+                case TypeCode.SByte:
+                    bytes = BitConverter.GetBytes((SByte)(Object)value);
                     break;
                 case TypeCode.Char:
                     bytes = Encoding.UTF8.GetBytes(new[] { (Char)(Object)value });
