@@ -336,7 +336,6 @@
     <Compile Include="Source\Scanners\ManualScanner\ManualScannerModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerModel.cs" />
     <Compile Include="Source\Scanners\ScanConstraints\ScanConstraint.cs" />
-    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintEditor.cs" />
     <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintManager.cs" />
     <Compile Include="Source\Scanners\ValueCollector\ValueCollectorViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>

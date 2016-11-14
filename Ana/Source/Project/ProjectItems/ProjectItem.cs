@@ -11,7 +11,6 @@
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.Serialization;
     using Utils.HotkeyEditor;
     using Utils.TypeConverters;
@@ -19,7 +18,6 @@
     /// <summary>
     /// A base class for all project items that can be added to the project explorer
     /// </summary>
-    [Obfuscation(ApplyToMembers = true, Exclude = true)]
     [KnownType(typeof(ProjectItem))]
     [KnownType(typeof(FolderItem))]
     [KnownType(typeof(ScriptItem))]

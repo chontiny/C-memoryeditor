@@ -3,14 +3,12 @@
     using SharpDX.DirectInput;
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A keyboard hotkey, which is activated by a given set of input
     /// </summary>
     [DataContract]
-    [Obfuscation(Exclude = true, ApplyToMembers = true)]
     internal class KeyboardHotkey : IHotkey
     {
         /// <summary>

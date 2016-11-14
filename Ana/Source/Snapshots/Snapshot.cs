@@ -4,7 +4,6 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
     using UserSettings;
     using Utils.Extensions;
@@ -116,7 +115,6 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element</param>
         /// <returns>Returns the snapshot element at the specified index</returns>
-        [Obfuscation(Exclude = true)]
         public SnapshotElement this[Int32 index]
         {
             get

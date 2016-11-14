@@ -6,7 +6,6 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
     using Utils.Extensions;
@@ -50,7 +49,6 @@
         /// <param name="address">The address where the value is read</param>
         /// <param name="success">Whether or not the read succeeded</param>
         /// <returns>A value.</returns>
-        [Obfuscation(Exclude = true)]
         public dynamic Read(Type valueType, IntPtr address, out Boolean success)
         {
             dynamic value;
@@ -155,7 +153,6 @@
         /// <param name="elementType">The data type to write</param>
         /// <param name="address">The address to write to</param>
         /// <param name="value">The value to write</param>
-        [Obfuscation(Exclude = true)]
         public void Write(Type elementType, IntPtr address, dynamic value)
         {
             switch (Type.GetTypeCode(elementType))

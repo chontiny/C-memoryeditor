@@ -4,12 +4,10 @@
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
-    using System.Reflection;
     using System.Runtime.Serialization;
     using Utils.ScriptEditor;
     using Utils.TypeConverters;
 
-    [Obfuscation(ApplyToMembers = true, Exclude = true)]
     [DataContract]
     internal class ScriptItem : ProjectItem
     {

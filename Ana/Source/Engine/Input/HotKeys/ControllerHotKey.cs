@@ -2,14 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A controller hotkey, which is activated by a given set of input
     /// </summary>
     [DataContract]
-    [Obfuscation(Exclude = true, ApplyToMembers = true)]
     internal class ControllerHotkey : IHotkey
     {
         /// <summary>

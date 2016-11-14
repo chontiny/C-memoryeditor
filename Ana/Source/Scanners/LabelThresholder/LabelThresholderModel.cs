@@ -5,7 +5,6 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
     using UserSettings;
 
@@ -23,7 +22,6 @@
             Task.Run(() => SnapshotManager.GetInstance().Subscribe(this));
         }
 
-        [Obfuscation(Exclude = true)]
         public Double LowerThreshold
         {
             get
@@ -38,7 +36,6 @@
             }
         }
 
-        [Obfuscation(Exclude = true)]
         public Double UpperThreshold
         {
             get
@@ -53,13 +50,10 @@
             }
         }
 
-        [Obfuscation(Exclude = true)]
         public SortedList<dynamic, Int64> Histogram { get; set; }
 
-        [Obfuscation(Exclude = true)]
         public SortedList<dynamic, Int64> HistogramFiltered { get; set; }
 
-        [Obfuscation(Exclude = true)]
         public SortedList<dynamic, Int64> HistogramKept { get; set; }
 
         private Int32 LowerIndex { get; set; }

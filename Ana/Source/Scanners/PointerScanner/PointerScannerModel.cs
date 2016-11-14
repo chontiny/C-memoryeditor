@@ -313,7 +313,7 @@
         {
             this.PrintDebugTag();
 
-            if (this.ScanConstraintManager == null || this.ScanConstraintManager.GetCount() <= 0)
+            if (this.ScanConstraintManager == null || this.ScanConstraintManager.Count() <= 0)
             {
                 return;
             }

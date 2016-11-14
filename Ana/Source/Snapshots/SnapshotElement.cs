@@ -2,13 +2,11 @@
 {
     using System;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.CompilerServices;
 
     /// <summary>
     /// Class used by SnapshotRegion as a wrapper for indexing into the raw collection of data
     /// </summary>
-    [Obfuscation(ApplyToMembers = true, Exclude = true)]
     internal partial class SnapshotElement
     {
         /// <summary>

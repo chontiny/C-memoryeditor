@@ -3,7 +3,6 @@
     using Source.Utils.Validation;
     using System;
     using System.Drawing;
-    using System.Reflection;
     using System.Windows.Forms;
 
     /// <summary>
@@ -205,7 +204,6 @@
         /// Sets the raw value being represented
         /// </summary>
         /// <param name="value">The raw value</param>
-        [Obfuscation(Exclude = true)]
         public void SetValue(dynamic value)
         {
             if (value == null)

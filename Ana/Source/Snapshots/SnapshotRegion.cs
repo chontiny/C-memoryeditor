@@ -6,7 +6,6 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Runtime.InteropServices;
     using Utils.Extensions;
 
@@ -73,7 +72,6 @@
         /// </summary>
         protected Int32 Alignment { get; set; }
 
-        [Obfuscation(Exclude = true)]
         public unsafe abstract SnapshotElement this[Int32 index] { get; }
 
         /// <summary>
@@ -351,7 +349,6 @@
         /// </summary>
         /// <param name="index">The index of the element</param>
         /// <returns>The snapshot at the specified index</returns>
-        [Obfuscation(Exclude = true)]
         public unsafe override SnapshotElement this[Int32 index]
         {
             get

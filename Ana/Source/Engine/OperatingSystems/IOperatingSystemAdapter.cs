@@ -3,7 +3,6 @@
     using Processes;
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
 
     /// <summary>
     /// An interface that describes general methods for memory manipulations that must be handled by the operating system
@@ -141,7 +140,6 @@
         /// <param name="address">The address to read from</param>
         /// <param name="success">Whether or not the read succeeded</param>
         /// <returns>The value read from memory</returns>
-        [Obfuscation(Exclude = true)]
         dynamic Read(Type elementType, IntPtr address, out Boolean success);
 
         /// <summary>
@@ -168,7 +166,6 @@
         /// <param name="elementType">The data type to write</param>
         /// <param name="address">The address to write to</param>
         /// <param name="value">The value to write</param>
-        [Obfuscation(Exclude = true)]
         void Write(Type elementType, IntPtr address, dynamic value);
 
         /// <summary>

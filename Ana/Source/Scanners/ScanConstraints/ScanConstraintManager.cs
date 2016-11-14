@@ -5,7 +5,6 @@
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using System.Reflection;
     using Utils.Extensions;
 
     /// <summary>
@@ -13,16 +12,29 @@
     /// </summary>
     internal class ScanConstraintManager : IEnumerable
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScanConstraintManager" /> class
+        /// </summary>
         public ScanConstraintManager()
         {
             this.ValueConstraints = new ObservableCollection<ScanConstraint>();
         }
 
+        /// <summary>
+        /// Gets the collection of constraints
+        /// </summary>
         public ObservableCollection<ScanConstraint> ValueConstraints { get; private set; }
 
+        /// <summary>
+        /// Gets the element type of this constraint manager
+        /// </summary>
         public Type ElementType { get; private set; }
 
-        [Obfuscation(Exclude = true)]
+        /// <summary>
+        /// Indexer into the collection of contraints
+        /// </summary>
+        /// <param name="index">The constraint index</param>
+        /// <returns>The constraint at the specified index</returns>
         public ScanConstraint this[Int32 index]
         {
             get
@@ -44,11 +56,19 @@
             return scanConstraintManager;
         }
 
-        public Int32 GetCount()
+        /// <summary>
+        /// Gets the number of constraints being managed
+        /// </summary>
+        /// <returns>The number of constraints being managed</returns>
+        public Int32 Count()
         {
             return this.ValueConstraints.Count;
         }
 
+        /// <summary>
+        /// Sets the element type to which all constraints apply
+        /// </summary>
+        /// <param name="elementType">The new element type</param>
         public void SetElementType(Type elementType)
         {
             this.ElementType = elementType;
@@ -82,6 +102,10 @@
             }
         }
 
+        /// <summary>
+        /// Determines if there is any constraint being managed which uses a relative value constraint
+        /// </summary>
+        /// <returns>True if any constraint has a relative value constraint</returns>
         public Boolean HasRelativeConstraint()
         {
             foreach (ScanConstraint valueConstraint in this)
@@ -95,8 +119,14 @@
             return false;
         }
 
-        public void AddConstraint(ScanConstraint scanConstraint)
+        /// <summary>
+        /// Adds a new constraint to the constraint manager
+        /// </summary>
+        /// <param name="scanConstraint">The new constraint</param>
+        /// <param name="hasPriority">Whether or not the new constraint has priority for conflicts</param>
+        public void AddConstraint(ScanConstraint scanConstraint, Boolean hasPriority = true)
         {
+            // Resolve potential conflicts depending on if the new constraint has priority
             if (scanConstraint.Constraint == ConstraintsEnum.NotScientificNotation)
             {
                 if (this.ElementType != typeof(Single) && this.ElementType != typeof(Double))
@@ -108,6 +138,10 @@
             this.ValueConstraints.Add(scanConstraint);
         }
 
+        /// <summary>
+        /// Removes constraints by indicies
+        /// </summary>
+        /// <param name="constraintIndicies">The indicies of removal</param>
         public void RemoveConstraints(IEnumerable<Int32> constraintIndicies)
         {
             foreach (Int32 index in constraintIndicies.OrderByDescending(x => x))
@@ -116,11 +150,18 @@
             }
         }
 
+        /// <summary>
+        /// Clears all constraints from the constraint manager
+        /// </summary>
         public void ClearConstraints()
         {
             this.ValueConstraints.Clear();
         }
 
+        /// <summary>
+        /// Gets the enumerator for the constraints being managed
+        /// </summary>
+        /// <returns>The enumerator for the constraints</returns>
         public IEnumerator GetEnumerator()
         {
             return ((IEnumerable)this.ValueConstraints).GetEnumerator();

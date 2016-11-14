@@ -3,12 +3,10 @@
     using Extensions;
     using System;
     using System.Linq;
-    using System.Reflection;
 
     /// <summary>
     /// Collection of methods to convert values from one format to another format
     /// </summary>
-    [Obfuscation(ApplyToMembers = true, Exclude = true)]
     internal class Conversions
     {
         /// <summary>
