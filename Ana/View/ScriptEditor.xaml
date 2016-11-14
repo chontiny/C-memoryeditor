@@ -92,6 +92,7 @@
 
         <avalonedit:TextEditor
             Name="ScriptEditorTextEditor"
+            Margin="8"
             shell:Grid.Row="2"
             Background="{StaticResource AvalonDock_Expression_BaseColor3}"
             Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
