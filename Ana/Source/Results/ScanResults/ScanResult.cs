@@ -44,7 +44,7 @@
         }
 
         /// <summary>
-        /// Event notifying that a property of this object has changed
+        /// Occurs after a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 

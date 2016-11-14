@@ -18,19 +18,16 @@
             this.ActivationKeys = new HashSet<Int32>();
         }
 
+        /// <summary>
+        /// Gets or sets the set of inputs corresponding to this hotkey
+        /// </summary>
         [DataMember]
         public HashSet<Int32> ActivationKeys { get; set; }
 
-        public void SetActivationKeys(IEnumerable<Int32> activationKeys)
-        {
-            this.ActivationKeys = new HashSet<Int32>(activationKeys);
-        }
-
-        public HashSet<Int32> GetActivationKeys()
-        {
-            return this.ActivationKeys;
-        }
-
+        /// <summary>
+        /// Gets the string representation of the hotkey inputs
+        /// </summary>
+        /// <returns>The string representatio of hotkey inputs</returns>
         public override String ToString()
         {
             return base.ToString();

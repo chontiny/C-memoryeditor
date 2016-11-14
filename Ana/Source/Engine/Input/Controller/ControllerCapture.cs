@@ -63,10 +63,19 @@
         /// </summary>
         private DirectInput DirectInput { get; set; }
 
+        /// <summary>
+        /// Gets or sets the identifier for the active joystick
+        /// </summary>
         private Guid JoystickGuid { get; set; }
 
+        /// <summary>
+        /// Gets or sets the joystick object
+        /// </summary>
         private Joystick Joystick { get; set; }
 
+        /// <summary>
+        /// Updates controller capture, polling all input
+        /// </summary>
         public void Update()
         {
             // TODO: maybe use this object
@@ -87,10 +96,18 @@
             }
         }
 
+        /// <summary>
+        /// Subscribes to controller capture events
+        /// </summary>
+        /// <param name="subject">The observer to subscribe</param>
         public void Subscribe(IControllerObserver subject)
         {
         }
 
+        /// <summary>
+        /// Unsubscribes from controller capture events
+        /// </summary>
+        /// <param name="subject">The observer to unsubscribe</param>
         public void Unsubscribe(IControllerObserver subject)
         {
         }

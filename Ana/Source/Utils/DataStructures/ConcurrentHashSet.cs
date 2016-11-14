@@ -181,7 +181,7 @@
 
         internal List<T> ToList()
         {
-            return hashSet.ToList();
+            return this.hashSet.ToList();
         }
     }
     //// End class

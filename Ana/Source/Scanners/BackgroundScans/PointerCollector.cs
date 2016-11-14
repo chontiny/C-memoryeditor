@@ -48,17 +48,17 @@
         }
 
         /// <summary>
-        /// The pointers found in the target process
+        /// Gets or sets the pointers found in the target process
         /// </summary>
         private HashSet<IntPtr> FoundPointers { get; set; }
 
         /// <summary>
-        /// The new found pointers being constructed, which will replace the found pointers upon snapshot parse completion.
+        /// Gets or sets the new found pointers being constructed, which will replace the found pointers upon snapshot parse completion.
         /// </summary>
         private HashSet<IntPtr> ConstructingSet { get; set; }
 
         /// <summary>
-        /// The current snapshot being parsed. A new one is collected after the current one is parsed.
+        /// Gets or sets the current snapshot being parsed. A new one is collected after the current one is parsed.
         /// </summary>
         private Snapshot CurrentSnapshot { get; set; }
 

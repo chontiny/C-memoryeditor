@@ -118,6 +118,7 @@
         /// <summary>
         /// Queries virtual pages from the OS to dertermine if any allocations or deallocations have happened
         /// </summary>
+        /// <returns></returns>
         private IEnumerable<RegionProperties> CollectNewPages()
         {
             List<RegionProperties> newRegions = new List<RegionProperties>();

@@ -31,14 +31,14 @@
         private KeyboardHotkey keyboardHotkey;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HotkeyEditorViewModel" /> class.	Ana	F:\Users\Zachary\Documents\Visual Studio 2015\Projects\Anathena\Ana\Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs	36	
+        /// Initializes a new instance of the <see cref="HotkeyEditorViewModel" /> class.
         /// </summary>
         public HotkeyEditorViewModel() : base("Hotkey Editor")
         {
             this.ContentId = HotkeyEditorViewModel.ToolContentId;
-            this.AddHotkeyCommand = new RelayCommand(() => AddHotkey(), () => true);
-            this.RemoveHotkeyCommand = new RelayCommand(() => RemoveSelectedHotkey(), () => true);
-            this.ClearHotkeysCommand = new RelayCommand(() => ClearActiveHotkey(), () => true);
+            this.AddHotkeyCommand = new RelayCommand(() => this.AddHotkey(), () => true);
+            this.RemoveHotkeyCommand = new RelayCommand(() => this.RemoveSelectedHotkey(), () => true);
+            this.ClearHotkeysCommand = new RelayCommand(() => this.ClearActiveHotkey(), () => true);
             this.keyboardHotkey = new KeyboardHotkey();
             this.AccessLock = new Object();
             this.InitializeListeners();
@@ -93,24 +93,40 @@
             }
         }
 
-        private Object AccessLock { get; set; }
-
         public Int32 SelectedHotkeyIndex { get; set; }
 
+        private Object AccessLock { get; set; }
+
+        /// <summary>
+        /// Event received when a key is pressed
+        /// </summary>
+        /// <param name="key">The key that was pressed</param>
         public void OnKeyPress(SharpDX.DirectInput.Key key)
         {
             this.keyboardHotkey.ActivationKeys.Add(key);
-            this.ActiveHotkey = keyboardHotkey;
+            this.ActiveHotkey = this.keyboardHotkey;
         }
 
+        /// <summary>
+        /// Event received when a key is released
+        /// </summary>
+        /// <param name="key">The key that was released</param>
         public void OnKeyRelease(SharpDX.DirectInput.Key key)
         {
         }
 
+        /// <summary>
+        /// Event received when a key is down
+        /// </summary>
+        /// <param name="key">The key that is down</param>
         public void OnKeyDown(SharpDX.DirectInput.Key key)
         {
         }
 
+        /// <summary>
+        /// Event received when a set of keys are down
+        /// </summary>
+        /// <param name="pressedKeys">The down keys</param>
         public void OnUpdateAllDownKeys(HashSet<SharpDX.DirectInput.Key> pressedKeys)
         {
         }
@@ -161,7 +177,7 @@
             lock (this.AccessLock)
             {
                 this.keyboardHotkey = new KeyboardHotkey();
-                this.ActiveHotkey = keyboardHotkey;
+                this.ActiveHotkey = this.keyboardHotkey;
             }
 
             this.RaisePropertyChanged(nameof(this.Hotkeys));

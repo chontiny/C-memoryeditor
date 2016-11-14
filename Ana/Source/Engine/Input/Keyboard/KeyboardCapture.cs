@@ -22,18 +22,34 @@
         }
 
         /// <summary>
-        /// Gets or sets the DirectX input object to collect keyboard input
+        /// Gets or sets the DirectX input object to collect system input
         /// </summary>
         private DirectInput DirectInput { get; set; }
 
+        /// <summary>
+        /// Gets or sets the keyboard input object to capture input
+        /// </summary>
         private Keyboard Keyboard { get; set; }
 
+        /// <summary>
+        /// Gets or sets the current state of the keyboard
+        /// </summary>
         private KeyboardState CurrentKeyboardState { get; set; }
 
+        /// <summary>
+        /// Gets or sets the previous state of the keyboard
+        /// </summary>
         private KeyboardState PreviousKeyboardState { get; set; }
 
+        /// <summary>
+        /// Gets or sets the subjects that are observing keyboard events
+        /// </summary>
         private List<IKeyboardObserver> Subjects { get; set; }
 
+        /// <summary>
+        /// Subscribes to keyboard capture events
+        /// </summary>
+        /// <param name="subject">The observer to subscribe</param>
         public void Subscribe(IKeyboardObserver subject)
         {
             if (this.Subjects.Contains(subject))
@@ -44,6 +60,10 @@
             this.Subjects.Add(subject);
         }
 
+        /// <summary>
+        /// Unsubscribes from keyboard capture events
+        /// </summary>
+        /// <param name="subject">The observer to unsubscribe</param>
         public void Unsubscribe(IKeyboardObserver subject)
         {
             if (!this.Subjects.Contains(subject))
@@ -54,6 +74,9 @@
             this.Subjects.Remove(subject);
         }
 
+        /// <summary>
+        /// Updates keyboard capture, gathering the input state and raising necessary events
+        /// </summary>
         public void Update()
         {
             try
@@ -102,6 +125,10 @@
             }
         }
 
+        /// <summary>
+        /// Notifies observers of a key press event
+        /// </summary>
+        /// <param name="key">The key that was pressed</param>
         public void NotifyKeyPress(Key key)
         {
             foreach (IKeyboardObserver keySubject in this.Subjects)
@@ -110,6 +137,10 @@
             }
         }
 
+        /// <summary>
+        /// Notifies observers of a key release event
+        /// </summary>
+        /// <param name="key">The key that was released</param>
         public void NotifyKeyRelease(Key key)
         {
             foreach (IKeyboardObserver keySubject in this.Subjects)
@@ -118,6 +149,10 @@
             }
         }
 
+        /// <summary>
+        /// Notifies observers of a key down event
+        /// </summary>
+        /// <param name="key">The key that is down</param>
         public void NotifyKeyDown(Key key)
         {
             foreach (IKeyboardObserver keySubject in this.Subjects)
@@ -126,6 +161,10 @@
             }
         }
 
+        /// <summary>
+        /// Notifies observers of a set of key down events
+        /// </summary>
+        /// <param name="downKeys">The keys that are down</param>
         public void NotifyAllDownKeys(HashSet<Key> downKeys)
         {
             foreach (IKeyboardObserver keySubject in this.Subjects)

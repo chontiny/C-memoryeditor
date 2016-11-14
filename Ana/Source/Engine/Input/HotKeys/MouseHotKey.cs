@@ -18,19 +18,16 @@
             this.ActivationMouseButtons = new HashSet<Byte>();
         }
 
+        /// <summary>
+        /// Gets or sets the set of inputs corresponding to this hotkey
+        /// </summary>
         [DataMember]
         public HashSet<Byte> ActivationMouseButtons { get; set; }
 
-        public void SetActivationKeys(IEnumerable<Byte> activationMouseButtons)
-        {
-            this.ActivationMouseButtons = new HashSet<Byte>(activationMouseButtons);
-        }
-
-        public HashSet<Byte> GetActivationMouseButtons()
-        {
-            return this.ActivationMouseButtons;
-        }
-
+        /// <summary>
+        /// Gets the string representation of the hotkey inputs
+        /// </summary>
+        /// <returns>The string representatio of hotkey inputs</returns>
         public override String ToString()
         {
             return base.ToString();

@@ -63,6 +63,9 @@
             this.IsActivated = false;
         }
 
+        /// <summary>
+        /// Occurs after a property value changes.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -165,23 +168,39 @@
         /// </summary>
         public abstract void Update();
 
+        /// <summary>
+        /// Event received when a key is pressed
+        /// </summary>
+        /// <param name="key">The key that was pressed</param>
         public void OnKeyPress(Key key)
         {
         }
 
+        /// <summary>
+        /// Event received when a key is down
+        /// </summary>
+        /// <param name="key">The key that is down</param>
         public void OnKeyDown(Key key)
         {
         }
 
+        /// <summary>
+        /// Event received when a key is released
+        /// </summary>
+        /// <param name="key">The key that was released</param>
         public void OnKeyRelease(Key key)
         {
             // Reset hotkey delay if any of the hotkey keys are released
-            if (this.Hotkeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.GetActivationKeys().Any(y => key == y)))
+            if (this.Hotkeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.ActivationKeys.Any(y => key == y)))
             {
                 this.LastActivated = DateTime.MinValue;
             }
         }
 
+        /// <summary>
+        /// Event received when a set of keys are down
+        /// </summary>
+        /// <param name="pressedKeys">The down keys</param>
         public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
         {
             if ((DateTime.Now - this.LastActivated).TotalMilliseconds < ProjectItem.HotkeyDelay)
@@ -190,7 +209,7 @@
             }
 
             // If any of our keyboard hotkeys include the current set of pressed keys, trigger activation/deactivation
-            if (this.Hotkeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.GetActivationKeys().All(y => pressedKeys.Contains(y))))
+            if (this.Hotkeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.ActivationKeys.All(y => pressedKeys.Contains(y))))
             {
                 this.LastActivated = DateTime.Now;
                 this.IsActivated = !this.IsActivated;

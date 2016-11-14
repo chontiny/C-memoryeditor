@@ -112,7 +112,7 @@
         }
 
         /// <summary>
-        /// Event for when a property changes to notify the view model
+        /// Occurs after a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 

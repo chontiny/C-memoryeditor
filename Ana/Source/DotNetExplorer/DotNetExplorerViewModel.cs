@@ -13,6 +13,7 @@
     using System.Linq;
     using System.Threading;
     using System.Windows.Input;
+
     /// <summary>
     /// View model for the .Net Explorer
     /// </summary>
@@ -42,14 +43,20 @@
         {
             this.ContentId = DotNetExplorerViewModel.ToolContentId;
             this.dotNetObjects = new ReadOnlyCollection<DotNetObjectViewModel>(new List<DotNetObjectViewModel>());
-            this.RefreshObjectsCommand = new RelayCommand(() => RefreshObjects(), () => true);
-            this.AddDotNetObjectCommand = new RelayCommand<DotNetObjectViewModel>((dotNetObjectViewModel) => AddDotNetObject(dotNetObjectViewModel), (dotNetObjectViewModel) => true);
+            this.RefreshObjectsCommand = new RelayCommand(() => this.RefreshObjects(), () => true);
+            this.AddDotNetObjectCommand = new RelayCommand<DotNetObjectViewModel>((dotNetObjectViewModel) => this.AddDotNetObject(dotNetObjectViewModel), (dotNetObjectViewModel) => true);
 
             MainViewModel.GetInstance().Subscribe(this);
         }
 
+        /// <summary>
+        /// Gets a command to refresh the list of active .Net objects based on gathered managed heap data
+        /// </summary>
         public ICommand RefreshObjectsCommand { get; private set; }
 
+        /// <summary>
+        /// Gets a command to add a .Net object to the project explorer
+        /// </summary>
         public ICommand AddDotNetObjectCommand { get; private set; }
 
         /// <summary>
@@ -78,6 +85,9 @@
             return dotNetExplorerViewModelInstance.Value;
         }
 
+        /// <summary>
+        /// Refreshes the list of active .Net objects based on gathered managed heap data
+        /// </summary>
         private void RefreshObjects()
         {
             IEnumerable<DotNetObject> dotNetObjects = DotNetObjectCollector.GetInstance().GetObjectTrees();
@@ -90,6 +100,10 @@
             this.DotNetObjects = new ReadOnlyCollection<DotNetObjectViewModel>(dotNetObjects.Select(x => new DotNetObjectViewModel(x)).ToList());
         }
 
+        /// <summary>
+        /// Adds a .Net object to the project explorer
+        /// </summary>
+        /// <param name="dotNetObjectViewModel">The view model of the .Net object</param>
         private void AddDotNetObject(DotNetObjectViewModel dotNetObjectViewModel)
         {
             DotNetObject dotNetObject = dotNetObjectViewModel.DotNetObject;

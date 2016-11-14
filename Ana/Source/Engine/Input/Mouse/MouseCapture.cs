@@ -55,42 +55,54 @@
         /// </summary>
         private DirectInput DirectInput { get; set; }
 
+        /// <summary>
+        /// Gets or sets the mouse input object to capture input
+        /// </summary>
         private Mouse Mouse { get; set; }
 
-        private MouseState MouseState { get; set; }
+        /// <summary>
+        /// Gets or sets the current mouse state
+        /// </summary>
+        private MouseState CurrentMouseState { get; set; }
 
+        /// <summary>
+        /// Gets or sets the previous mouse state
+        /// </summary>
         private MouseState PreviousMouseState { get; set; }
 
+        /// <summary>
+        /// Updates mouse capture, gathering the input state and raising necessary events
+        /// </summary>
         public void Update()
         {
             try
             {
-                this.MouseState = this.Mouse.GetCurrentState();
+                this.CurrentMouseState = this.Mouse.GetCurrentState();
 
-                if (this.MouseState == null)
+                if (this.CurrentMouseState == null)
                 {
                     return;
                 }
 
                 if (this.PreviousMouseState != null)
                 {
-                    if (this.MouseState.Buttons[(Int32)MouseButtonEnum.Left] == true && this.PreviousMouseState.Buttons[(Int32)MouseButtonEnum.Left] == false)
+                    if (this.CurrentMouseState.Buttons[(Int32)MouseButtonEnum.Left] == true && this.PreviousMouseState.Buttons[(Int32)MouseButtonEnum.Left] == false)
                     {
                         this.OnMouseDown(MouseButtonEnum.Left);
                     }
 
-                    if (this.MouseState.Buttons[(Int32)MouseButtonEnum.Right] == true && this.PreviousMouseState.Buttons[(Int32)MouseButtonEnum.Right] == false)
+                    if (this.CurrentMouseState.Buttons[(Int32)MouseButtonEnum.Right] == true && this.PreviousMouseState.Buttons[(Int32)MouseButtonEnum.Right] == false)
                     {
                         this.OnMouseDown(MouseButtonEnum.Right);
                     }
 
-                    if (this.MouseState.Buttons[(Int32)MouseButtonEnum.Left] == false && this.PreviousMouseState.Buttons[(Int32)MouseButtonEnum.Left] == true)
+                    if (this.CurrentMouseState.Buttons[(Int32)MouseButtonEnum.Left] == false && this.PreviousMouseState.Buttons[(Int32)MouseButtonEnum.Left] == true)
                     {
                         this.OnMouseUp(MouseButtonEnum.Left);
                     }
                 }
 
-                this.PreviousMouseState = this.MouseState;
+                this.PreviousMouseState = this.CurrentMouseState;
             }
             catch (SharpDXException)
             {
@@ -98,10 +110,18 @@
             }
         }
 
+        /// <summary>
+        /// Subscribes to mouse capture events
+        /// </summary>
+        /// <param name="subject">The observer to subscribe</param>
         public void Subscribe(IMouseObserver subject)
         {
         }
 
+        /// <summary>
+        /// Unsubscribes from mouse capture events
+        /// </summary>
+        /// <param name="subject">The observer to unsubscribe</param>
         public void Unsubscribe(IMouseObserver subject)
         {
         }

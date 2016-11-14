@@ -10,6 +10,9 @@
     /// </summary>
     internal abstract class ScannerBase : RepeatedTask, INotifyPropertyChanged
     {
+        /// <summary>
+        /// The number of scans completed
+        /// </summary>
         private Int32 scanCount;
 
         /// <summary>
@@ -21,6 +24,9 @@
             this.ScannerName = scannerName;
         }
 
+        /// <summary>
+        /// Occurs after a property value changes.
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
@@ -55,6 +61,10 @@
             base.Begin();
         }
 
+        /// <summary>
+        /// Notifies view model of a property change
+        /// </summary>
+        /// <param name="propertyName">The name of the changing property</param>
         protected void NotifyPropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
