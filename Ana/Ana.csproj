@@ -31,11 +31,11 @@
     <ErrorReportUrl>http://www.anathena.com/</ErrorReportUrl>
     <ProductName>Anathena</ProductName>
     <PublisherName>Anathena</PublisherName>
-    <MinimumRequiredVersion>3.1.0.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>3.1.4.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.1.0.0</ApplicationVersion>
+    <ApplicationVersion>3.1.4.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -210,10 +210,11 @@
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
     <Compile Include="Source\Snapshots\Null.cs" />
-    <Compile Include="Source\Snapshots\Prefilters\ChunkLinkedListPrefilter.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorModel.cs" />
@@ -342,9 +343,9 @@
     </Compile>
     <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
     <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
-    <Compile Include="Source\Snapshots\Prefilters\ISnapshotPrefilter.cs" />
-    <Compile Include="Source\Snapshots\Prefilters\ShallowPointerPrefilter.cs" />
-    <Compile Include="Source\Snapshots\Prefilters\SnapshotPrefilterFactory.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ISnapshotPrefilter.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ShallowPointerPrefilter.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\SnapshotPrefilterFactory.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
@@ -783,7 +784,7 @@
     <Resource Include="Content\Icons\LessThanOrEqual.png" />
     <Resource Include="Content\Icons\LogicalAnd.png" />
     <Resource Include="Content\Icons\LogicalOr.png" />
-    <EmbeddedResource Include="Content\Icons\MainIcon.ico" />
+    <Resource Include="Content\Icons\MainIcon.ico" />
     <Resource Include="Content\Icons\MainIconSmall.ico" />
     <Resource Include="Content\Icons\Merge.png" />
     <Resource Include="Content\Icons\MinusX.png" />

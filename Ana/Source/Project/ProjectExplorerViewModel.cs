@@ -65,6 +65,7 @@
             // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
             this.ImportProjectCommand = new RelayCommand(() => this.ImportProject(), () => true);
+            this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
             this.SaveAsProjectCommand = new RelayCommand(() => this.SaveAsProject(), () => true);
             this.AddNewFolderItemCommand = new RelayCommand(() => this.AddNewFolderItem(), () => true);
@@ -88,6 +89,11 @@
         /// Gets the command to open a project from disk
         /// </summary>
         public ICommand ImportProjectCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to open a specific project from disk, used for loading downloaded web projects
+        /// </summary>
+        public ICommand ImportSpecificProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to open a project from disk
@@ -336,22 +342,28 @@
         /// <summary>
         /// Imports a project from disk, adding the project items to the current project
         /// </summary>
-        private void ImportProject()
+        private void ImportProject(String filename = null)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = ProjectExtensionFilter;
-            openFileDialog.Title = "Import Project";
-            openFileDialog.ShowDialog();
-            this.ProjectFilePath = openFileDialog.FileName;
-
-            if (this.ProjectFilePath == null || this.ProjectFilePath == String.Empty)
+            // Ask for a specific file if one was not explicitly provided
+            if (filename == null || filename == String.Empty)
             {
-                return;
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = ProjectExtensionFilter;
+                openFileDialog.Title = "Import Project";
+                openFileDialog.ShowDialog();
+                this.ProjectFilePath = openFileDialog.FileName;
+
+                if (this.ProjectFilePath == null || this.ProjectFilePath == String.Empty)
+                {
+                    return;
+                }
+
+                filename = this.ProjectFilePath;
             }
 
             try
             {
-                using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
+                using (FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
                     ProjectRoot importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;

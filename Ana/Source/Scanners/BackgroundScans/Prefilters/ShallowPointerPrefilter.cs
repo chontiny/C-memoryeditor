@@ -1,12 +1,11 @@
-﻿namespace Ana.Source.Snapshots.Prefilters
+﻿namespace Ana.Source.Scanners.BackgroundScans.Prefilters
 {
     using Engine;
     using Engine.OperatingSystems;
+    using Snapshots;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
-    using System.Threading.Tasks;
     using UserSettings;
     using Utils;
     using Utils.DataStructures;
@@ -43,11 +42,11 @@
         /// </summary>
         private ShallowPointerPrefilter()
         {
-            this.FilteredSnapshot = new Snapshot<Null>();
+            this.PrefilteredSnapshot = new Snapshot<Null>();
             this.RegionLock = new Object();
             this.processedCount = 0;
 
-            this.FilteredSnapshot.Alignment = SettingsViewModel.GetInstance().Alignment;
+            this.PrefilteredSnapshot.Alignment = SettingsViewModel.GetInstance().Alignment;
         }
 
         /// <summary>
@@ -58,7 +57,7 @@
         /// <summary>
         /// Gets or sets the snapshot constructed by this prefilter
         /// </summary>
-        private Snapshot<Null> FilteredSnapshot { get; set; }
+        private Snapshot<Null> PrefilteredSnapshot { get; set; }
 
         public static ISnapshotPrefilter GetInstance()
         {
@@ -74,7 +73,7 @@
         {
             lock (this.RegionLock)
             {
-                return this.FilteredSnapshot.Clone();
+                return this.PrefilteredSnapshot.Clone();
             }
         }
 
@@ -116,79 +115,19 @@
                 baseRegions.Add(new SnapshotRegion<Null>(normalizedModule.BaseAddress, normalizedModule.RegionSize));
             }
 
-            this.FilteredSnapshot.AddSnapshotRegions(baseRegions);
+            this.PrefilteredSnapshot.AddSnapshotRegions(baseRegions);
 
             lock (this.RegionLock)
             {
-                List<SnapshotRegion> filteredRegions = new List<SnapshotRegion>(this.FilteredSnapshot.GetSnapshotRegions().OrderBy(x => x.TimeSinceLastRead));
+                List<SnapshotRegion<Null>> pointerRegions = new List<SnapshotRegion<Null>>();
 
-                // Process the allowed amount of chunks from the priority queue
-                Parallel.For(
-                    0,
-                    Math.Min(filteredRegions.Count, ShallowPointerPrefilter.RegionLimit),
-                    SettingsViewModel.GetInstance().ParallelSettings,
-                    (Index) =>
-                    {
-                        Interlocked.Increment(ref processedCount);
-
-                        SnapshotRegion region = filteredRegions[Index];
-                        Boolean success;
-
-                        // Set to type of a pointer
-                        region.SetElementType(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit() ? typeof(UInt32) : typeof(UInt64));
-
-                        // Enforce 4-byte alignment of pointers
-                        region.SetAlignment(sizeof(Int32));
-
-                        // Read current page data for chunk
-                        region.ReadAllRegionMemory(out success);
-
-                        // Read failed; Deallocated page
-                        if (!success)
-                        {
-                            return;
-                        }
-
-                        if (!region.HasValues())
-                        {
-                            return;
-                        }
-
-                        foreach (SnapshotElement element in region)
-                        {
-                            // Enforce user mode memory pointers
-                            if (element.LessThanValue(invalidPointerMin) || element.GreaterThanValue(invalidPointerMax))
-                            {
-                                continue;
-                            }
-
-                            // Enforce 4-byte alignment of destination
-                            if (element.GetCurrentValue() % 4 != 0)
-                            {
-                                continue;
-                            }
-
-                            IntPtr Value = new IntPtr(element.GetCurrentValue());
-
-                            // Check if it is possible that this pointer is valid, if so keep it
-                            if (snapshot.ContainsAddress(Value))
-                            {
-                                foundPointers.Add(Value);
-                            }
-                        }
-
-                        // Clear the saved values, we do not need them now
-                        region.SetCurrentValues(null);
-                    });
-
-                List<SnapshotRegion<Null>> foundRegions = new List<SnapshotRegion<Null>>();
-                foreach (IntPtr pointer in foundPointers)
+                foreach (IntPtr pointer in PointerCollector.GetInstance().GetFoundPointers())
                 {
-                    foundRegions.Add(new SnapshotRegion<Null>(pointer.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
+                    pointerRegions.Add(new SnapshotRegion<Null>(pointer.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
                 }
 
-                this.FilteredSnapshot.AddSnapshotRegions(foundRegions);
-                this.processedCount = Math.Max(this.processedCount, this.FilteredSnapshot.GetRegionCount());
+                this.PrefilteredSnapshot.AddSnapshotRegions(pointerRegions);
+                this.processedCount = Math.Max(this.processedCount, this.PrefilteredSnapshot.GetRegionCount());
             }
         }
 
@@ -198,9 +137,9 @@
 
             lock (this.RegionLock)
             {
-                if (this.FilteredSnapshot != null)
+                if (this.PrefilteredSnapshot != null)
                 {
-                    regionCount = Math.Max(regionCount, this.FilteredSnapshot.GetRegionCount());
+                    regionCount = Math.Max(regionCount, this.PrefilteredSnapshot.GetRegionCount());
                 }
             }
         }

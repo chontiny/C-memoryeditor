@@ -20,10 +20,6 @@
         {
             this.children = new List<ProjectItem>();
         }
-
-        public override void Update()
-        {
-        }
     }
     //// End class
 }

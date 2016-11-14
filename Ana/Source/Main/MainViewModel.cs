@@ -5,7 +5,7 @@
     using Engine.AddressResolver.DotNet;
     using Mvvm;
     using Mvvm.Command;
-    using Snapshots.Prefilters;
+    using Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -58,10 +58,7 @@
             this.ResetLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayout(dockingManager), (dockingManager) => true);
             this.LoadLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.LoadLayout(dockingManager), (dockingManager) => true);
             this.SaveLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.SaveLayout(dockingManager), (dockingManager) => true);
-
-            SnapshotPrefilterFactory.GetSnapshotPrefilter(typeof(ChunkLinkedListPrefilter)).BeginPrefilter();
-            DotNetObjectCollector.GetInstance().Begin();
-            AddressResolver.GetInstance().Begin();
+            this.StartBackgroundServices();
         }
 
         /// <summary>
@@ -145,6 +142,17 @@
             }
 
             this.RaisePropertyChanged(nameof(this.Tools));
+        }
+
+        /// <summary>
+        /// Starts useful services that run in the background to assist in various operations
+        /// </summary>
+        private void StartBackgroundServices()
+        {
+            SnapshotPrefilterFactory.GetSnapshotPrefilter(typeof(ChunkLinkedListPrefilter)).BeginPrefilter();
+            // PointerCollector.GetInstance().Begin();
+            DotNetObjectCollector.GetInstance().Begin();
+            AddressResolver.GetInstance().Begin();
         }
 
         /// <summary>

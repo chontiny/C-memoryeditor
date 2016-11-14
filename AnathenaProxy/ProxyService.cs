@@ -18,200 +18,259 @@ namespace AnathenaProxy
     {
         private const Int32 AttachTimeout = 5000;
 
-        public ProxyService() { }
-
-        public Byte[] Assemble(Boolean IsProcess32Bit, String Assembly, UInt64 BaseAddress)
+        public ProxyService()
         {
-            if (Assembly == null)
+        }
+
+        public Byte[] Assemble(Boolean isProcess32Bit, String assembly, UInt64 baseAddress)
+        {
+            if (assembly == null)
+            {
                 return null;
+            }
 
             // Add header information about process
-            if (IsProcess32Bit)
-                Assembly = String.Format("use32\n" + "org 0x{0:X8}\n", BaseAddress) + Assembly;
+            if (isProcess32Bit)
+            {
+                assembly = String.Format("use32\n" + "org 0x{0:X8}\n", baseAddress) + assembly;
+            }
             else
-                Assembly = String.Format("use64\n" + "org 0x{0:X16}\n", BaseAddress) + Assembly;
+            {
+                assembly = String.Format("use64\n" + "org 0x{0:X16}\n", baseAddress) + assembly;
+            }
 
             // Print fully assembly to console
-            Console.WriteLine("\n" + Assembly + "\n");
+            Console.WriteLine("\n" + assembly + "\n");
 
-            Byte[] Result;
+            Byte[] result;
             try
             {
                 // Call C++ FASM wrapper which will call the 32-bit FASM library which can assemble all x86/x64 instructions
-                Result = FasmNet.Assemble(Assembly);
+                result = FasmNet.Assemble(assembly);
 
                 // Print bytes to console
-                Array.ForEach(Result, (X => Console.Write(X.ToString() + " ")));
+                Array.ForEach(result, x => Console.Write(x.ToString() + " "));
             }
-            catch
+            catch (Exception ex)
             {
-                Result = null;
+                Console.WriteLine("Error:" + ex.ToString());
+                result = null;
             }
-            return Result;
+            return result;
         }
 
         #region Clr
 
-        private ClrHeap Heap;
-        private Dictionary<UInt64, ClrRoot> Roots;
-        private Dictionary<UInt64, ClrField> Fields;
+        private ClrHeap Heap { get; set; }
+
+        private Dictionary<UInt64, ClrRoot> Roots { get; set; }
+
+        private Dictionary<UInt64, ClrField> Fields { get; set; }
 
         public Boolean RefreshHeap(Int32 ProcessId)
         {
             // Clear all variables on a heap read
-            Heap = null;
-            Roots = new Dictionary<UInt64, ClrRoot>();
-            Fields = new Dictionary<UInt64, ClrField>();
+            this.Heap = null;
+            this.Roots = new Dictionary<UInt64, ClrRoot>();
+            this.Fields = new Dictionary<UInt64, ClrField>();
 
             try
             {
-                DataTarget DataTarget = DataTarget.AttachToProcess(ProcessId, AttachTimeout, AttachFlag.Passive);
+                DataTarget dataTarget = DataTarget.AttachToProcess(ProcessId, AttachTimeout, AttachFlag.Passive);
 
-                if (DataTarget.ClrVersions.Count <= 0)
+                if (dataTarget.ClrVersions.Count <= 0)
+                {
                     return false;
+                }
 
-                ClrInfo Version = DataTarget.ClrVersions[0];
-                ClrRuntime Runtime = Version.CreateRuntime();
-                Heap = Runtime.GetHeap();
+                ClrInfo version = dataTarget.ClrVersions[0];
+                ClrRuntime runtime = version.CreateRuntime();
+                this.Heap = runtime.GetHeap();
             }
-            catch { }
+            catch
+            {
+            }
 
-            return Heap == null ? false : true;
+            return this.Heap == null ? false : true;
         }
 
         private TypeCode TranslateType(ClrElementType? ElementType)
         {
-            Type Result;
+            Type result;
 
             if (ElementType == null)
                 return TypeCode.Empty;
 
             switch (ElementType)
             {
-                case ClrElementType.Boolean: Result = typeof(Boolean); break;
-                case ClrElementType.Int8: Result = typeof(SByte); break;
-                case ClrElementType.UInt8: Result = typeof(Byte); break;
-                case ClrElementType.Char: Result = typeof(Byte); break;
-                case ClrElementType.UInt16: Result = typeof(UInt16); break;
-                case ClrElementType.UInt32: Result = typeof(UInt32); break;
-                case ClrElementType.NativeUInt: Result = typeof(UInt32); break;
-                case ClrElementType.UInt64: Result = typeof(UInt64); break;
-                case ClrElementType.Int16: Result = typeof(Int16); break;
-                case ClrElementType.Int32: Result = typeof(Int32); break;
-                case ClrElementType.NativeInt: Result = typeof(Int32); break;
-                case ClrElementType.Int64: Result = typeof(Int64); break;
-                case ClrElementType.Float: Result = typeof(Single); break;
-                case ClrElementType.Double: Result = typeof(Double); break;
-                default: Result = null; break;
+                case ClrElementType.Boolean:
+                    result = typeof(Boolean);
+                    break;
+                case ClrElementType.Int8:
+                    result = typeof(SByte);
+                    break;
+                case ClrElementType.UInt8:
+                    result = typeof(Byte);
+                    break;
+                case ClrElementType.Char:
+                    result = typeof(Byte);
+                    break;
+                case ClrElementType.UInt16:
+                    result = typeof(UInt16);
+                    break;
+                case ClrElementType.UInt32:
+                    result = typeof(UInt32);
+                    break;
+                case ClrElementType.NativeUInt:
+                    result = typeof(UInt32);
+                    break;
+                case ClrElementType.UInt64:
+                    result = typeof(UInt64);
+                    break;
+                case ClrElementType.Int16:
+                    result = typeof(Int16);
+                    break;
+                case ClrElementType.Int32:
+                    result = typeof(Int32);
+                    break;
+                case ClrElementType.NativeInt:
+                    result = typeof(Int32);
+                    break;
+                case ClrElementType.Int64:
+                    result = typeof(Int64);
+                    break;
+                case ClrElementType.Float:
+                    result = typeof(Single);
+                    break;
+                case ClrElementType.Double:
+                    result = typeof(Double);
+                    break;
+                default:
+                    result = null;
+                    break;
             }
 
-            if (Result == null)
+            if (result == null)
+            {
                 return TypeCode.Empty;
+            }
 
-            return Type.GetTypeCode(Result);
+            return Type.GetTypeCode(result);
         }
 
         public IEnumerable<UInt64> GetRoots()
         {
-            foreach (ClrRoot Root in Heap?.EnumerateRoots())
+            foreach (ClrRoot root in this.Heap?.EnumerateRoots())
             {
                 // Prefilter bad roots
-                if (Root == null || Root.Type == null || Root.Name == null)
+                if (root == null || root.Type == null || root.Name == null)
+                {
                     continue;
+                }
 
-                Roots[Root == null ? 0 : Root.Object] = Root;
+                this.Roots[root == null ? 0 : root.Object] = root;
             }
 
-            return Roots?.Keys?.ToList();
+            return this.Roots?.Keys?.ToList();
         }
 
-        public IEnumerable<UInt64> GetObjectChildren(UInt64 ObjectRef)
+        public IEnumerable<UInt64> GetObjectChildren(UInt64 objectRef)
         {
-            List<UInt64> Children = new List<UInt64>();
+            List<UInt64> children = new List<UInt64>();
 
-            if (Roots.ContainsKey(ObjectRef))
+            if (this.Roots.ContainsKey(objectRef))
             {
-                Heap?.GetObjectType(ObjectRef)?.EnumerateRefsOfObject(ObjectRef, delegate (UInt64 ChildObjectRef, Int32 Offset)
+                this.Heap?.GetObjectType(objectRef)?.EnumerateRefsOfObject(objectRef, delegate (UInt64 childObjectRef, Int32 Offset)
                 {
-                    Children.Add(ChildObjectRef);
+                    children.Add(childObjectRef);
                 });
             }
 
-            return Children;
+            return children;
         }
 
-        public Int32 GetRootType(UInt64 RootRef)
+        public Int32 GetRootType(UInt64 rootRef)
         {
-            if (Roots.ContainsKey(RootRef))
-                return (Int32)TranslateType(Roots[RootRef]?.Type?.ElementType);
-
-            return (Int32)TypeCode.Empty;
-        }
-
-        public String GetRootName(UInt64 RootRef)
-        {
-            if (Roots.ContainsKey(RootRef))
-                return Roots[RootRef].Name;
-
-            return null;
-        }
-
-        public IEnumerable<UInt64> GetObjectFields(UInt64 ObjectRef)
-        {
-            List<UInt64> FieldReferences = new List<UInt64>();
-
-            IEnumerable<ClrField> ObjectFields = Heap?.GetObjectType(ObjectRef)?.Fields;
-
-            if (ObjectFields == null)
-                return FieldReferences;
-
-            foreach (ClrField Field in ObjectFields)
+            if (this.Roots.ContainsKey(rootRef))
             {
-                UInt64 FieldReference = unchecked((UInt64)Field.GetHashCode());
-                Fields[FieldReference] = Field;
-
-                FieldReferences.Add(FieldReference);
+                return (Int32)this.TranslateType(this.Roots[rootRef]?.Type?.ElementType);
             }
 
-            return FieldReferences.ToArray();
+            return (Int32)TypeCode.Empty;
         }
 
-        public Int32 GetObjectType(UInt64 ObjectRef)
+        public String GetRootName(UInt64 rootRef)
         {
-            return (Int32)TranslateType(Heap?.GetObjectType(ObjectRef)?.ElementType);
-        }
-
-        public String GetObjectName(UInt64 ObjectRef)
-        {
-            return Heap?.GetObjectType(ObjectRef)?.Name;
-        }
-
-        public String GetFieldName(UInt64 FieldRef)
-        {
-            if (Fields.ContainsKey(FieldRef))
-                return Fields[FieldRef].Name;
+            if (this.Roots.ContainsKey(rootRef))
+            {
+                return this.Roots[rootRef].Name;
+            }
 
             return null;
         }
 
-        public Int32 GetFieldType(UInt64 FieldRef)
+        public IEnumerable<UInt64> GetObjectFields(UInt64 objectRef)
         {
-            if (Fields.ContainsKey(FieldRef))
-                return (Int32)TranslateType(Fields[FieldRef].ElementType);
+            List<UInt64> fieldReferences = new List<UInt64>();
+
+            IEnumerable<ClrField> objectFields = this.Heap?.GetObjectType(objectRef)?.Fields;
+
+            if (objectFields == null)
+            {
+                return fieldReferences;
+            }
+
+            foreach (ClrField field in objectFields)
+            {
+                UInt64 fieldReference = unchecked((UInt64)field.GetHashCode());
+                this.Fields[fieldReference] = field;
+                fieldReferences.Add(fieldReference);
+            }
+
+            return fieldReferences.ToArray();
+        }
+
+        public Int32 GetObjectType(UInt64 objectRef)
+        {
+            return (Int32)this.TranslateType(this.Heap?.GetObjectType(objectRef)?.ElementType);
+        }
+
+        public String GetObjectName(UInt64 objectRef)
+        {
+            return this.Heap?.GetObjectType(objectRef)?.Name;
+        }
+
+        public String GetFieldName(UInt64 fieldRef)
+        {
+            if (this.Fields.ContainsKey(fieldRef))
+            {
+                return this.Fields[fieldRef].Name;
+            }
+
+            return null;
+        }
+
+        public Int32 GetFieldType(UInt64 fieldRef)
+        {
+            if (this.Fields.ContainsKey(fieldRef))
+            {
+                return (Int32)this.TranslateType(this.Fields[fieldRef].ElementType);
+            }
 
             return (Int32)TypeCode.Empty;
         }
 
-        public Int32 GetFieldOffset(UInt64 FieldRef)
+        public Int32 GetFieldOffset(UInt64 fieldRef)
         {
-            if (Fields.ContainsKey(FieldRef))
-                return Fields[FieldRef].Offset + IntPtr.Size;
+            if (this.Fields.ContainsKey(fieldRef))
+            {
+                return this.Fields[fieldRef].Offset + IntPtr.Size;
+            }
 
             return 0;
         }
-
         #endregion
-
-    } // End class
-
-} // End namespace
+    }
+    //// End class
+}
+//// End namespace

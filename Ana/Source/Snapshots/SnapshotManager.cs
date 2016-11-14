@@ -2,7 +2,7 @@
 {
     using Engine;
     using Engine.OperatingSystems;
-    using Prefilters;
+    using Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
     using System.Threading;

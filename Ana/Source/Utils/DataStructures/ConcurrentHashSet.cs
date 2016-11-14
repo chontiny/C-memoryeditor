@@ -3,6 +3,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
 
     /// <summary>
@@ -176,6 +177,11 @@
                     this.lockSlim.Dispose();
                 }
             }
+        }
+
+        internal List<T> ToList()
+        {
+            return hashSet.ToList();
         }
     }
     //// End class

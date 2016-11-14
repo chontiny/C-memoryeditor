@@ -96,6 +96,7 @@
             AddressItem addressItem = new AddressItem();
 
             addressItem.Description = dotNetObject.Name;
+            addressItem.ElementType = dotNetObject.ElementType == typeof(Boolean) ? typeof(Byte) : dotNetObject.ElementType;
             addressItem.BaseIdentifier = dotNetObject.GetFullName();
             addressItem.ResolveType = AddressResolver.ResolveTypeEnum.DotNet;
 
