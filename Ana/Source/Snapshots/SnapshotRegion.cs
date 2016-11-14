@@ -14,16 +14,29 @@
     /// </summary>
     internal abstract class SnapshotRegion : NormalizedRegion, IEnumerable
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
+        /// </summary>
+        /// <param name="baseAddress">The base address of the region</param>
+        /// <param name="regionSize">The size of the region</param>
         public SnapshotRegion(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
         {
             this.RegionExtension = 0;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
+        /// </summary>
+        /// <param name="remoteRegion">The snapshot region of which this will clone the size and base address</param>
         public SnapshotRegion(NormalizedRegion remoteRegion) : base(remoteRegion.BaseAddress, remoteRegion.RegionSize)
         {
             this.RegionExtension = 0;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
+        /// </summary>
+        /// <param name="snapshotRegion">The snapshot region of which this will clone the size, extension size, and base address</param>
         public SnapshotRegion(SnapshotRegion snapshotRegion) : base(snapshotRegion.BaseAddress, snapshotRegion.RegionSize)
         {
             this.RegionExtension = snapshotRegion.RegionExtension;
@@ -72,16 +85,25 @@
         /// </summary>
         protected Int32 Alignment { get; set; }
 
+        /// <summary>
+        /// Indexes into the snapshot region, getting the snapshot element at the given location.
+        /// </summary>
+        /// <param name="index">The index of the snapshot element.</param>
+        /// <returns>The snapshot element at the specified location.</returns>
         public unsafe abstract SnapshotElement this[Int32 index] { get; }
 
         /// <summary>
-        /// Expands a region by a given size in both directions (default is element type size) unconditionally
+        /// Expands a region by the element type size in both directions unconditionally.
         /// </summary>
         public void ExpandRegion()
         {
             this.ExpandRegion(this.GetElementReadOverSize());
         }
 
+        /// <summary>
+        /// Expands a region by a given size in both directions unconditionally.
+        /// </summary>
+        /// <param name="expandSize">The size of region expansion</param>
         public void ExpandRegion(Int32 expandSize)
         {
             // Expand with negative overflow protection
@@ -100,7 +122,7 @@
         }
 
         /// <summary>
-        /// Fills a region into the available extension space
+        /// Fills a region into the available extension space.
         /// </summary>
         public void FillRegion()
         {
@@ -134,16 +156,26 @@
             }
         }
 
+        /// <summary>
+        /// Sets the valid bit of all elements in this snapshot to true.
+        /// </summary>
         public void MarkAllValid()
         {
             this.Valid = new BitArray(this.RegionSize, true);
         }
 
+        /// <summary>
+        /// Sets the valid bit of all elements in this snapshot to false.
+        /// </summary>
         public void MarkAllInvalid()
         {
             this.Valid = new BitArray(this.RegionSize, false);
         }
 
+        /// <summary>
+        /// Sets the element type of this region
+        /// </summary>
+        /// <param name="elementType">The new element type</param>
         public void SetElementType(Type elementType)
         {
             this.ElementType = elementType;
@@ -157,6 +189,10 @@
             this.RelaxRegion();
         }
 
+        /// <summary>
+        /// Sets the memory alignment of this snapshot region
+        /// </summary>
+        /// <param name="alignment">The new alignment</param>
         public void SetAlignment(Int32 alignment)
         {
             this.Alignment = alignment;
@@ -184,6 +220,27 @@
         }
 
         /// <summary>
+        /// Sets the current values of this region
+        /// </summary>
+        /// <param name="newValues">The new values</param>
+        public void SetCurrentValues(Byte[] newValues)
+        {
+            this.PreviousValues = this.CurrentValues;
+            this.CurrentValues = newValues;
+            this.CurrentSnapshotElement.InitializePointers();
+        }
+
+        /// <summary>
+        /// Sets the previous values of this region
+        /// </summary>
+        /// <param name="previousValues">The new previous values</param>
+        public void SetPreviousValues(Byte[] previousValues)
+        {
+            this.PreviousValues = previousValues;
+            this.CurrentSnapshotElement.InitializePointers();
+        }
+
+        /// <summary>
         /// Determines how many extra bytes an element will need to read to determine it's value
         /// </summary>
         /// <returns>The readover size of this region</returns>
@@ -192,39 +249,46 @@
             return Marshal.SizeOf(this.ElementType) - 1;
         }
 
+        /// <summary>
+        /// Gets the region extension of this snapshot.
+        /// </summary>
+        /// <returns>The region extension of this snapshot.</returns>
         public Int32 GetRegionExtension()
         {
             return this.RegionExtension;
         }
 
-        public void SetCurrentValues(Byte[] newValues)
-        {
-            this.PreviousValues = this.CurrentValues;
-            this.CurrentValues = newValues;
-            this.CurrentSnapshotElement.InitializePointers();
-        }
-
-        public void SetPreviousValues(Byte[] newValues)
-        {
-            this.PreviousValues = newValues;
-            this.CurrentSnapshotElement.InitializePointers();
-        }
-
+        /// <summary>
+        /// Gets the current values of this snapshot.
+        /// </summary>
+        /// <returns>The current values of this snapshot.</returns>
         public Byte[] GetCurrentValues()
         {
             return this.CurrentValues;
         }
 
+        /// <summary>
+        /// Gets the previous values of this snapshot.
+        /// </summary>
+        /// <returns>The previous values of this snapshot.</returns>
         public Byte[] GetPreviousValues()
         {
             return this.PreviousValues;
         }
 
+        /// <summary>
+        /// Gets the element type of this snapshot.
+        /// </summary>
+        /// <returns>The element type of this snapshot.</returns>
         public Type GetElementType()
         {
             return this.ElementType;
         }
 
+        /// <summary>
+        /// Gets the memory alignment of this snapshot.
+        /// </summary>
+        /// <returns>The memory alignment of this snapshot.</returns>
         public Int32 GetAlignment()
         {
             return this.Alignment;
@@ -244,6 +308,10 @@
             return true;
         }
 
+        /// <summary>
+        /// Gets a value indicating if there are any values read from memory for this snapshot.
+        /// </summary>
+        /// <returns>True if there are any read memory values.</returns>
         public Boolean HasValues()
         {
             if (this.CurrentValues == null)
@@ -254,6 +322,12 @@
             return true;
         }
 
+        /// <summary>
+        /// Reads all memory bounded by this region
+        /// </summary>
+        /// <param name="readSuccess">Whether or not the read was successful</param>
+        /// <param name="keepValues">Whether or not this region should retain the read values in memory</param>
+        /// <returns>The read values from memory</returns>
         public Byte[] ReadAllRegionMemory(out Boolean readSuccess, Boolean keepValues = true)
         {
             this.TimeSinceLastRead = DateTime.Now;
@@ -274,6 +348,10 @@
             return currentValues;
         }
 
+        /// <summary>
+        /// Gets a snapshot element enumerator. Note: Do not parallelize this, there is only one enumerator object as an optimization.
+        /// </summary>
+        /// <returns>The snapshot element enumerator.</returns>
         public IEnumerator GetEnumerator()
         {
             if (this.RegionSize <= 0 || this.Alignment <= 0)
@@ -322,16 +400,29 @@
     /// <typeparam name="LabelType">The label type of this snapshot region</typeparam>
     internal class SnapshotRegion<LabelType> : SnapshotRegion where LabelType : struct
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotRegion {LabelType}" /> class.
+        /// </summary>
+        /// <param name="baseAddress">The base address of the region</param>
+        /// <param name="regionSize">The size of the region</param>
         public SnapshotRegion(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
         {
             this.CurrentSnapshotElement = new SnapshotElement<LabelType>(this);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotRegion {LabelType}" /> class.
+        /// </summary>
+        /// <param name="remoteRegion">The snapshot region of which this will clone the size and base address</param>
         public SnapshotRegion(NormalizedRegion remoteRegion) : base(remoteRegion)
         {
             this.CurrentSnapshotElement = new SnapshotElement<LabelType>(this);
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotRegion {LabelType}" /> class.
+        /// </summary>
+        /// <param name="snapshotRegion">The snapshot region of which this will clone the size, extension size, and base address</param>
         public SnapshotRegion(SnapshotRegion snapshotRegion) : base(snapshotRegion)
         {
             this.CurrentSnapshotElement = new SnapshotElement<LabelType>(this);
@@ -359,16 +450,28 @@
             }
         }
 
+        /// <summary>
+        /// Gets the element labels associated with this snapshot
+        /// </summary>
+        /// <returns>The element labels of this snapshot</returns>
         public LabelType?[] GetElementLabels()
         {
             return this.ElementLabels;
         }
 
+        /// <summary>
+        /// Sets the element label for this snapshot. Sets a single label for all elements at once.
+        /// </summary>
+        /// <param name="elementLabel">The new element label.</param>
         public void SetElementLabels(LabelType? elementLabel)
         {
             this.ElementLabels = Enumerable.Repeat(elementLabel, this.RegionSize).ToArray();
         }
 
+        /// <summary>
+        /// Sets the element labels for this snapshot.
+        /// </summary>
+        /// <param name="elementLabels">The new element labels.</param>
         public void SetElementLabels(LabelType?[] elementLabels)
         {
             this.ElementLabels = elementLabels;

@@ -76,6 +76,10 @@
             this.UpdateHistogram(forceUpdate: true);
         }
 
+        /// <summary>
+        /// Recieves an update of the active snapshot
+        /// </summary>
+        /// <param name="snapshot">The active snapshot</param>
         public void Update(Snapshot snapshot)
         {
             lock (this.SnapshotLock)

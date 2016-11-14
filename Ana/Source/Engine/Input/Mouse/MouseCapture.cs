@@ -126,6 +126,10 @@
         {
         }
 
+        /// <summary>
+        /// Notifies subscribers of a mouse down event
+        /// </summary>
+        /// <param name="mouseButton">The mouse down button</param>
         private void OnMouseDown(MouseButtonEnum mouseButton)
         {
             switch (mouseButton)
@@ -141,6 +145,10 @@
             }
         }
 
+        /// <summary>
+        /// Notifies subscribers of a mouse up event
+        /// </summary>
+        /// <param name="mouseButton">The mouse up button</param>
         private void OnMouseUp(MouseButtonEnum mouseButton)
         {
             switch (mouseButton)

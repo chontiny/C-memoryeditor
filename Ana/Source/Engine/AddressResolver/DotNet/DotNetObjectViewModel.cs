@@ -48,7 +48,7 @@
 
         protected override void LoadChildren()
         {
-            foreach (DotNetObject child in this.DotNetObject.GetChildren())
+            foreach (DotNetObject child in this.DotNetObject.Children)
             {
                 this.Children.Add(new DotNetObjectViewModel(child, this));
             }
@@ -56,7 +56,7 @@
 
         private void RebuildChildrenFacade()
         {
-            this.children = new ObservableCollection<TreeViewItemViewModel>(this.DotNetObject.GetChildren().Select(x => new DotNetObjectViewModel(x)));
+            this.children = new ObservableCollection<TreeViewItemViewModel>(this.DotNetObject.Children.Select(x => new DotNetObjectViewModel(x)));
             this.RaisePropertyChanged(nameof(this.Children));
         }
     }

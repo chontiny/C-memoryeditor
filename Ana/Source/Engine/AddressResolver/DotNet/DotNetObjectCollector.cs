@@ -174,10 +174,10 @@
             {
                 DotNetObject childObject = new DotNetObject(
                     parent,
-                    parent.GetAddress().Add(proxyService.GetFieldOffset(fieldRef)).ToUInt64(),
+                    parent.ObjectReference.ToIntPtr().Add(proxyService.GetFieldOffset(fieldRef)).ToUInt64(),
                     Conversions.TypeCodeToType((TypeCode)proxyService.GetFieldType(fieldRef)),
                     proxyService.GetFieldName(fieldRef));
-                parent.AddChild(childObject);
+                parent.Children.Add(childObject);
             }
 
             // Add all nested objects recursively
@@ -198,11 +198,11 @@
                 }
 
                 DotNetObject child = new DotNetObject(parent, childObjectRef, type, type.Name);
-                parent.AddChild(child);
+                parent.Children.Add(child);
                 this.RecursiveBuild(proxyService, visited, child, childObjectRef);
             }
 
-            parent.SortChildren();
+            parent.Children.Sort();
         }
     }
     //// End class

@@ -4,7 +4,6 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using Utils.Extensions;
     using Utils.TypeConverters;
 
     /// <summary>
@@ -38,98 +37,88 @@
             this.Children = new List<DotNetObject>();
         }
 
+        /// <summary>
+        /// Gets or sets the address of the object. The CLR can change this at any time, in which case it will eventually be re-resolved.
+        /// </summary>
         [ReadOnly(true)]
         [TypeConverter(typeof(AddressConverter))]
         [Category("Properties"), DisplayName("Address"), Description("Address of the object. The CLR can change this at any time")]
         public UInt64 ObjectReference { get; set; }
 
+        /// <summary>
+        /// Gets or sets the name of the .Net object.
+        /// </summary>
         [ReadOnly(true)]
         [Category("Properties"), DisplayName("Name"), Description("Name of the .NET object")]
         public String Name { get; set; }
 
+        /// <summary>
+        /// Gets or sets the data type of the .Net object.
+        /// </summary>
         [ReadOnly(true)]
         [Category("Properties"), DisplayName("Value Type"), Description("Data type of the address")]
         public Type ElementType { get; set; }
 
-        private DotNetObject Parent { get; set; }
-
+        /// <summary>
+        /// Gets or sets the children of this .Net object.
+        /// </summary>
         public List<DotNetObject> Children { get; set; }
 
-        public void AddChild(DotNetObject objectNode)
-        {
-            if (!this.Children.Contains(objectNode))
-            {
-                this.Children.Add(objectNode);
-            }
-        }
+        /// <summary>
+        /// Gets or sets the parent of this .Net object.
+        /// </summary>
+        private DotNetObject Parent { get; set; }
 
-        public List<DotNetObject> GetChildren()
-        {
-            return this.Children;
-        }
-
-        public void SortChildren()
-        {
-            this.Children.Sort();
-        }
-
-        public IntPtr GetAddress()
-        {
-            try
-            {
-                return this.ObjectReference.ToIntPtr();
-            }
-            catch
-            {
-                return IntPtr.Zero;
-            }
-        }
-
-        public Type GetElementType()
-        {
-            return this.ElementType == null ? typeof(Int32) : this.ElementType;
-        }
-
-        public String GetName()
-        {
-            return this.Name == null ? String.Empty : this.Name;
-        }
-
+        /// <summary>
+        /// Gets the full namespace name of this object
+        /// </summary>
+        /// <returns>The full namespace name of this object</returns>
         public String GetFullName()
         {
             return this.GetFullNamespace(String.Empty);
         }
 
+        /// <summary>
+        /// Compares this to another .Net object for sorting. Comparison done alphabetically by name.
+        /// </summary>
+        /// <param name="other">The .Net object to compare to</param>
+        /// <returns>An integer indicating sorting priority</returns>
         public Int32 CompareTo(DotNetObject other)
         {
-            if (this.ObjectReference > other.ObjectReference)
-            {
-                return 1;
-            }
+            String name = this.Name == null ? String.Empty : this.Name;
+            String otherName = other.Name == null ? String.Empty : other.Name;
 
-            if (this.ObjectReference == other.ObjectReference)
-            {
-                return 0;
-            }
-
-            return -1;
+            return name.CompareTo(otherName);
         }
 
+        /// <summary>
+        /// Gets the enumerator for the children of this object.
+        /// </summary>
+        /// <returns>The enumerator for the children of this object.</returns>
         public IEnumerator GetEnumerator()
         {
             return ((IEnumerable)this.Children).GetEnumerator();
         }
 
+        /// <summary>
+        /// Gets the root namespace name of this object
+        /// </summary>
+        /// <returns>The root namespace name</returns>
         private String GetRootName()
         {
             if (this.Parent == null)
             {
-                return this.GetName();
+                return this.Name == null ? String.Empty : this.Name;
             }
 
             return this.Parent.GetRootName();
         }
 
+        /// <summary>
+        /// Gets the full namespace that contains this object recursively
+        /// </summary>
+        /// <param name="currentNamespace">The namespace constructed so far</param>
+        /// <returns>The full namespace of this object</returns>
         private String GetFullNamespace(String currentNamespace)
         {
             if (this.Parent == null)

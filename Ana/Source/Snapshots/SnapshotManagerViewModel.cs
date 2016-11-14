@@ -59,6 +59,9 @@
         /// </summary>
         public ICommand RedoSnapshotCommand { get; private set; }
 
+        /// <summary>
+        /// Gets the snapshots taken during this scan session
+        /// </summary>
         public ObservableCollection<Snapshot> Snapshots
         {
             get
@@ -67,6 +70,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the snapshots deleted during this scan session
+        /// </summary>
         public ObservableCollection<Snapshot> DeletedSnapshots
         {
             get
@@ -84,6 +90,10 @@
             return snapshotManagerViewModelInstance.Value;
         }
 
+        /// <summary>
+        /// Recieves an update of the active snapshot
+        /// </summary>
+        /// <param name="snapshot">The active snapshot</param>
         public void Update(Snapshot snapshot)
         {
             this.RaisePropertyChanged(nameof(this.Snapshots));

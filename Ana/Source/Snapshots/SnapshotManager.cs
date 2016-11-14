@@ -275,7 +275,7 @@
         }
 
         /// <summary>
-        /// Saves a new snapshot, which becomes the current active snapshot
+        /// Saves a new snapshot, which will become the current active snapshot
         /// </summary>
         /// <param name="snapshot">The snapshot to save</param>
         public void SaveSnapshot(Snapshot snapshot)
