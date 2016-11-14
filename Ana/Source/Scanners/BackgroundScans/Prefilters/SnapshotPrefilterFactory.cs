@@ -1,4 +1,4 @@
-﻿namespace Ana.Source.Snapshots.Prefilters
+﻿namespace Ana.Source.Scanners.BackgroundScans.Prefilters
 {
     using System;
 

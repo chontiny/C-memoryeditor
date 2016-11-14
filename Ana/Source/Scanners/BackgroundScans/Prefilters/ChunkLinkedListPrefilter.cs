@@ -1,7 +1,8 @@
-﻿namespace Ana.Source.Snapshots.Prefilters
+﻿namespace Ana.Source.Scanners.BackgroundScans.Prefilters
 {
     using Engine;
     using Engine.OperatingSystems;
+    using Snapshots;
     using System;
     using System.Collections.Generic;
     using System.Linq;
