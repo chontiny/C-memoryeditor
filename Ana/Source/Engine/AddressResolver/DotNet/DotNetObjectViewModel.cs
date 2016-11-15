@@ -5,17 +5,37 @@
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows.Media.Imaging;
+
+    /// <summary>
+    /// View model for an individual .Net object
+    /// </summary>
     internal class DotNetObjectViewModel : TreeViewItemViewModel
     {
+        /// <summary>
+        /// The .Net object model
+        /// </summary>
         private readonly DotNetObject dotNetObject;
+
+        /// <summary>
+        /// The children view models under this object
+        /// </summary>
         private ObservableCollection<TreeViewItemViewModel> children;
 
-        public DotNetObjectViewModel(DotNetObject projectItem, TreeViewItemViewModel parent = null) : base(parent)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DotNetObjectViewModel" /> class.
+        /// </summary>
+        /// <param name="dotNetObject">The .Net object model</param>
+        /// <param name="parent">The parent to this .Net object view model</param>
+        public DotNetObjectViewModel(DotNetObject dotNetObject, TreeViewItemViewModel parent = null) : base(parent)
         {
-            this.dotNetObject = projectItem;
-            this.RebuildChildrenFacade();
+            this.dotNetObject = dotNetObject;
+            this.children = new ObservableCollection<TreeViewItemViewModel>(this.DotNetObject.Children.Select(x => new DotNetObjectViewModel(x)));
+            this.RaisePropertyChanged(nameof(this.Children));
         }
 
+        /// <summary>
+        /// Gets the children view models under this object
+        /// </summary>
         public override ObservableCollection<TreeViewItemViewModel> Children
         {
             get
@@ -24,6 +44,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the .Net object that this view model represents
+        /// </summary>
         public DotNetObject DotNetObject
         {
             get
@@ -32,6 +55,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the icon associated with this .Net object
+        /// </summary>
         public BitmapImage Icon
         {
             get
@@ -41,23 +67,12 @@
             }
         }
 
+        /// <summary>
+        /// Invoked when this view model is selected
+        /// </summary>
         protected override void OnSelected()
         {
             PropertyViewerViewModel.GetInstance().SetTargetObjects(this.DotNetObject);
-        }
-
-        protected override void LoadChildren()
-        {
-            foreach (DotNetObject child in this.DotNetObject.Children)
-            {
-                this.Children.Add(new DotNetObjectViewModel(child, this));
-            }
-        }
-
-        private void RebuildChildrenFacade()
-        {
-            this.children = new ObservableCollection<TreeViewItemViewModel>(this.DotNetObject.Children.Select(x => new DotNetObjectViewModel(x)));
-            this.RaisePropertyChanged(nameof(this.Children));
         }
     }
     //// End class

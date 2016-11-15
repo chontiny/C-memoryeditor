@@ -154,6 +154,7 @@
             }
             else
             {
+                return Conversions.ParseValueAsDec<Int32>(this.Text);
                 return Conversions.ParseValueAsDec(this.ElementType, this.Text);
             }
         }

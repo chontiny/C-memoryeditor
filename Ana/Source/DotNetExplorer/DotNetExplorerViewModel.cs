@@ -90,7 +90,7 @@
         /// </summary>
         private void RefreshObjects()
         {
-            IEnumerable<DotNetObject> dotNetObjects = DotNetObjectCollector.GetInstance().GetObjectTrees();
+            IEnumerable<DotNetObject> dotNetObjects = DotNetObjectCollector.GetInstance().ObjectTrees;
 
             if (dotNetObjects == null)
             {

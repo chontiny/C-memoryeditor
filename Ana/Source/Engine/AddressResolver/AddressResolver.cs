@@ -8,6 +8,7 @@
     using System.Threading;
     using Utils;
     using Utils.Extensions;
+
     /// <summary>
     /// Singleton class to resolve the address of managed objects in an external process
     /// </summary>
@@ -132,7 +133,7 @@
         protected override void OnUpdate()
         {
             Dictionary<String, DotNetObject> nameMap = new Dictionary<String, DotNetObject>();
-            List<DotNetObject> objectTrees = DotNetObjectCollector.GetInstance().GetObjectTrees();
+            List<DotNetObject> objectTrees = DotNetObjectCollector.GetInstance().ObjectTrees;
 
             // Build .NET object list
             objectTrees?.ForEach(x => this.BuildNameMap(nameMap, x));
