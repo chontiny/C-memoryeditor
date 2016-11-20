@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Snapshots
 {
+    using Engine.OperatingSystems;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -28,11 +29,13 @@
 
         void MaskRegions(ISnapshot groundTruth);
 
+        void MaskRegions(IEnumerable<NormalizedRegion> groundTruth);
+
         unsafe DateTime GetTimeSinceLastUpdate();
 
         IEnumerable<ISnapshotRegion> GetSnapshotRegions();
 
-        ISnapshot Clone();
+        ISnapshot Clone(String newSnapshotName = null);
 
         Boolean ContainsAddress(IntPtr address);
 
@@ -51,31 +54,17 @@
 
         void AddSnapshotRegions(IEnumerable<ISnapshotRegion<DataType, LabelType>> snapshotRegions);
 
-        void MaskRegions(IEnumerable<ISnapshotRegion<DataType, LabelType>> groundTruth);
-
-        ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>() where NewDataType : struct, IComparable<NewDataType>;
+        ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>(String newSnapshotName = null) where NewDataType : struct, IComparable<NewDataType>;
     }
 
     internal class NewSnapshot<DataType, LabelType> : ISnapshot<DataType, LabelType>
         where DataType : struct, IComparable<DataType>
         where LabelType : struct, IComparable<LabelType>
     {
-        /// <summary>
-        /// Gets or sets the snapshot regions contained in this snapshot
-        /// </summary>
-        private IList<ISnapshotRegion<DataType, LabelType>> SnapshotRegions { get; set; }
-
-        /// <summary>
-        /// Gets or sets the time since the last update was performed on this snapshot
-        /// </summary>
-        private DateTime TimeSinceLastUpdate { get; set; }
-
-        private Int32 Alignment { get; set; }
-
-        private String SnapshotName { get; set; }
 
         public NewSnapshot(String snapshotName = null)
         {
+            this.TimeSinceLastUpdate = DateTime.Now;
             this.SnapshotName = snapshotName == null ? String.Empty : snapshotName;
             this.SnapshotRegions = new List<ISnapshotRegion<DataType, LabelType>>();
             this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
@@ -86,6 +75,31 @@
             this.AddSnapshotRegions(snapshotRegions);
             this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
         }
+
+        /// <summary>
+        /// Gets or sets the snapshot regions contained in this snapshot
+        /// </summary>
+        private IList<ISnapshotRegion<DataType, LabelType>> SnapshotRegions { get; set; }
+
+        /// <summary>
+        /// Gets the time since the last update was performed on this snapshot
+        /// </summary>
+        public DateTime TimeSinceLastUpdate { get; private set; }
+
+        public String SnapshotName { get; private set; }
+
+        /// <summary>
+        /// Gets the total number of bytes contained in this snapshot
+        /// </summary>
+        public Int64 MemorySize
+        {
+            get
+            {
+                return this.SnapshotRegions == null ? 0L : this.SnapshotRegions.AsEnumerable().Sum(x => x.GetByteCount());
+            }
+        }
+
+        private Int32 Alignment { get; set; }
 
         /// <summary>
         /// Note: This must take a long value, but an individual region will never span more than Int32 in size
@@ -127,7 +141,20 @@
 
         public void DiscardInvalidRegions()
         {
-            // TODO
+            List<ISnapshotRegion<DataType, LabelType>> candidateRegions = new List<ISnapshotRegion<DataType, LabelType>>();
+
+            if (this.SnapshotRegions == null || this.SnapshotRegions.Count() <= 0)
+            {
+                return;
+            }
+
+            // Collect valid element regions
+            foreach (ISnapshotRegion<DataType, LabelType> snapshotRegion in this)
+            {
+                candidateRegions.AddRange(snapshotRegion.GetValidRegions());
+            }
+
+            this.SnapshotRegions = candidateRegions;
         }
 
         public void RelaxAllRegions(Int32 relaxSize)
@@ -146,6 +173,8 @@
 
         public void ReadAllMemory()
         {
+            this.TimeSinceLastUpdate = DateTime.Now;
+
             Boolean readSuccess;
             this.SnapshotRegions.ForEach(x => x.ReadAllRegionMemory(out readSuccess, keepValues: true));
         }
@@ -159,7 +188,7 @@
         {
             snapshotRegions?.ForEach(x => this.SnapshotRegions.Add(x));
 
-            // TODO: Merge mask etc
+            this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
         }
 
         public void MaskRegions(ISnapshot groundTruth)
@@ -167,7 +196,7 @@
             // TODO
         }
 
-        public void MaskRegions(IEnumerable<ISnapshotRegion<DataType, LabelType>> groundTruth)
+        public void MaskRegions(IEnumerable<NormalizedRegion> groundTruth)
         {
             // TODO
         }
@@ -182,23 +211,28 @@
             return this.SnapshotRegions;
         }
 
-        public ISnapshot Clone()
+        public ISnapshot Clone(String newSnapshotName = null)
         {
-            // TODO
-            return this;
+            return new NewSnapshot<DataType, LabelType>(this.SnapshotRegions, newSnapshotName);
         }
 
-        public ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>() where NewDataType : struct, IComparable<NewDataType>
+        public ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>(String newSnapshotName = null) where NewDataType : struct, IComparable<NewDataType>
         {
-            NewSnapshot<NewDataType, LabelType> clone = new NewSnapshot<NewDataType, LabelType>();
-            // TODO
+            IList<NewSnapshotRegion<NewDataType, LabelType>> clonedRegions = new List<NewSnapshotRegion<NewDataType, LabelType>>();
+            this.SnapshotRegions.ForEach(x => clonedRegions.Add(new NewSnapshotRegion<NewDataType, LabelType>(x as NormalizedRegion)));
+            NewSnapshot<NewDataType, LabelType> clone = new NewSnapshot<NewDataType, LabelType>(clonedRegions, newSnapshotName);
+
             return clone;
         }
 
         public Boolean ContainsAddress(IntPtr address)
         {
-            // TODO
-            return false;
+            if (this.SnapshotRegions == null || this.SnapshotRegions.Count() == 0)
+            {
+                return false;
+            }
+
+            return this.ContainsAddress(address, this.SnapshotRegions.Count() / 2, 0, this.SnapshotRegions.Count());
         }
 
         public Int32 GetRegionCount()
@@ -219,6 +253,35 @@
         public IEnumerator GetEnumerator()
         {
             return this.SnapshotRegions.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Helper function for searching for an address in this snapshot. Binary search that assumes this snapshot has sorted regions.
+        /// </summary>
+        /// <param name="address">The address for which we are searching</param>
+        /// <param name="middle">The middle region index</param>
+        /// <param name="min">The lower region index</param>
+        /// <param name="max">The upper region index</param>
+        /// <returns>True if the address was found</returns>
+        private Boolean ContainsAddress(IntPtr address, Int32 middle, Int32 min, Int32 max)
+        {
+            if (middle < 0 || middle == this.SnapshotRegions.Count() || max < min)
+            {
+                return false;
+            }
+
+            if (address.ToUInt64() < this.SnapshotRegions.ElementAt(middle).GetBaseAddress().ToUInt64())
+            {
+                return this.ContainsAddress(address, (min + middle - 1) / 2, min, middle - 1);
+            }
+            else if (address.ToUInt64() > this.SnapshotRegions.ElementAt(middle).GetEndAddress().ToUInt64())
+            {
+                return this.ContainsAddress(address, (middle + 1 + max) / 2, middle + 1, max);
+            }
+            else
+            {
+                return true;
+            }
         }
     }
     //// End class

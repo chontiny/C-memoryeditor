@@ -1,5 +1,6 @@
 ﻿using Ana.Source.Engine;
 using Ana.Source.Engine.OperatingSystems;
+using Ana.Source.UserSettings;
 using Ana.Source.Utils.Extensions;
 using System;
 using System.Collections;
@@ -46,6 +47,8 @@ namespace Ana.Source.Snapshots
         Int32 GetElementCount();
 
         IntPtr GetBaseAddress();
+
+        IntPtr GetEndAddress();
     }
 
     internal interface ISnapshotRegion<DataType, LabelType> : ISnapshotRegion
@@ -110,6 +113,7 @@ namespace Ana.Source.Snapshots
         public NewSnapshotRegion(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
         {
             this.TimeSinceLastRead = DateTime.MinValue;
+            this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
         }
 
 
@@ -241,8 +245,37 @@ namespace Ana.Source.Snapshots
 
         public IEnumerable<ISnapshotRegion<DataType, LabelType>> GetValidRegions()
         {
-            // TODO
-            return null;
+            List<ISnapshotRegion<DataType, LabelType>> validRegions = new List<ISnapshotRegion<DataType, LabelType>>();
+            for (Int32 startIndex = 0; startIndex < (this.ValidBits == null ? 0 : this.ValidBits.Length); startIndex += this.Alignment)
+            {
+                if (!this.ValidBits[startIndex])
+                {
+                    continue;
+                }
+
+                // Get the length of this valid region
+                Int32 validRegionSize = 0;
+                do
+                {
+                    // We only care if the aligned elements are valid
+                    validRegionSize += this.Alignment;
+                }
+                while (startIndex + validRegionSize < this.ValidBits.Length && this.ValidBits[startIndex + validRegionSize]);
+
+                // Create new subregion from this valid region
+                ISnapshotRegion<DataType, LabelType> subRegion = new NewSnapshotRegion<DataType, LabelType>(this.BaseAddress + startIndex, validRegionSize);
+
+                // Copy the current values and labels.
+                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, validRegionSize));
+                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, validRegionSize));
+                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, validRegionSize));
+
+                validRegions.Add(subRegion);
+                startIndex += validRegionSize;
+            }
+
+            this.ValidBits = null;
+            return validRegions;
         }
 
         public Int64 GetByteCount()
@@ -300,6 +333,41 @@ namespace Ana.Source.Snapshots
         public IntPtr GetBaseAddress()
         {
             return this.BaseAddress;
+        }
+
+        public IntPtr GetEndAddress()
+        {
+            return this.BaseAddress.Add(this.RegionSize);
+        }
+
+        private Int32 GetElementSize()
+        {
+            // Switch on type code. Could also do Marshal.SizeOf(DataType), but it is slower
+            switch (Type.GetTypeCode(typeof(DataType)))
+            {
+                case TypeCode.Byte:
+                    return sizeof(Byte);
+                case TypeCode.SByte:
+                    return sizeof(SByte);
+                case TypeCode.Int16:
+                    return sizeof(Int16);
+                case TypeCode.Int32:
+                    return sizeof(Int32);
+                case TypeCode.Int64:
+                    return sizeof(Int64);
+                case TypeCode.UInt16:
+                    return sizeof(UInt16);
+                case TypeCode.UInt32:
+                    return sizeof(UInt32);
+                case TypeCode.UInt64:
+                    return sizeof(UInt64);
+                case TypeCode.Single:
+                    return sizeof(Single);
+                case TypeCode.Double:
+                    return sizeof(Double);
+                default:
+                    throw new Exception("Invalid element type");
+            }
         }
     }
     //// End class

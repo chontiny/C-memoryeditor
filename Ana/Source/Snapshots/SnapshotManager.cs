@@ -202,6 +202,7 @@
             List<ISnapshotRegion<Int32, Int32>> memoryRegions = new List<ISnapshotRegion<Int32, Int32>>();
             virtualPages.ForEach(x => memoryRegions.Add(new NewSnapshotRegion<Int32, Int32>(x.BaseAddress, x.RegionSize)));
 
+            // TODO: Determine type on the fly, switch on current type
             return new NewSnapshot<Int32, Int32>(memoryRegions);
         }
 

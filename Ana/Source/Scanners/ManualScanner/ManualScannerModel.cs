@@ -28,7 +28,7 @@
         public override void Begin()
         {
             // Initialize snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone();
+            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
 
             if (this.Snapshot == null || this.ScanConstraintManager == null || this.ScanConstraintManager.Count() <= 0)
             {
@@ -191,7 +191,6 @@
             base.OnEnd();
 
             this.Snapshot.DiscardInvalidRegions();
-            // this.Snapshot.ScanMethod = this.ScannerName;
 
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
 

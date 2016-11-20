@@ -285,15 +285,15 @@
                 case ConstraintsEnum.GreaterThanOrEqual:
                 case ConstraintsEnum.LessThan:
                 case ConstraintsEnum.LessThanOrEqual:
+                case ConstraintsEnum.IncreasedByX:
+                case ConstraintsEnum.DecreasedByX:
+                    return true;
                 case ConstraintsEnum.NotScientificNotation:
-                    return false;
                 case ConstraintsEnum.Changed:
                 case ConstraintsEnum.Unchanged:
                 case ConstraintsEnum.Increased:
                 case ConstraintsEnum.Decreased:
-                case ConstraintsEnum.IncreasedByX:
-                case ConstraintsEnum.DecreasedByX:
-                    return true;
+                    return false;
                 default:
                     throw new Exception("Unrecognized Constraint");
             }

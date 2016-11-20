@@ -65,7 +65,7 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = ((dynamic)SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true)).CloneAs<Int16>();
+            this.Snapshot = ((dynamic)SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true)).CloneAs<Int16>(this.ScannerName);
 
             if (this.Snapshot == null)
             {
@@ -197,7 +197,6 @@
             }
 
             this.Snapshot.DiscardInvalidRegions();
-            // this.Snapshot.ScanMethod = "Input Correlator";
 
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
 
