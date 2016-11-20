@@ -348,7 +348,7 @@
         /// </summary>
         private void LoadPointerScanResults()
         {
-            //  this.RaisePropertyChanged(nameof(this.Addresses));
+            this.RaisePropertyChanged(nameof(this.Addresses));
         }
 
         /// <summary>

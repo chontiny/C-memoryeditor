@@ -102,13 +102,14 @@ namespace Ana.Source.Snapshots
         {
         }
 
-        public NewSnapshotRegion(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
+        public NewSnapshotRegion(NormalizedRegion normalizedRegion) : this(normalizedRegion == null ? IntPtr.Zero :
+            normalizedRegion.BaseAddress, normalizedRegion == null ? 0 : normalizedRegion.RegionSize)
         {
         }
 
-        public NewSnapshotRegion(NormalizedRegion normalizedRegion) : base(normalizedRegion == null ? IntPtr.Zero :
-            normalizedRegion.BaseAddress, normalizedRegion == null ? 0 : normalizedRegion.RegionSize)
+        public NewSnapshotRegion(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
         {
+            this.TimeSinceLastRead = DateTime.MinValue;
         }
 
 

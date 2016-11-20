@@ -4,11 +4,10 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Linq.Expressions;
     using UserSettings;
     using Utils.Extensions;
 
-    internal interface ISnapshot : IQueryable
+    internal interface ISnapshot : IEnumerable
     {
         ISnapshotElementRef this[Int64 index]
         {
@@ -73,42 +72,17 @@
 
         private Int32 Alignment { get; set; }
 
-        public Expression Expression
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        private String SnapshotName { get; set; }
 
-        public Type ElementType
+        public NewSnapshot(String snapshotName = null)
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public IQueryProvider Provider
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public NewSnapshot()
-        {
-            if (this.SnapshotRegions == null)
-            {
-                this.SnapshotRegions = new List<ISnapshotRegion<DataType, LabelType>>();
-                this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
-            }
-        }
-
-        public NewSnapshot(IEnumerable<ISnapshotRegion<DataType, LabelType>> snapshotRegions) : base()
-        {
+            this.SnapshotName = snapshotName == null ? String.Empty : snapshotName;
             this.SnapshotRegions = new List<ISnapshotRegion<DataType, LabelType>>();
+            this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
+        }
+
+        public NewSnapshot(IEnumerable<ISnapshotRegion<DataType, LabelType>> snapshotRegions, String snapshotName = null) : this(snapshotName)
+        {
             this.AddSnapshotRegions(snapshotRegions);
             this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
         }

@@ -64,17 +64,13 @@
         where LabelType : struct, IComparable<LabelType>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotElement" /> class
+        /// Initializes a new instance of the <see cref="SnapshotElementRef" /> class
         /// </summary>
         /// <param name="parent">The parent region that contains this element</param>
         public SnapshotElementRef(ISnapshotRegion<DataType, LabelType> parent)
         {
             this.Parent = parent;
         }
-
-        // MISSING:
-
-        // IsValid, BaseAddress, ElementType (explicitly at least)
 
         private ISnapshotRegion<DataType, LabelType> Parent { get; set; }
 
@@ -246,6 +242,7 @@
             this.Parent.GetElementLabels()[this.CurrentElementIndex] = newLabel;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Boolean HasCurrentValue()
         {
             if (this.CurrentValuePointer == (Byte*)0)
@@ -256,6 +253,7 @@
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Boolean HasPreviousValue()
         {
             if (this.PreviousValuePointer == (Byte*)0)
@@ -266,6 +264,7 @@
             return true;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe DataType LoadValue(Byte* array)
         {
             switch (this.CurrentTypeCode)

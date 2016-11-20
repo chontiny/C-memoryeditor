@@ -114,13 +114,13 @@
                 {
                     this.Snapshot.SetAllValidBits(false);
 
-                    foreach (SnapshotRegion region in this.Snapshot)
+                    foreach (ISnapshotRegion region in this.Snapshot)
                     {
-                        foreach (dynamic element in region)
+                        foreach (ISnapshotElementRef element in region)
                         {
-                            if (element.ElementLabel >= lowerValue && element.ElementLabel <= upperValue)
+                            if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
                             {
-                                element.Valid = true;
+                                element.SetValid(true);
                             }
                         }
                     }
@@ -129,13 +129,13 @@
                 {
                     this.Snapshot.SetAllValidBits(true);
 
-                    foreach (SnapshotRegion region in this.Snapshot)
+                    foreach (ISnapshotRegion region in this.Snapshot)
                     {
-                        foreach (dynamic element in region)
+                        foreach (ISnapshotElementRef element in region)
                         {
-                            if (element.ElementLabel >= lowerValue && element.ElementLabel <= upperValue)
+                            if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
                             {
-                                element.Valid = false;
+                                element.SetValid(false);
                             }
                         }
                     }
@@ -170,24 +170,24 @@
                     SettingsViewModel.GetInstance().ParallelSettings,
                     (regionObject) =>
                 {
-                    SnapshotRegion region = regionObject as SnapshotRegion;
+                    ISnapshotRegion region = regionObject as ISnapshotRegion;
 
-                    foreach (dynamic element in region)
+                    if (((dynamic)region).GetElementLabels() == null || ((dynamic)region).Length <= 0)
                     {
-                        if (element.ElementLabel == null)
-                        {
-                            return;
-                        }
+                        return;
+                    }
 
+                    foreach (ISnapshotElementRef element in region)
+                    {
                         lock (this.ItemLock)
                         {
-                            if (histogram.ContainsKey(element.ElementLabel))
+                            if (histogram.ContainsKey(((dynamic)element).GetElementLabel()))
                             {
-                                histogram[((dynamic)element.ElementLabel)]++;
+                                histogram[((dynamic)element).GetElementLabel()]++;
                             }
                             else
                             {
-                                histogram.TryAdd(element.ElementLabel, 1);
+                                histogram.TryAdd(((dynamic)element).GetElementLabel(), 1);
                             }
                         }
                     }
