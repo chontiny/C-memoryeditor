@@ -213,8 +213,11 @@
     <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
+    <Compile Include="Source\Snapshots\NewSnapshotRegion.cs" />
+    <Compile Include="Source\Snapshots\NewSnapshot.cs" />
     <Compile Include="Source\Snapshots\Null.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
+    <Compile Include="Source\Snapshots\NewSnapshotElement.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorModel.cs" />

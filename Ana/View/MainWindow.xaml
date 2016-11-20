@@ -12,7 +12,7 @@
     x:Name="AnaWindow"
     Title="Anathena"
     Width="720"
-    Height="640"
+    Height="720"
     x:ClassModifier="internal"
     AllowsTransparency="False"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
