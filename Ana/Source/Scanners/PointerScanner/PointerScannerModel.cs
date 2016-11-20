@@ -480,7 +480,8 @@
             this.PointerPool.Clear();
 
             // Collect memory regions
-            this.Snapshot = SnapshotManager.GetInstance().CollectSnapshot(useSettings: false, usePrefilter: false).Clone();
+            this.Snapshot = null; // SnapshotManager.GetInstance().CollectSnapshot(useSettings: false, usePrefilter: false).Clone();
+            throw new Exception("Fix this");
 
             // Set to type of a pointer
             if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())

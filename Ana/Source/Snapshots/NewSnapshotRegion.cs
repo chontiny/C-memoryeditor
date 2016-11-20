@@ -1,4 +1,5 @@
-﻿using Ana.Source.Engine.OperatingSystems;
+﻿using Ana.Source.Engine;
+using Ana.Source.Engine.OperatingSystems;
 using Ana.Source.Utils.Extensions;
 using System;
 using System.Collections;
@@ -7,10 +8,13 @@ using System.Runtime.InteropServices;
 
 namespace Ana.Source.Snapshots
 {
-    internal interface ISnapshotRegion<DataType, LabelType>
-        where DataType : class, IComparable<DataType>
-        where LabelType : class, IComparable<LabelType>
+    internal interface ISnapshotRegion : IEnumerable
     {
+        ISnapshotElementRef this[Int32 index]
+        {
+            get;
+        }
+
         void SetAlignment(Int32 alignment);
 
         void SetAllValidBits(Boolean isValid);
@@ -23,7 +27,11 @@ namespace Ana.Source.Snapshots
 
         void SetPreviousValues(Byte[] newValues);
 
-        void SetElementLabels(params LabelType[] newLabels);
+        DateTime GetTimeSinceLastRead();
+
+        BitArray GetValidBits();
+
+        Boolean CanCompare();
 
         Byte[] ReadAllRegionMemory(out Boolean readSuccess, Boolean keepValues = true);
 
@@ -33,16 +41,27 @@ namespace Ana.Source.Snapshots
 
         Byte[] GetCurrentValues();
 
+        Int64 GetByteCount();
+
+        Int32 GetElementCount();
+
+        IntPtr GetBaseAddress();
+    }
+
+    internal interface ISnapshotRegion<DataType, LabelType> : ISnapshotRegion
+        where DataType : struct, IComparable<DataType>
+        where LabelType : struct, IComparable<LabelType>
+    {
+        void SetElementLabels(params LabelType[] newLabels);
+
         LabelType[] GetElementLabels();
 
         IEnumerable<ISnapshotRegion<DataType, LabelType>> GetValidRegions();
-
-        UInt64 GetMemorySize();
     }
 
-    internal class NewSnapshotRegion<DataType, LabelType> : NormalizedRegion, ISnapshotRegion<DataType, LabelType>, IEnumerable
-        where DataType : class, IComparable<DataType>
-        where LabelType : class, IComparable<LabelType>
+    internal class NewSnapshotRegion<DataType, LabelType> : NormalizedRegion, ISnapshotRegion<DataType, LabelType>
+        where DataType : struct, IComparable<DataType>
+        where LabelType : struct, IComparable<LabelType>
     {
         /// <summary>
         /// Gets or sets the most recently read values
@@ -62,12 +81,17 @@ namespace Ana.Source.Snapshots
         /// <summary>
         /// Gets or sets the valid bits for use in filtering scans
         /// </summary>
-        private BitArray Valid { get; set; }
+        private BitArray ValidBits { get; set; }
 
         /// <summary>
         /// Gets or sets the memory alignment, typically aligned with external process pointer size
         /// </summary>
         private Int32 Alignment { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time since the last read was performed on this region
+        /// </summary>
+        private DateTime TimeSinceLastRead { get; set; }
 
         /// <summary>
         /// Gets or sets the reference to the snapshot element being iterated over
@@ -82,22 +106,58 @@ namespace Ana.Source.Snapshots
         {
         }
 
+        public NewSnapshotRegion(NormalizedRegion normalizedRegion) : base(normalizedRegion == null ? IntPtr.Zero :
+            normalizedRegion.BaseAddress, normalizedRegion == null ? 0 : normalizedRegion.RegionSize)
+        {
+        }
+
+
+        public ISnapshotElementRef this[Int32 index]
+        {
+            get
+            {
+                ISnapshotElementRef element = new SnapshotElementRef<DataType, LabelType>(this);
+                element.InitializePointers(index);
+                return element;
+            }
+        }
+
         public void SetAlignment(Int32 alignment)
         {
             this.Alignment = alignment;
+
+            // Enforce alignment constraint on base address
+            if (this.BaseAddress.Mod(alignment).ToUInt64() != 0)
+            {
+                unchecked
+                {
+                    this.BaseAddress = this.BaseAddress.Subtract(this.BaseAddress.Mod(alignment));
+                    this.BaseAddress = this.BaseAddress.Add(alignment);
+
+                    this.RegionSize -= alignment - this.BaseAddress.Mod(alignment).ToInt32();
+                    if (this.RegionSize < 0)
+                    {
+                        this.RegionSize = 0;
+                    }
+                }
+            }
         }
 
         public void SetAllValidBits(Boolean isValid)
         {
-            this.Valid = new BitArray(this.RegionSize, isValid);
+            this.ValidBits = new BitArray(this.RegionSize, isValid);
         }
 
         public void Relax(Int32 relaxSize)
         {
+            // TODO: Rollovers
+            this.BaseAddress = this.BaseAddress.Add(relaxSize);
+            this.RegionSize -= relaxSize;
         }
 
         public void Expand(Int32 expandSize)
         {
+            // TODO: Rollovers
             this.BaseAddress = this.BaseAddress.Subtract(expandSize);
             this.RegionSize += expandSize;
         }
@@ -109,20 +169,57 @@ namespace Ana.Source.Snapshots
 
         public void SetPreviousValues(Byte[] newValues)
         {
+            this.PreviousValues = newValues;
         }
 
         public void SetElementLabels(params LabelType[] newLabels)
         {
+            this.ElementLabels = newLabels;
+        }
+
+        public BitArray GetValidBits()
+        {
+            return this.ValidBits;
+        }
+
+        public DateTime GetTimeSinceLastRead()
+        {
+            return this.TimeSinceLastRead;
+        }
+
+        public Boolean CanCompare()
+        {
+            if (this.PreviousValues == null || this.CurrentValues == null || this.PreviousValues.Length != this.CurrentValues.Length)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public Byte[] ReadAllRegionMemory(out Boolean readSuccess, Boolean keepValues = true)
         {
+            this.TimeSinceLastRead = DateTime.Now;
+
             readSuccess = false;
-            return null;
+            Byte[] currentValues = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
+
+            if (!readSuccess)
+            {
+                return null;
+            }
+
+            if (keepValues)
+            {
+                this.SetCurrentValues(currentValues);
+            }
+
+            return currentValues;
         }
 
         public Boolean ContainsAddress(IntPtr address)
         {
+            // TODO
             return false;
         }
 
@@ -143,12 +240,18 @@ namespace Ana.Source.Snapshots
 
         public IEnumerable<ISnapshotRegion<DataType, LabelType>> GetValidRegions()
         {
+            // TODO
             return null;
         }
 
-        public UInt64 GetMemorySize()
+        public Int64 GetByteCount()
         {
-            return unchecked((UInt64)this.CurrentValues.LongLength);
+            return this.CurrentValues == null ? 0L : this.CurrentValues.LongLength;
+        }
+
+        public Int32 GetElementCount()
+        {
+            return unchecked((Int32)(this.CurrentValues == null ? 0L : this.CurrentValues.LongLength / this.Alignment));
         }
 
         public IEnumerator GetEnumerator()
@@ -191,6 +294,11 @@ namespace Ana.Source.Snapshots
             // Let the GC do what it wants now
             currentValuesHandle.Free();
             previousValuesHandle.Free();
+        }
+
+        public IntPtr GetBaseAddress()
+        {
+            return this.BaseAddress;
         }
     }
     //// End class

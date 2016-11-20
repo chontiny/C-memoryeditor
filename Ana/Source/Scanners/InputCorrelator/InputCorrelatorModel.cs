@@ -6,7 +6,6 @@
     using Engine.Input.Keyboard;
     using Engine.Input.Mouse;
     using LabelThresholder;
-    using Results.ScanResults;
     using SharpDX.DirectInput;
     using Snapshots;
     using System;
@@ -40,7 +39,7 @@
             }
         }
 
-        private Snapshot<Int16> Snapshot { get; set; }
+        private ISnapshot<Int32, Int16> Snapshot { get; set; }
 
         private Action UpdateScanCount { get; set; }
 
@@ -66,16 +65,13 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).CloneAs<Int16>();
+            this.Snapshot = ((dynamic)SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true)).CloneAs<Int16>();
 
             if (this.Snapshot == null)
             {
                 this.End();
                 return;
             }
-
-            this.Snapshot.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
-            this.Snapshot.Alignment = SettingsViewModel.GetInstance().Alignment;
 
             // Initialize with no correlation
             this.Snapshot.SetElementLabels(0);
@@ -124,9 +120,9 @@
         protected override void OnUpdate()
         {
             // Read memory to update previous and current values
-            this.Snapshot.ReadAllSnapshotMemory();
+            this.Snapshot.ReadAllMemory();
 
-            Boolean conditionValid = this.IsInputConditionValid(this.Snapshot.TimeStamp);
+            Boolean conditionValid = this.IsInputConditionValid(this.Snapshot.GetTimeSinceLastUpdate());
 
             // Note the duplicated code here is an optimization to minimize comparisons done per iteration
             if (conditionValid)
@@ -188,7 +184,7 @@
             base.OnEnd();
 
             // Prefilter items with negative penalties (ie constantly changing variables)
-            this.Snapshot.MarkAllInvalid();
+            this.Snapshot.SetAllValidBits(false);
             foreach (SnapshotRegion<Int16> region in this.Snapshot)
             {
                 foreach (SnapshotElement<Int16> element in region)
@@ -201,7 +197,7 @@
             }
 
             this.Snapshot.DiscardInvalidRegions();
-            this.Snapshot.ScanMethod = "Input Correlator";
+            // this.Snapshot.ScanMethod = "Input Correlator";
 
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
 

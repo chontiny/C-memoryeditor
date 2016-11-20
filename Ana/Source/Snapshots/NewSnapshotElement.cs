@@ -2,56 +2,67 @@
 {
     using System;
     using System.Runtime.CompilerServices;
-    internal interface ISnapshotElementRef<DataType, LabelType>
-        where DataType : class, IComparable<DataType>
-        where LabelType : class, IComparable<LabelType>
+    using Utils.Extensions;
+    internal interface ISnapshotElementRef
     {
-        unsafe void InitializePointers(Int32 index = 0);
+        void InitializePointers(Int32 index = 0);
 
-        unsafe void IncrementPointers();
+        void IncrementPointers();
 
-        unsafe void AddPointers(Int32 alignment);
+        void AddPointers(Int32 alignment);
 
-        unsafe Boolean Changed();
+        void SetValid(Boolean isValid);
 
-        unsafe Boolean Unchanged();
+        IntPtr GetBaseAddress();
 
-        unsafe Boolean Increased();
+        Boolean Changed();
 
-        unsafe Boolean Decreased();
+        Boolean Unchanged();
 
-        unsafe Boolean EqualToValue(dynamic value);
+        Boolean Increased();
 
-        unsafe Boolean NotEqualToValue(dynamic value);
+        Boolean Decreased();
 
-        unsafe Boolean GreaterThanValue(dynamic value);
+        Boolean EqualToValue(dynamic value);
 
-        unsafe Boolean GreaterThanOrEqualToValue(dynamic value);
+        Boolean NotEqualToValue(dynamic value);
 
-        unsafe Boolean LessThanValue(dynamic value);
+        Boolean GreaterThanValue(dynamic value);
 
-        unsafe Boolean LessThanOrEqualToValue(dynamic value);
+        Boolean GreaterThanOrEqualToValue(dynamic value);
 
-        unsafe Boolean IncreasedByValue(dynamic value);
+        Boolean LessThanValue(dynamic value);
 
-        unsafe Boolean DecreasedByValue(dynamic value);
+        Boolean LessThanOrEqualToValue(dynamic value);
 
-        unsafe Boolean IsScientificNotation();
+        Boolean IncreasedByValue(dynamic value);
 
-        unsafe DataType GetCurrentValue();
+        Boolean DecreasedByValue(dynamic value);
 
-        unsafe DataType GetPreviousValue();
+        Boolean IsScientificNotation();
 
-        unsafe Boolean HasCurrentValue();
+        Boolean HasCurrentValue();
 
-        unsafe Boolean HasPreviousValue();
+        Boolean HasPreviousValue();
+    }
+
+    internal interface ISnapshotElementRef<DataType, LabelType> : ISnapshotElementRef
+        where DataType : struct, IComparable<DataType>
+        where LabelType : struct, IComparable<LabelType>
+    {
+        DataType GetCurrentValue();
+
+        DataType GetPreviousValue();
+
+        LabelType GetElementLabel();
+
+        void SetElementLabel(LabelType newLabel);
     }
 
     internal class SnapshotElementRef<DataType, LabelType> : ISnapshotElementRef<DataType, LabelType>
-        where DataType : class, IComparable<DataType>
-        where LabelType : class, IComparable<LabelType>
+        where DataType : struct, IComparable<DataType>
+        where LabelType : struct, IComparable<LabelType>
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotElement" /> class
         /// </summary>
@@ -65,20 +76,20 @@
 
         // IsValid, BaseAddress, ElementType (explicitly at least)
 
-        protected ISnapshotRegion<DataType, LabelType> Parent { get; set; }
+        private ISnapshotRegion<DataType, LabelType> Parent { get; set; }
 
-        protected unsafe Byte* CurrentValuePointer { get; set; }
+        private unsafe Byte* CurrentValuePointer { get; set; }
 
-        protected unsafe Byte* PreviousValuePointer { get; set; }
+        private unsafe Byte* PreviousValuePointer { get; set; }
 
-        protected Int32 CurrentElementIndex { get; set; }
+        private Int32 CurrentElementIndex { get; set; }
 
-        protected TypeCode CurrentTypeCode { get; set; }
+        private TypeCode CurrentTypeCode { get; set; }
 
         public unsafe void InitializePointers(Int32 index = 0)
         {
             this.CurrentElementIndex = index;
-            this.CurrentTypeCode = Type.GetTypeCode(this.Parent.GetType());
+            this.CurrentTypeCode = Type.GetTypeCode(typeof(DataType));
             Byte[] currentValues = this.Parent.GetCurrentValues();
             Byte[] previousValues = this.Parent.GetPreviousValues();
 
@@ -105,6 +116,16 @@
             {
                 this.PreviousValuePointer = null;
             }
+        }
+
+        public void SetValid(Boolean isValid)
+        {
+            this.Parent.GetValidBits().Set(this.CurrentElementIndex, isValid);
+        }
+
+        public IntPtr GetBaseAddress()
+        {
+            return this.Parent.GetBaseAddress().Add(this.CurrentElementIndex);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -213,6 +234,18 @@
             return this.LoadValue(this.PreviousValuePointer);
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe LabelType GetElementLabel()
+        {
+            return this.Parent.GetElementLabels() == null ? default(LabelType) : this.Parent.GetElementLabels()[this.CurrentElementIndex];
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void SetElementLabel(LabelType newLabel)
+        {
+            this.Parent.GetElementLabels()[this.CurrentElementIndex] = newLabel;
+        }
+
         public unsafe Boolean HasCurrentValue()
         {
             if (this.CurrentValuePointer == (Byte*)0)
@@ -235,29 +268,28 @@
 
         private unsafe DataType LoadValue(Byte* array)
         {
-            // TODO: Inline IL could be an optimization here, since *(DataType*)array is not allowed
             switch (this.CurrentTypeCode)
             {
                 case TypeCode.Byte:
-                    return *array as DataType;
+                    return (DataType)(object)*array;
                 case TypeCode.SByte:
-                    return *(SByte*)array as DataType;
+                    return (DataType)(object)*(SByte*)array;
                 case TypeCode.Int16:
-                    return *(Int16*)array as DataType;
+                    return (DataType)(object)*(Int16*)array;
                 case TypeCode.Int32:
-                    return *(Int32*)array as DataType;
+                    return (DataType)(object)*(Int32*)array;
                 case TypeCode.Int64:
-                    return *(Int64*)array as DataType;
+                    return (DataType)(object)*(Int64*)array;
                 case TypeCode.UInt16:
-                    return *(UInt16*)array as DataType;
+                    return (DataType)(object)*(UInt16*)array;
                 case TypeCode.UInt32:
-                    return *(UInt32*)array as DataType;
+                    return (DataType)(object)*(UInt32*)array;
                 case TypeCode.UInt64:
-                    return *(UInt64*)array as DataType;
+                    return (DataType)(object)*(UInt64*)array;
                 case TypeCode.Single:
-                    return *(Single*)array as DataType;
+                    return (DataType)(object)*(Single*)array;
                 case TypeCode.Double:
-                    return *(Double*)array as DataType;
+                    return (DataType)(object)*(Double*)array;
                 default:
                     throw new Exception("Invalid element type");
             }

@@ -657,7 +657,7 @@
             }
 
             // Get current memory regions
-            Snapshot<LabelType> mask = SnapshotManager.GetInstance().CollectSnapshot(useSettings: false, usePrefilter: false).CloneAs<LabelType>();
+            Snapshot<LabelType> mask = null;// SnapshotManager.GetInstance().CollectSnapshot(useSettings: false, usePrefilter: false).CloneAs<LabelType>();
 
             // Mask each region against the current virtual memory regions
             IEnumerable<SnapshotRegion<LabelType>> maskedRegions = this.MaskRegions(mask, this.DeallocatedRegions);

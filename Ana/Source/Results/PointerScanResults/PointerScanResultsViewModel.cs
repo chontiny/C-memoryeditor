@@ -45,12 +45,12 @@
         /// <summary>
         /// The current page of scan results
         /// </summary>
-        private UInt64 currentPage;
+        private Int64 currentPage;
 
         /// <summary>
         /// The total number of addresses
         /// </summary>
-        private UInt64 addressCount;
+        private Int64 addressCount;
 
         /// <summary>
         /// The addresses on the current page
@@ -219,7 +219,7 @@
         /// <summary>
         /// Gets or sets the total number of addresses found
         /// </summary>
-        public UInt64 CurrentPage
+        public Int64 CurrentPage
         {
             get
             {
@@ -237,7 +237,7 @@
         /// <summary>
         /// Gets the total number of addresses found
         /// </summary>
-        public UInt64 PageCount
+        public Int64 PageCount
         {
             get
             {
@@ -252,14 +252,14 @@
         {
             get
             {
-                return Conversions.BytesToMetric<UInt64>(this.addressCount);
+                return Conversions.BytesToMetric<Int64>(this.addressCount);
             }
         }
 
         /// <summary>
         /// Gets or sets the total number of addresses found
         /// </summary>
-        public UInt64 ResultCount
+        public Int64 ResultCount
         {
             get
             {
@@ -337,7 +337,7 @@
         /// Recieves an update of the active snapshot
         /// </summary>
         /// <param name="snapshot">The active snapshot</param>
-        public void Update(Snapshot snapshot)
+        public void Update(ISnapshot snapshot)
         {
             this.ResultCount = snapshot == null ? 0 : snapshot.GetElementCount();
             this.CurrentPage = 0;
@@ -348,46 +348,7 @@
         /// </summary>
         private void LoadPointerScanResults()
         {
-            Snapshot snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: false);
-            ObservableCollection<PointerScanResult> newAddresses = new ObservableCollection<PointerScanResult>();
-
-            if (snapshot == null)
-            {
-                this.addresses = newAddresses;
-                this.RaisePropertyChanged(nameof(this.Addresses));
-                return;
-            }
-
-            UInt64 startIndex = Math.Min(PointerScanResultsViewModel.PageSize * this.CurrentPage, snapshot.GetElementCount());
-            UInt64 endIndex = Math.Min((PointerScanResultsViewModel.PageSize * this.CurrentPage) + PointerScanResultsViewModel.PageSize, snapshot.GetElementCount());
-
-            for (UInt64 index = startIndex; index < endIndex; index++)
-            {
-                SnapshotElement element = snapshot[(Int32)index];
-
-                String label = String.Empty;
-                if (((dynamic)snapshot)[(Int32)index].ElementLabel != null)
-                {
-                    label = ((dynamic)snapshot)[(Int32)index].ElementLabel.ToString();
-                }
-
-                String currentValue = String.Empty;
-                if (element.HasCurrentValue())
-                {
-                    currentValue = element.GetCurrentValue().ToString();
-                }
-
-                String previousValue = String.Empty;
-                if (element.HasPreviousValue())
-                {
-                    previousValue = element.GetPreviousValue().ToString();
-                }
-
-                newAddresses.Add(new PointerScanResult(element.BaseAddress, currentValue, previousValue, label));
-            }
-
-            this.addresses = newAddresses;
-            this.RaisePropertyChanged(nameof(this.Addresses));
+            //  this.RaisePropertyChanged(nameof(this.Addresses));
         }
 
         /// <summary>

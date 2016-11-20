@@ -62,7 +62,7 @@
 
         private Action OnUpdateHistogram { get; set; }
 
-        private Snapshot Snapshot { get; set; }
+        private ISnapshot Snapshot { get; set; }
 
         private Boolean Inverted { get; set; }
 
@@ -80,7 +80,7 @@
         /// Recieves an update of the active snapshot
         /// </summary>
         /// <param name="snapshot">The active snapshot</param>
-        public void Update(Snapshot snapshot)
+        public void Update(ISnapshot snapshot)
         {
             lock (this.SnapshotLock)
             {
@@ -112,7 +112,7 @@
             {
                 if (!this.Inverted)
                 {
-                    this.Snapshot.MarkAllInvalid();
+                    this.Snapshot.SetAllValidBits(false);
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
@@ -127,7 +127,7 @@
                 }
                 else
                 {
-                    this.Snapshot.MarkAllValid();
+                    this.Snapshot.SetAllValidBits(true);
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {

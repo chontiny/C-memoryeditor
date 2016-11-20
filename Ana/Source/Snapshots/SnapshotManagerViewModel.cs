@@ -62,22 +62,22 @@
         /// <summary>
         /// Gets the snapshots taken during this scan session
         /// </summary>
-        public ObservableCollection<Snapshot> Snapshots
+        public ObservableCollection<ISnapshot> Snapshots
         {
             get
             {
-                return new ObservableCollection<Snapshot>(SnapshotManager.GetInstance().Snapshots);
+                return new ObservableCollection<ISnapshot>(SnapshotManager.GetInstance().Snapshots);
             }
         }
 
         /// <summary>
         /// Gets the snapshots deleted during this scan session
         /// </summary>
-        public ObservableCollection<Snapshot> DeletedSnapshots
+        public ObservableCollection<ISnapshot> DeletedSnapshots
         {
             get
             {
-                return new ObservableCollection<Snapshot>(SnapshotManager.GetInstance().DeletedSnapshots.Reverse());
+                return new ObservableCollection<ISnapshot>(SnapshotManager.GetInstance().DeletedSnapshots.Reverse());
             }
         }
 
@@ -94,7 +94,7 @@
         /// Recieves an update of the active snapshot
         /// </summary>
         /// <param name="snapshot">The active snapshot</param>
-        public void Update(Snapshot snapshot)
+        public void Update(ISnapshot snapshot)
         {
             this.RaisePropertyChanged(nameof(this.Snapshots));
             this.RaisePropertyChanged(nameof(this.DeletedSnapshots));

@@ -1,18 +1,25 @@
 ﻿namespace Ana.Source.Snapshots
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Linq.Expressions;
     using UserSettings;
     using Utils.Extensions;
 
-    internal interface ISnapshot<DataType, LabelType>
-        where DataType : class, IComparable<DataType>
-        where LabelType : class, IComparable<LabelType>
+    internal interface ISnapshot : IQueryable
     {
+        ISnapshotElementRef this[Int64 index]
+        {
+            get;
+        }
+
         void SetAlignment(Int32 alignment);
 
         void SetAllValidBits(Boolean isValid);
+
+        void DiscardInvalidRegions();
 
         void RelaxAllRegions(Int32 relaxSize);
 
@@ -20,38 +27,133 @@
 
         void ReadAllMemory();
 
+        void MaskRegions(ISnapshot groundTruth);
+
+        unsafe DateTime GetTimeSinceLastUpdate();
+
+        IEnumerable<ISnapshotRegion> GetSnapshotRegions();
+
+        ISnapshot Clone();
+
+        Boolean ContainsAddress(IntPtr address);
+
+        Int32 GetRegionCount();
+
+        Int64 GetElementCount();
+
+        Int64 GetByteCount();
+    }
+
+    internal interface ISnapshot<DataType, LabelType> : ISnapshot
+        where DataType : struct, IComparable<DataType>
+        where LabelType : struct, IComparable<LabelType>
+    {
         void SetElementLabels(LabelType label);
 
         void AddSnapshotRegions(IEnumerable<ISnapshotRegion<DataType, LabelType>> snapshotRegions);
 
-        ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>() where NewDataType : class, IComparable<NewDataType>;
+        void MaskRegions(IEnumerable<ISnapshotRegion<DataType, LabelType>> groundTruth);
 
-        UInt64 GetMemorySize();
+        ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>() where NewDataType : struct, IComparable<NewDataType>;
     }
 
     internal class NewSnapshot<DataType, LabelType> : ISnapshot<DataType, LabelType>
-        where DataType : class, IComparable<DataType>
-        where LabelType : class, IComparable<LabelType>
+        where DataType : struct, IComparable<DataType>
+        where LabelType : struct, IComparable<LabelType>
     {
         /// <summary>
         /// Gets or sets the snapshot regions contained in this snapshot
         /// </summary>
         private IList<ISnapshotRegion<DataType, LabelType>> SnapshotRegions { get; set; }
 
+        /// <summary>
+        /// Gets or sets the time since the last update was performed on this snapshot
+        /// </summary>
+        private DateTime TimeSinceLastUpdate { get; set; }
+
+        private Int32 Alignment { get; set; }
+
+        public Expression Expression
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public Type ElementType
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IQueryProvider Provider
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public NewSnapshot()
         {
+            if (this.SnapshotRegions == null)
+            {
+                this.SnapshotRegions = new List<ISnapshotRegion<DataType, LabelType>>();
+                this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
+            }
+        }
+
+        public NewSnapshot(IEnumerable<ISnapshotRegion<DataType, LabelType>> snapshotRegions) : base()
+        {
+            this.SnapshotRegions = new List<ISnapshotRegion<DataType, LabelType>>();
+            this.AddSnapshotRegions(snapshotRegions);
             this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
+        }
+
+        /// <summary>
+        /// Note: This must take a long value, but an individual region will never span more than Int32 in size
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public ISnapshotElementRef this[Int64 index]
+        {
+            get
+            {
+                foreach (ISnapshotRegion region in this)
+                {
+                    Int64 elementCount = (Int64)region.GetElementCount();
+
+                    if (index - elementCount >= 0)
+                    {
+                        index -= elementCount;
+                    }
+                    else
+                    {
+                        return region[(Int32)index * this.Alignment];
+                    }
+                }
+
+                return null;
+            }
         }
 
         public void SetAlignment(Int32 alignment)
         {
-            alignment = alignment <= 0 ? 1 : alignment;
-            this.SnapshotRegions.ForEach(x => x.SetAlignment(alignment));
+            this.Alignment = alignment <= 0 ? 1 : alignment;
+            this.SnapshotRegions.ForEach(x => x.SetAlignment(this.Alignment));
         }
 
         public void SetAllValidBits(Boolean isValid)
         {
             this.SnapshotRegions.ForEach(x => x.SetAllValidBits(isValid));
+        }
+
+        public void DiscardInvalidRegions()
+        {
+            // TODO
         }
 
         public void RelaxAllRegions(Int32 relaxSize)
@@ -86,16 +188,63 @@
             // TODO: Merge mask etc
         }
 
-        public ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>() where NewDataType : class, IComparable<NewDataType>
+        public void MaskRegions(ISnapshot groundTruth)
+        {
+            // TODO
+        }
+
+        public void MaskRegions(IEnumerable<ISnapshotRegion<DataType, LabelType>> groundTruth)
+        {
+            // TODO
+        }
+
+        public DateTime GetTimeSinceLastUpdate()
+        {
+            return this.TimeSinceLastUpdate;
+        }
+
+        public IEnumerable<ISnapshotRegion> GetSnapshotRegions()
+        {
+            return this.SnapshotRegions;
+        }
+
+        public ISnapshot Clone()
+        {
+            // TODO
+            return this;
+        }
+
+        public ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>() where NewDataType : struct, IComparable<NewDataType>
         {
             NewSnapshot<NewDataType, LabelType> clone = new NewSnapshot<NewDataType, LabelType>();
             // TODO
             return clone;
         }
 
-        public UInt64 GetMemorySize()
+        public Boolean ContainsAddress(IntPtr address)
         {
-            return this.SnapshotRegions == null ? 0 : unchecked((UInt64)this.SnapshotRegions.AsEnumerable().Sum(x => unchecked((Int64)x.GetMemorySize())));
+            // TODO
+            return false;
+        }
+
+        public Int32 GetRegionCount()
+        {
+            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.Count;
+        }
+
+        public Int64 GetByteCount()
+        {
+            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.AsEnumerable().Sum(x => x.GetByteCount());
+        }
+
+        public Int64 GetElementCount()
+        {
+            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.AsEnumerable().Sum(x => (Int64)x.GetElementCount());
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return this.SnapshotRegions.GetEnumerator();
         }
     }
     //// End class

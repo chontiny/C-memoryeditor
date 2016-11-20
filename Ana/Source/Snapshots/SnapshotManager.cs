@@ -28,20 +28,20 @@
         {
             this.AccessLock = new Object();
             this.ObserverLock = new Object();
-            this.Snapshots = new Stack<Snapshot>();
-            this.DeletedSnapshots = new Stack<Snapshot>();
+            this.Snapshots = new Stack<ISnapshot>();
+            this.DeletedSnapshots = new Stack<ISnapshot>();
             this.SnapshotObservers = new List<ISnapshotObserver>();
         }
 
         /// <summary>
         /// Gets the snapshots being managed
         /// </summary>
-        public Stack<Snapshot> Snapshots { get; private set; }
+        public Stack<ISnapshot> Snapshots { get; private set; }
 
         /// <summary>
         /// Gets the deleted snapshots for the capability of redoing after undo
         /// </summary>
-        public Stack<Snapshot> DeletedSnapshots { get; private set; }
+        public Stack<ISnapshot> DeletedSnapshots { get; private set; }
 
         /// <summary>
         /// Gets or sets a lock to ensure multiple entities do not try and update the snapshot list at the same time
@@ -103,12 +103,13 @@
         /// </summary>
         /// <param name="createIfNone">Creates a snapshot if none exists</param>
         /// <returns>The current active snapshot of memory in the target process</returns>
-        public Snapshot GetActiveSnapshot(Boolean createIfNone = true)
+        public ISnapshot GetActiveSnapshot(Boolean createIfNone = true)
         {
             lock (this.AccessLock)
             {
                 // Take a snapshot if there are none, or the current one is empty
-                if (this.Snapshots.Count == 0 || this.Snapshots.Peek() == null || this.Snapshots.Peek().GetElementCount() == 0)
+                // TODO: Let's not do a dynamic cast. We can probably do some reflection magic to grab the actual ISnapshot<T1, T2> object to call the method
+                if (this.Snapshots.Count == 0 || this.Snapshots.Peek() == null || ((dynamic)this.Snapshots.Peek()).GetElementCount() == 0)
                 {
                     if (createIfNone)
                     {
@@ -188,7 +189,7 @@
         /// <param name="useSettings">Whether or not to apply user settings to the query</param>
         /// <param name="usePrefilter">Whether or not to apply the active prefilter to the query</param>
         /// <returns>The snapshot of memory taken in the target process</returns>
-        public Snapshot CollectSnapshot(Boolean useSettings = true, Boolean usePrefilter = true)
+        public ISnapshot CollectSnapshot(Boolean useSettings = true, Boolean usePrefilter = true)
         {
             if (usePrefilter)
             {
@@ -198,10 +199,10 @@
             IEnumerable<NormalizedRegion> virtualPages = this.CollectSnapshotRegions(useSettings);
 
             // Convert each virtual page to a snapshot region (a more condensed representation of the information)
-            List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
-            virtualPages.ForEach(x => memoryRegions.Add(new SnapshotRegion<Null>(x.BaseAddress, x.RegionSize)));
+            List<ISnapshotRegion<Int32, Int32>> memoryRegions = new List<ISnapshotRegion<Int32, Int32>>();
+            virtualPages.ForEach(x => memoryRegions.Add(new NewSnapshotRegion<Int32, Int32>(x.BaseAddress, x.RegionSize)));
 
-            return new Snapshot<Null>(memoryRegions);
+            return new NewSnapshot<Int32, Int32>(memoryRegions);
         }
 
         /// <summary>
@@ -278,7 +279,7 @@
         /// Saves a new snapshot, which will become the current active snapshot
         /// </summary>
         /// <param name="snapshot">The snapshot to save</param>
-        public void SaveSnapshot(Snapshot snapshot)
+        public void SaveSnapshot(ISnapshot snapshot)
         {
             lock (this.AccessLock)
             {
@@ -300,7 +301,7 @@
         {
             lock (this.ObserverLock)
             {
-                Snapshot activeSnapshot = this.GetActiveSnapshot(createIfNone: false);
+                ISnapshot activeSnapshot = this.GetActiveSnapshot(createIfNone: false);
                 foreach (ISnapshotObserver observer in this.SnapshotObservers)
                 {
                     observer.Update(activeSnapshot);
