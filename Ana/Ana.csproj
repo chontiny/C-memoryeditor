@@ -219,14 +219,11 @@
     <Compile Include="Source\Snapshots\ISnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
-    <Compile Include="Source\Snapshots\Deprecating\Null.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementRef.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorModel.cs" />
-    <Compile Include="Source\Utils\TypeEditors\IEditorViewModel.cs" />
-    <Compile Include="Source\Utils\TypeEditors\IEditorModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\OffsetEditor\OffsetEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\ScriptEditor\ScriptEditorModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\ScriptEditor\ScriptEditorViewModel.cs" />
@@ -352,13 +349,8 @@
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ISnapshotPrefilter.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ShallowPointerPrefilter.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\SnapshotPrefilterFactory.cs" />
-    <Compile Include="Source\Snapshots\Deprecating\SnapshotDeprecating.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Snapshots\Deprecating\SnapshotElementDeprecating.cs" />
     <Compile Include="Source\Snapshots\SnapshotManager.cs" />
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
-    <Compile Include="Source\Snapshots\Deprecating\SnapshotRegionDeprecating.cs" />
     <Compile Include="Source\UserSettings\SettingsViewModel.cs" />
     <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>

@@ -13,8 +13,14 @@
     /// </summary>
     internal class OffsetEditorViewModel : ViewModelBase
     {
+        /// <summary>
+        /// The collection of offsets.
+        /// </summary>
         private IList<Int32> offsets;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="OffsetEditorViewModel" /> class.
+        /// </summary>
         public OffsetEditorViewModel()
         {
             this.AddOffsetCommand = new RelayCommand(() => Task.Run(() => this.AddOffset()), () => true);
@@ -23,12 +29,24 @@
             this.AccessLock = new Object();
         }
 
+        /// <summary>
+        /// Gets a command to add an offset to the offset list.
+        /// </summary>
         public ICommand AddOffsetCommand { get; private set; }
 
+        /// <summary>
+        /// Gets a command to remove an offset from the offset list.
+        /// </summary>
         public ICommand RemoveOffsetCommand { get; private set; }
 
+        /// <summary>
+        /// Gets a command to update the active offset value.
+        /// </summary>
         public ICommand UpdateActiveValueCommand { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the collection of offsets.
+        /// </summary>
         public ObservableCollection<Int32> Offsets
         {
             get
@@ -54,12 +72,24 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the index of the selected offset.
+        /// </summary>
         public Int32 SelectedOffsetIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the offset list lock.
+        /// </summary>
         private Object AccessLock { get; set; }
 
+        /// <summary>
+        /// Gets or sets the active offset value.
+        /// </summary>
         private Int32 ActiveOffsetValue { get; set; }
 
+        /// <summary>
+        /// Adds the currently selected offset to the offset list.
+        /// </summary>
         private void AddOffset()
         {
             lock (this.AccessLock)
@@ -70,6 +100,9 @@
             this.RaisePropertyChanged(nameof(this.Offsets));
         }
 
+        /// <summary>
+        /// Removes the currently selected offset from the offset list.
+        /// </summary>
         private void RemoveSelectedOffset()
         {
             Int32 removalIndex = this.SelectedOffsetIndex;
@@ -90,6 +123,10 @@
             this.RaisePropertyChanged(nameof(this.Offsets));
         }
 
+        /// <summary>
+        /// Updates the active offset value.
+        /// </summary>
+        /// <param name="offset">The active offset value.</param>
         private void UpdateActiveValue(Int32 offset)
         {
             this.ActiveOffsetValue = offset;

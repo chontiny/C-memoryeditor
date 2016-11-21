@@ -39,6 +39,9 @@
                 () => { return new ScanResultsViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
+        /// <summary>
+        /// The active data type for the scan results.
+        /// </summary>
         private Type activeType;
 
         /// <summary>
@@ -94,24 +97,54 @@
             this.UpdateScanResults();
         }
 
+        /// <summary>
+        /// Gets the command to change the active data type to SByte.
+        /// </summary>
         public ICommand ChangeTypeSByteCommand { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Int16.
+        /// </summary>
         public ICommand ChangeTypeInt16Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Int32.
+        /// </summary>
         public ICommand ChangeTypeInt32Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Int64.
+        /// </summary>
         public ICommand ChangeTypeInt64Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Byte.
+        /// </summary>
         public ICommand ChangeTypeByteCommand { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to UInt16.
+        /// </summary>
         public ICommand ChangeTypeUInt16Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to UInt32.
+        /// </summary>
         public ICommand ChangeTypeUInt32Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to UInt64.
+        /// </summary>
         public ICommand ChangeTypeUInt64Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Single.
+        /// </summary>
         public ICommand ChangeTypeSingleCommand { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Double.
+        /// </summary>
         public ICommand ChangeTypeDoubleCommand { get; private set; }
 
         /// <summary>
@@ -139,6 +172,9 @@
         /// </summary>
         public ICommand AddAddressCommand { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the active scan results data type.
+        /// </summary>
         public Type ActiveType
         {
             get
@@ -156,6 +192,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the name associated with the active data type.
+        /// </summary>
         public String ActiveTypeName
         {
             get
@@ -188,6 +227,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the image associated with the active data type.
+        /// </summary>
         public BitmapSource ActiveTypeImage
         {
             get
@@ -250,7 +292,7 @@
         }
 
         /// <summary>
-        /// Gets the size (in B, KB, MB, GB, TB, etc) of the results found
+        /// Gets or sets the total number of bytes found.
         /// </summary>
         public Int64 ByteCount
         {
@@ -295,6 +337,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the lock for accessing observers.
+        /// </summary>
         private Object ObserverLock { get; set; }
 
         /// <summary>
@@ -415,6 +460,10 @@
             });
         }
 
+        /// <summary>
+        /// Changes the active scan results type.
+        /// </summary>
+        /// <param name="newType">The new scan results type.</param>
         private void ChangeType(Type newType)
         {
             this.ActiveType = newType;

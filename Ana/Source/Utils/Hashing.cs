@@ -2,13 +2,16 @@
 {
     using System;
 
+    /// <summary>
+    /// Class for hashing helper methods.
+    /// </summary>
     internal static class Hashing
     {
         /// <summary>
-        /// This should be replaced with a real checksum function with better collision avoidance
+        /// Computes the checksum of an array of bytes. This is fast but has terrible collision avoidance.
         /// </summary>
-        /// <param name="data">Data for which to compute checksum</param>
-        /// <returns>Checksum of the data</returns>
+        /// <param name="data">Data for which to compute checksum.</param>
+        /// <returns>Checksum of the data.</returns>
         public static unsafe UInt64 ComputeCheckSum(Byte[] data)
         {
             unchecked
@@ -38,12 +41,12 @@
         }
 
         /// <summary>
-        /// This should be replaced with a real checksum function with better collision avoidance
+        /// Computes the checksum of an array of bytes. This is fast but has terrible collision avoidance.
         /// </summary>
-        /// <param name="data">Data for which to compute checksum</param>
-        /// <param name="start">Index for which to begin the checksum algorithm</param>
-        /// <param name="end">Index for which to end the checksum algorithm</param>
-        /// <returns>Checksum of the data</returns>
+        /// <param name="data">Data for which to compute checksum.</param>
+        /// <param name="start">Index for which to begin the checksum algorithm.</param>
+        /// <param name="end">Index for which to end the checksum algorithm.</param>
+        /// <returns>Checksum of the data.</returns>
         public static unsafe UInt64 ComputeCheckSum(Byte[] data, UInt64 start, UInt64 end)
         {
             unchecked

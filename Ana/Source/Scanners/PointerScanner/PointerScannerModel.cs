@@ -2,17 +2,14 @@
 {
     using Engine;
     using Engine.AddressResolver;
-    using Engine.OperatingSystems;
     using Project;
     using Project.ProjectItems;
     using ScanConstraints;
     using Snapshots;
-    using Snapshots.Deprecating;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using System.Threading.Tasks;
     using UserSettings;
     using Utils.Extensions;
@@ -51,7 +48,7 @@
             Rescan
         }
 
-        private SnapshotDeprecating Snapshot { get; set; }
+        private ISnapshot Snapshot { get; set; }
 
         private ScanModeEnum ScanMode { get; set; }
 
@@ -65,7 +62,7 @@
 
         private List<ConcurrentDictionary<IntPtr, IntPtr>> ConnectedPointers { get; set; }
 
-        private SnapshotDeprecating<Null> AcceptedBases { get; set; }
+        private ISnapshot AcceptedBases { get; set; }
 
         private ScanConstraintManager ScanConstraintManager { get; set; }
 
@@ -313,7 +310,7 @@
         private void RescanValues()
         {
             this.PrintDebugTag();
-
+            /*
             if (this.ScanConstraintManager == null || this.ScanConstraintManager.Count() <= 0)
             {
                 return;
@@ -457,10 +454,12 @@
             }
 
             this.AcceptedPointers = retainedPointers;
+            */
         }
 
         private void SetAcceptedBases()
         {
+            /*
             this.PrintDebugTag();
 
             IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().OperatingSystemAdapter.GetModules();
@@ -471,10 +470,12 @@
 
             // Convert regions into a snapshot
             this.AcceptedBases = new SnapshotDeprecating<Null>(acceptedBaseRegions);
+            */
         }
 
         private void BuildPointerPool()
         {
+            /*
             this.PrintDebugTag();
 
             // Clear current pointer pool
@@ -552,17 +553,19 @@
                 // Clear the saved values, we do not need them now
                 region.SetCurrentValues(null);
             });
+            */
         }
 
-        private SnapshotRegionDeprecating AddressToRegion(IntPtr address)
+        private ISnapshotRegion AddressToRegion(IntPtr address)
         {
-            return new SnapshotRegionDeprecating<Null>(new NormalizedRegion(address.Subtract(this.MaxPointerOffset), this.MaxPointerOffset * 2));
+            // new SnapshotRegionDeprecating<Null>(new NormalizedRegion(address.Subtract(this.MaxPointerOffset), this.MaxPointerOffset * 2));
+            return null;
         }
 
         private void TracePointers()
         {
             this.PrintDebugTag();
-
+            /*
             ConcurrentBag<SnapshotRegionDeprecating> previousLevelRegions = new ConcurrentBag<SnapshotRegionDeprecating>();
             previousLevelRegions.Add(this.AddressToRegion(this.TargetAddress));
 
@@ -613,6 +616,7 @@
             }
 
             this.PointerPool.Clear();
+            */
         }
 
         private void BuildPointers()

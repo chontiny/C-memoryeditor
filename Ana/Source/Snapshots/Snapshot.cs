@@ -323,6 +323,152 @@
                 return true;
             }
         }
+
+        /*
+        /// <summary>
+        /// Masks the given memory regions against the memory regions of a given snapshot, keeping the common elements of the two in O(n)
+        /// </summary>
+        /// <param name="mask">The snapshot to mask the target regions against</param>
+        /// <param name="targetRegions">The regions we are performing a mask against</param>
+        /// <returns>A new collection of regions created from the masking operation</returns>
+        public IEnumerable<SnapshotRegionDeprecating<LabelType>> MaskRegions(SnapshotDeprecating<LabelType> mask, IEnumerable<SnapshotRegionDeprecating> targetRegions)
+        {
+            List<SnapshotRegionDeprecating<LabelType>> resultRegions = new List<SnapshotRegionDeprecating<LabelType>>();
+
+            // Initialize stacks with regions and masking regions
+            Queue<SnapshotRegionDeprecating<LabelType>> candidateRegions = new Queue<SnapshotRegionDeprecating<LabelType>>();
+            Queue<SnapshotRegionDeprecating<LabelType>> maskingRegions = new Queue<SnapshotRegionDeprecating<LabelType>>();
+
+            if (targetRegions == null || targetRegions.Count() < 0)
+            {
+                return null;
+            }
+
+            if (mask == null || mask.GetRegionCount() <= 0)
+            {
+                return null;
+            }
+
+            // Build candidate region queue from target region array
+            foreach (SnapshotRegionDeprecating<LabelType> region in targetRegions.OrderBy(x => x.BaseAddress.ToUInt64()))
+            {
+                candidateRegions.Enqueue(region);
+            }
+
+            // Build masking region queue from snapshot
+            foreach (SnapshotRegionDeprecating<LabelType> maskRegion in mask.GetSnapshotRegions().OrderBy(x => x.BaseAddress.ToUInt64()))
+            {
+                maskingRegions.Enqueue(maskRegion);
+            }
+
+            if (candidateRegions.Count <= 0 || maskingRegions.Count <= 0)
+            {
+                return null;
+            }
+
+            SnapshotRegionDeprecating<LabelType> currentRegion;
+            SnapshotRegionDeprecating<LabelType> currentMask = maskingRegions.Dequeue();
+
+            while (candidateRegions.Count > 0)
+            {
+                // Grab next region
+                currentRegion = candidateRegions.Dequeue();
+
+                // Grab the next mask following the current region
+                while (currentMask.EndAddress.ToUInt64() < currentRegion.BaseAddress.ToUInt64() && maskingRegions.Count > 0)
+                {
+                    currentMask = maskingRegions.Dequeue();
+                }
+
+                // Check for mask completely removing this region
+                if (currentMask.EndAddress.ToUInt64() < currentRegion.BaseAddress.ToUInt64() || currentMask.BaseAddress.ToUInt64() > currentRegion.EndAddress.ToUInt64())
+                {
+                    continue;
+                }
+
+                // Mask completely overlaps, just use the original region
+                if (currentMask.BaseAddress == currentRegion.BaseAddress && currentMask.EndAddress == currentRegion.EndAddress)
+                {
+                    resultRegions.Add(currentRegion);
+                    continue;
+                }
+
+                // Mask is within bounds; Grab the masked portion of this region
+                Int32 baseOffset = 0;
+                if (currentMask.BaseAddress.ToUInt64() > currentRegion.BaseAddress.ToUInt64())
+                {
+                    baseOffset = currentMask.BaseAddress.Subtract(currentRegion.BaseAddress).ToInt32();
+                }
+
+                SnapshotRegionDeprecating<LabelType> newRegion = new SnapshotRegionDeprecating<LabelType>(currentRegion);
+                newRegion.BaseAddress = currentRegion.BaseAddress + baseOffset;
+                newRegion.EndAddress = Math.Min(currentMask.EndAddress.ToUInt64(), currentRegion.EndAddress.ToUInt64()).ToIntPtr();
+                newRegion.SetCurrentValues(currentRegion.GetCurrentValues().LargestSubArray(baseOffset, newRegion.RegionSize + newRegion.GetRegionExtension()));
+                newRegion.SetPreviousValues(currentRegion.GetPreviousValues().LargestSubArray(baseOffset, newRegion.RegionSize + newRegion.GetRegionExtension()));
+                newRegion.SetElementLabels(currentRegion.GetElementLabels().LargestSubArray(baseOffset, newRegion.RegionSize + newRegion.GetRegionExtension()));
+                newRegion.SetElementType(currentRegion.GetElementType());
+                newRegion.SetAlignment(currentRegion.GetAlignment());
+                resultRegions.Add(newRegion);
+            }
+
+            return resultRegions.Count == 0 ? null : resultRegions;
+        } 
+        */
+
+        /*
+        /// <summary>
+        /// Merges regions in the current list of memory regions using a fast stack based algorithm O(nlogn + n)
+        /// </summary>
+        private void MergeRegions()
+        {
+            if (this.SnapshotRegions == null)
+            {
+                return;
+            }
+
+            SnapshotRegionDeprecating<LabelType>[] snapshotRegionArray = ((IEnumerable<SnapshotRegionDeprecating<LabelType>>)this.SnapshotRegions).ToArray();
+
+            if (snapshotRegionArray == null || snapshotRegionArray.Length <= 0)
+            {
+                return;
+            }
+
+            // First, sort by start address
+            Array.Sort(snapshotRegionArray, (x, y) => x.BaseAddress.ToUInt64().CompareTo(y.BaseAddress.ToUInt64()));
+
+            // Create and initialize the stack with the first region
+            Stack<SnapshotRegionDeprecating<LabelType>> combinedRegions = new Stack<SnapshotRegionDeprecating<LabelType>>();
+            combinedRegions.Push(snapshotRegionArray[0]);
+
+            // Build the remaining regions
+            for (Int32 index = combinedRegions.Count; index < snapshotRegionArray.Length; index++)
+            {
+                SnapshotRegionDeprecating<LabelType> top = combinedRegions.Peek();
+
+                if (top.EndAddress.ToUInt64() < snapshotRegionArray[index].BaseAddress.ToUInt64())
+                {
+                    // If the interval does not overlap, put it on the top of the stack
+                    combinedRegions.Push(snapshotRegionArray[index]);
+                }
+                else if (top.EndAddress.ToUInt64() == snapshotRegionArray[index].BaseAddress.ToUInt64())
+                {
+                    // The regions are adjacent; merge them
+                    top.RegionSize = snapshotRegionArray[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                    top.SetElementLabels(top.GetElementLabels().Concat(snapshotRegionArray[index].GetElementLabels()));
+                }
+                else if (top.EndAddress.ToUInt64() <= snapshotRegionArray[index].EndAddress.ToUInt64())
+                {
+                    // The regions overlap
+                    top.RegionSize = snapshotRegionArray[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                }
+            }
+
+            // Replace memory regions with merged memory regions
+            SnapshotRegionDeprecating<LabelType>[] combinedRegionsArray = combinedRegions.ToArray();
+            Array.Sort(combinedRegionsArray, (x, y) => x.BaseAddress.ToUInt64().CompareTo(y.BaseAddress.ToUInt64()));
+            this.SnapshotRegions = combinedRegionsArray;
+        }
+         */
     }
     //// End class
 }
