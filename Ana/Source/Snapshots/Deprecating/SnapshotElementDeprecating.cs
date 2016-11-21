@@ -1,4 +1,4 @@
-﻿namespace Ana.Source.Snapshots
+﻿namespace Ana.Source.Snapshots.Deprecating
 {
     using System;
     using System.Linq;
@@ -7,13 +7,13 @@
     /// <summary>
     /// Class used by SnapshotRegion as a wrapper for indexing into the raw collection of data
     /// </summary>
-    internal partial class SnapshotElement
+    internal partial class SnapshotElementDeprecating
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotElement" /> class
+        /// Initializes a new instance of the <see cref="SnapshotElementDeprecating" /> class
         /// </summary>
         /// <param name="parent">The parent region that contains this element</param>
-        public SnapshotElement(SnapshotRegion parent)
+        public SnapshotElementDeprecating(SnapshotRegionDeprecating parent)
         {
             this.Parent = parent;
         }
@@ -62,7 +62,7 @@
             }
         }
 
-        protected SnapshotRegion Parent { get; set; }
+        protected SnapshotRegionDeprecating Parent { get; set; }
 
         protected unsafe Byte* CurrentValuePointer { get; set; }
 
@@ -265,13 +265,13 @@
     /// Class used by SnapshotRegion as a wrapper for indexing into the raw collection of data
     /// </summary>
     /// <typeparam name="LabelType">The label type of the snapshot element</typeparam>
-    internal class SnapshotElement<LabelType> : SnapshotElement where LabelType : struct
+    internal class SnapshotElementDeprecating<LabelType> : SnapshotElementDeprecating where LabelType : struct
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotElement{LabelType}" /> class
+        /// Initializes a new instance of the <see cref="SnapshotElementDeprecating{LabelType}" /> class
         /// </summary>
         /// <param name="parent">The parent region that contains this element</param>
-        public SnapshotElement(SnapshotRegion<LabelType> parent) : base(parent)
+        public SnapshotElementDeprecating(SnapshotRegionDeprecating<LabelType> parent) : base(parent)
         {
             this.Parent = parent;
         }
@@ -289,7 +289,7 @@
             }
         }
 
-        private new SnapshotRegion<LabelType> Parent { get; set; }
+        private new SnapshotRegionDeprecating<LabelType> Parent { get; set; }
     }
     //// End class
 }

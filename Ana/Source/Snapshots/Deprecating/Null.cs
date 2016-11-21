@@ -1,9 +1,10 @@
-﻿namespace Ana.Source.Snapshots
+﻿namespace Ana.Source.Snapshots.Deprecating
 {
     /// <summary>
     /// Empty struct for unlabeled snapshots
     /// </summary>
     internal struct Null
     {
-    } //// End struct
+    }
+    //// End struct
 } //// End namespace

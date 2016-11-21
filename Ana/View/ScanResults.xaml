@@ -15,6 +15,9 @@
     DataContext="{Binding ScanResultsViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <Grid.Resources>
+            <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -416,7 +419,7 @@
             Padding="8,4,8,4"
             Background="{StaticResource AvalonDock_Expression_BaseColor1}">
             <WrapPanel HorizontalAlignment="Center">
-                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ResultSize}" />
+                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ByteCount, Converter={StaticResource ValueToMetricSize}}" />
                 <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text=" - (Count: " />
                 <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ResultCount}" />
                 <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text=")" />

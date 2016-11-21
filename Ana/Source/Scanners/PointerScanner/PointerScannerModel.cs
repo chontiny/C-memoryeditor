@@ -7,6 +7,7 @@
     using Project.ProjectItems;
     using ScanConstraints;
     using Snapshots;
+    using Snapshots.Deprecating;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -50,7 +51,7 @@
             Rescan
         }
 
-        private Snapshot Snapshot { get; set; }
+        private SnapshotDeprecating Snapshot { get; set; }
 
         private ScanModeEnum ScanMode { get; set; }
 
@@ -64,7 +65,7 @@
 
         private List<ConcurrentDictionary<IntPtr, IntPtr>> ConnectedPointers { get; set; }
 
-        private Snapshot<Null> AcceptedBases { get; set; }
+        private SnapshotDeprecating<Null> AcceptedBases { get; set; }
 
         private ScanConstraintManager ScanConstraintManager { get; set; }
 
@@ -324,7 +325,7 @@
             }
 
             List<IntPtr> resolvedAddresses = new List<IntPtr>();
-            List<SnapshotRegion> regions = new List<SnapshotRegion>();
+            List<SnapshotRegionDeprecating> regions = new List<SnapshotRegionDeprecating>();
 
             // Resolve addresses
             foreach (Tuple<IntPtr, List<Int32>> fullPointer in this.AcceptedPointers)
@@ -335,11 +336,11 @@
             // Build regions from resolved address
             foreach (IntPtr pointer in resolvedAddresses)
             {
-                regions.Add(new SnapshotRegion<Null>(pointer, Marshal.SizeOf(this.ScanConstraintManager.ElementType)));
+                regions.Add(new SnapshotRegionDeprecating<Null>(pointer, Marshal.SizeOf(this.ScanConstraintManager.ElementType)));
             }
 
             // Create a snapshot from regions
-            Snapshot<Null> pointerSnapshot = new Snapshot<Null>(regions);
+            SnapshotDeprecating<Null> pointerSnapshot = new SnapshotDeprecating<Null>(regions);
 
             // Read the memory (collecting values)
             pointerSnapshot.ReadAllSnapshotMemory();
@@ -354,7 +355,7 @@
             }
 
             // Note there are likely only a few regions that span <= 8 bytes, we do not need to parallelize this
-            foreach (SnapshotRegion region in pointerSnapshot)
+            foreach (SnapshotRegionDeprecating region in pointerSnapshot)
             {
                 if (!region.HasValues())
                 {
@@ -362,7 +363,7 @@
                     continue;
                 }
 
-                foreach (SnapshotElement element in region)
+                foreach (SnapshotElementDeprecating element in region)
                 {
                     // Enforce each value constraint on the element
                     foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
@@ -439,9 +440,9 @@
             }
 
             // Keep all remaining pointers
-            foreach (SnapshotRegion region in pointerSnapshot)
+            foreach (SnapshotRegionDeprecating region in pointerSnapshot)
             {
-                foreach (SnapshotElement element in region)
+                foreach (SnapshotElementDeprecating element in region)
                 {
                     for (Int32 addressIndex = 0; addressIndex < resolvedAddresses.Count; addressIndex++)
                     {
@@ -463,13 +464,13 @@
             this.PrintDebugTag();
 
             IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().OperatingSystemAdapter.GetModules();
-            List<SnapshotRegion> acceptedBaseRegions = new List<SnapshotRegion>();
+            List<SnapshotRegionDeprecating> acceptedBaseRegions = new List<SnapshotRegionDeprecating>();
 
             // Gather regions from every module as valid base addresses
-            modules.ForEach(x => acceptedBaseRegions.Add(new SnapshotRegion<Null>(new NormalizedRegion(x.BaseAddress, x.RegionSize))));
+            modules.ForEach(x => acceptedBaseRegions.Add(new SnapshotRegionDeprecating<Null>(new NormalizedRegion(x.BaseAddress, x.RegionSize))));
 
             // Convert regions into a snapshot
-            this.AcceptedBases = new Snapshot<Null>(acceptedBaseRegions);
+            this.AcceptedBases = new SnapshotDeprecating<Null>(acceptedBaseRegions);
         }
 
         private void BuildPointerPool()
@@ -505,7 +506,7 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
             {
-                SnapshotRegion region = (SnapshotRegion)regionObject;
+                SnapshotRegionDeprecating region = (SnapshotRegionDeprecating)regionObject;
                 Boolean readSuccess;
 
                 // Read the memory of this region
@@ -521,7 +522,7 @@
                     return;
                 }
 
-                foreach (SnapshotElement element in region)
+                foreach (SnapshotElementDeprecating element in region)
                 {
                     if (element.LessThanValue(invalidPointerMin))
                     {
@@ -553,16 +554,16 @@
             });
         }
 
-        private SnapshotRegion AddressToRegion(IntPtr address)
+        private SnapshotRegionDeprecating AddressToRegion(IntPtr address)
         {
-            return new SnapshotRegion<Null>(new NormalizedRegion(address.Subtract(this.MaxPointerOffset), this.MaxPointerOffset * 2));
+            return new SnapshotRegionDeprecating<Null>(new NormalizedRegion(address.Subtract(this.MaxPointerOffset), this.MaxPointerOffset * 2));
         }
 
         private void TracePointers()
         {
             this.PrintDebugTag();
 
-            ConcurrentBag<SnapshotRegion> previousLevelRegions = new ConcurrentBag<SnapshotRegion>();
+            ConcurrentBag<SnapshotRegionDeprecating> previousLevelRegions = new ConcurrentBag<SnapshotRegionDeprecating>();
             previousLevelRegions.Add(this.AddressToRegion(this.TargetAddress));
 
             this.ConnectedPointers.Clear();
@@ -575,7 +576,7 @@
             for (Int32 level = 1; level <= this.MaxPointerLevel; level++)
             {
                 // Create snapshot from previous level regions to leverage the merging and sorting capabilities of a snapshot
-                Snapshot previousLevel = new Snapshot<Null>(previousLevelRegions);
+                SnapshotDeprecating previousLevel = new SnapshotDeprecating<Null>(previousLevelRegions);
                 ConcurrentDictionary<IntPtr, IntPtr> levelPointers = new ConcurrentDictionary<IntPtr, IntPtr>();
 
                 Parallel.ForEach(
@@ -599,7 +600,7 @@
                 // Add the pointers for this level to the global accepted list
                 this.ConnectedPointers.Add(levelPointers);
 
-                previousLevelRegions = new ConcurrentBag<SnapshotRegion>();
+                previousLevelRegions = new ConcurrentBag<SnapshotRegionDeprecating>();
 
                 // Construct new target region list from this level of pointers
                 Parallel.ForEach(

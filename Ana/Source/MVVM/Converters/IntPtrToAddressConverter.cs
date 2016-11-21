@@ -34,7 +34,7 @@
         }
 
         /// <summary>
-        /// Not implemented
+        /// Not used or implemented
         /// </summary>
         /// <param name="value">Value to be converted</param>
         /// <param name="targetType">Type to convert to</param>

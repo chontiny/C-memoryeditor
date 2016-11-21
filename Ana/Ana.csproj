@@ -204,6 +204,7 @@
     <Compile Include="Source\Engine\Input\Mouse\MouseCapture.cs" />
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
     <Compile Include="Source\Project\ProjectItems\ProjectRoot.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
@@ -213,11 +214,14 @@
     <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
-    <Compile Include="Source\Snapshots\NewSnapshotRegion.cs" />
-    <Compile Include="Source\Snapshots\NewSnapshot.cs" />
-    <Compile Include="Source\Snapshots\Null.cs" />
+    <Compile Include="Source\Snapshots\ISnapshot.cs" />
+    <Compile Include="Source\Snapshots\ISnapshotElementRef.cs" />
+    <Compile Include="Source\Snapshots\ISnapshotRegion.cs" />
+    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
+    <Compile Include="Source\Snapshots\Snapshot.cs" />
+    <Compile Include="Source\Snapshots\Deprecating\Null.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
-    <Compile Include="Source\Snapshots\NewSnapshotElement.cs" />
+    <Compile Include="Source\Snapshots\SnapshotElementRef.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorModel.cs" />
@@ -348,13 +352,13 @@
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ISnapshotPrefilter.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ShallowPointerPrefilter.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\SnapshotPrefilterFactory.cs" />
-    <Compile Include="Source\Snapshots\Snapshot.cs">
+    <Compile Include="Source\Snapshots\Deprecating\SnapshotDeprecating.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Source\Snapshots\SnapshotElement.cs" />
+    <Compile Include="Source\Snapshots\Deprecating\SnapshotElementDeprecating.cs" />
     <Compile Include="Source\Snapshots\SnapshotManager.cs" />
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
-    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
+    <Compile Include="Source\Snapshots\Deprecating\SnapshotRegionDeprecating.cs" />
     <Compile Include="Source\UserSettings\SettingsViewModel.cs" />
     <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>

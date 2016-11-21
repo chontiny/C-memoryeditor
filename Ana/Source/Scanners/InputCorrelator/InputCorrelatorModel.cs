@@ -132,18 +132,18 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
                 {
-                    SnapshotRegion<Int16> region = (SnapshotRegion<Int16>)regionObject;
+                    ISnapshotRegion<Int32, Int16> region = regionObject as ISnapshotRegion<Int32, Int16>;
 
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (SnapshotElement<Int16> element in region)
+                    foreach (ISnapshotElementRef<Int32, Int16> element in region)
                     {
                         if (element.Changed())
                         {
-                            element.ElementLabel++;
+                            ((dynamic)element).ElementLabel++;
                         }
                     }
                 });
@@ -155,18 +155,18 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
                 {
-                    SnapshotRegion<Int16> region = regionObject as SnapshotRegion<Int16>;
+                    ISnapshotRegion<Int32, Int16> region = regionObject as ISnapshotRegion<Int32, Int16>;
 
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (SnapshotElement<Int16> element in region)
+                    foreach (ISnapshotElementRef<Int32, Int16> element in region)
                     {
                         if (element.Changed())
                         {
-                            element.ElementLabel--;
+                            ((dynamic)element).ElementLabel--;
                         }
                     }
                 });
@@ -185,13 +185,13 @@
 
             // Prefilter items with negative penalties (ie constantly changing variables)
             this.Snapshot.SetAllValidBits(false);
-            foreach (SnapshotRegion<Int16> region in this.Snapshot)
+            foreach (ISnapshotRegion<Int32, Int16> region in this.Snapshot)
             {
-                foreach (SnapshotElement<Int16> element in region)
+                foreach (ISnapshotElementRef<Int32, Int16> element in region)
                 {
-                    if (element.ElementLabel.Value > 0)
+                    if (((dynamic)element).ElementLabel.Value > 0)
                     {
-                        element.Valid = true;
+                        element.SetValid(true);
                     }
                 }
             }

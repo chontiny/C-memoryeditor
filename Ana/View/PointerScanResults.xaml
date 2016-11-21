@@ -276,12 +276,6 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <Grid.InputBindings>
-                                <MouseBinding
-                                    Command="{Binding AddAddressCommand, ElementName=AnaScanResults}"
-                                    CommandParameter="{Binding .}"
-                                    Gesture="LeftDoubleClick" />
-                            </Grid.InputBindings>
                             <TextBlock
                                 Grid.Column="0"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"

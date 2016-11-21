@@ -16,7 +16,6 @@
     using System.Windows.Media.Imaging;
     using UserSettings;
     using Utils.Extensions;
-    using Utils.Validation;
 
     /// <summary>
     /// View model for the Process Selector
@@ -246,17 +245,6 @@
         }
 
         /// <summary>
-        /// Gets the size (in B, KB, MB, GB, TB, etc) of the results found
-        /// </summary>
-        public String ResultSize
-        {
-            get
-            {
-                return Conversions.BytesToMetric<Int64>(this.addressCount);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the total number of addresses found
         /// </summary>
         public Int64 ResultCount
@@ -270,7 +258,6 @@
             {
                 this.addressCount = value;
                 this.RaisePropertyChanged(nameof(this.ResultCount));
-                this.RaisePropertyChanged(nameof(this.ResultSize));
                 this.RaisePropertyChanged(nameof(this.PageCount));
             }
         }

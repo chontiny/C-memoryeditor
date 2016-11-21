@@ -17,6 +17,9 @@
     mc:Ignorable="d">
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid>
+            <Grid.Resources>
+                <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
+            </Grid.Resources>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -153,7 +156,7 @@
                                 <TextBlock
                                     Grid.Column="1"
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="{Binding Path=MemorySize}" />
+                                    Text="{Binding Path=ByteCount, Converter={StaticResource ValueToMetricSize}}" />
                                 <TextBlock
                                     Grid.Column="2"
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"

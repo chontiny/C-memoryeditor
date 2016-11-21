@@ -272,29 +272,6 @@
             return null;
         }
 
-        /// <summary>
-        /// Converts a given number of bytes to the most relevant metric. ie 2123 bytes => 2KB
-        /// </summary>
-        /// <typeparam name="T">The data type expressing the byte count</typeparam>
-        /// <param name="byteCount">The number of bytes</param>
-        /// <returns>The byte count converted to a string representing the same value as the most relevant metric</returns>
-        public static String BytesToMetric<T>(T byteCount) where T : struct
-        {
-            // Note: UInt64s run out around EB
-            String[] suffix = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
-
-            UInt64 realByteCount = (UInt64)Convert.ChangeType(byteCount, typeof(UInt64));
-
-            if (realByteCount == 0)
-            {
-                return "0" + suffix[0];
-            }
-
-            Int32 place = Convert.ToInt32(Math.Floor(Math.Log(realByteCount, 1024)));
-            Double number = Math.Round(realByteCount / Math.Pow(1024, place), 1);
-            return number.ToString() + suffix[place];
-        }
-
         public static Int32 GetTypeSize<T>()
         {
             switch (Type.GetTypeCode(typeof(T)))

@@ -298,16 +298,6 @@
                     break;
             }
 
-            if (EngineCore.GetInstance() == null)
-            {
-                if (this.Offsets != null && this.Offsets.Count() > 0)
-                {
-                    pointer = IntPtr.Zero;
-                }
-
-                return pointer;
-            }
-
             if (this.Offsets == null || this.Offsets.Count() == 0)
             {
                 return pointer;
@@ -324,14 +314,9 @@
                     pointer = EngineCore.GetInstance().OperatingSystemAdapter.Read<Int64>(pointer, out successReading).ToIntPtr();
                 }
 
-                if (pointer == IntPtr.Zero)
-                {
-                    break;
-                }
-
                 pointer = pointer.Add(offset);
 
-                if (!successReading)
+                if (pointer == IntPtr.Zero || !successReading)
                 {
                     break;
                 }

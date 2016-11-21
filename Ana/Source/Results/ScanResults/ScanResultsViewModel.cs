@@ -16,7 +16,6 @@
     using System.Windows.Media.Imaging;
     using UserSettings;
     using Utils.Extensions;
-    using Utils.Validation;
 
     /// <summary>
     /// View model for the Process Selector
@@ -51,6 +50,11 @@
         /// The total number of addresses
         /// </summary>
         private Int64 addressCount;
+
+        /// <summary>
+        /// The total number of bytes in memory
+        /// </summary>
+        private Int64 byteCount;
 
         /// <summary>
         /// The addresses on the current page
@@ -248,12 +252,17 @@
         /// <summary>
         /// Gets the size (in B, KB, MB, GB, TB, etc) of the results found
         /// </summary>
-        public String ResultSize
+        public Int64 ByteCount
         {
             get
             {
-                // TODO: Wrong, use byte count and convert on that
-                return Conversions.BytesToMetric<Int64>(this.addressCount);
+                return this.byteCount;
+            }
+
+            set
+            {
+                this.byteCount = value;
+                this.RaisePropertyChanged(nameof(this.ByteCount));
             }
         }
 
@@ -271,7 +280,6 @@
             {
                 this.addressCount = value;
                 this.RaisePropertyChanged(nameof(this.ResultCount));
-                this.RaisePropertyChanged(nameof(this.ResultSize));
                 this.RaisePropertyChanged(nameof(this.PageCount));
             }
         }
@@ -341,6 +349,7 @@
         public void Update(ISnapshot snapshot)
         {
             this.ResultCount = snapshot == null ? 0 : snapshot.GetElementCount();
+            this.ByteCount = snapshot == null ? 0 : snapshot.GetByteCount();
             this.CurrentPage = 0;
         }
 

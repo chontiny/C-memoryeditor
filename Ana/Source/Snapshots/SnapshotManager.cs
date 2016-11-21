@@ -200,10 +200,10 @@
 
             // Convert each virtual page to a snapshot region (a more condensed representation of the information)
             List<ISnapshotRegion<Int32, Int32>> memoryRegions = new List<ISnapshotRegion<Int32, Int32>>();
-            virtualPages.ForEach(x => memoryRegions.Add(new NewSnapshotRegion<Int32, Int32>(x.BaseAddress, x.RegionSize)));
+            virtualPages.ForEach(x => memoryRegions.Add(new SnapshotRegion<Int32, Int32>(x.BaseAddress, x.RegionSize)));
 
             // TODO: Determine type on the fly, switch on current type
-            return new NewSnapshot<Int32, Int32>(memoryRegions);
+            return new Snapshot<Int32, Int32>(memoryRegions);
         }
 
         /// <summary>
