@@ -2,6 +2,7 @@
 {
     using Engine;
     using Engine.OperatingSystems;
+    using Results.ScanResults;
     using Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
@@ -12,7 +13,7 @@
     /// <summary>
     /// Manages snapshots of memory taken from the target process
     /// </summary>
-    internal class SnapshotManager
+    internal class SnapshotManager : IScanResultsObserver
     {
         /// <summary>
         /// Singleton instance of Snapshot Manager
@@ -199,11 +200,11 @@
             IEnumerable<NormalizedRegion> virtualPages = this.CollectSnapshotRegions(useSettings);
 
             // Convert each virtual page to a snapshot region (a more condensed representation of the information)
-            List<ISnapshotRegion<Int32, Int32>> memoryRegions = new List<ISnapshotRegion<Int32, Int32>>();
-            virtualPages.ForEach(x => memoryRegions.Add(new SnapshotRegion<Int32, Int32>(x.BaseAddress, x.RegionSize)));
+            List<ISnapshotRegion> memoryRegions = new List<ISnapshotRegion>();
+            virtualPages.ForEach(x => memoryRegions.Add(new SnapshotRegion(x.BaseAddress, x.RegionSize)));
 
             // TODO: Determine type on the fly, switch on current type
-            return new Snapshot<Int32, Int32>(memoryRegions);
+            return new Snapshot(memoryRegions);
         }
 
         /// <summary>
@@ -276,6 +277,11 @@
             }
         }
 
+        public void Update(Type activeType)
+        {
+            this.GetActiveSnapshot(createIfNone: false)?.SetElementType(activeType);
+        }
+
         /// <summary>
         /// Saves a new snapshot, which will become the current active snapshot
         /// </summary>
@@ -309,6 +315,7 @@
                 }
             }
         }
+
     }
     //// End class
 }

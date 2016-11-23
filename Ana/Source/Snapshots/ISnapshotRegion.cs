@@ -7,7 +7,7 @@
     /// <summary>
     /// Interface defining a region of memory in an external process.
     /// </summary>
-    internal partial interface ISnapshotRegion : IEnumerable
+    internal interface ISnapshotRegion : IEnumerable
     {
         /// <summary>
         /// Indexer to allow the retrieval of the element at the specified index.
@@ -18,6 +18,18 @@
         {
             get;
         }
+
+        /// <summary>
+        /// Sets the element type of the snapshot.
+        /// </summary>
+        /// <param name="elementType">The element type.</param>
+        void SetElementType(Type elementType);
+
+        /// <summary>
+        /// Sets the label type of the snapshot.
+        /// </summary>
+        /// <param name="labelType">The label type.</param>
+        void SetLabelType(Type labelType);
 
         /// <summary>
         /// Sets the memory alignment of this memory region.
@@ -48,6 +60,10 @@
         /// </summary>
         /// <param name="newValues">The raw bytes of the values.</param>
         void SetPreviousValues(Byte[] newValues);
+
+        Type GetElementType();
+
+        Type GetLabelType();
 
         /// <summary>
         /// Gets the time since values were read for this region.
@@ -117,35 +133,24 @@
         /// </summary>
         /// <returns>The end address of this snapshot region.</returns>
         IntPtr GetEndAddress();
-    }
-    //// End interface
 
-    /// <summary>
-    /// Interface defining a region of memory in an external process.
-    /// </summary>
-    /// <typeparam name="DataType">The data type of this snapshot region.</typeparam>
-    /// <typeparam name="LabelType">The type corresponding to the labels of this snapshot region.</typeparam>
-    internal partial interface ISnapshotRegion<DataType, LabelType> : ISnapshotRegion
-        where DataType : struct, IComparable<DataType>
-        where LabelType : struct, IComparable<LabelType>
-    {
         /// <summary>
         /// Sets the element labels for this snapshot region.
         /// </summary>
         /// <param name="newLabels">The new labels to be assigned.</param>
-        void SetElementLabels(params LabelType[] newLabels);
+        void SetElementLabels(params Object[] newLabels);
 
         /// <summary>
         /// Gets the colletion of element labels for this snapshot region.
         /// </summary>
         /// <returns>The colletion of element labels for this snapshot region.</returns>
-        LabelType[] GetElementLabels();
+        Object[] GetElementLabels();
 
         /// <summary>
         /// Gets the regions in this snapshot with a valid bit set.
         /// </summary>
         /// <returns>The regions in this snapshot with a valid bit set.</returns>
-        IEnumerable<ISnapshotRegion<DataType, LabelType>> GetValidRegions();
+        IEnumerable<ISnapshotRegion> GetValidRegions();
     }
     //// End interface
 }

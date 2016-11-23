@@ -422,7 +422,10 @@
 
                 String label = String.Empty;
 
-                label = ((dynamic)element).GetElementLabel().ToString();
+                if (((dynamic)element).GetElementLabel() != null)
+                {
+                    label = ((dynamic)element).GetElementLabel().ToString();
+                }
 
                 String currentValue = String.Empty;
                 if (element.HasCurrentValue())

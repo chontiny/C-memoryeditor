@@ -8,7 +8,7 @@
     /// <summary>
     /// Interface defining a snapshot of memory in an external process.
     /// </summary>
-    internal partial interface ISnapshot : IEnumerable
+    internal interface ISnapshot : IEnumerable
     {
         /// <summary>
         /// Indexer to allow the retrieval of the element at the specified index. Notes: This does NOT index into a region. 
@@ -20,6 +20,18 @@
         {
             get;
         }
+
+        /// <summary>
+        /// Sets the element type of the snapshot.
+        /// </summary>
+        /// <param name="elementType">The element type.</param>
+        void SetElementType(Type elementType);
+
+        /// <summary>
+        /// Sets the label type of the snapshot.
+        /// </summary>
+        /// <param name="labelType">The label type.</param>
+        void SetLabelType(Type labelType);
 
         /// <summary>
         /// Sets the memory alignment of this snapshot and all of the regions it contains.
@@ -60,6 +72,10 @@
         /// </summary>
         /// <param name="groundTruth">The snapshot regions to mask the target regions against.</param>
         void MaskRegions(IEnumerable<NormalizedRegion> groundTruth);
+
+        Type GetElementType();
+
+        Type GetLabelType();
 
         /// <summary>
         /// Gets the time since the last update was performed on this snapshot.
@@ -104,29 +120,18 @@
         /// </summary>
         /// <returns>The number of bytes contained in this snapshot.</returns>
         Int64 GetByteCount();
-    }
-    //// End interface
-
-    /// <summary>
-    /// Interface defining a snapshot of memory in an external process.
-    /// </summary>
-    /// <typeparam name="DataType">The data type of this snapshot.</typeparam>
-    /// <typeparam name="LabelType">The type corresponding to the labels of this snapshot.</typeparam>
-    internal partial interface ISnapshot<DataType, LabelType> : ISnapshot
-        where DataType : struct, IComparable<DataType>
-        where LabelType : struct, IComparable<LabelType>
-    {
-        /// <summary>
-        /// Sets the label of every element in this snapshot to the same value.
-        /// </summary>
-        /// <param name="label">The new snapshot label value.</param>
-        void SetElementLabels(LabelType label);
 
         /// <summary>
         /// Adds snapshot regions to the regions contained in this snapshot. Will automatically merge and sort regions.
         /// </summary>
         /// <param name="snapshotRegions">The snapshot regions to add.</param>
-        void AddSnapshotRegions(IEnumerable<ISnapshotRegion<DataType, LabelType>> snapshotRegions);
+        void AddSnapshotRegions(IEnumerable<ISnapshotRegion> snapshotRegions);
+
+        /// <summary>
+        /// Sets the label of every element in this snapshot to the same value.
+        /// </summary>
+        /// <param name="label">The new snapshot label value.</param>
+        void SetElementLabels<LabelType>(LabelType label) where LabelType : struct, IComparable<LabelType>;
 
         /// <summary>
         /// Creates a shallow clone of this snapshot as a new data type.
@@ -134,7 +139,7 @@
         /// <typeparam name="NewDataType">The new data type.</typeparam>
         /// <param name="newSnapshotName">The snapshot generation method name.</param>
         /// <returns>The shallow cloned snapshot.</returns>
-        ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>(String newSnapshotName = null) where NewDataType : struct, IComparable<NewDataType>;
+        ISnapshot CloneAs<NewDataType>(String newSnapshotName = null) where NewDataType : struct, IComparable<NewDataType>;
     }
     //// End interface
 }

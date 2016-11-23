@@ -66,14 +66,14 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (Object regionObject) =>
             {
-                ISnapshotRegion<Int32, UInt16> region = regionObject as ISnapshotRegion<Int32, UInt16>;
+                ISnapshotRegion region = regionObject as ISnapshotRegion;
 
                 if (!region.CanCompare())
                 {
                     return;
                 }
 
-                foreach (ISnapshotElementRef<Int32, UInt16> element in region)
+                foreach (ISnapshotElementRef element in region)
                 {
                     if (element.Changed())
                     {

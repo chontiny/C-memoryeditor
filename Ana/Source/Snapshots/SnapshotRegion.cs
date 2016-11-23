@@ -2,6 +2,7 @@
 {
     using Engine;
     using Engine.OperatingSystems;
+    using Results.ScanResults;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -12,21 +13,17 @@
     /// <summary>
     /// Defines a region of memory in an external process.
     /// </summary>
-    /// <typeparam name="DataType">The data type of this snapshot region.</typeparam>
-    /// <typeparam name="LabelType">The type corresponding to the labels of this snapshot region.</typeparam>
-    internal class SnapshotRegion<DataType, LabelType> : NormalizedRegion, ISnapshotRegion<DataType, LabelType>
-        where DataType : struct, IComparable<DataType>
-        where LabelType : struct, IComparable<LabelType>
+    internal class SnapshotRegion : NormalizedRegion, ISnapshotRegion
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotRegion {DataType,LabelType}" /> class.
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
         /// </summary>
         public SnapshotRegion() : this(IntPtr.Zero, 0)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotRegion {DataType,LabelType}" /> class.
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
         /// </summary>
         /// <param name="normalizedRegion">The region on which to base this snapshot region.</param>
         public SnapshotRegion(NormalizedRegion normalizedRegion) :
@@ -35,7 +32,7 @@
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotRegion {DataType,LabelType}" /> class.
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
         /// </summary>
         /// <param name="baseAddress">The base address of this snapshot region.</param>
         /// <param name="regionSize">The size of this snapshot region.</param>
@@ -43,6 +40,7 @@
         {
             this.TimeSinceLastRead = DateTime.MinValue;
             this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
+            this.SetElementType(ScanResultsViewModel.GetInstance().ActiveType);
         }
 
         /// <summary>
@@ -58,7 +56,7 @@
         /// <summary>
         /// Gets or sets the previously read values
         /// </summary>
-        private unsafe LabelType[] ElementLabels { get; set; }
+        private unsafe Object[] ElementLabels { get; set; }
 
         /// <summary>
         /// Gets or sets the valid bits for use in filtering scans
@@ -75,10 +73,14 @@
         /// </summary>
         private DateTime TimeSinceLastRead { get; set; }
 
+        private Type ElementType { get; set; }
+
+        private Type LabelType { get; set; }
+
         /// <summary>
         /// Gets or sets the reference to the snapshot element being iterated over
         /// </summary>
-        private ISnapshotElementRef<DataType, LabelType> SnapshotElementRef { get; set; }
+        private ISnapshotElementRef SnapshotElementRef { get; set; }
 
         /// <summary>
         /// Indexer to allow the retrieval of the element at the specified index.
@@ -89,10 +91,20 @@
         {
             get
             {
-                ISnapshotElementRef element = new SnapshotElementRef<DataType, LabelType>(this);
+                ISnapshotElementRef element = new SnapshotElementRef(this);
                 element.InitializePointers(index);
                 return element;
             }
+        }
+
+        public void SetElementType(Type elementType)
+        {
+            this.ElementType = elementType;
+        }
+
+        public void SetLabelType(Type labelType)
+        {
+            this.LabelType = labelType;
         }
 
         /// <summary>
@@ -158,6 +170,16 @@
             this.PreviousValues = newValues;
         }
 
+        public Type GetElementType()
+        {
+            return this.ElementType;
+        }
+
+        public Type GetLabelType()
+        {
+            return this.LabelType;
+        }
+
         /// <summary>
         /// Gets the time since values were read for this region.
         /// </summary>
@@ -180,7 +202,7 @@
         /// Sets the element labels for this snapshot region.
         /// </summary>
         /// <param name="newLabels">The new labels to be assigned.</param>
-        public void SetElementLabels(params LabelType[] newLabels)
+        public void SetElementLabels(params Object[] newLabels)
         {
             this.ElementLabels = newLabels;
         }
@@ -258,7 +280,7 @@
         /// Gets the colletion of element labels for this snapshot region.
         /// </summary>
         /// <returns>The colletion of element labels for this snapshot region.</returns>
-        public LabelType[] GetElementLabels()
+        public Object[] GetElementLabels()
         {
             return this.ElementLabels;
         }
@@ -267,9 +289,9 @@
         /// Gets the regions in this snapshot with a valid bit set.
         /// </summary>
         /// <returns>The regions in this snapshot with a valid bit set.</returns>
-        public IEnumerable<ISnapshotRegion<DataType, LabelType>> GetValidRegions()
+        public IEnumerable<ISnapshotRegion> GetValidRegions()
         {
-            List<ISnapshotRegion<DataType, LabelType>> validRegions = new List<ISnapshotRegion<DataType, LabelType>>();
+            List<ISnapshotRegion> validRegions = new List<ISnapshotRegion>();
             for (Int32 startIndex = 0; startIndex < (this.ValidBits == null ? 0 : this.ValidBits.Length); startIndex += this.Alignment)
             {
                 if (!this.ValidBits[startIndex])
@@ -287,7 +309,7 @@
                 while (startIndex + validRegionSize < this.ValidBits.Length && this.ValidBits[startIndex + validRegionSize]);
 
                 // Create new subregion from this valid region
-                ISnapshotRegion<DataType, LabelType> subRegion = new SnapshotRegion<DataType, LabelType>(this.BaseAddress + startIndex, validRegionSize);
+                ISnapshotRegion subRegion = new SnapshotRegion(this.BaseAddress + startIndex, validRegionSize);
 
                 // Copy the current values and labels.
                 subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, validRegionSize));
@@ -353,7 +375,7 @@
             GCHandle currentValuesHandle = GCHandle.Alloc(this.CurrentValues, GCHandleType.Pinned);
             GCHandle previousValuesHandle = GCHandle.Alloc(this.PreviousValues, GCHandleType.Pinned);
 
-            this.SnapshotElementRef = new SnapshotElementRef<DataType, LabelType>(this);
+            this.SnapshotElementRef = new SnapshotElementRef(this);
 
             this.SnapshotElementRef.InitializePointers();
 
@@ -391,7 +413,7 @@
         private Int32 GetElementSize()
         {
             // Switch on type code. Could also do Marshal.SizeOf(DataType), but it is slower
-            switch (Type.GetTypeCode(typeof(DataType)))
+            switch (Type.GetTypeCode(this.GetElementType()))
             {
                 case TypeCode.Byte:
                     return sizeof(Byte);

@@ -41,7 +41,7 @@
         /// </summary>
         private ShallowPointerPrefilter()
         {
-            this.PrefilteredSnapshot = new Snapshot<Int32, Int32>();
+            this.PrefilteredSnapshot = new Snapshot();
             this.RegionLock = new Object();
             this.processedCount = 0;
         }
@@ -105,21 +105,21 @@
             ConcurrentHashSet<IntPtr> foundPointers = new ConcurrentHashSet<IntPtr>();
 
             // Add static bases
-            List<SnapshotRegion<Int32, Int32>> baseRegions = new List<SnapshotRegion<Int32, Int32>>();
+            List<SnapshotRegion> baseRegions = new List<SnapshotRegion>();
             foreach (NormalizedModule normalizedModule in EngineCore.GetInstance().OperatingSystemAdapter.GetModules())
             {
-                baseRegions.Add(new SnapshotRegion<Int32, Int32>(normalizedModule.BaseAddress, normalizedModule.RegionSize));
+                baseRegions.Add(new SnapshotRegion(normalizedModule.BaseAddress, normalizedModule.RegionSize));
             }
 
             ((dynamic)this.PrefilteredSnapshot).AddSnapshotRegions(baseRegions);
 
             lock (this.RegionLock)
             {
-                List<SnapshotRegion<Int32, Int32>> pointerRegions = new List<SnapshotRegion<Int32, Int32>>();
+                List<SnapshotRegion> pointerRegions = new List<SnapshotRegion>();
 
                 foreach (IntPtr pointer in PointerCollector.GetInstance().GetFoundPointers())
                 {
-                    pointerRegions.Add(new SnapshotRegion<Int32, Int32>(pointer.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
+                    pointerRegions.Add(new SnapshotRegion(pointer.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
                 }
 
                ((dynamic)this.PrefilteredSnapshot).AddSnapshotRegions(pointerRegions);

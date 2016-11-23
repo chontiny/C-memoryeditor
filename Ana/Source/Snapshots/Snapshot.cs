@@ -1,6 +1,7 @@
 ﻿namespace Ana.Source.Snapshots
 {
     using Engine.OperatingSystems;
+    using Results.ScanResults;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -11,33 +12,29 @@
     /// <summary>
     /// Defines a snapshot of memory in an external process.
     /// </summary>
-    /// <typeparam name="DataType">The data type of this snapshot.</typeparam>
-    /// <typeparam name="LabelType">The type corresponding to the labels of this snapshot.</typeparam>
-    internal class Snapshot<DataType, LabelType> : ISnapshot<DataType, LabelType>
-        where DataType : struct, IComparable<DataType>
-        where LabelType : struct, IComparable<LabelType>
+    internal class Snapshot : ISnapshot
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Snapshot {DataType,LabelType}" /> class.
+        /// Initializes a new instance of the <see cref="Snapshot" /> class.
         /// </summary>
         /// <param name="snapshotName">The snapshot generation method name.</param>
         public Snapshot(String snapshotName = null)
         {
+            this.SetElementType(ScanResultsViewModel.GetInstance().ActiveType);
             this.TimeSinceLastUpdate = DateTime.Now;
             this.SnapshotName = snapshotName == null ? String.Empty : snapshotName;
-            this.SnapshotRegions = new List<ISnapshotRegion<DataType, LabelType>>();
+            this.SnapshotRegions = new List<ISnapshotRegion>();
             this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Snapshot {DataType,LabelType}" /> class.
+        /// Initializes a new instance of the <see cref="Snapshot" /> class.
         /// </summary>
         /// <param name="snapshotRegions">The regions with which to initialize this snapshot.</param>
         /// <param name="snapshotName">The snapshot generation method name.</param>
-        public Snapshot(IEnumerable<ISnapshotRegion<DataType, LabelType>> snapshotRegions, String snapshotName = null) : this(snapshotName)
+        public Snapshot(IEnumerable<ISnapshotRegion> snapshotRegions, String snapshotName = null) : this(snapshotName)
         {
             this.AddSnapshotRegions(snapshotRegions);
-            this.SetAlignment(SettingsViewModel.GetInstance().Alignment);
         }
 
         /// <summary>
@@ -61,6 +58,10 @@
             }
         }
 
+        private Type ElementType { get; set; }
+
+        private Type LabelType { get; set; }
+
         /// <summary>
         /// Gets or sets the memory alignment of the regions contained in the snapshot
         /// </summary>
@@ -69,7 +70,7 @@
         /// <summary>
         /// Gets or sets the snapshot regions contained in this snapshot
         /// </summary>
-        private IList<ISnapshotRegion<DataType, LabelType>> SnapshotRegions { get; set; }
+        private IList<ISnapshotRegion> SnapshotRegions { get; set; }
 
         /// <summary>
         /// Indexer to allow the retrieval of the element at the specified index. Notes: This does NOT index into a region. 
@@ -99,6 +100,18 @@
             }
         }
 
+        public void SetElementType(Type elementType)
+        {
+            this.ElementType = elementType;
+            this.SnapshotRegions?.ForEach(x => x.SetElementType(elementType));
+        }
+
+        public void SetLabelType(Type labelType)
+        {
+            this.LabelType = labelType;
+            this.SnapshotRegions?.ForEach(x => x.SetLabelType(labelType));
+        }
+
         /// <summary>
         /// Sets the memory alignment of this snapshot and all of the regions it contains.
         /// </summary>
@@ -106,7 +119,7 @@
         public void SetAlignment(Int32 alignment)
         {
             this.Alignment = alignment <= 0 ? 1 : alignment;
-            this.SnapshotRegions.ForEach(x => x.SetAlignment(this.Alignment));
+            this.SnapshotRegions?.ForEach(x => x.SetAlignment(this.Alignment));
         }
 
         /// <summary>
@@ -115,7 +128,7 @@
         /// <param name="isValid">Value indicating if valid bits will be marked as valid or invalid.</param>
         public void SetAllValidBits(Boolean isValid)
         {
-            this.SnapshotRegions.ForEach(x => x.SetAllValidBits(isValid));
+            this.SnapshotRegions?.ForEach(x => x.SetAllValidBits(isValid));
         }
 
         /// <summary>
@@ -123,7 +136,7 @@
         /// </summary>
         public void DiscardInvalidRegions()
         {
-            List<ISnapshotRegion<DataType, LabelType>> candidateRegions = new List<ISnapshotRegion<DataType, LabelType>>();
+            List<ISnapshotRegion> candidateRegions = new List<ISnapshotRegion>();
 
             if (this.SnapshotRegions == null || this.SnapshotRegions.Count() <= 0)
             {
@@ -131,7 +144,7 @@
             }
 
             // Collect valid element regions
-            foreach (ISnapshotRegion<DataType, LabelType> snapshotRegion in this)
+            foreach (ISnapshotRegion snapshotRegion in this)
             {
                 candidateRegions.AddRange(snapshotRegion.GetValidRegions());
             }
@@ -165,7 +178,7 @@
         /// Sets the label of every element in this snapshot to the same value.
         /// </summary>
         /// <param name="label">The new snapshot label value.</param>
-        public void SetElementLabels(LabelType label)
+        public void SetElementLabels<LabelType>(LabelType label) where LabelType : struct, IComparable<LabelType>
         {
             this.SnapshotRegions.ForEach(x => x.SetElementLabels(label));
         }
@@ -174,7 +187,7 @@
         /// Adds snapshot regions to the regions contained in this snapshot. Will automatically merge and sort regions.
         /// </summary>
         /// <param name="snapshotRegions">The snapshot regions to add.</param>
-        public void AddSnapshotRegions(IEnumerable<ISnapshotRegion<DataType, LabelType>> snapshotRegions)
+        public void AddSnapshotRegions(IEnumerable<ISnapshotRegion> snapshotRegions)
         {
             snapshotRegions?.ForEach(x => this.SnapshotRegions.Add(x));
 
@@ -199,6 +212,16 @@
         {
             // TODO
             // Sort first
+        }
+
+        public Type GetElementType()
+        {
+            return this.ElementType;
+        }
+
+        public Type GetLabelType()
+        {
+            return this.LabelType;
         }
 
         /// <summary>
@@ -226,7 +249,7 @@
         /// <returns>The shallow cloned snapshot.</returns>
         public ISnapshot Clone(String newSnapshotName = null)
         {
-            return new Snapshot<DataType, LabelType>(this.SnapshotRegions, newSnapshotName);
+            return new Snapshot(this.SnapshotRegions, newSnapshotName);
         }
 
         /// <summary>
@@ -235,11 +258,11 @@
         /// <typeparam name="NewDataType">The new data type.</typeparam>
         /// <param name="newSnapshotName">The snapshot generation method name.</param>
         /// <returns>The shallow cloned snapshot.</returns>
-        public ISnapshot<NewDataType, LabelType> CloneAs<NewDataType>(String newSnapshotName = null) where NewDataType : struct, IComparable<NewDataType>
+        public ISnapshot CloneAs<NewDataType>(String newSnapshotName = null) where NewDataType : struct, IComparable<NewDataType>
         {
-            IList<SnapshotRegion<NewDataType, LabelType>> clonedRegions = new List<SnapshotRegion<NewDataType, LabelType>>();
-            this.SnapshotRegions.ForEach(x => clonedRegions.Add(new SnapshotRegion<NewDataType, LabelType>(x as NormalizedRegion)));
-            Snapshot<NewDataType, LabelType> clone = new Snapshot<NewDataType, LabelType>(clonedRegions, newSnapshotName);
+            IList<ISnapshotRegion> clonedRegions = new List<ISnapshotRegion>();
+            this.SnapshotRegions.ForEach(x => clonedRegions.Add(new SnapshotRegion(x as NormalizedRegion)));
+            Snapshot clone = new Snapshot(clonedRegions, newSnapshotName);
 
             return clone;
         }

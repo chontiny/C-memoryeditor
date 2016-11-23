@@ -7,17 +7,13 @@
     /// <summary>
     /// Defines a reference to an element within a snapshot region.
     /// </summary>
-    /// <typeparam name="DataType">The data type of this snapshot element.</typeparam>
-    /// <typeparam name="LabelType">The type corresponding to the labels of this snapshot element.</typeparam>
-    internal class SnapshotElementRef<DataType, LabelType> : ISnapshotElementRef<DataType, LabelType>
-        where DataType : struct, IComparable<DataType>
-        where LabelType : struct, IComparable<LabelType>
+    internal class SnapshotElementRef : ISnapshotElementRef
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotElementRef {DataType,LabelType}" /> class.
         /// </summary>
         /// <param name="parent">The parent region that contains this element</param>
-        public SnapshotElementRef(ISnapshotRegion<DataType, LabelType> parent)
+        public SnapshotElementRef(ISnapshotRegion parent)
         {
             this.Parent = parent;
         }
@@ -25,7 +21,7 @@
         /// <summary>
         /// Gets or sets the parent snapshot region.
         /// </summary>
-        private ISnapshotRegion<DataType, LabelType> Parent { get; set; }
+        private ISnapshotRegion Parent { get; set; }
 
         /// <summary>
         /// Gets or sets the pointer to the current value.
@@ -55,7 +51,7 @@
         public unsafe void InitializePointers(Int32 index = 0)
         {
             this.CurrentElementIndex = index;
-            this.CurrentTypeCode = Type.GetTypeCode(typeof(DataType));
+            this.CurrentTypeCode = Type.GetTypeCode(this.Parent.GetElementType());
             Byte[] currentValues = this.Parent.GetCurrentValues();
             Byte[] previousValues = this.Parent.GetPreviousValues();
 
@@ -268,7 +264,7 @@
         /// </summary>
         /// <returns>The current value of this element.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe DataType GetCurrentValue()
+        public unsafe dynamic GetCurrentValue()
         {
             return this.LoadValue(this.CurrentValuePointer);
         }
@@ -278,7 +274,7 @@
         /// </summary>
         /// <returns>The previous value of this element.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe DataType GetPreviousValue()
+        public unsafe dynamic GetPreviousValue()
         {
             return this.LoadValue(this.PreviousValuePointer);
         }
@@ -288,9 +284,9 @@
         /// </summary>
         /// <returns>The label of this element.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe LabelType GetElementLabel()
+        public unsafe dynamic GetElementLabel()
         {
-            return this.Parent.GetElementLabels() == null ? default(LabelType) : this.Parent.GetElementLabels()[this.CurrentElementIndex];
+            return this.Parent.GetElementLabels() == null ? null : this.Parent.GetElementLabels()[this.CurrentElementIndex];
         }
 
         /// <summary>
@@ -298,7 +294,7 @@
         /// </summary>
         /// <param name="newLabel">The new element label.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void SetElementLabel(LabelType newLabel)
+        public unsafe void SetElementLabel(dynamic newLabel)
         {
             this.Parent.GetElementLabels()[this.CurrentElementIndex] = newLabel;
         }
@@ -339,30 +335,30 @@
         /// <param name="array">The byte array from which to read a value.</param>
         /// <returns>The value at the start of this array casted as the proper data type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe DataType LoadValue(Byte* array)
+        private unsafe dynamic LoadValue(Byte* array)
         {
             switch (this.CurrentTypeCode)
             {
                 case TypeCode.Byte:
-                    return (DataType)(object)(*array);
+                    return (*array);
                 case TypeCode.SByte:
-                    return (DataType)(object)(*(SByte*)array);
+                    return (*(SByte*)array);
                 case TypeCode.Int16:
-                    return (DataType)(object)(*(Int16*)array);
+                    return (*(Int16*)array);
                 case TypeCode.Int32:
-                    return (DataType)(object)(*(Int32*)array);
+                    return (*(Int32*)array);
                 case TypeCode.Int64:
-                    return (DataType)(object)(*(Int64*)array);
+                    return (*(Int64*)array);
                 case TypeCode.UInt16:
-                    return (DataType)(object)(*(UInt16*)array);
+                    return (*(UInt16*)array);
                 case TypeCode.UInt32:
-                    return (DataType)(object)(*(UInt32*)array);
+                    return (*(UInt32*)array);
                 case TypeCode.UInt64:
-                    return (DataType)(object)(*(UInt64*)array);
+                    return (*(UInt64*)array);
                 case TypeCode.Single:
-                    return (DataType)(object)(*(Single*)array);
+                    return (*(Single*)array);
                 case TypeCode.Double:
-                    return (DataType)(object)(*(Double*)array);
+                    return (*(Double*)array);
                 default:
                     throw new Exception("Invalid element type");
             }

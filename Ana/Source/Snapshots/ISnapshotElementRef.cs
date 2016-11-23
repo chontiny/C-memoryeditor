@@ -133,41 +133,29 @@
         /// </summary>
         /// <returns>True if a previous value is present.</returns>
         Boolean HasPreviousValue();
-    }
-    //// End interface
-
-    /// <summary>
-    /// Interface that defines a reference to an element within a snapshot region.
-    /// </summary>
-    /// <typeparam name="DataType">The data type of this snapshot element.</typeparam>
-    /// <typeparam name="LabelType">The type corresponding to the labels of this snapshot element.</typeparam>
-    internal partial interface ISnapshotElementRef<DataType, LabelType> : ISnapshotElementRef
-       where DataType : struct, IComparable<DataType>
-       where LabelType : struct, IComparable<LabelType>
-    {
         /// <summary>
         /// Gets the current value of this element.
         /// </summary>
         /// <returns>The current value of this element.</returns>
-        DataType GetCurrentValue();
+        dynamic GetCurrentValue();
 
         /// <summary>
         /// Gets the previous value of this element.
         /// </summary>
         /// <returns>The previous value of this element.</returns>
-        DataType GetPreviousValue();
+        dynamic GetPreviousValue();
 
         /// <summary>
         /// Gets the label of this element.
         /// </summary>
         /// <returns>The label of this element.</returns>
-        LabelType GetElementLabel();
+        Object GetElementLabel();
 
         /// <summary>
         /// Sets the label of this element.
         /// </summary>
         /// <param name="newLabel">The new element label.</param>
-        void SetElementLabel(LabelType newLabel);
+        void SetElementLabel(Object newLabel);
     }
     //// End interface
 }

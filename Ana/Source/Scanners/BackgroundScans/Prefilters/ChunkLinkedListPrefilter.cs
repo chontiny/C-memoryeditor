@@ -69,7 +69,7 @@
 
         public ISnapshot GetPrefilteredSnapshot()
         {
-            List<SnapshotRegion<Int32, Int32>> regions = new List<SnapshotRegion<Int32, Int32>>();
+            List<SnapshotRegion> regions = new List<SnapshotRegion>();
 
             lock (this.ChunkLock)
             {
@@ -80,14 +80,14 @@
                         continue;
                     }
 
-                    SnapshotRegion<Int32, Int32> newRegion = new SnapshotRegion<Int32, Int32>(virtualPage);
+                    SnapshotRegion newRegion = new SnapshotRegion(virtualPage);
                     newRegion.SetAlignment(SettingsViewModel.GetInstance().Alignment);
                     regions.Add(newRegion);
                 }
             }
 
             // Create snapshot from valid regions, do standard expand/mask operations to catch lost bytes for larger data types
-            Snapshot<Int32, Int32> prefilteredSnapshot = new Snapshot<Int32, Int32>(regions);
+            Snapshot prefilteredSnapshot = new Snapshot(regions);
             prefilteredSnapshot.ExpandAllRegions(PrimitiveTypes.GetLargestPrimitiveSize() - 1);
             prefilteredSnapshot.MaskRegions(prefilteredSnapshot);
 

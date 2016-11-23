@@ -39,7 +39,7 @@
             }
         }
 
-        private ISnapshot<Int32, Int16> Snapshot { get; set; }
+        private ISnapshot Snapshot { get; set; }
 
         private Action UpdateScanCount { get; set; }
 
@@ -132,14 +132,14 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
                 {
-                    ISnapshotRegion<Int32, Int16> region = regionObject as ISnapshotRegion<Int32, Int16>;
+                    ISnapshotRegion region = regionObject as ISnapshotRegion;
 
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (ISnapshotElementRef<Int32, Int16> element in region)
+                    foreach (ISnapshotElementRef element in region)
                     {
                         if (element.Changed())
                         {
@@ -155,14 +155,14 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
                 {
-                    ISnapshotRegion<Int32, Int16> region = regionObject as ISnapshotRegion<Int32, Int16>;
+                    ISnapshotRegion region = regionObject as ISnapshotRegion;
 
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (ISnapshotElementRef<Int32, Int16> element in region)
+                    foreach (ISnapshotElementRef element in region)
                     {
                         if (element.Changed())
                         {
@@ -185,9 +185,9 @@
 
             // Prefilter items with negative penalties (ie constantly changing variables)
             this.Snapshot.SetAllValidBits(false);
-            foreach (ISnapshotRegion<Int32, Int16> region in this.Snapshot)
+            foreach (ISnapshotRegion region in this.Snapshot)
             {
-                foreach (ISnapshotElementRef<Int32, Int16> element in region)
+                foreach (ISnapshotElementRef element in region)
                 {
                     if (((dynamic)element).ElementLabel.Value > 0)
                     {
