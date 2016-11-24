@@ -41,7 +41,6 @@
         public Snapshot(IEnumerable<SnapshotRegion> snapshotRegions, String snapshotName = null) : this(snapshotName)
         {
             this.AddSnapshotRegions(snapshotRegions);
-            this.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
         }
 
         /// <summary>
@@ -205,6 +204,10 @@
             {
                 snapshotRegions?.ForEach(x => this.SnapshotRegions.Add(x));
             }
+
+            // Re-update type and alignment, so that the newly added regions receive updates
+            this.ElementType = this.ElementType;
+            this.Alignment = this.Alignment;
 
             this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
         }
