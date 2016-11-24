@@ -26,6 +26,19 @@
             }
         }
 
+        public Object ElementLabel
+        {
+            get
+            {
+                return this.Parent.GetElementLabels()[this.CurrentElementIndex];
+            }
+
+            set
+            {
+                this.Parent.GetElementLabels()[this.CurrentElementIndex] = value;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the parent snapshot region.
         /// </summary>
@@ -339,25 +352,25 @@
             switch (this.CurrentTypeCode)
             {
                 case TypeCode.Byte:
-                    return (*array);
+                    return *array;
                 case TypeCode.SByte:
-                    return (*(SByte*)array);
+                    return *(SByte*)array;
                 case TypeCode.Int16:
-                    return (*(Int16*)array);
+                    return *(Int16*)array;
                 case TypeCode.Int32:
-                    return (*(Int32*)array);
+                    return *(Int32*)array;
                 case TypeCode.Int64:
-                    return (*(Int64*)array);
+                    return *(Int64*)array;
                 case TypeCode.UInt16:
-                    return (*(UInt16*)array);
+                    return *(UInt16*)array;
                 case TypeCode.UInt32:
-                    return (*(UInt32*)array);
+                    return *(UInt32*)array;
                 case TypeCode.UInt64:
-                    return (*(UInt64*)array);
+                    return *(UInt64*)array;
                 case TypeCode.Single:
-                    return (*(Single*)array);
+                    return *(Single*)array;
                 case TypeCode.Double:
-                    return (*(Double*)array);
+                    return *(Double*)array;
                 default:
                     throw new Exception("Invalid element type");
             }

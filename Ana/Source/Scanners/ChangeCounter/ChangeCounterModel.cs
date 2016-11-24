@@ -97,12 +97,10 @@
         /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
-            // this.Snapshot.ScanMethod = this.ScannerName;
-
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
             LabelThresholderViewModel.GetInstance().IsVisible = true;
             LabelThresholderViewModel.GetInstance().IsActive = true;
+            base.OnEnd();
         }
 
         private void CleanUp()

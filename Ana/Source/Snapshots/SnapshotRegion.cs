@@ -189,7 +189,7 @@
         /// Sets the element labels for this snapshot region.
         /// </summary>
         /// <param name="newLabels">The new labels to be assigned.</param>
-        public void SetElementLabels(params Object[] newLabels)
+        public void SetElementLabels(Object[] newLabels)
         {
             this.ElementLabels = newLabels;
         }

@@ -510,7 +510,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer</param>
         private void AddAddress(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, typeof(Int32));
+            ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, this.ActiveType);
         }
 
         /// <summary>

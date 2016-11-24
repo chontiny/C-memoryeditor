@@ -182,15 +182,13 @@
         /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
-
             // Prefilter items with negative penalties (ie constantly changing variables)
             this.Snapshot.SetAllValidBits(false);
             foreach (SnapshotRegion region in this.Snapshot)
             {
                 foreach (SnapshotElementRef element in region)
                 {
-                    if (((dynamic)element).ElementLabel.Value > 0)
+                    if ((Int16)element.ElementLabel > 0)
                     {
                         element.SetValid(true);
                     }
@@ -204,6 +202,7 @@
             this.CleanUp();
             LabelThresholderViewModel.GetInstance().IsVisible = true;
             LabelThresholderViewModel.GetInstance().IsActive = true;
+            base.OnEnd();
         }
 
         private void InitializeObjects()

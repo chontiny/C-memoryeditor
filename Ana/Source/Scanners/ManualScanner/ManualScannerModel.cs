@@ -189,13 +189,10 @@
         /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
-
             this.Snapshot.DiscardInvalidRegions();
-
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
-
             this.CleanUp();
+            base.OnEnd();
         }
 
         private void CleanUp()
