@@ -306,6 +306,40 @@
             }
         }
 
+        public static Int32 GetTypeSize(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Boolean:
+                    return sizeof(Boolean);
+                case TypeCode.Byte:
+                    return sizeof(Byte);
+                case TypeCode.Char:
+                    return sizeof(Char);
+                case TypeCode.Decimal:
+                    return sizeof(Decimal);
+                case TypeCode.Double:
+                    return sizeof(Double);
+                case TypeCode.Int16:
+                    return sizeof(Int16);
+                case TypeCode.Int32:
+                    return sizeof(Int32);
+                case TypeCode.Int64:
+                    return sizeof(Int64);
+                case TypeCode.SByte:
+                    return sizeof(SByte);
+                case TypeCode.Single:
+                    return sizeof(Single);
+                case TypeCode.UInt16:
+                    return sizeof(UInt16);
+                case TypeCode.UInt32:
+                    return sizeof(UInt32);
+                case TypeCode.UInt64:
+                    return sizeof(UInt64);
+                default: throw new Exception("Type is not a primitive");
+            }
+        }
+
         public static T BytesToObject<T>(Byte[] byteArray)
         {
             switch (Type.GetTypeCode(typeof(T)))

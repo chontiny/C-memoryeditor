@@ -9,7 +9,7 @@
     using System.Runtime.InteropServices;
     using UserSettings;
     using Utils.Extensions;
-
+    using Utils.Validation;
     /// <summary>
     /// Defines a region of memory in an external process.
     /// </summary>
@@ -79,12 +79,7 @@
                 {
                     this.BaseAddress = this.BaseAddress.Subtract(this.BaseAddress.Mod(value));
                     this.BaseAddress = this.BaseAddress.Add(value);
-
                     this.RegionSize -= value - this.BaseAddress.Mod(value).ToInt32();
-                    if (this.RegionSize < 0)
-                    {
-                        this.RegionSize = 0;
-                    }
                 }
             }
         }
@@ -155,12 +150,11 @@
         }
 
         /// <summary>
-        /// Sets the current values of this region, and saves the previous values.
+        /// Sets the current values of this region.
         /// </summary>
         /// <param name="newValues">The raw bytes of the values.</param>
         public void SetCurrentValues(Byte[] newValues)
         {
-            this.SetPreviousValues(this.CurrentValues);
             this.CurrentValues = newValues;
         }
 
@@ -234,6 +228,7 @@
 
             if (keepValues)
             {
+                this.SetPreviousValues(this.CurrentValues);
                 this.SetCurrentValues(newCurrentValues);
             }
 
@@ -289,14 +284,20 @@
         public IEnumerable<SnapshotRegion> GetValidRegions()
         {
             List<SnapshotRegion> validRegions = new List<SnapshotRegion>();
-            for (Int32 startIndex = 0; startIndex < (this.ValidBits == null ? 0 : this.ValidBits.Length); startIndex += this.Alignment)
+
+            if (this.ValidBits == null)
+            {
+                return validRegions;
+            }
+
+            for (Int32 startIndex = 0; startIndex < this.ValidBits.Length; startIndex += this.Alignment)
             {
                 if (!this.ValidBits[startIndex])
                 {
                     continue;
                 }
 
-                // Get the length of this valid region
+                // Get the length of this valid segment
                 Int32 validRegionSize = 0;
                 do
                 {
@@ -308,10 +309,16 @@
                 // Create new subregion from this valid region
                 SnapshotRegion subRegion = new SnapshotRegion(this.BaseAddress + startIndex, validRegionSize);
 
+                // Ensure region size is worth keeping. This can happen if we grab a misaligned segment
+                if (subRegion.RegionSize < Conversions.GetTypeSize(this.ElementType))
+                {
+                    continue;
+                }
+
                 // Copy the current values and labels.
-                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, validRegionSize));
-                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, validRegionSize));
-                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, validRegionSize));
+                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, subRegion.RegionSize));
+                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, subRegion.RegionSize));
+                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, subRegion.RegionSize));
 
                 validRegions.Add(subRegion);
                 startIndex += validRegionSize;

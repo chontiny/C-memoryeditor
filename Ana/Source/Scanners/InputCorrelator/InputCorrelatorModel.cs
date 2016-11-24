@@ -214,9 +214,9 @@
 
         private void InitializeListeners()
         {
-            EngineCore.GetInstance()?.Input?.GetKeyboardCapture().Subscribe(this);
-            EngineCore.GetInstance()?.Input?.GetControllerCapture().Subscribe(this);
-            EngineCore.GetInstance()?.Input?.GetMouseCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetControllerCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetMouseCapture().Subscribe(this);
         }
 
         private Boolean IsInputConditionValid(DateTime updateTime)
@@ -233,9 +233,9 @@
         {
             this.Snapshot = null;
 
-            EngineCore.GetInstance()?.Input?.GetKeyboardCapture().Unsubscribe(this);
-            EngineCore.GetInstance()?.Input?.GetControllerCapture().Unsubscribe(this);
-            EngineCore.GetInstance()?.Input?.GetMouseCapture().Unsubscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().Unsubscribe(this);
+            EngineCore.GetInstance().Input?.GetControllerCapture().Unsubscribe(this);
+            EngineCore.GetInstance().Input?.GetMouseCapture().Unsubscribe(this);
         }
     }
     //// End class
