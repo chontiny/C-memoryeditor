@@ -7,21 +7,29 @@
     /// <summary>
     /// Defines a reference to an element within a snapshot region.
     /// </summary>
-    internal class SnapshotElementRef : ISnapshotElementRef
+    internal class SnapshotElementRef
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotElementRef {DataType,LabelType}" /> class.
         /// </summary>
         /// <param name="parent">The parent region that contains this element</param>
-        public SnapshotElementRef(ISnapshotRegion parent)
+        public SnapshotElementRef(SnapshotRegion parent)
         {
             this.Parent = parent;
+        }
+
+        public IntPtr BaseAddress
+        {
+            get
+            {
+                return this.Parent.BaseAddress.Add(this.CurrentElementIndex);
+            }
         }
 
         /// <summary>
         /// Gets or sets the parent snapshot region.
         /// </summary>
-        private ISnapshotRegion Parent { get; set; }
+        private SnapshotRegion Parent { get; set; }
 
         /// <summary>
         /// Gets or sets the pointer to the current value.
@@ -51,7 +59,7 @@
         public unsafe void InitializePointers(Int32 index = 0)
         {
             this.CurrentElementIndex = index;
-            this.CurrentTypeCode = Type.GetTypeCode(this.Parent.GetElementType());
+            this.CurrentTypeCode = Type.GetTypeCode(this.Parent.ElementType);
             Byte[] currentValues = this.Parent.GetCurrentValues();
             Byte[] previousValues = this.Parent.GetPreviousValues();
 
@@ -113,22 +121,13 @@
         }
 
         /// <summary>
-        /// Gets the base address of this element in memory.
-        /// </summary>
-        /// <returns>The base address of this element in memory.</returns>
-        public IntPtr GetBaseAddress()
-        {
-            return this.Parent.GetBaseAddress().Add(this.CurrentElementIndex);
-        }
-
-        /// <summary>
         /// Determines if this element has changed.
         /// </summary>
         /// <returns>True if the element changed.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Boolean Changed()
         {
-            return !this.LoadValue(this.CurrentValuePointer).Equals(this.LoadValue(this.PreviousValuePointer));
+            return this.LoadValue(this.CurrentValuePointer) != this.LoadValue(this.PreviousValuePointer);
         }
 
         /// <summary>
@@ -138,7 +137,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Boolean Unchanged()
         {
-            return this.LoadValue(this.CurrentValuePointer).Equals(this.LoadValue(this.PreviousValuePointer));
+            return this.LoadValue(this.CurrentValuePointer) == this.LoadValue(this.PreviousValuePointer);
         }
 
         /// <summary>
@@ -148,7 +147,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Boolean Increased()
         {
-            return this.LoadValue(this.CurrentValuePointer).CompareTo(this.LoadValue(this.PreviousValuePointer)) > 0;
+            return this.LoadValue(this.CurrentValuePointer) > this.LoadValue(this.PreviousValuePointer);
         }
 
         /// <summary>
@@ -158,7 +157,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Boolean Decreased()
         {
-            return this.LoadValue(this.CurrentValuePointer).CompareTo(this.LoadValue(this.PreviousValuePointer)) < 0;
+            return this.LoadValue(this.CurrentValuePointer) < this.LoadValue(this.PreviousValuePointer);
         }
 
         /// <summary>

@@ -60,7 +60,7 @@
         /// <summary>
         /// Gets or sets the current snapshot being parsed. A new one is collected after the current one is parsed.
         /// </summary>
-        private ISnapshot CurrentSnapshot { get; set; }
+        private Snapshot CurrentSnapshot { get; set; }
 
         public static PointerCollector GetInstance()
         {
@@ -114,7 +114,7 @@
                 this.ConstructingSet = new HashSet<IntPtr>();
             }
 
-            List<ISnapshotRegion> sortedRegions = new List<ISnapshotRegion>(this.CurrentSnapshot.GetSnapshotRegions().OrderBy(x => x.GetTimeSinceLastRead()));
+            List<SnapshotRegion> sortedRegions = new List<SnapshotRegion>(this.CurrentSnapshot.GetSnapshotRegions().OrderBy(x => x.GetTimeSinceLastRead()));
 
             // Process the allowed amount of chunks from the priority queue
             Parallel.For(
@@ -125,15 +125,14 @@
             {
                 Interlocked.Increment(ref this.processedCount);
 
-                ISnapshotRegion region = sortedRegions[index];
+                SnapshotRegion region = sortedRegions[index];
                 Boolean success;
 
                 // Set to type of a pointer
-                //  region.SetElementType(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit() ? typeof(UInt32) : typeof(UInt64));
-                throw new Exception("Fix this");
+                region.ElementType = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit() ? typeof(UInt32) : typeof(UInt64);
 
                 // Enforce 4-byte alignment of pointers
-                region.SetAlignment(sizeof(Int32));
+                region.Alignment = sizeof(Int32);
 
                 // Read current page data for chunk
                 region.ReadAllRegionMemory(out success);
@@ -149,7 +148,7 @@
                     return;
                 }
 
-                foreach (ISnapshotElementRef element in region)
+                foreach (SnapshotElementRef element in region)
                 {
                     // Enforce user mode memory pointers
                     if (element.LessThanValue(invalidPointerMin) || element.GreaterThanValue(invalidPointerMax))
@@ -158,14 +157,12 @@
                     }
 
                     // Enforce 4-byte alignment of destination
-                    // TODO: no dynamic
-                    if (((dynamic)element).GetCurrentValue() % 4 != 0)
+                    if (element.GetCurrentValue() % 4 != 0)
                     {
                         continue;
                     }
 
-                    // TODO: no dynamic
-                    IntPtr Value = new IntPtr(((dynamic)element).GetCurrentValue());
+                    IntPtr Value = new IntPtr(element.GetCurrentValue());
 
                     // Check if it is possible that this pointer is valid, if so keep it
                     if (this.CurrentSnapshot.ContainsAddress(Value))

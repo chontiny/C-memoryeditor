@@ -62,7 +62,7 @@
 
         private Action OnUpdateHistogram { get; set; }
 
-        private ISnapshot Snapshot { get; set; }
+        private Snapshot Snapshot { get; set; }
 
         private Boolean Inverted { get; set; }
 
@@ -80,7 +80,7 @@
         /// Recieves an update of the active snapshot
         /// </summary>
         /// <param name="snapshot">The active snapshot</param>
-        public void Update(ISnapshot snapshot)
+        public void Update(Snapshot snapshot)
         {
             lock (this.SnapshotLock)
             {
@@ -114,9 +114,9 @@
                 {
                     this.Snapshot.SetAllValidBits(false);
 
-                    foreach (ISnapshotRegion region in this.Snapshot)
+                    foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        foreach (ISnapshotElementRef element in region)
+                        foreach (SnapshotElementRef element in region)
                         {
                             if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
                             {
@@ -129,9 +129,9 @@
                 {
                     this.Snapshot.SetAllValidBits(true);
 
-                    foreach (ISnapshotRegion region in this.Snapshot)
+                    foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        foreach (ISnapshotElementRef element in region)
+                        foreach (SnapshotElementRef element in region)
                         {
                             if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
                             {
@@ -170,14 +170,14 @@
                     SettingsViewModel.GetInstance().ParallelSettings,
                     (regionObject) =>
                 {
-                    ISnapshotRegion region = regionObject as ISnapshotRegion;
+                    SnapshotRegion region = regionObject as SnapshotRegion;
 
-                    if (((dynamic)region).GetElementLabels() == null || ((dynamic)region).Length <= 0)
+                    if (((dynamic)region).GetElementLabels() == null || region.GetElementCount() <= 0)
                     {
                         return;
                     }
 
-                    foreach (ISnapshotElementRef element in region)
+                    foreach (SnapshotElementRef element in region)
                     {
                         lock (this.ItemLock)
                         {

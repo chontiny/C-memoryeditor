@@ -9,7 +9,7 @@
         /// Recieves an update of the active snapshot
         /// </summary>
         /// <param name="snapshot">The active snapshot</param>
-        void Update(ISnapshot snapshot);
+        void Update(Snapshot snapshot);
     }
     //// End interface
 }

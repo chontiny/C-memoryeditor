@@ -54,7 +54,7 @@
         /// <summary>
         /// Gets or sets the snapshot constructed by this prefilter
         /// </summary>
-        private ISnapshot PrefilteredSnapshot { get; set; }
+        private Snapshot PrefilteredSnapshot { get; set; }
 
         public static ISnapshotPrefilter GetInstance()
         {
@@ -66,7 +66,7 @@
             this.Begin();
         }
 
-        public ISnapshot GetPrefilteredSnapshot()
+        public Snapshot GetPrefilteredSnapshot()
         {
             lock (this.RegionLock)
             {

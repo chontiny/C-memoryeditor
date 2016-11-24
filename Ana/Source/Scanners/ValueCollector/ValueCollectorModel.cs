@@ -19,7 +19,7 @@
         /// </summary>
         public override void Begin()
         {
-            ISnapshot snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
+            Snapshot snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
             snapshot.ReadAllMemory();
             SnapshotManager.GetInstance().SaveSnapshot(snapshot);
         }

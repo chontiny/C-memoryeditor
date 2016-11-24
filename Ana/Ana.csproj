@@ -214,9 +214,6 @@
     <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
-    <Compile Include="Source\Snapshots\ISnapshot.cs" />
-    <Compile Include="Source\Snapshots\ISnapshotElementRef.cs" />
-    <Compile Include="Source\Snapshots\ISnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />

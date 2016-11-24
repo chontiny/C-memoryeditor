@@ -48,7 +48,7 @@
             Rescan
         }
 
-        private ISnapshot Snapshot { get; set; }
+        private Snapshot Snapshot { get; set; }
 
         private ScanModeEnum ScanMode { get; set; }
 
@@ -62,7 +62,7 @@
 
         private List<ConcurrentDictionary<IntPtr, IntPtr>> ConnectedPointers { get; set; }
 
-        private ISnapshot AcceptedBases { get; set; }
+        private Snapshot AcceptedBases { get; set; }
 
         private ScanConstraintManager ScanConstraintManager { get; set; }
 
@@ -556,7 +556,7 @@
             */
         }
 
-        private ISnapshotRegion AddressToRegion(IntPtr address)
+        private SnapshotRegion AddressToRegion(IntPtr address)
         {
             // new SnapshotRegionDeprecating<Null>(new NormalizedRegion(address.Subtract(this.MaxPointerOffset), this.MaxPointerOffset * 2));
             return null;

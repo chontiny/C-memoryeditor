@@ -67,7 +67,7 @@
             this.Begin();
         }
 
-        public ISnapshot GetPrefilteredSnapshot()
+        public Snapshot GetPrefilteredSnapshot()
         {
             List<SnapshotRegion> regions = new List<SnapshotRegion>();
 
@@ -81,7 +81,6 @@
                     }
 
                     SnapshotRegion newRegion = new SnapshotRegion(virtualPage);
-                    newRegion.SetAlignment(SettingsViewModel.GetInstance().Alignment);
                     regions.Add(newRegion);
                 }
             }

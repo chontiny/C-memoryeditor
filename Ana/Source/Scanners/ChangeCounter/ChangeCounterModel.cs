@@ -18,7 +18,7 @@
         /// <summary>
         /// Gets or sets the snapshot being labeled with change counts
         /// </summary>
-        private ISnapshot Snapshot { get; set; }
+        private Snapshot Snapshot { get; set; }
 
         private UInt16 MinChanges { get; set; }
 
@@ -41,7 +41,8 @@
         public override void Begin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = ((dynamic)SnapshotManager.GetInstance().GetActiveSnapshot()).CloneAs<Int32, UInt16>();
+            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone();
+            this.Snapshot.LabelType = typeof(UInt16);
 
             if (this.Snapshot == null)
             {
@@ -49,7 +50,7 @@
             }
 
             // Initialize change counts to zero
-           ((dynamic)this.Snapshot).SetElementLabels(0);
+            this.Snapshot.SetElementLabels<UInt16>(0);
 
             base.Begin();
         }
@@ -66,14 +67,14 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (Object regionObject) =>
             {
-                ISnapshotRegion region = regionObject as ISnapshotRegion;
+                SnapshotRegion region = regionObject as SnapshotRegion;
 
                 if (!region.CanCompare())
                 {
                     return;
                 }
 
-                foreach (ISnapshotElementRef element in region)
+                foreach (SnapshotElementRef element in region)
                 {
                     if (element.Changed())
                     {

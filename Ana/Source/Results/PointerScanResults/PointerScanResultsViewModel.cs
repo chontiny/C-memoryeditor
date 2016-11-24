@@ -324,7 +324,7 @@
         /// Recieves an update of the active snapshot
         /// </summary>
         /// <param name="snapshot">The active snapshot</param>
-        public void Update(ISnapshot snapshot)
+        public void Update(Snapshot snapshot)
         {
             this.ResultCount = snapshot == null ? 0 : snapshot.GetElementCount();
             this.CurrentPage = 0;

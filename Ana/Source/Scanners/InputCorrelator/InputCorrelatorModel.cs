@@ -39,7 +39,7 @@
             }
         }
 
-        private ISnapshot Snapshot { get; set; }
+        private Snapshot Snapshot { get; set; }
 
         private Action UpdateScanCount { get; set; }
 
@@ -65,7 +65,8 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = ((dynamic)SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true)).CloneAs<Int16>(this.ScannerName);
+            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
+            this.Snapshot.LabelType = typeof(Int16);
 
             if (this.Snapshot == null)
             {
@@ -74,7 +75,7 @@
             }
 
             // Initialize with no correlation
-            this.Snapshot.SetElementLabels(0);
+            this.Snapshot.SetElementLabels<Int16>(0);
             this.TimeOutIntervalMs = SettingsViewModel.GetInstance().InputCorrelatorTimeOutInterval;
 
             base.Begin();
@@ -132,14 +133,14 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
                 {
-                    ISnapshotRegion region = regionObject as ISnapshotRegion;
+                    SnapshotRegion region = regionObject as SnapshotRegion;
 
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (ISnapshotElementRef element in region)
+                    foreach (SnapshotElementRef element in region)
                     {
                         if (element.Changed())
                         {
@@ -155,14 +156,14 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
                 {
-                    ISnapshotRegion region = regionObject as ISnapshotRegion;
+                    SnapshotRegion region = regionObject as SnapshotRegion;
 
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (ISnapshotElementRef element in region)
+                    foreach (SnapshotElementRef element in region)
                     {
                         if (element.Changed())
                         {
@@ -185,9 +186,9 @@
 
             // Prefilter items with negative penalties (ie constantly changing variables)
             this.Snapshot.SetAllValidBits(false);
-            foreach (ISnapshotRegion region in this.Snapshot)
+            foreach (SnapshotRegion region in this.Snapshot)
             {
-                foreach (ISnapshotElementRef element in region)
+                foreach (SnapshotElementRef element in region)
                 {
                     if (((dynamic)element).ElementLabel.Value > 0)
                     {

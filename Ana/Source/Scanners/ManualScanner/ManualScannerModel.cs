@@ -14,7 +14,7 @@
             this.ProgressLock = new Object();
         }
 
-        private ISnapshot Snapshot { get; set; }
+        private Snapshot Snapshot { get; set; }
 
         private ScanConstraintManager ScanConstraintManager { get; set; }
 
@@ -51,7 +51,7 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
             {
-                ISnapshotRegion region = (ISnapshotRegion)regionObject;
+                SnapshotRegion region = regionObject as SnapshotRegion;
                 Boolean readSuccess;
 
                 region.ReadAllRegionMemory(out readSuccess, keepValues: true);
@@ -62,13 +62,14 @@
                     return;
                 }
 
+                // Ignore region if it requires current & previous values, but we cannot find them
                 if (this.ScanConstraintManager.HasRelativeConstraint() && !region.CanCompare())
                 {
                     region.SetAllValidBits(false);
                     return;
                 }
 
-                foreach (ISnapshotElementRef element in region)
+                foreach (SnapshotElementRef element in region)
                 {
                     // Enforce each value constraint on the element
                     foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)

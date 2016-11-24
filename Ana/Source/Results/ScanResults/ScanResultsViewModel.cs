@@ -391,7 +391,7 @@
         /// Recieves an update of the active snapshot
         /// </summary>
         /// <param name="snapshot">The active snapshot</param>
-        public void Update(ISnapshot snapshot)
+        public void Update(Snapshot snapshot)
         {
             this.ResultCount = snapshot == null ? 0 : snapshot.GetElementCount();
             this.ByteCount = snapshot == null ? 0 : snapshot.GetByteCount();
@@ -403,7 +403,7 @@
         /// </summary>
         private void LoadScanResults()
         {
-            ISnapshot snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: false);
+            Snapshot snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: false);
             ObservableCollection<ScanResult> newAddresses = new ObservableCollection<ScanResult>();
 
             if (snapshot == null)
@@ -418,28 +418,28 @@
 
             for (Int64 index = startIndex; index < endIndex; index++)
             {
-                ISnapshotElementRef element = snapshot[index];
+                SnapshotElementRef element = snapshot[index];
 
                 String label = String.Empty;
 
-                if (((dynamic)element).GetElementLabel() != null)
+                if (element.GetElementLabel() != null)
                 {
-                    label = ((dynamic)element).GetElementLabel().ToString();
+                    label = element.GetElementLabel().ToString();
                 }
 
                 String currentValue = String.Empty;
                 if (element.HasCurrentValue())
                 {
-                    currentValue = ((dynamic)element).GetCurrentValue().ToString();
+                    currentValue = element.GetCurrentValue().ToString();
                 }
 
                 String previousValue = String.Empty;
                 if (element.HasPreviousValue())
                 {
-                    previousValue = ((dynamic)element).GetPreviousValue().ToString();
+                    previousValue = element.GetPreviousValue().ToString();
                 }
 
-                newAddresses.Add(new ScanResult(element.GetBaseAddress(), currentValue, previousValue, label));
+                newAddresses.Add(new ScanResult(element.BaseAddress, currentValue, previousValue, label));
             }
 
             this.addresses = newAddresses;
