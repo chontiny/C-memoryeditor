@@ -240,7 +240,7 @@
                         <Border Grid.RowSpan="2" Background="Transparent" />
 
                         <Border x:Name="Header">
-                            <!-- <avalonDockControls:AnchorablePaneTitle Model="{Binding Model.SelectedContent, RelativeSource={RelativeSource TemplatedParent}}" /> -->
+                            <avalonDockControls:AnchorablePaneTitle Model="{Binding Model.SelectedContent, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Border>
 
                         <Grid>
@@ -277,10 +277,8 @@
                     <ControlTemplate.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <!--
                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Model.IsFloating}" Value="True" />
                                 <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=Model.Parent.IsDirectlyHostedInFloatingWindow}" Value="True" />
-                                -->
                             </MultiDataTrigger.Conditions>
                             <Setter TargetName="Header" Property="Visibility" Value="Collapsed" />
                         </MultiDataTrigger>
