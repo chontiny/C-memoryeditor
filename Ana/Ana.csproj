@@ -15,7 +15,7 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>F:\Users\Zachary\Documents\Visual Studio 2015\Projects\AnathenaWeb\release\</PublishUrl>
+    <PublishUrl>F:\Users\Zachary\Documents\Visual Studio 2015\Projects\AnathenaSite\AnathenaSite\Content\Release\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,17 +25,17 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://www.anathena.com/release/</InstallUrl>
-    <UpdateUrl>http://www.anathena.com/release/</UpdateUrl>
-    <SupportUrl>http://www.anathena.com/</SupportUrl>
-    <ErrorReportUrl>http://www.anathena.com/</ErrorReportUrl>
+    <InstallUrl>https://www.anathena.com/Content/Release/</InstallUrl>
+    <UpdateUrl>https://www.anathena.com/Content/Release/</UpdateUrl>
+    <SupportUrl>https://www.anathena.com/</SupportUrl>
+    <ErrorReportUrl>https://www.anathena.com/</ErrorReportUrl>
     <ProductName>Anathena</ProductName>
     <PublisherName>Anathena</PublisherName>
-    <MinimumRequiredVersion>3.1.4.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>3.1.7.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.1.4.0</ApplicationVersion>
+    <ApplicationVersion>3.1.7.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -65,7 +65,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Content\Icons\MainIcon.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -202,6 +203,65 @@
     <Compile Include="Source\Engine\Input\Mouse\IMouseObserver.cs" />
     <Compile Include="Source\Engine\Input\Mouse\IMouseSubject.cs" />
     <Compile Include="Source\Engine\Input\Mouse\MouseCapture.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Constants.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\CrlUrlList.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\DataDirectories.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\ExportFunction.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\ImpHash\ImportHash.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\ImpHash\OrdinalSymbolMapping.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\ImportFunction.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\NativeMethods.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ExportedFunctionsParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageBaseRelocationsParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageBoundImportDescriptorParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageDebugDirectoryParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageDelayImportDescriptorParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageDosHeaderParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageExportDirectoriesParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageImportDescriptorsParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageLoadConfigDirectoryParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageNtHeadersParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageResourceDirectoryParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageSectionHeadersParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageTlsDirectoryParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImportedFunctionsParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\PKCS7Parser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\RuntimeFunctionsParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\SafeParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\WinCertificateParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\PatternMatching\AhoCorasick.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\PeFile.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\StructureParser.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\AbstractStructure.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\Copyright.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_BASE_RELOCATION.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_BOUND_IMPORT_DESCRIPTOR.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_DATA_DIRECTORY.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_DEBUG_DIRECTORY.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_DELAY_IMPORT_DESCRIPTOR.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_DOS_HEADER.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_EXPORT_DIRECTORY.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_FILE_HEADER.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_IMPORT_BY_NAME.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_IMPORT_DESCRIPTOR.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_LOAD_CONFIG_DIRECTORY.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_NT_HEADERS.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_OPTIONAL_HEADER.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_RESOURCE_DATA_ENTRY.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_RESOURCE_DIRECTORY.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_RESOURCE_DIRECTORY_ENTRY.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_RESOURCE_DIR_STRING_U.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_SECTION_HEADER.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_THUNK_DATA.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_TLS_CALLBACK.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_TLS_DIRECTORY.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\RUNTIME_FUNCTION.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\StructureFacade.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\StructureFactory.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\UNWIND_CODE.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\UNWIND_INFO.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\WIN_CERTIFICATE.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Utility.cs" />
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
@@ -214,6 +274,7 @@
     <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
+    <Compile Include="Source\SignatureCollector\SignatureCollectorViewModel.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
@@ -374,6 +435,9 @@
     <Compile Include="Source\Utils\VirtualItemProvider\VirtualizingCollection.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
+    <Compile Include="View\SignatureCollector.xaml.cs">
+      <DependentUpon>SignatureCollector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
@@ -479,6 +543,10 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
+    <Page Include="View\SignatureCollector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\HotkeyEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -609,6 +677,8 @@
     <Resource Include="Content\Icons\BlueBlocks1.png" />
     <Resource Include="Content\Icons\BlueBlocks2.png" />
     <Resource Include="Content\Icons\BlueBlocks4.png" />
+    <Content Include="Content\Icons\MainIcon.ico" />
+    <Resource Include="Content\Icons\MainIconSmall.ico" />
     <Resource Include="Content\Icons\OrangeBlocks1.png" />
     <Resource Include="Content\Icons\OrangeBlocks2.png" />
     <Resource Include="Content\Icons\OrangeBlocks4.png" />
@@ -663,6 +733,10 @@
     <ProjectReference Include="..\LiveCharts\WpfView\WpfCharts.csproj">
       <Project>{4D253423-AE05-47F6-A59D-9162EC0BB1F2}</Project>
       <Name>WpfCharts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.Diagnostics.Runtime\Microsoft.Diagnostics.Runtime.csproj">
+      <Project>{A82126CA-23AA-41F1-8586-A5938D44D0A7}</Project>
+      <Name>Microsoft.Diagnostics.Runtime</Name>
     </ProjectReference>
     <ProjectReference Include="..\SharpDX\SharpCli\SharpCli.csproj">
       <Project>{4e2d9a17-2195-4a51-aae3-924517440293}</Project>
@@ -779,8 +853,6 @@
     <Resource Include="Content\Icons\LessThanOrEqual.png" />
     <Resource Include="Content\Icons\LogicalAnd.png" />
     <Resource Include="Content\Icons\LogicalOr.png" />
-    <Resource Include="Content\Icons\MainIcon.ico" />
-    <Resource Include="Content\Icons\MainIconSmall.ico" />
     <Resource Include="Content\Icons\Merge.png" />
     <Resource Include="Content\Icons\MinusX.png" />
     <Resource Include="Content\Icons\MoveDown.png" />
@@ -840,6 +912,346 @@
     <Content Include="Source\EasyHook\EasyLoad64.dll" />
   </ItemGroup>
   <ItemGroup>
+    <PublishFile Include="Ana.exe">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>ManifestEntryPoint</FileType>
+    </PublishFile>
+    <PublishFile Include="Ana.exe.config">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Ana.exe.manifest">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>ManifestEntryPoint</FileType>
+    </PublishFile>
+    <PublishFile Include="AnathenaProxy">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="AnathenaProxy32">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="AnathenaProxy64">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Content/Icons/MainIcon.ico">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Content\Icons\MainIcon.ico">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="de\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="de\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="EasyHook">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="en\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="es\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="es\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="Fasm.NET">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="fr\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="fr\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="hu\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="ICSharpCode.AvalonEdit">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="it\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="it\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="ja\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="KopiLua">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="ko\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="LiveCharts">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="LiveCharts.Wpf">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Microsoft.Diagnostics.Runtime">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Mono.Cecil">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Mono.Cecil.Pdb">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="NLua">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="pt-BR\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="ro\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="ru\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="ru\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
     <PublishFile Include="SharpCli">
       <Visible>False</Visible>
       <Group>
@@ -1039,6 +1451,146 @@
       <PublishState>Auto</PublishState>
       <IncludeHash>False</IncludeHash>
       <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Source\EasyHook\EasyHook.dll">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Source\EasyHook\EasyHook32.dll">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Source\EasyHook\EasyHook32Svc.exe">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Source\EasyHook\EasyHook64.dll">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Source\EasyHook\EasyHook64Svc.exe">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Source\EasyHook\EasyLoad32.dll">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Source\EasyHook\EasyLoad64.dll">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="sv\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="System.Windows.Interactivity">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Xceed.Wpf.AvalonDock">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="Xceed.Wpf.Toolkit">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Assembly</FileType>
+    </PublishFile>
+    <PublishFile Include="zh-Hans\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="zh-Hans\Xceed.Wpf.AvalonDock.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
+    </PublishFile>
+    <PublishFile Include="zh-Hant\System.Windows.Interactivity.resources">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Auto</PublishState>
+      <IncludeHash>False</IncludeHash>
+      <FileType>Satellite</FileType>
     </PublishFile>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

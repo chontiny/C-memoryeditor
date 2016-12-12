@@ -1,10 +1,13 @@
 ﻿namespace Ana.Source.Engine.OperatingSystems.Windows
 {
     using Native;
+    using Pe;
+    using Pe.Structures;
     using Processes;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
@@ -528,7 +531,7 @@
 
             Process systemProcess = Process.GetProcessById(process.ProcessId);
 
-            if (systemProcess == null || !NativeMethods.IsWow64Process(systemProcess.Handle, out isWow64))
+            if (systemProcess == null || !Native.NativeMethods.IsWow64Process(systemProcess.Handle, out isWow64))
             {
                 // Error, assume 32 bit
                 return true;
@@ -545,6 +548,119 @@
         public Boolean IsProcess64Bit(NormalizedProcess process)
         {
             return !this.IsProcess32Bit(process);
+        }
+
+        /// <summary>
+        /// Collects the window title of the running process.
+        /// </summary>
+        /// <returns>The window title of the running process.</returns>
+        public String CollectWindowTitle()
+        {
+            return this.SystemProcess?.MainWindowTitle ?? String.Empty;
+        }
+
+        /// <summary>
+        /// Collects the version from the binary. This information should be stored directly in the binary.
+        /// </summary>
+        /// <returns>The version of the target process, taken from the binary.</returns>
+        public String CollectBinaryVersion()
+        {
+            String binaryVersion = String.Empty;
+
+            try
+            {
+                binaryVersion = FileVersionInfo.GetVersionInfo(SystemProcess?.MainModule?.FileName)?.ProductVersion;
+            }
+            catch
+            {
+            }
+
+            return binaryVersion ?? String.Empty;
+        }
+
+        /// <summary>
+        /// Collects the binary header (such as the PE header) and creates a SHA-256 hash based on the header information.
+        /// </summary>
+        /// <returns>A SHA-256 hash computed from the header of the binary.</returns>
+        public String CollectBinaryHeaderHash()
+        {
+            String binaryHeaderHash = String.Empty;
+
+            try
+            {
+                PeFile pe = new PeFile(SystemProcess?.MainModule?.FileName);
+
+                binaryHeaderHash = pe.SHA256;
+            }
+            catch
+            {
+            }
+
+            return binaryHeaderHash ?? String.Empty;
+        }
+
+        /// <summary>
+        /// Collects the binary import hash.
+        /// </summary>
+        /// <returns>A hash computed from the imports of the binary.</returns>
+        public String CollectBinaryImportHash()
+        {
+            String binaryImportHash = String.Empty;
+
+            try
+            {
+                PeFile pe = new PeFile(SystemProcess?.MainModule?.FileName);
+
+                binaryImportHash = pe.ImpHash;
+            }
+            catch
+            {
+            }
+
+            return binaryImportHash ?? String.Empty;
+        }
+
+        /// <summary>
+        /// Collects a "hash", which is simply the first 128 bytes of the main module encoded in base-64.
+        /// </summary>
+        /// <returns>A hash based on the first 128 bytes of the main module.</returns>
+        public String CollectMainModuleHash()
+        {
+            const Int32 BytesToRead = 128;
+
+            String mainModuleHash = String.Empty;
+
+            try
+            {
+                PeFile pe = new PeFile(SystemProcess?.MainModule?.FileName);
+                IMAGE_SECTION_HEADER textHeader = pe.ImageSectionHeaders.Where(x => Encoding.UTF8.GetString(x?.Name).TrimEnd('\0') == ".text")?.First();
+                UInt32 entryPointAddress = pe.ImageNtHeaders.OptionalHeader.AddressOfEntryPoint;
+                UInt32 pointerToRawData = textHeader.PointerToRawData;
+                UInt32 virtualAddress = textHeader.VirtualAddress;
+
+                // Formula: AddressOfRawEntryPoint (in exe file) = AddressOfEntryPoint + .text[PointerToRawData] - .text[VirtualAddress]
+                Int32 entryPoint = unchecked((Int32)(entryPointAddress + pointerToRawData - virtualAddress));
+
+                mainModuleHash = Convert.ToBase64String(File.ReadAllBytes(SystemProcess?.MainModule?.FileName).Skip(entryPoint).Take(BytesToRead).ToArray());
+            }
+            catch
+            {
+            }
+
+            return mainModuleHash ?? String.Empty;
+        }
+
+        /// <summary>
+        /// Collects a hash code to identify the game loaded in the running emulator.
+        /// </summary>
+        /// <returns>A hash identifying the game running in the target process emulator.</returns>
+        public String CollectEmulatorHash()
+        {
+            String emulatorHash = String.Empty;
+
+            // TODO: Here we could write some really advanced logic to determine what game is loaded in EVERY single possible emulator
+            // It is currently unclear if this is a valid possibility. This functionality may be abandoned if determined to be a wasted effort.
+            return emulatorHash;
         }
     }
     //// End class

@@ -12,6 +12,7 @@
     using Source.Scanners.LabelThresholder;
     using Source.Scanners.ManualScanner;
     using Source.Scanners.PointerScanner;
+    using Source.SignatureCollector;
     using Source.Snapshots;
     using Source.UserSettings;
     using Source.Utils.ScriptEditor;
@@ -102,6 +103,11 @@
         public DataTemplate ProjectExplorerViewTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the template for the Signature Collector
+        /// </summary>
+        public DataTemplate SignatureCollectorViewTemplate { get; set; }
+
+        /// <summary>
         /// Gets or sets the template for the Offset Editor
         /// </summary>
         public DataTemplate OffsetEditorViewTemplate { get; set; }
@@ -179,6 +185,10 @@
             else if (item is ProjectExplorerViewModel)
             {
                 return this.ProjectExplorerViewTemplate;
+            }
+            else if (item is SignatureCollectorViewModel)
+            {
+                return this.SignatureCollectorViewTemplate;
             }
             else if (item is ScriptEditorViewModel)
             {

@@ -235,6 +235,12 @@
                         IsCheckable="True"
                         IsChecked="{Binding DotNetExplorerViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
+                    <shell:Separator />
+                    <shell:MenuItem
+                        Header="Signature Collector"
+                        IsCheckable="True"
+                        IsChecked="{Binding SignatureCollectorViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
 
                 <!--  Scans Header  -->
@@ -435,6 +441,12 @@
                             <view:ProjectExplorer />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.ProjectExplorerViewTemplate>
+                    <!--  Signature Collector  -->
+                    <view:ViewTemplateSelector.SignatureCollectorViewTemplate>
+                        <shell:DataTemplate>
+                            <view:SignatureCollector />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.SignatureCollectorViewTemplate>
                 </view:ViewTemplateSelector>
             </avalonDock:DockingManager.LayoutItemTemplateSelector>
 

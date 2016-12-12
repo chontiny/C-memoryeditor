@@ -176,8 +176,9 @@
         /// </summary>
         public void ReadAllMemory()
         {
-            this.TimeSinceLastUpdate = DateTime.Now;
             Boolean readSuccess;
+            this.TimeSinceLastUpdate = DateTime.Now;
+            this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
             this.SnapshotRegions?.ForEach(x => x.ReadAllRegionMemory(out readSuccess, keepValues: true));
         }
 
@@ -229,6 +230,8 @@
         {
             List<SnapshotRegion> resultRegions = new List<SnapshotRegion>();
 
+            groundTruth = this.MergeAndSortRegions(groundTruth);
+
             if (this.SnapshotRegions == null || groundTruth == null || this.SnapshotRegions.Count <= 0 || groundTruth.Count() <= 0)
             {
                 this.SnapshotRegions = resultRegions;
@@ -237,7 +240,6 @@
 
             this.MergeAndSortRegions();
 
-            // TODO: Confirm this masking shit even works
             return;
 
             // Initialize stacks with regions and masking regions
@@ -415,7 +417,49 @@
         }
 
         /// <summary>
-        /// Merges regions in the current list of memory regions using a fast stack based algorithm O(nlogn + n)
+        /// Merges regions of a given set of normalized regions using a fast stack based algorithm O(nlogn + n).
+        /// </summary>
+        private IEnumerable<NormalizedRegion> MergeAndSortRegions(IEnumerable<NormalizedRegion> regions)
+        {
+            if (regions == null || regions.Count() <= 0)
+            {
+                return null;
+            }
+
+            // First, sort by start address
+            IList<NormalizedRegion> sortedRegions = regions.OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
+
+            // Create and initialize the stack with the first region
+            Stack<NormalizedRegion> combinedRegions = new Stack<NormalizedRegion>();
+            combinedRegions.Push(sortedRegions[0]);
+
+            // Build the remaining regions
+            for (Int32 index = combinedRegions.Count; index < sortedRegions.Count; index++)
+            {
+                NormalizedRegion top = combinedRegions.Peek();
+
+                if (top.EndAddress.ToUInt64() < sortedRegions[index].BaseAddress.ToUInt64())
+                {
+                    // If the interval does not overlap, put it on the top of the stack
+                    combinedRegions.Push(sortedRegions[index]);
+                }
+                else if (top.EndAddress.ToUInt64() == sortedRegions[index].BaseAddress.ToUInt64())
+                {
+                    // The regions are adjacent; merge them
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                }
+                else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
+                {
+                    // The regions overlap
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                }
+            }
+
+            return combinedRegions.ToList().OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
+        }
+
+        /// <summary>
+        /// Merges regions in the current list of memory regions using a fast stack based algorithm O(nlogn + n).
         /// </summary>
         private void MergeAndSortRegions()
         {
@@ -445,7 +489,9 @@
                 {
                     // The regions are adjacent; merge them
                     top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
-                    top.SetElementLabels(top.GetElementLabels().Concat(sortedRegions[index].GetElementLabels()));
+
+                    // Combine values and labels
+                    top.SetElementLabels(top.GetElementLabels()?.Concat(sortedRegions[index].GetElementLabels()));
                     top.SetCurrentValues(top.GetCurrentValues()?.Concat(sortedRegions[index].GetCurrentValues()));
                     top.SetPreviousValues(top.GetPreviousValues()?.Concat(sortedRegions[index].GetPreviousValues()));
                 }
@@ -454,7 +500,17 @@
                     // The regions overlap
                     top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
 
-                    // TOOD: Previous/current value merging strategy
+                    Int32 overlapSize = unchecked((Int32)(sortedRegions[index].EndAddress.ToUInt64() - top.EndAddress.ToUInt64()));
+
+                    // Overlap has conflicting values, so we prioritize the top region and trim the current region
+                    sortedRegions[index].SetElementLabels(sortedRegions[index].GetElementLabels()?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+                    sortedRegions[index].SetCurrentValues(sortedRegions[index].GetCurrentValues()?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+                    sortedRegions[index].SetPreviousValues(sortedRegions[index].GetPreviousValues()?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+
+                    // Combine values and labels
+                    top.SetElementLabels(top.GetElementLabels()?.Concat(sortedRegions[index].GetElementLabels()));
+                    top.SetCurrentValues(top.GetCurrentValues()?.Concat(sortedRegions[index].GetCurrentValues()));
+                    top.SetPreviousValues(top.GetPreviousValues()?.Concat(sortedRegions[index].GetPreviousValues()));
                 }
             }
 
