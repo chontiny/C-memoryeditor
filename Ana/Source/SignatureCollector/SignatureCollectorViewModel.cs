@@ -63,6 +63,7 @@
             set
             {
                 this.signature = value;
+                this.RaisePropertyChanged(nameof(this.Signature));
             }
         }
 
@@ -76,6 +77,7 @@
             set
             {
                 this.windowTitle = value;
+                this.RaisePropertyChanged(nameof(this.WindowTitle));
             }
         }
 
@@ -89,6 +91,7 @@
             set
             {
                 this.binaryVersion = value;
+                this.RaisePropertyChanged(nameof(this.BinaryVersion));
             }
         }
 
@@ -102,6 +105,7 @@
             set
             {
                 this.binaryHeaderHash = value;
+                this.RaisePropertyChanged(nameof(this.BinaryHeaderHash));
             }
         }
 
@@ -115,6 +119,7 @@
             set
             {
                 this.binaryImportHash = value;
+                this.RaisePropertyChanged(nameof(this.BinaryImportHash));
             }
         }
 
@@ -128,6 +133,7 @@
             set
             {
                 this.mainModuleHash = value;
+                this.RaisePropertyChanged(nameof(this.MainModuleHash));
             }
         }
 
@@ -141,6 +147,7 @@
             set
             {
                 this.emulatorHash = value;
+                this.RaisePropertyChanged(nameof(this.EmulatorHash));
             }
         }
 
@@ -162,8 +169,9 @@
             this.MainModuleHash = EngineCore.GetInstance().OperatingSystemAdapter.CollectMainModuleHash();
             this.EmulatorHash = EngineCore.GetInstance().OperatingSystemAdapter.CollectEmulatorHash();
 
-            // TODO: Base64 encode
-            this.Signature = this.WindowTitle + this.BinaryVersion + this.BinaryHeaderHash + this.MainModuleHash + this.EmulatorHash;
+            // TODO: Base64 encode all hashes together or whatever
+            // string combinedHashes = this.WindowTitle + this.BinaryVersion + this.BinaryHeaderHash + this.MainModuleHash + this.EmulatorHash;
+            // this.Signature = Convert.ToBase64String(Encoding.UTF8.GetBytes(()));
         }
     }
     //// End class

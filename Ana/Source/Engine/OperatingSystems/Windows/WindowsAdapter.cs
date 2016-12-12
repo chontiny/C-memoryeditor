@@ -19,6 +19,10 @@
     /// </summary>
     internal class WindowsAdapter : IOperatingSystemAdapter
     {
+        private Process systemProcess;
+
+        private PeFile peFile;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="WindowsAdapter"/> class
         /// </summary>
@@ -32,8 +36,19 @@
         /// Gets a reference to the process running. This is an optimization to minimize accesses
         /// to the Processes component of the Engine
         /// </summary>
-        public Process SystemProcess { get; private set; }
+        public Process SystemProcess
+        {
+            get
+            {
+                return this.systemProcess;
+            }
 
+            private set
+            {
+                this.systemProcess = value;
+                this.peFile = new PeFile(this.SystemProcess?.MainModule?.FileName);
+            }
+        }
         /// <summary>
         /// Recieve a process update. This is an optimization over grabbing the process from the <see cref="IProcesses"/> component
         /// of the <see cref="EngineCore"/> every time we need it, which would be cumbersome when doing hundreds of thousands of memory read/writes
@@ -588,9 +603,7 @@
 
             try
             {
-                PeFile pe = new PeFile(SystemProcess?.MainModule?.FileName);
-
-                binaryHeaderHash = pe.SHA256;
+                binaryHeaderHash = peFile.SHA256;
             }
             catch
             {
@@ -609,9 +622,7 @@
 
             try
             {
-                PeFile pe = new PeFile(SystemProcess?.MainModule?.FileName);
-
-                binaryImportHash = pe.ImpHash;
+                binaryImportHash = peFile.ImpHash;
             }
             catch
             {
@@ -632,9 +643,8 @@
 
             try
             {
-                PeFile pe = new PeFile(SystemProcess?.MainModule?.FileName);
-                IMAGE_SECTION_HEADER textHeader = pe.ImageSectionHeaders.Where(x => Encoding.UTF8.GetString(x?.Name).TrimEnd('\0') == ".text")?.First();
-                UInt32 entryPointAddress = pe.ImageNtHeaders.OptionalHeader.AddressOfEntryPoint;
+                IMAGE_SECTION_HEADER textHeader = peFile.ImageSectionHeaders.Where(x => Encoding.UTF8.GetString(x?.Name).TrimEnd('\0') == ".text")?.First();
+                UInt32 entryPointAddress = peFile.ImageNtHeaders.OptionalHeader.AddressOfEntryPoint;
                 UInt32 pointerToRawData = textHeader.PointerToRawData;
                 UInt32 virtualAddress = textHeader.VirtualAddress;
 
