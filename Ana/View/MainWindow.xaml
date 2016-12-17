@@ -63,7 +63,7 @@
                     Width="24"
                     Height="24"
                     Margin="4"
-                    Source="pack://application:,,,/Ana;component/Content/Icons/MainIcon.ico" />
+                    Source="pack://application:,,,/Ana;component/Content/Icons/MainAppIcon.ico" />
 
                 <shell:TextBlock
                     VerticalAlignment="Center"

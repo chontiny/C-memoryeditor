@@ -677,6 +677,7 @@
     <Resource Include="Content\Icons\BlueBlocks1.png" />
     <Resource Include="Content\Icons\BlueBlocks2.png" />
     <Resource Include="Content\Icons\BlueBlocks4.png" />
+    <Resource Include="Content\Icons\MainAppIcon.ico" />
     <Content Include="Content\Icons\MainIcon.ico" />
     <Resource Include="Content\Icons\MainIconSmall.ico" />
     <Resource Include="Content\Icons\OrangeBlocks1.png" />
