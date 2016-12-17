@@ -253,6 +253,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.zh-Hans.resx</DependentUpon>
     </Compile>
+    <Compile Include="Themes\DarkTheme.cs" />
     <Compile Include="Themes\GenericTheme.cs" />
     <Compile Include="Themes\Theme.cs" />
     <Compile Include="Win32Helper.cs" />
@@ -314,42 +315,133 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Themes\Generic\Images\DockBottom.PNG" />
-    <Resource Include="Themes\Generic\Images\DockLeft.PNG" />
-    <Resource Include="Themes\Generic\Images\DockPane.PNG" />
-    <Resource Include="Themes\Generic\Images\DockPaneEmpty.png" />
-    <Resource Include="Themes\Generic\Images\DockRight.PNG" />
-    <Resource Include="Themes\Generic\Images\DockTop.PNG" />
-    <Resource Include="Themes\Generic\Images\HTabGroup.png" />
-    <Resource Include="Themes\Generic\Images\InnerDockDocPaneBottom.png" />
-    <Resource Include="Themes\Generic\Images\InnerDockDocPaneLeft.png" />
-    <Resource Include="Themes\Generic\Images\InnerDockDocPaneRight.png" />
-    <Resource Include="Themes\Generic\Images\InnerDockDocPaneTop.png" />
-    <Resource Include="Themes\Generic\Images\InnerDockPaneBottom.png" />
-    <Resource Include="Themes\Generic\Images\InnerDockPaneInside.png" />
-    <Resource Include="Themes\Generic\Images\InnerDockPaneLeft.png" />
-    <Resource Include="Themes\Generic\Images\InnerDockPaneRight.png" />
-    <Resource Include="Themes\Generic\Images\InnerDockPaneTop.png" />
-    <Resource Include="Themes\Generic\Images\Locked.png" />
-    <Resource Include="Themes\Generic\Images\PinAutoHide.png" />
-    <Resource Include="Themes\Generic\Images\PinClose.png" />
-    <Resource Include="Themes\Generic\Images\PinDocMenu.png" />
-    <Resource Include="Themes\Generic\Images\PinMenu.png" />
-    <Resource Include="Themes\Generic\Images\VTabGroup.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Themes\Generic\Images\PinMaximize.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Themes\Generic\Images\PinRestore.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="Themes\generic.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="Themes\DarkTheme.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockAnchorableBottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockAnchorableLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockAnchorableRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockAnchorableTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockDocumentAsAnchorableBottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockDocumentAsAnchorableLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockDocumentAsAnchorableRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockDocumentAsAnchorableTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockDocumentBottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockDocumentInside.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockDocumentLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockDocumentRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockDocumentTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockPaneEmpty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\DockPaneLargeEmpty.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\HTabGroup.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\Locked.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinAutoHide.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinAutoHide_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinAutoHide_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinAutoHide_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinClose.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinClose_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinClose_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinClose_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinDocMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinDocMenu_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinMaximize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinMaximize_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinMaximize_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinMenu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinMenu_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinMenu_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinMenu_White.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinRestore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinRestore_Black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\PinRestore_Dark.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Images\VTabGroup.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

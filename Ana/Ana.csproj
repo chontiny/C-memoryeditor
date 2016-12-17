@@ -819,10 +819,6 @@
       <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
       <Name>WpfToolkit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Xceed.Wpf.AvalonDock.Themes.VS2013\Xceed.Wpf.AvalonDock.Themes.VS2013.csproj">
-      <Project>{89286eb4-b4a1-418c-839a-067b00f442d8}</Project>
-      <Name>Xceed.Wpf.AvalonDock.Themes.VS2013</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>
       <Name>Xceed.Wpf.AvalonDock</Name>
