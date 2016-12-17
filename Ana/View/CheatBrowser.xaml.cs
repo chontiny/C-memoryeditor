@@ -1,5 +1,6 @@
 ﻿namespace Ana.View
 {
+    using Source.CheatBrowser;
     using Source.Project;
     using System;
     using System.IO;
@@ -42,6 +43,18 @@
             this.InitializeComponent();
 
             this.browser.Navigating += this.BrowserNavigating;
+            this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
+        }
+
+        /// <summary>
+        /// Gets the view model associated with this view.
+        /// </summary>
+        public CheatBrowserViewModel CheatBrowserViewModel
+        {
+            get
+            {
+                return this.DataContext as CheatBrowserViewModel;
+            }
         }
 
         /// <summary>

@@ -19,20 +19,6 @@
         /// </summary>
         public const String ToolContentId = nameof(SignatureCollectorViewModel);
 
-        private String signature;
-
-        private String binaryVersion;
-
-        private String binaryHeaderHash;
-
-        private String binaryImportHash;
-
-        private String mainModuleHash;
-
-        private String windowTitle;
-
-        private String emulatorHash;
-
         /// <summary>
         /// Singleton instance of the <see cref="SignatureCollectorViewModel" /> class
         /// </summary>
@@ -47,6 +33,7 @@
         {
             this.ContentId = SignatureCollectorViewModel.ToolContentId;
             this.CollectSignatureCommand = new RelayCommand(() => Task.Run(() => this.CollectSignature()), () => true);
+            this.SignatureModel = new SignatureModel();
 
             MainViewModel.GetInstance().Subscribe(this);
         }
@@ -57,13 +44,7 @@
         {
             get
             {
-                return this.signature;
-            }
-
-            set
-            {
-                this.signature = value;
-                this.RaisePropertyChanged(nameof(this.Signature));
+                return this.SignatureModel.GetFullSignature();
             }
         }
 
@@ -71,12 +52,12 @@
         {
             get
             {
-                return this.windowTitle;
+                return this.SignatureModel.WindowTitle;
             }
 
             set
             {
-                this.windowTitle = value;
+                this.SignatureModel.WindowTitle = value;
                 this.RaisePropertyChanged(nameof(this.WindowTitle));
             }
         }
@@ -85,12 +66,12 @@
         {
             get
             {
-                return this.binaryVersion;
+                return this.SignatureModel.BinaryVersion;
             }
 
             set
             {
-                this.binaryVersion = value;
+                this.SignatureModel.BinaryVersion = value;
                 this.RaisePropertyChanged(nameof(this.BinaryVersion));
             }
         }
@@ -99,12 +80,12 @@
         {
             get
             {
-                return this.binaryHeaderHash;
+                return this.SignatureModel.BinaryHeaderHash;
             }
 
             set
             {
-                this.binaryHeaderHash = value;
+                this.SignatureModel.BinaryHeaderHash = value;
                 this.RaisePropertyChanged(nameof(this.BinaryHeaderHash));
             }
         }
@@ -113,12 +94,12 @@
         {
             get
             {
-                return this.binaryImportHash;
+                return this.SignatureModel.BinaryImportHash;
             }
 
             set
             {
-                this.binaryImportHash = value;
+                this.SignatureModel.BinaryImportHash = value;
                 this.RaisePropertyChanged(nameof(this.BinaryImportHash));
             }
         }
@@ -127,12 +108,12 @@
         {
             get
             {
-                return this.mainModuleHash;
+                return this.SignatureModel.MainModuleHash;
             }
 
             set
             {
-                this.mainModuleHash = value;
+                this.SignatureModel.MainModuleHash = value;
                 this.RaisePropertyChanged(nameof(this.MainModuleHash));
             }
         }
@@ -141,15 +122,17 @@
         {
             get
             {
-                return this.emulatorHash;
+                return this.SignatureModel.EmulatorHash;
             }
 
             set
             {
-                this.emulatorHash = value;
+                this.SignatureModel.EmulatorHash = value;
                 this.RaisePropertyChanged(nameof(this.EmulatorHash));
             }
         }
+
+        private SignatureModel SignatureModel { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="SignatureCollectorViewModel"/> class
@@ -172,6 +155,7 @@
             // TODO: Base64 encode all hashes together or whatever
             // string combinedHashes = this.WindowTitle + this.BinaryVersion + this.BinaryHeaderHash + this.MainModuleHash + this.EmulatorHash;
             // this.Signature = Convert.ToBase64String(Encoding.UTF8.GetBytes(()));
+            this.RaisePropertyChanged(nameof(this.Signature));
         }
     }
     //// End class

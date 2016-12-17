@@ -1026,7 +1026,15 @@ namespace Xceed.Wpf.AvalonDock
         {
             Trace.WriteLine(string.Format("DockingManager.OnPreviewGotKeyboardFocus({0})", e.NewFocus));
 
-            e.Handled = true;
+            if (e.NewFocus is TabItem)
+            {
+                e.Handled = true;
+                return;
+            }
+            else
+            {
+                base.OnPreviewGotKeyboardFocus(e);
+            }
         }
 
         protected override void OnPreviewLostKeyboardFocus(KeyboardFocusChangedEventArgs e)
