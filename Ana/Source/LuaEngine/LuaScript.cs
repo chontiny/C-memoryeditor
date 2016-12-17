@@ -2,13 +2,11 @@
 {
     using System;
     using System.ComponentModel;
-    using System.Reflection;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// Defines a Lua script that can leverage the engine to execute a cheat
     /// </summary>
-    [Obfuscation(ApplyToMembers = true, Exclude = true)]
     [DataContract]
     internal class LuaScript
     {

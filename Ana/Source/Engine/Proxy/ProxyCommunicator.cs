@@ -13,14 +13,29 @@
     /// </summary>
     internal class ProxyCommunicator
     {
+        /// <summary>
+        /// The 32 bit proxy service executable
+        /// </summary>
         private const String AnathenaProxy32Executable = "AnathenaProxy32.exe";
 
+        /// <summary>
+        /// The 64 bit proxy service executable
+        /// </summary>
         private const String AnathenaProxy64Executable = "AnathenaProxy64.exe";
 
+        /// <summary>
+        /// The event name for a wait event, which allows us to wait for a proxy service to start
+        /// </summary>
         private const String WaitEventName = @"Global\Anathena";
 
+        /// <summary>
+        /// Uri prefix for IPC channel names
+        /// </summary>
         private const String UriPrefix = "net.pipe://localhost/";
 
+        /// <summary>
+        /// Singleton instance of the <see cref="ProxyCommunicator" /> class
+        /// </summary>
         private static Lazy<ProxyCommunicator> proxyCommunicatorInstance = new Lazy<ProxyCommunicator>(
             () => { return new ProxyCommunicator(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
@@ -39,15 +54,30 @@
             this.AnathenaProxy64 = this.StartProxyService(ProxyCommunicator.AnathenaProxy64Executable, anathenaProxy64ServerName);
         }
 
+        /// <summary>
+        /// Gets or sets the 32 bit proxy service
+        /// </summary>
         private IProxyService AnathenaProxy32 { get; set; }
 
+        /// <summary>
+        /// Gets or sets the 64 bit proxy service
+        /// </summary>
         private IProxyService AnathenaProxy64 { get; set; }
 
+        /// <summary>
+        /// Gets a singleton instance of the <see cref="ProxyCommunicator"/> class
+        /// </summary>
+        /// <returns>A singleton instance of the class</returns>
         public static ProxyCommunicator GetInstance()
         {
             return proxyCommunicatorInstance.Value;
         }
 
+        /// <summary>
+        /// Gets the proxy service based on provided parameters
+        /// </summary>
+        /// <param name="is32Bit">Whether or not to get the 32 or 64 bit service</param>
+        /// <returns>The 32 or 64 bit service</returns>
         public IProxyService GetProxyService(Boolean is32Bit)
         {
             if (is32Bit)
@@ -60,6 +90,12 @@
             }
         }
 
+        /// <summary>
+        /// Starts a proxy service
+        /// </summary>
+        /// <param name="executableName">The executable name of the service to start</param>
+        /// <param name="channelServerName">The channel name for IPC</param>
+        /// <returns>The proxy service that is created</returns>
         private IProxyService StartProxyService(String executableName, String channelServerName)
         {
             // Start the proxy service

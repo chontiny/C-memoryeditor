@@ -5,7 +5,6 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
     using System.Threading.Tasks;
     using UserSettings;
 
@@ -23,7 +22,6 @@
             Task.Run(() => SnapshotManager.GetInstance().Subscribe(this));
         }
 
-        [Obfuscation(Exclude = true)]
         public Double LowerThreshold
         {
             get
@@ -38,7 +36,6 @@
             }
         }
 
-        [Obfuscation(Exclude = true)]
         public Double UpperThreshold
         {
             get
@@ -53,13 +50,10 @@
             }
         }
 
-        [Obfuscation(Exclude = true)]
         public SortedList<dynamic, Int64> Histogram { get; set; }
 
-        [Obfuscation(Exclude = true)]
         public SortedList<dynamic, Int64> HistogramFiltered { get; set; }
 
-        [Obfuscation(Exclude = true)]
         public SortedList<dynamic, Int64> HistogramKept { get; set; }
 
         private Int32 LowerIndex { get; set; }
@@ -82,6 +76,10 @@
             this.UpdateHistogram(forceUpdate: true);
         }
 
+        /// <summary>
+        /// Recieves an update of the active snapshot
+        /// </summary>
+        /// <param name="snapshot">The active snapshot</param>
         public void Update(Snapshot snapshot)
         {
             lock (this.SnapshotLock)
@@ -114,30 +112,30 @@
             {
                 if (!this.Inverted)
                 {
-                    this.Snapshot.MarkAllInvalid();
+                    this.Snapshot.SetAllValidBits(false);
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        foreach (dynamic element in region)
+                        foreach (SnapshotElementRef element in region)
                         {
-                            if (element.ElementLabel >= lowerValue && element.ElementLabel <= upperValue)
+                            if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
                             {
-                                element.Valid = true;
+                                element.SetValid(true);
                             }
                         }
                     }
                 }
                 else
                 {
-                    this.Snapshot.MarkAllValid();
+                    this.Snapshot.SetAllValidBits(true);
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        foreach (dynamic element in region)
+                        foreach (SnapshotElementRef element in region)
                         {
-                            if (element.ElementLabel >= lowerValue && element.ElementLabel <= upperValue)
+                            if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
                             {
-                                element.Valid = false;
+                                element.SetValid(false);
                             }
                         }
                     }
@@ -174,22 +172,22 @@
                 {
                     SnapshotRegion region = regionObject as SnapshotRegion;
 
-                    foreach (dynamic element in region)
+                    if (((dynamic)region).GetElementLabels() == null || region.GetElementCount() <= 0)
                     {
-                        if (element.ElementLabel == null)
-                        {
-                            return;
-                        }
+                        return;
+                    }
 
+                    foreach (SnapshotElementRef element in region)
+                    {
                         lock (this.ItemLock)
                         {
-                            if (histogram.ContainsKey(element.ElementLabel))
+                            if (histogram.ContainsKey(((dynamic)element).GetElementLabel()))
                             {
-                                histogram[((dynamic)element.ElementLabel)]++;
+                                histogram[((dynamic)element).GetElementLabel()]++;
                             }
                             else
                             {
-                                histogram.TryAdd(element.ElementLabel, 1);
+                                histogram.TryAdd(((dynamic)element).GetElementLabel(), 1);
                             }
                         }
                     }

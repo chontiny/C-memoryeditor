@@ -1,7 +1,6 @@
 ﻿namespace Ana.Source.Scanners.ChangeCounter
 {
     using LabelThresholder;
-    using Results.ScanResults;
     using Snapshots;
     using System;
     using System.Linq;
@@ -19,7 +18,7 @@
         /// <summary>
         /// Gets or sets the snapshot being labeled with change counts
         /// </summary>
-        private Snapshot<UInt16> Snapshot { get; set; }
+        private Snapshot Snapshot { get; set; }
 
         private UInt16 MinChanges { get; set; }
 
@@ -42,18 +41,16 @@
         public override void Begin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot().CloneAs<UInt16>();
+            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone();
+            this.Snapshot.LabelType = typeof(UInt16);
 
             if (this.Snapshot == null)
             {
                 return;
             }
 
-            this.Snapshot.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
-            this.Snapshot.Alignment = SettingsViewModel.GetInstance().Alignment;
-
             // Initialize change counts to zero
-            this.Snapshot.SetElementLabels(0);
+            this.Snapshot.SetElementLabels<UInt16>(0);
 
             base.Begin();
         }
@@ -63,25 +60,25 @@
             Int32 processedPages = 0;
 
             // Read memory to get current values
-            this.Snapshot.ReadAllSnapshotMemory();
+            this.Snapshot.ReadAllMemory();
 
             Parallel.ForEach(
                 this.Snapshot.Cast<Object>(),
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (Object regionObject) =>
             {
-                SnapshotRegion<UInt16> region = regionObject as SnapshotRegion<UInt16>;
+                SnapshotRegion region = regionObject as SnapshotRegion;
 
                 if (!region.CanCompare())
                 {
                     return;
                 }
 
-                foreach (SnapshotElement<UInt16> element in region)
+                foreach (SnapshotElementRef element in region)
                 {
                     if (element.Changed())
                     {
-                        element.ElementLabel++;
+                        ((dynamic)element).ElementLabel++;
                     }
                 }
 
@@ -100,12 +97,10 @@
         /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
-            this.Snapshot.ScanMethod = this.ScannerName;
-
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
             LabelThresholderViewModel.GetInstance().IsVisible = true;
             LabelThresholderViewModel.GetInstance().IsActive = true;
+            base.OnEnd();
         }
 
         private void CleanUp()

@@ -48,17 +48,17 @@
         }
 
         /// <summary>
-        /// The pointers found in the target process
+        /// Gets or sets the pointers found in the target process
         /// </summary>
         private HashSet<IntPtr> FoundPointers { get; set; }
 
         /// <summary>
-        /// The new found pointers being constructed, which will replace the found pointers upon snapshot parse completion.
+        /// Gets or sets the new found pointers being constructed, which will replace the found pointers upon snapshot parse completion.
         /// </summary>
         private HashSet<IntPtr> ConstructingSet { get; set; }
 
         /// <summary>
-        /// The current snapshot being parsed. A new one is collected after the current one is parsed.
+        /// Gets or sets the current snapshot being parsed. A new one is collected after the current one is parsed.
         /// </summary>
         private Snapshot CurrentSnapshot { get; set; }
 
@@ -114,7 +114,7 @@
                 this.ConstructingSet = new HashSet<IntPtr>();
             }
 
-            List<SnapshotRegion> sortedRegions = new List<SnapshotRegion>(this.CurrentSnapshot.GetSnapshotRegions().OrderBy(x => x.TimeSinceLastRead));
+            List<SnapshotRegion> sortedRegions = new List<SnapshotRegion>(this.CurrentSnapshot.GetSnapshotRegions().OrderBy(x => x.GetTimeSinceLastRead()));
 
             // Process the allowed amount of chunks from the priority queue
             Parallel.For(
@@ -129,10 +129,10 @@
                 Boolean success;
 
                 // Set to type of a pointer
-                region.SetElementType(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit() ? typeof(UInt32) : typeof(UInt64));
+                region.ElementType = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit() ? typeof(UInt32) : typeof(UInt64);
 
                 // Enforce 4-byte alignment of pointers
-                region.SetAlignment(sizeof(Int32));
+                region.Alignment = sizeof(Int32);
 
                 // Read current page data for chunk
                 region.ReadAllRegionMemory(out success);
@@ -143,12 +143,12 @@
                     return;
                 }
 
-                if (!region.HasValues())
+                if (region.GetCurrentValues() == null || region.GetCurrentValues().Length <= 0)
                 {
                     return;
                 }
 
-                foreach (SnapshotElement element in region)
+                foreach (SnapshotElementRef element in region)
                 {
                     // Enforce user mode memory pointers
                     if (element.LessThanValue(invalidPointerMin) || element.GreaterThanValue(invalidPointerMax))

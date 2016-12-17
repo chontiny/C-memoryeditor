@@ -30,24 +30,47 @@
             Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
         }
 
+        /// <summary>
+        /// Gets a command to save the active script.
+        /// </summary>
         public ICommand SaveScriptCommand { get; private set; }
 
+        /// <summary>
+        /// Gets a command to exit this window.
+        /// </summary>
         public ICommand ExitCommand { get; private set; }
 
+        /// <summary>
+        /// Gets a command to update the active script text.
+        /// </summary>
         public ICommand UpdateScriptCommand { get; private set; }
 
+        /// <summary>
+        /// Gets the active script text.
+        /// </summary>
         public String Script { get; private set; }
 
+        /// <summary>
+        /// Updates the active script.
+        /// </summary>
+        /// <param name="script">The raw script text.</param>
         private void UpdateScript(String script)
         {
             this.Script = script;
         }
 
+        /// <summary>
+        /// Saves the provided script.
+        /// </summary>
+        /// <param name="script">The raw script to save.</param>
         private void SaveScript(String script)
         {
             this.UpdateScript(script);
         }
 
+        /// <summary>
+        /// Closes this window.
+        /// </summary>
         private void Exit()
         {
             //// this.Close();

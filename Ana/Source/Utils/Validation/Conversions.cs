@@ -3,12 +3,10 @@
     using Extensions;
     using System;
     using System.Linq;
-    using System.Reflection;
 
     /// <summary>
     /// Collection of methods to convert values from one format to another format
     /// </summary>
-    [Obfuscation(ApplyToMembers = true, Exclude = true)]
     internal class Conversions
     {
         /// <summary>
@@ -73,39 +71,43 @@
             return ParseDecStringAsValue(valueType, value?.ToString()).ToString();
         }
 
+        /// <summary>
+        /// Parses a raw value as a hex string
+        /// </summary>
+        /// <param name="valueType"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public static String ParseValueAsHex(Type valueType, dynamic value)
         {
             return ParseDecStringAsHexString(valueType, value?.ToString());
         }
 
+        /// <summary>
+        /// Converts a string containing dec characters to the hex equivalent for the given data type
+        /// </summary>
+        /// <param name="valueType">The value type</param>
+        /// <param name="value">The hex string to parse</param>
+        /// <returns>The converted value from the hex</returns>
         public static String ParseDecStringAsHexString(Type valueType, String value)
         {
-            dynamic vealValue = ParseDecStringAsValue(valueType, value);
+            dynamic realValue = ParseDecStringAsValue(valueType, value);
 
             switch (Type.GetTypeCode(valueType))
             {
                 case TypeCode.Byte:
-                    return vealValue.ToString("X");
                 case TypeCode.Char:
-                    return vealValue.ToString("X");
                 case TypeCode.SByte:
-                    return vealValue.ToString("X");
                 case TypeCode.Int16:
-                    return vealValue.ToString("X");
                 case TypeCode.Int32:
-                    return vealValue.ToString("X");
                 case TypeCode.Int64:
-                    return vealValue.ToString("X");
                 case TypeCode.UInt16:
-                    return vealValue.ToString("X");
                 case TypeCode.UInt32:
-                    return vealValue.ToString("X");
                 case TypeCode.UInt64:
-                    return vealValue.ToString("X");
+                    return realValue.ToString("X");
                 case TypeCode.Single:
-                    return BitConverter.ToUInt32(BitConverter.GetBytes(vealValue), 0).ToString("X");
+                    return BitConverter.ToUInt32(BitConverter.GetBytes(realValue), 0).ToString("X");
                 case TypeCode.Double:
-                    return BitConverter.ToUInt64(BitConverter.GetBytes(vealValue), 0).ToString("X");
+                    return BitConverter.ToUInt64(BitConverter.GetBytes(realValue), 0).ToString("X");
                 default: return null;
             }
         }
@@ -230,69 +232,110 @@
 
             switch (typeCode)
             {
-                case TypeCode.Boolean: return typeof(Boolean);
-                case TypeCode.Byte: return typeof(Byte);
-                case TypeCode.Char: return typeof(Char);
-                case TypeCode.DateTime: return typeof(DateTime);
-                case TypeCode.DBNull: return typeof(DBNull);
-                case TypeCode.Decimal: return typeof(Decimal);
-                case TypeCode.Double: return typeof(Double);
-                case TypeCode.Int16: return typeof(Int16);
-                case TypeCode.Int32: return typeof(Int32);
-                case TypeCode.Int64: return typeof(Int64);
-                case TypeCode.Object: return typeof(Object);
-                case TypeCode.SByte: return typeof(SByte);
-                case TypeCode.Single: return typeof(Single);
-                case TypeCode.String: return typeof(String);
-                case TypeCode.UInt16: return typeof(UInt16);
-                case TypeCode.UInt32: return typeof(UInt32);
-                case TypeCode.UInt64: return typeof(UInt64);
+                case TypeCode.Boolean:
+                    return typeof(Boolean);
+                case TypeCode.Byte:
+                    return typeof(Byte);
+                case TypeCode.Char:
+                    return typeof(Char);
+                case TypeCode.DateTime:
+                    return typeof(DateTime);
+                case TypeCode.DBNull:
+                    return typeof(DBNull);
+                case TypeCode.Decimal:
+                    return typeof(Decimal);
+                case TypeCode.Double:
+                    return typeof(Double);
+                case TypeCode.Int16:
+                    return typeof(Int16);
+                case TypeCode.Int32:
+                    return typeof(Int32);
+                case TypeCode.Int64:
+                    return typeof(Int64);
+                case TypeCode.Object:
+                    return typeof(Object);
+                case TypeCode.SByte:
+                    return typeof(SByte);
+                case TypeCode.Single:
+                    return typeof(Single);
+                case TypeCode.String:
+                    return typeof(String);
+                case TypeCode.UInt16:
+                    return typeof(UInt16);
+                case TypeCode.UInt32:
+                    return typeof(UInt32);
+                case TypeCode.UInt64:
+                    return typeof(UInt64);
                 case TypeCode.Empty: return null;
             }
 
             return null;
         }
 
-        /// <summary>
-        /// Converts a given number of bytes to the most relevant metric. ie 2123 bytes => 2KB
-        /// </summary>
-        /// <typeparam name="T">The data type expressing the byte count</typeparam>
-        /// <param name="byteCount">The number of bytes</param>
-        /// <returns>The byte count converted to a string representing the same value as the most relevant metric</returns>
-        public static String BytesToMetric<T>(T byteCount) where T : struct
-        {
-            // Note: UInt64s run out around EB
-            String[] suffix = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
-
-            UInt64 realByteCount = (UInt64)Convert.ChangeType(byteCount, typeof(UInt64));
-
-            if (realByteCount == 0)
-            {
-                return "0" + suffix[0];
-            }
-
-            Int32 place = Convert.ToInt32(Math.Floor(Math.Log(realByteCount, 1024)));
-            Double number = Math.Round(realByteCount / Math.Pow(1024, place), 1);
-            return number.ToString() + suffix[place];
-        }
-
         public static Int32 GetTypeSize<T>()
         {
             switch (Type.GetTypeCode(typeof(T)))
             {
-                case TypeCode.Boolean: return sizeof(Boolean);
-                case TypeCode.Byte: return sizeof(Byte);
-                case TypeCode.Char: return sizeof(Char);
-                case TypeCode.Decimal: return sizeof(Decimal);
-                case TypeCode.Double: return sizeof(Double);
-                case TypeCode.Int16: return sizeof(Int16);
-                case TypeCode.Int32: return sizeof(Int32);
-                case TypeCode.Int64: return sizeof(Int64);
-                case TypeCode.SByte: return sizeof(SByte);
-                case TypeCode.Single: return sizeof(Single);
-                case TypeCode.UInt16: return sizeof(UInt16);
-                case TypeCode.UInt32: return sizeof(UInt32);
-                case TypeCode.UInt64: return sizeof(UInt64);
+                case TypeCode.Boolean:
+                    return sizeof(Boolean);
+                case TypeCode.Byte:
+                    return sizeof(Byte);
+                case TypeCode.Char:
+                    return sizeof(Char);
+                case TypeCode.Decimal:
+                    return sizeof(Decimal);
+                case TypeCode.Double:
+                    return sizeof(Double);
+                case TypeCode.Int16:
+                    return sizeof(Int16);
+                case TypeCode.Int32:
+                    return sizeof(Int32);
+                case TypeCode.Int64:
+                    return sizeof(Int64);
+                case TypeCode.SByte:
+                    return sizeof(SByte);
+                case TypeCode.Single:
+                    return sizeof(Single);
+                case TypeCode.UInt16:
+                    return sizeof(UInt16);
+                case TypeCode.UInt32:
+                    return sizeof(UInt32);
+                case TypeCode.UInt64:
+                    return sizeof(UInt64);
+                default: throw new Exception("Type is not a primitive");
+            }
+        }
+
+        public static Int32 GetTypeSize(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.Boolean:
+                    return sizeof(Boolean);
+                case TypeCode.Byte:
+                    return sizeof(Byte);
+                case TypeCode.Char:
+                    return sizeof(Char);
+                case TypeCode.Decimal:
+                    return sizeof(Decimal);
+                case TypeCode.Double:
+                    return sizeof(Double);
+                case TypeCode.Int16:
+                    return sizeof(Int16);
+                case TypeCode.Int32:
+                    return sizeof(Int32);
+                case TypeCode.Int64:
+                    return sizeof(Int64);
+                case TypeCode.SByte:
+                    return sizeof(SByte);
+                case TypeCode.Single:
+                    return sizeof(Single);
+                case TypeCode.UInt16:
+                    return sizeof(UInt16);
+                case TypeCode.UInt32:
+                    return sizeof(UInt32);
+                case TypeCode.UInt64:
+                    return sizeof(UInt64);
                 default: throw new Exception("Type is not a primitive");
             }
         }

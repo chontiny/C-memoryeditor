@@ -18,14 +18,14 @@
     /// <summary>
     /// Entry point for a hook in the target process. Automatically loads when RemoteHooking.Inject() is called.
     /// </summary>
-    public class HookServer : IEntryPoint
+    internal class HookServer : IEntryPoint
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HookServer" /> class
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="channelName"></param>
-        /// <param name="projectDirectory"></param>
+        /// <param name="context">Easyhook remoting context</param>
+        /// <param name="channelName">IPC channel name</param>
+        /// <param name="projectDirectory">The Ana project directory to use when loading content</param>
         public HookServer(RemoteHooking.IContext context, String channelName, String projectDirectory)
         {
             this.IpcServerChannel = null;
@@ -50,22 +50,40 @@
         }
 
         /// <summary>
-        /// Gets or sets the hook to DirectX
+        /// Gets or sets the hook to DirectX.
         /// TODO: Move this out, hide it under graphics interface or something
         /// </summary>
         private BaseDXHook DirectXHook { get; set; }
 
+        /// <summary>
+        /// Gets or sets the channel for inter-process communication
+        /// </summary>
         private IpcServerChannel IpcServerChannel { get; set; }
 
+        /// <summary>
+        /// Gets or sets the hook client to control the hook
+        /// </summary>
         private IHookClient HookClient { get; set; }
 
+        /// <summary>
+        /// Gets or sets the cancellation token for the client pinging task
+        /// </summary>
         private CancellationTokenSource CancelRequest { get; set; }
 
+        /// <summary>
+        /// Gets or sets the task to detect if the client is still running
+        /// </summary>
         private ManualResetEvent TaskRunning { get; set; }
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetModuleHandle(String moduleName);
 
+        /// <summary>
+        /// Entry point for the server hook
+        /// </summary>
+        /// <param name="context">Easyhook remoting context</param>
+        /// <param name="channelName">IPC channel name</param>
+        /// <param name="projectDirectory">The Ana project directory to use when loading content</param>
         public void Run(RemoteHooking.IContext context, String channelName, String projectDirectory)
         {
             // When not using GAC there can be issues with remoting assemblies resolving correctly
@@ -104,6 +122,9 @@
             }
         }
 
+        /// <summary>
+        /// Dispose of the directX hook in the process.
+        /// </summary>
         private void DisposeDirectXHook()
         {
             if (this.DirectXHook == null)
@@ -114,6 +135,10 @@
             //// this.DirectXHook.Dispose();
         }
 
+        /// <summary>
+        /// Initializes the directX hook in the process
+        /// </summary>
+        /// <returns>True if the initialization was successful.</returns>
         private Boolean InitializeDirectXHook()
         {
             DirextXGraphicsInterface dirextXGraphicsInterface = (DirextXGraphicsInterface)this.HookClient.GetGraphicsInterface();

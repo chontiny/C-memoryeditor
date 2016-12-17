@@ -12,7 +12,7 @@
     x:Name="AnaWindow"
     Title="Anathena"
     Width="720"
-    Height="640"
+    Height="720"
     x:ClassModifier="internal"
     AllowsTransparency="False"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
@@ -63,7 +63,7 @@
                     Width="24"
                     Height="24"
                     Margin="4"
-                    Source="pack://application:,,,/Ana;component/Content/Icons/MainIcon.ico" />
+                    Source="pack://application:,,,/Ana;component/Content/Icons/MainAppIcon.ico" />
 
                 <shell:TextBlock
                     VerticalAlignment="Center"
@@ -235,6 +235,12 @@
                         IsCheckable="True"
                         IsChecked="{Binding DotNetExplorerViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
+                    <shell:Separator />
+                    <shell:MenuItem
+                        Header="Signature Collector"
+                        IsCheckable="True"
+                        IsChecked="{Binding SignatureCollectorViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
 
                 <!--  Scans Header  -->
@@ -345,7 +351,7 @@
             Background="{StaticResource AvalonDock_Expression_BaseColor4}">
             <!--  Theme  -->
             <avalonDock:DockingManager.Theme>
-                <avalonDock:ExpressionDarkTheme />
+                <avalonDock:DarkTheme />
             </avalonDock:DockingManager.Theme>
 
             <!--  All Dockable Windows  -->
@@ -435,6 +441,12 @@
                             <view:ProjectExplorer />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.ProjectExplorerViewTemplate>
+                    <!--  Signature Collector  -->
+                    <view:ViewTemplateSelector.SignatureCollectorViewTemplate>
+                        <shell:DataTemplate>
+                            <view:SignatureCollector />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.SignatureCollectorViewTemplate>
                 </view:ViewTemplateSelector>
             </avalonDock:DockingManager.LayoutItemTemplateSelector>
 

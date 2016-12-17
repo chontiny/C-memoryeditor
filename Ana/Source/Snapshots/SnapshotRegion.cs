@@ -2,240 +2,202 @@
 {
     using Engine;
     using Engine.OperatingSystems;
+    using Results.ScanResults;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
-    using System.Reflection;
     using System.Runtime.InteropServices;
+    using UserSettings;
     using Utils.Extensions;
-
+    using Utils.Validation;
     /// <summary>
-    /// Defines a snapshot of memory in an external process.
+    /// Defines a region of memory in an external process.
     /// </summary>
-    internal abstract class SnapshotRegion : NormalizedRegion, IEnumerable
+    internal class SnapshotRegion : NormalizedRegion, IEnumerable
     {
-        public SnapshotRegion(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
-        {
-            this.RegionExtension = 0;
-        }
+        private Int32 alignment;
 
-        public SnapshotRegion(NormalizedRegion remoteRegion) : base(remoteRegion.BaseAddress, remoteRegion.RegionSize)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
+        /// </summary>
+        public SnapshotRegion() : this(IntPtr.Zero, 0)
         {
-            this.RegionExtension = 0;
-        }
-
-        public SnapshotRegion(SnapshotRegion snapshotRegion) : base(snapshotRegion.BaseAddress, snapshotRegion.RegionSize)
-        {
-            this.RegionExtension = snapshotRegion.RegionExtension;
         }
 
         /// <summary>
-        /// Gets or sets the element type of this region
-        /// [Public as an access optimization, otherwise use getters and setters] 
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
+        /// </summary>
+        /// <param name="normalizedRegion">The region on which to base this snapshot region.</param>
+        public SnapshotRegion(NormalizedRegion normalizedRegion) :
+            this(normalizedRegion == null ? IntPtr.Zero : normalizedRegion.BaseAddress, normalizedRegion == null ? 0 : normalizedRegion.RegionSize)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
+        /// </summary>
+        /// <param name="baseAddress">The base address of this snapshot region.</param>
+        /// <param name="regionSize">The size of this snapshot region.</param>
+        public SnapshotRegion(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
+        {
+            this.TimeSinceLastRead = DateTime.MinValue;
+            this.Alignment = SettingsViewModel.GetInstance().Alignment;
+            this.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
+        }
+
+        /// <summary>
+        /// Gets or sets the data type of the elements of this region.
         /// </summary>
         public Type ElementType { get; set; }
 
         /// <summary>
-        /// Gets or sets the valid bits for use in filtering scans
-        /// [Public as an access optimization, otherwise use getters and setters]
+        /// Gets or sets the data type of the labels of this region.
         /// </summary>
-        public BitArray Valid { get; set; }
+        public Type LabelType { get; set; }
 
         /// <summary>
-        /// Gets or sets the regions only access one element at a time, so it is held here to avoid uneccessary memory usage
-        /// [Public as an access optimization, otherwise use getters and setters]
+        /// Gets or sets the memory alignment, typically aligned with external process pointer size
         /// </summary>
-        public SnapshotElement CurrentSnapshotElement { get; set; }
-
-        /// <summary>
-        /// Gets the time since the last read was performed on this region
-        /// </summary>
-        public DateTime TimeSinceLastRead { get; private set; }
-
-        /// <summary>
-        /// Gets or sets a value indicatating a safe number of read-over bytes
-        /// </summary>
-        protected Int32 RegionExtension { get; set; }
-
-        /// <summary>
-        /// Gets or sets the most recently read values
-        /// </summary>
-        protected unsafe Byte[] CurrentValues { get; set; }
-
-        /// <summary>
-        /// Gets or sets the previously read values
-        /// </summary>
-        protected unsafe Byte[] PreviousValues { get; set; }
-
-        /// <summary>
-        /// Gets or sets the memory alignment, typically aligned with native platform word size
-        /// </summary>
-        protected Int32 Alignment { get; set; }
-
-        [Obfuscation(Exclude = true)]
-        public unsafe abstract SnapshotElement this[Int32 index] { get; }
-
-        /// <summary>
-        /// Expands a region by a given size in both directions (default is element type size) unconditionally
-        /// </summary>
-        public void ExpandRegion()
+        public Int32 Alignment
         {
-            this.ExpandRegion(this.GetElementReadOverSize());
-        }
-
-        public void ExpandRegion(Int32 expandSize)
-        {
-            // Expand with negative overflow protection
-            if (this.BaseAddress.ToUInt64() > checked((UInt32)expandSize))
+            get
             {
-                this.BaseAddress = this.BaseAddress.Subtract(expandSize);
-            }
-            else
-            {
-                this.BaseAddress = IntPtr.Zero;
+                return this.alignment;
             }
 
-            // Expand with overflow protection
-            Int32 newRegionSize = unchecked(this.RegionSize + (expandSize * 2));
-            this.RegionSize = Math.Max(this.RegionSize, newRegionSize);
-        }
-
-        /// <summary>
-        /// Fills a region into the available extension space
-        /// </summary>
-        public void FillRegion()
-        {
-            Int32 expandSize = this.RegionExtension;
-            this.RegionExtension = 0;
-
-            // Expand with overflow protection
-            Int32 newRegionSize = unchecked(this.RegionSize + expandSize);
-            this.RegionSize = Math.Max(this.RegionSize, newRegionSize);
-        }
-
-        /// <summary>
-        /// Shrinks a region by the current element size. The old space is marked as extension space.
-        /// This is important for elements with values that span several bytes, which need to read past the region size.
-        /// </summary>
-        public void RelaxRegion()
-        {
-            Int32 relaxSize = this.GetElementReadOverSize();
-
-            this.FillRegion();
-
-            if (this.RegionSize >= relaxSize)
+            set
             {
-                this.RegionSize -= relaxSize;
-                this.RegionExtension = relaxSize;
-            }
-            else
-            {
-                this.RegionExtension = this.RegionSize;
-                this.RegionSize = 0;
-            }
-        }
+                this.alignment = value;
 
-        public void MarkAllValid()
-        {
-            this.Valid = new BitArray(this.RegionSize, true);
-        }
+                // Enforce alignment constraint on base address
+                if (this.BaseAddress.Mod(value).ToUInt64() == 0)
+                {
+                    return;
+                }
 
-        public void MarkAllInvalid()
-        {
-            this.Valid = new BitArray(this.RegionSize, false);
-        }
-
-        public void SetElementType(Type elementType)
-        {
-            this.ElementType = elementType;
-
-            if (elementType == null)
-            {
-                return;
-            }
-
-            // Adjust extension space accordingly
-            this.RelaxRegion();
-        }
-
-        public void SetAlignment(Int32 alignment)
-        {
-            this.Alignment = alignment;
-
-            if (alignment == 0)
-            {
-                return;
-            }
-
-            // Enforce alignment constraint on base address
-            if (this.BaseAddress.Mod(alignment).ToUInt64() != 0)
-            {
                 unchecked
                 {
-                    this.BaseAddress = this.BaseAddress.Subtract(this.BaseAddress.Mod(alignment));
-                    this.BaseAddress = this.BaseAddress.Add(alignment);
-
-                    this.RegionSize -= alignment - this.BaseAddress.Mod(alignment).ToInt32();
-                    if (this.RegionSize < 0)
-                    {
-                        this.RegionSize = 0;
-                    }
+                    this.BaseAddress = this.BaseAddress.Subtract(this.BaseAddress.Mod(value));
+                    this.BaseAddress = this.BaseAddress.Add(value);
+                    this.RegionSize -= value - this.BaseAddress.Mod(value).ToInt32();
                 }
             }
         }
 
         /// <summary>
-        /// Determines how many extra bytes an element will need to read to determine it's value
+        /// Gets or sets the most recently read values
         /// </summary>
-        /// <returns>The readover size of this region</returns>
-        public Int32 GetElementReadOverSize()
-        {
-            return Marshal.SizeOf(this.ElementType) - 1;
-        }
+        private unsafe Byte[] CurrentValues { get; set; }
 
-        public Int32 GetRegionExtension()
-        {
-            return this.RegionExtension;
-        }
+        /// <summary>
+        /// Gets or sets the previously read values
+        /// </summary>
+        private unsafe Byte[] PreviousValues { get; set; }
 
-        public void SetCurrentValues(Byte[] newValues)
-        {
-            this.PreviousValues = this.CurrentValues;
-            this.CurrentValues = newValues;
-            this.CurrentSnapshotElement.InitializePointers();
-        }
+        /// <summary>
+        /// Gets or sets the previously read values
+        /// </summary>
+        private unsafe Object[] ElementLabels { get; set; }
 
-        public void SetPreviousValues(Byte[] newValues)
-        {
-            this.PreviousValues = newValues;
-            this.CurrentSnapshotElement.InitializePointers();
-        }
+        /// <summary>
+        /// Gets or sets the valid bits for use in filtering scans
+        /// </summary>
+        private BitArray ValidBits { get; set; }
 
-        public Byte[] GetCurrentValues()
-        {
-            return this.CurrentValues;
-        }
+        /// <summary>
+        /// Gets or sets the time since the last read was performed on this region
+        /// </summary>
+        private DateTime TimeSinceLastRead { get; set; }
 
-        public Byte[] GetPreviousValues()
-        {
-            return this.PreviousValues;
-        }
+        /// <summary>
+        /// Gets or sets the reference to the snapshot element being iterated over
+        /// </summary>
+        private SnapshotElementRef SnapshotElementRef { get; set; }
 
-        public Type GetElementType()
+        /// <summary>
+        /// Indexer to allow the retrieval of the element at the specified index.
+        /// </summary>
+        /// <param name="index">The index of the snapshot element.</param>
+        /// <returns>Returns the snapshot element at the specified index.</returns>
+        public SnapshotElementRef this[Int32 index]
         {
-            return this.ElementType;
-        }
-
-        public Int32 GetAlignment()
-        {
-            return this.Alignment;
+            get
+            {
+                SnapshotElementRef element = new SnapshotElementRef(this);
+                element.InitializePointers(index);
+                return element;
+            }
         }
 
         /// <summary>
-        /// Determines if the values of this region can be compared with itself, ie previous and current values are initialized
+        /// Sets all valid bits to the specified boolean value.
         /// </summary>
-        /// <returns>Returns true if an region can be compared with itself</returns>
+        /// <param name="isValid">Value indicating if valid bits will be marked as valid or invalid.</param>
+        public void SetAllValidBits(Boolean isValid)
+        {
+            this.ValidBits = new BitArray(this.RegionSize, isValid);
+        }
+
+        /// <summary>
+        /// Expands a region by the element type size in both directions unconditionally.
+        /// </summary>
+        /// <param name="expandSize">The size by which to expand this region.</param>
+        public void Expand(Int32 expandSize)
+        {
+            // TODO: Rollovers
+            this.BaseAddress = this.BaseAddress.Subtract(expandSize);
+            this.RegionSize += expandSize;
+        }
+
+        /// <summary>
+        /// Sets the current values of this region.
+        /// </summary>
+        /// <param name="newValues">The raw bytes of the values.</param>
+        public void SetCurrentValues(Byte[] newValues)
+        {
+            this.CurrentValues = newValues;
+        }
+
+        /// <summary>
+        /// Sets the previous values of this region.
+        /// </summary>
+        /// <param name="newValues">The raw bytes of the values.</param>
+        public void SetPreviousValues(Byte[] newValues)
+        {
+            this.PreviousValues = newValues;
+        }
+
+        /// <summary>
+        /// Gets the time since values were read for this region.
+        /// </summary>
+        /// <returns>The time since values were read for this region.</returns>
+        public DateTime GetTimeSinceLastRead()
+        {
+            return this.TimeSinceLastRead;
+        }
+
+        /// <summary>
+        /// Gets the valid bit array associated with this region.
+        /// </summary>
+        /// <returns>The valid bit array associated with this region.</returns>
+        public BitArray GetValidBits()
+        {
+            return this.ValidBits;
+        }
+
+        /// <summary>
+        /// Sets the element labels for this snapshot region.
+        /// </summary>
+        /// <param name="newLabels">The new labels to be assigned.</param>
+        public void SetElementLabels(Object[] newLabels)
+        {
+            this.ElementLabels = newLabels;
+        }
+
+        /// <summary>
+        /// Determines if a relative comparison can be done for this region, ie current and previous values are loaded.
+        /// </summary>
+        /// <returns>True if a relative comparison can be done for this region.</returns>
         public Boolean CanCompare()
         {
             if (this.PreviousValues == null || this.CurrentValues == null || this.PreviousValues.Length != this.CurrentValues.Length)
@@ -246,22 +208,18 @@
             return true;
         }
 
-        public Boolean HasValues()
-        {
-            if (this.CurrentValues == null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
+        /// <summary>
+        /// Reads all memory for this snapshot region.
+        /// </summary>
+        /// <param name="readSuccess">Whether or not the read was successful.</param>
+        /// <param name="keepValues">Whether or not to keep the values returned as current values.</param>
+        /// <returns>The bytes read from memory.</returns>
         public Byte[] ReadAllRegionMemory(out Boolean readSuccess, Boolean keepValues = true)
         {
             this.TimeSinceLastRead = DateTime.Now;
 
             readSuccess = false;
-            Byte[] currentValues = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(this.BaseAddress, this.RegionSize + this.RegionExtension, out readSuccess);
+            Byte[] newCurrentValues = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
 
             if (!readSuccess)
             {
@@ -270,12 +228,128 @@
 
             if (keepValues)
             {
-                this.SetCurrentValues(currentValues);
+                this.SetPreviousValues(this.CurrentValues);
+                this.SetCurrentValues(newCurrentValues);
             }
 
-            return currentValues;
+            return newCurrentValues;
         }
 
+        /// <summary>
+        /// Determines if an address is contained in this snapshot.
+        /// </summary>
+        /// <param name="address">The address for which to search.</param>
+        /// <returns>True if the address is contained.</returns>
+        public Boolean ContainsAddress(IntPtr address)
+        {
+            if (address.ToUInt64() >= this.BaseAddress.ToUInt64() && address.ToUInt64() <= this.EndAddress.ToUInt64())
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Gets the previous values as raw bytes of this snapshot.
+        /// </summary>
+        /// <returns>The previous values as raw bytes of this snapshot.</returns>
+        public Byte[] GetPreviousValues()
+        {
+            return this.PreviousValues;
+        }
+
+        /// <summary>
+        /// Gets the current values as raw bytes of this snapshot.
+        /// </summary>
+        /// <returns>The current values as raw bytes of this snapshot.</returns>
+        public Byte[] GetCurrentValues()
+        {
+            return this.CurrentValues;
+        }
+
+        /// <summary>
+        /// Gets the colletion of element labels for this snapshot region.
+        /// </summary>
+        /// <returns>The colletion of element labels for this snapshot region.</returns>
+        public Object[] GetElementLabels()
+        {
+            return this.ElementLabels;
+        }
+
+        /// <summary>
+        /// Gets the regions in this snapshot with a valid bit set.
+        /// </summary>
+        /// <returns>The regions in this snapshot with a valid bit set.</returns>
+        public IEnumerable<SnapshotRegion> GetValidRegions()
+        {
+            List<SnapshotRegion> validRegions = new List<SnapshotRegion>();
+
+            if (this.ValidBits == null)
+            {
+                return validRegions;
+            }
+
+            for (Int32 startIndex = 0; startIndex < this.ValidBits.Length; startIndex += this.Alignment)
+            {
+                if (!this.ValidBits[startIndex])
+                {
+                    continue;
+                }
+
+                // Get the length of this valid segment
+                Int32 validRegionSize = 0;
+                do
+                {
+                    // We only care if the aligned elements are valid
+                    validRegionSize += this.Alignment;
+                }
+                while (startIndex + validRegionSize < this.ValidBits.Length && this.ValidBits[startIndex + validRegionSize]);
+
+                // Create new subregion from this valid region
+                SnapshotRegion subRegion = new SnapshotRegion(this.BaseAddress + startIndex, validRegionSize);
+
+                // Ensure region size is worth keeping. This can happen if we grab a misaligned segment
+                if (subRegion.RegionSize < Conversions.GetTypeSize(this.ElementType))
+                {
+                    continue;
+                }
+
+                // Copy the current values and labels.
+                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, subRegion.RegionSize));
+                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, subRegion.RegionSize));
+                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, subRegion.RegionSize));
+
+                validRegions.Add(subRegion);
+                startIndex += validRegionSize;
+            }
+
+            this.ValidBits = null;
+            return validRegions;
+        }
+
+        /// <summary>
+        /// Gets the number of bytes that this snapshot spans.
+        /// </summary>
+        /// <returns>The number of bytes that this snapshot spans.</returns>
+        public Int64 GetByteCount()
+        {
+            return this.CurrentValues == null ? 0L : this.CurrentValues.LongLength;
+        }
+
+        /// <summary>
+        /// Gets the number of elements contained by this snapshot. Equal to ByteCount / Alignment.
+        /// </summary>
+        /// <returns>The number of elements contained by this snapshot.</returns>
+        public Int32 GetElementCount()
+        {
+            return unchecked((Int32)(this.CurrentValues == null ? 0L : this.CurrentValues.LongLength / this.Alignment));
+        }
+
+        /// <summary>
+        /// Gets the enumerator for an element reference within this snapshot region.
+        /// </summary>
+        /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator GetEnumerator()
         {
             if (this.RegionSize <= 0 || this.Alignment <= 0)
@@ -287,27 +361,29 @@
             GCHandle currentValuesHandle = GCHandle.Alloc(this.CurrentValues, GCHandleType.Pinned);
             GCHandle previousValuesHandle = GCHandle.Alloc(this.PreviousValues, GCHandleType.Pinned);
 
-            this.CurrentSnapshotElement.InitializePointers();
+            this.SnapshotElementRef = new SnapshotElementRef(this);
 
-            // Return the first element. This allows us to call IncrementPointers each loop unconditionally, with small speed gains.
-            yield return this.CurrentSnapshotElement;
+            this.SnapshotElementRef.InitializePointers();
+
+            // Return the first element. This allows us to call IncrementPointers each loop unconditionally based on alignment later.
+            yield return this.SnapshotElementRef;
 
             if (this.Alignment == 1)
             {
-                // Utilizes ++ operators; fast but we check every address
+                // Utilizes ++ operator. This is fast operation wise, but slower because we check every address
                 for (Int32 index = 1; index < this.RegionSize; index++)
                 {
-                    this.CurrentSnapshotElement.IncrementPointers();
-                    yield return this.CurrentSnapshotElement;
+                    this.SnapshotElementRef.IncrementPointers();
+                    yield return this.SnapshotElementRef;
                 }
             }
             else
             {
-                // Utilizes += operators; faster because we access far less addresses
+                // Utilizes += operators. This is faster because we access far less addresses
                 for (Int32 index = this.Alignment; index < this.RegionSize; index += this.Alignment)
                 {
-                    this.CurrentSnapshotElement.AddPointers(this.Alignment);
-                    yield return this.CurrentSnapshotElement;
+                    this.SnapshotElementRef.AddPointers(this.Alignment);
+                    yield return this.SnapshotElementRef;
                 }
             }
 
@@ -315,123 +391,39 @@
             currentValuesHandle.Free();
             previousValuesHandle.Free();
         }
-    }
-    //// End class
-
-    /// <summary>
-    /// Defines a snapshot of memory in an external process, as well as assigned labels to this memory
-    /// </summary>
-    /// <typeparam name="LabelType">The label type of this snapshot region</typeparam>
-    internal class SnapshotRegion<LabelType> : SnapshotRegion where LabelType : struct
-    {
-        public SnapshotRegion(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
-        {
-            this.CurrentSnapshotElement = new SnapshotElement<LabelType>(this);
-        }
-
-        public SnapshotRegion(NormalizedRegion remoteRegion) : base(remoteRegion)
-        {
-            this.CurrentSnapshotElement = new SnapshotElement<LabelType>(this);
-        }
-
-        public SnapshotRegion(SnapshotRegion snapshotRegion) : base(snapshotRegion)
-        {
-            this.CurrentSnapshotElement = new SnapshotElement<LabelType>(this);
-            this.SetCurrentValues(snapshotRegion.GetCurrentValues() == null ? null : (Byte[])snapshotRegion.GetCurrentValues().Clone());
-            this.SetPreviousValues(snapshotRegion.GetPreviousValues() == null ? null : (Byte[])snapshotRegion.GetPreviousValues().Clone());
-        }
 
         /// <summary>
-        /// Gets or sets the labels for individual elements
+        /// Gets the element size of the current data type.
         /// </summary>
-        public LabelType?[] ElementLabels { get; set; }
-
-        /// <summary>
-        /// Indexer to access a labeled unified snapshot element at the specified index
-        /// </summary>
-        /// <param name="index">The index of the element</param>
-        /// <returns>The snapshot at the specified index</returns>
-        [Obfuscation(Exclude = true)]
-        public unsafe override SnapshotElement this[Int32 index]
+        /// <returns>The element size of the current data type.</returns>
+        private Int32 GetElementSize()
         {
-            get
+            // Switch on type code. Could also do Marshal.SizeOf(DataType), but it is slower
+            switch (Type.GetTypeCode(this.GetElementType()))
             {
-                SnapshotElement<LabelType> element = new SnapshotElement<LabelType>(this);
-                element.InitializePointers(index);
-                return element;
+                case TypeCode.Byte:
+                    return sizeof(Byte);
+                case TypeCode.SByte:
+                    return sizeof(SByte);
+                case TypeCode.Int16:
+                    return sizeof(Int16);
+                case TypeCode.Int32:
+                    return sizeof(Int32);
+                case TypeCode.Int64:
+                    return sizeof(Int64);
+                case TypeCode.UInt16:
+                    return sizeof(UInt16);
+                case TypeCode.UInt32:
+                    return sizeof(UInt32);
+                case TypeCode.UInt64:
+                    return sizeof(UInt64);
+                case TypeCode.Single:
+                    return sizeof(Single);
+                case TypeCode.Double:
+                    return sizeof(Double);
+                default:
+                    throw new Exception("Invalid element type");
             }
-        }
-
-        public LabelType?[] GetElementLabels()
-        {
-            return this.ElementLabels;
-        }
-
-        public void SetElementLabels(LabelType? elementLabel)
-        {
-            this.ElementLabels = Enumerable.Repeat(elementLabel, this.RegionSize).ToArray();
-        }
-
-        public void SetElementLabels(LabelType?[] elementLabels)
-        {
-            this.ElementLabels = elementLabels;
-        }
-
-        /// <summary>
-        /// Retrieves a subset of snapshot regions where valid bits are true. Valid bits will be cleared in the new regions
-        /// </summary>
-        /// <returns>A subset of the snapshot regions where the valid bits are true</returns>
-        public IEnumerable<SnapshotRegion<LabelType>> GetValidRegions()
-        {
-            List<SnapshotRegion<LabelType>> validRegions = new List<SnapshotRegion<LabelType>>();
-            for (Int32 startIndex = 0; startIndex < (this.Valid == null ? 0 : this.Valid.Length); startIndex += this.Alignment)
-            {
-                if (!this.Valid[startIndex])
-                {
-                    continue;
-                }
-
-                // Get the length of this valid region
-                Int32 validRegionSize = 0;
-                do
-                {
-                    // We only care if the aligned elements are valid
-                    validRegionSize += this.Alignment;
-                }
-                while (startIndex + validRegionSize < this.Valid.Length && this.Valid[startIndex + validRegionSize]);
-
-                // Create new subregion from this valid region
-                SnapshotRegion<LabelType> subRegion = new SnapshotRegion<LabelType>(this.BaseAddress + startIndex, validRegionSize);
-
-                // Collect the current values. Attempts to collect out of bounds into extended space.
-                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, validRegionSize + this.GetElementReadOverSize()));
-                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, validRegionSize + this.GetElementReadOverSize()));
-
-                // Collect the element labels. Attempts to collect out of bounds into extended space.
-                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, validRegionSize + this.GetElementReadOverSize()));
-
-                // If we were able to grab values into the extended space, update the extension size.
-                if (subRegion.GetCurrentValues() != null)
-                {
-                    subRegion.RegionExtension = subRegion.GetCurrentValues().Length - validRegionSize;
-                }
-                else
-                {
-                    subRegion.RegionExtension = this.GetElementReadOverSize();
-                }
-
-                subRegion.SetElementType(this.ElementType);
-                subRegion.SetAlignment(this.Alignment);
-
-                validRegions.Add(subRegion);
-
-                startIndex += validRegionSize;
-            }
-
-            // Free memory for GC on valid array
-            this.Valid = null;
-
-            return validRegions;
         }
     }
     //// End class

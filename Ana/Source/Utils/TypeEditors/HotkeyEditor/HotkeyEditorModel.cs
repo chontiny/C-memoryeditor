@@ -8,17 +8,35 @@
     using System.Linq;
     using System.Windows;
 
+    /// <summary>
+    /// Type editor for hot keys.
+    /// </summary>
     internal class HotkeyEditorModel : UITypeEditor
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="HotkeyEditorModel" /> class.
+        /// </summary>
         public HotkeyEditorModel()
         {
         }
 
+        /// <summary>
+        /// Gets the editor style. This will be Modal, as it launches a custom editor.
+        /// </summary>
+        /// <param name="context">Type descriptor context.</param>
+        /// <returns>Modal type editor.</returns>
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
         {
             return UITypeEditorEditStyle.Modal;
         }
 
+        /// <summary>
+        /// Launches the editor for this type.
+        /// </summary>
+        /// <param name="context">Type descriptor context.</param>
+        /// <param name="provider">Service provider.</param>
+        /// <param name="value">The current value.</param>
+        /// <returns>The updated values.</returns>
         public override Object EditValue(ITypeDescriptorContext context, IServiceProvider provider, Object value)
         {
             View.HotkeyEditor hotkeyEditor = new View.HotkeyEditor(value == null ? null : (value as IEnumerable<IHotkey>)?.ToList());

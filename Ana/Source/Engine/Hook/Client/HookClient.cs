@@ -32,6 +32,10 @@
         /// </summary>
         private ISpeedHackInterface SpeedHackInterface { get; set; }
 
+        /// <summary>
+        /// Injects the hook into the specified process
+        /// </summary>
+        /// <param name="process">The process to inject into</param>
         public void Inject(Process process)
         {
             // Skip if the process is already hooked, or if there is no main window
@@ -66,20 +70,34 @@
             }
         }
 
+        /// <summary>
+        /// Gets the graphics interface hook object
+        /// </summary>
+        /// <returns>The graphics interface hook object</returns>
         public IGraphicsInterface GetGraphicsInterface()
         {
             return this.GraphicsInterface;
         }
 
+        /// <summary>
+        /// Gets the speed hack hook object
+        /// </summary>
+        /// <returns>The speed hack hook object</returns>
         public ISpeedHackInterface GetSpeedHackInterface()
         {
             return this.SpeedHackInterface;
         }
 
+        /// <summary>
+        /// Allows the server to ping the client to ensure that it is still alive
+        /// </summary>
         public void Ping()
         {
         }
 
+        /// <summary>
+        /// Uninjects the hook from the external process
+        /// </summary>
         public void Uninject()
         {
             this.GraphicsInterface = null;

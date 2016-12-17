@@ -6,7 +6,6 @@
     using Engine.Input.Keyboard;
     using Engine.Input.Mouse;
     using LabelThresholder;
-    using Results.ScanResults;
     using SharpDX.DirectInput;
     using Snapshots;
     using System;
@@ -40,7 +39,7 @@
             }
         }
 
-        private Snapshot<Int16> Snapshot { get; set; }
+        private Snapshot Snapshot { get; set; }
 
         private Action UpdateScanCount { get; set; }
 
@@ -66,7 +65,8 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).CloneAs<Int16>();
+            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
+            this.Snapshot.LabelType = typeof(Int16);
 
             if (this.Snapshot == null)
             {
@@ -74,32 +74,45 @@
                 return;
             }
 
-            this.Snapshot.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
-            this.Snapshot.Alignment = SettingsViewModel.GetInstance().Alignment;
-
             // Initialize with no correlation
-            this.Snapshot.SetElementLabels(0);
+            this.Snapshot.SetElementLabels<Int16>(0);
             this.TimeOutIntervalMs = SettingsViewModel.GetInstance().InputCorrelatorTimeOutInterval;
 
             base.Begin();
         }
 
+        /// <summary>
+        /// Event received when a key is pressed
+        /// </summary>
+        /// <param name="key">The key that was pressed</param>
         public void OnKeyPress(Key key)
         {
         }
 
+        /// <summary>
+        /// Event received when a key is down
+        /// </summary>
+        /// <param name="key">The key that is down</param>
         public void OnKeyDown(Key key)
         {
         }
 
+        /// <summary>
+        /// Event received when a key is released
+        /// </summary>
+        /// <param name="key">The key that was released</param>
         public void OnKeyRelease(Key key)
         {
         }
 
+        /// <summary>
+        /// Event received when a set of keys are down
+        /// </summary>
+        /// <param name="pressedKeys">The down keys</param>
         public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
         {
             // If any of our keyboard hotkeys include the current set of pressed keys, trigger activation/deactivation
-            if (this.HotKeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.GetActivationKeys().All(y => pressedKeys.Contains(y))))
+            if (this.HotKeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.ActivationKeys.All(y => pressedKeys.Contains(y))))
             {
                 this.LastActivated = DateTime.Now;
             }
@@ -108,9 +121,9 @@
         protected override void OnUpdate()
         {
             // Read memory to update previous and current values
-            this.Snapshot.ReadAllSnapshotMemory();
+            this.Snapshot.ReadAllMemory();
 
-            Boolean conditionValid = this.IsInputConditionValid(this.Snapshot.TimeStamp);
+            Boolean conditionValid = this.IsInputConditionValid(this.Snapshot.GetTimeSinceLastUpdate());
 
             // Note the duplicated code here is an optimization to minimize comparisons done per iteration
             if (conditionValid)
@@ -120,18 +133,18 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
                 {
-                    SnapshotRegion<Int16> region = (SnapshotRegion<Int16>)regionObject;
+                    SnapshotRegion region = regionObject as SnapshotRegion;
 
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (SnapshotElement<Int16> element in region)
+                    foreach (SnapshotElementRef element in region)
                     {
                         if (element.Changed())
                         {
-                            element.ElementLabel++;
+                            ((dynamic)element).ElementLabel++;
                         }
                     }
                 });
@@ -143,18 +156,18 @@
                 SettingsViewModel.GetInstance().ParallelSettings,
                 (regionObject) =>
                 {
-                    SnapshotRegion<Int16> region = regionObject as SnapshotRegion<Int16>;
+                    SnapshotRegion region = regionObject as SnapshotRegion;
 
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (SnapshotElement<Int16> element in region)
+                    foreach (SnapshotElementRef element in region)
                     {
                         if (element.Changed())
                         {
-                            element.ElementLabel--;
+                            ((dynamic)element).ElementLabel--;
                         }
                     }
                 });
@@ -169,29 +182,27 @@
         /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
-
             // Prefilter items with negative penalties (ie constantly changing variables)
-            this.Snapshot.MarkAllInvalid();
-            foreach (SnapshotRegion<Int16> region in this.Snapshot)
+            this.Snapshot.SetAllValidBits(false);
+            foreach (SnapshotRegion region in this.Snapshot)
             {
-                foreach (SnapshotElement<Int16> element in region)
+                foreach (SnapshotElementRef element in region)
                 {
-                    if (element.ElementLabel.Value > 0)
+                    if ((Int16)element.ElementLabel > 0)
                     {
-                        element.Valid = true;
+                        element.SetValid(true);
                     }
                 }
             }
 
             this.Snapshot.DiscardInvalidRegions();
-            this.Snapshot.ScanMethod = "Input Correlator";
 
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
 
             this.CleanUp();
             LabelThresholderViewModel.GetInstance().IsVisible = true;
             LabelThresholderViewModel.GetInstance().IsActive = true;
+            base.OnEnd();
         }
 
         private void InitializeObjects()
@@ -202,9 +213,9 @@
 
         private void InitializeListeners()
         {
-            EngineCore.GetInstance()?.Input?.GetKeyboardCapture().Subscribe(this);
-            EngineCore.GetInstance()?.Input?.GetControllerCapture().Subscribe(this);
-            EngineCore.GetInstance()?.Input?.GetMouseCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetControllerCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetMouseCapture().Subscribe(this);
         }
 
         private Boolean IsInputConditionValid(DateTime updateTime)
@@ -221,9 +232,9 @@
         {
             this.Snapshot = null;
 
-            EngineCore.GetInstance()?.Input?.GetKeyboardCapture().Unsubscribe(this);
-            EngineCore.GetInstance()?.Input?.GetControllerCapture().Unsubscribe(this);
-            EngineCore.GetInstance()?.Input?.GetMouseCapture().Unsubscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().Unsubscribe(this);
+            EngineCore.GetInstance().Input?.GetControllerCapture().Unsubscribe(this);
+            EngineCore.GetInstance().Input?.GetMouseCapture().Unsubscribe(this);
         }
     }
     //// End class

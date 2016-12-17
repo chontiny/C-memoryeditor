@@ -16,7 +16,6 @@
     using System.Windows.Media.Imaging;
     using UserSettings;
     using Utils.Extensions;
-    using Utils.Validation;
 
     /// <summary>
     /// View model for the Process Selector
@@ -40,17 +39,25 @@
                 () => { return new ScanResultsViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
+        /// <summary>
+        /// The active data type for the scan results.
+        /// </summary>
         private Type activeType;
 
         /// <summary>
         /// The current page of scan results
         /// </summary>
-        private UInt64 currentPage;
+        private Int64 currentPage;
 
         /// <summary>
         /// The total number of addresses
         /// </summary>
-        private UInt64 addressCount;
+        private Int64 addressCount;
+
+        /// <summary>
+        /// The total number of bytes in memory
+        /// </summary>
+        private Int64 byteCount;
 
         /// <summary>
         /// The addresses on the current page
@@ -90,24 +97,54 @@
             this.UpdateScanResults();
         }
 
+        /// <summary>
+        /// Gets the command to change the active data type to SByte.
+        /// </summary>
         public ICommand ChangeTypeSByteCommand { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Int16.
+        /// </summary>
         public ICommand ChangeTypeInt16Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Int32.
+        /// </summary>
         public ICommand ChangeTypeInt32Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Int64.
+        /// </summary>
         public ICommand ChangeTypeInt64Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Byte.
+        /// </summary>
         public ICommand ChangeTypeByteCommand { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to UInt16.
+        /// </summary>
         public ICommand ChangeTypeUInt16Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to UInt32.
+        /// </summary>
         public ICommand ChangeTypeUInt32Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to UInt64.
+        /// </summary>
         public ICommand ChangeTypeUInt64Command { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Single.
+        /// </summary>
         public ICommand ChangeTypeSingleCommand { get; private set; }
 
+        /// <summary>
+        /// Gets the command to change the active data type to Double.
+        /// </summary>
         public ICommand ChangeTypeDoubleCommand { get; private set; }
 
         /// <summary>
@@ -135,6 +172,9 @@
         /// </summary>
         public ICommand AddAddressCommand { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the active scan results data type.
+        /// </summary>
         public Type ActiveType
         {
             get
@@ -152,6 +192,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the name associated with the active data type.
+        /// </summary>
         public String ActiveTypeName
         {
             get
@@ -184,6 +227,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the image associated with the active data type.
+        /// </summary>
         public BitmapSource ActiveTypeImage
         {
             get
@@ -219,7 +265,7 @@
         /// <summary>
         /// Gets or sets the total number of addresses found
         /// </summary>
-        public UInt64 CurrentPage
+        public Int64 CurrentPage
         {
             get
             {
@@ -237,7 +283,7 @@
         /// <summary>
         /// Gets the total number of addresses found
         /// </summary>
-        public UInt64 PageCount
+        public Int64 PageCount
         {
             get
             {
@@ -246,20 +292,26 @@
         }
 
         /// <summary>
-        /// Gets the size (in B, KB, MB, GB, TB, etc) of the results found
+        /// Gets or sets the total number of bytes found.
         /// </summary>
-        public String ResultSize
+        public Int64 ByteCount
         {
             get
             {
-                return Conversions.BytesToMetric<UInt64>(this.addressCount);
+                return this.byteCount;
+            }
+
+            set
+            {
+                this.byteCount = value;
+                this.RaisePropertyChanged(nameof(this.ByteCount));
             }
         }
 
         /// <summary>
         /// Gets or sets the total number of addresses found
         /// </summary>
-        public UInt64 ResultCount
+        public Int64 ResultCount
         {
             get
             {
@@ -270,7 +322,6 @@
             {
                 this.addressCount = value;
                 this.RaisePropertyChanged(nameof(this.ResultCount));
-                this.RaisePropertyChanged(nameof(this.ResultSize));
                 this.RaisePropertyChanged(nameof(this.PageCount));
             }
         }
@@ -286,6 +337,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the lock for accessing observers.
+        /// </summary>
         private Object ObserverLock { get; set; }
 
         /// <summary>
@@ -340,6 +394,7 @@
         public void Update(Snapshot snapshot)
         {
             this.ResultCount = snapshot == null ? 0 : snapshot.GetElementCount();
+            this.ByteCount = snapshot == null ? 0 : snapshot.GetByteCount();
             this.CurrentPage = 0;
         }
 
@@ -358,17 +413,18 @@
                 return;
             }
 
-            UInt64 startIndex = Math.Min(ScanResultsViewModel.PageSize * this.CurrentPage, snapshot.GetElementCount());
-            UInt64 endIndex = Math.Min((ScanResultsViewModel.PageSize * this.CurrentPage) + ScanResultsViewModel.PageSize, snapshot.GetElementCount());
+            Int64 startIndex = Math.Min(ScanResultsViewModel.PageSize * this.CurrentPage, snapshot.GetElementCount());
+            Int64 endIndex = Math.Min((ScanResultsViewModel.PageSize * this.CurrentPage) + ScanResultsViewModel.PageSize, snapshot.GetElementCount());
 
-            for (UInt64 index = startIndex; index < endIndex; index++)
+            for (Int64 index = startIndex; index < endIndex; index++)
             {
-                SnapshotElement element = snapshot[(Int32)index];
+                SnapshotElementRef element = snapshot[index];
 
                 String label = String.Empty;
-                if (((dynamic)snapshot)[(Int32)index].ElementLabel != null)
+
+                if (element.GetElementLabel() != null)
                 {
-                    label = ((dynamic)snapshot)[(Int32)index].ElementLabel.ToString();
+                    label = element.GetElementLabel().ToString();
                 }
 
                 String currentValue = String.Empty;
@@ -407,6 +463,10 @@
             });
         }
 
+        /// <summary>
+        /// Changes the active scan results type.
+        /// </summary>
+        /// <param name="newType">The new scan results type.</param>
         private void ChangeType(Type newType)
         {
             this.ActiveType = newType;
@@ -450,7 +510,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer</param>
         private void AddAddress(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, typeof(Int32));
+            ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, this.ActiveType);
         }
 
         /// <summary>

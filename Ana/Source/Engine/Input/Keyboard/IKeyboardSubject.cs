@@ -8,16 +8,40 @@
     /// </summary>
     internal interface IKeyboardSubject : IInputCapture
     {
+        /// <summary>
+        /// Subscribes to keyboard capture events
+        /// </summary>
+        /// <param name="subject">The observer to subscribe</param>
         void Subscribe(IKeyboardObserver subject);
 
+        /// <summary>
+        /// Unsubscribes from keyboard capture events
+        /// </summary>
+        /// <param name="subject">The observer to unsubscribe</param>
         void Unsubscribe(IKeyboardObserver subject);
 
-        void NotifyKeyRelease(Key key);
-
+        /// <summary>
+        /// Notifies observers of a key press event
+        /// </summary>
+        /// <param name="key">The key that was pressed</param>
         void NotifyKeyPress(Key key);
 
+        /// <summary>
+        /// Notifies observers of a key release event
+        /// </summary>
+        /// <param name="key">The key that was released</param>
+        void NotifyKeyRelease(Key key);
+
+        /// <summary>
+        /// Notifies observers of a key down event
+        /// </summary>
+        /// <param name="key">The key that is down</param>
         void NotifyKeyDown(Key key);
 
+        /// <summary>
+        /// Notifies observers of a set of key down events
+        /// </summary>
+        /// <param name="downKeys">The keys that are down</param>
         void NotifyAllDownKeys(HashSet<Key> downKeys);
     }
     //// End interface

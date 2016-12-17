@@ -2,14 +2,12 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
     using System.Runtime.Serialization;
 
     /// <summary>
     /// A controller hotkey, which is activated by a given set of input
     /// </summary>
     [DataContract]
-    [Obfuscation(Exclude = true, ApplyToMembers = true)]
     internal class ControllerHotkey : IHotkey
     {
         /// <summary>
@@ -20,19 +18,16 @@
             this.ActivationKeys = new HashSet<Int32>();
         }
 
+        /// <summary>
+        /// Gets or sets the set of inputs corresponding to this hotkey
+        /// </summary>
         [DataMember]
         public HashSet<Int32> ActivationKeys { get; set; }
 
-        public void SetActivationKeys(IEnumerable<Int32> activationKeys)
-        {
-            this.ActivationKeys = new HashSet<Int32>(activationKeys);
-        }
-
-        public HashSet<Int32> GetActivationKeys()
-        {
-            return this.ActivationKeys;
-        }
-
+        /// <summary>
+        /// Gets the string representation of the hotkey inputs
+        /// </summary>
+        /// <returns>The string representatio of hotkey inputs</returns>
         public override String ToString()
         {
             return base.ToString();

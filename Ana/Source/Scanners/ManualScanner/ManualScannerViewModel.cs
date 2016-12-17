@@ -143,11 +143,6 @@
         public ICommand SelectIncreasedByXCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.Invalid"/> constraint
-        /// </summary>
-        public ICommand SelectInvalidCommand { get; private set; }
-
-        /// <summary>
         /// Gets the command to select the <see cref="ConstraintsEnum.LessThan"/> constraint
         /// </summary>
         public ICommand SelectLessThanCommand { get; private set; }

@@ -3,7 +3,6 @@
     using Processes;
     using System;
     using System.Collections.Generic;
-    using System.Reflection;
 
     /// <summary>
     /// An interface that describes general methods for memory manipulations that must be handled by the operating system
@@ -141,7 +140,6 @@
         /// <param name="address">The address to read from</param>
         /// <param name="success">Whether or not the read succeeded</param>
         /// <returns>The value read from memory</returns>
-        [Obfuscation(Exclude = true)]
         dynamic Read(Type elementType, IntPtr address, out Boolean success);
 
         /// <summary>
@@ -168,7 +166,6 @@
         /// <param name="elementType">The data type to write</param>
         /// <param name="address">The address to write to</param>
         /// <param name="value">The value to write</param>
-        [Obfuscation(Exclude = true)]
         void Write(Type elementType, IntPtr address, dynamic value);
 
         /// <summary>
@@ -185,6 +182,42 @@
         /// <param name="address">The address to write to</param>
         /// <param name="values">The value to write</param>
         void WriteBytes(IntPtr address, Byte[] values);
+
+        /// <summary>
+        /// Collects the window title of the running process.
+        /// </summary>
+        /// <returns>The window title of the running process.</returns>
+        String CollectWindowTitle();
+
+        /// <summary>
+        /// Collects the version from the binary. This information should be stored directly in the binary.
+        /// </summary>
+        /// <returns>The version of the target process, taken from the binary.</returns>
+        String CollectBinaryVersion();
+
+        /// <summary>
+        /// Collects the binary header (such as the PE header) and creates a SHA-256 hash based on the header information.
+        /// </summary>
+        /// <returns>A SHA-256 hash computed from the header of the binary.</returns>
+        String CollectBinaryHeaderHash();
+
+        /// <summary>
+        /// Collects the binary import hash.
+        /// </summary>
+        /// <returns>A hash computed from the imports of the binary.</returns>
+        String CollectBinaryImportHash();
+
+        /// <summary>
+        /// Collects a "hash", which is simply the first 128 bytes of the main module encoded in base-64.
+        /// </summary>
+        /// <returns>A hash based on the first 128 bytes of the main module.</returns>
+        String CollectMainModuleHash();
+
+        /// <summary>
+        /// Collects a hash code to identify the game loaded in the running emulator.
+        /// </summary>
+        /// <returns>A hash identifying the game running in the target process emulator.</returns>
+        String CollectEmulatorHash();
     }
     //// End interface
 }

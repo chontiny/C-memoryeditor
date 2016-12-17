@@ -2,6 +2,7 @@
 {
     using Engine;
     using Engine.OperatingSystems;
+    using Results.ScanResults;
     using Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
@@ -12,7 +13,7 @@
     /// <summary>
     /// Manages snapshots of memory taken from the target process
     /// </summary>
-    internal class SnapshotManager
+    internal class SnapshotManager : IScanResultsObserver
     {
         /// <summary>
         /// Singleton instance of Snapshot Manager
@@ -126,7 +127,7 @@
         }
 
         /// <summary>
-        /// Collects all snapshot regions in the target process
+        /// Collects all snapshot regions in the target process. Will not read the values of the snapshots.
         /// </summary>
         /// <param name="useSettings">Whether or not to apply user settings to the query</param>
         /// <returns>Regions of memory in the target process</returns>
@@ -199,9 +200,9 @@
 
             // Convert each virtual page to a snapshot region (a more condensed representation of the information)
             List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
-            virtualPages.ForEach(x => memoryRegions.Add(new SnapshotRegion<Null>(x.BaseAddress, x.RegionSize)));
+            virtualPages.ForEach(x => memoryRegions.Add(new SnapshotRegion(x.BaseAddress, x.RegionSize)));
 
-            return new Snapshot<Null>(memoryRegions);
+            return new Snapshot(memoryRegions);
         }
 
         /// <summary>
@@ -274,8 +275,18 @@
             }
         }
 
+        public void Update(Type activeType)
+        {
+            Snapshot activeSnapshot = this.GetActiveSnapshot(createIfNone: false);
+
+            if (activeSnapshot != null)
+            {
+                this.GetActiveSnapshot(createIfNone: false).ElementType = activeType;
+            }
+        }
+
         /// <summary>
-        /// Saves a new snapshot, which becomes the current active snapshot
+        /// Saves a new snapshot, which will become the current active snapshot
         /// </summary>
         /// <param name="snapshot">The snapshot to save</param>
         public void SaveSnapshot(Snapshot snapshot)
@@ -307,6 +318,7 @@
                 }
             }
         }
+
     }
     //// End class
 }

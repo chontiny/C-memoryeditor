@@ -6,8 +6,19 @@
     using System.Globalization;
     using Validation;
 
+    /// <summary>
+    /// Dynamic type converter for use in the property viewer.
+    /// </summary>
     internal class DynamicConverter : StringConverter
     {
+        /// <summary>
+        /// Converts a value to the proper dynamic type.
+        /// </summary>
+        /// <param name="context">Type descriptor context.</param>
+        /// <param name="culture">Globalization info.</param>
+        /// <param name="value">The value being converted.</param>
+        /// <param name="destinationType">The target type to convert to.</param>
+        /// <returns>The converted value.</returns>
         public override Object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, Object value, Type destinationType)
         {
             String valueString = (value == null) ? String.Empty : value.ToString();
@@ -27,6 +38,13 @@
             return isHex ? Conversions.ParseValueAsHex(valueType, valueString) : Conversions.ParseValueAsDec(valueType, valueString);
         }
 
+        /// <summary>
+        /// Converts an address string to the corresponding value.
+        /// </summary>
+        /// <param name="context">Type descriptor context.</param>
+        /// <param name="culture">Globalization info.</param>
+        /// <param name="value">The value being converted.</param>
+        /// <returns>The converted value.</returns>
         public override Object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)
         {
             Type valueType = null;
@@ -55,6 +73,23 @@
             return isHex ? Conversions.ParseHexStringAsValue(valueType, value as String) : Conversions.ParseDecStringAsValue(valueType, value as String);
         }
 
+        /// <summary>
+        /// Determines if this converter can convert to the given source type.
+        /// </summary>
+        /// <param name="context">Type descriptor context.</param>
+        /// <param name="sourceType">The source type.</param>
+        /// <returns>True if this converter can convert to the given type.</returns>
+        public override Boolean CanConvertTo(ITypeDescriptorContext context, Type sourceType)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Determines if this converter can convert from the given source type.
+        /// </summary>
+        /// <param name="context">Type descriptor context.</param>
+        /// <param name="sourceType">The source type.</param>
+        /// <returns>True if this converter can convert from the given type.</returns>
         public override Boolean CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
             return true;

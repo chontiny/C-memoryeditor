@@ -30,19 +30,16 @@
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         public delegate IntPtr QueryPerformanceCounter2(out Int64 performanceCount);
 
-        public Int32 ProcessId { get; set; }
-
+        /// <summary>
+        /// Hook to kernel methods in the external process
+        /// </summary>
         private LocalHook Hook { get; set; }
 
+        /// <summary>
+        /// Sets the speed in the external process
+        /// </summary>
+        /// <param name="speed">The speed multiplier</param>
         public void SetSpeed(Double speed)
-        {
-        }
-
-        public void Disconnect()
-        {
-        }
-
-        public void Ping()
         {
         }
 
@@ -54,6 +51,7 @@
 
         [DllImport("kernel32.dll")]
         private static extern Boolean QueryPerformanceCounter(out Int64 performanceCount);
+
 
         [DllImport("Kernel32.dll")]
         private static extern Boolean QueryPerformanceFrequency(out Int64 performanceFrequency);
@@ -70,8 +68,7 @@
 
             public override Object InitializeLifetimeService()
             {
-                // Returning null holds the object alive
-                // until it is explicitly destroyed
+                // Returning null holds the object alive until it is explicitly destroyed
                 return null;
             }
 

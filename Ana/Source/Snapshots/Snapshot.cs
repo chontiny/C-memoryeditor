@@ -1,67 +1,69 @@
 ﻿namespace Ana.Source.Snapshots
 {
+    using Engine.OperatingSystems;
+    using Results.ScanResults;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Reflection;
-    using System.Threading.Tasks;
     using UserSettings;
     using Utils.Extensions;
 
     /// <summary>
-    /// Defines data contained in a single snapshot
+    /// Defines a snapshot of memory in an external process.
     /// </summary>
-    internal abstract class Snapshot : IEnumerable
+    internal class Snapshot : IEnumerable
     {
-        /// <summary>
-        /// The data type of values contained in this snapshot
-        /// </summary>
-        private Type elementType;
-
-        /// <summary>
-        /// Memory alignment of the regions contained in the snapshot
-        /// </summary>
         private Int32 alignment;
 
-        /// <summary>
-        /// Gets or sets a string indicating from where this snapshot was generated
-        /// </summary>
-        public String ScanMethod { get; set; }
+        private Type elementType;
+
+        private Type labelType;
 
         /// <summary>
-        /// Gets or sets the time stamp of most recent scan for a given snapshot
+        /// Initializes a new instance of the <see cref="Snapshot" /> class.
         /// </summary>
-        public DateTime TimeStamp { get; protected set; }
-
-        /// <summary>
-        /// Gets or sets the memory alignment of the regions contained in the snapshot
-        /// </summary>
-        public Int32 Alignment
+        /// <param name="snapshotName">The snapshot generation method name.</param>
+        public Snapshot(String snapshotName = null)
         {
-            get
-            {
-                return this.alignment;
-            }
-
-            set
-            {
-                this.alignment = value;
-                if (this.SnapshotRegions == null)
-                {
-                    return;
-                }
-
-                foreach (SnapshotRegion region in this)
-                {
-                    region.SetAlignment(this.alignment);
-                }
-            }
+            this.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
+            this.TimeSinceLastUpdate = DateTime.Now;
+            this.SnapshotName = snapshotName == null ? String.Empty : snapshotName;
+            this.SnapshotRegions = new List<SnapshotRegion>();
+            this.Alignment = SettingsViewModel.GetInstance().Alignment;
         }
 
         /// <summary>
-        /// Gets or sets the data type of values contained in this snapshot
+        /// Initializes a new instance of the <see cref="Snapshot" /> class.
         /// </summary>
+        /// <param name="snapshotRegions">The regions with which to initialize this snapshot.</param>
+        /// <param name="snapshotName">The snapshot generation method name.</param>
+        public Snapshot(IEnumerable<SnapshotRegion> snapshotRegions, String snapshotName = null) : this(snapshotName)
+        {
+            this.AddSnapshotRegions(snapshotRegions);
+        }
+
+        /// <summary>
+        /// Gets the time since the last update was performed on this snapshot.
+        /// </summary>
+        public DateTime TimeSinceLastUpdate { get; private set; }
+
+        /// <summary>
+        /// Gets the name associated with the method by which this snapshot was generated.
+        /// </summary>
+        public String SnapshotName { get; private set; }
+
+        /// <summary>
+        /// Gets the total number of bytes contained in this snapshot.
+        /// </summary>
+        public Int64 ByteCount
+        {
+            get
+            {
+                return this.SnapshotRegions == null ? 0L : this.SnapshotRegions.AsEnumerable().Sum(x => x.GetByteCount());
+            }
+        }
+
         public Type ElementType
         {
             get
@@ -72,64 +74,67 @@
             set
             {
                 this.elementType = value;
+                this.SnapshotRegions?.ForEach(x => x.ElementType = value);
+            }
+        }
 
-                if (this.SnapshotRegions == null || this.SnapshotRegions.Count() <= 0)
-                {
-                    return;
-                }
+        public Type LabelType
+        {
+            get
+            {
+                return this.labelType;
+            }
 
-                foreach (SnapshotRegion region in this)
-                {
-                    region.SetElementType(this.elementType);
-                }
+            set
+            {
+                this.labelType = value;
+                this.SnapshotRegions?.ForEach(x => x.LabelType = value);
             }
         }
 
         /// <summary>
-        /// Gets the total number of bytes contained in this snapshot
+        /// Gets or sets the memory alignment of the regions contained in the snapshot
         /// </summary>
-        public UInt64 MemorySize
+        private Int32 Alignment
         {
             get
             {
-                return this.SnapshotRegions == null ? 0 : (UInt64)this.SnapshotRegions.AsEnumerable().Sum(x => ((Int64)x.RegionSize / this.Alignment) + (Int64)x.GetRegionExtension());
+                return this.alignment;
+            }
+
+            set
+            {
+                this.alignment = value <= 0 ? 1 : value;
+                this.SnapshotRegions?.ForEach(x => x.Alignment = value);
             }
         }
 
         /// <summary>
         /// Gets or sets the snapshot regions contained in this snapshot
         /// </summary>
-        protected IEnumerable<SnapshotRegion> SnapshotRegions { get; set; }
+        private IList<SnapshotRegion> SnapshotRegions { get; set; }
 
         /// <summary>
-        /// Gets or sets the collection of deallocated regions found when reading memory
+        /// Indexer to allow the retrieval of the element at the specified index. Notes: This does NOT index into a region. 
+        /// An individual region is only an Int32, but there may be many of these, so the indexer requires Int64.
         /// </summary>
-        protected List<SnapshotRegion> DeallocatedRegions { get; set; }
-
-        /// <summary>
-        /// Gets or sets the lock for accessing deallocated regions
-        /// </summary>
-        protected Object DeallocatedRegionLock { get; set; }
-
-        /// <summary>
-        /// Indexer to allow the retrieval of the element at the specified index. Note that this does NOT index into a region
-        /// </summary>
-        /// <param name="index">The index of the snapshot element</param>
-        /// <returns>Returns the snapshot element at the specified index</returns>
-        [Obfuscation(Exclude = true)]
-        public SnapshotElement this[Int32 index]
+        /// <param name="index">The index of the snapshot element.</param>
+        /// <returns>Returns the snapshot element at the specified index.</returns>
+        public SnapshotElementRef this[Int64 index]
         {
             get
             {
                 foreach (SnapshotRegion region in this)
                 {
-                    if (index - (region.RegionSize / this.Alignment) >= 0)
+                    Int64 elementCount = (Int64)region.GetElementCount();
+
+                    if (index - elementCount >= 0)
                     {
-                        index -= region.RegionSize / this.Alignment;
+                        index -= elementCount;
                     }
                     else
                     {
-                        return region[index * this.Alignment];
+                        return region[(Int32)index * this.Alignment];
                     }
                 }
 
@@ -138,374 +143,129 @@
         }
 
         /// <summary>
-        /// Creates a shallow clone of this snapshot
+        /// Sets all valid bits to the specified boolean value for each memory region contained.
         /// </summary>
-        /// <returns>A shallow clone of this snapshot</returns>
-        public abstract Snapshot Clone();
-
-        /// <summary>
-        /// Creates a shallow clone of this snapshot with a new specified label type
-        /// </summary>
-        /// <typeparam name="NewLabelType">The label type of the snapshot clone</typeparam>
-        /// <returns>A shallow clone of this snapshot with the new label type</returns>
-        public abstract Snapshot<NewLabelType> CloneAs<NewLabelType>() where NewLabelType : struct;
-
-        /// <summary>
-        /// Reads all memory for every region contained in this snapshot
-        /// </summary>
-        public abstract void ReadAllSnapshotMemory();
-
-        /// <summary>
-        /// Sets a valid bit for each element in this snapshot
-        /// </summary>
-        public abstract void MarkAllValid();
-
-        /// <summary>
-        /// Sets an invalid bit for each element in this snapshot
-        /// </summary>
-        public abstract void MarkAllInvalid();
-
-        /// <summary>
-        /// Discards all sections of memory marked with an invalid bit
-        /// </summary>
-        public abstract void DiscardInvalidRegions();
-
-        /// <summary>
-        /// Gets all snapshot regions contained in this snapshot
-        /// </summary>
-        /// <returns>The snapshot regions contained in this snapshot</returns>
-        public IEnumerable<SnapshotRegion> GetSnapshotRegions()
+        /// <param name="isValid">Value indicating if valid bits will be marked as valid or invalid.</param>
+        public void SetAllValidBits(Boolean isValid)
         {
-            return this.SnapshotRegions;
+            this.SnapshotRegions?.ForEach(x => x.SetAllValidBits(isValid));
         }
 
         /// <summary>
-        /// Gets the number of regions contained in this snapshot
+        /// Discards all sections of memory marked with invalid bits.
         /// </summary>
-        /// <returns>The number of regions contained in this snapshot</returns>
-        public Int32 GetRegionCount()
+        public void DiscardInvalidRegions()
         {
-            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.Count();
-        }
-
-        /// <summary>
-        /// Gets the number of individual elements contaiend in this snapshot
-        /// </summary>
-        /// <returns>The number of individual elements contaiend in this snapshot</returns>
-        public UInt64 GetElementCount()
-        {
-            return this.SnapshotRegions == null ? 0 : (UInt64)this.SnapshotRegions.AsEnumerable().Sum(x => (Int64)(x.RegionSize / this.Alignment));
-        }
-
-        /// <summary>
-        /// Sets the underlying data type of the element to an arbitrary data type of the specified size
-        /// </summary>
-        /// <param name="variableSize">The size of the data contained at each element in this snapshot</param>
-        public void SetVariableSize(Int32 variableSize)
-        {
-            switch (variableSize)
-            {
-                case sizeof(SByte):
-                    this.ElementType = typeof(SByte);
-                    break;
-                case sizeof(Int16):
-                    this.ElementType = typeof(Int16);
-                    break;
-                case sizeof(Int32):
-                    this.ElementType = typeof(Int32);
-                    break;
-                case sizeof(Int64):
-                    this.ElementType = typeof(Int64);
-                    break;
-                default:
-                    throw new Exception("Unsupported variable size");
-            }
-        }
-
-        /// <summary>
-        /// Gets the enumerator for the regions in this snapshot
-        /// </summary>
-        /// <returns>The enumerator for the regions in this snapshot</returns>
-        public IEnumerator GetEnumerator()
-        {
-            return this.SnapshotRegions.GetEnumerator();
-        }
-
-        /// <summary>
-        /// Determines if an address is contained in this snapshot
-        /// </summary>
-        /// <param name="address">The address to search for</param>
-        /// <returns>Returns true if the address is contained</returns>
-        public Boolean ContainsAddress(IntPtr address)
-        {
-            if (this.SnapshotRegions == null || this.SnapshotRegions.Count() == 0)
-            {
-                return false;
-            }
-
-            return this.ContainsAddress(address, this.SnapshotRegions.Count() / 2, 0, this.SnapshotRegions.Count());
-        }
-
-        /// <summary>
-        /// Helper function for searching for an address in this snapshot. Binary search that assumes this snapshot has sorted regions
-        /// </summary>
-        /// <param name="address">The address to search for</param>
-        /// <param name="middle">The middle region index</param>
-        /// <param name="min">The lower region index</param>
-        /// <param name="max">The upper region index</param>
-        /// <returns>Returns true if the address was found</returns>
-        private Boolean ContainsAddress(IntPtr address, Int32 middle, Int32 min, Int32 max)
-        {
-            if (middle < 0 || middle == this.SnapshotRegions.Count() || max < min)
-            {
-                return false;
-            }
-
-            if (address.ToUInt64() < this.SnapshotRegions.ElementAt(middle).BaseAddress.ToUInt64())
-            {
-                return this.ContainsAddress(address, (min + middle - 1) / 2, min, middle - 1);
-            }
-            else if (address.ToUInt64() > this.SnapshotRegions.ElementAt(middle).EndAddress.ToUInt64())
-            {
-                return this.ContainsAddress(address, (middle + 1 + max) / 2, middle + 1, max);
-            }
-            else
-            {
-                return true;
-            }
-        }
-    }
-    //// End class
-
-    /// <summary>
-    /// Defines data contained in a single labeled snapshot
-    /// </summary>
-    /// <typeparam name="LabelType">The type of the labels for each snapshot element</typeparam>
-    internal class Snapshot<LabelType> : Snapshot where LabelType : struct
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Snapshot{LabelType}"/> class
-        /// </summary>
-        public Snapshot()
-        {
-            this.SnapshotRegions = null;
-            this.DeallocatedRegions = new List<SnapshotRegion>();
-            this.DeallocatedRegionLock = new Object();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Snapshot{LabelType}"/> class
-        /// </summary>
-        /// <param name="snapshotRegions">The regions with which to initialize this snapshot</param>
-        public Snapshot(IEnumerable<SnapshotRegion> snapshotRegions)
-        {
-            this.SnapshotRegions = snapshotRegions == null ? null : snapshotRegions.Select(x => new SnapshotRegion<LabelType>(x));
-            this.DeallocatedRegions = new List<SnapshotRegion>();
-            this.DeallocatedRegionLock = new Object();
-            this.MergeRegions();
-        }
-
-        /// <summary>
-        /// Creates a shallow clone of this snapshot
-        /// </summary>
-        /// <returns>A shallow clone of this snapshot</returns>
-        public override Snapshot Clone()
-        {
-            List<SnapshotRegion<LabelType>> regions = new List<SnapshotRegion<LabelType>>();
-
-            if (this.GetRegionCount() > 0)
-            {
-                foreach (SnapshotRegion region in this.GetSnapshotRegions())
-                {
-                    regions.Add(new SnapshotRegion<LabelType>(region));
-                    regions.Last().SetCurrentValues(region.GetCurrentValues());
-                    regions.Last().SetPreviousValues(region.GetPreviousValues());
-                }
-            }
-
-            Snapshot<LabelType> clonedSnapshot = new Snapshot<LabelType>(regions);
-            clonedSnapshot.Alignment = this.Alignment;
-            clonedSnapshot.ElementType = this.GetElementType();
-
-            return clonedSnapshot;
-        }
-
-        /// <summary>
-        /// Creates a shallow clone of this snapshot with a new specified label type
-        /// </summary>
-        /// <typeparam name="NewLabelType">The label type of the snapshot clone</typeparam>
-        /// <returns>A shallow clone of this snapshot with the new label type</returns>
-        public override Snapshot<NewLabelType> CloneAs<NewLabelType>()
-        {
-            return new Snapshot<NewLabelType>(this.Clone().GetSnapshotRegions());
-        }
-
-        /// <summary>
-        /// Sets a valid bit for each element in this snapshot
-        /// </summary>
-        public override void MarkAllValid()
-        {
-            foreach (SnapshotRegion snapshotRegion in this)
-            {
-                snapshotRegion.MarkAllValid();
-            }
-        }
-
-        /// <summary>
-        /// Sets an invalid bit for each element in this snapshot
-        /// </summary>
-        public override void MarkAllInvalid()
-        {
-            foreach (SnapshotRegion snapshotRegion in this)
-            {
-                snapshotRegion.MarkAllInvalid();
-            }
-        }
-
-        /// <summary>
-        /// Expands all memory regions in both directions based on the size of the current element type.
-        /// Useful for filtering methods that isolate changing bytes (ie 1 byte of an 8 byte integer), where we would want to grow to recover the other 7 bytes.
-        /// </summary>
-        /// <param name="expandSize">The size of the region expansion</param>
-        public void ExpandAllRegionsOutward(Int32 expandSize)
-        {
-            foreach (SnapshotRegion snapshotRegion in this)
-            {
-                snapshotRegion.ExpandRegion(expandSize);
-            }
-        }
-
-        /// <summary>
-        /// Reads memory for every snapshot, with each region storing the current and previous read values.
-        /// Handles ScanFailedExceptions by automatically masking deallocated regions against the current virtual memory space
-        /// </summary>
-        public override void ReadAllSnapshotMemory()
-        {
-            this.TimeStamp = DateTime.Now;
-
-            if (this.SnapshotRegions == null || this.SnapshotRegions.Count() <= 0)
-            {
-                return;
-            }
-
-            //// Mask this snapshot regions against active virtual pages in the target
-            //// TODO: Debug this shit, apparently it isn't working correctly
-            //// Snapshot<LabelType> Mask = new Snapshot<LabelType>(SnapshotManager.GetInstance().CollectSnapshot(UseSettings: false, UsePrefilter: false));
-            //// SnapshotRegions = MaskRegions(Mask, this.GetSnapshotRegions());
-
-            Parallel.ForEach(
-                this.SnapshotRegions,
-                SettingsViewModel.GetInstance().ParallelSettings,
-                (snapshotRegion) =>
-            {
-                Boolean readSuccess;
-
-                snapshotRegion.ReadAllRegionMemory(out readSuccess, keepValues: true);
-
-                if (!readSuccess)
-                {
-                    lock (this.DeallocatedRegionLock)
-                    {
-                        if (!this.DeallocatedRegions.Contains(snapshotRegion))
-                        {
-                            this.DeallocatedRegions.Add(snapshotRegion);
-                        }
-                    }
-                }
-            });
-
-            // Mask deallocated regions
-            IEnumerable<SnapshotRegion> newRegions = this.MaskDeallocatedRegions();
-
-            if (newRegions == null || newRegions.Count() <= 0)
-            {
-                return;
-            }
-
-            // Attempt to collect values for the recovered regions
-            foreach (SnapshotRegion snapshotRegion in newRegions)
-            {
-                Boolean readSuccess;
-                snapshotRegion.ReadAllRegionMemory(out readSuccess);
-            }
-        }
-
-        /// <summary>
-        /// Discards all elements marked as invalid, and updates the snapshot regions to contain only valid regions
-        /// </summary>
-        public override void DiscardInvalidRegions()
-        {
-            List<SnapshotRegion<LabelType>> candidateRegions = new List<SnapshotRegion<LabelType>>();
-
-            if (this.SnapshotRegions == null || this.SnapshotRegions.Count() <= 0)
-            {
-                return;
-            }
-
-            // Collect valid element regions
-            foreach (SnapshotRegion<LabelType> snapshotRegion in this)
-            {
-                candidateRegions.AddRange(snapshotRegion.GetValidRegions());
-            }
-
-            // Mask the regions against the original snapshot (this snapshot)
-            IEnumerable<SnapshotRegion<LabelType>> validRegions = this.MaskRegions(this, candidateRegions);
-
-            // Shrink the regions based on their element type
-            if (validRegions != null && validRegions.Count() > 0)
-            {
-                foreach (SnapshotRegion<LabelType> region in validRegions)
-                {
-                    region.RelaxRegion();
-                }
-            }
-
+            List<SnapshotRegion> validRegions = new List<SnapshotRegion>();
+            SnapshotRegions?.ForEach(x => validRegions.AddRange(x.GetValidRegions()));
             this.SnapshotRegions = validRegions;
         }
 
         /// <summary>
-        /// Masks the given memory regions against the memory regions of a given snapshot, keeping the common elements of the two in O(n)
+        /// Unconditionally expands all regions in this snapshot by the specified size.
         /// </summary>
-        /// <param name="mask">The snapshot to mask the target regions against</param>
-        /// <param name="targetRegions">The regions we are performing a mask against</param>
-        /// <returns>A new collection of regions created from the masking operation</returns>
-        public IEnumerable<SnapshotRegion<LabelType>> MaskRegions(Snapshot<LabelType> mask, IEnumerable<SnapshotRegion> targetRegions)
+        /// <param name="expandSize">The size by which to expand the snapshot regions.</param>
+        public void ExpandAllRegions(Int32 expandSize)
         {
-            List<SnapshotRegion<LabelType>> resultRegions = new List<SnapshotRegion<LabelType>>();
+            this.SnapshotRegions?.ForEach(x => x.Expand(expandSize));
+            this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
+        }
+
+        /// <summary>
+        /// Reads all memory for every region contained in this snapshot.
+        /// </summary>
+        public void ReadAllMemory()
+        {
+            Boolean readSuccess;
+            this.TimeSinceLastUpdate = DateTime.Now;
+            this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
+            this.SnapshotRegions?.ForEach(x => x.ReadAllRegionMemory(out readSuccess, keepValues: true));
+        }
+
+        /// <summary>
+        /// Sets the label of every element in this snapshot to the same value.
+        /// </summary>
+        /// <param name="label">The new snapshot label value.</param>
+        public void SetElementLabels<LabelType>(LabelType label) where LabelType : struct, IComparable<LabelType>
+        {
+            this.SnapshotRegions?.ForEach(x => x.SetElementLabels(Enumerable.Repeat(label, x.RegionSize).Cast<Object>().ToArray()));
+        }
+
+        /// <summary>
+        /// Adds snapshot regions to the regions contained in this snapshot. Will automatically merge and sort regions.
+        /// </summary>
+        /// <param name="snapshotRegions">The snapshot regions to add.</param>
+        public void AddSnapshotRegions(IEnumerable<SnapshotRegion> snapshotRegions)
+        {
+            if (this.SnapshotRegions == null)
+            {
+                this.SnapshotRegions = snapshotRegions.ToList();
+            }
+            else
+            {
+                snapshotRegions?.ForEach(x => this.SnapshotRegions.Add(x));
+            }
+
+            // Re-update type and alignment, so that the newly added regions receive updates
+            this.ElementType = this.ElementType;
+            this.Alignment = this.Alignment;
+
+            this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
+        }
+
+        /// <summary>
+        /// Masks the given memory regions against the memory regions of a given snapshot, keeping the common elements of the two in O(n).
+        /// </summary>
+        /// <param name="groundTruth">The snapshot containing the regions to mask the target regions against.</param>
+        public void MaskRegions(Snapshot groundTruth)
+        {
+            this.MaskRegions(groundTruth.GetSnapshotRegions()?.Select(x => x as NormalizedRegion));
+        }
+
+        /// <summary>
+        /// Masks the given memory regions against the given memory regions, keeping the common elements of the two in O(n).
+        /// </summary>
+        /// <param name="groundTruth">The snapshot regions to mask the target regions against.</param>
+        public void MaskRegions(IEnumerable<NormalizedRegion> groundTruth)
+        {
+            List<SnapshotRegion> resultRegions = new List<SnapshotRegion>();
+
+            groundTruth = this.MergeAndSortRegions(groundTruth);
+
+            if (this.SnapshotRegions == null || groundTruth == null || this.SnapshotRegions.Count <= 0 || groundTruth.Count() <= 0)
+            {
+                this.SnapshotRegions = resultRegions;
+                return;
+            }
+
+            this.MergeAndSortRegions();
+
+            return;
 
             // Initialize stacks with regions and masking regions
-            Queue<SnapshotRegion<LabelType>> candidateRegions = new Queue<SnapshotRegion<LabelType>>();
-            Queue<SnapshotRegion<LabelType>> maskingRegions = new Queue<SnapshotRegion<LabelType>>();
-
-            if (targetRegions == null || targetRegions.Count() < 0)
-            {
-                return null;
-            }
-
-            if (mask == null || mask.GetRegionCount() <= 0)
-            {
-                return null;
-            }
+            Queue<SnapshotRegion> candidateRegions = new Queue<SnapshotRegion>();
+            Queue<NormalizedRegion> maskingRegions = new Queue<NormalizedRegion>();
 
             // Build candidate region queue from target region array
-            foreach (SnapshotRegion<LabelType> region in targetRegions.OrderBy(x => x.BaseAddress.ToUInt64()))
+            foreach (SnapshotRegion region in this.SnapshotRegions.OrderBy(x => x.BaseAddress.ToUInt64()))
             {
                 candidateRegions.Enqueue(region);
             }
 
             // Build masking region queue from snapshot
-            foreach (SnapshotRegion<LabelType> maskRegion in mask.GetSnapshotRegions().OrderBy(x => x.BaseAddress.ToUInt64()))
+            foreach (NormalizedRegion maskRegion in groundTruth.OrderBy(x => x.BaseAddress.ToUInt64()))
             {
                 maskingRegions.Enqueue(maskRegion);
             }
 
             if (candidateRegions.Count <= 0 || maskingRegions.Count <= 0)
             {
-                return null;
+                this.SnapshotRegions = resultRegions;
+                return;
             }
 
-            SnapshotRegion<LabelType> currentRegion;
-            SnapshotRegion<LabelType> currentMask = maskingRegions.Dequeue();
+            SnapshotRegion currentRegion;
+            NormalizedRegion currentMask = maskingRegions.Dequeue();
 
             while (candidateRegions.Count > 0)
             {
@@ -532,151 +292,229 @@
                 }
 
                 // Mask is within bounds; Grab the masked portion of this region
-                Int32 baseOffset = 0;
-                if (currentMask.BaseAddress.ToUInt64() > currentRegion.BaseAddress.ToUInt64())
-                {
-                    baseOffset = currentMask.BaseAddress.Subtract(currentRegion.BaseAddress).ToInt32();
-                }
+                Int32 baseOffset = currentMask.BaseAddress.ToUInt64() <= currentRegion.BaseAddress.ToUInt64() ? 0 : currentMask.BaseAddress.Subtract(currentRegion.BaseAddress).ToInt32();
 
-                SnapshotRegion<LabelType> newRegion = new SnapshotRegion<LabelType>(currentRegion);
+                SnapshotRegion newRegion = new SnapshotRegion(currentRegion as NormalizedRegion);
                 newRegion.BaseAddress = currentRegion.BaseAddress + baseOffset;
-                newRegion.EndAddress = Math.Min(currentMask.EndAddress.ToUInt64(), currentRegion.EndAddress.ToUInt64()).ToIntPtr();
-                newRegion.SetCurrentValues(currentRegion.GetCurrentValues().LargestSubArray(baseOffset, newRegion.RegionSize + newRegion.GetRegionExtension()));
-                newRegion.SetPreviousValues(currentRegion.GetPreviousValues().LargestSubArray(baseOffset, newRegion.RegionSize + newRegion.GetRegionExtension()));
-                newRegion.SetElementLabels(currentRegion.GetElementLabels().LargestSubArray(baseOffset, newRegion.RegionSize + newRegion.GetRegionExtension()));
-                newRegion.SetElementType(currentRegion.GetElementType());
-                newRegion.SetAlignment(currentRegion.GetAlignment());
+                newRegion.BaseAddress = Math.Min(currentMask.EndAddress.ToUInt64(), currentRegion.EndAddress.ToUInt64()).ToIntPtr();
+                newRegion.SetCurrentValues(currentRegion.GetCurrentValues().LargestSubArray(baseOffset, newRegion.RegionSize));
+                newRegion.SetPreviousValues(currentRegion.GetPreviousValues().LargestSubArray(baseOffset, newRegion.RegionSize));
+                newRegion.SetElementLabels(currentRegion.GetElementLabels().LargestSubArray(baseOffset, newRegion.RegionSize));
+                newRegion.ElementType = currentRegion.ElementType;
+                newRegion.Alignment = currentRegion.Alignment;
                 resultRegions.Add(newRegion);
             }
 
-            return resultRegions.Count == 0 ? null : resultRegions;
+            this.SnapshotRegions = resultRegions;
         }
 
         /// <summary>
-        /// Removes all snapshot regions contained in this snapshot
+        /// Gets the time since the last update was performed on this snapshot.
         /// </summary>
-        public void ClearSnapshotRegions()
+        /// <returns>The time since the last update.</returns>
+        public DateTime GetTimeSinceLastUpdate()
         {
-            this.SnapshotRegions = null;
+            return this.TimeSinceLastUpdate;
         }
 
         /// <summary>
-        /// Adds snapshot regions to the regions contained in this snapshot. Will automatically merge and sort regions
+        /// Gets all snapshot regions contained in this snapshot
         /// </summary>
-        /// <param name="snapshotRegions">The snapshot regions to add</param>
-        public void AddSnapshotRegions(IEnumerable<SnapshotRegion<LabelType>> snapshotRegions)
+        /// <returns>The snapshot regions contained in this snapshot</returns>
+        public IEnumerable<SnapshotRegion> GetSnapshotRegions()
         {
-            List<SnapshotRegion<LabelType>> newRegions = this.SnapshotRegions == null ? new List<SnapshotRegion<LabelType>>() : ((IEnumerable<SnapshotRegion<LabelType>>)this.SnapshotRegions).ToList();
-            newRegions.AddRange(snapshotRegions);
-            this.SnapshotRegions = newRegions.ToArray();
-            Array.Sort((SnapshotRegion<LabelType>[])this.SnapshotRegions, (x, y) => x.BaseAddress.ToUInt64().CompareTo(y.BaseAddress.ToUInt64()));
-
-            this.MergeRegions();
+            return this.SnapshotRegions;
         }
 
         /// <summary>
-        /// Sets the label of every element in this snapshot to the same value
+        /// Creates a shallow clone of this snapshot.
         /// </summary>
-        /// <param name="label">The new snapshot label value</param>
-        public void SetElementLabels(LabelType label)
+        /// <param name="newSnapshotName">The snapshot generation method name.</param>
+        /// <returns>The shallow cloned snapshot.</returns>
+        public Snapshot Clone(String newSnapshotName = null)
         {
-            foreach (SnapshotRegion<LabelType> region in this)
+            return new Snapshot(this.SnapshotRegions, newSnapshotName);
+        }
+
+        /// <summary>
+        /// Determines if an address is contained in this snapshot.
+        /// </summary>
+        /// <param name="address">The address for which we are searching.</param>
+        /// <returns>True if the address is contained.</returns>
+        public Boolean ContainsAddress(IntPtr address)
+        {
+            if (this.SnapshotRegions == null || this.SnapshotRegions.Count() == 0)
             {
-                region.SetElementLabels(label);
+                return false;
+            }
+
+            return this.ContainsAddress(address, this.SnapshotRegions.Count() / 2, 0, this.SnapshotRegions.Count());
+        }
+
+        /// <summary>
+        /// Gets the number of regions contained in this snapshot.
+        /// </summary>
+        /// <returns>The number of regions contained in this snapshot.</returns>
+        public Int32 GetRegionCount()
+        {
+            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.Count;
+        }
+
+        /// <summary>
+        /// Gets the number of bytes contained in this snapshot.
+        /// </summary>
+        /// <returns>The number of bytes contained in this snapshot.</returns>
+        public Int64 GetByteCount()
+        {
+            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.AsEnumerable().Sum(x => x.GetByteCount());
+        }
+
+        /// <summary>
+        /// Gets the number of individual elements contained in this snapshot.
+        /// </summary>
+        /// <returns>The number of individual elements contained in this snapshot.</returns>
+        public Int64 GetElementCount()
+        {
+            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.AsEnumerable().Sum(x => (Int64)x.GetElementCount());
+        }
+
+        /// <summary>
+        /// Gets the snapshot region enumerator.
+        /// </summary>
+        /// <returns>The snapshot region enumerator.</returns>
+        public IEnumerator GetEnumerator()
+        {
+            return this.SnapshotRegions.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Helper function for searching for an address in this snapshot. Binary search that assumes this snapshot has sorted regions.
+        /// </summary>
+        /// <param name="address">The address for which we are searching.</param>
+        /// <param name="middle">The middle region index.</param>
+        /// <param name="min">The lower region index.</param>
+        /// <param name="max">The upper region index.</param>
+        /// <returns>True if the address was found.</returns>
+        private Boolean ContainsAddress(IntPtr address, Int32 middle, Int32 min, Int32 max)
+        {
+            if (middle < 0 || middle == this.SnapshotRegions.Count() || max < min)
+            {
+                return false;
+            }
+
+            if (address.ToUInt64() < this.SnapshotRegions.ElementAt(middle).BaseAddress.ToUInt64())
+            {
+                return this.ContainsAddress(address, (min + middle - 1) / 2, min, middle - 1);
+            }
+            else if (address.ToUInt64() > this.SnapshotRegions.ElementAt(middle).EndAddress.ToUInt64())
+            {
+                return this.ContainsAddress(address, (middle + 1 + max) / 2, middle + 1, max);
+            }
+            else
+            {
+                return true;
             }
         }
 
         /// <summary>
-        /// Merges regions in the current list of memory regions using a fast stack based algorithm O(nlogn + n)
+        /// Merges regions of a given set of normalized regions using a fast stack based algorithm O(nlogn + n).
         /// </summary>
-        private void MergeRegions()
+        private IEnumerable<NormalizedRegion> MergeAndSortRegions(IEnumerable<NormalizedRegion> regions)
         {
-            if (this.SnapshotRegions == null)
+            if (regions == null || regions.Count() <= 0)
             {
-                return;
+                return null;
             }
 
-            SnapshotRegion<LabelType>[] snapshotRegionArray = ((IEnumerable<SnapshotRegion<LabelType>>)this.SnapshotRegions).ToArray();
+            // First, sort by start address
+            IList<NormalizedRegion> sortedRegions = regions.OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
 
-            if (snapshotRegionArray == null || snapshotRegionArray.Length <= 0)
+            // Create and initialize the stack with the first region
+            Stack<NormalizedRegion> combinedRegions = new Stack<NormalizedRegion>();
+            combinedRegions.Push(sortedRegions[0]);
+
+            // Build the remaining regions
+            for (Int32 index = combinedRegions.Count; index < sortedRegions.Count; index++)
+            {
+                NormalizedRegion top = combinedRegions.Peek();
+
+                if (top.EndAddress.ToUInt64() < sortedRegions[index].BaseAddress.ToUInt64())
+                {
+                    // If the interval does not overlap, put it on the top of the stack
+                    combinedRegions.Push(sortedRegions[index]);
+                }
+                else if (top.EndAddress.ToUInt64() == sortedRegions[index].BaseAddress.ToUInt64())
+                {
+                    // The regions are adjacent; merge them
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                }
+                else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
+                {
+                    // The regions overlap
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                }
+            }
+
+            return combinedRegions.ToList().OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
+        }
+
+        /// <summary>
+        /// Merges regions in the current list of memory regions using a fast stack based algorithm O(nlogn + n).
+        /// </summary>
+        private void MergeAndSortRegions()
+        {
+            if (this.SnapshotRegions == null || SnapshotRegions.Count <= 0)
             {
                 return;
             }
 
             // First, sort by start address
-            Array.Sort(snapshotRegionArray, (x, y) => x.BaseAddress.ToUInt64().CompareTo(y.BaseAddress.ToUInt64()));
+            IList<SnapshotRegion> sortedRegions = this.SnapshotRegions.OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
 
             // Create and initialize the stack with the first region
-            Stack<SnapshotRegion<LabelType>> combinedRegions = new Stack<SnapshotRegion<LabelType>>();
-            combinedRegions.Push(snapshotRegionArray[0]);
+            Stack<SnapshotRegion> combinedRegions = new Stack<SnapshotRegion>();
+            combinedRegions.Push(sortedRegions[0]);
 
             // Build the remaining regions
-            for (Int32 index = combinedRegions.Count; index < snapshotRegionArray.Length; index++)
+            for (Int32 index = combinedRegions.Count; index < sortedRegions.Count; index++)
             {
-                SnapshotRegion<LabelType> top = combinedRegions.Peek();
+                SnapshotRegion top = combinedRegions.Peek();
 
-                if (top.EndAddress.ToUInt64() < snapshotRegionArray[index].BaseAddress.ToUInt64())
+                if (top.EndAddress.ToUInt64() < sortedRegions[index].BaseAddress.ToUInt64())
                 {
                     // If the interval does not overlap, put it on the top of the stack
-                    combinedRegions.Push(snapshotRegionArray[index]);
+                    combinedRegions.Push(sortedRegions[index]);
                 }
-                else if (top.EndAddress.ToUInt64() == snapshotRegionArray[index].BaseAddress.ToUInt64())
+                else if (top.EndAddress.ToUInt64() == sortedRegions[index].BaseAddress.ToUInt64())
                 {
                     // The regions are adjacent; merge them
-                    top.RegionSize = snapshotRegionArray[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
-                    top.SetElementLabels(top.GetElementLabels().Concat(snapshotRegionArray[index].GetElementLabels()));
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+
+                    // Combine values and labels
+                    top.SetElementLabels(top.GetElementLabels()?.Concat(sortedRegions[index].GetElementLabels()));
+                    top.SetCurrentValues(top.GetCurrentValues()?.Concat(sortedRegions[index].GetCurrentValues()));
+                    top.SetPreviousValues(top.GetPreviousValues()?.Concat(sortedRegions[index].GetPreviousValues()));
                 }
-                else if (top.EndAddress.ToUInt64() <= snapshotRegionArray[index].EndAddress.ToUInt64())
+                else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
                 {
                     // The regions overlap
-                    top.RegionSize = snapshotRegionArray[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+
+                    Int32 overlapSize = unchecked((Int32)(sortedRegions[index].EndAddress.ToUInt64() - top.EndAddress.ToUInt64()));
+
+                    // Overlap has conflicting values, so we prioritize the top region and trim the current region
+                    sortedRegions[index].SetElementLabels(sortedRegions[index].GetElementLabels()?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+                    sortedRegions[index].SetCurrentValues(sortedRegions[index].GetCurrentValues()?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+                    sortedRegions[index].SetPreviousValues(sortedRegions[index].GetPreviousValues()?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+
+                    // Combine values and labels
+                    top.SetElementLabels(top.GetElementLabels()?.Concat(sortedRegions[index].GetElementLabels()));
+                    top.SetCurrentValues(top.GetCurrentValues()?.Concat(sortedRegions[index].GetCurrentValues()));
+                    top.SetPreviousValues(top.GetPreviousValues()?.Concat(sortedRegions[index].GetPreviousValues()));
                 }
             }
 
-            // Replace memory regions with merged memory regions
-            SnapshotRegion<LabelType>[] combinedRegionsArray = combinedRegions.ToArray();
-            Array.Sort(combinedRegionsArray, (x, y) => x.BaseAddress.ToUInt64().CompareTo(y.BaseAddress.ToUInt64()));
-            this.SnapshotRegions = combinedRegionsArray;
-        }
-
-        /// <summary>
-        /// Removes deallocated regions and recovers the remaining regions
-        /// </summary>
-        /// <returns>A collection of snapshot regions after performing a mask operation against deallocated regions</returns>
-        private IEnumerable<SnapshotRegion<LabelType>> MaskDeallocatedRegions()
-        {
-            if (this.DeallocatedRegions == null || this.DeallocatedRegions.Count <= 0 || this.SnapshotRegions == null || this.SnapshotRegions.Count() <= 0)
-            {
-                return null;
-            }
-
-            List<SnapshotRegion<LabelType>> newSnapshotRegions = this.SnapshotRegions.Select(x => (SnapshotRegion<LabelType>)x).ToList();
-
-            // Remove invalid items from collection
-            foreach (SnapshotRegion<LabelType> region in this.DeallocatedRegions)
-            {
-                newSnapshotRegions.Remove(region);
-            }
-
-            // Get current memory regions
-            Snapshot<LabelType> mask = SnapshotManager.GetInstance().CollectSnapshot(useSettings: false, usePrefilter: false).CloneAs<LabelType>();
-
-            // Mask each region against the current virtual memory regions
-            IEnumerable<SnapshotRegion<LabelType>> maskedRegions = this.MaskRegions(mask, this.DeallocatedRegions);
-
-            // Merge split regions back with the main list
-            if (maskedRegions != null && maskedRegions.Count() > 0)
-            {
-                newSnapshotRegions.AddRange(maskedRegions);
-            }
-
-            // Clear invalid items
-            this.DeallocatedRegions = new List<SnapshotRegion>();
-
-            // Store result as main snapshot array
-            this.SnapshotRegions = newSnapshotRegions;
-
-            return maskedRegions;
+            this.SnapshotRegions = combinedRegions.ToList().OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
         }
     }
     //// End class

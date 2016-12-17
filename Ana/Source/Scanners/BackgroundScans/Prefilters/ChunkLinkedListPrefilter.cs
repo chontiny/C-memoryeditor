@@ -80,19 +80,17 @@
                         continue;
                     }
 
-                    SnapshotRegion newRegion = new SnapshotRegion<Null>(virtualPage);
-                    newRegion.SetAlignment(SettingsViewModel.GetInstance().Alignment);
+                    SnapshotRegion newRegion = new SnapshotRegion(virtualPage);
                     regions.Add(newRegion);
                 }
             }
 
             // Create snapshot from valid regions, do standard expand/mask operations to catch lost bytes for larger data types
-            Snapshot<Null> prefilteredSnapshot = new Snapshot<Null>(regions);
-            prefilteredSnapshot.Alignment = SettingsViewModel.GetInstance().Alignment;
-            prefilteredSnapshot.ExpandAllRegionsOutward(PrimitiveTypes.GetLargestPrimitiveSize() - 1);
-            prefilteredSnapshot = new Snapshot<Null>(prefilteredSnapshot.MaskRegions(prefilteredSnapshot, regions));
+            Snapshot prefilteredSnapshot = new Snapshot(regions);
+            prefilteredSnapshot.ExpandAllRegions(PrimitiveTypes.GetLargestPrimitiveSize() - 1);
+            prefilteredSnapshot.MaskRegions(prefilteredSnapshot);
 
-            return new Snapshot<Null>(regions);
+            return prefilteredSnapshot;
         }
 
         public override void Begin()
@@ -118,6 +116,7 @@
         /// <summary>
         /// Queries virtual pages from the OS to dertermine if any allocations or deallocations have happened
         /// </summary>
+        /// <returns></returns>
         private IEnumerable<RegionProperties> CollectNewPages()
         {
             List<RegionProperties> newRegions = new List<RegionProperties>();
