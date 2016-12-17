@@ -3,6 +3,7 @@
     using Source.Project;
     using System;
     using System.IO;
+    using System.Linq;
     using System.Net;
     using System.Reflection;
     using System.Windows.Controls;
@@ -57,12 +58,15 @@
 
             try
             {
-                if (e.Uri.AbsoluteUri.ToLower().EndsWith(FileExtension))
+                if (e.Uri.Query.Split('&').Any(x => x.ToLower().EndsWith(FileExtension)))
                 {
+                    // Get filename from the url
+                    String fileName = e.Uri.Query.Split('&').Where(x => x.ToLower().EndsWith(FileExtension)).First().Split('=').Last() ?? ("default" + FileExtension);
+
                     e.Cancel = true;
 
                     WebClient client = new WebClient();
-                    client.DownloadDataCompleted += (source, args) => this.DownloadDataCompleted(source, args, Path.GetFileName(e.Uri.AbsoluteUri));
+                    client.DownloadDataCompleted += (source, args) => this.DownloadDataCompleted(source, args, fileName);
                     client.DownloadDataAsync(e.Uri);
                 }
             }
