@@ -718,10 +718,6 @@
       <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
       <Name>AnathenaProxy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AvalonDock\AvalonDock.csproj">
-      <Project>{db81988f-e0f2-45a0-a1fd-8c37f3d35244}</Project>
-      <Name>AvalonDock</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AvalonEdit\AvalonEdit.csproj">
       <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
       <Name>AvalonEdit</Name>
@@ -821,6 +817,14 @@
     <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
       <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
       <Name>WpfToolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xceed.Wpf.AvalonDock.Themes.VS2013\Xceed.Wpf.AvalonDock.Themes.VS2013.csproj">
+      <Project>{89286eb4-b4a1-418c-839a-067b00f442d8}</Project>
+      <Name>Xceed.Wpf.AvalonDock.Themes.VS2013</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
+      <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>
+      <Name>Xceed.Wpf.AvalonDock</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

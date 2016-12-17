@@ -351,7 +351,7 @@
             Background="{StaticResource AvalonDock_Expression_BaseColor4}">
             <!--  Theme  -->
             <avalonDock:DockingManager.Theme>
-                <avalonDock:ExpressionDarkTheme />
+                <avalonDock:Vs2013DarkTheme />
             </avalonDock:DockingManager.Theme>
 
             <!--  All Dockable Windows  -->
