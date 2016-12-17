@@ -528,7 +528,8 @@
                                 DropDownContextMenuDataContext="{Binding Path=LayoutItem, RelativeSource={RelativeSource TemplatedParent}}"
                                 Focusable="False"
                                 Style="{StaticResource AvalonDockThemeVs2013ToolButtonStyle}"
-                                ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_CxMenu_Hint}">
+                                ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_CxMenu_Hint}"
+                                Visibility="Collapsed">
                                 <Rectangle
                                     x:Name="PART_ImgMenuPin"
                                     Width="13"
@@ -549,7 +550,7 @@
                                 Focusable="False"
                                 Style="{StaticResource AvalonDockThemeVs2013ButtonStyle}"
                                 ToolTip="{x:Static avalonDockProperties:Resources.Anchorable_BtnAutoHide_Hint}"
-                                Visibility="{Binding Path=IsEnabled, RelativeSource={RelativeSource Self}, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                Visibility="Collapsed">
                                 <Rectangle
                                     x:Name="PART_ImgAutoHidePin"
                                     Width="13"
