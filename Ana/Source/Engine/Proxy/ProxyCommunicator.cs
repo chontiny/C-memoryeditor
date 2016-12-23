@@ -4,9 +4,9 @@
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Reflection;
     using System.ServiceModel;
     using System.Threading;
-    using System.Windows.Forms;
 
     /// <summary>
     /// Communicates with proxy services. These issue commands that require 32 or 64 bit specifically.
@@ -100,7 +100,7 @@
         {
             // Start the proxy service
             EventWaitHandle processStartEvent = new EventWaitHandle(false, EventResetMode.ManualReset, ProxyCommunicator.WaitEventName);
-            ProcessStartInfo processInfo = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), executableName));
+            ProcessStartInfo processInfo = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), executableName));
             processInfo.Arguments = Process.GetCurrentProcess().Id.ToString() + " " + channelServerName + " " + ProxyCommunicator.WaitEventName;
             processInfo.UseShellExecute = false;
             processInfo.CreateNoWindow = true;
