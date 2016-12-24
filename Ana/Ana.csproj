@@ -31,11 +31,11 @@
     <ErrorReportUrl>https://www.anathena.com/</ErrorReportUrl>
     <ProductName>Anathena</ProductName>
     <PublisherName>Anathena</PublisherName>
-    <MinimumRequiredVersion>3.2.2.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>3.2.3.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.2.2.0</ApplicationVersion>
+    <ApplicationVersion>3.2.3.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -734,6 +734,10 @@
     <ProjectReference Include="..\AvalonEdit\AvalonEdit.csproj">
       <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
       <Name>AvalonEdit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CSScriptLibrary\CSScriptLibrary.csproj">
+      <Project>{f33ddb9a-918f-43d9-a1cf-cecd269ad958}</Project>
+      <Name>CSScriptLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Deploy\Deploy.csproj">
       <Project>{8b2579c2-faa1-4cc7-a48e-2b6d4901c503}</Project>

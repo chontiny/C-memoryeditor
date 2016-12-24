@@ -65,10 +65,14 @@
 
             foreach (String file in Directory.EnumerateFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.*", SearchOption.AllDirectories))
             {
-                if (file.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                try
                 {
-                    processInfoCommandPrompt.Arguments += " " + GetRelativePath(file, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                    if (file.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                    {
+                        processInfoCommandPrompt.Arguments += " " + GetRelativePath(file, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+                    }
                 }
+                catch { }
             }
 
             Process commandPrompt = Process.Start(processInfoCommandPrompt);
@@ -81,10 +85,14 @@
             // Add back .deploy extension to all binaries
             foreach (String file in Directory.EnumerateFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.*", SearchOption.AllDirectories))
             {
-                if (file.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                try
                 {
-                    File.Move(file, file + ".deploy");
+                    if (file.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                    {
+                        File.Move(file, file + ".deploy");
+                    }
                 }
+                catch { }
             }
 
             // Start Mage UI to sign ClickOnce assemblies
