@@ -221,6 +221,15 @@
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        /// <summary>
+        /// Deactivates this item without triggering the <see cref="OnActivationChanged" /> function.
+        /// </summary>
+        protected void ResetActivation()
+        {
+            this.isActivated = false;
+            this.NotifyPropertyChanged(nameof(this.IsActivated));
+        }
+
         protected virtual void OnActivationChanged()
         {
         }

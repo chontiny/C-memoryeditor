@@ -1,4 +1,4 @@
-﻿namespace Ana.Source.LuaEngine
+﻿namespace Ana.Source.ScriptEngine
 {
     using Graphics;
     using Hook;
@@ -8,19 +8,9 @@
     using System.Linq;
     using Utils.Extensions;
 
-    internal class LuaKeywordManager
+    internal class ScriptKeywordManager
     {
         private static Boolean sorted = false;
-
-        private static String luaKeywords = "and break do else elseif end false for function if" +
-                " in local nil not or repeat return then true until while" +
-                " _VERSION assert collectgarbage dofile error gcinfo loadfile loadstring" +
-                " print rawget rawset require tonumber tostring type unpack" +
-                " assert collectgarbage dofile error gcinfo loadfile loadstring" +
-                " abs acos asin atan atan2 ceil cos deg exp" +
-                " floor format frexp gsub ldexp log log10 max min mod rad random randomseed" +
-                " sin sqrt strbyte strchar strfind strlen strlower strrep strsub strupper tan" +
-                " string.byte string.char string.dump string.find string.len";
 
         private static String asmRegisterKeywords = "rax rbx rcx rdx rbp rsi rdi rsp r8 r9 r10 r11 r12 r13 r14 r15 rip" +
                 " eax ebx ecx edx ebp esi edi esp r8d r9d r10d r11d r12d r13d r14d r15d eip" +
@@ -75,37 +65,21 @@
             " WAIT WBINVD WRFSBASE WRGSBASE WRMSR XABORT XACQUIRE XADD XBEGIN XCHG XEND XGETBV XLAT XLATB XOR XORPD XORPS XRELEASE" +
             " XRSTOR XRSTORS XSAVE XSAVEC XSAVEOPT XSAVES XSETBV XTEST";
 
-        private static String allLuaKeywords = String.Empty;
-
         private static String allAsmKeywords = String.Empty;
 
         private static String anathenaKeywords = "Memory Graphics Hook fasm nasm masm";
-
-        public static String LuaKeywords
-        {
-            get
-            {
-                LuaKeywordManager.SortKeywords();
-                return LuaKeywordManager.luaKeywords;
-            }
-
-            private set
-            {
-                LuaKeywordManager.luaKeywords = value;
-            }
-        }
 
         public static String AsmRegisterKeywords
         {
             get
             {
-                LuaKeywordManager.SortKeywords();
-                return LuaKeywordManager.asmRegisterKeywords;
+                ScriptKeywordManager.SortKeywords();
+                return ScriptKeywordManager.asmRegisterKeywords;
             }
 
             private set
             {
-                LuaKeywordManager.asmRegisterKeywords = value;
+                ScriptKeywordManager.asmRegisterKeywords = value;
             }
         }
 
@@ -113,13 +87,13 @@
         {
             get
             {
-                LuaKeywordManager.SortKeywords();
-                return LuaKeywordManager.asmInstructionKeywords;
+                ScriptKeywordManager.SortKeywords();
+                return ScriptKeywordManager.asmInstructionKeywords;
             }
 
             private set
             {
-                LuaKeywordManager.asmInstructionKeywords = value;
+                ScriptKeywordManager.asmInstructionKeywords = value;
             }
         }
 
@@ -127,27 +101,13 @@
         {
             get
             {
-                LuaKeywordManager.SortKeywords();
-                return LuaKeywordManager.anathenaKeywords;
+                ScriptKeywordManager.SortKeywords();
+                return ScriptKeywordManager.anathenaKeywords;
             }
 
             private set
             {
-                LuaKeywordManager.anathenaKeywords = value;
-            }
-        }
-
-        public static String AllLuaKeywords
-        {
-            get
-            {
-                LuaKeywordManager.SortKeywords();
-                return allLuaKeywords;
-            }
-
-            private set
-            {
-                LuaKeywordManager.allLuaKeywords = value;
+                ScriptKeywordManager.anathenaKeywords = value;
             }
         }
 
@@ -155,32 +115,25 @@
         {
             get
             {
-                LuaKeywordManager.SortKeywords();
-                return LuaKeywordManager.allAsmKeywords;
+                ScriptKeywordManager.SortKeywords();
+                return ScriptKeywordManager.allAsmKeywords;
             }
 
             private set
             {
-                LuaKeywordManager.allAsmKeywords = value;
+                ScriptKeywordManager.allAsmKeywords = value;
             }
         }
 
         private static void SortKeywords()
         {
-            if (LuaKeywordManager.sorted)
+            if (ScriptKeywordManager.sorted)
             {
                 return;
             }
 
             List<String> keywords;
             String sortedKeywords;
-
-            // Sort Lua keywords
-            sortedKeywords = String.Empty;
-            keywords = new List<String>(luaKeywords.Split(' '));
-            keywords.Sort();
-            keywords.ForEach(x => sortedKeywords += x + " ");
-            luaKeywords = sortedKeywords;
 
             // Sort Asm register keywords
             sortedKeywords = String.Empty;
@@ -207,13 +160,6 @@
             keywords.Sort();
             keywords.ForEach(x => sortedKeywords += x + " ");
             anathenaKeywords = sortedKeywords;
-
-            // Sort all Lua keywords
-            sortedKeywords = String.Empty;
-            keywords = new List<String>(luaKeywords.Split(' ').Concat(anathenaKeywords.Split(' ')));
-            keywords.Sort();
-            keywords.ForEach(x => sortedKeywords += x + " ");
-            allLuaKeywords = sortedKeywords;
 
             // Sort all Asm keywords
             sortedKeywords = String.Empty;

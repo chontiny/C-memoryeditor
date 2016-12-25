@@ -1,17 +1,17 @@
-﻿namespace Ana.Source.LuaEngine.Hook
+﻿namespace Ana.Source.ScriptEngine.Hook
 {
     using Engine.SpeedManipulator;
     using System;
 
     /// <summary>
-    /// Provides access to environment manipulations in a hooked process for Lua scripts
+    /// Provides access to environment manipulations in a hooked process for scripts
     /// </summary>
-    internal class LuaHookCore : IHookCore
+    internal class HookCore : IHookCore
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LuaHookCore" /> class
+        /// Initializes a new instance of the <see cref="HookCore" /> class
         /// </summary>
-        public LuaHookCore()
+        public HookCore()
         {
             this.AccessLock = new Object();
         }

@@ -1,11 +1,11 @@
-﻿namespace Ana.Source.LuaEngine.Graphics
+﻿namespace Ana.Source.ScriptEngine.Graphics
 {
     using System;
 
     /// <summary>
-    /// Provides functions to interact with graphics in an external process for Lua scripts
+    /// Provides functions to interact with graphics in an external process for scripts
     /// </summary>
-    internal class LuaGraphicsCore : IGraphicsCore
+    internal class GraphicsCore : IGraphicsCore
     {
         public Guid CreateText(String text, Int32 locationX, Int32 locationY)
         {

@@ -108,7 +108,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.AvalonDock", "Xce
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deploy", "Deploy\Deploy.csproj", "{8B2579C2-FAA1-4CC7-A48E-2B6D4901C503}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSScriptLibrary", "CSScriptLibrary\CSScriptLibrary.csproj", "{F33DDB9A-918F-43D9-A1CF-CECD269AD958}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSScriptLibrary", "CsScriptLibrary\CSScriptLibrary.csproj", "{F33DDB9A-918F-43D9-A1CF-CECD269AD958}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-﻿namespace Ana.Source.LuaEngine.Memory
+﻿namespace Ana.Source.ScriptEngine.Memory
 {
     using Engine;
     using Engine.Architecture.Disassembler.SharpDisasm;
@@ -11,9 +11,9 @@
     using Utils.Validation;
 
     /// <summary>
-    /// Provides access to memory manipulations in an external process for Lua scripts.
+    /// Provides access to memory manipulations in an external process for scripts.
     /// </summary>
-    internal class LuaMemoryCore : IMemoryCore
+    internal class MemoryCore : IMemoryCore
     {
         /// <summary>
         /// The size of a jump instruction. TODO: this may not always be the case, and sure as hell isn't true for all architectures.
@@ -26,23 +26,23 @@
         private const Int32 Largestx86InstructionSize = 15;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="LuaMemoryCore" /> class.
+        /// Initializes a new instance of the <see cref="MemoryCore" /> class.
         /// </summary>
-        public LuaMemoryCore()
+        public MemoryCore()
         {
-            LuaMemoryCore.GlobalKeywords = new ConcurrentDictionary<String, String>();
+            MemoryCore.GlobalKeywords = new ConcurrentDictionary<String, String>();
             this.RemoteAllocations = new List<UInt64>();
             this.Keywords = new ConcurrentDictionary<String, String>();
             this.CodeCaves = new List<CodeCave>();
         }
 
         /// <summary>
-        /// Gets or sets the keywords associated with all running Lua scripts.
+        /// Gets or sets the keywords associated with all running scripts.
         /// </summary>
         private static ConcurrentDictionary<String, String> GlobalKeywords { get; set; }
 
         /// <summary>
-        /// Gets or sets the keywords associated with the calling Lua script.
+        /// Gets or sets the keywords associated with the calling script.
         /// </summary>
         private ConcurrentDictionary<String, String> Keywords { get; set; }
 
@@ -128,7 +128,7 @@
             // Read original bytes at code cave jump
             Boolean readSuccess;
 
-            Byte[] originalBytes = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(address.ToIntPtr(), LuaMemoryCore.Largestx86InstructionSize, out readSuccess);
+            Byte[] originalBytes = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(address.ToIntPtr(), MemoryCore.Largestx86InstructionSize, out readSuccess);
 
             if (!readSuccess || originalBytes == null || originalBytes.Length <= 0)
             {
@@ -197,7 +197,7 @@
         }
 
         /// <summary>
-        /// Deallocates all allocated memory for the parent lua script.
+        /// Deallocates all allocated memory for the parent script.
         /// </summary>
         public void DeallocateAllMemory()
         {
@@ -226,7 +226,7 @@
             Int32 assemblySize = this.GetAssemblySize(assembly, entry);
 
             // Handle case where allocation is not needed
-            if (assemblySize < LuaMemoryCore.JumpSize)
+            if (assemblySize < MemoryCore.JumpSize)
             {
                 Byte[] originalBytes = this.GetInstructionBytes(entry, assemblySize);
 
@@ -248,7 +248,7 @@
             }
             else
             {
-                Byte[] originalBytes = this.GetInstructionBytes(entry, LuaMemoryCore.JumpSize);
+                Byte[] originalBytes = this.GetInstructionBytes(entry, MemoryCore.JumpSize);
 
                 if (originalBytes == null)
                 {
@@ -256,13 +256,13 @@
                 }
 
                 // Not able to collect enough bytes to even place a jump!
-                if (originalBytes.Length < LuaMemoryCore.JumpSize)
+                if (originalBytes.Length < MemoryCore.JumpSize)
                 {
                     throw new Exception("Not enough bytes at address to jump");
                 }
 
                 // Determine number of no-ops to fill dangling bytes
-                String noOps = (originalBytes.Length - LuaMemoryCore.JumpSize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - JumpSize)).TrimEnd(',');
+                String noOps = (originalBytes.Length - MemoryCore.JumpSize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - JumpSize)).TrimEnd(',');
 
                 // Allocate memory
                 UInt64 remoteAllocation = EngineCore.GetInstance().OperatingSystemAdapter.AllocateMemory(assemblySize).ToUInt64();
@@ -294,10 +294,10 @@
         {
             this.PrintDebugTag();
 
-            Byte[] originalBytes = this.GetInstructionBytes(address, LuaMemoryCore.JumpSize);
+            Byte[] originalBytes = this.GetInstructionBytes(address, MemoryCore.JumpSize);
             Int32 originalByteSize;
 
-            if (originalBytes != null && originalBytes.Length < LuaMemoryCore.JumpSize)
+            if (originalBytes != null && originalBytes.Length < MemoryCore.JumpSize)
             {
                 // Determine the size of the minimum number of instructions we will be overwriting
                 originalByteSize = originalBytes.Length;
@@ -305,7 +305,7 @@
             else
             {
                 // Fall back if something goes wrong
-                originalByteSize = LuaMemoryCore.JumpSize;
+                originalByteSize = MemoryCore.JumpSize;
             }
 
             address = address.ToIntPtr().Add(originalByteSize).ToUInt64();
@@ -341,7 +341,7 @@
         }
 
         /// <summary>
-        /// Removes all created code caves by the parent lua script.
+        /// Removes all created code caves by the parent script.
         /// </summary>
         public void RemoveAllCodeCaves()
         {
@@ -364,7 +364,7 @@
         }
 
         /// <summary>
-        /// Binds a keyword to a given value for use in the lua script.
+        /// Binds a keyword to a given value for use in the script.
         /// </summary>
         /// <param name="keyword">The local keyword to bind.</param>
         /// <param name="address">The address to which the keyword is bound.</param>
@@ -377,7 +377,7 @@
         }
 
         /// <summary>
-        /// Binds a keyword to a given value for use in all lua scripts.
+        /// Binds a keyword to a given value for use in all scripts.
         /// </summary>
         /// <param name="globalKeyword">The global keyword to bind.</param>
         /// <param name="address">The address to which the keyword is bound.</param>
@@ -385,11 +385,11 @@
         {
             this.PrintDebugTag(globalKeyword, address.ToString("x"));
 
-            LuaMemoryCore.GlobalKeywords[globalKeyword] = "0x" + Conversions.ToAddress(address);
+            MemoryCore.GlobalKeywords[globalKeyword] = "0x" + Conversions.ToAddress(address);
         }
 
         /// <summary>
-        /// Clears the specified keyword created by the parent lua script.
+        /// Clears the specified keyword created by the parent script.
         /// </summary>
         /// <param name="keyword">The local keyword to clear.</param>
         public void ClearKeyword(String keyword)
@@ -404,7 +404,7 @@
         }
 
         /// <summary>
-        /// Clears the specified global keyword created by any lua script.
+        /// Clears the specified global keyword created by any script.
         /// </summary>
         /// <param name="globalKeyword">The global keyword to clear.</param>
         public void ClearGlobalKeyword(String globalKeyword)
@@ -412,14 +412,14 @@
             this.PrintDebugTag(globalKeyword);
 
             String valueRemoved;
-            if (LuaMemoryCore.GlobalKeywords.ContainsKey(globalKeyword))
+            if (MemoryCore.GlobalKeywords.ContainsKey(globalKeyword))
             {
-                LuaMemoryCore.GlobalKeywords.TryRemove(globalKeyword, out valueRemoved);
+                MemoryCore.GlobalKeywords.TryRemove(globalKeyword, out valueRemoved);
             }
         }
 
         /// <summary>
-        /// Clears all keywords created by the parent lua script.
+        /// Clears all keywords created by the parent script.
         /// </summary>
         public void ClearAllKeywords()
         {
@@ -429,13 +429,13 @@
         }
 
         /// <summary>
-        /// Clears all global keywords created by any lua script.
+        /// Clears all global keywords created by any script.
         /// </summary>
         public void ClearAllGlobalKeywords()
         {
             this.PrintDebugTag();
 
-            LuaMemoryCore.GlobalKeywords.Clear();
+            MemoryCore.GlobalKeywords.Clear();
         }
 
         /// <summary>
@@ -773,7 +773,7 @@
                 assembly = assembly.Replace(keyword.Key, keyword.Value);
             }
 
-            foreach (KeyValuePair<String, String> globalKeyword in LuaMemoryCore.GlobalKeywords)
+            foreach (KeyValuePair<String, String> globalKeyword in MemoryCore.GlobalKeywords)
             {
                 assembly = assembly.Replace(globalKeyword.Key, globalKeyword.Value);
             }

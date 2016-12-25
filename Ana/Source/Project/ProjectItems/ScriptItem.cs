@@ -1,6 +1,6 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
-    using LuaEngine;
+    using ScriptEngine;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
@@ -12,39 +12,39 @@
     internal class ScriptItem : ProjectItem
     {
         [Browsable(false)]
-        private LuaScript luaScript;
+        private Script script;
 
         public ScriptItem() : this("New Script", null)
         {
         }
 
-        public ScriptItem(String description, LuaScript luaScript) : base(description)
+        public ScriptItem(String description, Script script) : base(description)
         {
-            this.LuaScript = luaScript;
+            this.Script = script;
 
-            LuaCore = null;
+            ScriptManager = null;
         }
 
         [DataMember]
         [TypeConverter(typeof(ScriptConverter))]
         [Editor(typeof(ScriptEditorModel), typeof(UITypeEditor))]
-        [Category("Properties"), DisplayName("Script"), Description("Lua script to interface with engine")]
-        public LuaScript LuaScript
+        [Category("Properties"), DisplayName("Script"), Description("C# script to interface with engine")]
+        public Script Script
         {
             get
             {
-                return this.luaScript;
+                return this.script;
             }
 
             set
             {
-                this.luaScript = value;
+                this.script = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
             }
         }
 
         [Browsable(false)]
-        private LuaCore LuaCore { get; set; }
+        private ScriptManager ScriptManager { get; set; }
 
         public override void Update()
         {
@@ -52,25 +52,28 @@
 
         protected override void OnActivationChanged()
         {
-            if (LuaCore == null)
+            if (ScriptManager == null)
             {
-                LuaCore = new LuaCore(LuaScript);
+                ScriptManager = new ScriptManager();
             }
 
             if (this.IsActivated)
             {
-                // Try to run script. Will not activate on failure.
-                if (!LuaCore.RunActivationFunction())
+                // Try to run script.
+                if (!ScriptManager.RunActivationFunction())
                 {
+                    // Script error -- clear activation.
+                    this.ResetActivation();
                     return;
                 }
 
-                LuaCore.RunUpdateFunction();
+                // Run the update loop for the script
+                ScriptManager.RunUpdateFunction();
             }
             else
             {
                 // Try to deactivate script (we do not care if this fails)
-                LuaCore.RunDeactivationFunction();
+                ScriptManager.RunDeactivationFunction();
             }
         }
     }

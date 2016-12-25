@@ -1,4 +1,4 @@
-﻿namespace Ana.Source.LuaEngine.Memory
+﻿namespace Ana.Source.ScriptEngine.Memory
 {
     using System;
 
@@ -54,7 +54,7 @@
         void DeallocateMemory(UInt64 address);
 
         /// <summary>
-        /// Deallocates all allocated memory for the parent lua script.
+        /// Deallocates all allocated memory for the parent script.
         /// </summary>
         void DeallocateAllMemory();
 
@@ -80,43 +80,43 @@
         void RemoveCodeCave(UInt64 address);
 
         /// <summary>
-        /// Removes all created code caves by the parent lua script.
+        /// Removes all created code caves by the parent script.
         /// </summary>
         void RemoveAllCodeCaves();
 
         /// <summary>
-        /// Binds a keyword to a given value for use in the lua script.
+        /// Binds a keyword to a given value for use in the script.
         /// </summary>
         /// <param name="keyword">The local keyword to bind.</param>
         /// <param name="address">The address to which the keyword is bound.</param>
         void SetKeyword(String keyword, UInt64 address);
 
         /// <summary>
-        /// Binds a keyword to a given value for use in all lua scripts.
+        /// Binds a keyword to a given value for use in all scripts.
         /// </summary>
         /// <param name="globalKeyword">The global keyword to bind.</param>
         /// <param name="address">The address to which the keyword is bound.</param>
         void SetGlobalKeyword(String globalKeyword, UInt64 address);
 
         /// <summary>
-        /// Clears the specified keyword created by the parent lua script.
+        /// Clears the specified keyword created by the parent script.
         /// </summary>
         /// <param name="keyword">The local keyword to clear.</param>
         void ClearKeyword(String keyword);
 
         /// <summary>
-        /// Clears the specified global keyword created by any lua script.
+        /// Clears the specified global keyword created by any script.
         /// </summary>
         /// <param name="globalKeyword">The global keyword to clear.</param>
         void ClearGlobalKeyword(String globalKeyword);
 
         /// <summary>
-        /// Clears all keywords created by the parent lua script.
+        /// Clears all keywords created by the parent script.
         /// </summary>
         void ClearAllKeywords();
 
         /// <summary>
-        /// Clears all global keywords created by any lua script.
+        /// Clears all global keywords created by any script.
         /// </summary>
         void ClearAllGlobalKeywords();
 

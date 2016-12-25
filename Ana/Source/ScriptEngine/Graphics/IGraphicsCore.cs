@@ -1,4 +1,4 @@
-﻿namespace Ana.Source.LuaEngine.Graphics
+﻿namespace Ana.Source.ScriptEngine.Graphics
 {
     using System;
 

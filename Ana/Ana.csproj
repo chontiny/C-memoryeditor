@@ -122,12 +122,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EasyHook, Version=2.7.5870.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL" />
-    <Reference Include="KopiLua">
-      <HintPath>..\Lua\KopiLua.dll</HintPath>
-    </Reference>
-    <Reference Include="NLua">
-      <HintPath>..\Lua\NLua.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -283,6 +277,7 @@
     <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
+    <Compile Include="Source\ScriptEngine\ScriptEngine.cs" />
     <Compile Include="Source\SignatureCollector\SignatureCollectorViewModel.cs" />
     <Compile Include="Source\SignatureCollector\SignatureModel.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
@@ -370,19 +365,19 @@
     <Compile Include="Source\Engine\Processes\ProcessAdapter.cs" />
     <Compile Include="Source\Engine\SpeedManipulator\ISpeedManipulator.cs" />
     <Compile Include="Source\Engine\Unrandomizer\IUnrandomizer.cs" />
-    <Compile Include="Source\LuaEngine\Graphics\LuaGraphicsCore.cs" />
-    <Compile Include="Source\LuaEngine\Graphics\IGraphicsCore.cs" />
-    <Compile Include="Source\LuaEngine\Hook\IHookCore.cs" />
-    <Compile Include="Source\LuaEngine\Hook\LuaHookCore.cs" />
-    <Compile Include="Source\LuaEngine\Input\IInputCore.cs" />
-    <Compile Include="Source\LuaEngine\Input\LuaInputCore.cs" />
-    <Compile Include="Source\LuaEngine\LuaCore.cs" />
-    <Compile Include="Source\LuaEngine\LuaKeywordManager.cs">
+    <Compile Include="Source\ScriptEngine\Graphics\GraphicsCore.cs" />
+    <Compile Include="Source\ScriptEngine\Graphics\IGraphicsCore.cs" />
+    <Compile Include="Source\ScriptEngine\Hook\IHookCore.cs" />
+    <Compile Include="Source\ScriptEngine\Hook\HookCore.cs" />
+    <Compile Include="Source\ScriptEngine\Input\IInputCore.cs" />
+    <Compile Include="Source\ScriptEngine\Input\InputCore.cs" />
+    <Compile Include="Source\ScriptEngine\ScriptManager.cs" />
+    <Compile Include="Source\ScriptEngine\ScriptKeywordManager.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Source\LuaEngine\LuaScript.cs" />
-    <Compile Include="Source\LuaEngine\Memory\IMemoryCore.cs" />
-    <Compile Include="Source\LuaEngine\Memory\LuaMemoryCore.cs" />
+    <Compile Include="Source\ScriptEngine\Script.cs" />
+    <Compile Include="Source\ScriptEngine\Memory\IMemoryCore.cs" />
+    <Compile Include="Source\ScriptEngine\Memory\MemoryCore.cs" />
     <Compile Include="Source\Mvvm\Converters\IntPtrToAddressConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
     <Compile Include="Source\Project\ProjectExplorerViewModel.cs" />
@@ -391,7 +386,7 @@
     <Compile Include="Source\Project\ProjectItems\ProjectItem.cs" />
     <Compile Include="Source\Project\ProjectItems\ProjectItemViewModel.cs" />
     <Compile Include="Source\Project\ProjectItems\ScriptItem.cs" />
-    <Compile Include="Source\LuaEngine\LuaTemplates.cs" />
+    <Compile Include="Source\ScriptEngine\ScriptTemplates.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
     <Compile Include="Source\Results\ScanResults\IScanResultsObserver.cs" />
     <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
@@ -680,10 +675,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Content\Lua.xhsd">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <Resource Include="Content\Icons\BlueBlocks1.png" />
     <Resource Include="Content\Icons\BlueBlocks2.png" />
     <Resource Include="Content\Icons\BlueBlocks4.png" />
@@ -706,6 +697,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Content\CSharp.xshd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -735,8 +727,8 @@
       <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
       <Name>AvalonEdit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CSScriptLibrary\CSScriptLibrary.csproj">
-      <Project>{f33ddb9a-918f-43d9-a1cf-cecd269ad958}</Project>
+    <ProjectReference Include="..\CsScriptLibrary\CSScriptLibrary.csproj">
+      <Project>{F33DDB9A-918F-43D9-A1CF-CECD269AD958}</Project>
       <Name>CSScriptLibrary</Name>
     </ProjectReference>
     <ProjectReference Include="..\Deploy\Deploy.csproj">
