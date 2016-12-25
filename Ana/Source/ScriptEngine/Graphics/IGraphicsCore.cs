@@ -5,7 +5,7 @@
     /// <summary>
     /// Interface to interacting with graphics in an external process
     /// </summary>
-    internal interface IGraphicsCore
+    public interface IGraphicsCore
     {
         Guid CreateText(String text, Int32 locationX, Int32 locationY);
 

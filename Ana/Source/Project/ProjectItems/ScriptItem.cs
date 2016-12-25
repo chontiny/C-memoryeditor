@@ -60,7 +60,7 @@
             if (this.IsActivated)
             {
                 // Try to run script.
-                if (!ScriptManager.RunActivationFunction())
+                if (!ScriptManager.RunActivationFunction(script?.Payload))
                 {
                     // Script error -- clear activation.
                     this.ResetActivation();

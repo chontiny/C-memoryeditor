@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface to provide access to user input
     /// </summary>
-    internal interface IInputCore
+    public interface IInputCore
     {
     }
     //// End interface

@@ -24,7 +24,7 @@
         /// <summary>
         /// The resource file for C# script highlighting rules
         /// </summary>
-        private const String ScriptSyntaxHighlightingResource = "Ana.Content.CSharp.xhsd";
+        private const String ScriptSyntaxHighlightingResource = "Ana.Content.CSharp.xshd";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptEditor" /> class

@@ -17,7 +17,6 @@ using System.Windows;
 
 // Allows unit tests to test internal classes
 [assembly: InternalsVisibleTo("AnaTests")]
-[assembly: InternalsVisibleTo("AnaTests")]
 
 // Version information for an assembly consists of the following four values:
 //

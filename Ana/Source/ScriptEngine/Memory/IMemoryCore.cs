@@ -5,7 +5,7 @@
     /// <summary>
     /// Interface to provide access to memory manipulations in an external process.
     /// </summary>
-    internal interface IMemoryCore
+    public interface IMemoryCore
     {
         /// <summary>
         /// Returns the address of the specified module name. Returns 0 on failure.

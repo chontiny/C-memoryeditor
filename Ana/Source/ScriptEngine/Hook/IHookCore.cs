@@ -5,7 +5,7 @@
     /// <summary>
     /// Interface for environment manipulations in a hooked process
     /// </summary>
-    internal interface IHookCore
+    public interface IHookCore
     {
         void SetSpeed(Double speed);
 
