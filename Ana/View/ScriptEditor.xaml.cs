@@ -38,7 +38,7 @@
             //// this.ScriptEditorTextEditor.TextArea.TextEntering += this.ScriptEditorTextEditorTextAreaTextEntering;
             //// this.ScriptEditorTextEditor.TextArea.TextEntered += this.ScriptEditorTextEditorTextAreaTextEntered;
             this.ScriptEditorTextEditor.TextChanged += this.ScriptEditorTextEditorTextChanged;
-            this.ScriptEditorTextEditor.Text = script == null ? String.Empty : script;
+            this.ScriptEditorTextEditor.Text = script ?? String.Empty;
         }
 
         /// <summary>

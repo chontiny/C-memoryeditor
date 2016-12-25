@@ -375,7 +375,6 @@
     <Compile Include="Source\ScriptEngine\ScriptKeywordManager.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Source\ScriptEngine\Script.cs" />
     <Compile Include="Source\ScriptEngine\Memory\IMemoryCore.cs" />
     <Compile Include="Source\ScriptEngine\Memory\MemoryCore.cs" />
     <Compile Include="Source\Mvvm\Converters\IntPtrToAddressConverter.cs" />

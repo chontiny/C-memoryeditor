@@ -45,16 +45,16 @@
         private IEnumerable<IHotkey> hotkeys;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProjectItem" /> class
+        /// Initializes a new instance of the <see cref="ProjectItem" /> class.
         /// </summary>
         public ProjectItem() : this(String.Empty)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProjectItem" /> class
+        /// Initializes a new instance of the <see cref="ProjectItem" /> class.
         /// </summary>
-        /// <param name="description">The description of the project item</param>
+        /// <param name="description">The description of the project item.</param>
         public ProjectItem(String description)
         {
             // Bypass setters/getters to avoid triggering any view updates in constructor
@@ -69,7 +69,7 @@
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Gets or sets the parent of this project item
+        /// Gets or sets the parent of this project item.
         /// </summary>
         [Browsable(false)]
         public FolderItem Parent
@@ -88,7 +88,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the description for this object
+        /// Gets or sets the description for this object.
         /// </summary>
         [DataMember]
         [Category("Properties"), DisplayName("Description"), Description("Description to be shown for the Project Items")]
@@ -108,7 +108,7 @@
         }
 
         /// <summary>
-        /// Gets or sets hot keys that activate this project item
+        /// Gets or sets hot keys that activate this project item.
         /// </summary>
         [DataMember]
         [TypeConverter(typeof(HotkeyConverter))]
@@ -130,7 +130,7 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not this item is activated
+        /// Gets or sets a value indicating whether or not this item is activated.
         /// </summary>
         [Browsable(false)]
         public Boolean IsActivated
@@ -149,13 +149,13 @@
         }
 
         /// <summary>
-        /// Gets or sets the time since this item was last activated
+        /// Gets or sets the time since this item was last activated.
         /// </summary>
         [Browsable(false)]
         private DateTime LastActivated { get; set; }
 
         /// <summary>
-        /// Invoked when this object is deserialized
+        /// Invoked when this object is deserialized.
         /// </summary>
         /// <param name="streamingContext">Streaming context</param>
         [OnDeserialized]
@@ -164,30 +164,30 @@
         }
 
         /// <summary>
-        /// Updates the project item
+        /// Updates the project item.
         /// </summary>
         public abstract void Update();
 
         /// <summary>
-        /// Event received when a key is pressed
+        /// Event received when a key is pressed.
         /// </summary>
-        /// <param name="key">The key that was pressed</param>
+        /// <param name="key">The key that was pressed.</param>
         public void OnKeyPress(Key key)
         {
         }
 
         /// <summary>
-        /// Event received when a key is down
+        /// Event received when a key is down.
         /// </summary>
-        /// <param name="key">The key that is down</param>
+        /// <param name="key">The key that is down.</param>
         public void OnKeyDown(Key key)
         {
         }
 
         /// <summary>
-        /// Event received when a key is released
+        /// Event received when a key is released.
         /// </summary>
-        /// <param name="key">The key that was released</param>
+        /// <param name="key">The key that was released.</param>
         public void OnKeyRelease(Key key)
         {
             // Reset hotkey delay if any of the hotkey keys are released
@@ -198,9 +198,9 @@
         }
 
         /// <summary>
-        /// Event received when a set of keys are down
+        /// Event received when a set of keys are down.
         /// </summary>
-        /// <param name="pressedKeys">The down keys</param>
+        /// <param name="pressedKeys">The down keys.</param>
         public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
         {
             if ((DateTime.Now - this.LastActivated).TotalMilliseconds < ProjectItem.HotkeyDelay)

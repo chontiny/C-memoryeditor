@@ -12,24 +12,29 @@
     internal class ScriptItem : ProjectItem
     {
         [Browsable(false)]
-        private Script script;
+        private String script;
+
+        [Browsable(false)]
+        private Boolean isCompiled;
 
         public ScriptItem() : this("New Script", null)
         {
         }
 
-        public ScriptItem(String description, Script script) : base(description)
+        public ScriptItem(String description, String script, Boolean compiled = false) : base(description)
         {
             this.Script = script;
+            this.IsCompiled = compiled;
 
-            ScriptManager = null;
+            this.ScriptManager = null;
         }
 
         [DataMember]
+        [ReadOnly(false)]
         [TypeConverter(typeof(ScriptConverter))]
         [Editor(typeof(ScriptEditorModel), typeof(UITypeEditor))]
         [Category("Properties"), DisplayName("Script"), Description("C# script to interface with engine")]
-        public Script Script
+        public String Script
         {
             get
             {
@@ -39,6 +44,24 @@
             set
             {
                 this.script = value;
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+            }
+        }
+
+        [DataMember]
+        [ReadOnly(true)]
+        [RefreshProperties(RefreshProperties.All)]
+        [Category("Properties"), DisplayName("Compiled"), Description("Whether or not this script has been compiled.")]
+        public Boolean IsCompiled
+        {
+            get
+            {
+                return this.isCompiled;
+            }
+
+            set
+            {
+                this.isCompiled = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
             }
         }
@@ -60,7 +83,7 @@
             if (this.IsActivated)
             {
                 // Try to run script.
-                if (!ScriptManager.RunActivationFunction(script?.Payload))
+                if (!ScriptManager.RunActivationFunction(this.Script, this.IsCompiled))
                 {
                     // Script error -- clear activation.
                     this.ResetActivation();

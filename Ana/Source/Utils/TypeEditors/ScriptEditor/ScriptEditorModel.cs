@@ -1,6 +1,5 @@
 ﻿namespace Ana.Source.Utils.ScriptEditor
 {
-    using ScriptEngine;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
@@ -37,21 +36,12 @@
         /// <returns>The updated values.</returns>
         public override Object EditValue(ITypeDescriptorContext context, IServiceProvider provider, Object value)
         {
-            View.ScriptEditor scriptEditor = new View.ScriptEditor((value as Script)?.Payload);
+            View.ScriptEditor scriptEditor = new View.ScriptEditor(value as String);
 
             scriptEditor.Owner = Application.Current.MainWindow;
             if (scriptEditor.ShowDialog() == true)
             {
-                String script = scriptEditor.ScriptEditorViewModel.Script;
-
-                if (script != null && script != String.Empty)
-                {
-                    return new Script(scriptEditor.ScriptEditorViewModel.Script);
-                }
-                else
-                {
-                    return null;
-                }
+                return scriptEditor.ScriptEditorViewModel.Script ?? String.Empty;
             }
 
             return value;

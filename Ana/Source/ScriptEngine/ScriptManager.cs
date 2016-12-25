@@ -2,8 +2,8 @@
 {
     using CSScriptLibrary;
     using System;
+    using System.Reflection;
     using System.Security;
-    using System.Security.Permissions;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -36,17 +36,34 @@
         /// </summary>
         private Task Task { get; set; }
 
+        private dynamic ScriptObject { get; set; }
+
         /// <summary>
         /// Runs the activation function in the script
         /// </summary>
         /// <returns></returns>
-        public Boolean RunActivationFunction(string script)
+        public Boolean RunActivationFunction(String script, Boolean compiled)
         {
             try
             {
-                MethodDelegate onActivate = CSScript.LoadMethod(script).GetStaticMethod("*.OnActivate");
-                Sandbox.With(SecurityPermissionFlag.Execution)
-                       .Execute(() => onActivate());
+                // String compiledFile = CSScript.CompileCode(script);
+                // String compiledAssembly = Convert.ToBase64String(File.ReadAllBytes(compiledFile));
+
+                Assembly assembly;
+
+                if (compiled)
+                {
+                    // Assembly already compiled, just load it
+                    assembly = Assembly.Load(Convert.FromBase64String(script));
+                }
+                else
+                {
+                    // Raw script, compile it
+                    assembly = CSScript.MonoEvaluator.CompileCode(script);
+                }
+
+                ScriptObject = assembly.CreateObject("*");
+                ScriptObject.OnActivate();
             }
             catch (SecurityException ex)
             {
@@ -67,8 +84,6 @@
         /// </summary>
         public void RunUpdateFunction()
         {
-            DateTime previousTime = DateTime.Now;
-            TimeSpan elapsedTime;
             this.CancelRequest = new CancellationTokenSource();
 
             try
@@ -76,13 +91,16 @@
                 this.Task = Task.Run(
                 async () =>
                 {
+                    TimeSpan elapsedTime;
+                    DateTime previousTime = DateTime.Now;
+
                     while (true)
                     {
                         DateTime currentTime = DateTime.Now;
                         elapsedTime = currentTime - previousTime;
 
                         // Call the update function, giving the elapsed milliseconds since the previous call
-                        // function?.Call(elapsedTime.TotalMilliseconds);
+                        ScriptObject.OnUpdate(elapsedTime.TotalMilliseconds);
 
                         previousTime = currentTime;
 
@@ -110,6 +128,8 @@
                 // Abort the update loop
                 try
                 {
+                    ScriptObject.OnDeactivate();
+
                     this.CancelRequest?.Cancel();
                     this.Task?.Wait(ScriptManager.AbortTime);
                 }
