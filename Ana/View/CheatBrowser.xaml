@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Ana.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:gecko="clr-namespace:Gecko;assembly=Geckofx-Wpf"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:Ana"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -25,7 +26,8 @@
             Padding="8,4,8,4"
             Background="{StaticResource AvalonDock_Expression_BaseColor4}">
             <Menu Background="Transparent">
-                <MenuItem Command="{Binding NavigateHomeCommand}" CommandParameter="{Binding ElementName=browser}">
+                <!--  Command="{Binding NavigateHomeCommand}" CommandParameter="{Binding ElementName=browser}"  -->
+                <MenuItem Click="MenuItem_Click">
                     <MenuItem.Header>
                         <Image
                             Width="16"
@@ -36,6 +38,8 @@
                 </MenuItem>
             </Menu>
         </Border>
-        <WebBrowser x:Name="browser" Grid.Row="1" />
+
+        <!--  Placeholder for Windows Forms hosting  -->
+        <Grid x:Name="browserGrid" Grid.Row="1" />
     </Grid>
 </UserControl>

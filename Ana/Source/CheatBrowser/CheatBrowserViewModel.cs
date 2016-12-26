@@ -1,11 +1,11 @@
 ﻿namespace Ana.Source.CheatBrowser
 {
     using Docking;
+    using Gecko;
     using Main;
     using Mvvm.Command;
     using System;
     using System.Threading;
-    using System.Windows.Controls;
     using System.Windows.Input;
 
     /// <summary>
@@ -38,7 +38,7 @@
             this.ContentId = CheatBrowserViewModel.ToolContentId;
 
             // Note: Cannot be async, navigation must take place on the same thread as GUI
-            this.NavigateHomeCommand = new RelayCommand<WebBrowser>((browser) => this.NavigateHome(browser), (browser) => true);
+            this.NavigateHomeCommand = new RelayCommand<GeckoWebBrowser>((browser) => this.NavigateHome(browser), (browser) => true);
 
             MainViewModel.GetInstance().Subscribe(this);
         }
@@ -61,7 +61,7 @@
         /// Navigates home in the browser
         /// </summary>
         /// <param name="browser">The Gecko Fx web browser</param>
-        private void NavigateHome(WebBrowser browser)
+        private void NavigateHome(GeckoWebBrowser browser)
         {
             browser.Navigate(HomeUrl);
         }

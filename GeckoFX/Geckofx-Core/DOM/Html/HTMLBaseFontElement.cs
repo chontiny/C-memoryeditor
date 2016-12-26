@@ -1,0 +1,5 @@
+namespace Gecko.DOM
+{
+
+}
+
