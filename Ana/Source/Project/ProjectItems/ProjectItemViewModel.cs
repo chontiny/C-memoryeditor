@@ -65,13 +65,16 @@
         /// <param name="projectItemViewModel">The current project item view model for which the children being constructed</param>
         public void BuildViewModels()
         {
-            if (!(this.ProjectItem is FolderItem))
+            App.Current.Dispatcher.Invoke((Action)delegate
             {
-                return;
-            }
+                if (!(this.ProjectItem is FolderItem))
+                {
+                    return;
+                }
 
-            (this.ProjectItem as FolderItem).Children.ForEach(x => this.Children.Add(new ProjectItemViewModel(x, this)));
-            this.Children.ForEach(x => (x as ProjectItemViewModel).BuildViewModels());
+                (this.ProjectItem as FolderItem).Children.ForEach(x => this.Children.Add(new ProjectItemViewModel(x, this)));
+                this.Children.ForEach(x => (x as ProjectItemViewModel).BuildViewModels());
+            });
         }
 
         public Boolean ContainsChildRecursive(ProjectItemViewModel child)

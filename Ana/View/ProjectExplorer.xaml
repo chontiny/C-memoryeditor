@@ -232,7 +232,7 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type project:ProjectItemViewModel}" ItemsSource="{Binding Children}">
                     <WrapPanel Orientation="Horizontal">
-                        <CheckBox IsChecked="{Binding ProjectItem.IsActivated}" />
+                        <CheckBox IsChecked="{Binding ProjectItem.IsActivated}" IsTabStop="False" />
                         <Image
                             Width="16"
                             Height="16"
