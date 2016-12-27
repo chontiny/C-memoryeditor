@@ -9,7 +9,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
-    xmlns:wpf="clr-namespace:Xilium.CefGlue.WPF;assembly=Xilium.CefGlue.WPF"
     x:Name="AnaCheatBrowser"
     d:DesignHeight="256"
     d:DesignWidth="256"
@@ -40,9 +39,6 @@
         </Border>
 
         <!--  Placeholder for Windows Forms hosting  -->
-        <wpf:WpfCefBrowser
-            x:Name="browser"
-            Grid.Row="1"
-            StartUrl="http://www.Anathena.com/CheatBrowser/Search" />
+        <Grid Name="browserGrid" Grid.Row="1" />
     </Grid>
 </UserControl>

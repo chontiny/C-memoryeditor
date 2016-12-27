@@ -1,72 +1,50 @@
 ﻿namespace Ana
 {
+    using Chromium;
+    using Chromium.WebBrowser;
+    using Chromium.WebBrowser.Event;
     using System;
-    using Xilium.CefGlue;
+    using System.IO;
+    using System.Reflection;
 
     public partial class App
     {
         [STAThread]
         public static void Main()
         {
-            App.InitializeCefGlue();
+            String assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+
+            if (CfxRuntime.PlatformArch == CfxPlatformArch.x86)
+            {
+                CfxRuntime.LibCefDirPath = Path.Combine(assemblyDir, "Libraries/32/LibCEF/");
+            }
+            else
+            {
+                CfxRuntime.LibCefDirPath = Path.Combine(assemblyDir, "Libraries/64/LibCEF/");
+            }
+
+            ChromiumWebBrowser.OnBeforeCfxInitialize += ChromiumWebBrowserOnBeforeCfxInitialize;
+            ChromiumWebBrowser.Initialize();
+
             App app = new App();
             app.InitializeComponent();
             app.Run();
 
-            App.ShutDownCef();
+            CfxRuntime.Shutdown();
         }
-
-        private static void InitializeCefGlue()
+        private static void ChromiumWebBrowserOnBeforeCfxInitialize(OnBeforeCfxInitializeEventArgs e)
         {
-            try
+            String assemblyDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+            if (CfxRuntime.PlatformArch == CfxPlatformArch.x86)
             {
-                CefRuntime.Load();
+                e.Settings.LocalesDirPath = Path.Combine(assemblyDir, "Libraries/32/LibCEF/locales/");
+                e.Settings.ResourcesDirPath = Path.Combine(assemblyDir, "Libraries/32/LibCEF/");
             }
-            catch (DllNotFoundException ex)
+            else
             {
-                // TODO: Log to user
-                return;
+                e.Settings.LocalesDirPath = Path.Combine(assemblyDir, "Libraries/64/LibCEF/locales/");
+                e.Settings.ResourcesDirPath = Path.Combine(assemblyDir, "Libraries/64/LibCEF/");
             }
-            catch (CefRuntimeException ex)
-            {
-                // TODO: Log to user
-                return;
-            }
-            catch (Exception ex)
-            {
-                // TODO: Log to user
-                return;
-            }
-            var mainArgs = new CefMainArgs(new string[] { });
-            var cefApp = new SampleCefApp();
-
-            var exitCode = CefRuntime.ExecuteProcess(mainArgs, cefApp);
-            if (exitCode != -1) { return; }
-
-            var cefSettings = new CefSettings
-            {
-                // BrowserSubprocessPath = browserSubprocessPath,
-                SingleProcess = false,
-                WindowlessRenderingEnabled = true,
-                MultiThreadedMessageLoop = true,
-                LogSeverity = CefLogSeverity.Verbose,
-                LogFile = "cef.log",
-            };
-
-            try
-            {
-                CefRuntime.Initialize(mainArgs, cefSettings, cefApp);
-            }
-            catch (CefRuntimeException ex)
-            {
-                // TODO: Log to user
-                return;
-            }
-        }
-
-        private static void ShutDownCef()
-        {
-            CefRuntime.Shutdown();
         }
     }
     //// End class

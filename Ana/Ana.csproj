@@ -78,6 +78,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -156,7 +157,6 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SampleCefApp.cs" />
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\ActionScheduler\ActionChannels.cs" />
     <Compile Include="Source\ActionScheduler\IAction.cs" />
@@ -735,13 +735,13 @@
       <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
       <Name>AvalonEdit</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CefGlue\CefGlue.WPF\CefGlue.WPF.csproj">
-      <Project>{447c6790-e36e-4a54-bfac-06c92fff4aa3}</Project>
-      <Name>CefGlue.WPF</Name>
+    <ProjectReference Include="..\ChromiumFX\ChromiumFX\ChromiumFX.csproj">
+      <Project>{36972b7c-3a3a-465f-b064-51b525fd4c14}</Project>
+      <Name>ChromiumFX</Name>
     </ProjectReference>
-    <ProjectReference Include="..\CefGlue\CefGlue\CefGlue.csproj">
-      <Project>{703ff300-34b9-48d4-a5d6-e741f48d5f95}</Project>
-      <Name>CefGlue</Name>
+    <ProjectReference Include="..\ChromiumFX\ChromiumWebBrowser\ChromiumWebBrowser.csproj">
+      <Project>{f94eab75-c33f-4f69-9e26-8c3b48141daa}</Project>
+      <Name>ChromiumWebBrowser</Name>
     </ProjectReference>
     <ProjectReference Include="..\CsScriptLibrary\CSScriptLibrary.csproj">
       <Project>{F33DDB9A-918F-43D9-A1CF-CECD269AD958}</Project>
