@@ -1,15 +1,10 @@
 ﻿namespace Ana.View
 {
-    using Controls;
-    using Gecko;
     using Source.CheatBrowser;
-    using Source.Engine;
-    using Source.Project;
     using System;
     using System.IO;
     using System.Reflection;
-    using System.Windows.Forms;
-
+    using System.Windows;
     /// <summary>
     /// Interaction logic for CheatBrowser.xaml
     /// </summary>
@@ -40,8 +35,6 @@
         /// </summary>
         private static readonly String SavePath = Path.Combine(Path.Combine(ApplicationFiles, Assembly.GetExecutingAssembly().GetName().Name), CheatBrowser.FileStorageDirectoryName);
 
-        protected GeckoWebBrowser browser;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CheatBrowser" /> class
         /// </summary>
@@ -49,22 +42,13 @@
         {
             this.InitializeComponent();
 
-            // Initialize engine for Gecko Fx web browser
-            if (EngineCore.GetInstance().OperatingSystemAdapter.IsAnathena32Bit())
-            {
-                Xpcom.Initialize(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Libraries/xulrunner-32"));
-            }
-            else if (EngineCore.GetInstance().OperatingSystemAdapter.IsAnathena64Bit())
-            {
-                Xpcom.Initialize(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Libraries/xulrunner-64"));
-            }
+            this.browser.Focus();
 
             // Windows forms hosting -- TODO: Phase this out
-            this.browser = new GeckoWebBrowser();
-            this.browserGrid.Children.Add(WinformsHostingHelper.CreateHostedControl(this.browser));
-            LauncherDialog.Download += this.LauncherDialogDownload;
+            // this.browser = new GeckoWebBrowser();
+            // this.browserGrid.Children.Add(WinformsHostingHelper.CreateHostedControl(this.browser));
 
-            this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
+            // this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
         }
 
         /// <summary>
@@ -78,59 +62,9 @@
             }
         }
 
-        /// <summary>
-        /// Handle save file dialog for downloads. Code partly ripped from the internet, no idea how it works.
-        /// </summary>
-        /// <param name="sender">The event sender</param>
-        /// <param name="e">The event parameters</param>
-        private void LauncherDialogDownload(Object sender, LauncherDialogEvent e)
+        private void MenuItemClick(Object sender, RoutedEventArgs e)
         {
-            nsILocalFile objectTarget = Xpcom.CreateInstance<nsILocalFile>("@mozilla.org/file/local;1");
-            String fileName = Path.Combine(CheatBrowser.SavePath, e.Filename);
-
-            using (nsAString nsaString = new nsAString(@Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\temp.tmp"))
-            {
-                objectTarget.InitWithPath(nsaString);
-            }
-
-            using (Stream saveStream = File.OpenWrite(fileName))
-            {
-                nsIURI source = IOService.CreateNsIUri(e.Url);
-                nsIURI destination = IOService.CreateNsIUri(new Uri(fileName).AbsoluteUri);
-                nsAStringBase stringBase = new nsAString(Path.GetFileName(fileName));
-
-                nsIWebBrowserPersist persist = Xpcom.CreateInstance<nsIWebBrowserPersist>("@mozilla.org/embedding/browser/nsWebBrowserPersist;1");
-                nsIDownloadManager downloadMan = Xpcom.CreateInstance<nsIDownloadManager>("@mozilla.org/download-manager;1");
-                nsIDownload download = downloadMan.AddDownload(0, source, destination, stringBase, e.Mime, 0, null, persist, false);
-
-                if (download != null)
-                {
-                    persist.SetPersistFlagsAttribute(2 | 32 | 16384);
-                    persist.SetProgressListenerAttribute(download);
-                    persist.SaveURI(source, null, null, null, null, (nsISupports)destination, null);
-                    var x = download.GetPercentCompleteAttribute();
-                    while (x <= 100)
-                    {
-                        Application.DoEvents();
-                        x = download.GetPercentCompleteAttribute();
-                    }
-                }
-                saveStream.Flush();
-                saveStream.Close();
-            }
-
-            // Import the downloaded file into the current project
-            ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(fileName);
-        }
-
-        private void DownloadComplete()
-        {
-
-        }
-
-        private void MenuItemClick(Object sender, System.Windows.RoutedEventArgs e)
-        {
-            this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
+            // this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
         }
     }
     //// End class

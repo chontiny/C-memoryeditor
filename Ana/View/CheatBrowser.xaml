@@ -4,12 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Ana.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:gecko="clr-namespace:Gecko;assembly=Geckofx-Wpf"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:Ana"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
+    xmlns:wpf="clr-namespace:Xilium.CefGlue.WPF;assembly=Xilium.CefGlue.WPF"
     x:Name="AnaCheatBrowser"
     d:DesignHeight="256"
     d:DesignWidth="256"
@@ -40,6 +40,9 @@
         </Border>
 
         <!--  Placeholder for Windows Forms hosting  -->
-        <Grid x:Name="browserGrid" Grid.Row="1" />
+        <wpf:WpfCefBrowser
+            x:Name="browser"
+            Grid.Row="1"
+            StartUrl="http://www.Anathena.com/CheatBrowser/Search" />
     </Grid>
 </UserControl>
