@@ -115,7 +115,7 @@ namespace Xceed.Wpf.AvalonDock.Controls
 
         private void OnHide()
         {
-            Model.Hide();
+            Model.IsVisible = false;
         }
 
         private void OnToggleAutoHide()

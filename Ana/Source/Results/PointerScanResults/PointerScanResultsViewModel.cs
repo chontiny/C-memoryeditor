@@ -80,7 +80,6 @@
             this.PointerScanResultsObservers = new List<IPointerScanResultsObserver>();
             this.ObserverLock = new Object();
             this.ActiveType = typeof(Int32);
-            this.IsVisible = true;
             this.addresses = new ObservableCollection<PointerScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);

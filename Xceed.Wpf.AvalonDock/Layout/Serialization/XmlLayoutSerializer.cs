@@ -14,12 +14,9 @@
 
   **********************************************************************/
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Serialization;
 using System.IO;
+using System.Linq;
+using System.Xml.Serialization;
 
 namespace Xceed.Wpf.AvalonDock.Layout.Serialization
 {
@@ -27,7 +24,7 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
     {
         public XmlLayoutSerializer(DockingManager manager)
             : base(manager)
-        { 
+        {
 
         }
 
@@ -61,7 +58,9 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
                 var serializer = new XmlSerializer(typeof(LayoutRoot));
                 var layout = serializer.Deserialize(stream) as LayoutRoot;
                 FixupLayout(layout);
+                var visibleItems = layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.IsVisible).ToArray();
                 Manager.Layout = layout;
+                visibleItems.ForEach(x => x.IsVisible = true);
             }
             finally
             {
@@ -77,7 +76,9 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
                 var serializer = new XmlSerializer(typeof(LayoutRoot));
                 var layout = serializer.Deserialize(reader) as LayoutRoot;
                 FixupLayout(layout);
+                var visibleItems = layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.IsVisible).ToArray();
                 Manager.Layout = layout;
+                visibleItems.ForEach(x => x.IsVisible = true);
             }
             finally
             {
@@ -93,7 +94,9 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
                 var serializer = new XmlSerializer(typeof(LayoutRoot));
                 var layout = serializer.Deserialize(reader) as LayoutRoot;
                 FixupLayout(layout);
+                var visibleItems = layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.IsVisible).ToArray();
                 Manager.Layout = layout;
+                visibleItems.ForEach(x => x.IsVisible = true);
             }
             finally
             {

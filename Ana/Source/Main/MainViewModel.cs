@@ -9,11 +9,13 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Threading;
     using System.Windows;
     using System.Windows.Input;
     using Xceed.Wpf.AvalonDock;
+    using Xceed.Wpf.AvalonDock.Layout;
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
     /// <summary>
@@ -23,12 +25,17 @@
     internal class MainViewModel : ViewModelBase
     {
         /// <summary>
-        /// Default layout file
+        /// Default layout file for browsing cheats.
         /// </summary>
-        private const String DefaultLayoutResources = "Ana.Content.defaultLayout.xml";
+        private const String StandardLayoutResource = "Ana.Content.StandardLayout.xml";
 
         /// <summary>
-        /// The save file for the docking layout
+        /// Default layout file for browsing cheats.
+        /// </summary>
+        private const String DeveloperLayoutResource = "Ana.Content.DeveloperLayout.xml";
+
+        /// <summary>
+        /// The save file for the docking layout.
         /// </summary>
         private const String LayoutSaveFile = "layout.xml";
 
@@ -40,12 +47,12 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Collection of tools contained in the main docking panel
+        /// Collection of tools contained in the main docking panel.
         /// </summary>
         private HashSet<ToolViewModel> tools;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="MainViewModel" /> class from being created
+        /// Prevents a default instance of the <see cref="MainViewModel" /> class from being created.
         /// </summary>
         private MainViewModel()
         {
@@ -55,44 +62,50 @@
             this.CloseCommand = new RelayCommand<Window>((window) => this.Close(window), (window) => true);
             this.MaximizeRestoreCommand = new RelayCommand<Window>((window) => this.MaximizeRestore(window), (window) => true);
             this.MinimizeCommand = new RelayCommand<Window>((window) => this.Minimize(window), (window) => true);
-            this.ResetLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayout(dockingManager), (dockingManager) => true);
+            this.ResetLayoutStandardCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutStandard(dockingManager), (dockingManager) => true);
+            this.ResetLayoutStandardCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutDeveloper(dockingManager), (dockingManager) => true);
             this.LoadLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.LoadLayout(dockingManager), (dockingManager) => true);
             this.SaveLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.SaveLayout(dockingManager), (dockingManager) => true);
             this.StartBackgroundServices();
         }
 
         /// <summary>
-        /// Gets the command to close the main window
+        /// Gets the command to close the main window.
         /// </summary>
         public ICommand CloseCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to maximize the main window
+        /// Gets the command to maximize the main window.
         /// </summary>
         public ICommand MaximizeRestoreCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to minimize the main window
+        /// Gets the command to minimize the main window.
         /// </summary>
         public ICommand MinimizeCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to reset the current docking layout to the default
+        /// Gets the command to reset the current docking layout to the default.
         /// </summary>
-        public ICommand ResetLayoutCommand { get; private set; }
+        public ICommand ResetLayoutStandardCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to open the current docking layout
+        /// Gets the command to reset the current docking layout to the default.
+        /// </summary>
+        public ICommand ResetLayoutDeveloperCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to open the current docking layout.
         /// </summary>
         public ICommand LoadLayoutCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to save the current docking layout
+        /// Gets the command to save the current docking layout.
         /// </summary>
         public ICommand SaveLayoutCommand { get; private set; }
 
         /// <summary>
-        /// Gets the tools contained in the main docking panel
+        /// Gets the tools contained in the main docking panel.
         /// </summary>
         public IEnumerable<ToolViewModel> Tools
         {
@@ -108,18 +121,18 @@
         }
 
         /// <summary>
-        /// Gets the singleton instance of the <see cref="MainViewModel" /> class
+        /// Gets the singleton instance of the <see cref="MainViewModel" /> class.
         /// </summary>
-        /// <returns>The singleton instance of the <see cref="MainViewModel" /> class</returns>
+        /// <returns>The singleton instance of the <see cref="MainViewModel" /> class.</returns>
         public static MainViewModel GetInstance()
         {
             return mainViewModelInstance.Value;
         }
 
         /// <summary>
-        /// Adds a tool to the list of tools controlled by the main view model
+        /// Adds a tool to the list of tools controlled by the main view model.
         /// </summary>
-        /// <param name="toolViewModel">The tool to be added</param>
+        /// <param name="toolViewModel">The tool to be added.</param>
         public void Subscribe(ToolViewModel toolViewModel)
         {
             if (toolViewModel != null && !this.tools.Contains(toolViewModel))
@@ -131,9 +144,9 @@
         }
 
         /// <summary>
-        /// Removes a tool from the list of tools controlled by the main view model
+        /// Removes a tool from the list of tools controlled by the main view model.
         /// </summary>
-        /// <param name="toolViewModel">The tool to be added</param>
+        /// <param name="toolViewModel">The tool to be added.</param>
         public void Unsubscribe(ToolViewModel toolViewModel)
         {
             if (toolViewModel != null && this.tools.Contains(toolViewModel))
@@ -145,7 +158,7 @@
         }
 
         /// <summary>
-        /// Starts useful services that run in the background to assist in various operations
+        /// Starts useful services that run in the background to assist in various operations.
         /// </summary>
         private void StartBackgroundServices()
         {
@@ -156,18 +169,18 @@
         }
 
         /// <summary>
-        /// Closes the main window
+        /// Closes the main window.
         /// </summary>
-        /// <param name="window">The window to close</param>
+        /// <param name="window">The window to close.</param>
         private void Close(Window window)
         {
             window.Close();
         }
 
         /// <summary>
-        /// Maximizes or Restores the main window
+        /// Maximizes or Restores the main window.
         /// </summary>
-        /// <param name="window">The window to maximize or restore</param>
+        /// <param name="window">The window to maximize or restore.</param>
         private void MaximizeRestore(Window window)
         {
             if (window == null)
@@ -186,53 +199,66 @@
         }
 
         /// <summary>
-        /// Minimizes the main window
+        /// Minimizes the main window.
         /// </summary>
-        /// <param name="window">The window to minimize</param>
+        /// <param name="window">The window to minimize.</param>
         private void Minimize(Window window)
         {
             window.WindowState = WindowState.Minimized;
         }
 
         /// <summary>
-        /// Loads and deserializes the default layout from the project resources
+        /// Loads and deserializes the default layout from the project resources.
         /// </summary>
-        /// <param name="dockManager">The docking root to which content is loaded</param>
-        private void ResetLayout(DockingManager dockManager)
+        /// <param name="dockManager">The docking root to which content is loaded.</param>
+        private void ResetLayoutStandard(DockingManager dockManager)
         {
-            this.LoadLayout(dockManager, loadDefault: true);
+            this.LoadLayout(dockManager, resourceName: StandardLayoutResource);
         }
 
         /// <summary>
-        /// Loads and deserializes the saved layout from disk. If no layout found, the default is loaded from resources
+        /// Loads and deserializes the default layout from the project resources.
         /// </summary>
-        /// <param name="dockManager">The docking root to which content is loaded</param>
-        /// <param name="loadDefault">Whether or not to only load the default</param>
-        private void LoadLayout(DockingManager dockManager, Boolean loadDefault = false)
+        /// <param name="dockManager">The docking root to which content is loaded.</param>
+        private void ResetLayoutDeveloper(DockingManager dockManager)
         {
-            // Attempt to load saved layout file
-            if (!loadDefault)
+            this.LoadLayout(dockManager, resourceName: DeveloperLayoutResource);
+        }
+
+        /// <summary>
+        /// Loads and deserializes the saved layout from disk. If no layout found, the default is loaded from resources.
+        /// </summary>
+        /// <param name="dockManager">The docking root to which content is loaded.</param>
+        /// <param name="resourceName">Resource to load the layout from. This is optional.</param>
+        private void LoadLayout(DockingManager dockManager, String resourceName = null)
+        {
+            // Attempt to load from personal saved layout file
+            if (String.IsNullOrEmpty(resourceName))
             {
                 try
                 {
                     XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
                     serializer.Deserialize(LayoutSaveFile);
+                    this.FixShit(dockManager);
                     return;
                 }
                 catch
                 {
+                    // Something went wrong, use the standard layout
+                    resourceName = MainViewModel.StandardLayoutResource;
                 }
             }
 
-            // Attempt to load default layout from resources
+            // Attempt to load layout from resource name
             try
             {
-                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(DefaultLayoutResources))
+                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
                 {
                     if (stream != null)
                     {
                         XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
                         serializer.Deserialize(stream);
+                        this.FixShit(dockManager);
                     }
                 }
             }
@@ -241,10 +267,22 @@
             }
         }
 
+        private void FixShit(DockingManager dockingManager)
+        {
+            foreach (var lcToFix in dockingManager.Layout.Children.OfType<LayoutAnchorable>().ToArray())
+            {
+                if (lcToFix.IsVisible)
+                {
+                    lcToFix.IsVisible = false;
+                    lcToFix.IsVisible = true;
+                }
+            }
+        }
+
         /// <summary>
-        /// Saves and deserializes the saved layout from disk
+        /// Saves and deserializes the saved layout from disk.
         /// </summary>
-        /// <param name="dockManager">The docking root to save</param>
+        /// <param name="dockManager">The docking root to save.</param>
         private void SaveLayout(DockingManager dockManager)
         {
             try

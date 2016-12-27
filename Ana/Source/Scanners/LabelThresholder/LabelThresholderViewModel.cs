@@ -172,6 +172,7 @@
         public void OpenLabelThresholder()
         {
             this.IsVisible = true;
+            this.IsActive = true;
         }
 
         private void ApplyThreshold()

@@ -8,12 +8,12 @@
     using System;
     using System.IO;
     using System.Reflection;
-    using System.Windows.Controls;
+    using System.Windows.Forms;
 
     /// <summary>
     /// Interaction logic for CheatBrowser.xaml
     /// </summary>
-    internal partial class CheatBrowser : UserControl
+    internal partial class CheatBrowser : System.Windows.Controls.UserControl
     {
         /// <summary>
         /// The file extension for cheat files
@@ -100,8 +100,7 @@
                 nsAStringBase stringBase = new nsAString(Path.GetFileName(fileName));
 
                 nsIWebBrowserPersist persist = Xpcom.CreateInstance<nsIWebBrowserPersist>("@mozilla.org/embedding/browser/nsWebBrowserPersist;1");
-                nsIDownloadManager downloadMan = null;
-                downloadMan = Xpcom.CreateInstance<nsIDownloadManager>("@mozilla.org/download-manager;1");
+                nsIDownloadManager downloadMan = Xpcom.CreateInstance<nsIDownloadManager>("@mozilla.org/download-manager;1");
                 nsIDownload download = downloadMan.AddDownload(0, source, destination, stringBase, e.Mime, 0, null, persist, false);
 
                 if (download != null)
@@ -109,14 +108,24 @@
                     persist.SetPersistFlagsAttribute(2 | 32 | 16384);
                     persist.SetProgressListenerAttribute(download);
                     persist.SaveURI(source, null, null, null, null, (nsISupports)destination, null);
+                    var x = download.GetPercentCompleteAttribute();
+                    while (x <= 100)
+                    {
+                        Application.DoEvents();
+                        x = download.GetPercentCompleteAttribute();
+                    }
                 }
-
                 saveStream.Flush();
                 saveStream.Close();
-
-                // Import the downloaded file into the current project
-                ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(fileName);
             }
+
+            // Import the downloaded file into the current project
+            ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(fileName);
+        }
+
+        private void DownloadComplete()
+        {
+
         }
 
         private void MenuItemClick(Object sender, System.Windows.RoutedEventArgs e)

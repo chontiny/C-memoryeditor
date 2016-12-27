@@ -88,7 +88,6 @@
             this.ScanResultsObservers = new List<IScanResultsObserver>();
             this.ObserverLock = new Object();
             this.ActiveType = typeof(Int32);
-            this.IsVisible = true;
             this.addresses = new ObservableCollection<ScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);

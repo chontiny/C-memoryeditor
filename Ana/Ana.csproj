@@ -678,6 +678,7 @@
     <Resource Include="Content\Icons\BlueBlocks2.png" />
     <Resource Include="Content\Icons\BlueBlocks4.png" />
     <Resource Include="Content\Icons\MainAppIcon.ico" />
+    <EmbeddedResource Include="Content\StandardLayout.xml" />
     <Content Include="Content\Icons\MainIcon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -982,7 +983,7 @@
     <Resource Include="Content\Icons\RightArrows.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\defaultLayout.xml" />
+    <EmbeddedResource Include="Content\DeveloperLayout.xml" />
     <Content Include="Libraries\xulrunner-32\AccessibleMarshal.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

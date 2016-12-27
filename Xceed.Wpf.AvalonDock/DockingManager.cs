@@ -2553,7 +2553,7 @@ namespace Xceed.Wpf.AvalonDock
             if (model != null)
             {
                 //by default hide the anchorable
-                model.Hide();
+                model.IsVisible = false;
             }
         }
 

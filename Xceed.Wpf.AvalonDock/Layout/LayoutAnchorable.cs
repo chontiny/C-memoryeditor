@@ -15,14 +15,12 @@
   **********************************************************************/
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Xml.Serialization;
-using System.Windows.Controls;
-using System.Globalization;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Xml.Serialization;
 
 namespace Xceed.Wpf.AvalonDock.Layout
 {
@@ -30,15 +28,20 @@ namespace Xceed.Wpf.AvalonDock.Layout
     public class LayoutAnchorable : LayoutContent
     {
         #region IsVisible
-        [XmlIgnore]
+
+        private bool isVisible;
+
         public bool IsVisible
         {
             get
             {
-                return Parent != null && !(Parent is LayoutRoot);
+                return this.isVisible;
             }
+
             set
             {
+                this.isVisible = value;
+
                 if (value)
                 {
                     Show();
@@ -172,32 +175,23 @@ namespace Xceed.Wpf.AvalonDock.Layout
         /// Hide this contents
         /// </summary>
         /// <remarks>Add this content to <see cref="ILayoutRoot.Hidden"/> collection of parent root.</remarks>
-        public void Hide(bool cancelable = true)
+        private void Hide()
         {
-            if (!IsVisible)
-            {
-                IsSelected = true;
-                IsActive = true;
-                return;
-            }
-
-            if (cancelable)
-            {
-                CancelEventArgs args = new CancelEventArgs();
-                OnHiding(args);
-                if (args.Cancel)
-                    return;
-            }
 
             RaisePropertyChanging("IsHidden");
             RaisePropertyChanging("IsVisible");
-            //if (Parent is ILayoutPane)
+            if (Parent is ILayoutPane)
             {
                 var parentAsGroup = Parent as ILayoutGroup;
                 PreviousContainer = parentAsGroup;
-                PreviousContainerIndex = parentAsGroup.IndexOfChild(this);
+                PreviousContainerIndex = parentAsGroup?.IndexOfChild(this) ?? -1;
             }
-            Root.Hidden.Add(this);
+
+            if (Root != null && !Root.Hidden.Any(x => x.ContentId == this.ContentId))
+            {
+                Root.Hidden.Add(this);
+            }
+
             RaisePropertyChanged("IsVisible");
             RaisePropertyChanged("IsHidden");
             NotifyIsVisibleChanged();
@@ -216,13 +210,8 @@ namespace Xceed.Wpf.AvalonDock.Layout
         /// Show the content
         /// </summary>
         /// <remarks>Try to show the content where it was previously hidden.</remarks>
-        public void Show()
+        private void Show()
         {
-            if (IsVisible)
-                return;
-
-            if (!IsHidden)
-                throw new InvalidOperationException();
 
             RaisePropertyChanging("IsHidden");
             RaisePropertyChanging("IsVisible");
@@ -339,7 +328,7 @@ namespace Xceed.Wpf.AvalonDock.Layout
             bool bottom = (strategy & AnchorableShowStrategy.Bottom) == AnchorableShowStrategy.Bottom;
 
             if (!most)
-            { 
+            {
                 var side = AnchorSide.Left;
                 if (left)
                     side = AnchorSide.Left;
@@ -493,7 +482,7 @@ namespace Xceed.Wpf.AvalonDock.Layout
                     }
                 }
                 else
-                { 
+                {
                     //I'm about to remove parentGroup, redirect any content (ie hidden contents) that point to it
                     //to previousContainer
                     LayoutRoot root = parentGroup.Root as LayoutRoot;
@@ -588,6 +577,8 @@ namespace Xceed.Wpf.AvalonDock.Layout
 
         public override void ReadXml(System.Xml.XmlReader reader)
         {
+            if (reader.MoveToAttribute("IsVisible"))
+                IsVisible = bool.Parse(reader.Value);
             if (reader.MoveToAttribute("CanHide"))
                 CanHide = bool.Parse(reader.Value);
             if (reader.MoveToAttribute("CanAutoHide"))
@@ -606,6 +597,7 @@ namespace Xceed.Wpf.AvalonDock.Layout
 
         public override void WriteXml(System.Xml.XmlWriter writer)
         {
+            writer.WriteAttributeString("IsVisible", IsVisible.ToString());
             if (!CanHide)
                 writer.WriteAttributeString("CanHide", CanHide.ToString());
             if (!CanAutoHide)

@@ -41,11 +41,8 @@
 
             set
             {
-                if (this.isVisible != value)
-                {
-                    this.isVisible = value;
-                    this.RaisePropertyChanged(nameof(this.IsVisible));
-                }
+                this.isVisible = value;
+                this.RaisePropertyChanged(nameof(this.IsVisible));
             }
         }
 

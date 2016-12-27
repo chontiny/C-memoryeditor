@@ -109,7 +109,6 @@
 
             // Raise event to update process name in the view
             this.RaisePropertyChanged(nameof(this.ProcessName));
-
             this.IsVisible = false;
         }
     }

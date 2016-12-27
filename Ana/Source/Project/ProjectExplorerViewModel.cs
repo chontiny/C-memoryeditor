@@ -74,7 +74,6 @@
             this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
             this.projectRoot = new ProjectItemViewModel(new ProjectRoot());
-            this.IsVisible = true;
             this.Update();
 
             Task.Run(() => MainViewModel.GetInstance().Subscribe(this));

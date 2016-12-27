@@ -200,8 +200,7 @@
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
 
             this.CleanUp();
-            LabelThresholderViewModel.GetInstance().IsVisible = true;
-            LabelThresholderViewModel.GetInstance().IsActive = true;
+            LabelThresholderViewModel.GetInstance().OpenLabelThresholder();
             base.OnEnd();
         }
 
