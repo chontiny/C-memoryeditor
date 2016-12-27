@@ -9,13 +9,11 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Reflection;
     using System.Threading;
     using System.Windows;
     using System.Windows.Input;
     using Xceed.Wpf.AvalonDock;
-    using Xceed.Wpf.AvalonDock.Layout;
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
     /// <summary>
@@ -63,7 +61,7 @@
             this.MaximizeRestoreCommand = new RelayCommand<Window>((window) => this.MaximizeRestore(window), (window) => true);
             this.MinimizeCommand = new RelayCommand<Window>((window) => this.Minimize(window), (window) => true);
             this.ResetLayoutStandardCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutStandard(dockingManager), (dockingManager) => true);
-            this.ResetLayoutStandardCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutDeveloper(dockingManager), (dockingManager) => true);
+            this.ResetLayoutDeveloperCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutDeveloper(dockingManager), (dockingManager) => true);
             this.LoadLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.LoadLayout(dockingManager), (dockingManager) => true);
             this.SaveLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.SaveLayout(dockingManager), (dockingManager) => true);
             this.StartBackgroundServices();
@@ -238,8 +236,7 @@
                 try
                 {
                     XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-                    serializer.Deserialize(LayoutSaveFile);
-                    this.FixShit(dockManager);
+                    serializer.Deserialize(MainViewModel.LayoutSaveFile);
                     return;
                 }
                 catch
@@ -258,24 +255,11 @@
                     {
                         XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
                         serializer.Deserialize(stream);
-                        this.FixShit(dockManager);
                     }
                 }
             }
             catch
             {
-            }
-        }
-
-        private void FixShit(DockingManager dockingManager)
-        {
-            foreach (var lcToFix in dockingManager.Layout.Children.OfType<LayoutAnchorable>().ToArray())
-            {
-                if (lcToFix.IsVisible)
-                {
-                    lcToFix.IsVisible = false;
-                    lcToFix.IsVisible = true;
-                }
             }
         }
 
