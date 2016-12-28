@@ -5,6 +5,7 @@
     using Controls;
     using Controls.TreeView;
     using Source.Content;
+    using Source.Project;
     using Source.Project.ProjectItems;
     using Source.Utils;
     using Source.Utils.DataStructures;
@@ -17,9 +18,9 @@
     using System.Windows.Forms;
 
     /// <summary>
-    /// Interaction logic for ProjectExplorer.xaml
+    /// Interaction logic for ProjectExplorer.xaml.
     /// </summary>
-    internal partial class ProjectExplorer : System.Windows.Controls.UserControl
+    internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IProjectExplorerObserver
     {
         private TreeViewAdv projectExplorerTreeView;
         private BiDictionary<ProjectItem, ProjectNode> nodeCache;
@@ -27,14 +28,14 @@
         private TreeNodeAdv draggedItem;
         private Object accessLock;
 
-        private FolderItem projectRoot;
+        private ProjectRoot projectRoot;
 
         private NodeCheckBox EntryCheckBox;
         private NodeIcon EntryIcon;
         private NodeTextBox EntryDescription;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProjectExplorer" /> class
+        /// Initializes a new instance of the <see cref="ProjectExplorer" /> class.
         /// </summary>
         public ProjectExplorer()
         {
@@ -87,24 +88,7 @@
 
             this.projectExplorerTreeViewContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.projectExplorerTreeView));
 
-            // Testing
-            FolderItem nice = new FolderItem();
-            FolderItem nice2 = new FolderItem();
-            FolderItem nice3 = new FolderItem();
-            FolderItem nice4 = new FolderItem();
-            FolderItem nicea = new FolderItem();
-            FolderItem niceb = new FolderItem();
-            FolderItem nicec = new FolderItem();
-            nice.Children.Add(nice2);
-            nice.Children.Add(nicea);
-            nice.Children.Add(niceb);
-            nice.Children.Add(nicec);
-            nice2.Children.Add(nice3);
-            nice3.Children.Add(nice4);
-
-            this.projectRoot = nice;
-
-            RebuildProjectStructure(nice);
+            ProjectExplorerViewModel.GetInstance().Subscribe(this);
         }
 
         private void EntryDescriptionDrawText(Object sender, DrawEventArgs e)
@@ -112,7 +96,7 @@
             e.TextColor = DarkBrushes.BaseColor2;
         }
 
-        public void RebuildProjectStructure(FolderItem projectRoot)
+        public void RebuildProjectStructure(ProjectRoot projectRoot)
         {
             this.projectRoot = projectRoot;
 
@@ -135,7 +119,9 @@
         private void BuildNodes(ProjectItem projectItem, ProjectItem parent = null)
         {
             if (projectItem == null)
+            {
                 return;
+            }
 
             Bitmap image = null;
 
@@ -256,7 +242,9 @@
         private void DeleteSelectedItems()
         {
             if (projectExplorerTreeView.SelectedNodes == null || projectExplorerTreeView.SelectedNodes.Count <= 0)
+            {
                 return;
+            }
 
             List<ProjectItem> Nodes = new List<ProjectItem>();
             projectExplorerTreeView.SelectedNodes.ForEach(x => Nodes.Add(GetProjectItemFromNode(x)));
@@ -288,42 +276,42 @@
 
         private void AddressToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            AddNewAddressItem();
+            this.AddNewAddressItem();
         }
 
         private void AddNewScriptToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            AddNewScriptItem();
+            this.AddNewScriptItem();
         }
 
         private void FolderToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            AddNewFolderItem();
+            this.AddNewFolderItem();
         }
 
         private void AddressRightClickToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            AddNewAddressItem();
+            this.AddNewAddressItem();
         }
 
         private void ScriptRightClickToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            AddNewScriptItem();
+            this.AddNewScriptItem();
         }
 
         private void FolderRightClickToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            AddNewFolderItem();
+            this.AddNewFolderItem();
         }
 
         private void DeleteSelectionToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            DeleteSelectedItems();
+            this.DeleteSelectedItems();
         }
 
         private void ToggleFreezeToolStripMenuItem_Click(Object sender, EventArgs e)
         {
-            ActivateSelectedItems();
+            this.ActivateSelectedItems();
         }
 
         private void ProjectExplorerTreeView_KeyPress(Object sender, KeyPressEventArgs e)
@@ -333,7 +321,7 @@
                 return;
             }
 
-            ActivateSelectedItems();
+            this.ActivateSelectedItems();
         }
 
         private void ProjectContextMenuStrip_Opening(Object sender, CancelEventArgs e)
@@ -367,15 +355,17 @@
                 return;
             }
 
-            DoCheck(projectItem, !projectItem.IsActivated);
+            this.DoCheck(projectItem, !projectItem.IsActivated);
 
-            RebuildProjectStructure(projectRoot);
+            this.RebuildProjectStructure(projectRoot);
         }
 
         private void ProjectExplorerTreeView_NodeMouseDoubleClick(Object sender, TreeNodeAdvMouseEventArgs e)
         {
             if (e == null || e.Node == null)
+            {
                 return;
+            }
 
             ProjectItem projectItem = GetProjectItemFromNode(e.Node);
             // projectExplorerPresenter.PerformDefaultAction(projectItem);
@@ -386,7 +376,7 @@
             List<TreeNodeAdv> treeNodes = new List<TreeNodeAdv>();
             List<ProjectItem> projectItems = new List<ProjectItem>();
 
-            projectExplorerTreeView.SelectedNodes.ForEach(X => treeNodes.Add(X));
+            projectExplorerTreeView.SelectedNodes.ForEach(x => treeNodes.Add(x));
             treeNodes.ForEach(x => projectItems.Add(GetProjectItemFromNode(x)));
 
             // projectExplorerPresenter.UpdateSelection(projectItems);
@@ -455,11 +445,15 @@
                             targetItem.AddSibling(draggedItem, true);
                         }
                         break;
-                }
-                */
+                }*/
 
                 RebuildProjectStructure(projectRoot);
             }
+        }
+
+        public void Update(ProjectRoot projectRoot)
+        {
+            this.RebuildProjectStructure(projectRoot);
         }
     }
     //// End class

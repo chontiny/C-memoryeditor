@@ -8,29 +8,29 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// View model for the Property Viewer
+    /// View model for the Property Viewer.
     /// </summary>
     internal class PropertyViewerViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model
+        /// The content id for the docking library associated with this view model.
         /// </summary>
         public const String ToolContentId = nameof(PropertyViewerViewModel);
 
         /// <summary>
-        /// Singleton instance of the <see cref="PropertyViewerViewModel" /> class
+        /// Singleton instance of the <see cref="PropertyViewerViewModel" /> class.
         /// </summary>
         private static Lazy<PropertyViewerViewModel> propertyViewerViewModelInstance = new Lazy<PropertyViewerViewModel>(
                 () => { return new PropertyViewerViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// The objects being viewed
+        /// The objects being viewed.
         /// </summary>
         private Object[] targetObjects;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="PropertyViewerViewModel" /> class from being created
+        /// Prevents a default instance of the <see cref="PropertyViewerViewModel" /> class from being created.
         /// </summary>
         private PropertyViewerViewModel() : base("Property Viewer")
         {
@@ -42,7 +42,7 @@
         }
 
         /// <summary>
-        /// Gets the objects being viewed
+        /// Gets the objects being viewed.
         /// </summary>
         public Object[] TargetObjects
         {
@@ -60,28 +60,28 @@
         }
 
         /// <summary>
-        /// Gets or sets a lock that controls access to observing classes
+        /// Gets or sets a lock that controls access to observing classes.
         /// </summary>
         private Object ObserverLock { get; set; }
 
         /// <summary>
-        /// Gets or sets objects observing changes in the selected objects
+        /// Gets or sets objects observing changes in the selected objects.
         /// </summary>
         private List<IPropertyViewerObserver> PropertyViewerObservers { get; set; }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="PropertyViewerViewModel"/> class
+        /// Gets a singleton instance of the <see cref="PropertyViewerViewModel"/> class.
         /// </summary>
-        /// <returns>A singleton instance of the class</returns>
+        /// <returns>A singleton instance of the class.</returns>
         public static PropertyViewerViewModel GetInstance()
         {
             return PropertyViewerViewModel.propertyViewerViewModelInstance.Value;
         }
 
         /// <summary>
-        /// Subscribes the given object to changes in the selected objects
+        /// Subscribes the given object to changes in the selected objects.
         /// </summary>
-        /// <param name="propertyViewerObserver">The object to observe selected objects changes</param>
+        /// <param name="propertyViewerObserver">The object to observe selected objects changes.</param>
         public void Subscribe(IPropertyViewerObserver propertyViewerObserver)
         {
             lock (this.ObserverLock)
@@ -95,9 +95,9 @@
         }
 
         /// <summary>
-        /// Unsubscribes the given object from changes in the selected objects
+        /// Unsubscribes the given object from changes in the selected objects.
         /// </summary>
-        /// <param name="propertyViewerObserver">The object to observe selected objects changes</param>
+        /// <param name="propertyViewerObserver">The object to observe selected objects changes.</param>
         public void Unsubscribe(IPropertyViewerObserver propertyViewerObserver)
         {
             lock (this.ObserverLock)
@@ -110,16 +110,16 @@
         }
 
         /// <summary>
-        /// Sets the objects being viewed
+        /// Sets the objects being viewed.
         /// </summary>
-        /// <param name="targetObjects">The objects to view</param>
+        /// <param name="targetObjects">The objects to view.</param>
         public void SetTargetObjects(params Object[] targetObjects)
         {
             this.TargetObjects = targetObjects;
         }
 
         /// <summary>
-        /// Notify all observing objects of a change in the selected objects
+        /// Notify all observing objects of a change in the selected objects.
         /// </summary>
         private void NotifyObservers()
         {

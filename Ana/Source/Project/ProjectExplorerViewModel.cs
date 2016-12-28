@@ -7,6 +7,7 @@
     using ProjectItems;
     using PropertyViewer;
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Runtime.Serialization.Json;
     using System.Threading;
@@ -38,12 +39,12 @@
         /// <summary>
         /// The project root which contains all project items
         /// </summary>
-        private ProjectItemViewModel projectRoot;
+        private ProjectRoot projectRoot;
 
         /// <summary>
         /// The selected project item
         /// </summary>
-        private ProjectItemViewModel selectedProjectItem;
+        private ProjectItem selectedProjectItem;
 
         /// <summary>
         /// Whether or not there are unsaved project changes
@@ -61,6 +62,8 @@
         private ProjectExplorerViewModel() : base("Project Explorer")
         {
             this.ContentId = ProjectExplorerViewModel.ToolContentId;
+            this.ObserverLock = new Object();
+            this.ProjectExplorerObservers = new List<IProjectExplorerObserver>();
 
             // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
@@ -73,7 +76,7 @@
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
             this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
-            this.projectRoot = new ProjectItemViewModel(new ProjectRoot());
+            this.ProjectRoot = new ProjectRoot();
             this.Update();
 
             Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
@@ -171,7 +174,7 @@
         /// <summary>
         /// The root that contains all project items
         /// </summary>
-        public ProjectItemViewModel ProjectRoot
+        public ProjectRoot ProjectRoot
         {
             get
             {
@@ -181,6 +184,7 @@
             private set
             {
                 this.projectRoot = value;
+                this.NotifyObservers();
                 this.RaisePropertyChanged(nameof(this.ProjectRoot));
             }
         }
@@ -188,7 +192,7 @@
         /// <summary>
         /// Gets or sets the selected project item
         /// </summary>
-        public ProjectItemViewModel SelectedProjectItem
+        public ProjectItem SelectedProjectItem
         {
             get
             {
@@ -198,7 +202,7 @@
             set
             {
                 this.selectedProjectItem = value;
-                PropertyViewerViewModel.GetInstance().SetTargetObjects(this.selectedProjectItem?.ProjectItem);
+                PropertyViewerViewModel.GetInstance().SetTargetObjects(this.selectedProjectItem);
                 this.RaisePropertyChanged(nameof(this.SelectedProjectItem));
             }
         }
@@ -223,28 +227,43 @@
         }
 
         /// <summary>
-        /// Adds the new project item to the project item collection
+        /// Adds the new project item to the project item collection.
         /// </summary>
-        /// <param name="projectItem">The project item to add</param>
-        public void AddNewProjectItem(ProjectItem projectItem)
+        /// <param name="projectItem">The project item to add.</param>
+        /// <param name="AddToSelected">Whether or not the items should be added under the selected item.</param>
+        public void AddNewProjectItem(ProjectItem projectItem, Boolean AddToSelected = true)
         {
-            ProjectItemViewModel folderTarget = this.SelectedProjectItem;
+            ProjectItem target = this.SelectedProjectItem;
 
             // Atempt to find the correct folder to place the new item into
-            while (folderTarget != null && !(folderTarget.ProjectItem is FolderItem))
+            while (target != null && !(target is FolderItem))
             {
-                folderTarget = folderTarget.Parent as ProjectItemViewModel;
+                target = target.Parent as ProjectItem;
             }
 
-            if (folderTarget != null)
+            FolderItem targetFolder = target as FolderItem;
+
+            if (target != null)
             {
-                folderTarget.AddChild(new ProjectItemViewModel(projectItem, folderTarget));
+                targetFolder.AddChild(projectItem);
             }
             else
             {
-                this.projectRoot.AddChild(new ProjectItemViewModel(projectItem, this.projectRoot));
+                this.ProjectRoot.AddChild(projectItem);
             }
+
+            this.NotifyObservers();
         }
+
+        /// <summary>
+        /// Gets or sets a lock that controls access to observing classes.
+        /// </summary>
+        private Object ObserverLock { get; set; }
+
+        /// <summary>
+        /// Gets or sets objects observing changes in the selected objects.
+        /// </summary>
+        private List<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
 
         /// <summary>
         /// Adds a new folder to the project items
@@ -275,8 +294,10 @@
         /// </summary>
         private void DeleteSelection()
         {
-            this.ProjectRoot.RemoveChildRecursive(this.SelectedProjectItem);
+            this.ProjectRoot.RemoveChild(this.SelectedProjectItem);
             this.SelectedProjectItem = null;
+
+            this.NotifyObservers();
         }
 
         /// <summary>
@@ -284,7 +305,7 @@
         /// </summary>
         private void ToggleSelectionActivation()
         {
-            ProjectItem projectItem = this.SelectedProjectItem?.ProjectItem;
+            ProjectItem projectItem = this.SelectedProjectItem;
             if (projectItem != null)
             {
                 projectItem.IsActivated = !projectItem.IsActivated;
@@ -300,7 +321,7 @@
             {
                 while (true)
                 {
-                    this.projectRoot.ProjectItem.Update();
+                    this.ProjectRoot.Update();
                     Thread.Sleep(SettingsViewModel.GetInstance().TableReadInterval);
                 }
             });
@@ -327,8 +348,7 @@
                 using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    this.ProjectRoot = new ProjectItemViewModel(serializer.ReadObject(fileStream) as ProjectRoot);
-                    this.ProjectRoot.BuildViewModels();
+                    this.ProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
                     this.HasUnsavedChanges = false;
                 }
             }
@@ -366,8 +386,7 @@
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
                     ProjectRoot importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
-                    importedProjectRoot.Children.ForEach(x => (this.ProjectRoot.ProjectItem as ProjectRoot).AddChild(x));
-                    this.ProjectRoot.BuildViewModels();
+                    importedProjectRoot.Children.ForEach(x => this.AddNewProjectItem(x, AddToSelected: false));
                     this.HasUnsavedChanges = true;
                 }
             }
@@ -393,7 +412,7 @@
                 using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Create, FileAccess.Write))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    serializer.WriteObject(fileStream, this.projectRoot.ProjectItem);
+                    serializer.WriteObject(fileStream, this.ProjectRoot);
                 }
 
                 this.HasUnsavedChanges = false;
@@ -415,6 +434,51 @@
             saveFileDialog.ShowDialog();
             this.ProjectFilePath = saveFileDialog.FileName;
             this.SaveProject();
+        }
+
+        /// <summary>
+        /// Subscribes the given object to changes in the selected objects.
+        /// </summary>
+        /// <param name="projectExplorerObserver">The object to observe selected objects changes.</param>
+        public void Subscribe(IProjectExplorerObserver projectExplorerObserver)
+        {
+            lock (this.ObserverLock)
+            {
+                if (!this.ProjectExplorerObservers.Contains(projectExplorerObserver))
+                {
+                    this.ProjectExplorerObservers.Add(projectExplorerObserver);
+                    projectExplorerObserver.Update(this.ProjectRoot);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Unsubscribes the given object from changes in the selected objects.
+        /// </summary>
+        /// <param name="projectExplorerObserver">The object to observe selected objects changes.</param>
+        public void Unsubscribe(IProjectExplorerObserver projectExplorerObserver)
+        {
+            lock (this.ObserverLock)
+            {
+                if (this.ProjectExplorerObservers.Contains(projectExplorerObserver))
+                {
+                    this.ProjectExplorerObservers.Remove(projectExplorerObserver);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Notify all observing objects of a change in the selected objects.
+        /// </summary>
+        private void NotifyObservers()
+        {
+            lock (this.ObserverLock)
+            {
+                foreach (IProjectExplorerObserver observer in this.ProjectExplorerObservers)
+                {
+                    observer.Update(this.ProjectRoot);
+                }
+            }
         }
     }
     //// End class
