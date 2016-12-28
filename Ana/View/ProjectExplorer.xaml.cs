@@ -69,22 +69,24 @@
             this.projectExplorerTreeView.NodeControls.Add(this.EntryCheckBox);
             this.projectExplorerTreeView.NodeControls.Add(this.EntryIcon);
             this.projectExplorerTreeView.NodeControls.Add(this.EntryDescription);
+            this.projectExplorerTreeView.SelectionMode = TreeSelectionMode.Multi;
             this.projectExplorerTreeView.BorderStyle = BorderStyle.None;
             this.projectExplorerTreeView.Model = this.projectTree;
             this.projectExplorerTreeView.AllowDrop = true;
+            this.projectExplorerTreeView.FullRowSelect = true;
 
             this.projectExplorerTreeView.ItemDrag += this.ProjectExplorerTreeView_ItemDrag;
-            this.projectExplorerTreeView.NodeMouseDoubleClick += this.ProjectExplorerTreeView_NodeMouseDoubleClick;
-            this.projectExplorerTreeView.SelectionChanged += this.ProjectExplorerTreeView_SelectionChanged;
-            this.projectExplorerTreeView.DragDrop += this.ProjectExplorerTreeView_DragDrop;
-            this.projectExplorerTreeView.DragEnter += this.ProjectExplorerTreeView_DragEnter;
-            this.projectExplorerTreeView.DragOver += this.ProjectExplorerTreeView_DragOver;
-            this.projectExplorerTreeView.KeyPress += this.ProjectExplorerTreeView_KeyPress;
+            this.projectExplorerTreeView.NodeMouseDoubleClick += this.ProjectExplorerTreeViewNodeMouseDoubleClick;
+            this.projectExplorerTreeView.SelectionChanged += this.ProjectExplorerTreeViewSelectionChanged;
+            this.projectExplorerTreeView.DragDrop += this.ProjectExplorerTreeViewDragDrop;
+            this.projectExplorerTreeView.DragEnter += this.ProjectExplorerTreeViewDragEnter;
+            this.projectExplorerTreeView.DragOver += this.ProjectExplorerTreeViewDragOver;
+            this.projectExplorerTreeView.KeyPress += this.ProjectExplorerTreeViewKeyPress;
 
             this.projectExplorerTreeView.BackColor = DarkBrushes.BaseColor3;
             this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;
             this.projectExplorerTreeView.DragDropMarkColor = DarkBrushes.BaseColor11;
-            this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor2;
+            this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
 
             this.projectExplorerTreeViewContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.projectExplorerTreeView));
 
@@ -99,14 +101,15 @@
         public void RebuildProjectStructure(ProjectRoot projectRoot)
         {
             this.projectRoot = projectRoot;
+            this.projectRoot?.BuildParents();
 
             projectExplorerTreeView.BeginUpdate();
             projectTree.Nodes.Clear();
             nodeCache.Clear();
 
-            if (projectRoot != null)
+            if (this.projectRoot != null)
             {
-                foreach (ProjectItem Child in projectRoot.Children)
+                foreach (ProjectItem Child in this.projectRoot.Children)
                 {
                     BuildNodes(Child);
                 }
@@ -232,8 +235,7 @@
             }
 
             // Behavior here is undefined, we could check only the selected items, or enforce the recursive rules of folders
-            // Nodes.ForEach(x => DoCheck(x, !x.GetActivationState()));
-            // projectExplorerPresenter.ActivateProjectItems(nodes, !nodes.First().GetActivationState());
+            nodes.ForEach(x => CheckItem(x, !x.IsActivated));
             projectExplorerTreeView.SelectedNodes.ForEach(x => nodeCache[GetProjectItemFromNode(x)].IsChecked = GetProjectItemFromNode(x).IsActivated);
 
             RebuildProjectStructure(projectRoot);
@@ -250,17 +252,17 @@
             projectExplorerTreeView.SelectedNodes.ForEach(x => Nodes.Add(GetProjectItemFromNode(x)));
             // projectExplorerPresenter.DeleteProjectItems(Nodes);
 
-            RebuildProjectStructure(projectRoot);
+            this.RebuildProjectStructure(projectRoot);
         }
 
-        private void DoCheck(ProjectItem projectItem, Boolean activated)
+        private void CheckItem(ProjectItem projectItem, Boolean activated)
         {
             if (projectItem == null)
             {
                 return;
             }
 
-            // projectExplorerPresenter.ActivateProjectItem(projectItem, activated);
+            projectItem.IsActivated = activated;
             nodeCache[projectItem].IsChecked = projectItem.IsActivated;
 
             if (projectItem is FolderItem)
@@ -269,7 +271,7 @@
 
                 foreach (ProjectItem child in folderItem.Children)
                 {
-                    DoCheck(child, activated);
+                    this.CheckItem(child, activated);
                 }
             }
         }
@@ -314,7 +316,7 @@
             this.ActivateSelectedItems();
         }
 
-        private void ProjectExplorerTreeView_KeyPress(Object sender, KeyPressEventArgs e)
+        private void ProjectExplorerTreeViewKeyPress(Object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar != ' ')
             {
@@ -355,12 +357,12 @@
                 return;
             }
 
-            this.DoCheck(projectItem, !projectItem.IsActivated);
+            this.CheckItem(projectItem, !projectItem.IsActivated);
 
             this.RebuildProjectStructure(projectRoot);
         }
 
-        private void ProjectExplorerTreeView_NodeMouseDoubleClick(Object sender, TreeNodeAdvMouseEventArgs e)
+        private void ProjectExplorerTreeViewNodeMouseDoubleClick(Object sender, TreeNodeAdvMouseEventArgs e)
         {
             if (e == null || e.Node == null)
             {
@@ -368,10 +370,10 @@
             }
 
             ProjectItem projectItem = GetProjectItemFromNode(e.Node);
-            // projectExplorerPresenter.PerformDefaultAction(projectItem);
+            this.CheckItem(projectItem, !projectItem.IsActivated);
         }
 
-        private void ProjectExplorerTreeView_SelectionChanged(Object sender, EventArgs e)
+        private void ProjectExplorerTreeViewSelectionChanged(Object sender, EventArgs e)
         {
             List<TreeNodeAdv> treeNodes = new List<TreeNodeAdv>();
             List<ProjectItem> projectItems = new List<ProjectItem>();
@@ -379,7 +381,10 @@
             projectExplorerTreeView.SelectedNodes.ForEach(x => treeNodes.Add(x));
             treeNodes.ForEach(x => projectItems.Add(GetProjectItemFromNode(x)));
 
-            // projectExplorerPresenter.UpdateSelection(projectItems);
+            if (projectItems.Count > 0)
+            {
+                ProjectExplorerViewModel.GetInstance().SelectedProjectItem = projectItems?.First();
+            }
         }
 
         private void ProjectExplorerTreeView_ItemDrag(Object sender, ItemDragEventArgs e)
@@ -388,17 +393,17 @@
             this.projectExplorerTreeView.DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private void ProjectExplorerTreeView_DragOver(Object sender, DragEventArgs e)
+        private void ProjectExplorerTreeViewDragOver(Object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
 
-        private void ProjectExplorerTreeView_DragEnter(Object sender, DragEventArgs e)
+        private void ProjectExplorerTreeViewDragEnter(Object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
 
-        private void ProjectExplorerTreeView_DragDrop(Object sender, DragEventArgs e)
+        private void ProjectExplorerTreeViewDragDrop(Object sender, DragEventArgs e)
         {
             // Retrieve the client coordinates of the drop location.
             Point targetPoint = projectExplorerTreeView.PointToClient(new Point(e.X, e.Y));
@@ -421,33 +426,31 @@
                 ProjectItem draggedItem = GetProjectItemFromNode(draggedNodeAdv);
                 ProjectItem targetItem = GetProjectItemFromNode(targetNodeAdv);
 
-                /*
-                switch (projectExplorerTreeView.DropPosition.Position)
-                {
-                    case NodePosition.Before:
-                        if (!draggedItem.HasNode(targetItem))
-                        {
-                            projectRoot.RemoveNode(draggedItem);
-                            targetItem.AddSibling(draggedItem, false);
-                        }
-                        break;
-                    case NodePosition.Inside:
-                        if (!draggedItem.HasNode(targetItem))
-                        {
-                            projectRoot.RemoveNode(draggedItem);
-                            targetItem.AddChild(draggedItem);
-                        }
-                        break;
-                    case NodePosition.After:
-                        if (!draggedItem.HasNode(targetItem))
-                        {
-                            projectRoot.RemoveNode(draggedItem);
-                            targetItem.AddSibling(draggedItem, true);
-                        }
-                        break;
-                }*/
+                this.projectRoot?.BuildParents();
 
-                RebuildProjectStructure(projectRoot);
+                if (!(draggedItem is FolderItem) || !(draggedItem as FolderItem).HasNode(targetItem))
+                {
+                    switch (projectExplorerTreeView.DropPosition.Position)
+                    {
+                        case NodePosition.Before:
+                            projectRoot.RemoveNode(draggedItem);
+                            targetItem.AddSibling(draggedItem, after: false);
+                            break;
+                        case NodePosition.Inside:
+                            if (targetItem is FolderItem)
+                            {
+                                projectRoot.RemoveNode(draggedItem);
+                                (targetItem as FolderItem).AddChild(draggedItem);
+                            }
+                            break;
+                        case NodePosition.After:
+                            projectRoot.RemoveNode(draggedItem);
+                            targetItem.AddSibling(draggedItem, after: true);
+                            break;
+                    }
+                }
+
+                this.RebuildProjectStructure(projectRoot);
             }
         }
 
