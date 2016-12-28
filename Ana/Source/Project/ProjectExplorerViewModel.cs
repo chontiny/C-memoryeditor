@@ -138,6 +138,16 @@
         public ICommand ClearSelectionCommand { get; private set; }
 
         /// <summary>
+        /// Gets or sets a lock that controls access to observing classes.
+        /// </summary>
+        private Object ObserverLock { get; set; }
+
+        /// <summary>
+        /// Gets or sets objects observing changes in the selected objects.
+        /// </summary>
+        private List<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
+
+        /// <summary>
         /// Gets or sets a value indicating whether there are unsaved changes
         /// </summary>
         public Boolean HasUnsavedChanges
@@ -256,14 +266,12 @@
         }
 
         /// <summary>
-        /// Gets or sets a lock that controls access to observing classes.
+        /// Called when a property is updated in any of the contained project items
         /// </summary>
-        private Object ObserverLock { get; set; }
-
-        /// <summary>
-        /// Gets or sets objects observing changes in the selected objects.
-        /// </summary>
-        private List<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
+        public void OnPropertyUpdate()
+        {
+            this.NotifyObservers();
+        }
 
         /// <summary>
         /// Adds a new folder to the project items
@@ -437,9 +445,9 @@
         }
 
         /// <summary>
-        /// Subscribes the given object to changes in the selected objects.
+        /// Subscribes the given object to changes in the project structure.
         /// </summary>
-        /// <param name="projectExplorerObserver">The object to observe selected objects changes.</param>
+        /// <param name="projectExplorerObserver">The object to observe project structure changes.</param>
         public void Subscribe(IProjectExplorerObserver projectExplorerObserver)
         {
             lock (this.ObserverLock)
@@ -453,9 +461,9 @@
         }
 
         /// <summary>
-        /// Unsubscribes the given object from changes in the selected objects.
+        /// Unsubscribes the given object from changes in the project structure.
         /// </summary>
-        /// <param name="projectExplorerObserver">The object to observe selected objects changes.</param>
+        /// <param name="projectExplorerObserver">The object to observe project structure changes.</param>
         public void Unsubscribe(IProjectExplorerObserver projectExplorerObserver)
         {
             lock (this.ObserverLock)
@@ -468,7 +476,7 @@
         }
 
         /// <summary>
-        /// Notify all observing objects of a change in the selected objects.
+        /// Notify all observing objects of a change in the project structure.
         /// </summary>
         private void NotifyObservers()
         {

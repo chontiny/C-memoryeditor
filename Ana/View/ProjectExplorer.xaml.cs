@@ -98,6 +98,11 @@
             e.TextColor = DarkBrushes.BaseColor2;
         }
 
+        public void RefreshItem(ProjectItem projectItem)
+        {
+
+        }
+
         public void RebuildProjectStructure(ProjectRoot projectRoot)
         {
             this.projectRoot = projectRoot;
@@ -381,10 +386,7 @@
             projectExplorerTreeView.SelectedNodes.ForEach(x => treeNodes.Add(x));
             treeNodes.ForEach(x => projectItems.Add(GetProjectItemFromNode(x)));
 
-            if (projectItems.Count > 0)
-            {
-                ProjectExplorerViewModel.GetInstance().SelectedProjectItem = projectItems?.First();
-            }
+            ProjectExplorerViewModel.GetInstance().SelectedProjectItem = (projectItems?.Count ?? 0) > 0 ? projectItems.First() : null;
         }
 
         private void ProjectExplorerTreeView_ItemDrag(Object sender, ItemDragEventArgs e)

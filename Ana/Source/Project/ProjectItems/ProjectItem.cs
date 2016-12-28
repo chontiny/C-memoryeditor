@@ -83,6 +83,7 @@
                 this.description = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Description));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -107,6 +108,7 @@
                 this.isActivated = value;
                 this.OnActivationChanged();
                 this.NotifyPropertyChanged(nameof(this.IsActivated));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
