@@ -1,12 +1,14 @@
 ﻿namespace Ana.Source.Utils
 {
     using System;
+    using System.Drawing;
+    using System.IO;
     using System.Windows.Media.Imaging;
 
     /// <summary>
     /// Static class for loading images from the project content
     /// </summary>
-    internal static class ImageLoader
+    internal static class ImageUtils
     {
         /// <summary>
         /// Loads an image from the given uri
@@ -22,6 +24,19 @@
             bitmapImage.EndInit();
 
             return bitmapImage;
+        }
+
+        public static Bitmap BitmapImageToBitmap(BitmapImage bitmapImage)
+        {
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bitmapImage));
+                enc.Save(outStream);
+                Bitmap bitmap = new Bitmap(outStream);
+
+                return new Bitmap(bitmap);
+            }
         }
     }
     //// End class

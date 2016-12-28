@@ -12,7 +12,7 @@
     /// <summary>
     /// A base class for objects of which the properties must be observable.
     /// </summary>
-    internal class ObservableObject : INotifyPropertyChanged /* INotifyPropertyChanging */
+    internal class ObservableObject : INotifyPropertyChanged
     {
         /// <summary>
         /// Occurs before a property value changes.

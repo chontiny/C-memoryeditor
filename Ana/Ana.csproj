@@ -274,6 +274,7 @@
     <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\WIN_CERTIFICATE.cs" />
     <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Utility.cs" />
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
+    <Compile Include="Source\Mvvm\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
@@ -292,6 +293,7 @@
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementRef.cs" />
+    <Compile Include="Source\Utils\DataStructures\BiDictionary.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorModel.cs" />
@@ -435,7 +437,7 @@
     </Compile>
     <Compile Include="Source\Utils\Extensions\ObjectExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\PrimitiveExtensions.cs" />
-    <Compile Include="Source\Utils\ImageLoader.cs" />
+    <Compile Include="Source\Utils\ImageUtils.cs" />
     <Compile Include="Source\Utils\PrimitiveTypes.cs" />
     <Compile Include="Source\Utils\RepeatedTask.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
@@ -447,6 +449,7 @@
     <Compile Include="Source\Utils\VirtualItemProvider\VirtualizingCollection.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
+    <Compile Include="View\Controls\TreeView\ProjectNode.cs" />
     <Compile Include="View\SignatureCollector.xaml.cs">
       <DependentUpon>SignatureCollector.xaml</DependentUpon>
     </Compile>
@@ -842,6 +845,10 @@
     <ProjectReference Include="..\SharpDX\SharpDX\SharpDX.csproj">
       <Project>{6a41eaf1-67d4-43f0-b6b8-1a1395b07235}</Project>
       <Name>SharpDX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TreeViewAdv\TreeViewAdv.csproj">
+      <Project>{e73bb233-d88b-44a7-a98f-d71ee158381d}</Project>
+      <Name>TreeViewAdv</Name>
     </ProjectReference>
     <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
       <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>

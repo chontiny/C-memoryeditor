@@ -262,6 +262,11 @@
 
             return false;
         }
+
+        protected override Boolean IsActivatable()
+        {
+            return false;
+        }
     }
     //// End class
 }
