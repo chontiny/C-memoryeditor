@@ -9,6 +9,7 @@
     {
         public static String GetCodeInjectionTemplate(String moduleName = "moduleName", UInt64 moduleOffset = 0x12345)
         {
+            // TODO: Offload to a resource file, migrate to C#
             return "function OnActivate()" + "\n\t\n" +
                 "\t" + "MyCheat()" + "\n\t\n" +
                 "end" + "\n\t\n" +
@@ -33,6 +34,7 @@
 
         public static String GetGraphicsOverlayTemplate()
         {
+            // TODO: Offload to a resource file, migrate to C#
             return "function OnActivate()" + "\n\t\n" +
                 "\t" + "MyOverlay()" + "\n\t\n" +
                 "end" + "\n\t\n" +

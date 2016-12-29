@@ -478,133 +478,16 @@
         }
 
         /// <summary>
-        /// Reads the SByte at the given address.
+        /// Reads the value at the given address.
         /// </summary>
         /// <param name="address">The address of the read.</param>
-        /// <returns>The SByte read from memory.</returns>
-        public SByte ReadSByte(UInt64 address)
+        /// <returns>The value read from memory.</returns>
+        public T ReadMemory<T>(UInt64 address)
         {
             this.PrintDebugTag(address.ToString("x"));
 
             Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<SByte>(address.ToIntPtr(), out readSuccess);
-        }
-
-        /// <summary>
-        /// Reads the Byte at the given address.
-        /// </summary>
-        /// <param name="address">The address of the read.</param>
-        /// <returns>The Byte read from memory.</returns>
-        public Byte ReadByte(UInt64 address)
-        {
-            this.PrintDebugTag(address.ToString("x"));
-
-            Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<Byte>(address.ToIntPtr(), out readSuccess);
-        }
-
-        /// <summary>
-        /// Reads the Int16 at the given address.
-        /// </summary>
-        /// <param name="address">The address of the read.</param>
-        /// <returns>The Int16 read from memory.</returns>
-        public Int16 ReadInt16(UInt64 address)
-        {
-            this.PrintDebugTag(address.ToString("x"));
-
-            Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<Int16>(address.ToIntPtr(), out readSuccess);
-        }
-
-        /// <summary>
-        /// Reads the Int32 at the given address.
-        /// </summary>
-        /// <param name="address">The address of the read.</param>
-        /// <returns>The Int32 read from memory.</returns>
-        public Int32 ReadInt32(UInt64 address)
-        {
-            this.PrintDebugTag(address.ToString("x"));
-
-            Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<Int32>(address.ToIntPtr(), out readSuccess);
-        }
-
-        /// <summary>
-        /// Reads the Int64 at the given address.
-        /// </summary>
-        /// <param name="address">The address of the read.</param>
-        /// <returns>The Int64 read from memory.</returns>
-        public Int64 ReadInt64(UInt64 address)
-        {
-            this.PrintDebugTag(address.ToString("x"));
-
-            Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<Int64>(address.ToIntPtr(), out readSuccess);
-        }
-
-        /// <summary>
-        /// Reads the UInt16 at the given address.
-        /// </summary>
-        /// <param name="address">The address of the read.</param>
-        /// <returns>The UInt16 read from memory.</returns>
-        public UInt16 ReadUInt16(UInt64 address)
-        {
-            this.PrintDebugTag(address.ToString("x"));
-
-            Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<UInt16>(address.ToIntPtr(), out readSuccess);
-        }
-
-        /// <summary>
-        /// Reads the UInt32 at the given address.
-        /// </summary>
-        /// <param name="address">The address of the read.</param>
-        /// <returns>The UInt32 read from memory.</returns>
-        public UInt32 ReadUInt32(UInt64 address)
-        {
-            this.PrintDebugTag(address.ToString("x"));
-
-            Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<UInt32>(address.ToIntPtr(), out readSuccess);
-        }
-
-        /// <summary>
-        /// Reads the UInt64 at the given address.
-        /// </summary>
-        /// <param name="address">The address of the read.</param>
-        /// <returns>The UInt64 read from memory.</returns>
-        public UInt64 ReadUInt64(UInt64 address)
-        {
-            this.PrintDebugTag(address.ToString("x"));
-
-            Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<UInt64>(address.ToIntPtr(), out readSuccess);
-        }
-
-        /// <summary>
-        /// Reads the Single at the given address.
-        /// </summary>
-        /// <param name="address">The address of the read.</param>
-        /// <returns>The Single read from memory.</returns>
-        public Single ReadSingle(UInt64 address)
-        {
-            this.PrintDebugTag(address.ToString("x"));
-
-            Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<Single>(address.ToIntPtr(), out readSuccess);
-        }
-
-        /// <summary>
-        /// Reads the Double at the given address.
-        /// </summary>
-        /// <param name="address">The address of the read.</param>
-        /// <returns>The Double read from memory.</returns>
-        public Double ReadDouble(UInt64 address)
-        {
-            this.PrintDebugTag(address.ToString("x"));
-
-            Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystemAdapter.Read<Double>(address.ToIntPtr(), out readSuccess);
+            return EngineCore.GetInstance().OperatingSystemAdapter.Read<T>(address.ToIntPtr(), out readSuccess);
         }
 
         /// <summary>
@@ -613,7 +496,7 @@
         /// <param name="address">The address of the read.</param>
         /// <param name="count">The number of bytes to read.</param>
         /// <returns>The bytes read at the address.</returns>
-        public Byte[] ReadBytes(UInt64 address, Int32 count)
+        public Byte[] ReadMemory(UInt64 address, Int32 count)
         {
             this.PrintDebugTag(address.ToString("x"), count.ToString());
 
@@ -622,123 +505,15 @@
         }
 
         /// <summary>
-        /// Writes the SByte value at the specified address.
+        /// Writes the value at the specified address.
         /// </summary>
         /// <param name="address">The address of the write.</param>
         /// <param name="value">The value of the write.</param>
-        public void WriteSByte(UInt64 address, SByte value)
+        public void WriteMemory<T>(UInt64 address, T value)
         {
             this.PrintDebugTag(address.ToString("x"), value.ToString());
 
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<SByte>(address.ToIntPtr(), value);
-        }
-
-        /// <summary>
-        /// Writes the Byte value at the specified address.
-        /// </summary>
-        /// <param name="address">The address of the write.</param>
-        /// <param name="value">The value of the write.</param>
-        public void WriteByte(UInt64 address, Byte value)
-        {
-            this.PrintDebugTag(address.ToString("x"), value.ToString());
-
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<Byte>(address.ToIntPtr(), value);
-        }
-
-        /// <summary>
-        /// Writes the Int16 value at the specified address.
-        /// </summary>
-        /// <param name="address">The address of the write.</param>
-        /// <param name="value">The value of the write.</param>
-        public void WriteInt16(UInt64 address, Int16 value)
-        {
-            this.PrintDebugTag(address.ToString("x"), value.ToString());
-
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<Int16>(address.ToIntPtr(), value);
-        }
-
-        /// <summary>
-        /// Writes the Int32 value at the specified address.
-        /// </summary>
-        /// <param name="address">The address of the write.</param>
-        /// <param name="value">The value of the write.</param>
-        public void WriteInt32(UInt64 address, Int32 value)
-        {
-            this.PrintDebugTag(address.ToString("x"), value.ToString());
-
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<Int32>(address.ToIntPtr(), value);
-        }
-
-        /// <summary>
-        /// Writes the Int64 value at the specified address.
-        /// </summary>
-        /// <param name="address">The address of the write.</param>
-        /// <param name="value">The value of the write.</param>
-        public void WriteInt64(UInt64 address, Int64 value)
-        {
-            this.PrintDebugTag(address.ToString("x"), value.ToString());
-
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<Int64>(address.ToIntPtr(), value);
-        }
-
-        /// <summary>
-        /// Writes the UInt16 value at the specified address.
-        /// </summary>
-        /// <param name="address">The address of the write.</param>
-        /// <param name="value">The value of the write.</param>
-        public void WriteUInt16(UInt64 address, UInt16 value)
-        {
-            this.PrintDebugTag(address.ToString("x"), value.ToString());
-
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<UInt16>(address.ToIntPtr(), value);
-        }
-
-        /// <summary>
-        /// Writes the UInt32 value at the specified address.
-        /// </summary>
-        /// <param name="address">The address of the write.</param>
-        /// <param name="value">The value of the write.</param>
-        public void WriteUInt32(UInt64 address, UInt32 value)
-        {
-            this.PrintDebugTag(address.ToString("x"), value.ToString());
-
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<UInt32>(address.ToIntPtr(), value);
-        }
-
-        /// <summary>
-        /// Writes the UInt64 value at the specified address.
-        /// </summary>
-        /// <param name="address">The address of the write.</param>
-        /// <param name="value">The value of the write.</param>
-        public void WriteUInt64(UInt64 address, UInt64 value)
-        {
-            this.PrintDebugTag(address.ToString("x"), value.ToString());
-
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<UInt64>(address.ToIntPtr(), value);
-        }
-
-        /// <summary>
-        /// Writes the Single value at the specified address.
-        /// </summary>
-        /// <param name="address">The address of the write.</param>
-        /// <param name="value">The value of the write.</param>
-        public void WriteSingle(UInt64 address, Single value)
-        {
-            this.PrintDebugTag(address.ToString("x"), value.ToString());
-
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<Single>(address.ToIntPtr(), value);
-        }
-
-        /// <summary>
-        /// Writes the Double value at the specified address.
-        /// </summary>
-        /// <param name="address">The address of the write.</param>
-        /// <param name="value">The value of the write.</param>
-        public void WriteDouble(UInt64 address, Double value)
-        {
-            this.PrintDebugTag(address.ToString("x"), value.ToString());
-
-            EngineCore.GetInstance().OperatingSystemAdapter.Write<Double>(address.ToIntPtr(), value);
+            EngineCore.GetInstance().OperatingSystemAdapter.Write<T>(address.ToIntPtr(), value);
         }
 
         /// <summary>
@@ -746,7 +521,7 @@
         /// </summary>
         /// <param name="address">The address of the write.</param>
         /// <param name="values">The values of the write.</param>
-        public void WriteBytes(UInt64 address, Byte[] values)
+        public void WriteMemory(UInt64 address, Byte[] values)
         {
             this.PrintDebugTag(address.ToString("x"));
 

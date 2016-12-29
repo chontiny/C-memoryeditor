@@ -21,11 +21,6 @@
             this.InputCore = new InputCore();
         }
 
-        public string Debug()
-        {
-            return "HAHAHA";
-        }
-
         public IMemoryCore MemoryCore { get; set; }
 
         public IGraphicsCore GraphicsCore { get; set; }
