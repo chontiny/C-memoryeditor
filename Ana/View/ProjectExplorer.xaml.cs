@@ -24,15 +24,18 @@
     {
         private TreeViewAdv projectExplorerTreeView;
         private BiDictionary<ProjectItem, ProjectNode> nodeCache;
+        private ProjectRoot projectRoot;
         private TreeModel projectTree;
         private TreeNodeAdv draggedItem;
         private Object accessLock;
 
-        private ProjectRoot projectRoot;
-
-        private NodeCheckBox EntryCheckBox;
-        private NodeIcon EntryIcon;
-        private NodeTextBox EntryDescription;
+        private ToolStripMenuItem addNewItemMenuItem;
+        private ToolStripMenuItem deleteSelectionMenuItem;
+        private ToolStripMenuItem toggleSelectionMenuItem;
+        private ToolStripMenuItem addNewFolderMenuItem;
+        private ToolStripMenuItem addNewAddressMenuItem;
+        private ToolStripMenuItem addNewScriptMenuItem;
+        private ContextMenuStrip contextMenuStrip;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectExplorer" /> class.
@@ -41,71 +44,24 @@
         {
             this.InitializeComponent();
 
-            this.EntryCheckBox = new NodeCheckBox();
-            this.EntryCheckBox.DataPropertyName = "IsChecked";
-            this.EntryCheckBox.EditEnabled = true;
-            this.EntryCheckBox.LeftMargin = 0;
-            this.EntryCheckBox.ParentColumn = null;
-            this.EntryCheckBox.IsEditEnabledValueNeeded += CheckIndex;
-
-            this.EntryIcon = new NodeIcon();
-            this.EntryIcon.DataPropertyName = "EntryIcon";
-            this.EntryIcon.LeftMargin = 1;
-            this.EntryIcon.ParentColumn = null;
-            this.EntryIcon.ScaleMode = ImageScaleMode.Clip;
-
-            this.EntryDescription = new NodeTextBox();
-            this.EntryDescription.DataPropertyName = "EntryDescription";
-            this.EntryDescription.IncrementalSearchEnabled = true;
-            this.EntryDescription.LeftMargin = 3;
-            this.EntryDescription.ParentColumn = null;
-            this.EntryDescription.DrawText += EntryDescriptionDrawText;
-
             this.nodeCache = new BiDictionary<ProjectItem, ProjectNode>();
             this.projectTree = new TreeModel();
             this.accessLock = new Object();
 
-            this.projectExplorerTreeView = new TreeViewAdv();
-            this.projectExplorerTreeView.NodeControls.Add(this.EntryCheckBox);
-            this.projectExplorerTreeView.NodeControls.Add(this.EntryIcon);
-            this.projectExplorerTreeView.NodeControls.Add(this.EntryDescription);
-            this.projectExplorerTreeView.SelectionMode = TreeSelectionMode.Multi;
-            this.projectExplorerTreeView.BorderStyle = BorderStyle.None;
-            this.projectExplorerTreeView.Model = this.projectTree;
-            this.projectExplorerTreeView.AllowDrop = true;
-            this.projectExplorerTreeView.FullRowSelect = true;
-
-            this.projectExplorerTreeView.ItemDrag += this.ProjectExplorerTreeView_ItemDrag;
-            this.projectExplorerTreeView.NodeMouseDoubleClick += this.ProjectExplorerTreeViewNodeMouseDoubleClick;
-            this.projectExplorerTreeView.SelectionChanged += this.ProjectExplorerTreeViewSelectionChanged;
-            this.projectExplorerTreeView.DragDrop += this.ProjectExplorerTreeViewDragDrop;
-            this.projectExplorerTreeView.DragEnter += this.ProjectExplorerTreeViewDragEnter;
-            this.projectExplorerTreeView.DragOver += this.ProjectExplorerTreeViewDragOver;
-            this.projectExplorerTreeView.KeyPress += this.ProjectExplorerTreeViewKeyPress;
-
-            this.projectExplorerTreeView.BackColor = DarkBrushes.BaseColor3;
-            this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;
-            this.projectExplorerTreeView.DragDropMarkColor = DarkBrushes.BaseColor11;
-            this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
-
+            this.InitializeDesigner();
             this.projectExplorerTreeViewContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.projectExplorerTreeView));
 
             ProjectExplorerViewModel.GetInstance().Subscribe(this);
         }
 
-        private void EntryDescriptionDrawText(Object sender, DrawEventArgs e)
-        {
-            e.TextColor = DarkBrushes.BaseColor2;
-        }
-
-        public void RefreshItem(ProjectItem projectItem)
-        {
-
-        }
-
-        public void RebuildProjectStructure(ProjectRoot projectRoot)
+        public void Update(ProjectRoot projectRoot)
         {
             this.projectRoot = projectRoot;
+            this.RebuildProjectStructure();
+        }
+
+        public void RebuildProjectStructure()
+        {
             this.projectRoot?.BuildParents();
 
             projectExplorerTreeView.BeginUpdate();
@@ -122,6 +78,37 @@
 
             projectExplorerTreeView.EndUpdate();
             projectExplorerTreeView.ExpandAll();
+        }
+
+        public void AddNewAddressItem()
+        {
+            ProjectExplorerViewModel.GetInstance().AddNewAddressItemCommand.Execute(null);
+        }
+
+        public void AddNewScriptItem()
+        {
+            ProjectExplorerViewModel.GetInstance().AddNewScriptItemCommand.Execute(null);
+        }
+
+        public void AddNewFolderItem()
+        {
+            ProjectExplorerViewModel.GetInstance().AddNewFolderItemCommand.Execute(null);
+        }
+
+        private ProjectItem GetSelectedItem()
+        {
+            Node selectedNode = projectTree.FindNode(projectExplorerTreeView.GetPath(projectExplorerTreeView.SelectedNode));
+            ProjectItem SelectedItem = null;
+
+            if (selectedNode != null && typeof(ProjectNode).IsAssignableFrom(selectedNode.GetType()))
+            {
+                if (nodeCache.Reverse.ContainsKey((ProjectNode)selectedNode))
+                {
+                    SelectedItem = nodeCache.Reverse[(ProjectNode)selectedNode];
+                }
+            }
+
+            return SelectedItem;
         }
 
         private void BuildNodes(ProjectItem projectItem, ProjectItem parent = null)
@@ -193,35 +180,9 @@
             return GetProjectNodeFromTreeNodeAdv(treeNodeAdv)?.ProjectItem;
         }
 
-        public void AddNewAddressItem()
+        private void EntryDescriptionDrawText(Object sender, DrawEventArgs e)
         {
-            // projectExplorerPresenter.AddNewAddressItem(GetSelectedItem());
-        }
-
-        public void AddNewScriptItem()
-        {
-            // projectExplorerPresenter.AddNewScriptItem(GetSelectedItem());
-        }
-
-        public void AddNewFolderItem()
-        {
-            // projectExplorerPresenter.AddNewFolderItem(GetSelectedItem());
-        }
-
-        private ProjectItem GetSelectedItem()
-        {
-            Node selectedNode = projectTree.FindNode(projectExplorerTreeView.GetPath(projectExplorerTreeView.SelectedNode));
-            ProjectItem SelectedItem = null;
-
-            if (selectedNode != null && typeof(ProjectNode).IsAssignableFrom(selectedNode.GetType()))
-            {
-                if (nodeCache.Reverse.ContainsKey((ProjectNode)selectedNode))
-                {
-                    SelectedItem = nodeCache.Reverse[(ProjectNode)selectedNode];
-                }
-            }
-
-            return SelectedItem;
+            e.TextColor = DarkBrushes.BaseColor2;
         }
 
         private void ActivateSelectedItems()
@@ -243,7 +204,7 @@
             nodes.ForEach(x => CheckItem(x, !x.IsActivated));
             projectExplorerTreeView.SelectedNodes.ForEach(x => nodeCache[GetProjectItemFromNode(x)].IsChecked = GetProjectItemFromNode(x).IsActivated);
 
-            RebuildProjectStructure(projectRoot);
+            RebuildProjectStructure();
         }
 
         private void DeleteSelectedItems()
@@ -257,7 +218,7 @@
             projectExplorerTreeView.SelectedNodes.ForEach(x => Nodes.Add(GetProjectItemFromNode(x)));
             // projectExplorerPresenter.DeleteProjectItems(Nodes);
 
-            this.RebuildProjectStructure(projectRoot);
+            this.RebuildProjectStructure();
         }
 
         private void CheckItem(ProjectItem projectItem, Boolean activated)
@@ -281,46 +242,6 @@
             }
         }
 
-        private void AddressToolStripMenuItem_Click(Object sender, EventArgs e)
-        {
-            this.AddNewAddressItem();
-        }
-
-        private void AddNewScriptToolStripMenuItem_Click(Object sender, EventArgs e)
-        {
-            this.AddNewScriptItem();
-        }
-
-        private void FolderToolStripMenuItem_Click(Object sender, EventArgs e)
-        {
-            this.AddNewFolderItem();
-        }
-
-        private void AddressRightClickToolStripMenuItem_Click(Object sender, EventArgs e)
-        {
-            this.AddNewAddressItem();
-        }
-
-        private void ScriptRightClickToolStripMenuItem_Click(Object sender, EventArgs e)
-        {
-            this.AddNewScriptItem();
-        }
-
-        private void FolderRightClickToolStripMenuItem_Click(Object sender, EventArgs e)
-        {
-            this.AddNewFolderItem();
-        }
-
-        private void DeleteSelectionToolStripMenuItem_Click(Object sender, EventArgs e)
-        {
-            this.DeleteSelectedItems();
-        }
-
-        private void ToggleFreezeToolStripMenuItem_Click(Object sender, EventArgs e)
-        {
-            this.ActivateSelectedItems();
-        }
-
         private void ProjectExplorerTreeViewKeyPress(Object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar != ' ')
@@ -333,19 +254,16 @@
 
         private void ProjectContextMenuStrip_Opening(Object sender, CancelEventArgs e)
         {
-            /*
             if (projectExplorerTreeView.SelectedNodes == null || projectExplorerTreeView.SelectedNodes.Count <= 0)
             {
-                ToggleActivationToolStripMenuItem.Enabled = false;
-                DeleteSelectionToolStripMenuItem.Enabled = false;
-                AddNewItemToolStripMenuItem.Enabled = true;
+                deleteSelectionMenuItem.Enabled = false;
+                toggleSelectionMenuItem.Enabled = false;
             }
             else
             {
-                ToggleActivationToolStripMenuItem.Enabled = true;
-                DeleteSelectionToolStripMenuItem.Enabled = true;
-                AddNewItemToolStripMenuItem.Enabled = true;
-            }*/
+                deleteSelectionMenuItem.Enabled = true;
+                toggleSelectionMenuItem.Enabled = true;
+            }
         }
 
         private void CheckIndex(Object sender, NodeControlValueEventArgs e)
@@ -364,7 +282,7 @@
 
             this.CheckItem(projectItem, !projectItem.IsActivated);
 
-            this.RebuildProjectStructure(projectRoot);
+            this.RebuildProjectStructure();
         }
 
         private void ProjectExplorerTreeViewNodeMouseDoubleClick(Object sender, TreeNodeAdvMouseEventArgs e)
@@ -452,13 +370,105 @@
                     }
                 }
 
-                this.RebuildProjectStructure(projectRoot);
+                this.RebuildProjectStructure();
             }
         }
 
-        public void Update(ProjectRoot projectRoot)
+        /// <summary>
+        /// Initialize all windows forms components.
+        /// </summary>
+        private void InitializeDesigner()
         {
-            this.RebuildProjectStructure(projectRoot);
+            NodeCheckBox entryCheckBox = new NodeCheckBox();
+            entryCheckBox.DataPropertyName = "IsChecked";
+            entryCheckBox.EditEnabled = true;
+            entryCheckBox.LeftMargin = 0;
+            entryCheckBox.ParentColumn = null;
+            entryCheckBox.IsEditEnabledValueNeeded += CheckIndex;
+
+            NodeIcon entryIcon = new NodeIcon();
+            entryIcon.DataPropertyName = "EntryIcon";
+            entryIcon.LeftMargin = 1;
+            entryIcon.ParentColumn = null;
+            entryIcon.ScaleMode = ImageScaleMode.Clip;
+
+            NodeTextBox entryDescription = new NodeTextBox();
+            entryDescription.DataPropertyName = "EntryDescription";
+            entryDescription.IncrementalSearchEnabled = true;
+            entryDescription.LeftMargin = 3;
+            entryDescription.ParentColumn = null;
+            entryDescription.DrawText += EntryDescriptionDrawText;
+
+            this.toggleSelectionMenuItem = new ToolStripMenuItem("Toggle Selection");
+            this.addNewItemMenuItem = new ToolStripMenuItem("Add New...");
+            this.deleteSelectionMenuItem = new ToolStripMenuItem("Delete Selection");
+            this.addNewFolderMenuItem = new ToolStripMenuItem("Add Folder", ImageUtils.BitmapImageToBitmap(Images.Open));
+            this.addNewAddressMenuItem = new ToolStripMenuItem("Add Address", ImageUtils.BitmapImageToBitmap(Images.CollectValues));
+            this.addNewScriptMenuItem = new ToolStripMenuItem("Add Script", ImageUtils.BitmapImageToBitmap(Images.CollectValues));
+            this.contextMenuStrip = new ContextMenuStrip();
+
+            this.toggleSelectionMenuItem.Click += ToggleSelectionMenuItem_Click;
+            this.deleteSelectionMenuItem.Click += DeleteSelectionMenuItem_Click;
+            this.addNewFolderMenuItem.Click += AddNewFolderMenuItem_Click;
+            this.addNewAddressMenuItem.Click += AddNewAddressMenuItem_Click;
+            this.addNewScriptMenuItem.Click += AddNewScriptMenuItem_Click;
+
+            this.addNewItemMenuItem.DropDownItems.Add(addNewFolderMenuItem);
+            this.addNewItemMenuItem.DropDownItems.Add(addNewAddressMenuItem);
+            this.addNewItemMenuItem.DropDownItems.Add(addNewScriptMenuItem);
+
+            this.contextMenuStrip.Items.Add(toggleSelectionMenuItem);
+            this.contextMenuStrip.Items.Add(addNewItemMenuItem);
+            this.contextMenuStrip.Items.Add(deleteSelectionMenuItem);
+
+            this.projectExplorerTreeView = new TreeViewAdv();
+            this.projectExplorerTreeView.NodeControls.Add(entryCheckBox);
+            this.projectExplorerTreeView.NodeControls.Add(entryIcon);
+            this.projectExplorerTreeView.NodeControls.Add(entryDescription);
+            this.projectExplorerTreeView.SelectionMode = TreeSelectionMode.Multi;
+            this.projectExplorerTreeView.BorderStyle = BorderStyle.None;
+            this.projectExplorerTreeView.Model = this.projectTree;
+            this.projectExplorerTreeView.AllowDrop = true;
+            this.projectExplorerTreeView.FullRowSelect = true;
+            this.projectExplorerTreeView.ContextMenuStrip = contextMenuStrip;
+
+            this.projectExplorerTreeView.ItemDrag += this.ProjectExplorerTreeView_ItemDrag;
+            this.projectExplorerTreeView.NodeMouseDoubleClick += this.ProjectExplorerTreeViewNodeMouseDoubleClick;
+            this.projectExplorerTreeView.SelectionChanged += this.ProjectExplorerTreeViewSelectionChanged;
+            this.projectExplorerTreeView.DragDrop += this.ProjectExplorerTreeViewDragDrop;
+            this.projectExplorerTreeView.DragEnter += this.ProjectExplorerTreeViewDragEnter;
+            this.projectExplorerTreeView.DragOver += this.ProjectExplorerTreeViewDragOver;
+            this.projectExplorerTreeView.KeyPress += this.ProjectExplorerTreeViewKeyPress;
+
+            this.projectExplorerTreeView.BackColor = DarkBrushes.BaseColor3;
+            this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;
+            this.projectExplorerTreeView.DragDropMarkColor = DarkBrushes.BaseColor11;
+            this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
+        }
+
+        private void AddNewScriptMenuItem_Click(Object sender, EventArgs e)
+        {
+            this.AddNewScriptItem();
+        }
+
+        private void AddNewAddressMenuItem_Click(Object sender, EventArgs e)
+        {
+            this.AddNewAddressItem();
+        }
+
+        private void AddNewFolderMenuItem_Click(Object sender, EventArgs e)
+        {
+            this.AddNewFolderItem();
+        }
+
+        private void DeleteSelectionMenuItem_Click(Object sender, EventArgs e)
+        {
+            this.DeleteSelectedItems();
+        }
+
+        private void ToggleSelectionMenuItem_Click(Object sender, EventArgs e)
+        {
+            this.ActivateSelectedItems();
         }
     }
     //// End class
