@@ -343,26 +343,29 @@
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = ProjectExtensionFilter;
             openFileDialog.Title = "Open Project";
-            openFileDialog.ShowDialog();
-            this.ProjectFilePath = openFileDialog.FileName;
 
-            if (this.ProjectFilePath == null || this.ProjectFilePath == String.Empty)
+            if (openFileDialog.ShowDialog() == true)
             {
-                return;
-            }
+                this.ProjectFilePath = openFileDialog.FileName;
 
-            try
-            {
-                using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
+                if (this.ProjectFilePath == null || this.ProjectFilePath == String.Empty)
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    this.ProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
-                    this.HasUnsavedChanges = false;
+                    return;
                 }
-            }
-            catch
-            {
-                return;
+
+                try
+                {
+                    using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
+                    {
+                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                        this.ProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
+                        this.HasUnsavedChanges = false;
+                    }
+                }
+                catch
+                {
+                    return;
+                }
             }
         }
 
@@ -377,15 +380,18 @@
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = ProjectExtensionFilter;
                 openFileDialog.Title = "Import Project";
-                openFileDialog.ShowDialog();
-                this.ProjectFilePath = openFileDialog.FileName;
 
-                if (this.ProjectFilePath == null || this.ProjectFilePath == String.Empty)
+                if (openFileDialog.ShowDialog() == true)
                 {
-                    return;
-                }
+                    this.ProjectFilePath = openFileDialog.FileName;
 
-                filename = this.ProjectFilePath;
+                    if (this.ProjectFilePath == null || this.ProjectFilePath == String.Empty)
+                    {
+                        return;
+                    }
+
+                    filename = this.ProjectFilePath;
+                }
             }
 
             try
@@ -439,9 +445,12 @@
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.Filter = ProjectExplorerViewModel.ProjectExtensionFilter;
             saveFileDialog.Title = "Save Project";
-            saveFileDialog.ShowDialog();
-            this.ProjectFilePath = saveFileDialog.FileName;
-            this.SaveProject();
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                this.ProjectFilePath = saveFileDialog.FileName;
+                this.SaveProject();
+            }
         }
 
         /// <summary>
