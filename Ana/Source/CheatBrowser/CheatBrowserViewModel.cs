@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.CheatBrowser
 {
+    using Chromium.WebBrowser;
     using Docking;
     using Main;
     using Mvvm.Command;
@@ -13,56 +14,56 @@
     internal class CheatBrowserViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model
+        /// The content id for the docking library associated with this view model.
         /// </summary>
         public const String ToolContentId = nameof(CheatBrowserViewModel);
 
         /// <summary>
-        /// The home url for the cheat browser
+        /// The home url for the cheat browser.
         /// </summary>
-        private const String HomeUrl = "https://www.anathena.com/CheatBrowser/UnderConstruction";
+        private const String HomeUrl = "http://www.anathena.com/CheatBrowser/Index";
 
         /// <summary>
-        /// Singleton instance of the <see cref="CheatBrowserViewModel" /> class
+        /// Singleton instance of the <see cref="CheatBrowserViewModel" /> class.
         /// </summary>
         private static Lazy<CheatBrowserViewModel> cheatBrowserViewModelInstance = new Lazy<CheatBrowserViewModel>(
                 () => { return new CheatBrowserViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="CheatBrowserViewModel" /> class from being created
+        /// Prevents a default instance of the <see cref="CheatBrowserViewModel" /> class from being created.
         /// </summary>
         private CheatBrowserViewModel() : base("Cheat Browser")
         {
             this.ContentId = CheatBrowserViewModel.ToolContentId;
 
             // Note: Cannot be async, navigation must take place on the same thread as GUI
-            this.NavigateHomeCommand = new RelayCommand<Object>((browser) => this.NavigateHome(browser), (browser) => true);
+            this.NavigateHomeCommand = new RelayCommand<ChromiumWebBrowser>((browser) => this.NavigateHome(browser), (browser) => true);
 
             MainViewModel.GetInstance().Subscribe(this);
         }
 
         /// <summary>
-        /// Gets the command to navigate home
+        /// Gets the command to navigate home.
         /// </summary>
         public ICommand NavigateHomeCommand { get; private set; }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="CheatBrowserViewModel"/> class
+        /// Gets a singleton instance of the <see cref="CheatBrowserViewModel"/> class.
         /// </summary>
-        /// <returns>A singleton instance of the class</returns>
+        /// <returns>A singleton instance of the class.</returns>
         public static CheatBrowserViewModel GetInstance()
         {
             return cheatBrowserViewModelInstance.Value;
         }
 
         /// <summary>
-        /// Navigates home in the browser
+        /// Navigates home in the browser.
         /// </summary>
-        /// <param name="browser">The Gecko Fx web browser</param>
-        private void NavigateHome(Object browser)
+        /// <param name="browser">The web browser.</param>
+        private void NavigateHome(ChromiumWebBrowser browser)
         {
-            // browser.Navigate(HomeUrl);
+            browser.LoadUrl(HomeUrl);
         }
     }
     //// End class

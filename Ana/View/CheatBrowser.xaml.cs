@@ -51,10 +51,22 @@
             // Windows forms hosting -- TODO: Phase this out
             this.browser = new ChromiumWebBrowser();
             this.browserGrid.Children.Add(WinformsHostingHelper.CreateHostedControl(this.browser));
-            this.browser.LoadUrl("http://www.anathena.com/CheatBrowser/Search");
 
             this.browser.DownloadHandler.OnBeforeDownload += DownloadHandler_OnBeforeDownload;
-            this.browser.DownloadHandler.OnDownloadUpdated += DownloadHandler_OnDownloadUpdated; ;
+            this.browser.DownloadHandler.OnDownloadUpdated += DownloadHandler_OnDownloadUpdated;
+
+            this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
+        }
+
+        /// <summary>
+        /// Gets the view model associated with this view.
+        /// </summary>
+        public CheatBrowserViewModel CheatBrowserViewModel
+        {
+            get
+            {
+                return this.DataContext as CheatBrowserViewModel;
+            }
         }
 
         private void DownloadHandler_OnBeforeDownload(Object sender, CfxOnBeforeDownloadEventArgs e)
@@ -70,20 +82,9 @@
             }
         }
 
-        /// <summary>
-        /// Gets the view model associated with this view.
-        /// </summary>
-        public CheatBrowserViewModel CheatBrowserViewModel
-        {
-            get
-            {
-                return this.DataContext as CheatBrowserViewModel;
-            }
-        }
-
         private void MenuItemClick(Object sender, RoutedEventArgs e)
         {
-            // this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
+            this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
         }
     }
     //// End class

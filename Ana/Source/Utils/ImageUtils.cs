@@ -22,6 +22,7 @@
             bitmapImage.BeginInit();
             bitmapImage.UriSource = new Uri(uri);
             bitmapImage.EndInit();
+            bitmapImage.Freeze();
 
             return bitmapImage;
         }

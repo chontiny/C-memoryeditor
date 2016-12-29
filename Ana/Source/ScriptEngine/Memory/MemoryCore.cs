@@ -1,8 +1,8 @@
 ﻿namespace Ana.Source.ScriptEngine.Memory
 {
-    using Engine;
-    using Engine.Architecture.Disassembler.SharpDisasm;
-    using Engine.OperatingSystems;
+    using Source.Engine;
+    using Source.Engine.Architecture.Disassembler.SharpDisasm;
+    using Source.Engine.OperatingSystems;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;

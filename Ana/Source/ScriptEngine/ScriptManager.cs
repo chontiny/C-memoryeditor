@@ -100,7 +100,7 @@
                         elapsedTime = currentTime - previousTime;
 
                         // Call the update function, giving the elapsed milliseconds since the previous call
-                        ScriptObject.OnUpdate(elapsedTime.TotalMilliseconds);
+                        ScriptObject.OnUpdate((Single)elapsedTime.TotalMilliseconds);
 
                         previousTime = currentTime;
 
