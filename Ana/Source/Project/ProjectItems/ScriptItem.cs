@@ -1,6 +1,6 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
-    using LuaEngine;
+    using ScriptEngine;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
@@ -12,39 +12,62 @@
     internal class ScriptItem : ProjectItem
     {
         [Browsable(false)]
-        private LuaScript luaScript;
+        private String script;
+
+        [Browsable(false)]
+        private Boolean isCompiled;
 
         public ScriptItem() : this("New Script", null)
         {
         }
 
-        public ScriptItem(String description, LuaScript luaScript) : base(description)
+        public ScriptItem(String description, String script, Boolean compiled = false) : base(description)
         {
-            this.LuaScript = luaScript;
+            this.Script = script;
+            this.IsCompiled = compiled;
 
-            LuaCore = null;
+            this.ScriptManager = null;
         }
 
         [DataMember]
+        [ReadOnly(false)]
         [TypeConverter(typeof(ScriptConverter))]
         [Editor(typeof(ScriptEditorModel), typeof(UITypeEditor))]
-        [Category("Properties"), DisplayName("Script"), Description("Lua script to interface with engine")]
-        public LuaScript LuaScript
+        [Category("Properties"), DisplayName("Script"), Description("C# script to interface with engine")]
+        public String Script
         {
             get
             {
-                return this.luaScript;
+                return this.script;
             }
 
             set
             {
-                this.luaScript = value;
+                this.script = value;
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+            }
+        }
+
+        [DataMember]
+        [ReadOnly(true)]
+        [RefreshProperties(RefreshProperties.All)]
+        [Category("Properties"), DisplayName("Compiled"), Description("Whether or not this script has been compiled.")]
+        public Boolean IsCompiled
+        {
+            get
+            {
+                return this.isCompiled;
+            }
+
+            set
+            {
+                this.isCompiled = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
             }
         }
 
         [Browsable(false)]
-        private LuaCore LuaCore { get; set; }
+        private ScriptManager ScriptManager { get; set; }
 
         public override void Update()
         {
@@ -52,25 +75,28 @@
 
         protected override void OnActivationChanged()
         {
-            if (LuaCore == null)
+            if (ScriptManager == null)
             {
-                LuaCore = new LuaCore(LuaScript);
+                ScriptManager = new ScriptManager();
             }
 
             if (this.IsActivated)
             {
-                // Try to run script. Will not activate on failure.
-                if (!LuaCore.RunActivationFunction())
+                // Try to run script.
+                if (!ScriptManager.RunActivationFunction(this.Script, this.IsCompiled))
                 {
+                    // Script error -- clear activation.
+                    this.ResetActivation();
                     return;
                 }
 
-                LuaCore.RunUpdateFunction();
+                // Run the update loop for the script
+                ScriptManager.RunUpdateFunction();
             }
             else
             {
                 // Try to deactivate script (we do not care if this fails)
-                LuaCore.RunDeactivationFunction();
+                ScriptManager.RunDeactivationFunction();
             }
         }
     }

@@ -35,7 +35,7 @@
         private ProcessSelectorViewModel() : base("Process Selector")
         {
             this.ContentId = ProcessSelectorViewModel.ToolContentId;
-            this.IconSource = ImageLoader.LoadImage("pack://application:,,,/Ana;component/Content/Icons/SelectProcess.png");
+            this.IconSource = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/SelectProcess.png");
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<NormalizedProcess>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
 
@@ -109,7 +109,6 @@
 
             // Raise event to update process name in the view
             this.RaisePropertyChanged(nameof(this.ProcessName));
-
             this.IsVisible = false;
         }
     }

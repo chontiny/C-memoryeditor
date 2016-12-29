@@ -25,17 +25,20 @@
             Padding="8,4,8,4"
             Background="{StaticResource AvalonDock_Expression_BaseColor4}">
             <Menu Background="Transparent">
-                <MenuItem Command="{Binding NavigateHomeCommand}" CommandParameter="{Binding ElementName=browser}">
+                <!--  Command="{Binding NavigateHomeCommand}" CommandParameter="{Binding ElementName=browser}"  -->
+                <MenuItem Click="MenuItemClick">
                     <MenuItem.Header>
                         <Image
                             Width="16"
                             Height="16"
                             Source="pack://application:,,,/Ana;component/Content/Icons/Home.png"
-                            ToolTip="Refresh Process List" />
+                            ToolTip="Return To Home Page" />
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>
         </Border>
-        <WebBrowser x:Name="browser" Grid.Row="1" />
+
+        <!--  Placeholder for Windows Forms hosting  -->
+        <Grid Name="browserGrid" Grid.Row="1" />
     </Grid>
 </UserControl>

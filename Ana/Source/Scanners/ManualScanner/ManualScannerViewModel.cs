@@ -45,7 +45,6 @@
         private ManualScannerViewModel() : base("Manual Scanner")
         {
             this.ContentId = ManualScannerViewModel.ToolContentId;
-            this.IsVisible = true;
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
 
             // Note: Not async to avoid updates slower than the perception threshold

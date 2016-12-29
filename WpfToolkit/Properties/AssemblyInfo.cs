@@ -101,11 +101,3 @@ using System.Windows.Markup;
 [assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/toolkit", "Xceed.Wpf.Toolkit.Zoombox" )]
 [assembly: XmlnsDefinition("http://schemas.xceed.com/wpf/xaml/toolkit", "Xceed.Wpf.Toolkit.Panels" )]
 
-
-#pragma warning disable 1699
-[assembly: AssemblyDelaySign( false )]
-[assembly: AssemblyKeyFile( @"..\..\sn.snk" )]
-[assembly: AssemblyKeyName( "" )]
-#pragma warning restore 1699
-
-

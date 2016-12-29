@@ -31,11 +31,11 @@
     <ErrorReportUrl>https://www.anathena.com/</ErrorReportUrl>
     <ProductName>Anathena</ProductName>
     <PublisherName>Anathena</PublisherName>
-    <MinimumRequiredVersion>3.1.8.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>3.3.2.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.1.8.0</ApplicationVersion>
+    <ApplicationVersion>3.3.2.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -52,6 +52,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -63,6 +64,7 @@
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>
@@ -77,6 +79,7 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -111,14 +114,20 @@
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>C1A711EAE328CAEA08DA8ACE57DFE7AA5D129D11</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Ana.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="EasyHook, Version=2.7.5870.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL" />
-    <Reference Include="KopiLua">
-      <HintPath>..\Lua\KopiLua.dll</HintPath>
-    </Reference>
-    <Reference Include="NLua">
-      <HintPath>..\Lua\NLua.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -142,10 +151,13 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\ActionScheduler\ActionChannels.cs" />
     <Compile Include="Source\ActionScheduler\IAction.cs" />
@@ -263,9 +275,11 @@
     <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\WIN_CERTIFICATE.cs" />
     <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Utility.cs" />
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
+    <Compile Include="Source\Mvvm\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
+    <Compile Include="Source\Project\IProjectExplorerObserver.cs" />
     <Compile Include="Source\Project\ProjectItems\ProjectRoot.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
@@ -274,11 +288,14 @@
     <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
+    <Compile Include="Source\ScriptEngine\Engine.cs" />
     <Compile Include="Source\SignatureCollector\SignatureCollectorViewModel.cs" />
+    <Compile Include="Source\SignatureCollector\SignatureModel.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementRef.cs" />
+    <Compile Include="Source\Utils\DataStructures\BiDictionary.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorModel.cs" />
@@ -360,28 +377,23 @@
     <Compile Include="Source\Engine\Processes\ProcessAdapter.cs" />
     <Compile Include="Source\Engine\SpeedManipulator\ISpeedManipulator.cs" />
     <Compile Include="Source\Engine\Unrandomizer\IUnrandomizer.cs" />
-    <Compile Include="Source\LuaEngine\Graphics\LuaGraphicsCore.cs" />
-    <Compile Include="Source\LuaEngine\Graphics\IGraphicsCore.cs" />
-    <Compile Include="Source\LuaEngine\Hook\IHookCore.cs" />
-    <Compile Include="Source\LuaEngine\Hook\LuaHookCore.cs" />
-    <Compile Include="Source\LuaEngine\Input\IInputCore.cs" />
-    <Compile Include="Source\LuaEngine\Input\LuaInputCore.cs" />
-    <Compile Include="Source\LuaEngine\LuaCore.cs" />
-    <Compile Include="Source\LuaEngine\LuaKeywordManager.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\LuaEngine\LuaScript.cs" />
-    <Compile Include="Source\LuaEngine\Memory\IMemoryCore.cs" />
-    <Compile Include="Source\LuaEngine\Memory\LuaMemoryCore.cs" />
+    <Compile Include="Source\ScriptEngine\Graphics\GraphicsCore.cs" />
+    <Compile Include="Source\ScriptEngine\Graphics\IGraphicsCore.cs" />
+    <Compile Include="Source\ScriptEngine\Hook\IHookCore.cs" />
+    <Compile Include="Source\ScriptEngine\Hook\HookCore.cs" />
+    <Compile Include="Source\ScriptEngine\Input\IInputCore.cs" />
+    <Compile Include="Source\ScriptEngine\Input\InputCore.cs" />
+    <Compile Include="Source\ScriptEngine\ScriptManager.cs" />
+    <Compile Include="Source\ScriptEngine\Memory\IMemoryCore.cs" />
+    <Compile Include="Source\ScriptEngine\Memory\MemoryCore.cs" />
     <Compile Include="Source\Mvvm\Converters\IntPtrToAddressConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
     <Compile Include="Source\Project\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\Project\ProjectItems\AddressItem.cs" />
     <Compile Include="Source\Project\ProjectItems\FolderItem.cs" />
     <Compile Include="Source\Project\ProjectItems\ProjectItem.cs" />
-    <Compile Include="Source\Project\ProjectItems\ProjectItemViewModel.cs" />
     <Compile Include="Source\Project\ProjectItems\ScriptItem.cs" />
-    <Compile Include="Source\LuaEngine\LuaTemplates.cs" />
+    <Compile Include="Source\ScriptEngine\ScriptTemplates.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
     <Compile Include="Source\Results\ScanResults\IScanResultsObserver.cs" />
     <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
@@ -423,7 +435,7 @@
     </Compile>
     <Compile Include="Source\Utils\Extensions\ObjectExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\PrimitiveExtensions.cs" />
-    <Compile Include="Source\Utils\ImageLoader.cs" />
+    <Compile Include="Source\Utils\ImageUtils.cs" />
     <Compile Include="Source\Utils\PrimitiveTypes.cs" />
     <Compile Include="Source\Utils\RepeatedTask.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
@@ -435,6 +447,8 @@
     <Compile Include="Source\Utils\VirtualItemProvider\VirtualizingCollection.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
+    <Compile Include="View\Controls\ControlThreadingHelper.cs" />
+    <Compile Include="View\Controls\TreeView\ProjectNode.cs" />
     <Compile Include="View\SignatureCollector.xaml.cs">
       <DependentUpon>SignatureCollector.xaml</DependentUpon>
     </Compile>
@@ -670,15 +684,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="Content\Lua.xhsd">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <Resource Include="Content\Icons\BlueBlocks1.png" />
     <Resource Include="Content\Icons\BlueBlocks2.png" />
     <Resource Include="Content\Icons\BlueBlocks4.png" />
     <Resource Include="Content\Icons\MainAppIcon.ico" />
-    <Content Include="Content\Icons\MainIcon.ico" />
+    <EmbeddedResource Include="Content\StandardLayout.xml" />
+    <Content Include="Content\Icons\MainIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Content\Icons\MainIconSmall.ico" />
     <Resource Include="Content\Icons\OrangeBlocks1.png" />
     <Resource Include="Content\Icons\OrangeBlocks2.png" />
@@ -694,6 +707,373 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Content\CSharp.xshd" />
+    <Content Include="Libraries\32\LibCEF\cef.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\cef_100_percent.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\cef_200_percent.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\cef_extensions.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\devtools_resources.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\icudtl.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\am.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\ar.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\bg.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\bn.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\ca.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\cs.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\da.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\de.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\el.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\en-GB.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\en-US.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\es-419.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\es.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\et.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\fa.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\fi.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\fil.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\fr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\gu.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\he.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\hi.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\hr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\hu.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\id.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\it.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\ja.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\kn.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\ko.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\lt.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\lv.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\ml.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\mr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\ms.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\nb.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\nl.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\pl.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\pt-BR.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\pt-PT.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\ro.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\ru.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\sk.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\sl.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\sr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\sv.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\sw.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\ta.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\te.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\th.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\tr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\uk.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\vi.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\zh-CN.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\locales\zh-TW.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\natives_blob.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\snapshot_blob.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\cef.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\cef_100_percent.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\cef_200_percent.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\cef_extensions.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\devtools_resources.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\icudtl.dat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\am.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\ar.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\bg.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\bn.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\ca.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\cs.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\da.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\de.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\el.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\en-GB.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\en-US.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\es-419.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\es.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\et.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\fa.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\fi.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\fil.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\fr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\gu.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\he.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\hi.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\hr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\hu.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\id.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\it.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\ja.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\kn.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\ko.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\lt.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\lv.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\ml.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\mr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\ms.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\nb.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\nl.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\pl.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\pt-BR.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\pt-PT.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\ro.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\ru.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\sk.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\sl.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\sr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\sv.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\sw.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\ta.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\te.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\th.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\tr.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\uk.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\vi.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\zh-CN.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\locales\zh-TW.pak">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\natives_blob.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\snapshot_blob.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -722,6 +1102,22 @@
     <ProjectReference Include="..\AvalonEdit\AvalonEdit.csproj">
       <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
       <Name>AvalonEdit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChromiumFX\ChromiumFX\ChromiumFX.csproj">
+      <Project>{36972b7c-3a3a-465f-b064-51b525fd4c14}</Project>
+      <Name>ChromiumFX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ChromiumFX\ChromiumWebBrowser\ChromiumWebBrowser.csproj">
+      <Project>{f94eab75-c33f-4f69-9e26-8c3b48141daa}</Project>
+      <Name>ChromiumWebBrowser</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CsScriptLibrary\CSScriptLibrary.csproj">
+      <Project>{F33DDB9A-918F-43D9-A1CF-CECD269AD958}</Project>
+      <Name>CSScriptLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Deploy\Deploy.csproj">
+      <Project>{8b2579c2-faa1-4cc7-a48e-2b6d4901c503}</Project>
+      <Name>Deploy</Name>
     </ProjectReference>
     <ProjectReference Include="..\LiveCharts\Core\LiveCharts.csproj">
       <Project>{d447642c-a85f-4ab0-96d9-c66cff91aada}</Project>
@@ -815,6 +1211,10 @@
       <Project>{6a41eaf1-67d4-43f0-b6b8-1a1395b07235}</Project>
       <Name>SharpDX</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TreeViewAdv\TreeViewAdv.csproj">
+      <Project>{e73bb233-d88b-44a7-a98f-d71ee158381d}</Project>
+      <Name>TreeViewAdv</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
       <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
       <Name>WpfToolkit</Name>
@@ -903,697 +1303,72 @@
     <Resource Include="Content\Icons\RightArrows.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Content\defaultLayout.xml" />
-    <Content Include="Source\EasyHook\EasyHook.dll" />
-    <Content Include="Source\EasyHook\EasyHook32.dll" />
-    <Content Include="Source\EasyHook\EasyHook32Svc.exe" />
-    <Content Include="Source\EasyHook\EasyHook64.dll" />
-    <Content Include="Source\EasyHook\EasyHook64Svc.exe" />
-    <Content Include="Source\EasyHook\EasyLoad32.dll" />
-    <Content Include="Source\EasyHook\EasyLoad64.dll" />
+    <EmbeddedResource Include="Content\DeveloperLayout.xml" />
+    <Content Include="Libraries\32\LibCEF\d3dcompiler_43.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\d3dcompiler_47.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\libcef.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\libEGL.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\libGLESv2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCEF\widevinecdmadapter.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\32\LibCFX\libcfx.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\d3dcompiler_43.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\d3dcompiler_47.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\libcef.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\libEGL.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\libGLESv2.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCEF\widevinecdmadapter.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\64\LibCFX\libcfx.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\EasyHook\EasyHook.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\EasyHook\EasyHook32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\EasyHook\EasyHook32Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\EasyHook\EasyHook64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\EasyHook\EasyHook64Svc.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\EasyHook\EasyLoad32.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Libraries\EasyHook\EasyLoad64.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
-  <ItemGroup>
-    <PublishFile Include="Ana.exe">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>ManifestEntryPoint</FileType>
-    </PublishFile>
-    <PublishFile Include="Ana.exe.config">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="Ana.exe.manifest">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>ManifestEntryPoint</FileType>
-    </PublishFile>
-    <PublishFile Include="AnathenaProxy">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="AnathenaProxy32">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="AnathenaProxy64">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Content/Icons/MainIcon.ico">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Content\Icons\MainIcon.ico">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="de\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="de\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="EasyHook">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="en\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="es\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="es\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="Fasm.NET">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="fr\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="fr\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="hu\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="ICSharpCode.AvalonEdit">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="it\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="it\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="ja\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="KopiLua">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="ko\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="LiveCharts">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="LiveCharts.Wpf">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Microsoft.Diagnostics.Runtime">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Mono.Cecil">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Mono.Cecil.Pdb">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="NLua">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="pt-BR\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="ro\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="ru\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="ru\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpCli">
-      <Visible>False</Visible>
-      <PublishState>Exclude</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.Animation">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.D3DCompiler">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.Desktop">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.Direct2D1">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.Direct3D11">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.Direct3D11.Effects">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.Direct3D12">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.Direct3D9">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.DirectComposition">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.DirectInput">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.DirectManipulation">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.DirectSound">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.DXGI">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.Mathematics">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.MediaFoundation">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.RawInput">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.XAudio2">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="SharpDX.XInput">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Source\EasyHook\EasyHook.dll">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="Source\EasyHook\EasyHook32.dll">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="Source\EasyHook\EasyHook32Svc.exe">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="Source\EasyHook\EasyHook64.dll">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="Source\EasyHook\EasyHook64Svc.exe">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="Source\EasyHook\EasyLoad32.dll">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="Source\EasyHook\EasyLoad64.dll">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>File</FileType>
-    </PublishFile>
-    <PublishFile Include="sv\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="System.Windows.Interactivity">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Xceed.Wpf.AvalonDock">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="Xceed.Wpf.Toolkit">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Assembly</FileType>
-    </PublishFile>
-    <PublishFile Include="zh-Hans\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="zh-Hans\Xceed.Wpf.AvalonDock.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-    <PublishFile Include="zh-Hant\System.Windows.Interactivity.resources">
-      <Visible>False</Visible>
-      <PublishState>Auto</PublishState>
-      <IncludeHash>False</IncludeHash>
-      <Group>
-      </Group>
-      <TargetPath>
-      </TargetPath>
-      <FileType>Satellite</FileType>
-    </PublishFile>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>START /WAIT cmd /c "$(TargetDir)SharpCli.exe"</PostBuildEvent>

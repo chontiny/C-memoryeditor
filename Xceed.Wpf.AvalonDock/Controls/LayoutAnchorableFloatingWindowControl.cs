@@ -234,7 +234,7 @@ namespace Xceed.Wpf.AvalonDock.Controls
             if (CloseInitiatedByUser && !KeepContentVisibleOnClose)
             {
                 e.Cancel = true;
-                _model.Descendents().OfType<LayoutAnchorable>().ToArray().ForEach<LayoutAnchorable>((a) => a.Hide());
+                _model.Descendents().OfType<LayoutAnchorable>().ToArray().ForEach<LayoutAnchorable>((a) => a.IsVisible = false);
             }
 
             base.OnClosing(e);

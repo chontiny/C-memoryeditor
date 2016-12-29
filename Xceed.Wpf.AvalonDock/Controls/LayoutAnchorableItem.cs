@@ -289,9 +289,9 @@ namespace Xceed.Wpf.AvalonDock.Controls
                     using (_visibilityReentrantFlag.Enter())
                     {
                         if (Visibility == System.Windows.Visibility.Hidden)
-                            _anchorable.Hide(false);
+                            _anchorable.IsVisible = false;
                         else if (Visibility == System.Windows.Visibility.Visible)
-                            _anchorable.Show();
+                            _anchorable.IsVisible = true;
                     }
                 }
             }

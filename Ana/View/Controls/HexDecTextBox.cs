@@ -39,7 +39,7 @@
         public HexDecTextBox(Type elementType)
         {
             this.BorderStyle = BorderStyle.FixedSingle;
-            this.BackColor = Color.FromArgb(0x33, 0x33, 0x33); // Color.Gray; // Color.FromArgb(0x333333);
+            this.BackColor = DarkBrushes.BaseColor4;
 
             this.DecimalMenuItem = new MenuItem("Decimal");
             this.HexidecimalMenuItem = new MenuItem("Hexidecimal");

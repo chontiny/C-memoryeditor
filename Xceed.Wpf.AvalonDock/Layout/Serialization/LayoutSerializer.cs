@@ -15,12 +15,7 @@
   **********************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.IO;
-using Xceed.Wpf.AvalonDock.Controls;
-using System.Windows;
 
 namespace Xceed.Wpf.AvalonDock.Layout.Serialization
 {
@@ -66,7 +61,7 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
             {
                 LayoutAnchorable previousAchorable = null;
                 if (lcToFix.ContentId != null)
-                { 
+                {
                     //try find the content in replaced layout
                     previousAchorable = _previousAnchorables.FirstOrDefault(a => a.ContentId == lcToFix.ContentId);
                 }
@@ -80,10 +75,10 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
                     else if (args.Content != null)
                         lcToFix.Content = args.Content;
                     else if (args.Model.Content != null)
-                        lcToFix.Hide(false);
+                        lcToFix.IsVisible = false;
                 }
                 else if (previousAchorable == null)
-                    lcToFix.Hide(false);
+                    lcToFix.IsVisible = false;
                 else
                 {
                     lcToFix.Content = previousAchorable.Content;
@@ -118,8 +113,7 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
                 else
                     lcToFix.Content = previousDocument.Content;
             }
-
-
+            
             layout.CollectGarbage();
         }
 

@@ -1,18 +1,18 @@
 ﻿namespace Ana.View
 {
+    using Chromium.Event;
+    using Chromium.WebBrowser;
+    using Controls;
+    using Source.CheatBrowser;
     using Source.Project;
     using System;
     using System.IO;
-    using System.Linq;
-    using System.Net;
     using System.Reflection;
-    using System.Windows.Controls;
-    using System.Windows.Navigation;
-
+    using System.Windows;
     /// <summary>
     /// Interaction logic for CheatBrowser.xaml
     /// </summary>
-    internal partial class CheatBrowser : UserControl
+    internal partial class CheatBrowser : System.Windows.Controls.UserControl
     {
         /// <summary>
         /// The file extension for cheat files
@@ -25,6 +25,11 @@
         private const String FileStorageDirectoryName = "Cheats";
 
         /// <summary>
+        /// The filter to use for the save file dialog
+        /// </summary>
+        private const String ExtensionFilter = "Cheat File(*.Hax)|*.hax|All files(*.*)|*.*";
+
+        /// <summary>
         /// The path to all user application files
         /// </summary>
         private static readonly String ApplicationFiles = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -34,6 +39,8 @@
         /// </summary>
         private static readonly String SavePath = Path.Combine(Path.Combine(ApplicationFiles, Assembly.GetExecutingAssembly().GetName().Name), CheatBrowser.FileStorageDirectoryName);
 
+        private ChromiumWebBrowser browser;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CheatBrowser" /> class
         /// </summary>
@@ -41,65 +48,43 @@
         {
             this.InitializeComponent();
 
-            this.browser.Navigating += this.BrowserNavigating;
+            // Windows forms hosting -- TODO: Phase this out
+            this.browser = new ChromiumWebBrowser();
+            this.browserGrid.Children.Add(WinformsHostingHelper.CreateHostedControl(this.browser));
+
+            this.browser.DownloadHandler.OnBeforeDownload += DownloadHandler_OnBeforeDownload;
+            this.browser.DownloadHandler.OnDownloadUpdated += DownloadHandler_OnDownloadUpdated;
+
+            this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
         }
 
         /// <summary>
-        /// Invoked when the browser is about to navigate to a new page
+        /// Gets the view model associated with this view.
         /// </summary>
-        /// <param name="sender">Sending object</param>
-        /// <param name="e">Cancel event args</param>
-        private void BrowserNavigating(Object sender, NavigatingCancelEventArgs e)
+        public CheatBrowserViewModel CheatBrowserViewModel
         {
-            if (e == null || e.Uri == null || e.Uri.AbsoluteUri == null)
+            get
             {
-                return;
-            }
-
-            try
-            {
-                if (e.Uri.Query.Split('&').Any(x => x.ToLower().EndsWith(FileExtension)))
-                {
-                    // Get filename from the url
-                    String fileName = e.Uri.Query.Split('&').Where(x => x.ToLower().EndsWith(FileExtension)).First().Split('=').Last() ?? ("default" + FileExtension);
-
-                    e.Cancel = true;
-
-                    WebClient client = new WebClient();
-                    client.DownloadDataCompleted += (source, args) => this.DownloadDataCompleted(source, args, fileName);
-                    client.DownloadDataAsync(e.Uri);
-                }
-            }
-            catch
-            {
-                return;
+                return this.DataContext as CheatBrowserViewModel;
             }
         }
 
-        /// <summary>
-        /// Invoked when a download is complete, before the bytes are written
-        /// </summary>
-        /// <param name="sender">Sending object</param>
-        /// <param name="e">Download event args</param>
-        /// <param name="fileName">The name of the file being downloaded</param>
-        private void DownloadDataCompleted(Object sender, DownloadDataCompletedEventArgs e, String fileName)
+        private void DownloadHandler_OnBeforeDownload(Object sender, CfxOnBeforeDownloadEventArgs e)
         {
-            try
-            {
-                if (!Directory.Exists(SavePath))
-                {
-                    Directory.CreateDirectory(SavePath);
-                }
+            e.Callback.Continue(Path.GetTempFileName(), false);
+        }
 
-                String saveLocation = Path.Combine(SavePath, fileName);
-                File.WriteAllBytes(saveLocation, e.Result);
-
-                ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(saveLocation);
-            }
-            catch
+        private void DownloadHandler_OnDownloadUpdated(Object sender, CfxOnDownloadUpdatedEventArgs e)
+        {
+            if (e.DownloadItem.IsComplete)
             {
-                return;
+                ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(e.DownloadItem.FullPath);
             }
+        }
+
+        private void MenuItemClick(Object sender, RoutedEventArgs e)
+        {
+            this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
         }
     }
     //// End class

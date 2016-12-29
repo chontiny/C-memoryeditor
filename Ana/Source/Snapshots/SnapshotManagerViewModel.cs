@@ -33,7 +33,6 @@
         private SnapshotManagerViewModel() : base("Snapshot Manager")
         {
             this.ContentId = SnapshotManagerViewModel.ToolContentId;
-            this.IsVisible = true;
 
             // Note: Not async to avoid updates slower than the perception threshold
             this.ClearSnapshotsCommand = new RelayCommand(() => this.ClearSnapshots(), () => true);

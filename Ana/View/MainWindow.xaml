@@ -11,7 +11,7 @@
     xmlns:view="clr-namespace:Ana.View"
     x:Name="AnaWindow"
     Title="Anathena"
-    Width="720"
+    Width="840"
     Height="720"
     x:ClassModifier="internal"
     AllowsTransparency="False"
@@ -184,9 +184,14 @@
                 <!--  View Header  -->
                 <shell:MenuItem Header="View" Style="{StaticResource DropDown}">
                     <shell:MenuItem
-                        Command="{Binding ResetLayoutCommand}"
+                        Command="{Binding ResetLayoutStandardCommand}"
                         CommandParameter="{Binding ., ElementName=dockManager}"
-                        Header="Reset Layout"
+                        Header="Standard Layout"
+                        Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
+                        Command="{Binding ResetLayoutDeveloperCommand}"
+                        CommandParameter="{Binding ., ElementName=dockManager}"
+                        Header="Developer Layout"
                         Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
 

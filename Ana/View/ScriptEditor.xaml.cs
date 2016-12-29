@@ -5,7 +5,7 @@
     using ICSharpCode.AvalonEdit.Editing;
     using ICSharpCode.AvalonEdit.Highlighting;
     using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-    using Source.LuaEngine;
+    using Source.ScriptEngine;
     using Source.Utils.ScriptEditor;
     using System;
     using System.Collections.Generic;
@@ -22,9 +22,9 @@
     internal partial class ScriptEditor : Window
     {
         /// <summary>
-        /// The resource file for Lua script highlighting rules
+        /// The resource file for C# script highlighting rules
         /// </summary>
-        private const String ScriptSyntaxHighlightingResource = "Ana.Content.Lua.xhsd";
+        private const String ScriptSyntaxHighlightingResource = "Ana.Content.CSharp.xshd";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptEditor" /> class
@@ -38,7 +38,7 @@
             //// this.ScriptEditorTextEditor.TextArea.TextEntering += this.ScriptEditorTextEditorTextAreaTextEntering;
             //// this.ScriptEditorTextEditor.TextArea.TextEntered += this.ScriptEditorTextEditorTextAreaTextEntered;
             this.ScriptEditorTextEditor.TextChanged += this.ScriptEditorTextEditorTextChanged;
-            this.ScriptEditorTextEditor.Text = script == null ? String.Empty : script;
+            this.ScriptEditorTextEditor.Text = script ?? String.Empty;
         }
 
         /// <summary>
@@ -182,7 +182,7 @@
         /// <param name="e">Event args</param>
         private void CodeInjectionFileMenuItemClick(Object sender, RoutedEventArgs e)
         {
-            this.ScriptEditorTextEditor.Text = LuaTemplates.GetCodeInjectionTemplate() + this.ScriptEditorTextEditor.Text;
+            this.ScriptEditorTextEditor.Text = ScriptTemplates.GetCodeInjectionTemplate() + this.ScriptEditorTextEditor.Text;
         }
 
         /// <summary>
@@ -192,7 +192,7 @@
         /// <param name="e">Event args</param>
         private void GraphicsOverlayFileMenuItemClick(Object sender, RoutedEventArgs e)
         {
-            this.ScriptEditorTextEditor.Text = LuaTemplates.GetGraphicsOverlayTemplate() + this.ScriptEditorTextEditor.Text;
+            this.ScriptEditorTextEditor.Text = ScriptTemplates.GetGraphicsOverlayTemplate() + this.ScriptEditorTextEditor.Text;
         }
 
         /// <summary>

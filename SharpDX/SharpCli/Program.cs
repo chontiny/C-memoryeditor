@@ -16,7 +16,9 @@
         /// <param name="args">Arguments passed to the program</param>
         public static void Main(String[] args)
         {
-            // Get SharpCli to patch all SharpDX DLLs to implement generated functions 
+            Console.WriteLine("SharpCli started");
+
+            // Get SharpCli to patch all SharpDX DLLs to implement generated functions
             InteropApp interopApp = new InteropApp(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             interopApp.PatchAll();
         }
