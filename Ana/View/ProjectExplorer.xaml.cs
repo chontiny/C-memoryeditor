@@ -64,20 +64,20 @@
         {
             this.projectRoot?.BuildParents();
 
-            projectExplorerTreeView.BeginUpdate();
-            projectTree.Nodes.Clear();
-            nodeCache.Clear();
+            this.projectExplorerTreeView.BeginUpdate();
+            this.projectTree.Nodes.Clear();
+            this.nodeCache.Clear();
 
             if (this.projectRoot != null)
             {
-                foreach (ProjectItem Child in this.projectRoot.Children)
+                foreach (ProjectItem child in this.projectRoot.Children)
                 {
-                    BuildNodes(Child);
+                    this.BuildNodes(child);
                 }
             }
 
-            projectExplorerTreeView.EndUpdate();
-            projectExplorerTreeView.ExpandAll();
+            this.projectExplorerTreeView.EndUpdate();
+            this.projectExplorerTreeView.ExpandAll();
         }
 
         public void AddNewAddressItem()
@@ -93,22 +93,6 @@
         public void AddNewFolderItem()
         {
             ProjectExplorerViewModel.GetInstance().AddNewFolderItemCommand.Execute(null);
-        }
-
-        private ProjectItem GetSelectedItem()
-        {
-            Node selectedNode = projectTree.FindNode(projectExplorerTreeView.GetPath(projectExplorerTreeView.SelectedNode));
-            ProjectItem SelectedItem = null;
-
-            if (selectedNode != null && typeof(ProjectNode).IsAssignableFrom(selectedNode.GetType()))
-            {
-                if (nodeCache.Reverse.ContainsKey((ProjectNode)selectedNode))
-                {
-                    SelectedItem = nodeCache.Reverse[(ProjectNode)selectedNode];
-                }
-            }
-
-            return SelectedItem;
         }
 
         private void BuildNodes(ProjectItem projectItem, ProjectItem parent = null)
@@ -158,7 +142,7 @@
 
                 foreach (ProjectItem child in folderItem.Children)
                 {
-                    BuildNodes(child, projectItem);
+                    this.BuildNodes(child, projectItem);
                 }
             }
         }
@@ -177,7 +161,7 @@
 
         private ProjectItem GetProjectItemFromNode(TreeNodeAdv treeNodeAdv)
         {
-            return GetProjectNodeFromTreeNodeAdv(treeNodeAdv)?.ProjectItem;
+            return this.GetProjectNodeFromTreeNodeAdv(treeNodeAdv)?.ProjectItem;
         }
 
         private void EntryDescriptionDrawText(Object sender, DrawEventArgs e)
@@ -204,7 +188,7 @@
             nodes.ForEach(x => CheckItem(x, !x.IsActivated));
             projectExplorerTreeView.SelectedNodes.ForEach(x => nodeCache[GetProjectItemFromNode(x)].IsChecked = GetProjectItemFromNode(x).IsActivated);
 
-            RebuildProjectStructure();
+            this.RebuildProjectStructure();
         }
 
         private void DeleteSelectedItems()
@@ -214,11 +198,7 @@
                 return;
             }
 
-            List<ProjectItem> Nodes = new List<ProjectItem>();
-            projectExplorerTreeView.SelectedNodes.ForEach(x => Nodes.Add(GetProjectItemFromNode(x)));
-            // projectExplorerPresenter.DeleteProjectItems(Nodes);
-
-            this.RebuildProjectStructure();
+            ProjectExplorerViewModel.GetInstance().DeleteSelectionCommand.Execute(null);
         }
 
         private void CheckItem(ProjectItem projectItem, Boolean activated)
@@ -233,9 +213,7 @@
 
             if (projectItem is FolderItem)
             {
-                FolderItem folderItem = projectItem as FolderItem;
-
-                foreach (ProjectItem child in folderItem.Children)
+                foreach (ProjectItem child in (projectItem as FolderItem).Children)
                 {
                     this.CheckItem(child, activated);
                 }
@@ -252,17 +230,17 @@
             this.ActivateSelectedItems();
         }
 
-        private void ProjectContextMenuStrip_Opening(Object sender, CancelEventArgs e)
+        private void ProjectContextMenuStripOpening(Object sender, CancelEventArgs e)
         {
-            if (projectExplorerTreeView.SelectedNodes == null || projectExplorerTreeView.SelectedNodes.Count <= 0)
+            if (this.projectExplorerTreeView.SelectedNodes == null || this.projectExplorerTreeView.SelectedNodes.Count <= 0)
             {
-                deleteSelectionMenuItem.Enabled = false;
-                toggleSelectionMenuItem.Enabled = false;
+                this.deleteSelectionMenuItem.Enabled = false;
+                this.toggleSelectionMenuItem.Enabled = false;
             }
             else
             {
-                deleteSelectionMenuItem.Enabled = true;
-                toggleSelectionMenuItem.Enabled = true;
+                this.deleteSelectionMenuItem.Enabled = true;
+                this.toggleSelectionMenuItem.Enabled = true;
             }
         }
 
@@ -301,15 +279,15 @@
             List<TreeNodeAdv> treeNodes = new List<TreeNodeAdv>();
             List<ProjectItem> projectItems = new List<ProjectItem>();
 
-            projectExplorerTreeView.SelectedNodes.ForEach(x => treeNodes.Add(x));
+            this.projectExplorerTreeView.SelectedNodes.ForEach(x => treeNodes.Add(x));
             treeNodes.ForEach(x => projectItems.Add(GetProjectItemFromNode(x)));
 
-            ProjectExplorerViewModel.GetInstance().SelectedProjectItem = (projectItems?.Count ?? 0) > 0 ? projectItems.First() : null;
+            ProjectExplorerViewModel.GetInstance().SelectedProjectItems = projectItems;
         }
 
-        private void ProjectExplorerTreeView_ItemDrag(Object sender, ItemDragEventArgs e)
+        private void ProjectExplorerTreeViewItemDrag(Object sender, ItemDragEventArgs e)
         {
-            draggedItem = e.Item as TreeNodeAdv;
+            this.draggedItem = e.Item as TreeNodeAdv;
             this.projectExplorerTreeView.DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
@@ -407,11 +385,11 @@
             this.addNewScriptMenuItem = new ToolStripMenuItem("Add Script", ImageUtils.BitmapImageToBitmap(Images.CollectValues));
             this.contextMenuStrip = new ContextMenuStrip();
 
-            this.toggleSelectionMenuItem.Click += ToggleSelectionMenuItem_Click;
-            this.deleteSelectionMenuItem.Click += DeleteSelectionMenuItem_Click;
-            this.addNewFolderMenuItem.Click += AddNewFolderMenuItem_Click;
-            this.addNewAddressMenuItem.Click += AddNewAddressMenuItem_Click;
-            this.addNewScriptMenuItem.Click += AddNewScriptMenuItem_Click;
+            this.toggleSelectionMenuItem.Click += ToggleSelectionMenuItemClick;
+            this.deleteSelectionMenuItem.Click += DeleteSelectionMenuItemClick;
+            this.addNewFolderMenuItem.Click += AddNewFolderMenuItemClick;
+            this.addNewAddressMenuItem.Click += AddNewAddressMenuItemClick;
+            this.addNewScriptMenuItem.Click += AddNewScriptMenuItemClick;
 
             this.addNewItemMenuItem.DropDownItems.Add(addNewFolderMenuItem);
             this.addNewItemMenuItem.DropDownItems.Add(addNewAddressMenuItem);
@@ -432,7 +410,7 @@
             this.projectExplorerTreeView.FullRowSelect = true;
             this.projectExplorerTreeView.ContextMenuStrip = contextMenuStrip;
 
-            this.projectExplorerTreeView.ItemDrag += this.ProjectExplorerTreeView_ItemDrag;
+            this.projectExplorerTreeView.ItemDrag += this.ProjectExplorerTreeViewItemDrag;
             this.projectExplorerTreeView.NodeMouseDoubleClick += this.ProjectExplorerTreeViewNodeMouseDoubleClick;
             this.projectExplorerTreeView.SelectionChanged += this.ProjectExplorerTreeViewSelectionChanged;
             this.projectExplorerTreeView.DragDrop += this.ProjectExplorerTreeViewDragDrop;
@@ -446,27 +424,27 @@
             this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
         }
 
-        private void AddNewScriptMenuItem_Click(Object sender, EventArgs e)
+        private void AddNewScriptMenuItemClick(Object sender, EventArgs e)
         {
             this.AddNewScriptItem();
         }
 
-        private void AddNewAddressMenuItem_Click(Object sender, EventArgs e)
+        private void AddNewAddressMenuItemClick(Object sender, EventArgs e)
         {
             this.AddNewAddressItem();
         }
 
-        private void AddNewFolderMenuItem_Click(Object sender, EventArgs e)
+        private void AddNewFolderMenuItemClick(Object sender, EventArgs e)
         {
             this.AddNewFolderItem();
         }
 
-        private void DeleteSelectionMenuItem_Click(Object sender, EventArgs e)
+        private void DeleteSelectionMenuItemClick(Object sender, EventArgs e)
         {
             this.DeleteSelectedItems();
         }
 
-        private void ToggleSelectionMenuItem_Click(Object sender, EventArgs e)
+        private void ToggleSelectionMenuItemClick(Object sender, EventArgs e)
         {
             this.ActivateSelectedItems();
         }

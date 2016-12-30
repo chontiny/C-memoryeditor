@@ -112,13 +112,13 @@
             IEnumerable<ProjectItem> childrenSorted = this.Children.ToList().OrderBy(x => x.GetHashCode());
             toDelete = toDelete.OrderBy(x => x.GetHashCode());
 
-            if (toDelete.Count() <= 0 || childrenSorted.Count() <= 0)
+            ProjectItem nextDelete = toDelete?.FirstOrDefault();
+            ProjectItem nextNode = childrenSorted?.FirstOrDefault();
+
+            if (nextDelete == null || nextNode == null)
             {
                 return;
             }
-
-            ProjectItem nextDelete = toDelete.First();
-            ProjectItem nextNode = childrenSorted.First();
 
             toDelete = toDelete.Skip(1);
             childrenSorted = childrenSorted.Skip(1);
