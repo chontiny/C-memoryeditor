@@ -447,6 +447,9 @@
     <Compile Include="Source\Utils\VirtualItemProvider\VirtualizingCollection.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
+    <Compile Include="View\Controls\CenteredDialogBox.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="View\Controls\ControlThreadingHelper.cs" />
     <Compile Include="View\Controls\TreeView\ProjectNode.cs" />
     <Compile Include="View\SignatureCollector.xaml.cs">

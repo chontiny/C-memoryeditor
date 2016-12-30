@@ -289,7 +289,7 @@
             clone.resolveType = resolveType;
             clone.baseIdentifier = baseIdentifier;
             clone.baseAddress = baseAddress;
-            clone.offsets = offsets.ToArray();
+            clone.offsets = offsets?.ToArray();
             clone.typeName = typeName;
             clone.addressValue = addressValue;
             clone.isValueHex = isValueHex;

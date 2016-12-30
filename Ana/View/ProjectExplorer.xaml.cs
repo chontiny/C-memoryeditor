@@ -22,6 +22,8 @@
     /// </summary>
     internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IProjectExplorerObserver
     {
+        private const char DeleteKeyCode = (char)0x127;
+
         private TreeViewAdv projectExplorerTreeView;
         private BiDictionary<ProjectItem, ProjectNode> nodeCache;
         private ProjectRoot projectRoot;
@@ -30,7 +32,6 @@
         private Object accessLock;
 
         private IEnumerable<ProjectItem> clipBoard;
-        private Boolean isClipBoardCopy;
 
         private ToolStripMenuItem addNewItemMenuItem;
         private ToolStripMenuItem deleteSelectionMenuItem;
@@ -104,14 +105,12 @@
         private void CopySelection()
         {
             this.clipBoard = this.GetSelectedProjectItems();
-            this.isClipBoardCopy = true;
         }
 
         private void CutSelection()
         {
             this.clipBoard = this.GetSelectedProjectItems();
             this.DeleteSelectedItems();
-            this.isClipBoardCopy = false;
         }
 
         private void PasteSelection()
@@ -123,16 +122,8 @@
 
             foreach (ProjectItem projectItem in clipBoard)
             {
-                if (this.isClipBoardCopy)
-                {
-                    // For copy we must clone the item, such as to prevent duplicate references of the same exact object
-                    ProjectExplorerViewModel.GetInstance().AddNewProjectItem(projectItem.Clone());
-                }
-                else
-                {
-                    // For cut we do not need to clone the item
-                    ProjectExplorerViewModel.GetInstance().AddNewProjectItem(projectItem);
-                }
+                // We must clone the item, such as to prevent duplicate references of the same exact object
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItem(projectItem.Clone());
             }
         }
 
@@ -245,7 +236,17 @@
                 return;
             }
 
-            ProjectExplorerViewModel.GetInstance().DeleteSelectionCommand.Execute(null);
+            System.Windows.MessageBoxResult result =
+                MessageBoxEx.Show(System.Windows.Application.Current.MainWindow,
+                "Delete selected items?",
+                "Confirm",
+                System.Windows.MessageBoxButton.OKCancel,
+                System.Windows.MessageBoxImage.Warning);
+
+            if (result == System.Windows.MessageBoxResult.OK)
+            {
+                ProjectExplorerViewModel.GetInstance().DeleteSelectionCommand.Execute(null);
+            }
         }
 
         private void CheckItem(ProjectItem projectItem, Boolean activated)
@@ -269,6 +270,30 @@
 
         private void ProjectExplorerTreeViewKeyPress(Object sender, KeyPressEventArgs e)
         {
+            if (!contextMenuStrip.Focused)
+            {
+                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                {
+                    if (e.KeyChar == 'c')
+                    {
+                        this.CopySelection();
+                    }
+                    else if (e.KeyChar == 'x')
+                    {
+                        this.CutSelection();
+                    }
+                    else if (e.KeyChar == 'v')
+                    {
+                        this.PasteSelection();
+                    }
+                }
+
+                if (e.KeyChar == ProjectExplorer.DeleteKeyCode)
+                {
+                    this.DeleteSelectedItems();
+                }
+            }
+
             if (e.KeyChar != ' ')
             {
                 return;
@@ -420,6 +445,11 @@
             this.addNewAddressMenuItem = new ToolStripMenuItem("Add Address", ImageUtils.BitmapImageToBitmap(Images.CollectValues));
             this.addNewScriptMenuItem = new ToolStripMenuItem("Add Script", ImageUtils.BitmapImageToBitmap(Images.CollectValues));
             this.contextMenuStrip = new ContextMenuStrip();
+
+            this.copySelectionMenuItem.ShortcutKeys = Keys.Control | Keys.C;
+            this.cutSelectionMenuItem.ShortcutKeys = Keys.Control | Keys.X;
+            this.pasteSelectionMenuItem.ShortcutKeys = Keys.Control | Keys.V;
+            this.deleteSelectionMenuItem.ShortcutKeys = Keys.Delete;
 
             this.toggleSelectionMenuItem.Click += ToggleSelectionMenuItemClick;
             this.deleteSelectionMenuItem.Click += DeleteSelectionMenuItemClick;
