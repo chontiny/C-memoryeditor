@@ -1,52 +1,35 @@
 # Anathena
 
-Anathena
+Official web site: [anathena.com](https://www.anathena.com)
 
-Anathena is a modern single player game hacking engine designed to make cheating in games easy. Within minutes, create cheats such as:
+**Anathena** is Memory Editing software that allows users to create and share cheats in their windows desktop games. This includes memory scanning, pointers, x86/x64 assembly injection, and so on.
 
-Godmode
+## Wiki Documentation
 
-Teleportation
+You can find more documentation on the [Wiki](https://github.com/zcanann/Anathena/wiki)
 
-Infinite Money
+## Build
 
-Infinite Ammo
+In order to compile Anathena, you should only need **Visual Studio 2015 Update 3**. External libraries are mostly compiled from source (with the exception of most C++ applications). This is because almost every library I use has had issues where I've needed access to the source code (to be fair, I am using most of these in unexpected ways). Currently this consists of:
 
-Increased Speed
+Library | Description
+--- | ---
+[SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper
+[OpenTK](https://github.com/opentk/opentk) | OpenGL Wrapper (Not actually used yet)
+[ChromiumFX](https://bitbucket.org/chromiumfx/chromiumfx) | Chrome Wrapper
+[PeNet](https://github.com/secana/PeNet) | PE Format Parser
+[CLRMD](https://github.com/Microsoft/clrmd) | .NET Application Inspection Library
+[AvalonDock](https://avalondock.codeplex.com/) | Docking Library
+[AvalonEdit](https://github.com/icsharpcode/AvalonEdit) | Code Editing Library
+[LiveCharts](https://github.com/beto-rodriguez/Live-Charts) | WPF Charts
+[CsScript](https://github.com/oleg-shilo/cs-script) | C# Scripting Library
+[EasyHook](https://github.com/EasyHook/EasyHook) | Managed/Unmanaged API Hooking
+[SharpDisasm](https://github.com/spazzarama/SharpDisasm) | Udis86 Assembler Ported to C#
+[MemorySharp](https://github.com/ZenLulz/MemorySharp) | Memory Editing Library
+[FASM](https://flatassembler.net/) | Flat Assembler (C# Invocation done via MemorySharp)
+[TreeViewAdv](https://sourceforge.net/projects/treeviewadv/) | Advanced Tree View Control
+[WPFToolKit](http://wpftoolkit.codeplex.com/) | Toolkit for WPF Applications
 
-Unlimited Stat Points
-
-Item Duplication
-
-
-And many, many more.
-
-==Browse and Share Cheats==
-
-Search for cheats that others have already discovered, or discover your own and share them with other members of the community. This process is made simple and easy, which is perfect for those with minimal experiance that would prefer to use cheats written by experts.
-
-==Traditional Memory Scanning Features==
-
-Anathena has all of the traditional memory scanning features with added touches, including the ability to scan with multiple constraints at once, such as a value that has both increased and is greater than zero.
-
-==Automated Memory Scanning==
-
-Automatically discover hacks without doing all of the work. Let Anathena correlate your key presses with memory changes to automatically find useful cheats, such as the player's position or ammo.
-
-Anathena also features several other automated scanning features, such as a Chunk Scanner to quickly locate useful memory, or the Change Counter to determine what memory changes frequently, or infrequently.
-
-==LUA Scripting==
-
-Write sophisticated hacks with minimal effort using the user friendly scripting language LUA. Leverage the power of the FASM compiler to write your own code to replace the code in the game on the fly. 
-
-==RELEASE STEPS==
-
-1) Update version number for Anathena in Properties -> AssemblyInfo, and for Anathena.csproj Publish settings under Publish version AND in the Updates button menu
-
-2) Compile for Release as AnyCPU
-
-3) Publish for Release in OneClick to the proper AnathenaWeb release folder
-
-4) Manually copy over every single SharpDx DLL, and delete the existing '.deploy' SharpDx DLLs. Add '.deploy' to the copied over SharpDx DLLs. You can thank microsoft for this, SharpCli.exe will patch the SharpDx DLLs, but OneClick creates the published files before they get patched.
-
-5) Push assemblies to develop/master branch, deploy to site
+## Licensing
+ 
+GPLv3
