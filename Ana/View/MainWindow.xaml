@@ -166,7 +166,11 @@
                         Command="{Binding ProjectExplorerViewModel.SaveAsProjectCommand}"
                         Header="Save As"
                         Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem Header="Exit" Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
+                        Command="{Binding MainViewModel.CloseCommand}"
+                        CommandParameter="{Binding ElementName=AnaWindow}"
+                        Header="Exit"
+                        Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
 
                 <!--  Edit Header  -->

@@ -14,6 +14,8 @@
     using System.Threading.Tasks;
     using Utils.Extensions;
     using Utils.Validation;
+    using static Native.Enumerations;
+    using static Native.Structures;
 
     /// <summary>
     /// Class for memory editing a remote process.
@@ -57,7 +59,14 @@
         /// <param name="process">The newly selected process</param>
         public void Update(NormalizedProcess process)
         {
-            this.SystemProcess = Process.GetProcessById(process.ProcessId);
+            try
+            {
+                this.SystemProcess = Process.GetProcessById(process.ProcessId);
+            }
+            catch
+            {
+                this.SystemProcess = null;
+            }
         }
 
         #region Read
@@ -459,7 +468,7 @@
             UInt32 uiSize = (UInt32)(IntPtr.Size * (hMods.Length));
             UInt32 bytesNeeded = 0;
 
-            if (Native.NativeMethods.EnumProcessModulesEx((IntPtr)systemProcess.Handle, pModules, uiSize, out bytesNeeded, (UIntPtr)0x01) == 1)
+            if (Native.NativeMethods.EnumProcessModulesEx((IntPtr)systemProcess.Handle, pModules, uiSize, out bytesNeeded, (UIntPtr)Enumerations.ModuleFilter.ListModulesAll) == 1)
             {
                 Int32 totalNumberofModules = (Int32)(bytesNeeded / IntPtr.Size);
                 for (Int32 index = 0; index < totalNumberofModules; index++)
@@ -468,7 +477,7 @@
                     Native.NativeMethods.GetModuleFileNameEx((IntPtr)systemProcess.Handle, hMods[index], moduleFilePath, (UInt32)(moduleFilePath.Capacity));
 
                     String moduleName = Path.GetFileName(moduleFilePath.ToString());
-                    Structures.ModuleInformation moduleInformation = new Structures.ModuleInformation();
+                    ModuleInformation moduleInformation = new ModuleInformation();
                     Native.NativeMethods.GetModuleInformation((IntPtr)systemProcess.Handle, hMods[index], out moduleInformation, uiSize);
 
                     // Convert to a normalized module and add it to our list

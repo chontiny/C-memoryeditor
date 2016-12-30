@@ -3,6 +3,7 @@
     using System;
     using System.Runtime.InteropServices;
     using System.Text;
+    using static Enumerations;
     using static Structures;
 
     /// <summary>

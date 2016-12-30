@@ -2,35 +2,10 @@
 {
     using System;
     using System.Runtime.InteropServices;
+    using static Enumerations;
 
     internal class Structures
     {
-        /// <summary>
-        /// A filtering flag for querying modules in an external process.
-        /// </summary>
-        internal enum ModuleFilter
-        {
-            /// <summary>
-            /// Use the default behavior.
-            /// </summary>
-            ListModulesDefault = 0x0,
-
-            /// <summary>
-            /// List the 32-bit modules.
-            /// </summary>
-            ListModules32Bit = 0x01,
-
-            /// <summary>
-            /// List the 64-bit modules.
-            /// </summary>
-            ListModules64Bit = 0x02,
-
-            /// <summary>
-            /// List all modules.
-            /// </summary>
-            ListModulesAll = 0x03,
-        }
-
         [StructLayout(LayoutKind.Sequential)]
         internal struct ModuleInformation
         {
