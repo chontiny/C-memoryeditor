@@ -9,11 +9,13 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Serialization.Json;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using UserSettings;
+
     /// <summary>
     /// View model for the Project Explorer
     /// </summary>
@@ -44,7 +46,7 @@
         /// <summary>
         /// The selected project item
         /// </summary>
-        private ProjectItem selectedProjectItem;
+        private IEnumerable<ProjectItem> selectedProjectItems;
 
         /// <summary>
         /// Whether or not there are unsaved project changes
@@ -200,20 +202,19 @@
         }
 
         /// <summary>
-        /// Gets or sets the selected project item
+        /// Gets or sets the selected project items.
         /// </summary>
-        public ProjectItem SelectedProjectItem
+        public IEnumerable<ProjectItem> SelectedProjectItems
         {
             get
             {
-                return this.selectedProjectItem;
+                return this.selectedProjectItems;
             }
 
             set
             {
-                this.selectedProjectItem = value;
-                PropertyViewerViewModel.GetInstance().SetTargetObjects(this.selectedProjectItem);
-                this.RaisePropertyChanged(nameof(this.SelectedProjectItem));
+                this.selectedProjectItems = value;
+                PropertyViewerViewModel.GetInstance().SetTargetObjects(this.SelectedProjectItems?.ToArray());
             }
         }
 
@@ -243,7 +244,12 @@
         /// <param name="AddToSelected">Whether or not the items should be added under the selected item.</param>
         public void AddNewProjectItem(ProjectItem projectItem, Boolean AddToSelected = true)
         {
-            ProjectItem target = this.SelectedProjectItem;
+            if (ProjectRoot.HasNode(projectItem))
+            {
+                return;
+            }
+
+            ProjectItem target = this.SelectedProjectItems?.FirstOrDefault();
 
             // Atempt to find the correct folder to place the new item into
             while (target != null && !(target is FolderItem))
@@ -302,8 +308,8 @@
         /// </summary>
         private void DeleteSelection()
         {
-            this.ProjectRoot.RemoveChild(this.SelectedProjectItem);
-            this.SelectedProjectItem = null;
+            this.ProjectRoot.RemoveNodes(this.SelectedProjectItems);
+            this.SelectedProjectItems = null;
 
             this.NotifyObservers();
         }
@@ -313,10 +319,17 @@
         /// </summary>
         private void ToggleSelectionActivation()
         {
-            ProjectItem projectItem = this.SelectedProjectItem;
-            if (projectItem != null)
+            if (this.SelectedProjectItems == null || this.SelectedProjectItems.Count() < 0)
             {
-                projectItem.IsActivated = !projectItem.IsActivated;
+                return;
+            }
+
+            foreach (ProjectItem projectItem in this.SelectedProjectItems)
+            {
+                if (projectItem != null)
+                {
+                    projectItem.IsActivated = !projectItem.IsActivated;
+                }
             }
         }
 
