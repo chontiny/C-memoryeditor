@@ -9,7 +9,6 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
-    using System.Runtime.InteropServices;
     using System.Text;
     using System.Threading.Tasks;
     using Utils.Extensions;
@@ -460,25 +459,28 @@
             }
 
             // Query all modules in the target process
-            IntPtr processHandle = systemProcess.Handle;
-            IntPtr hWnd = systemProcess.MainWindowHandle;
-            IntPtr[] hMods = new IntPtr[1024];
-            GCHandle gch = GCHandle.Alloc(hMods, GCHandleType.Pinned);
-            IntPtr pModules = gch.AddrOfPinnedObject();
-            UInt32 uiSize = (UInt32)(IntPtr.Size * (hMods.Length));
-            UInt32 bytesNeeded = 0;
+            IntPtr[] modulePointers = new IntPtr[0];
+            Int32 bytesNeeded = 0;
 
-            if (Native.NativeMethods.EnumProcessModulesEx((IntPtr)systemProcess.Handle, pModules, uiSize, out bytesNeeded, (UIntPtr)Enumerations.ModuleFilter.ListModulesAll) == 1)
+            // Determine number of modules
+            if (!Native.NativeMethods.EnumProcessModulesEx(systemProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
             {
-                Int32 totalNumberofModules = (Int32)(bytesNeeded / IntPtr.Size);
+                return normalizedModules;
+            }
+
+            Int32 totalNumberofModules = bytesNeeded / IntPtr.Size;
+            modulePointers = new IntPtr[totalNumberofModules];
+
+            if (Native.NativeMethods.EnumProcessModulesEx(systemProcess.Handle, modulePointers, bytesNeeded, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
+            {
                 for (Int32 index = 0; index < totalNumberofModules; index++)
                 {
                     StringBuilder moduleFilePath = new StringBuilder(1024);
-                    Native.NativeMethods.GetModuleFileNameEx((IntPtr)systemProcess.Handle, hMods[index], moduleFilePath, (UInt32)(moduleFilePath.Capacity));
+                    Native.NativeMethods.GetModuleFileNameEx(systemProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)(moduleFilePath.Capacity));
 
                     String moduleName = Path.GetFileName(moduleFilePath.ToString());
                     ModuleInformation moduleInformation = new ModuleInformation();
-                    Native.NativeMethods.GetModuleInformation((IntPtr)systemProcess.Handle, hMods[index], out moduleInformation, uiSize);
+                    Native.NativeMethods.GetModuleInformation(systemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * (modulePointers.Length)));
 
                     // Convert to a normalized module and add it to our list
                     NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.lpBaseOfDll, unchecked((Int32)moduleInformation.SizeOfImage));

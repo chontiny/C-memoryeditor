@@ -308,8 +308,8 @@
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, Byte[] lpBuffer, Int32 nSize, out Int32 lpNumberOfBytesWritten);
 
-        [DllImport("psapi.dll", CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        public static extern Int32 EnumProcessModulesEx(IntPtr hProcess, [Out] IntPtr lphModule, UInt32 cb, out UInt32 lpcbNeeded, UIntPtr dwFilterFlags);
+        [DllImport("psapi.dll")]
+        public static extern Boolean EnumProcessModulesEx(IntPtr hProcess, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U4)] [In][Out] IntPtr[] lphModule, Int32 cb, [MarshalAs(UnmanagedType.U4)] out Int32 lpcbNeeded, UInt32 dwFilterFlag);
 
         [DllImport("psapi.dll")]
         public static extern UInt32 GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In] [MarshalAs(UnmanagedType.U4)] UInt32 nSize);
