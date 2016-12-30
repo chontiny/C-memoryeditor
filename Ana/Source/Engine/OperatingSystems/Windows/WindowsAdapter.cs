@@ -9,6 +9,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Runtime.InteropServices;
     using System.Text;
     using System.Threading.Tasks;
     using Utils.Extensions;
@@ -435,7 +436,6 @@
         public IEnumerable<NormalizedModule> GetModules()
         {
             List<NormalizedModule> normalizedModules = new List<NormalizedModule>();
-
             NormalizedProcess process = EngineCore.GetInstance().Processes.GetOpenedProcess();
 
             if (process == null)
@@ -450,7 +450,32 @@
                 return normalizedModules;
             }
 
-            systemProcess?.Modules?.Cast<ProcessModule>().ForEach(x => normalizedModules.Add(new NormalizedModule(x.ModuleName, x.BaseAddress, x.ModuleMemorySize)));
+            // Query all modules in the target process
+            IntPtr processHandle = systemProcess.Handle;
+            IntPtr hWnd = systemProcess.MainWindowHandle;
+            IntPtr[] hMods = new IntPtr[1024];
+            GCHandle gch = GCHandle.Alloc(hMods, GCHandleType.Pinned);
+            IntPtr pModules = gch.AddrOfPinnedObject();
+            UInt32 uiSize = (UInt32)(IntPtr.Size * (hMods.Length));
+            UInt32 bytesNeeded = 0;
+
+            if (Native.NativeMethods.EnumProcessModulesEx((IntPtr)systemProcess.Handle, pModules, uiSize, out bytesNeeded, (UIntPtr)0x01) == 1)
+            {
+                Int32 totalNumberofModules = (Int32)(bytesNeeded / IntPtr.Size);
+                for (Int32 index = 0; index < totalNumberofModules; index++)
+                {
+                    StringBuilder moduleFilePath = new StringBuilder(1024);
+                    Native.NativeMethods.GetModuleFileNameEx((IntPtr)systemProcess.Handle, hMods[index], moduleFilePath, (UInt32)(moduleFilePath.Capacity));
+
+                    String moduleName = Path.GetFileName(moduleFilePath.ToString());
+                    Structures.ModuleInformation moduleInformation = new Structures.ModuleInformation();
+                    Native.NativeMethods.GetModuleInformation((IntPtr)systemProcess.Handle, hMods[index], out moduleInformation, uiSize);
+
+                    // Convert to a normalized module and add it to our list
+                    NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.lpBaseOfDll, unchecked((Int32)moduleInformation.SizeOfImage));
+                    normalizedModules.Add(module);
+                }
+            }
 
             return normalizedModules;
         }

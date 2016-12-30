@@ -443,7 +443,7 @@
         /// </summary>
         /// <param name="bytes">The array of bytes to search for.</param>
         /// <returns>The address of the first first array of byte match.</returns>
-        public UInt64 SearchAOB(Byte[] bytes)
+        public UInt64 SearchAob(Byte[] bytes)
         {
             this.PrintDebugTag();
 
@@ -456,7 +456,7 @@
         /// </summary>
         /// <param name="pattern">The pattern string for which to search.</param>
         /// <returns>The address of the first first pattern match.</returns>
-        public UInt64 SearchAOB(String pattern)
+        public UInt64 SearchAob(String pattern)
         {
             this.PrintDebugTag(pattern);
 
@@ -540,17 +540,18 @@
                 return String.Empty;
             }
 
+            // Clear out any whitespace that may cause issues in the assembly script
             assembly = assembly.Replace("\t", String.Empty);
 
             // Resolve keywords
             foreach (KeyValuePair<String, String> keyword in this.Keywords)
             {
-                assembly = assembly.Replace(keyword.Key, keyword.Value);
+                assembly = assembly.Replace("<" + keyword.Key + ">", keyword.Value);
             }
 
             foreach (KeyValuePair<String, String> globalKeyword in MemoryCore.GlobalKeywords)
             {
-                assembly = assembly.Replace(globalKeyword.Key, globalKeyword.Value);
+                assembly = assembly.Replace("<" + globalKeyword.Key + ">", globalKeyword.Value);
             }
 
             return assembly;

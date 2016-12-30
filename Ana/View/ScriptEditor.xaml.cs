@@ -5,7 +5,6 @@
     using ICSharpCode.AvalonEdit.Editing;
     using ICSharpCode.AvalonEdit.Highlighting;
     using ICSharpCode.AvalonEdit.Highlighting.Xshd;
-    using Source.ScriptEngine;
     using Source.Utils.ScriptEditor;
     using System;
     using System.Collections.Generic;
@@ -182,7 +181,7 @@
         /// <param name="e">Event args</param>
         private void CodeInjectionFileMenuItemClick(Object sender, RoutedEventArgs e)
         {
-            this.ScriptEditorTextEditor.Text = ScriptTemplates.GetCodeInjectionTemplate() + this.ScriptEditorTextEditor.Text;
+            this.ScriptEditorTextEditor.Text = this.ScriptEditorViewModel.GetCodeInjectionTemplate() + this.ScriptEditorTextEditor.Text;
         }
 
         /// <summary>
@@ -192,7 +191,7 @@
         /// <param name="e">Event args</param>
         private void GraphicsOverlayFileMenuItemClick(Object sender, RoutedEventArgs e)
         {
-            this.ScriptEditorTextEditor.Text = ScriptTemplates.GetGraphicsOverlayTemplate() + this.ScriptEditorTextEditor.Text;
+            this.ScriptEditorTextEditor.Text = this.ScriptEditorViewModel.GetGraphicsInjectionTemplate() + this.ScriptEditorTextEditor.Text;
         }
 
         /// <summary>

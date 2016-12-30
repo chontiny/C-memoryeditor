@@ -125,14 +125,14 @@
         /// </summary>
         /// <param name="bytes">The array of bytes to search for.</param>
         /// <returns>The address of the first first array of byte match.</returns>
-        UInt64 SearchAOB(Byte[] bytes);
+        UInt64 SearchAob(Byte[] bytes);
 
         /// <summary>
         /// Searches for the first address that matches the given array of byte pattern.
         /// </summary>
         /// <param name="pattern">The pattern string for which to search.</param>
         /// <returns>The address of the first first pattern match.</returns>
-        UInt64 SearchAOB(String pattern);
+        UInt64 SearchAob(String pattern);
 
         /// <summary>
         /// Searches for all addresses that match the given array of byte pattern.

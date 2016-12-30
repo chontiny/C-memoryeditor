@@ -72,7 +72,7 @@
         /// <summary>
         /// Clones the project item.
         /// </summary>
-        /// <returns>The clone of the project.</returns>
+        /// <returns>The clone of the project item.</returns>
         public override ProjectItem Clone()
         {
             ScriptItem clone = new ScriptItem();
@@ -84,21 +84,53 @@
             return clone;
         }
 
+        /// <summary>
+        /// Clones the script item and compiles it.
+        /// </summary>
+        /// <returns>The clone of the project. Returns null on compilation failure.</returns>
+        public ScriptItem Compile()
+        {
+            if (this.ScriptManager == null)
+            {
+                this.ScriptManager = new ScriptManager();
+            }
+
+            if (this.IsCompiled)
+            {
+                // TODO: Log to user, already compiled
+                return null;
+            }
+
+            try
+            {
+                ScriptItem clone = this.Clone() as ScriptItem;
+                clone.description += " - [Compiled]";
+                clone.isCompiled = true;
+                clone.script = this.ScriptManager.CompileScript(clone.script);
+
+                return clone;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public override void Update()
         {
         }
 
         protected override void OnActivationChanged()
         {
-            if (ScriptManager == null)
+            if (this.ScriptManager == null)
             {
-                ScriptManager = new ScriptManager();
+                this.ScriptManager = new ScriptManager();
             }
 
             if (this.IsActivated)
             {
                 // Try to run script.
-                if (!ScriptManager.RunActivationFunction(this.Script, this.IsCompiled))
+                if (!this.ScriptManager.RunActivationFunction(this.Script, this.IsCompiled))
                 {
                     // Script error -- clear activation.
                     this.ResetActivation();
@@ -106,12 +138,12 @@
                 }
 
                 // Run the update loop for the script
-                ScriptManager.RunUpdateFunction();
+                this.ScriptManager.RunUpdateFunction();
             }
             else
             {
                 // Try to deactivate script (we do not care if this fails)
-                ScriptManager.RunDeactivationFunction();
+                this.ScriptManager.RunDeactivationFunction();
             }
         }
     }

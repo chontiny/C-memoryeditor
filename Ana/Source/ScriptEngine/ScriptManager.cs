@@ -2,59 +2,79 @@
 {
     using CSScriptLibrary;
     using System;
+    using System.IO;
     using System.Reflection;
     using System.Security;
     using System.Threading;
     using System.Threading.Tasks;
-
+    using Utils;
     public class ScriptManager
     {
         /// <summary>
-        /// Time to wait for the update loop to finish on deactivation
+        /// Time to wait for the update loop to finish on deactivation.
         /// </summary>
         private const Int32 AbortTime = 500;
 
         /// <summary>
-        /// Update time in milliseconds
+        /// Update time in milliseconds.
         /// </summary>
         private const Int32 UpdateTime = 1000 / 15;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScriptManager" /> class
+        /// Initializes a new instance of the <see cref="ScriptManager" /> class.
         /// </summary>
         public ScriptManager()
         {
         }
 
         /// <summary>
-        /// Gets or sets a cancelation request for the update loop
+        /// Gets or sets a cancelation request for the update loop.
         /// </summary>
         private CancellationTokenSource CancelRequest { get; set; }
 
         /// <summary>
-        /// Gets or sets the task for the update loops
+        /// Gets or sets the task for the update loops.
         /// </summary>
         private Task Task { get; set; }
 
         private dynamic ScriptObject { get; set; }
 
         /// <summary>
-        /// Runs the activation function in the script
+        /// Compiles a script. Will compress the file and convert to base64.
+        /// </summary>
+        /// <param name="script">The input script in plaintext.</param>
+        /// <returns>The compiled script. Returns null on failure.</returns>
+        public String CompileScript(String script)
+        {
+            String result = null;
+
+            try
+            {
+                String compiledScriptFile = CSScript.CompileCode(script);
+                Byte[] compressedScript = Compression.Compress(File.ReadAllBytes(compiledScriptFile));
+                result = Convert.ToBase64String(compressedScript);
+            }
+            catch
+            {
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Runs the activation function in the script.
         /// </summary>
         /// <returns></returns>
         public Boolean RunActivationFunction(String script, Boolean compiled)
         {
             try
             {
-                // String compiledFile = CSScript.CompileCode(script);
-                // String compiledAssembly = Convert.ToBase64String(File.ReadAllBytes(compiledFile));
-
                 Assembly assembly;
 
                 if (compiled)
                 {
                     // Assembly already compiled, just load it
-                    assembly = Assembly.Load(Convert.FromBase64String(script));
+                    assembly = Assembly.Load(Compression.Decompress(Convert.FromBase64String(script)));
                 }
                 else
                 {
@@ -80,7 +100,7 @@
         }
 
         /// <summary>
-        /// Continously runs the update function in the script
+        /// Continously runs the update function in the script.
         /// </summary>
         public void RunUpdateFunction()
         {
@@ -119,7 +139,7 @@
         }
 
         /// <summary>
-        /// Runs the deactivation function in the script
+        /// Runs the deactivation function in the script.
         /// </summary>
         public void RunDeactivationFunction()
         {

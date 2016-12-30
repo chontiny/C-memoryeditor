@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Utils.ScriptEditor
 {
+    using Ana.Content.Templates;
     using Docking;
     using Main;
     using Mvvm.Command;
@@ -49,6 +50,20 @@
         /// Gets the active script text.
         /// </summary>
         public String Script { get; private set; }
+
+        public String GetCodeInjectionTemplate()
+        {
+            CodeInjectionTemplate codeInjectionTemplate = new CodeInjectionTemplate();
+
+            return codeInjectionTemplate.TransformText();
+        }
+
+        public String GetGraphicsInjectionTemplate()
+        {
+            GraphicsInjectionTemplate graphicsInjectionTemplate = new GraphicsInjectionTemplate();
+
+            return graphicsInjectionTemplate.TransformText();
+        }
 
         /// <summary>
         /// Updates the active script.

@@ -39,7 +39,7 @@
             // Bypass setters/getters to avoid triggering any view updates in constructor
             this.description = description == null ? String.Empty : description;
             this.parent = null;
-            this.IsActivated = false;
+            this.isActivated = false;
         }
 
         /// <summary>
@@ -61,7 +61,6 @@
             set
             {
                 this.parent = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Parent));
             }
         }
@@ -180,6 +179,10 @@
             }
         }
 
+        /// <summary>
+        /// Clones the project item.
+        /// </summary>
+        /// <returns>The clone of the project item.</returns>
         public abstract ProjectItem Clone();
 
         protected void NotifyPropertyChanged(String propertyName)

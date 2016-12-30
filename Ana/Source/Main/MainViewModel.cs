@@ -5,6 +5,7 @@
     using Engine.AddressResolver.DotNet;
     using Mvvm;
     using Mvvm.Command;
+    using Project;
     using Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
@@ -172,6 +173,11 @@
         /// <param name="window">The window to close.</param>
         private void Close(Window window)
         {
+            if (!ProjectExplorerViewModel.GetInstance().PromptSave())
+            {
+                return;
+            }
+
             window.Close();
         }
 
@@ -233,17 +239,21 @@
             // Attempt to load from personal saved layout file
             if (String.IsNullOrEmpty(resourceName))
             {
-                try
+                if (File.Exists(MainViewModel.LayoutSaveFile))
                 {
-                    XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-                    serializer.Deserialize(MainViewModel.LayoutSaveFile);
-                    return;
+                    try
+                    {
+                        XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
+                        serializer.Deserialize(MainViewModel.LayoutSaveFile);
+                        return;
+                    }
+                    catch
+                    {
+                    }
                 }
-                catch
-                {
-                    // Something went wrong, use the standard layout
-                    resourceName = MainViewModel.StandardLayoutResource;
-                }
+
+                // Something went wrong or the file is not present -- use the standard layout
+                resourceName = MainViewModel.StandardLayoutResource;
             }
 
             // Attempt to load layout from resource name

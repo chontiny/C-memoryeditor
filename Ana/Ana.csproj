@@ -158,6 +158,16 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Content\Templates\GraphicsInjectionTemplate.cs">
+      <DependentUpon>GraphicsInjectionTemplate.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Content\Templates\CodeInjectionTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
+    </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\ActionScheduler\ActionChannels.cs" />
     <Compile Include="Source\ActionScheduler\IAction.cs" />
@@ -288,13 +298,14 @@
     <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
-    <Compile Include="Source\ScriptEngine\Engine.cs" />
+    <Compile Include="Source\ScriptEngine\ScriptEngine.cs" />
     <Compile Include="Source\SignatureCollector\SignatureCollectorViewModel.cs" />
     <Compile Include="Source\SignatureCollector\SignatureModel.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementRef.cs" />
+    <Compile Include="Source\Utils\Compression.cs" />
     <Compile Include="Source\Utils\DataStructures\BiDictionary.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
@@ -393,7 +404,6 @@
     <Compile Include="Source\Project\ProjectItems\FolderItem.cs" />
     <Compile Include="Source\Project\ProjectItems\ProjectItem.cs" />
     <Compile Include="Source\Project\ProjectItems\ScriptItem.cs" />
-    <Compile Include="Source\ScriptEngine\ScriptTemplates.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
     <Compile Include="Source\Results\ScanResults\IScanResultsObserver.cs" />
     <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
@@ -711,6 +721,14 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Content\CSharp.xshd" />
+    <Content Include="Content\Templates\GraphicsInjectionTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>GraphicsInjectionTemplate.cs</LastGenOutput>
+    </Content>
+    <Content Include="Content\Templates\CodeInjectionTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>
+    </Content>
     <Content Include="Libraries\32\LibCEF\cef.pak">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

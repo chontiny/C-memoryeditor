@@ -138,7 +138,7 @@
         /// <returns>
         /// A collection of <see cref="MemoryBasicInformation64"/> structures containing info about all virtual pages in the target process
         /// </returns>
-        public static IEnumerable<MemoryBasicInformation64> VirtualPages(
+        public static IEnumerable<Structures.MemoryBasicInformation64> VirtualPages(
             IntPtr processHandle,
             IntPtr startAddress,
             IntPtr endAddress,
@@ -148,7 +148,7 @@
         {
             if (startAddress.ToUInt64() >= endAddress.ToUInt64())
             {
-                yield return new MemoryBasicInformation64();
+                yield return new Structures.MemoryBasicInformation64();
             }
 
             Boolean wrappedAround = false;
@@ -158,12 +158,12 @@
             do
             {
                 // Allocate the structure to store information of memory
-                MemoryBasicInformation64 memoryInfo = new MemoryBasicInformation64();
+                Structures.MemoryBasicInformation64 memoryInfo = new Structures.MemoryBasicInformation64();
 
                 if (!Environment.Is64BitProcess)
                 {
                     // 32 Bit struct is not the same
-                    MemoryBasicInformation32 memoryInfo32 = new MemoryBasicInformation32();
+                    Structures.MemoryBasicInformation32 memoryInfo32 = new Structures.MemoryBasicInformation32();
 
                     // Query the memory region (32 bit native method)
                     queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress, out memoryInfo32, Marshal.SizeOf(memoryInfo32));

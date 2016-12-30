@@ -3,104 +3,143 @@
     using System;
     using System.Runtime.InteropServices;
 
-    /// <summary>
-    /// Contains information about a range of pages in the virtual address space of a 32 bit process. The VirtualQuery and 
-    /// <see cref="NativeMethods.VirtualQueryEx"/> functions use this structure
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct MemoryBasicInformation32
+    internal class Structures
     {
         /// <summary>
-        /// A pointer to the base address of the region of pages
+        /// A filtering flag for querying modules in an external process.
         /// </summary>
-        public IntPtr BaseAddress;
+        internal enum ModuleFilter
+        {
+            /// <summary>
+            /// Use the default behavior.
+            /// </summary>
+            ListModulesDefault = 0x0,
+
+            /// <summary>
+            /// List the 32-bit modules.
+            /// </summary>
+            ListModules32Bit = 0x01,
+
+            /// <summary>
+            /// List the 64-bit modules.
+            /// </summary>
+            ListModules64Bit = 0x02,
+
+            /// <summary>
+            /// List all modules.
+            /// </summary>
+            ListModulesAll = 0x03,
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct ModuleInformation
+        {
+            public IntPtr lpBaseOfDll;
+
+            public UInt32 SizeOfImage;
+
+            public IntPtr EntryPoint;
+        }
 
         /// <summary>
-        /// A pointer to the base address of a range of pages allocated by the VirtualAlloc function.
-        /// The page pointed to by the BaseAddress member is contained within this allocation range
+        /// Contains information about a range of pages in the virtual address space of a 32 bit process. The VirtualQuery and 
+        /// <see cref="NativeMethods.VirtualQueryEx"/> functions use this structure
         /// </summary>
-        public IntPtr AllocationBase;
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct MemoryBasicInformation32
+        {
+            /// <summary>
+            /// A pointer to the base address of the region of pages
+            /// </summary>
+            public IntPtr BaseAddress;
+
+            /// <summary>
+            /// A pointer to the base address of a range of pages allocated by the VirtualAlloc function.
+            /// The page pointed to by the BaseAddress member is contained within this allocation range
+            /// </summary>
+            public IntPtr AllocationBase;
+
+            /// <summary>
+            /// The memory protection option when the region was initially allocated. This member can be one of the memory protection constants or 0 if the caller does not have access
+            /// </summary>
+            public MemoryProtectionFlags AllocationProtect;
+
+            /// <summary>
+            /// The size of the region beginning at the base address in which all pages have identical attributes, in bytes
+            /// </summary>
+            public Int32 RegionSize;
+
+            /// <summary>
+            /// The state of the pages in the region
+            /// </summary>
+            public MemoryStateFlags State;
+
+            /// <summary>
+            /// The access protection of the pages in the region. This member is one of the values listed for the AllocationProtect member
+            /// </summary>
+            public MemoryProtectionFlags Protect;
+
+            /// <summary>
+            /// The type of pages in the region
+            /// </summary>
+            public MemoryTypeFlags Type;
+        }
 
         /// <summary>
-        /// The memory protection option when the region was initially allocated. This member can be one of the memory protection constants or 0 if the caller does not have access
+        /// Contains information about a range of pages in the virtual address space of a 64 bit process. The VirtualQuery and 
+        /// <see cref="NativeMethods.VirtualQueryEx"/> functions use this structure
         /// </summary>
-        public MemoryProtectionFlags AllocationProtect;
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct MemoryBasicInformation64
+        {
+            /// <summary>
+            /// A pointer to the base address of the region of pages
+            /// </summary>
+            public IntPtr BaseAddress;
 
-        /// <summary>
-        /// The size of the region beginning at the base address in which all pages have identical attributes, in bytes
-        /// </summary>
-        public Int32 RegionSize;
+            /// <summary>
+            /// A pointer to the base address of a range of pages allocated by the VirtualAlloc function. The page pointed to by the
+            /// BaseAddress member is contained within this allocation range
+            /// </summary>
+            public IntPtr AllocationBase;
 
-        /// <summary>
-        /// The state of the pages in the region
-        /// </summary>
-        public MemoryStateFlags State;
+            /// <summary>
+            /// The memory protection option when the region was initially allocated. This member can be one of the memory 
+            /// protection constants or 0 if the caller does not have access
+            /// </summary>
+            public MemoryProtectionFlags AllocationProtect;
 
-        /// <summary>
-        /// The access protection of the pages in the region. This member is one of the values listed for the AllocationProtect member
-        /// </summary>
-        public MemoryProtectionFlags Protect;
+            /// <summary>
+            /// Required in the 64 bit struct. Blame Windows
+            /// </summary>
+            public UInt32 Alignment1;
 
-        /// <summary>
-        /// The type of pages in the region
-        /// </summary>
-        public MemoryTypeFlags Type;
+            /// <summary>
+            /// The size of the region beginning at the base address in which all pages have identical attributes, in bytes
+            /// </summary>
+            public Int64 RegionSize;
+
+            /// <summary>
+            /// The state of the pages in the region
+            /// </summary>
+            public MemoryStateFlags State;
+
+            /// <summary>
+            /// The access protection of the pages in the region. This member is one of the values listed for the AllocationProtect member
+            /// </summary>
+            public MemoryProtectionFlags Protect;
+
+            /// <summary>
+            /// The type of pages in the region
+            /// </summary>
+            public MemoryTypeFlags Type;
+
+            /// <summary>
+            /// Required in the 64 bit struct. Blame Windows
+            /// </summary>
+            public UInt32 Alignment2;
+        }
     }
-
-    /// <summary>
-    /// Contains information about a range of pages in the virtual address space of a 64 bit process. The VirtualQuery and 
-    /// <see cref="NativeMethods.VirtualQueryEx"/> functions use this structure
-    /// </summary>
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct MemoryBasicInformation64
-    {
-        /// <summary>
-        /// A pointer to the base address of the region of pages
-        /// </summary>
-        public IntPtr BaseAddress;
-
-        /// <summary>
-        /// A pointer to the base address of a range of pages allocated by the VirtualAlloc function. The page pointed to by the
-        /// BaseAddress member is contained within this allocation range
-        /// </summary>
-        public IntPtr AllocationBase;
-
-        /// <summary>
-        /// The memory protection option when the region was initially allocated. This member can be one of the memory 
-        /// protection constants or 0 if the caller does not have access
-        /// </summary>
-        public MemoryProtectionFlags AllocationProtect;
-
-        /// <summary>
-        /// Required in the 64 bit struct. Blame Windows
-        /// </summary>
-        public UInt32 Alignment1;
-
-        /// <summary>
-        /// The size of the region beginning at the base address in which all pages have identical attributes, in bytes
-        /// </summary>
-        public Int64 RegionSize;
-
-        /// <summary>
-        /// The state of the pages in the region
-        /// </summary>
-        public MemoryStateFlags State;
-
-        /// <summary>
-        /// The access protection of the pages in the region. This member is one of the values listed for the AllocationProtect member
-        /// </summary>
-        public MemoryProtectionFlags Protect;
-
-        /// <summary>
-        /// The type of pages in the region
-        /// </summary>
-        public MemoryTypeFlags Type;
-
-        /// <summary>
-        /// Required in the 64 bit struct. Blame Windows
-        /// </summary>
-        public UInt32 Alignment2;
-    }
-    //// End struct
+    //// End class
 }
 //// End namespace
