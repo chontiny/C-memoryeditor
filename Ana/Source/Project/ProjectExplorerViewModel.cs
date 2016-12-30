@@ -15,6 +15,7 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using UserSettings;
+
     /// <summary>
     /// View model for the Project Explorer
     /// </summary>
@@ -243,6 +244,11 @@
         /// <param name="AddToSelected">Whether or not the items should be added under the selected item.</param>
         public void AddNewProjectItem(ProjectItem projectItem, Boolean AddToSelected = true)
         {
+            if (ProjectRoot.HasNode(projectItem))
+            {
+                return;
+            }
+
             ProjectItem target = this.SelectedProjectItems?.FirstOrDefault();
 
             // Atempt to find the correct folder to place the new item into
@@ -302,7 +308,7 @@
         /// </summary>
         private void DeleteSelection()
         {
-            this.ProjectRoot.DeleteChildren(this.SelectedProjectItems);
+            this.ProjectRoot.RemoveNodes(this.SelectedProjectItems);
             this.SelectedProjectItems = null;
 
             this.NotifyObservers();

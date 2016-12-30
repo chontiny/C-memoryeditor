@@ -278,6 +278,26 @@
         }
 
         /// <summary>
+        /// Clones the project item.
+        /// </summary>
+        /// <returns>The clone of the project.</returns>
+        public override ProjectItem Clone()
+        {
+            AddressItem clone = new AddressItem();
+            clone.description = this.Description;
+            clone.parent = this.Parent;
+            clone.resolveType = resolveType;
+            clone.baseIdentifier = baseIdentifier;
+            clone.baseAddress = baseAddress;
+            clone.offsets = offsets.ToArray();
+            clone.typeName = typeName;
+            clone.addressValue = addressValue;
+            clone.isValueHex = isValueHex;
+            clone.effectiveAddress = effectiveAddress;
+            return clone;
+        }
+
+        /// <summary>
         /// Resolves the address of an address, pointer, or managed object
         /// </summary>
         /// <returns>The base address of this object</returns>

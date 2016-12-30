@@ -15,13 +15,13 @@
     internal abstract class ProjectItem : INotifyPropertyChanged
     {
         [Browsable(false)]
-        private FolderItem parent;
+        protected FolderItem parent;
 
         [Browsable(false)]
-        private String description;
+        protected String description;
 
         [Browsable(false)]
-        private Boolean isActivated;
+        protected Boolean isActivated;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectItem" /> class.
@@ -179,6 +179,8 @@
                 this.Parent?.Children?.Insert(this.Parent.Children.IndexOf(this), projectItem);
             }
         }
+
+        public abstract ProjectItem Clone();
 
         protected void NotifyPropertyChanged(String propertyName)
         {

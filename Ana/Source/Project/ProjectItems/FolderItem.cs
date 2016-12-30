@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Linq;
     using System.Runtime.Serialization;
 
     /// <summary>
@@ -57,6 +56,28 @@
             }
         }
 
+        /// <summary>
+        /// Clones the project item.
+        /// </summary>
+        /// <returns>The clone of the project.</returns>
+        public override ProjectItem Clone()
+        {
+            FolderItem clone = new FolderItem();
+            clone.description = this.Description;
+            clone.parent = this.Parent;
+            clone.children = new List<ProjectItem>();
+
+            if (this.Children != null && this.Children.Count > 0)
+            {
+                foreach (ProjectItem projectItem in this.Children)
+                {
+                    clone.children.Add(projectItem.Clone());
+                }
+            }
+
+            return clone;
+        }
+
         public override void Update()
         {
             this.Children.ForEach(x => x.Update());
@@ -76,94 +97,6 @@
             }
 
             this.Children.Add(projectItem);
-        }
-
-        /// <summary>
-        /// Removes a project item as a child under this one
-        /// </summary>
-        /// <param name="projectItem">The child project item</param>
-        public void RemoveChild(ProjectItem projectItem)
-        {
-            projectItem.Parent = this;
-
-            if (this.Children == null)
-            {
-                this.Children = new List<ProjectItem>();
-            }
-
-            if (this.Children.Contains(projectItem))
-            {
-                this.Children.Remove(projectItem);
-            }
-        }
-
-        /// <summary>
-        /// Deletes the specified children from this item
-        /// </summary>
-        /// <param name="toDelete">The children to delete</param>
-        public void DeleteChildren(IEnumerable<ProjectItem> toDelete)
-        {
-            if (toDelete == null)
-            {
-                return;
-            }
-
-            // Sort children and nodes to delete (Makes the algorithm O(nlogn) rather than O(n^2))
-            IEnumerable<ProjectItem> childrenSorted = this.Children.ToList().OrderBy(x => x.GetHashCode());
-            toDelete = toDelete.OrderBy(x => x.GetHashCode());
-
-            ProjectItem nextDelete = toDelete?.FirstOrDefault();
-            ProjectItem nextNode = childrenSorted?.FirstOrDefault();
-
-            if (nextDelete == null || nextNode == null)
-            {
-                return;
-            }
-
-            toDelete = toDelete.Skip(1);
-            childrenSorted = childrenSorted.Skip(1);
-
-            // Walk through both lists and see if there are elements in common and delete them
-            while (nextDelete != null && nextNode != null)
-            {
-                if (nextNode.GetHashCode() > nextDelete.GetHashCode())
-                {
-                    nextDelete = null;
-                }
-                else if (nextNode.GetHashCode() < nextDelete.GetHashCode())
-                {
-                    nextNode = null;
-                }
-                else if (nextNode.GetHashCode() == nextDelete.GetHashCode())
-                {
-                    this.Children.Remove(nextNode);
-
-                    nextDelete = null;
-                    nextNode = null;
-                }
-
-                if (nextDelete == null)
-                {
-                    if (toDelete.Count() <= 0)
-                    {
-                        break;
-                    }
-
-                    nextDelete = toDelete.First();
-                    toDelete = toDelete.Skip(1);
-                }
-
-                if (nextNode == null)
-                {
-                    if (childrenSorted.Count() <= 0)
-                    {
-                        break;
-                    }
-
-                    nextNode = childrenSorted.First();
-                    childrenSorted = childrenSorted.Skip(1);
-                }
-            }
         }
 
         /// <summary>
@@ -193,10 +126,27 @@
         }
 
         /// <summary>
-        /// Removes the specified item from this item's children recursively
+        /// Removes the specified items from this item's children recursively.
         /// </summary>
-        /// <param name="projectItem">The item to remove</param>
-        /// <returns>Returns true if the removal succeeded</returns>
+        /// <param name="projectItem">The items to remove.</param>
+        public void RemoveNodes(IEnumerable<ProjectItem> projectItems)
+        {
+            if (projectItems == null)
+            {
+                return;
+            }
+
+            foreach (ProjectItem projectItem in projectItems)
+            {
+                this.RemoveNode(projectItem);
+            }
+        }
+
+        /// <summary>
+        /// Removes the specified item from this item's children recursively.
+        /// </summary>
+        /// <param name="projectItem">The item to remove.</param>
+        /// <returns>Returns true if the removal succeeded.</returns>
         public Boolean RemoveNode(ProjectItem projectItem)
         {
             if (projectItem == null)

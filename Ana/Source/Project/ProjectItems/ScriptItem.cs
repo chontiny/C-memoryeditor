@@ -69,6 +69,21 @@
         [Browsable(false)]
         private ScriptManager ScriptManager { get; set; }
 
+        /// <summary>
+        /// Clones the project item.
+        /// </summary>
+        /// <returns>The clone of the project.</returns>
+        public override ProjectItem Clone()
+        {
+            ScriptItem clone = new ScriptItem();
+            clone.description = this.Description;
+            clone.parent = this.Parent;
+            clone.script = this.Script;
+            clone.isCompiled = this.IsCompiled;
+
+            return clone;
+        }
+
         public override void Update()
         {
         }

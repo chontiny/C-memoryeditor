@@ -29,9 +29,15 @@
         private TreeNodeAdv draggedItem;
         private Object accessLock;
 
+        private IEnumerable<ProjectItem> clipBoard;
+        private Boolean isClipBoardCopy;
+
         private ToolStripMenuItem addNewItemMenuItem;
         private ToolStripMenuItem deleteSelectionMenuItem;
         private ToolStripMenuItem toggleSelectionMenuItem;
+        private ToolStripMenuItem copySelectionMenuItem;
+        private ToolStripMenuItem cutSelectionMenuItem;
+        private ToolStripMenuItem pasteSelectionMenuItem;
         private ToolStripMenuItem addNewFolderMenuItem;
         private ToolStripMenuItem addNewAddressMenuItem;
         private ToolStripMenuItem addNewScriptMenuItem;
@@ -93,6 +99,41 @@
         public void AddNewFolderItem()
         {
             ProjectExplorerViewModel.GetInstance().AddNewFolderItemCommand.Execute(null);
+        }
+
+        private void CopySelection()
+        {
+            this.clipBoard = this.GetSelectedProjectItems();
+            this.isClipBoardCopy = true;
+        }
+
+        private void CutSelection()
+        {
+            this.clipBoard = this.GetSelectedProjectItems();
+            this.DeleteSelectedItems();
+            this.isClipBoardCopy = false;
+        }
+
+        private void PasteSelection()
+        {
+            if (this.clipBoard == null || this.clipBoard.Count() <= 0)
+            {
+                return;
+            }
+
+            foreach (ProjectItem projectItem in clipBoard)
+            {
+                if (this.isClipBoardCopy)
+                {
+                    // For copy we must clone the item, such as to prevent duplicate references of the same exact object
+                    ProjectExplorerViewModel.GetInstance().AddNewProjectItem(projectItem.Clone());
+                }
+                else
+                {
+                    // For cut we do not need to clone the item
+                    ProjectExplorerViewModel.GetInstance().AddNewProjectItem(projectItem);
+                }
+            }
         }
 
         private void BuildNodes(ProjectItem projectItem, ProjectItem parent = null)
@@ -159,6 +200,13 @@
             return node as ProjectNode;
         }
 
+        private IEnumerable<ProjectItem> GetSelectedProjectItems()
+        {
+            List<ProjectItem> nodes = new List<ProjectItem>();
+            projectExplorerTreeView.SelectedNodes.ForEach(x => nodes.Add(this.GetProjectItemFromNode(x)));
+            return nodes;
+        }
+
         private ProjectItem GetProjectItemFromNode(TreeNodeAdv treeNodeAdv)
         {
             return this.GetProjectNodeFromTreeNodeAdv(treeNodeAdv)?.ProjectItem;
@@ -176,16 +224,15 @@
                 return;
             }
 
-            List<ProjectItem> nodes = new List<ProjectItem>();
-            projectExplorerTreeView.SelectedNodes.ForEach(x => nodes.Add(GetProjectItemFromNode(x)));
+            IEnumerable<ProjectItem> selectedProjectItems = this.GetSelectedProjectItems();
 
-            if (nodes.Count <= 0)
+            if (selectedProjectItems == null || selectedProjectItems.Count() <= 0)
             {
                 return;
             }
 
             // Behavior here is undefined, we could check only the selected items, or enforce the recursive rules of folders
-            nodes.ForEach(x => CheckItem(x, !x.IsActivated));
+            selectedProjectItems.ForEach(x => CheckItem(x, !x.IsActivated));
             projectExplorerTreeView.SelectedNodes.ForEach(x => nodeCache[GetProjectItemFromNode(x)].IsChecked = GetProjectItemFromNode(x).IsActivated);
 
             this.RebuildProjectStructure();
@@ -228,20 +275,6 @@
             }
 
             this.ActivateSelectedItems();
-        }
-
-        private void ProjectContextMenuStripOpening(Object sender, CancelEventArgs e)
-        {
-            if (this.projectExplorerTreeView.SelectedNodes == null || this.projectExplorerTreeView.SelectedNodes.Count <= 0)
-            {
-                this.deleteSelectionMenuItem.Enabled = false;
-                this.toggleSelectionMenuItem.Enabled = false;
-            }
-            else
-            {
-                this.deleteSelectionMenuItem.Enabled = true;
-                this.toggleSelectionMenuItem.Enabled = true;
-            }
         }
 
         private void CheckIndex(Object sender, NodeControlValueEventArgs e)
@@ -377,9 +410,12 @@
             entryDescription.ParentColumn = null;
             entryDescription.DrawText += EntryDescriptionDrawText;
 
-            this.toggleSelectionMenuItem = new ToolStripMenuItem("Toggle Selection");
+            this.toggleSelectionMenuItem = new ToolStripMenuItem("Toggle");
             this.addNewItemMenuItem = new ToolStripMenuItem("Add New...");
-            this.deleteSelectionMenuItem = new ToolStripMenuItem("Delete Selection");
+            this.deleteSelectionMenuItem = new ToolStripMenuItem("Delete");
+            this.copySelectionMenuItem = new ToolStripMenuItem("Copy");
+            this.cutSelectionMenuItem = new ToolStripMenuItem("Cut");
+            this.pasteSelectionMenuItem = new ToolStripMenuItem("Paste");
             this.addNewFolderMenuItem = new ToolStripMenuItem("Add Folder", ImageUtils.BitmapImageToBitmap(Images.Open));
             this.addNewAddressMenuItem = new ToolStripMenuItem("Add Address", ImageUtils.BitmapImageToBitmap(Images.CollectValues));
             this.addNewScriptMenuItem = new ToolStripMenuItem("Add Script", ImageUtils.BitmapImageToBitmap(Images.CollectValues));
@@ -387,9 +423,13 @@
 
             this.toggleSelectionMenuItem.Click += ToggleSelectionMenuItemClick;
             this.deleteSelectionMenuItem.Click += DeleteSelectionMenuItemClick;
+            this.copySelectionMenuItem.Click += CopySelectionMenuItemClick;
+            this.cutSelectionMenuItem.Click += CutSelectionMenuItemClick;
+            this.pasteSelectionMenuItem.Click += PasteSelectionMenuItemClick;
             this.addNewFolderMenuItem.Click += AddNewFolderMenuItemClick;
             this.addNewAddressMenuItem.Click += AddNewAddressMenuItemClick;
             this.addNewScriptMenuItem.Click += AddNewScriptMenuItemClick;
+            this.contextMenuStrip.Opening += ContextMenuStripOpening;
 
             this.addNewItemMenuItem.DropDownItems.Add(addNewFolderMenuItem);
             this.addNewItemMenuItem.DropDownItems.Add(addNewAddressMenuItem);
@@ -398,6 +438,10 @@
             this.contextMenuStrip.Items.Add(toggleSelectionMenuItem);
             this.contextMenuStrip.Items.Add(addNewItemMenuItem);
             this.contextMenuStrip.Items.Add(deleteSelectionMenuItem);
+            this.contextMenuStrip.Items.Add(new ToolStripSeparator());
+            this.contextMenuStrip.Items.Add(copySelectionMenuItem);
+            this.contextMenuStrip.Items.Add(cutSelectionMenuItem);
+            this.contextMenuStrip.Items.Add(pasteSelectionMenuItem);
 
             this.projectExplorerTreeView = new TreeViewAdv();
             this.projectExplorerTreeView.NodeControls.Add(entryCheckBox);
@@ -422,6 +466,48 @@
             this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;
             this.projectExplorerTreeView.DragDropMarkColor = DarkBrushes.BaseColor11;
             this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
+        }
+
+        private void ContextMenuStripOpening(Object sender, CancelEventArgs e)
+        {
+            if (this.projectExplorerTreeView.SelectedNodes == null || this.projectExplorerTreeView.SelectedNodes.Count <= 0)
+            {
+                this.deleteSelectionMenuItem.Enabled = false;
+                this.toggleSelectionMenuItem.Enabled = false;
+                this.copySelectionMenuItem.Enabled = false;
+                this.cutSelectionMenuItem.Enabled = false;
+            }
+            else
+            {
+                this.deleteSelectionMenuItem.Enabled = true;
+                this.toggleSelectionMenuItem.Enabled = true;
+                this.copySelectionMenuItem.Enabled = true;
+                this.cutSelectionMenuItem.Enabled = true;
+            }
+
+            if (this.clipBoard == null || this.clipBoard.Count() <= 0)
+            {
+                this.pasteSelectionMenuItem.Enabled = false;
+            }
+            else
+            {
+                this.pasteSelectionMenuItem.Enabled = true;
+            }
+        }
+
+        private void CopySelectionMenuItemClick(Object sender, EventArgs e)
+        {
+            this.CopySelection();
+        }
+
+        private void CutSelectionMenuItemClick(Object sender, EventArgs e)
+        {
+            this.CutSelection();
+        }
+
+        private void PasteSelectionMenuItemClick(Object sender, EventArgs e)
+        {
+            this.PasteSelection();
         }
 
         private void AddNewScriptMenuItemClick(Object sender, EventArgs e)
