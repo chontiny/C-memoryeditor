@@ -39,6 +39,6 @@
         </Border>
 
         <!--  Placeholder for Windows Forms hosting  -->
-        <Grid Name="browserGrid" Grid.Row="1" />
+        <WebBrowser Name="browser" Grid.Row="1" />
     </Grid>
 </UserControl>

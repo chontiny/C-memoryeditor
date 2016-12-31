@@ -1,11 +1,11 @@
 ﻿namespace Ana.Source.CheatBrowser
 {
-    using Chromium.WebBrowser;
     using Docking;
     using Main;
     using Mvvm.Command;
     using System;
     using System.Threading;
+    using System.Windows.Controls;
     using System.Windows.Input;
 
     /// <summary>
@@ -38,7 +38,7 @@
             this.ContentId = CheatBrowserViewModel.ToolContentId;
 
             // Note: Cannot be async, navigation must take place on the same thread as GUI
-            this.NavigateHomeCommand = new RelayCommand<ChromiumWebBrowser>((browser) => this.NavigateHome(browser), (browser) => true);
+            this.NavigateHomeCommand = new RelayCommand<WebBrowser>((browser) => this.NavigateHome(browser), (browser) => true);
 
             MainViewModel.GetInstance().Subscribe(this);
         }
@@ -61,9 +61,9 @@
         /// Navigates home in the browser.
         /// </summary>
         /// <param name="browser">The web browser.</param>
-        private void NavigateHome(ChromiumWebBrowser browser)
+        private void NavigateHome(WebBrowser browser)
         {
-            browser.LoadUrl(HomeUrl);
+            browser.Navigate(HomeUrl);
         }
     }
     //// End class

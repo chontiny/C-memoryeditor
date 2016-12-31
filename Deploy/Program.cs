@@ -31,15 +31,6 @@
         /// <param name="args">Arguments passed to the program</param>
         public static void Main(String[] args)
         {
-            // Remove .deploy extensions from all binaries
-            foreach (String file in Directory.EnumerateFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.*", SearchOption.AllDirectories))
-            {
-                if (file.EndsWith(".dll.deploy", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".exe.deploy", StringComparison.OrdinalIgnoreCase))
-                {
-                    File.Move(file, file.Substring(0, file.Length - ".deploy".Length));
-                }
-            }
-
             // Start SharpCli MSIL patching
             ProcessStartInfo processInfoSharpCli = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SharpCliExecutable));
             processInfoSharpCli.UseShellExecute = false;
@@ -67,7 +58,7 @@
             {
                 try
                 {
-                    if (file.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                    if (file.EndsWith(".dll.deploy", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".exe.deploy", StringComparison.OrdinalIgnoreCase))
                     {
                         processInfoCommandPrompt.Arguments += " " + GetRelativePath(file, Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
                     }
@@ -81,19 +72,6 @@
             commandPrompt.BeginOutputReadLine();
             commandPrompt.BeginErrorReadLine();
             commandPrompt.WaitForExit();
-
-            // Add back .deploy extension to all binaries
-            foreach (String file in Directory.EnumerateFiles(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "*.*", SearchOption.AllDirectories))
-            {
-                try
-                {
-                    if (file.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-                    {
-                        File.Move(file, file + ".deploy");
-                    }
-                }
-                catch { }
-            }
 
             // Start Mage UI to sign ClickOnce assemblies
             Process mage = Process.Start(MageExecutable);

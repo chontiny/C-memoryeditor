@@ -1,14 +1,14 @@
 ﻿namespace Ana.View
 {
-    using Chromium.Event;
-    using Chromium.WebBrowser;
-    using Controls;
     using Source.CheatBrowser;
     using Source.Project;
     using System;
     using System.IO;
-    using System.Reflection;
+    using System.Linq;
+    using System.Net;
     using System.Windows;
+    using System.Windows.Navigation;
+
     /// <summary>
     /// Interaction logic for CheatBrowser.xaml
     /// </summary>
@@ -19,27 +19,6 @@
         /// </summary>
         private const String FileExtension = ".hax";
 
-        /// <summary>
-        /// The subdirectory to store downloaded cheat files
-        /// </summary>
-        private const String FileStorageDirectoryName = "Cheats";
-
-        /// <summary>
-        /// The filter to use for the save file dialog
-        /// </summary>
-        private const String ExtensionFilter = "Cheat File(*.Hax)|*.hax|All files(*.*)|*.*";
-
-        /// <summary>
-        /// The path to all user application files
-        /// </summary>
-        private static readonly String ApplicationFiles = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-
-        /// <summary>
-        /// The complete directory to store saved cheat files
-        /// </summary>
-        private static readonly String SavePath = Path.Combine(Path.Combine(ApplicationFiles, Assembly.GetExecutingAssembly().GetName().Name), CheatBrowser.FileStorageDirectoryName);
-
-        private ChromiumWebBrowser browser;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CheatBrowser" /> class
@@ -48,13 +27,7 @@
         {
             this.InitializeComponent();
 
-            // Windows forms hosting -- TODO: Phase this out
-            this.browser = new ChromiumWebBrowser();
-            this.browserGrid.Children.Add(WinformsHostingHelper.CreateHostedControl(this.browser));
-
-            this.browser.DownloadHandler.OnBeforeDownload += DownloadHandler_OnBeforeDownload;
-            this.browser.DownloadHandler.OnDownloadUpdated += DownloadHandler_OnDownloadUpdated;
-
+            this.browser.Navigating += BrowserNavigating;
             this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
         }
 
@@ -69,16 +42,43 @@
             }
         }
 
-        private void DownloadHandler_OnBeforeDownload(Object sender, CfxOnBeforeDownloadEventArgs e)
+        /// <summary>
+        /// Invoked when the browser is about to navigate to a new page
+        /// </summary>
+        /// <param name="sender">Sending object</param>
+        /// <param name="e">Cancel event args</param>
+        private void BrowserNavigating(Object sender, NavigatingCancelEventArgs e)
         {
-            e.Callback.Continue(Path.GetTempFileName(), false);
+            if (e == null || e.Uri == null || e.Uri.AbsoluteUri == null)
+            {
+                return;
+            }
+
+            try
+            {
+                if (e.Uri.Query.Split('&').Any(x => x.ToLower().EndsWith(FileExtension)))
+                {
+                    e.Cancel = true;
+                    WebClient client = new WebClient();
+                    client.DownloadDataCompleted += (source, args) => this.DownloadDataCompleted(source, args);
+                    client.DownloadDataAsync(e.Uri);
+                }
+            }
+            catch
+            {
+            }
         }
 
-        private void DownloadHandler_OnDownloadUpdated(Object sender, CfxOnDownloadUpdatedEventArgs e)
+        private void DownloadDataCompleted(Object sender, DownloadDataCompletedEventArgs e)
         {
-            if (e.DownloadItem.IsComplete)
+            try
             {
-                ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(e.DownloadItem.FullPath);
+                String file = Path.GetTempFileName();
+                File.WriteAllBytes(file, e.Result);
+                ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(file);
+            }
+            catch
+            {
             }
         }
 
