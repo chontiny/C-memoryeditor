@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace CSScriptLibrary
@@ -63,7 +62,7 @@ namespace CSScriptLibrary
         {
             Dictionary<string, object> properties;
             if (ObjectCache.TryGetValue(obj, out properties) && properties.ContainsKey(name))
-                return (T) properties[name];
+                return (T)properties[name];
             else
                 return default(T);
         }
@@ -113,10 +112,6 @@ namespace CSScriptLibrary
                     eval = CSScript.MonoEvaluator;
                 else if (context.evaluatorType == typeof(CodeDomEvaluator))
                     eval = CSScript.CodeDomEvaluator;
-#if net45
-                else if (context.evaluatorType == typeof(RoslynEvaluator))
-                    eval = CSScript.RoslynEvaluator;
-#endif
                 else
                     throw new Exception("Unknown evaluator type: " + context.evaluatorType.FullName);
 
@@ -131,7 +126,7 @@ namespace CSScriptLibrary
             {
                 var asms = evaluator.GetReferencedAssemblies()
                                     .Select(x => x.Location())
-                                    .Where(x => !string.IsNullOrEmpty(x) );
+                                    .Where(x => !string.IsNullOrEmpty(x));
 
                 return new RemoteLoadingContext
                 {
@@ -181,7 +176,7 @@ namespace CSScriptLibrary
         /// <returns></returns>
         public static T GetOwnerObject<T>(this object obj)
         {
-            return (T) obj.GetValue("OwnerObject");
+            return (T)obj.GetValue("OwnerObject");
         }
 
         internal static object CopyOwnerDomainTo(this object src, object dest)
@@ -359,7 +354,7 @@ namespace CSScriptLibrary
             if (cx.error != null)
                 throw new CompilerException("Exception in the remote AppDomain: " + cx.error);
 
-            var result = (T) cx.scriptObj;
+            var result = (T)cx.scriptObj;
 
             evaluator.SetRemoteDomain(remoteDomain);
             result.SetOwnerDomain(remoteDomain);
@@ -433,7 +428,7 @@ namespace CSScriptLibrary
                                                  .First()
                                                  .FullName;
 #endif             
-                    var agent = (IRemoteAgent) script.CreateObject(agentTypeName);
+                    var agent = (IRemoteAgent)script.CreateObject(agentTypeName);
                     agent.Implementation = script.GetStaticMethod();
                     context.scriptObj = agent;
                 }
@@ -446,7 +441,7 @@ namespace CSScriptLibrary
             if (cx.error != null)
                 throw new CompilerException("Exception in the remote AppDomain: " + cx.error);
 
-            var agentProxy = (IRemoteAgent) cx.scriptObj;
+            var agentProxy = (IRemoteAgent)cx.scriptObj;
 
             MethodDelegate result = (param) => agentProxy.Method(param);
 
@@ -485,7 +480,7 @@ namespace CSScriptLibrary
         public static MethodDelegate<T> CreateDelegateRemotely<T>(this IEvaluator evaluator, string code, params string[] probingDirs)
         {
             var method = evaluator.CreateDelegateRemotely(code, probingDirs);
-            MethodDelegate<T> result = (param) => (T) method(param);
+            MethodDelegate<T> result = (param) => (T)method(param);
             method.CopyOwnerDomainTo(result)
                   .CopyOwnerObjectTo(result);
             return result;

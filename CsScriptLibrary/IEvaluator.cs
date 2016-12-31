@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 
 namespace CSScriptLibrary
 {
@@ -40,10 +37,6 @@ namespace CSScriptLibrary
     /// </summary>
     public enum EvaluatorEngine
     {
-        /// <summary>
-        /// Roslyn compilation services
-        /// </summary>
-        Roslyn,
         /// <summary>
         /// Mono compilation services
         /// </summary>
@@ -177,9 +170,6 @@ namespace CSScriptLibrary
             {
                 switch (CSScript.EvaluatorConfig.Engine)
                 {
-#if net45
-                    case EvaluatorEngine.Roslyn: return RoslynEvaluator;
-#endif
                     case EvaluatorEngine.Mono: return MonoEvaluator;
                     case EvaluatorEngine.CodeDom: return CodeDomEvaluator;
                     default: return null;
