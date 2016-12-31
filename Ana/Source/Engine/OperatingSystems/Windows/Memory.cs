@@ -6,6 +6,8 @@
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
     using Utils.Extensions;
+    using static Native.Enumerations;
+    using static Native.Structures;
 
     /// <summary>
     /// Static class providing tools for windows memory editing internals

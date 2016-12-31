@@ -212,23 +212,24 @@
         }
 
         /// <summary>
-        /// Creates a code cave that jumps from a given entry address and executes the given assembly.
+        /// Creates a code cave that jumps from a given entry address and executes the given assembly. This will nop-fill.
+        /// If the injected assmebly code fits in one instruction, no cave will be created.
         /// </summary>
-        /// <param name="entry">The address to jump to the code cave.</param>
+        /// <param name="address">The injection address.</param>
         /// <param name="assembly">The assembly code to disassemble and inject into the code cave.</param>
-        /// <returns>The address of the code cave.</returns>
-        public UInt64 CreateCodeCave(UInt64 entry, String assembly)
+        /// <returns>The address of the code cave. Returns zero if no allocation was necessary.</returns>
+        public UInt64 CreateCodeCave(UInt64 address, String assembly)
         {
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
 
-            Int32 assemblySize = this.GetAssemblySize(assembly, entry);
+            Int32 assemblySize = this.GetAssemblySize(assembly, address);
 
             // Handle case where allocation is not needed
-            if (assemblySize < MemoryCore.JumpSize)
+            if (assemblySize <= MemoryCore.JumpSize)
             {
-                Byte[] originalBytes = this.GetInstructionBytes(entry, assemblySize);
+                Byte[] originalBytes = this.GetInstructionBytes(address, assemblySize);
 
                 if (originalBytes == null)
                 {
@@ -238,17 +239,17 @@
                 // Determine number of no-ops to fill dangling bytes
                 String noOps = (originalBytes.Length - assemblySize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - assemblySize)).TrimEnd(',');
 
-                Byte[] injectionBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly + "\n" + noOps, entry.ToIntPtr());
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(entry.ToIntPtr(), injectionBytes);
+                Byte[] injectionBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly + "\n" + noOps, address.ToIntPtr());
+                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(address.ToIntPtr(), injectionBytes);
 
-                CodeCave codeCave = new CodeCave(entry, originalBytes, entry);
+                CodeCave codeCave = new CodeCave(address, 0, originalBytes);
                 this.CodeCaves.Add(codeCave);
 
-                return entry;
+                return address;
             }
             else
             {
-                Byte[] originalBytes = this.GetInstructionBytes(entry, MemoryCore.JumpSize);
+                Byte[] originalBytes = this.GetInstructionBytes(address, MemoryCore.JumpSize);
 
                 if (originalBytes == null)
                 {
@@ -274,15 +275,48 @@
 
                 // Write in the jump to the code cave
                 String codeCaveJump = "jmp " + "0x" + Conversions.ToAddress(remoteAllocation) + "\n" + noOps;
-                Byte[] jumpBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), codeCaveJump, entry.ToIntPtr());
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(entry.ToIntPtr(), jumpBytes);
+                Byte[] jumpBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), codeCaveJump, address.ToIntPtr());
+                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(address.ToIntPtr(), jumpBytes);
 
                 // Save this code cave for later deallocation
-                CodeCave codeCave = new CodeCave(remoteAllocation, originalBytes, entry);
+                CodeCave codeCave = new CodeCave(address, remoteAllocation, originalBytes);
                 this.CodeCaves.Add(codeCave);
 
                 return remoteAllocation;
             }
+        }
+
+        /// <summary>
+        /// Injects instructions at the specified location, overwriting following instructions. This will nop-fill.
+        /// </summary>
+        /// <param name="address">The injection address.</param>
+        /// <param name="assembly">The assembly code to disassemble and inject into the code cave.</param>
+        /// <returns>The address of the code cave.</returns>
+        public UInt64 InjectCode(UInt64 address, String assembly)
+        {
+            this.PrintDebugTag();
+
+            assembly = this.ResolveKeywords(assembly);
+
+            Int32 assemblySize = this.GetAssemblySize(assembly, address);
+
+            Byte[] originalBytes = this.GetInstructionBytes(address, assemblySize);
+
+            if (originalBytes == null)
+            {
+                throw new Exception("Could not gather original bytes");
+            }
+
+            // Determine number of no-ops to fill dangling bytes
+            String noOps = (originalBytes.Length - assemblySize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - assemblySize)).TrimEnd(',');
+
+            Byte[] injectionBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly + "\n" + noOps, address.ToIntPtr());
+            EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(address.ToIntPtr(), injectionBytes);
+
+            CodeCave codeCave = new CodeCave(address, 0, originalBytes);
+            this.CodeCaves.Add(codeCave);
+
+            return address;
         }
 
         /// <summary>
@@ -316,27 +350,22 @@
         /// <summary>
         /// Removes a created code cave at the specified address.
         /// </summary>
-        /// <param name="address">The address of the code cave.</param>
-        public void RemoveCodeCave(UInt64 address)
+        /// <param name="codeCaveAddress">The address of the code cave.</param>
+        public void RemoveCodeCave(UInt64 codeCaveAddress)
         {
             this.PrintDebugTag();
 
             foreach (CodeCave codeCave in this.CodeCaves)
             {
-                if (codeCave.Entry != address)
+                // If remote allocation address is unset, then it was not allocated. Also, if the addresses do not match, ignore it.
+                if (codeCave.RemoteAllocationAddress == 0 || codeCave.Address != codeCaveAddress)
                 {
                     continue;
                 }
 
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(codeCave.Entry.ToIntPtr(), codeCave.OriginalBytes);
+                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
 
-                // If these are equal, the cave is an in-place edit and not an allocation
-                if (codeCave.Entry == codeCave.RemoteAllocation)
-                {
-                    continue;
-                }
-
-                EngineCore.GetInstance().OperatingSystemAdapter.DeallocateMemory(codeCave.RemoteAllocation.ToIntPtr());
+                EngineCore.GetInstance().OperatingSystemAdapter.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
         }
 
@@ -349,15 +378,15 @@
 
             foreach (CodeCave codeCave in this.CodeCaves)
             {
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(codeCave.Entry.ToIntPtr(), codeCave.OriginalBytes);
+                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
 
-                // If these are equal, the cave is an in-place edit and not an allocation
-                if (codeCave.Entry == codeCave.RemoteAllocation)
+                // If remote allocation address is unset, then it was not allocated.
+                if (codeCave.RemoteAllocationAddress == 0)
                 {
                     continue;
                 }
 
-                EngineCore.GetInstance().OperatingSystemAdapter.DeallocateMemory(codeCave.RemoteAllocation.ToIntPtr());
+                EngineCore.GetInstance().OperatingSystemAdapter.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
 
             this.CodeCaves.Clear();
@@ -443,7 +472,7 @@
         /// </summary>
         /// <param name="bytes">The array of bytes to search for.</param>
         /// <returns>The address of the first first array of byte match.</returns>
-        public UInt64 SearchAOB(Byte[] bytes)
+        public UInt64 SearchAob(Byte[] bytes)
         {
             this.PrintDebugTag();
 
@@ -456,7 +485,7 @@
         /// </summary>
         /// <param name="pattern">The pattern string for which to search.</param>
         /// <returns>The address of the first first pattern match.</returns>
-        public UInt64 SearchAOB(String pattern)
+        public UInt64 SearchAob(String pattern)
         {
             this.PrintDebugTag(pattern);
 
@@ -540,17 +569,18 @@
                 return String.Empty;
             }
 
+            // Clear out any whitespace that may cause issues in the assembly script
             assembly = assembly.Replace("\t", String.Empty);
 
             // Resolve keywords
             foreach (KeyValuePair<String, String> keyword in this.Keywords)
             {
-                assembly = assembly.Replace(keyword.Key, keyword.Value);
+                assembly = assembly.Replace("<" + keyword.Key + ">", keyword.Value);
             }
 
             foreach (KeyValuePair<String, String> globalKeyword in MemoryCore.GlobalKeywords)
             {
-                assembly = assembly.Replace(globalKeyword.Key, globalKeyword.Value);
+                assembly = assembly.Replace("<" + globalKeyword.Key + ">", globalKeyword.Value);
             }
 
             return assembly;
@@ -564,14 +594,14 @@
             /// <summary>
             /// Initializes a new instance of the <see cref="CodeCave" /> struct.
             /// </summary>
-            /// <param name="remoteAllocation">The address of the code cave allocation.</param>
+            /// <param name="codeCaveAddress">The address of the code cave allocation.</param>
             /// <param name="originalBytes">The original bytes being overwritten.</param>
-            /// <param name="entry">The entry address of the code cave.</param>
-            public CodeCave(UInt64 remoteAllocation, Byte[] originalBytes, UInt64 entry)
+            /// <param name="address">The entry address of the code cave.</param>
+            public CodeCave(UInt64 address, UInt64 codeCaveAddress, Byte[] originalBytes)
             {
-                this.RemoteAllocation = remoteAllocation;
+                this.RemoteAllocationAddress = codeCaveAddress;
                 this.OriginalBytes = originalBytes;
-                this.Entry = entry;
+                this.Address = address;
             }
 
             /// <summary>
@@ -582,12 +612,12 @@
             /// <summary>
             /// Gets or sets the address of the allocated code cave.
             /// </summary>
-            public UInt64 RemoteAllocation { get; set; }
+            public UInt64 RemoteAllocationAddress { get; set; }
 
             /// <summary>
             /// Gets or sets the entry address of the code cave.
             /// </summary>
-            public UInt64 Entry { get; set; }
+            public UInt64 Address { get; set; }
         }
     }
     //// End interface

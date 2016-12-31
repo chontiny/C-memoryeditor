@@ -13,6 +13,8 @@
     using System.Threading.Tasks;
     using Utils.Extensions;
     using Utils.Validation;
+    using static Native.Enumerations;
+    using static Native.Structures;
 
     /// <summary>
     /// Class for memory editing a remote process.
@@ -56,7 +58,14 @@
         /// <param name="process">The newly selected process</param>
         public void Update(NormalizedProcess process)
         {
-            this.SystemProcess = Process.GetProcessById(process.ProcessId);
+            try
+            {
+                this.SystemProcess = Process.GetProcessById(process.ProcessId);
+            }
+            catch
+            {
+                this.SystemProcess = null;
+            }
         }
 
         #region Read
@@ -435,7 +444,6 @@
         public IEnumerable<NormalizedModule> GetModules()
         {
             List<NormalizedModule> normalizedModules = new List<NormalizedModule>();
-
             NormalizedProcess process = EngineCore.GetInstance().Processes.GetOpenedProcess();
 
             if (process == null)
@@ -450,7 +458,35 @@
                 return normalizedModules;
             }
 
-            systemProcess?.Modules?.Cast<ProcessModule>().ForEach(x => normalizedModules.Add(new NormalizedModule(x.ModuleName, x.BaseAddress, x.ModuleMemorySize)));
+            // Query all modules in the target process
+            IntPtr[] modulePointers = new IntPtr[0];
+            Int32 bytesNeeded = 0;
+
+            // Determine number of modules
+            if (!Native.NativeMethods.EnumProcessModulesEx(systemProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
+            {
+                return normalizedModules;
+            }
+
+            Int32 totalNumberofModules = bytesNeeded / IntPtr.Size;
+            modulePointers = new IntPtr[totalNumberofModules];
+
+            if (Native.NativeMethods.EnumProcessModulesEx(systemProcess.Handle, modulePointers, bytesNeeded, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
+            {
+                for (Int32 index = 0; index < totalNumberofModules; index++)
+                {
+                    StringBuilder moduleFilePath = new StringBuilder(1024);
+                    Native.NativeMethods.GetModuleFileNameEx(systemProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)(moduleFilePath.Capacity));
+
+                    String moduleName = Path.GetFileName(moduleFilePath.ToString());
+                    ModuleInformation moduleInformation = new ModuleInformation();
+                    Native.NativeMethods.GetModuleInformation(systemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * (modulePointers.Length)));
+
+                    // Convert to a normalized module and add it to our list
+                    NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.lpBaseOfDll, unchecked((Int32)moduleInformation.SizeOfImage));
+                    normalizedModules.Add(module);
+                }
+            }
 
             return normalizedModules;
         }

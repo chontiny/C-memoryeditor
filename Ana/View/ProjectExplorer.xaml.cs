@@ -36,6 +36,7 @@
         private ToolStripMenuItem addNewItemMenuItem;
         private ToolStripMenuItem deleteSelectionMenuItem;
         private ToolStripMenuItem toggleSelectionMenuItem;
+        private ToolStripMenuItem compileSelectionMenuItem;
         private ToolStripMenuItem copySelectionMenuItem;
         private ToolStripMenuItem cutSelectionMenuItem;
         private ToolStripMenuItem pasteSelectionMenuItem;
@@ -227,6 +228,34 @@
             projectExplorerTreeView.SelectedNodes.ForEach(x => nodeCache[GetProjectItemFromNode(x)].IsChecked = GetProjectItemFromNode(x).IsActivated);
 
             this.RebuildProjectStructure();
+        }
+
+        private void CompileSelectedItems()
+        {
+            if (projectExplorerTreeView.SelectedNodes == null || projectExplorerTreeView.SelectedNodes.Count <= 0)
+            {
+                return;
+            }
+
+            IEnumerable<ProjectItem> selectedProjectItems = this.GetSelectedProjectItems();
+
+            if (selectedProjectItems == null || selectedProjectItems.Count() <= 0)
+            {
+                return;
+            }
+
+            foreach (ProjectItem projectItem in selectedProjectItems)
+            {
+                if (projectItem is ScriptItem)
+                {
+                    ScriptItem compiledScript = (projectItem as ScriptItem)?.Compile();
+
+                    if (compiledScript != null)
+                    {
+                        ProjectExplorerViewModel.GetInstance().AddNewProjectItem(compiledScript);
+                    }
+                }
+            }
         }
 
         private void DeleteSelectedItems()
@@ -436,6 +465,7 @@
             entryDescription.DrawText += EntryDescriptionDrawText;
 
             this.toggleSelectionMenuItem = new ToolStripMenuItem("Toggle");
+            this.compileSelectionMenuItem = new ToolStripMenuItem("Compile");
             this.addNewItemMenuItem = new ToolStripMenuItem("Add New...");
             this.deleteSelectionMenuItem = new ToolStripMenuItem("Delete");
             this.copySelectionMenuItem = new ToolStripMenuItem("Copy");
@@ -452,6 +482,7 @@
             this.deleteSelectionMenuItem.ShortcutKeys = Keys.Delete;
 
             this.toggleSelectionMenuItem.Click += ToggleSelectionMenuItemClick;
+            this.compileSelectionMenuItem.Click += CompileSelectionMenuItemClick;
             this.deleteSelectionMenuItem.Click += DeleteSelectionMenuItemClick;
             this.copySelectionMenuItem.Click += CopySelectionMenuItemClick;
             this.cutSelectionMenuItem.Click += CutSelectionMenuItemClick;
@@ -466,6 +497,7 @@
             this.addNewItemMenuItem.DropDownItems.Add(addNewScriptMenuItem);
 
             this.contextMenuStrip.Items.Add(toggleSelectionMenuItem);
+            this.contextMenuStrip.Items.Add(compileSelectionMenuItem);
             this.contextMenuStrip.Items.Add(addNewItemMenuItem);
             this.contextMenuStrip.Items.Add(deleteSelectionMenuItem);
             this.contextMenuStrip.Items.Add(new ToolStripSeparator());
@@ -506,6 +538,7 @@
                 this.toggleSelectionMenuItem.Enabled = false;
                 this.copySelectionMenuItem.Enabled = false;
                 this.cutSelectionMenuItem.Enabled = false;
+                this.compileSelectionMenuItem.Visible = false;
             }
             else
             {
@@ -513,6 +546,15 @@
                 this.toggleSelectionMenuItem.Enabled = true;
                 this.copySelectionMenuItem.Enabled = true;
                 this.cutSelectionMenuItem.Enabled = true;
+
+                if (this.projectExplorerTreeView.SelectedNodes.All(x => this.GetProjectItemFromNode(x)?.GetType() == typeof(ScriptItem)))
+                {
+                    this.compileSelectionMenuItem.Visible = true;
+                }
+                else
+                {
+                    this.compileSelectionMenuItem.Visible = false;
+                }
             }
 
             if (this.clipBoard == null || this.clipBoard.Count() <= 0)
@@ -563,6 +605,11 @@
         private void ToggleSelectionMenuItemClick(Object sender, EventArgs e)
         {
             this.ActivateSelectedItems();
+        }
+
+        private void CompileSelectionMenuItemClick(Object sender, EventArgs e)
+        {
+            this.CompileSelectedItems();
         }
     }
     //// End class

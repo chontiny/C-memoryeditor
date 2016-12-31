@@ -86,6 +86,17 @@
         }
 
         /// <summary>
+        /// Called when the visibility of this tool is changed.
+        /// </summary>
+        protected override void OnVisibilityChanged()
+        {
+            if (this.IsVisible)
+            {
+                this.RefreshProcessList();
+            }
+        }
+
+        /// <summary>
         /// Refreshes the process list
         /// </summary>
         private void RefreshProcessList()

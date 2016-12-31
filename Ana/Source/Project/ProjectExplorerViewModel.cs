@@ -13,9 +13,10 @@
     using System.Runtime.Serialization.Json;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows;
     using System.Windows.Input;
     using UserSettings;
-
+    using View.Controls;
     /// <summary>
     /// View model for the Project Explorer
     /// </summary>
@@ -225,6 +226,43 @@
         public static ProjectExplorerViewModel GetInstance()
         {
             return ProjectExplorerViewModel.projectExplorerViewModelInstance.Value;
+        }
+
+        /// <summary>
+        /// Prompts the user to save the project if there are unsaved changes.
+        /// </summary>
+        /// <returns>Returns false if canceled, otherwise true.</returns>
+        public Boolean PromptSave()
+        {
+            if (!this.HasUnsavedChanges)
+            {
+                return true;
+            }
+
+            String projectName = Path.GetFileName(this.ProjectFilePath);
+
+            if (String.IsNullOrWhiteSpace(projectName))
+            {
+                projectName = "Untitled";
+            }
+
+            MessageBoxResult result = MessageBoxEx.Show(
+                "Save changes to project " + projectName + "?",
+                "Unsaved Changes",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Cancel)
+            {
+                return false;
+            }
+
+            if (result == MessageBoxResult.Yes)
+            {
+                this.SaveProject();
+            }
+
+            return true;
         }
 
         /// <summary>

@@ -15,7 +15,7 @@
         UInt64 GetModuleAddress(String moduleName);
 
         /// <summary>
-        /// Determines the size of the first instruction at the given address..
+        /// Determines the size of the first instruction at the given address.
         /// </summary>
         /// <param name="assembly">The assembly code to measure.</param>
         /// <param name="address">The base address of the assembly code.</param>
@@ -59,22 +59,31 @@
         void DeallocateAllMemory();
 
         /// <summary>
-        /// Creates a code cave that jumps from a given entry address and executes the given assembly.
+        /// Creates a code cave that jumps from a given entry address and executes the given assembly. This will nop-fill.
+        /// If the injected assmebly code fits in one instruction, no cave will be created.
         /// </summary>
-        /// <param name="entry">The address to jump to the code cave.</param>
+        /// <param name="address">The injection address.</param>
         /// <param name="assembly">The assembly code to disassemble and inject into the code cave.</param>
-        /// <returns>The address of the code cave.</returns>
-        UInt64 CreateCodeCave(UInt64 entry, String assembly);
+        /// <returns>The address of the code cave. Returns zero if no allocation was necessary.</returns>
+        UInt64 CreateCodeCave(UInt64 address, String assembly);
 
         /// <summary>
-        /// Determines the address that a code cave would need to return to, if one were to be created at the specified address..
+        /// Injects instructions at the specified location, overwriting following instructions. This will nop-fill.
+        /// </summary>
+        /// <param name="address">The injection address.</param>
+        /// <param name="assembly">The assembly code to disassemble and inject into the code cave.</param>
+        /// <returns>The address of the code cave.</returns>
+        UInt64 InjectCode(UInt64 address, String assembly);
+
+        /// <summary>
+        /// Determines the address that a code cave would need to return to, if one were to be created at the specified address.
         /// </summary>
         /// <param name="address">The address of the code cave.</param>
         /// <returns>The address to which the code cave will return upon completion.</returns>
         UInt64 GetCaveExitAddress(UInt64 address);
 
         /// <summary>
-        /// Removes a created code cave at the specified address..
+        /// Removes a created code cave at the specified address.
         /// </summary>
         /// <param name="address">The address of the code cave.</param>
         void RemoveCodeCave(UInt64 address);
@@ -125,14 +134,14 @@
         /// </summary>
         /// <param name="bytes">The array of bytes to search for.</param>
         /// <returns>The address of the first first array of byte match.</returns>
-        UInt64 SearchAOB(Byte[] bytes);
+        UInt64 SearchAob(Byte[] bytes);
 
         /// <summary>
         /// Searches for the first address that matches the given array of byte pattern.
         /// </summary>
         /// <param name="pattern">The pattern string for which to search.</param>
         /// <returns>The address of the first first pattern match.</returns>
-        UInt64 SearchAOB(String pattern);
+        UInt64 SearchAob(String pattern);
 
         /// <summary>
         /// Searches for all addresses that match the given array of byte pattern.

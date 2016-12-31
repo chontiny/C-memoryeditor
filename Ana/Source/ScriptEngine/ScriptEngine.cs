@@ -8,26 +8,26 @@
     /// <summary>
     /// Script engine which contains classes with easy to use API, which wrap complex functionality of Ana's Engine.
     /// </summary>
-    public class Engine
+    public class ScriptEngine
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptManager" /> class
         /// </summary>
-        public Engine()
+        public ScriptEngine()
         {
-            this.Memory = new MemoryCore();
-            this.Graphics = new GraphicsCore();
-            this.Hook = new HookCore();
-            this.Input = new InputCore();
+            this.MemoryCore = new MemoryCore();
+            this.GraphicsCore = new GraphicsCore();
+            this.HookCore = new HookCore();
+            this.InputCore = new InputCore();
         }
 
-        public IMemoryCore Memory { get; set; }
+        public IMemoryCore MemoryCore { get; set; }
 
-        public IGraphicsCore Graphics { get; set; }
+        public IGraphicsCore GraphicsCore { get; set; }
 
-        public IHookCore Hook { get; set; }
+        public IHookCore HookCore { get; set; }
 
-        public IInputCore Input { get; set; }
+        public IInputCore InputCore { get; set; }
     }
     //// End class
 }

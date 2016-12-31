@@ -112,10 +112,6 @@
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Roslyn.Scripting\System.Collections.Immutable.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -143,7 +139,6 @@
     <Compile Include="csparser.cs" />
     <Compile Include="csscript.cs" />
     <Compile Include="CSScriptLib.Eval.CodeDom.cs" />
-    <Compile Include="CSScriptLib.Eval.Roslyn.cs" />
     <Compile Include="Evaluator.Extensions.Remote.cs" />
     <Compile Include="Evaluator.Extensions.Async.cs" />
     <Compile Include="Exceptions.cs" />

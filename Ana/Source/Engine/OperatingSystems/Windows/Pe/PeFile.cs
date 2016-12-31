@@ -48,28 +48,32 @@ namespace Ana.Source.Engine.OperatingSystems.Windows.Pe
         /// <summary>
         ///     Create a new PeFile object.
         /// </summary>
-        /// <param name="buff">A PE file a byte array.</param>
-        public PeFile(byte[] buff)
-        {
-            Buff = buff;
-            _structureParser = new StructureParser(Buff);
-
-            _dataDirectories = new DataDirectories(
-                Buff,
-                ImageNtHeaders?.OptionalHeader?.DataDirectory,
-                ImageSectionHeaders,
-                Is32Bit
-                );
-        }
-
-        /// <summary>
-        ///     Create a new PeFile object.
-        /// </summary>
         /// <param name="peFile">Path to a PE file.</param>
         public PeFile(string peFile)
-            : this(File.ReadAllBytes(peFile))
         {
             FileLocation = peFile;
+
+            try
+            {
+                if (File.Exists(this.FileLocation))
+                {
+                    byte[] buff = File.ReadAllBytes(peFile);
+
+                    Buff = buff;
+                    _structureParser = new StructureParser(Buff);
+
+                    _dataDirectories = new DataDirectories(
+                        Buff,
+                        ImageNtHeaders?.OptionalHeader?.DataDirectory,
+                        ImageSectionHeaders,
+                        Is32Bit
+                        );
+                }
+            }
+            catch
+            {
+                // TODO: Log to user
+            }
         }
 
         /// <summary>

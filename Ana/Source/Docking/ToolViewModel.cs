@@ -42,6 +42,7 @@
             set
             {
                 this.isVisible = value;
+                this.OnVisibilityChanged();
                 this.RaisePropertyChanged(nameof(this.IsVisible));
             }
         }
@@ -52,6 +53,13 @@
         public void ToggleVisibilityExecute()
         {
             this.IsVisible = !this.IsVisible;
+        }
+
+        /// <summary>
+        /// Called when the visibility of this tool is changed.
+        /// </summary>
+        protected virtual void OnVisibilityChanged()
+        {
         }
     }
     //// End class

@@ -59,7 +59,7 @@
         /// <summary>
         /// Clones the project item.
         /// </summary>
-        /// <returns>The clone of the project.</returns>
+        /// <returns>The clone of the project item.</returns>
         public override ProjectItem Clone()
         {
             FolderItem clone = new FolderItem();

@@ -2,6 +2,9 @@
 {
     using System;
     using System.Runtime.InteropServices;
+    using System.Text;
+    using static Enumerations;
+    using static Structures;
 
     /// <summary>
     /// Static class referencing all P/Invoked functions used by the library.
@@ -304,6 +307,15 @@
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean WriteProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, Byte[] lpBuffer, Int32 nSize, out Int32 lpNumberOfBytesWritten);
+
+        [DllImport("psapi.dll")]
+        public static extern Boolean EnumProcessModulesEx(IntPtr hProcess, [MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.U4)] [In][Out] IntPtr[] lphModule, Int32 cb, [MarshalAs(UnmanagedType.U4)] out Int32 lpcbNeeded, UInt32 dwFilterFlag);
+
+        [DllImport("psapi.dll")]
+        public static extern UInt32 GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In] [MarshalAs(UnmanagedType.U4)] UInt32 nSize);
+
+        [DllImport("psapi.dll", SetLastError = true)]
+        public static extern Boolean GetModuleInformation(IntPtr hProcess, IntPtr hModule, out ModuleInformation lpmodinfo, UInt32 cb);
     }
     //// End class
 }

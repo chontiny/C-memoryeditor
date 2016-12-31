@@ -5,7 +5,7 @@
     using System.Runtime.Serialization;
 
     /// <summary>
-    /// A project root item which contains all project items
+    /// A project root item which contains all project items.
     /// </summary>
     [DataContract]
     internal class ProjectRoot : FolderItem
@@ -14,9 +14,9 @@
         private List<ProjectItem> children;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProjectRoot" /> class
+        /// Initializes a new instance of the <see cref="ProjectRoot" /> class.
         /// </summary>
-        public ProjectRoot() : base()
+        public ProjectRoot() : base("Project Root")
         {
             this.children = new List<ProjectItem>();
         }
