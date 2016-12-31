@@ -16,7 +16,6 @@ Library | Description
 --- | ---
 [SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper
 [OpenTK](https://github.com/opentk/opentk) | OpenGL Wrapper (Not actually used yet)
-[ChromiumFX](https://bitbucket.org/chromiumfx/chromiumfx) | Chrome Wrapper
 [PeNet](https://github.com/secana/PeNet) | PE Format Parser
 [CLRMD](https://github.com/Microsoft/clrmd) | .NET Application Inspection Library
 [AvalonDock](https://avalondock.codeplex.com/) | Docking Library
