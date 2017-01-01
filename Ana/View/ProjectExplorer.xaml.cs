@@ -174,6 +174,7 @@
             // Create new node to insert
             ProjectNode projectNode = new ProjectNode(projectItem.Description);
             projectNode.ProjectItem = projectItem;
+            projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
             projectNode.EntryIcon = image;
             projectNode.IsChecked = projectItem.IsActivated;
 
@@ -602,17 +603,11 @@
             this.projectExplorerTreeView.DragDrop += this.ProjectExplorerTreeViewDragDrop;
             this.projectExplorerTreeView.DragEnter += this.ProjectExplorerTreeViewDragEnter;
             this.projectExplorerTreeView.DragOver += this.ProjectExplorerTreeViewDragOver;
-            this.projectExplorerTreeView.LostFocus += ProjectExplorerTreeView_LostFocus;
 
             this.projectExplorerTreeView.BackColor = DarkBrushes.BaseColor3;
             this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;
             this.projectExplorerTreeView.DragDropMarkColor = DarkBrushes.BaseColor11;
             this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
-        }
-
-        private void ProjectExplorerTreeView_LostFocus(object sender, EventArgs e)
-        {
-
         }
 
         private void ContextMenuStripOpening(Object sender, CancelEventArgs e)
