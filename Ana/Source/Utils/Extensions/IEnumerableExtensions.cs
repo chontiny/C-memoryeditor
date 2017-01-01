@@ -11,6 +11,17 @@
     internal static class IEnumerableExtensions
     {
         /// <summary>
+        /// Determines if a collection is null or empty.
+        /// </summary>
+        /// <typeparam name="T">The type of the enumeration.</typeparam>
+        /// <param name="enumeration">The enumeration to iterate through.</param>
+        /// <returns>True if the collection is null or empty, otherwise false.</returns>
+        public static Boolean IsNullOrEmpty<T>(this IEnumerable<T> enumeration)
+        {
+            return enumeration == null || !enumeration.Any();
+        }
+
+        /// <summary>
         /// A foreach extension method to perform an action on all elements in an enumeration.
         /// </summary>
         /// <typeparam name="T">The type of the enumeration.</typeparam>

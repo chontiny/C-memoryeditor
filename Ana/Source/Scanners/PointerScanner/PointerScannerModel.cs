@@ -143,7 +143,7 @@
                     false,
                     pointerValue);
 
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItem(newPointer);
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, newPointer);
 
                 if (++count >= PointerScannerModel.MaxAdd)
                 {

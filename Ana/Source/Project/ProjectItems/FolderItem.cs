@@ -20,7 +20,6 @@
         /// </summary>
         public FolderItem() : this("New Folder")
         {
-            this.children = new List<ProjectItem>();
         }
 
         /// <summary>
@@ -29,6 +28,8 @@
         /// <param name="description">The description of the folder</param>
         public FolderItem(String description) : base(description)
         {
+            this.children = new List<ProjectItem>();
+            this.ChildrenLock = new Object();
         }
 
         /// <summary>
@@ -56,6 +57,23 @@
             }
         }
 
+        private Object ChildrenLock { get; set; }
+
+        /// <summary>
+        /// Invoked when this object is deserialized.
+        /// </summary>
+        /// <param name="streamingContext">Streaming context</param>
+        [OnDeserialized]
+        public new void OnDeserialized(StreamingContext streamingContext)
+        {
+            this.ChildrenLock = new Object();
+
+            if (this.Children == null)
+            {
+                this.children = new List<ProjectItem>();
+            }
+        }
+
         /// <summary>
         /// Clones the project item.
         /// </summary>
@@ -67,11 +85,14 @@
             clone.parent = this.Parent;
             clone.children = new List<ProjectItem>();
 
-            if (this.Children != null && this.Children.Count > 0)
+            lock (this.ChildrenLock)
             {
-                foreach (ProjectItem projectItem in this.Children)
+                if (this.Children != null && this.Children.Count > 0)
                 {
-                    clone.children.Add(projectItem.Clone());
+                    foreach (ProjectItem projectItem in this.Children)
+                    {
+                        clone.AddChild(projectItem.Clone());
+                    }
                 }
             }
 
@@ -80,23 +101,73 @@
 
         public override void Update()
         {
-            this.Children.ForEach(x => x.Update());
+            lock (this.ChildrenLock)
+            {
+                this.Children.ForEach(x => x.Update());
+            }
+        }
+
+        public override void BuildParents(FolderItem parent = null)
+        {
+            base.BuildParents(parent);
+
+            lock (this.ChildrenLock)
+            {
+                foreach (ProjectItem child in this.Children)
+                {
+                    child.BuildParents(this as FolderItem);
+                }
+            }
         }
 
         /// <summary>
         /// Adds a project item as a child under this one
         /// </summary>
-        /// <param name="projectItem">The child project item</param>
-        public void AddChild(ProjectItem projectItem)
+        /// <param name="newChild">The child project item</param>
+        public void AddChild(ProjectItem newChild)
         {
-            projectItem.Parent = this;
-
-            if (this.Children == null)
+            lock (ChildrenLock)
             {
-                this.Children = new List<ProjectItem>();
+                newChild.Parent = this;
+
+                if (this.Children == null)
+                {
+                    this.Children = new List<ProjectItem>();
+                }
+
+                this.Children.Add(newChild);
             }
 
-            this.Children.Add(projectItem);
+            ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+        }
+
+        /// <summary>
+        /// Adds a project item as a sibling to the specified object.
+        /// </summary>
+        /// <param name="targetChild">The child project item.</param>
+        /// <param name="newChild">The new child project item to add as a sibling.</param>
+        public void AddSibling(ProjectItem targetChild, ProjectItem newChild, Boolean after)
+        {
+            lock (this.ChildrenLock)
+            {
+                if (!this.Children.Contains(targetChild))
+                {
+                    return;
+                }
+
+                newChild.Parent = this;
+
+                if (after)
+                {
+                    this.Children?.Insert(this.Children.IndexOf(targetChild) + 1, newChild);
+                }
+                else
+                {
+                    this.Children?.Insert(this.Children.IndexOf(targetChild), newChild);
+                }
+            }
+
+            ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
         }
 
         /// <summary>
@@ -106,18 +177,21 @@
         /// <returns>Returns true if the item is found</returns>
         public Boolean HasNode(ProjectItem projectItem)
         {
-            if (this.Children.Contains(projectItem))
+            lock (this.ChildrenLock)
             {
-                return true;
-            }
-
-            foreach (ProjectItem child in this.Children)
-            {
-                if (child is FolderItem)
+                if (this.Children.Contains(projectItem))
                 {
-                    if (child != null && (child as FolderItem).HasNode(projectItem))
+                    return true;
+                }
+
+                foreach (ProjectItem child in this.Children)
+                {
+                    if (child is FolderItem)
                     {
-                        return true;
+                        if (child != null && (child as FolderItem).HasNode(projectItem))
+                        {
+                            return true;
+                        }
                     }
                 }
             }
@@ -149,32 +223,39 @@
         /// <returns>Returns true if the removal succeeded.</returns>
         public Boolean RemoveNode(ProjectItem projectItem)
         {
+            Boolean removeSuccess = false;
+
             if (projectItem == null)
             {
                 return false;
             }
 
-            if (this.Children.Contains(projectItem))
+            lock (this.ChildrenLock)
             {
-                projectItem.Parent = null;
-                this.Children.Remove(projectItem);
-                return true;
-            }
-            else
-            {
-                foreach (ProjectItem child in this.Children)
+                if (this.Children.Contains(projectItem))
                 {
-                    if (child is FolderItem)
+                    projectItem.Parent = null;
+                    this.Children.Remove(projectItem);
+                    removeSuccess = true;
+                }
+                else
+                {
+                    foreach (ProjectItem child in this.Children)
                     {
-                        if (child != null && (child as FolderItem).RemoveNode(projectItem))
+                        if (child is FolderItem)
                         {
-                            return true;
+                            if (child != null && (child as FolderItem).RemoveNode(projectItem))
+                            {
+                                removeSuccess = true;
+                            }
                         }
                     }
                 }
             }
 
-            return false;
+            ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+
+            return removeSuccess;
         }
 
         protected override Boolean IsActivatable()
