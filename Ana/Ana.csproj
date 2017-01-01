@@ -284,6 +284,7 @@
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
     <Compile Include="Source\Mvvm\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\IndexConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
     <Compile Include="Source\Project\IProjectExplorerObserver.cs" />

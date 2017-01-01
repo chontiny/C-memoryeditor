@@ -17,6 +17,7 @@
     using System.Windows;
     using System.Windows.Input;
     using UserSettings;
+    using Utils.Extensions;
     using View.Controls;
     /// <summary>
     /// View model for the Project Explorer
@@ -273,38 +274,46 @@
         /// <param name="elementType">The value type</param>
         public void AddSpecificAddressItem(IntPtr baseAddress, Type elementType)
         {
-            this.AddNewProjectItem(new AddressItem(baseAddress, elementType));
+            this.AddNewProjectItems(true, new AddressItem(baseAddress, elementType));
         }
 
         /// <summary>
         /// Adds the new project item to the project item collection.
         /// </summary>
-        /// <param name="projectItem">The project item to add.</param>
+        /// <param name="projectItems">The project item to add.</param>
         /// <param name="AddToSelected">Whether or not the items should be added under the selected item.</param>
-        public void AddNewProjectItem(ProjectItem projectItem, Boolean AddToSelected = true)
+        public void AddNewProjectItems(Boolean AddToSelected = true, params ProjectItem[] projectItems)
         {
-            if (ProjectRoot.HasNode(projectItem))
+            if (projectItems.IsNullOrEmpty())
             {
                 return;
             }
 
-            ProjectItem target = this.SelectedProjectItems?.FirstOrDefault();
-
-            // Atempt to find the correct folder to place the new item into
-            while (target != null && !(target is FolderItem))
+            foreach (ProjectItem projectItem in projectItems)
             {
-                target = target.Parent as ProjectItem;
-            }
+                if (ProjectRoot.HasNode(projectItem))
+                {
+                    return;
+                }
 
-            FolderItem targetFolder = target as FolderItem;
+                ProjectItem target = this.SelectedProjectItems?.FirstOrDefault();
 
-            if (target != null)
-            {
-                targetFolder.AddChild(projectItem);
-            }
-            else
-            {
-                this.ProjectRoot.AddChild(projectItem);
+                // Atempt to find the correct folder to place the new item into
+                while (target != null && !(target is FolderItem))
+                {
+                    target = target.Parent as ProjectItem;
+                }
+
+                FolderItem targetFolder = target as FolderItem;
+
+                if (target != null)
+                {
+                    targetFolder.AddChild(projectItem);
+                }
+                else
+                {
+                    this.ProjectRoot.AddChild(projectItem);
+                }
             }
 
             this.NotifyObservers();
@@ -323,7 +332,7 @@
         /// </summary>
         private void AddNewFolderItem()
         {
-            this.AddNewProjectItem(new FolderItem());
+            this.AddNewProjectItems(true, new FolderItem());
         }
 
         /// <summary>
@@ -331,7 +340,7 @@
         /// </summary>
         private void AddNewAddressItem()
         {
-            this.AddNewProjectItem(new AddressItem());
+            this.AddNewProjectItems(true, new AddressItem());
         }
 
         /// <summary>
@@ -339,7 +348,7 @@
         /// </summary>
         private void AddNewScriptItem()
         {
-            this.AddNewProjectItem(new ScriptItem());
+            this.AddNewProjectItems(true, new ScriptItem());
         }
 
         /// <summary>
@@ -456,7 +465,7 @@
 
                     foreach (ProjectItem child in importedProjectRoot.Children)
                     {
-                        this.AddNewProjectItem(child, AddToSelected: false);
+                        this.AddNewProjectItems(false, child);
                     }
 
                     this.HasUnsavedChanges = true;

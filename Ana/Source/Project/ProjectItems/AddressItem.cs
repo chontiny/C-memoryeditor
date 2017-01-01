@@ -338,6 +338,7 @@
 
                 if (pointer == IntPtr.Zero || !successReading)
                 {
+                    pointer = IntPtr.Zero;
                     break;
                 }
             }

@@ -4,7 +4,10 @@
     using Aga.Controls.Tree.NodeControls;
     using Controls;
     using Controls.TreeView;
+    using SharpDX.DirectInput;
     using Source.Content;
+    using Source.Engine;
+    using Source.Engine.Input.Keyboard;
     using Source.Project;
     using Source.Project.ProjectItems;
     using Source.Utils;
@@ -20,7 +23,7 @@
     /// <summary>
     /// Interaction logic for ProjectExplorer.xaml.
     /// </summary>
-    internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IProjectExplorerObserver
+    internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IProjectExplorerObserver, IKeyboardObserver
     {
         private const char DeleteKeyCode = (char)0x127;
 
@@ -59,6 +62,7 @@
             this.InitializeDesigner();
             this.projectExplorerTreeViewContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.projectExplorerTreeView));
 
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
             ProjectExplorerViewModel.GetInstance().Subscribe(this);
         }
 
@@ -105,12 +109,12 @@
 
         private void CopySelection()
         {
-            this.clipBoard = this.GetSelectedProjectItems();
+            this.clipBoard = this.CloneSelectedProjectItems();
         }
 
         private void CutSelection()
         {
-            this.clipBoard = this.GetSelectedProjectItems();
+            this.clipBoard = this.CloneSelectedProjectItems();
             this.DeleteSelectedItems();
         }
 
@@ -124,7 +128,7 @@
             foreach (ProjectItem projectItem in clipBoard)
             {
                 // We must clone the item, such as to prevent duplicate references of the same exact object
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItem(projectItem.Clone());
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, projectItem.Clone());
             }
         }
 
@@ -199,6 +203,13 @@
             return nodes;
         }
 
+        private IEnumerable<ProjectItem> CloneSelectedProjectItems()
+        {
+            List<ProjectItem> nodes = new List<ProjectItem>();
+            projectExplorerTreeView.SelectedNodes.ForEach(x => nodes.Add(this.GetProjectItemFromNode(x).Clone()));
+            return nodes;
+        }
+
         private ProjectItem GetProjectItemFromNode(TreeNodeAdv treeNodeAdv)
         {
             return this.GetProjectNodeFromTreeNodeAdv(treeNodeAdv)?.ProjectItem;
@@ -252,7 +263,7 @@
 
                     if (compiledScript != null)
                     {
-                        ProjectExplorerViewModel.GetInstance().AddNewProjectItem(compiledScript);
+                        ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, compiledScript);
                     }
                 }
             }
@@ -297,38 +308,47 @@
             }
         }
 
-        private void ProjectExplorerTreeViewKeyPress(Object sender, KeyPressEventArgs e)
+        public void OnKeyPress(Key key)
         {
-            if (!contextMenuStrip.Focused)
+            switch (key)
             {
-                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                {
-                    if (e.KeyChar == 'c')
+                case Key.Space:
+                    this.ActivateSelectedItems();
+                    break;
+                case Key.Delete:
+                    this.DeleteSelectedItems();
+                    break;
+                case Key.C:
+                    if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                     {
                         this.CopySelection();
                     }
-                    else if (e.KeyChar == 'x')
+                    break;
+                case Key.X:
+                    if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                     {
                         this.CutSelection();
                     }
-                    else if (e.KeyChar == 'v')
+                    break;
+                case Key.V:
+                    if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                     {
                         this.PasteSelection();
                     }
-                }
-
-                if (e.KeyChar == ProjectExplorer.DeleteKeyCode)
-                {
-                    this.DeleteSelectedItems();
-                }
+                    break;
             }
+        }
 
-            if (e.KeyChar != ' ')
-            {
-                return;
-            }
+        public void OnKeyRelease(Key key)
+        {
+        }
 
-            this.ActivateSelectedItems();
+        public void OnKeyDown(Key key)
+        {
+        }
+
+        public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
+        {
         }
 
         private void CheckIndex(Object sender, NodeControlValueEventArgs e)
@@ -419,7 +439,7 @@
                     {
                         case NodePosition.Before:
                             projectRoot.RemoveNode(draggedItem);
-                            targetItem.Parent?.AddSibling(draggedItem, after: false);
+                            targetItem.Parent?.AddSibling(targetItem, draggedItem, after: false);
                             break;
                         case NodePosition.Inside:
                             if (targetItem is FolderItem)
@@ -430,7 +450,7 @@
                             break;
                         case NodePosition.After:
                             projectRoot.RemoveNode(draggedItem);
-                            targetItem.Parent?.AddSibling(draggedItem, after: true);
+                            targetItem.Parent?.AddSibling(targetItem, draggedItem, after: true);
                             break;
                     }
                 }
@@ -476,10 +496,12 @@
             this.addNewScriptMenuItem = new ToolStripMenuItem("Add Script", ImageUtils.BitmapImageToBitmap(Images.CollectValues));
             this.contextMenuStrip = new ContextMenuStrip();
 
-            this.copySelectionMenuItem.ShortcutKeys = Keys.Control | Keys.C;
-            this.cutSelectionMenuItem.ShortcutKeys = Keys.Control | Keys.X;
-            this.pasteSelectionMenuItem.ShortcutKeys = Keys.Control | Keys.V;
-            this.deleteSelectionMenuItem.ShortcutKeys = Keys.Delete;
+            KeysConverter KeysConverter = new KeysConverter();
+            this.toggleSelectionMenuItem.ShortcutKeyDisplayString = KeysConverter.ConvertToString(Keys.Space);
+            this.copySelectionMenuItem.ShortcutKeyDisplayString = KeysConverter.ConvertToString(Keys.Control | Keys.C);
+            this.cutSelectionMenuItem.ShortcutKeyDisplayString = KeysConverter.ConvertToString(Keys.Control | Keys.X);
+            this.pasteSelectionMenuItem.ShortcutKeyDisplayString = KeysConverter.ConvertToString(Keys.Control | Keys.V);
+            this.deleteSelectionMenuItem.ShortcutKeyDisplayString = KeysConverter.ConvertToString(Keys.Delete);
 
             this.toggleSelectionMenuItem.Click += ToggleSelectionMenuItemClick;
             this.compileSelectionMenuItem.Click += CompileSelectionMenuItemClick;
@@ -522,7 +544,6 @@
             this.projectExplorerTreeView.DragDrop += this.ProjectExplorerTreeViewDragDrop;
             this.projectExplorerTreeView.DragEnter += this.ProjectExplorerTreeViewDragEnter;
             this.projectExplorerTreeView.DragOver += this.ProjectExplorerTreeViewDragOver;
-            this.projectExplorerTreeView.KeyPress += this.ProjectExplorerTreeViewKeyPress;
 
             this.projectExplorerTreeView.BackColor = DarkBrushes.BaseColor3;
             this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;

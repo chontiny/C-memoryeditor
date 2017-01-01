@@ -67,6 +67,11 @@
         public new void OnDeserialized(StreamingContext streamingContext)
         {
             this.ChildrenLock = new Object();
+
+            if (this.Children == null)
+            {
+                this.children = new List<ProjectItem>();
+            }
         }
 
         /// <summary>
@@ -118,41 +123,51 @@
         /// <summary>
         /// Adds a project item as a child under this one
         /// </summary>
-        /// <param name="projectItem">The child project item</param>
-        public void AddChild(ProjectItem projectItem)
+        /// <param name="newChild">The child project item</param>
+        public void AddChild(ProjectItem newChild)
         {
             lock (ChildrenLock)
             {
-                projectItem.Parent = this;
+                newChild.Parent = this;
 
                 if (this.Children == null)
                 {
                     this.Children = new List<ProjectItem>();
                 }
 
-                this.Children.Add(projectItem);
+                this.Children.Add(newChild);
             }
+
+            ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
         }
 
         /// <summary>
         /// Adds a project item as a sibling to the specified object.
         /// </summary>
-        /// <param name="projectItem">The child project item.</param>
-        public void AddSibling(ProjectItem projectItem, Boolean after)
+        /// <param name="targetChild">The child project item.</param>
+        /// <param name="newChild">The new child project item to add as a sibling.</param>
+        public void AddSibling(ProjectItem targetChild, ProjectItem newChild, Boolean after)
         {
             lock (this.ChildrenLock)
             {
-                projectItem.Parent = this;
+                if (!this.Children.Contains(targetChild))
+                {
+                    return;
+                }
+
+                newChild.Parent = this;
 
                 if (after)
                 {
-                    this.Children?.Insert(this.Children.IndexOf(this) + 1, projectItem);
+                    this.Children?.Insert(this.Children.IndexOf(targetChild) + 1, newChild);
                 }
                 else
                 {
-                    this.Children?.Insert(this.Children.IndexOf(this), projectItem);
+                    this.Children?.Insert(this.Children.IndexOf(targetChild), newChild);
                 }
             }
+
+            ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
         }
 
         /// <summary>
@@ -208,6 +223,8 @@
         /// <returns>Returns true if the removal succeeded.</returns>
         public Boolean RemoveNode(ProjectItem projectItem)
         {
+            Boolean removeSuccess = false;
+
             if (projectItem == null)
             {
                 return false;
@@ -219,7 +236,7 @@
                 {
                     projectItem.Parent = null;
                     this.Children.Remove(projectItem);
-                    return true;
+                    removeSuccess = true;
                 }
                 else
                 {
@@ -229,14 +246,16 @@
                         {
                             if (child != null && (child as FolderItem).RemoveNode(projectItem))
                             {
-                                return true;
+                                removeSuccess = true;
                             }
                         }
                     }
                 }
             }
 
-            return false;
+            ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+
+            return removeSuccess;
         }
 
         protected override Boolean IsActivatable()

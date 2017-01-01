@@ -114,7 +114,7 @@
             addressItem.BaseIdentifier = dotNetObject.GetFullName();
             addressItem.ResolveType = AddressResolver.ResolveTypeEnum.DotNet;
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItem(addressItem);
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, addressItem);
         }
     }
     //// End class
