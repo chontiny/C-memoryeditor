@@ -148,35 +148,9 @@
         /// Needed since we cannot serialize this to json or we will get cyclic dependencies
         /// </summary>
         /// <param name="parent"></param>
-        public void BuildParents(FolderItem parent = null)
+        public virtual void BuildParents(FolderItem parent = null)
         {
             this.Parent = parent;
-
-            if (this is FolderItem)
-            {
-                foreach (ProjectItem child in (this as FolderItem).Children)
-                {
-                    child.BuildParents(this as FolderItem);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Adds a project item as a sibling to this one
-        /// </summary>
-        /// <param name="projectItem">The child project item</param>
-        public void AddSibling(ProjectItem projectItem, Boolean after)
-        {
-            projectItem.Parent = this.Parent;
-
-            if (after)
-            {
-                this.Parent?.Children?.Insert(this.Parent.Children.IndexOf(this) + 1, projectItem);
-            }
-            else
-            {
-                this.Parent?.Children?.Insert(this.Parent.Children.IndexOf(this), projectItem);
-            }
         }
 
         /// <summary>

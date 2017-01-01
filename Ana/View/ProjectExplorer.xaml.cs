@@ -78,7 +78,7 @@
 
             if (this.projectRoot != null)
             {
-                foreach (ProjectItem child in this.projectRoot.Children)
+                foreach (ProjectItem child in this.projectRoot.Children.ToArray())
                 {
                     this.BuildNodes(child);
                 }
@@ -173,7 +173,7 @@
             {
                 FolderItem folderItem = projectItem as FolderItem;
 
-                foreach (ProjectItem child in folderItem.Children)
+                foreach (ProjectItem child in folderItem.Children.ToArray())
                 {
                     this.BuildNodes(child, projectItem);
                 }
@@ -290,7 +290,7 @@
 
             if (projectItem is FolderItem)
             {
-                foreach (ProjectItem child in (projectItem as FolderItem).Children)
+                foreach (ProjectItem child in (projectItem as FolderItem).Children.ToArray())
                 {
                     this.CheckItem(child, activated);
                 }
@@ -419,7 +419,7 @@
                     {
                         case NodePosition.Before:
                             projectRoot.RemoveNode(draggedItem);
-                            targetItem.AddSibling(draggedItem, after: false);
+                            targetItem.Parent?.AddSibling(draggedItem, after: false);
                             break;
                         case NodePosition.Inside:
                             if (targetItem is FolderItem)
@@ -430,7 +430,7 @@
                             break;
                         case NodePosition.After:
                             projectRoot.RemoveNode(draggedItem);
-                            targetItem.AddSibling(draggedItem, after: true);
+                            targetItem.Parent?.AddSibling(draggedItem, after: true);
                             break;
                     }
                 }

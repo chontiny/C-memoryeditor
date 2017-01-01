@@ -11,6 +11,7 @@
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization.Json;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
@@ -449,9 +450,15 @@
             {
                 using (FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                 {
+                    String why = Encoding.ASCII.GetString(File.ReadAllBytes(filename));
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
                     ProjectRoot importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
-                    importedProjectRoot.Children.ForEach(x => this.AddNewProjectItem(x, AddToSelected: false));
+
+                    foreach (ProjectItem child in importedProjectRoot.Children)
+                    {
+                        this.AddNewProjectItem(child, AddToSelected: false);
+                    }
+
                     this.HasUnsavedChanges = true;
                 }
             }
