@@ -72,91 +72,46 @@
                 </shell:Button>
             </shell:WrapPanel>
         </shell:Grid>
-        <shell:ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <shell:ListView
-                Name="offsetsListView"
-                AlternationCount="1024"
-                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                BorderThickness="0"
-                ItemsSource="{Binding Offsets}"
-                SelectionChanged="ListViewSelectionChanged">
-                <shell:ListView.Resources>
-                    <converters:Int32ToHexConverter x:Key="Int32ToHexConverter" />
-                    <converters:IndexConverter x:Key="IndexConverter" />
-                </shell:ListView.Resources>
-                <shell:ListView.ItemTemplate>
-                    <shell:DataTemplate>
-                        <shell:Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
-                            <shell:Grid.ColumnDefinitions>
-                                <shell:ColumnDefinition />
-                                <shell:ColumnDefinition />
-                                <shell:ColumnDefinition />
-                            </shell:Grid.ColumnDefinitions>
-                            <shell:Grid.InputBindings>
-                                <shell:MouseBinding
-                                    Command="{Binding DataContext.AddAddressCommand, ElementName=AnaScanResults}"
-                                    CommandParameter="{Binding .}"
-                                    Gesture="LeftDoubleClick" />
-                            </shell:Grid.InputBindings>
-                            <shell:TextBlock
-                                Grid.Column="0"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}, Converter={StaticResource IndexConverter}}" />
-                            <shell:TextBlock
-                                Grid.Column="1"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                Text="{Binding .}" />
-                            <shell:TextBlock
-                                Grid.Column="2"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                Text="{Binding ., Converter={StaticResource Int32ToHexConverter}}" />
-                        </shell:Grid>
-                    </shell:DataTemplate>
-                </shell:ListView.ItemTemplate>
-                <shell:ListView.Template>
-                    <shell:ControlTemplate>
-                        <shell:Grid HorizontalAlignment="Left">
-                            <shell:Grid.RowDefinitions>
-                                <shell:RowDefinition Height="Auto" />
-                                <shell:RowDefinition Height="Auto" />
-                            </shell:Grid.RowDefinitions>
-                            <shell:Grid
-                                Grid.Row="0"
-                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                                VerticalAlignment="Center">
-                                <shell:Grid.ColumnDefinitions>
-                                    <shell:ColumnDefinition />
-                                    <shell:ColumnDefinition />
-                                    <shell:ColumnDefinition />
-                                </shell:Grid.ColumnDefinitions>
-                                <shell:Grid.Resources>
-                                    <shell:Style TargetType="TextBlock">
-                                        <shell:Setter Property="Margin" Value="5,0" />
-                                        <shell:Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                                        <shell:Setter Property="FontWeight" Value="Bold" />
-                                    </shell:Style>
-                                    <shell:Style TargetType="Border">
-                                        <shell:Setter Property="BorderThickness" Value="0" />
-                                        <shell:Setter Property="Padding" Value="8,4,8,4" />
-                                        <shell:Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                                    </shell:Style>
-                                </shell:Grid.Resources>
-                                <shell:Border Grid.Column="0">
-                                    <shell:TextBlock>Offset</shell:TextBlock>
-                                </shell:Border>
-                                <shell:Border Grid.Column="1">
-                                    <shell:TextBlock>Decimal</shell:TextBlock>
-                                </shell:Border>
-                                <shell:Border Grid.Column="2">
-                                    <shell:TextBlock>Hexadecimal</shell:TextBlock>
-                                </shell:Border>
-                            </shell:Grid>
-                            <shell:ItemsPresenter Grid.Row="1" />
-                        </shell:Grid>
-                    </shell:ControlTemplate>
-                </shell:ListView.Template>
-            </shell:ListView>
-        </shell:ScrollViewer>
+        <shell:DataGrid
+            Name="offsetsDataGrid"
+            Grid.Row="2"
+            AutoGenerateColumns="False"
+            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+            ColumnWidth="*"
+            HeadersVisibility="Column"
+            ItemsSource="{Binding Path=Offsets}"
+            RowHeaderWidth="0"
+            SelectionChanged="DataGridSelectionChanged">
+            <shell:DataGrid.Resources>
+                <converters:Int32ToHexConverter x:Key="Int32ToHexConverter" />
+                <converters:DataGridIndexConverter x:Key="DataGridIndexConverter" />
+            </shell:DataGrid.Resources>
+            <shell:DataGrid.ColumnHeaderStyle>
+                <shell:Style TargetType="{x:Type DataGridColumnHeader}">
+                    <shell:Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor3}" />
+                    <shell:Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                    <shell:Setter Property="HorizontalAlignment" Value="Stretch" />
+                </shell:Style>
+            </shell:DataGrid.ColumnHeaderStyle>
+            <shell:DataGrid.Style>
+                <shell:Style TargetType="{x:Type DataGrid}">
+                    <shell:Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor3}" />
+                    <shell:Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                </shell:Style>
+            </shell:DataGrid.Style>
+            <shell:DataGrid.CellStyle>
+                <shell:Style TargetType="{x:Type DataGridCell}">
+                    <shell:Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor3}" />
+                    <shell:Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+
+                </shell:Style>
+            </shell:DataGrid.CellStyle>
+            <shell:DataGrid.Columns>
+                <shell:DataGridTextColumn Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridCell}}, Converter={StaticResource DataGridIndexConverter}, Mode=OneWay}" Header="Offset" />
+                <shell:DataGridTextColumn Binding="{Binding Path=Value}" Header="Decimal" />
+                <shell:DataGridTextColumn Binding="{Binding Path=Value, Converter={StaticResource Int32ToHexConverter}}" Header="Hexadecimal" />
+            </shell:DataGrid.Columns>
+        </shell:DataGrid>
         <shell:Grid Grid.Row="3" Margin="8">
             <shell:Button
                 Width="96"
