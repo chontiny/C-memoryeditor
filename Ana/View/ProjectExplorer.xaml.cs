@@ -66,10 +66,25 @@
             ProjectExplorerViewModel.GetInstance().Subscribe(this);
         }
 
-        public void Update(ProjectRoot projectRoot)
+        public void UpdateStructure(ProjectRoot projectRoot)
         {
             this.projectRoot = projectRoot;
             this.RebuildProjectStructure();
+        }
+
+        public void Update(ProjectRoot projectRoot)
+        {
+            this.projectExplorerTreeView.BeginUpdate();
+
+            if (projectRoot != null)
+            {
+                foreach (ProjectItem child in projectRoot.Children.ToArray())
+                {
+                    this.UpdateNodes(child);
+                }
+            }
+
+            this.projectExplorerTreeView.EndUpdate();
         }
 
         public void RebuildProjectStructure()
@@ -184,6 +199,26 @@
             }
         }
 
+        private void UpdateNodes(ProjectItem projectItem)
+        {
+            ProjectNode node = nodeCache[projectItem];
+
+            if (projectItem is AddressItem && node != null)
+            {
+                node.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+            }
+
+            if (projectItem is FolderItem)
+            {
+                FolderItem folderItem = projectItem as FolderItem;
+
+                foreach (ProjectItem child in folderItem.Children.ToArray())
+                {
+                    this.UpdateNodes(child);
+                }
+            }
+        }
+
         private ProjectNode GetProjectNodeFromTreeNodeAdv(TreeNodeAdv treeNodeAdv)
         {
             Node node = projectTree.FindNode(projectExplorerTreeView.GetPath(treeNodeAdv));
@@ -218,6 +253,11 @@
         private void EntryDescriptionDrawText(Object sender, DrawEventArgs e)
         {
             e.TextColor = DarkBrushes.BaseColor2;
+        }
+
+        private void EntryValuePreviewDrawText(Object sender, DrawEventArgs e)
+        {
+            e.TextColor = DarkBrushes.BaseColor11;
         }
 
         private void ActivateSelectedItems()
@@ -276,12 +316,16 @@
                 return;
             }
 
-            System.Windows.MessageBoxResult result =
-                MessageBoxEx.Show(System.Windows.Application.Current.MainWindow,
-                "Delete selected items?",
-                "Confirm",
-                System.Windows.MessageBoxButton.OKCancel,
-                System.Windows.MessageBoxImage.Warning);
+            System.Windows.MessageBoxResult result = System.Windows.MessageBoxResult.No;
+            ControlThreadingHelper.InvokeControlAction(this.projectExplorerTreeView, () =>
+            {
+                result =
+               MessageBoxEx.Show(System.Windows.Application.Current.MainWindow,
+               "Delete selected items?",
+               "Confirm",
+               System.Windows.MessageBoxButton.OKCancel,
+               System.Windows.MessageBoxImage.Warning);
+            });
 
             if (result == System.Windows.MessageBoxResult.OK)
             {
@@ -310,6 +354,11 @@
 
         public void OnKeyPress(Key key)
         {
+            if (!this.projectExplorerTreeView.Focused)
+            {
+                return;
+            }
+
             switch (key)
             {
                 case Key.Space:
@@ -484,6 +533,13 @@
             entryDescription.ParentColumn = null;
             entryDescription.DrawText += EntryDescriptionDrawText;
 
+            NodeTextBox entryValuePreview = new NodeTextBox();
+            entryValuePreview.DataPropertyName = "EntryValuePreview";
+            entryValuePreview.IncrementalSearchEnabled = true;
+            entryValuePreview.LeftMargin = 3;
+            entryValuePreview.ParentColumn = null;
+            entryValuePreview.DrawText += EntryValuePreviewDrawText;
+
             this.toggleSelectionMenuItem = new ToolStripMenuItem("Toggle");
             this.compileSelectionMenuItem = new ToolStripMenuItem("Compile");
             this.addNewItemMenuItem = new ToolStripMenuItem("Add New...");
@@ -531,6 +587,7 @@
             this.projectExplorerTreeView.NodeControls.Add(entryCheckBox);
             this.projectExplorerTreeView.NodeControls.Add(entryIcon);
             this.projectExplorerTreeView.NodeControls.Add(entryDescription);
+            this.projectExplorerTreeView.NodeControls.Add(entryValuePreview);
             this.projectExplorerTreeView.SelectionMode = TreeSelectionMode.Multi;
             this.projectExplorerTreeView.BorderStyle = BorderStyle.None;
             this.projectExplorerTreeView.Model = this.projectTree;

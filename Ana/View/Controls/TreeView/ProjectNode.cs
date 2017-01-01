@@ -11,6 +11,7 @@
     internal class ProjectNode : Node
     {
         public String EntryDescription { get; set; }
+        public String EntryValuePreview { get; set; }
         public Image EntryIcon { get; set; }
         public ProjectItem ProjectItem { get; set; }
 
@@ -21,6 +22,7 @@
         public ProjectNode(String entryDescription) : base(String.Empty)
         {
             this.EntryDescription = entryDescription;
+            this.EntryValuePreview = String.Empty;
 
             EntryIcon = null;
         }

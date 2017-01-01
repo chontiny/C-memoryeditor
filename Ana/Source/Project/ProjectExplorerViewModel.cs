@@ -199,7 +199,7 @@
             private set
             {
                 this.projectRoot = value;
-                this.NotifyObservers();
+                this.NotifyObserversStructureChange();
                 this.RaisePropertyChanged(nameof(this.ProjectRoot));
             }
         }
@@ -316,7 +316,7 @@
                 }
             }
 
-            this.NotifyObservers();
+            this.NotifyObserversStructureChange();
         }
 
         /// <summary>
@@ -324,7 +324,7 @@
         /// </summary>
         public void OnPropertyUpdate()
         {
-            this.NotifyObservers();
+            this.NotifyObserversStructureChange();
         }
 
         /// <summary>
@@ -359,7 +359,7 @@
             this.ProjectRoot.RemoveNodes(this.SelectedProjectItems);
             this.SelectedProjectItems = null;
 
-            this.NotifyObservers();
+            this.NotifyObserversStructureChange();
         }
 
         /// <summary>
@@ -391,6 +391,7 @@
                 while (true)
                 {
                     this.ProjectRoot.Update();
+                    this.NotifyObserversValueChange();
                     Thread.Sleep(SettingsViewModel.GetInstance().TableReadInterval);
                 }
             });
@@ -531,7 +532,7 @@
                 if (!this.ProjectExplorerObservers.Contains(projectExplorerObserver))
                 {
                     this.ProjectExplorerObservers.Add(projectExplorerObserver);
-                    projectExplorerObserver.Update(this.ProjectRoot);
+                    projectExplorerObserver.UpdateStructure(this.ProjectRoot);
                 }
             }
         }
@@ -554,7 +555,21 @@
         /// <summary>
         /// Notify all observing objects of a change in the project structure.
         /// </summary>
-        private void NotifyObservers()
+        private void NotifyObserversStructureChange()
+        {
+            lock (this.ObserverLock)
+            {
+                foreach (IProjectExplorerObserver observer in this.ProjectExplorerObservers)
+                {
+                    observer.UpdateStructure(this.ProjectRoot);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Notify all observing objects of a change in the project structure.
+        /// </summary>
+        private void NotifyObserversValueChange()
         {
             lock (this.ObserverLock)
             {
