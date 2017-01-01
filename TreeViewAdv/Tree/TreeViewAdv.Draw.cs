@@ -138,10 +138,14 @@ namespace Aga.Controls.Tree
                     {
                         e.Graphics.FillRectangle(SystemBrushes.Highlight, focusRect);
                         context.DrawSelection = DrawSelectionMode.FullRowSelect;
+                        e.Graphics.DrawLine(SystemPens.ControlDark, 0, rowRect.Top, e.Graphics.ClipBounds.Right, rowRect.Top);
+                        e.Graphics.DrawLine(SystemPens.ControlDark, 0, rowRect.Bottom, e.Graphics.ClipBounds.Right, rowRect.Bottom);
+                        e.Graphics.DrawLine(SystemPens.ControlDark, 0, rowRect.Top, 0, rowRect.Bottom);
+                        e.Graphics.DrawLine(SystemPens.ControlDark, e.Graphics.ClipBounds.Right, rowRect.Top, e.Graphics.ClipBounds.Right, rowRect.Bottom);
                     }
                     else
                     {
-                        e.Graphics.FillRectangle(SystemBrushes.InactiveBorder, focusRect);
+                        e.Graphics.FillRectangle(SystemBrushes.Highlight, focusRect);
                         context.DrawSelection = DrawSelectionMode.None;
                     }
                 }

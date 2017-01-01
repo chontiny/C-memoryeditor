@@ -354,38 +354,41 @@
 
         public void OnKeyPress(Key key)
         {
-            if (!this.projectExplorerTreeView.Focused)
+            ControlThreadingHelper.InvokeControlAction(this.projectExplorerTreeView, () =>
             {
-                return;
-            }
+                if (!this.projectExplorerTreeView.Focused)
+                {
+                    return;
+                }
 
-            switch (key)
-            {
-                case Key.Space:
-                    this.ActivateSelectedItems();
-                    break;
-                case Key.Delete:
-                    this.DeleteSelectedItems();
-                    break;
-                case Key.C:
-                    if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    {
-                        this.CopySelection();
-                    }
-                    break;
-                case Key.X:
-                    if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    {
-                        this.CutSelection();
-                    }
-                    break;
-                case Key.V:
-                    if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                    {
-                        this.PasteSelection();
-                    }
-                    break;
-            }
+                switch (key)
+                {
+                    case Key.Space:
+                        this.ActivateSelectedItems();
+                        break;
+                    case Key.Delete:
+                        this.DeleteSelectedItems();
+                        break;
+                    case Key.C:
+                        if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                        {
+                            this.CopySelection();
+                        }
+                        break;
+                    case Key.X:
+                        if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                        {
+                            this.CutSelection();
+                        }
+                        break;
+                    case Key.V:
+                        if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                        {
+                            this.PasteSelection();
+                        }
+                        break;
+                }
+            });
         }
 
         public void OnKeyRelease(Key key)
@@ -432,11 +435,9 @@
 
         private void ProjectExplorerTreeViewSelectionChanged(Object sender, EventArgs e)
         {
-            List<TreeNodeAdv> treeNodes = new List<TreeNodeAdv>();
             List<ProjectItem> projectItems = new List<ProjectItem>();
 
-            this.projectExplorerTreeView.SelectedNodes.ForEach(x => treeNodes.Add(x));
-            treeNodes.ForEach(x => projectItems.Add(GetProjectItemFromNode(x)));
+            this.projectExplorerTreeView.SelectedNodes.ToArray().ForEach(x => projectItems.Add(GetProjectItemFromNode(x)));
 
             ProjectExplorerViewModel.GetInstance().SelectedProjectItems = projectItems;
         }
@@ -601,11 +602,17 @@
             this.projectExplorerTreeView.DragDrop += this.ProjectExplorerTreeViewDragDrop;
             this.projectExplorerTreeView.DragEnter += this.ProjectExplorerTreeViewDragEnter;
             this.projectExplorerTreeView.DragOver += this.ProjectExplorerTreeViewDragOver;
+            this.projectExplorerTreeView.LostFocus += ProjectExplorerTreeView_LostFocus;
 
             this.projectExplorerTreeView.BackColor = DarkBrushes.BaseColor3;
             this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;
             this.projectExplorerTreeView.DragDropMarkColor = DarkBrushes.BaseColor11;
             this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
+        }
+
+        private void ProjectExplorerTreeView_LostFocus(object sender, EventArgs e)
+        {
+
         }
 
         private void ContextMenuStripOpening(Object sender, CancelEventArgs e)
