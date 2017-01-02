@@ -4,10 +4,10 @@
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-
-    /// <summary>
-    /// Extension methods for IEnumerable interfaces.
-    /// </summary>
+    using System.Windows;
+    using System.Windows.Media;    /// <summary>
+                                   /// Extension methods for IEnumerable interfaces.
+                                   /// </summary>
     internal static class IEnumerableExtensions
     {
         /// <summary>
@@ -114,6 +114,39 @@
             if (!insertAtStart)
             {
                 yield return extraElement;
+            }
+        }
+
+        public static IEnumerable<DependencyObject> Descendents(this DependencyObject root, Int32 depth)
+        {
+            Int32 count = VisualTreeHelper.GetChildrenCount(root);
+            for (Int32 index = 0; index < count; index++)
+            {
+                DependencyObject child = VisualTreeHelper.GetChild(root, index);
+                yield return child;
+
+                if (depth > 0)
+                {
+                    foreach (var descendent in Descendents(child, --depth))
+                    {
+                        yield return descendent;
+                    }
+                }
+            }
+        }
+
+        public static IEnumerable<DependencyObject> Descendents(this DependencyObject root)
+        {
+            return Descendents(root, Int32.MaxValue);
+        }
+
+        public static IEnumerable<DependencyObject> Ancestors(this DependencyObject root)
+        {
+            DependencyObject current = VisualTreeHelper.GetParent(root);
+            while (current != null)
+            {
+                yield return current;
+                current = VisualTreeHelper.GetParent(current);
             }
         }
     }

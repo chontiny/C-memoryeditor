@@ -1,10 +1,12 @@
 ﻿namespace Ana.View
 {
     using Controls;
+    using Source.Mvvm;
     using Source.Utils.ScriptEditor;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Windows;
 
     /// <summary>
@@ -25,7 +27,7 @@
             this.OffsetHexDecBox.IsHex = true;
             this.OffsetHexDecBox.TextChanged += this.ValueUpdated;
             this.offsetHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.OffsetHexDecBox));
-            this.OffsetEditorViewModel.Offsets = offsets == null ? null : new ObservableCollection<Int32>(offsets);
+            this.OffsetEditorViewModel.Offsets = offsets == null ? null : new ObservableCollection<PrimitiveBinding<Int32>>(offsets.Select(x => new PrimitiveBinding<Int32>(x)));
         }
 
         /// <summary>
@@ -81,9 +83,9 @@
         /// </summary>
         /// <param name="sender">Sending object</param>
         /// <param name="e">Selection event args</param>
-        private void ListViewSelectionChanged(Object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void DataGridSelectionChanged(Object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            this.OffsetEditorViewModel.SelectedOffsetIndex = this.offsetsListView.SelectedIndex;
+            this.OffsetEditorViewModel.SelectedOffsetIndex = this.offsetsDataGrid.SelectedIndex;
         }
     }
     //// End class

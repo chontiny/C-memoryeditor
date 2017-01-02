@@ -43,11 +43,11 @@
             offsetEditor.Owner = Application.Current.MainWindow;
             if (offsetEditor.ShowDialog() == true)
             {
-                List<Int32> newOffsets = offsetEditor.OffsetEditorViewModel.Offsets.ToList();
+                List<Int32> newOffsets = offsetEditor.OffsetEditorViewModel.Offsets.Select(x => x.Value).ToList();
 
                 if (newOffsets != null && newOffsets.Count > 0)
                 {
-                    return offsetEditor.OffsetEditorViewModel.Offsets.ToList();
+                    return newOffsets;
                 }
                 else
                 {

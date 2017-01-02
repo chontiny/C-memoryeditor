@@ -11,18 +11,18 @@
     internal class Int32ToHexConverter : IValueConverter
     {
         /// <summary>
-        /// Converts an Icon to a BitmapSource
+        /// Converts an Int32 to a Hex string
         /// </summary>
         /// <param name="value">Value to be converted</param>
         /// <param name="targetType">Type to convert to</param>
         /// <param name="parameter">Optional conversion parameter</param>
         /// <param name="culture">Globalization info</param>
-        /// <returns>Object with type of BitmapSource. If conversion cannot take place, returns null</returns>
+        /// <returns>A hex string. If conversion cannot take place, returns null.</returns>
         public Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
             if (value == null)
             {
-                return null;
+                return String.Empty;
             }
 
             if (value is Int32)
@@ -30,20 +30,33 @@
                 return Conversions.ParseValueAsHex(typeof(Int32), value);
             }
 
-            return null;
+            return String.Empty;
         }
 
         /// <summary>
-        /// Not used or implemented
+        /// Hex string to an Int32
         /// </summary>
         /// <param name="value">Value to be converted</param>
         /// <param name="targetType">Type to convert to</param>
         /// <param name="parameter">Optional conversion parameter</param>
         /// <param name="culture">Globalization info</param>
-        /// <returns>Throws see <see cref="NotImplementedException" /></returns>
+        /// <returns>An Int32. If conversion cannot take place, returns 0.</returns>
         public Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if (value == null)
+            {
+                return 0;
+            }
+
+            if (value is String)
+            {
+                if (CheckSyntax.CanParseHex(typeof(Int32), value.ToString()))
+                {
+                    return Conversions.ParseHexStringAsValue(typeof(Int32), value.ToString());
+                }
+            }
+
+            return 0;
         }
     }
     //// End class

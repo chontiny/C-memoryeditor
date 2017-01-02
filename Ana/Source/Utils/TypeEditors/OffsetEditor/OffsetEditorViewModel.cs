@@ -16,7 +16,7 @@
         /// <summary>
         /// The collection of offsets.
         /// </summary>
-        private IList<Int32> offsets;
+        private IList<PrimitiveBinding<Int32>> offsets;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OffsetEditorViewModel" /> class.
@@ -27,6 +27,7 @@
             this.RemoveOffsetCommand = new RelayCommand(() => Task.Run(() => this.RemoveSelectedOffset()), () => true);
             this.UpdateActiveValueCommand = new RelayCommand<Int32>((offset) => Task.Run(() => this.UpdateActiveValue(offset)), (offset) => true);
             this.AccessLock = new Object();
+            this.Offsets = new ObservableCollection<PrimitiveBinding<Int32>>();
         }
 
         /// <summary>
@@ -47,7 +48,7 @@
         /// <summary>
         /// Gets or sets the collection of offsets.
         /// </summary>
-        public ObservableCollection<Int32> Offsets
+        public ObservableCollection<PrimitiveBinding<Int32>> Offsets
         {
             get
             {
@@ -55,10 +56,10 @@
                 {
                     if (this.offsets == null)
                     {
-                        this.offsets = new List<Int32>();
+                        this.offsets = new List<PrimitiveBinding<Int32>>();
                     }
 
-                    return new ObservableCollection<Int32>(this.offsets);
+                    return new ObservableCollection<PrimitiveBinding<Int32>>(this.offsets);
                 }
             }
 
@@ -66,7 +67,7 @@
             {
                 lock (this.AccessLock)
                 {
-                    this.offsets = value == null ? new List<Int32>() : new List<Int32>(value);
+                    this.offsets = value == null ? new List<PrimitiveBinding<Int32>>() : new List<PrimitiveBinding<Int32>>(value);
                     this.RaisePropertyChanged(nameof(this.Offsets));
                 }
             }
@@ -94,7 +95,7 @@
         {
             lock (this.AccessLock)
             {
-                this.offsets.Add(this.ActiveOffsetValue);
+                this.offsets.Add(new PrimitiveBinding<Int32>(this.ActiveOffsetValue));
             }
 
             this.RaisePropertyChanged(nameof(this.Offsets));
