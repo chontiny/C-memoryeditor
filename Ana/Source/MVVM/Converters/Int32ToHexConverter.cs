@@ -50,7 +50,10 @@
 
             if (value is String)
             {
-                return Conversions.ParseHexStringAsValue(typeof(Int32), value.ToString());
+                if (CheckSyntax.CanParseHex(typeof(Int32), value.ToString()))
+                {
+                    return Conversions.ParseHexStringAsValue(typeof(Int32), value.ToString());
+                }
             }
 
             return 0;

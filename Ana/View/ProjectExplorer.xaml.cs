@@ -180,7 +180,11 @@
 
             if (parent != null && nodeCache.ContainsKey(parent))
             {
-                nodeCache[parent].Nodes.Add(projectNode);
+                ProjectNode result;
+                if (nodeCache.TryGetValue(parent, out result))
+                {
+                    result.Nodes.Add(projectNode);
+                }
             }
             else
             {
@@ -202,7 +206,12 @@
 
         private void UpdateNodes(ProjectItem projectItem)
         {
-            ProjectNode node = nodeCache[projectItem];
+            ProjectNode node;
+
+            if (!nodeCache.TryGetValue(projectItem, out node))
+            {
+                return;
+            }
 
             if (projectItem is AddressItem && node != null)
             {
@@ -277,7 +286,16 @@
 
             // Behavior here is undefined, we could check only the selected items, or enforce the recursive rules of folders
             selectedProjectItems.ForEach(x => CheckItem(x, !x.IsActivated));
-            projectExplorerTreeView.SelectedNodes.ForEach(x => nodeCache[GetProjectItemFromNode(x)].IsChecked = GetProjectItemFromNode(x).IsActivated);
+
+            foreach (TreeNodeAdv projectNode in projectExplorerTreeView.SelectedNodes)
+            {
+                ProjectItem projectItem = GetProjectItemFromNode(projectNode);
+                ProjectNode result;
+                if (nodeCache.TryGetValue(projectItem, out result))
+                {
+                    result.IsChecked = projectItem.IsActivated;
+                }
+            }
 
             this.RebuildProjectStructure();
         }
@@ -342,7 +360,12 @@
             }
 
             projectItem.IsActivated = activated;
-            nodeCache[projectItem].IsChecked = projectItem.IsActivated;
+
+            ProjectNode node;
+            if (nodeCache.TryGetValue(projectItem, out node))
+            {
+                node.IsChecked = projectItem.IsActivated;
+            }
 
             if (projectItem is FolderItem)
             {
