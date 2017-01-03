@@ -310,13 +310,16 @@
             {
                 case AddressResolver.ResolveTypeEnum.Module:
                     pointer = AddressResolver.GetInstance().ResolveModule(this.BaseIdentifier);
-                    pointer = pointer.Add(this.BaseAddress);
+                    break;
+                case AddressResolver.ResolveTypeEnum.GlobalKeyword:
+                    pointer = AddressResolver.GetInstance().ResolveGlobalKeyword(this.BaseIdentifier);
                     break;
                 case AddressResolver.ResolveTypeEnum.DotNet:
                     pointer = AddressResolver.GetInstance().ResolveDotNetObject(this.BaseIdentifier);
-                    pointer = pointer.Add(this.BaseAddress);
                     break;
             }
+
+            pointer = pointer.Add(this.BaseAddress);
 
             if (this.Offsets == null || this.Offsets.Count() == 0)
             {

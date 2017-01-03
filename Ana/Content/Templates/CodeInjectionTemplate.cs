@@ -35,7 +35,7 @@ using Ana.Source.ScriptEngine.Hook;
 using Ana.Source.ScriptEngine.Input;
 using Ana.Source.ScriptEngine.Memory;
 
-public class Test
+public class Cheat
 {
 	// Engine to provide access to memory, graphics, input, etc
 	private ScriptEngine Engine = new ScriptEngine();
@@ -54,7 +54,7 @@ public class Test
 		Memory.SetKeyword(""exit"", Memory.GetCaveExitAddress(entry));
 		
 		var code = @""
-			jmp exit
+			jmp <exit>
 			"";
 		
 		Memory.CreateCodeCave(entry, code);

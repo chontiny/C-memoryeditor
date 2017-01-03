@@ -36,9 +36,9 @@
         /// next instruction.
         /// </summary>
         /// <param name="address">The base address to begin reading instructions.</param>
-        /// <param name="minimumInstructionBytes">The minimum number of bytes the instructions must take.</param>
+        /// <param name="injectedCodeSize">The size of the code being injected.</param>
         /// <returns>The bytes read from memory.</returns>
-        Byte[] GetInstructionBytes(UInt64 address, Int32 minimumInstructionBytes);
+        Byte[] CollectOriginalBytes(UInt64 address, Int32 injectedCodeSize);
 
         /// <summary>
         /// Allocates memory in the target process, and returns the address of the new memory.
@@ -106,6 +106,20 @@
         /// <param name="globalKeyword">The global keyword to bind.</param>
         /// <param name="address">The address to which the keyword is bound.</param>
         void SetGlobalKeyword(String globalKeyword, UInt64 address);
+
+        /// <summary>
+        /// Gets the value of a keyword.
+        /// </summary>
+        /// <param name="keyword">The keyword.</param>
+        /// <returns>The value of the keyword. If not found, returns 0.</returns>
+        UInt64 GetKeywordValue(String keyword);
+
+        /// <summary>
+        /// Gets the value of a global keyword.
+        /// </summary>
+        /// <param name="keyword">The global keyword.</param>
+        /// <returns>The value of the global keyword. If not found, returns 0.</returns>
+        UInt64 GetGlobalKeywordValue(String globalKeyword);
 
         /// <summary>
         /// Clears the specified keyword created by the parent script.
