@@ -226,21 +226,18 @@
 
             assembly = this.ResolveKeywords(assembly);
 
+            // Determine size of our injected code
             Int32 assemblySize = this.GetAssemblySize(assembly, address);
 
+            // Gather the original bytes
+            Byte[] originalBytes = this.CollectOriginalBytes(address, MemoryCore.JumpSize);
+
+            // Determine number of no-ops to fill dangling bytes
+            String noOps = (originalBytes.Length - MemoryCore.JumpSize > 0 ? "db " + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - MemoryCore.JumpSize)).TrimEnd(',') : String.Empty);
+
             // Handle case where allocation is not needed
-            if (assemblySize <= MemoryCore.JumpSize)
+            if (assemblySize <= originalBytes.Length)
             {
-                Byte[] originalBytes = this.CollectOriginalBytes(address, assemblySize);
-
-                if (originalBytes == null)
-                {
-                    throw new Exception("Could not gather original bytes");
-                }
-
-                // Determine number of no-ops to fill dangling bytes
-                String noOps = (originalBytes.Length - assemblySize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - assemblySize)).TrimEnd(',');
-
                 Byte[] injectionBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly + "\n" + noOps, address.ToIntPtr());
                 EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(address.ToIntPtr(), injectionBytes);
 
@@ -251,21 +248,10 @@
             }
             else
             {
-                Byte[] originalBytes = this.CollectOriginalBytes(address, MemoryCore.JumpSize);
-
-                if (originalBytes == null)
-                {
-                    throw new Exception("Could not gather original bytes");
-                }
-
-                // Not able to collect enough bytes to even place a jump!
-                if (originalBytes.Length < MemoryCore.JumpSize)
-                {
-                    throw new Exception("Not enough bytes at address to jump");
-                }
-
-                // Determine number of no-ops to fill dangling bytes
-                String noOps = (originalBytes.Length - MemoryCore.JumpSize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - JumpSize)).TrimEnd(',');
+                // Add code cave jump return automatically
+                UInt64 returnAddress = GetCaveExitAddress(address);
+                assembly = assembly + "\n" + "jmp " + "0x" + Conversions.ToAddress(returnAddress);
+                assemblySize = this.GetAssemblySize(assembly, address);
 
                 // Allocate memory
                 UInt64 remoteAllocation = EngineCore.GetInstance().OperatingSystemAdapter.AllocateMemory(assemblySize).ToUInt64();
