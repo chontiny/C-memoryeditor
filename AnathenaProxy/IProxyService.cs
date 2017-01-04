@@ -10,7 +10,7 @@ namespace AnathenaProxy
         #region Fasm
 
         [OperationContract]
-        Byte[] Assemble(Boolean IsProcess32Bit, String Assembly, UInt64 BaseAddress);
+        Byte[] Assemble(Boolean isProcess32Bit, String assembly, UInt64 baseAddress);
 
         #endregion
 
@@ -22,28 +22,28 @@ namespace AnathenaProxy
         [OperationContract]
         IEnumerable<UInt64> GetRoots();
         [OperationContract]
-        Int32 GetRootType(UInt64 RootRef);
+        Int32 GetRootType(UInt64 rootRef);
         [OperationContract]
-        String GetRootName(UInt64 RootRef);
+        String GetRootName(UInt64 rootRef);
 
         [OperationContract]
-        IEnumerable<UInt64> GetObjectChildren(UInt64 ObjectRef);
+        IEnumerable<UInt64> GetObjectChildren(UInt64 objectRef);
         [OperationContract]
-        IEnumerable<UInt64> GetObjectFields(UInt64 ObjectRef);
+        IEnumerable<UInt64> GetObjectFields(UInt64 objectRef);
         [OperationContract]
-        Int32 GetObjectType(UInt64 ObjectRef);
+        Int32 GetObjectType(UInt64 objectRef);
         [OperationContract]
-        String GetObjectName(UInt64 ObjectRef);
+        String GetObjectName(UInt64 objectRef);
 
         [OperationContract]
-        String GetFieldName(UInt64 FieldRef);
+        String GetFieldName(UInt64 fieldRef);
         [OperationContract]
-        Int32 GetFieldType(UInt64 FieldRef);
+        Int32 GetFieldType(UInt64 fieldRef);
         [OperationContract]
-        Int32 GetFieldOffset(UInt64 FieldRef);
+        Int32 GetFieldOffset(UInt64 fieldRef);
 
         #endregion
-
-    } // End class
-
-} // End namespace
+    }
+    //// End class
+}
+//// End namespace

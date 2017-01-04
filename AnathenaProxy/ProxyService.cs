@@ -94,14 +94,16 @@ namespace AnathenaProxy
             return this.Heap == null ? false : true;
         }
 
-        private TypeCode TranslateType(ClrElementType? ElementType)
+        private TypeCode TranslateType(ClrElementType? elementType)
         {
             Type result;
 
-            if (ElementType == null)
+            if (elementType == null)
+            {
                 return TypeCode.Empty;
+            }
 
-            switch (ElementType)
+            switch (elementType)
             {
                 case ClrElementType.Boolean:
                     result = typeof(Boolean);

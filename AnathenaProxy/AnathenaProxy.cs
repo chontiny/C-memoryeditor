@@ -17,31 +17,31 @@ namespace AnathenaProxy
     {
         private const Int32 ParentCheckDelayMs = 500;
 
-        public AnathenaProxy(Int32 ParentProcessId, String PipeName, String WaitEventName)
+        public AnathenaProxy(Int32 parentProcessId, String pipeName, String waitEventName)
         {
             // Create an event to have the client wait until we are finished starting the service
-            EventWaitHandle ProcessStartingEvent = new EventWaitHandle(false, EventResetMode.ManualReset, WaitEventName);
+            EventWaitHandle processStartingEvent = new EventWaitHandle(false, EventResetMode.ManualReset, waitEventName);
 
-            InitializeAutoExit(ParentProcessId);
+            InitializeAutoExit(parentProcessId);
 
-            ServiceHost ServiceHost = new ServiceHost(typeof(ProxyService));
-            ServiceHost.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
-            ServiceHost.Description.Behaviors.Add(new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true });
-            NetNamedPipeBinding Binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
-            ServiceHost.AddServiceEndpoint(typeof(IProxyService), Binding, PipeName);
-            ServiceHost.Open();
+            ServiceHost serviceHost = new ServiceHost(typeof(ProxyService));
+            serviceHost.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
+            serviceHost.Description.Behaviors.Add(new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true });
+            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+            serviceHost.AddServiceEndpoint(typeof(IProxyService), binding, pipeName);
+            serviceHost.Open();
 
-            ProcessStartingEvent.Set();
+            processStartingEvent.Set();
 
             Console.WriteLine("Anathena proxy library loaded");
             Console.ReadLine();
         }
 
-        public static Boolean IsRunning(Int32 ParentProcessId)
+        public static Boolean IsRunning(Int32 parentProcessId)
         {
             try
             {
-                Process.GetProcessById(ParentProcessId);
+                Process.GetProcessById(parentProcessId);
             }
             catch (ArgumentException)
             {
@@ -51,22 +51,24 @@ namespace AnathenaProxy
             return true;
         }
 
-        private void InitializeAutoExit(Int32 ParentProcessId)
+        private void InitializeAutoExit(Int32 parentProcessId)
         {
             Task.Run(() =>
             {
                 while (true)
                 {
-                    if (!IsRunning(ParentProcessId))
+                    if (!IsRunning(parentProcessId))
+                    {
                         break;
+                    }
 
-                    Thread.Sleep(ParentCheckDelayMs);
+                    Thread.Sleep(AnathenaProxy.ParentCheckDelayMs);
                 }
 
                 Environment.Exit(0);
             });
         }
-
-    } // End class
-
-} // End namespace
+    }
+    //// End class
+}
+//// End namespace
