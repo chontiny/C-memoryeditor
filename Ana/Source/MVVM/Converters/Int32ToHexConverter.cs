@@ -27,7 +27,7 @@
 
             if (value is Int32)
             {
-                return Conversions.ParseValueAsHex(typeof(Int32), value);
+                return Conversions.ParseDynamicAsHex(typeof(Int32), value);
             }
 
             return String.Empty;
@@ -52,7 +52,7 @@
             {
                 if (CheckSyntax.CanParseHex(typeof(Int32), value.ToString()))
                 {
-                    return Conversions.ParseHexStringAsValue(typeof(Int32), value.ToString());
+                    return Conversions.ParseHexStringAsDynamic(typeof(Int32), value.ToString());
                 }
             }
 

@@ -55,11 +55,11 @@
 
                 if (this.IsDec && CheckSyntax.IsUInt64(rawValue))
                 {
-                    this.value = Conversions.ParseDecStringAsValue(typeof(UInt64), rawValue);
+                    this.value = Conversions.ParsePrimitiveStringAsDynamic(typeof(UInt64), rawValue);
                 }
                 else if (this.IsHex && CheckSyntax.CanParseHex(typeof(UInt64), rawValue))
                 {
-                    this.value = Conversions.ParseHexStringAsValue(typeof(UInt64), rawValue);
+                    this.value = Conversions.ParseHexStringAsDynamic(typeof(UInt64), rawValue);
                 }
 
                 return this.value;

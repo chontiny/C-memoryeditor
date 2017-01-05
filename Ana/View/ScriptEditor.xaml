@@ -14,7 +14,7 @@
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Name="AnaScriptEditor"
     Title="Script Editor"
-    Width="480"
+    Width="512"
     Height="512"
     d:DesignHeight="256"
     d:DesignWidth="256"

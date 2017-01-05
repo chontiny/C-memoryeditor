@@ -27,7 +27,7 @@
 
             if (value is IntPtr)
             {
-                return Conversions.ToAddress((IntPtr)value);
+                return Conversions.ToHex((IntPtr)value);
             }
 
             return null;

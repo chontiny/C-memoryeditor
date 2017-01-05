@@ -7,6 +7,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using Utils.Extensions;
     using Utils.Validation;
 
@@ -26,20 +27,21 @@
         private const Int32 Largestx86InstructionSize = 15;
 
         /// <summary>
+        /// Gets or sets the keywords associated with all running scripts.
+        /// </summary>
+        private static Lazy<ConcurrentDictionary<String, String>> globalKeywords = new Lazy<ConcurrentDictionary<String, String>>(
+            () => { return new ConcurrentDictionary<String, String>(); },
+            LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MemoryCore" /> class.
         /// </summary>
         public MemoryCore()
         {
-            MemoryCore.GlobalKeywords = new ConcurrentDictionary<String, String>();
             this.RemoteAllocations = new List<UInt64>();
             this.Keywords = new ConcurrentDictionary<String, String>();
             this.CodeCaves = new List<CodeCave>();
         }
-
-        /// <summary>
-        /// Gets or sets the keywords associated with all running scripts.
-        /// </summary>
-        private static ConcurrentDictionary<String, String> GlobalKeywords { get; set; }
 
         /// <summary>
         /// Gets or sets the keywords associated with the calling script.
@@ -65,12 +67,12 @@
         {
             this.PrintDebugTag();
 
-            moduleName = moduleName?.Split('.')?.First();
+            moduleName = moduleName?.RemoveSuffixes(".exe", ".dll");
 
             UInt64 address = 0;
             foreach (NormalizedModule module in EngineCore.GetInstance().OperatingSystemAdapter.GetModules())
             {
-                String targetModuleName = module?.Name?.Split('.')?.First();
+                String targetModuleName = module?.Name?.RemoveSuffixes(".exe", ".dll");
                 if (targetModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
                 {
                     address = module.BaseAddress.ToUInt64();
@@ -118,17 +120,17 @@
         /// ie with a minimum of 16 bytes, if we get three 5 byte instructions, we will need to read the entire
         /// next instruction.
         /// </summary>
-        /// <param name="address">The base address to begin reading instructions</param>
-        /// <param name="minimumInstructionBytes">The minimum number of bytes the instructions must take</param>
+        /// <param name="address">The base address to begin reading instructions.</param>
+        /// <param name="injectedCodeSize">The size of the code being injected.</param>
         /// <returns>The bytes read from memory</returns>
-        public Byte[] GetInstructionBytes(UInt64 address, Int32 minimumInstructionBytes)
+        public Byte[] CollectOriginalBytes(UInt64 address, Int32 injectedCodeSize)
         {
             this.PrintDebugTag();
 
             // Read original bytes at code cave jump
             Boolean readSuccess;
 
-            Byte[] originalBytes = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(address.ToIntPtr(), MemoryCore.Largestx86InstructionSize, out readSuccess);
+            Byte[] originalBytes = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(address.ToIntPtr(), injectedCodeSize + MemoryCore.Largestx86InstructionSize, out readSuccess);
 
             if (!readSuccess || originalBytes == null || originalBytes.Length <= 0)
             {
@@ -143,13 +145,13 @@
             foreach (Instruction instruction in instructions)
             {
                 replacedInstructionSize += instruction.Length;
-                if (replacedInstructionSize >= minimumInstructionBytes)
+                if (replacedInstructionSize >= injectedCodeSize)
                 {
                     break;
                 }
             }
 
-            if (replacedInstructionSize < minimumInstructionBytes)
+            if (replacedInstructionSize < injectedCodeSize)
             {
                 return null;
             }
@@ -170,6 +172,22 @@
             this.PrintDebugTag();
 
             UInt64 address = EngineCore.GetInstance().OperatingSystemAdapter.AllocateMemory(size).ToUInt64();
+            this.RemoteAllocations.Add(address);
+
+            return address;
+        }
+
+        /// <summary>
+        /// Allocates memory in the target process, and returns the address of the new memory.
+        /// </summary>
+        /// <param name="size">The size of the allocation.</param>
+        /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
+        /// <returns>The address of the allocated memory.</returns>
+        public UInt64 AllocateMemory(Int32 size, IntPtr allocAddress)
+        {
+            this.PrintDebugTag();
+
+            UInt64 address = EngineCore.GetInstance().OperatingSystemAdapter.AllocateMemory(size, allocAddress).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -224,23 +242,23 @@
 
             assembly = this.ResolveKeywords(assembly);
 
+            // Determine size of our injected code
             Int32 assemblySize = this.GetAssemblySize(assembly, address);
 
+            // Determine the minimum number of bytes that need to be replaced
+            Int32 minimumReplacementSize = Math.Min(assemblySize, MemoryCore.JumpSize);
+
+            // Gather the original bytes
+            Byte[] originalBytes = this.CollectOriginalBytes(address, minimumReplacementSize);
+
+            // Determine number of no-ops to fill dangling bytes
+            String noOps = (originalBytes.Length - minimumReplacementSize > 0 ? "db " + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - minimumReplacementSize)).TrimEnd(',') : String.Empty);
+
             // Handle case where allocation is not needed
-            if (assemblySize <= MemoryCore.JumpSize)
+            if (assemblySize <= originalBytes.Length)
             {
-                Byte[] originalBytes = this.GetInstructionBytes(address, assemblySize);
-
-                if (originalBytes == null)
-                {
-                    throw new Exception("Could not gather original bytes");
-                }
-
-                // Determine number of no-ops to fill dangling bytes
-                String noOps = (originalBytes.Length - assemblySize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - assemblySize)).TrimEnd(',');
-
-                Byte[] injectionBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly + "\n" + noOps, address.ToIntPtr());
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(address.ToIntPtr(), injectionBytes);
+                Byte[] injectionBytes = this.GetAssemblyBytes(assembly + "\n" + noOps, address);
+                this.WriteMemory(address, injectionBytes);
 
                 CodeCave codeCave = new CodeCave(address, 0, originalBytes);
                 this.CodeCaves.Add(codeCave);
@@ -249,34 +267,33 @@
             }
             else
             {
-                Byte[] originalBytes = this.GetInstructionBytes(address, MemoryCore.JumpSize);
-
-                if (originalBytes == null)
-                {
-                    throw new Exception("Could not gather original bytes");
-                }
-
-                // Not able to collect enough bytes to even place a jump!
-                if (originalBytes.Length < MemoryCore.JumpSize)
-                {
-                    throw new Exception("Not enough bytes at address to jump");
-                }
-
-                // Determine number of no-ops to fill dangling bytes
-                String noOps = (originalBytes.Length - MemoryCore.JumpSize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - JumpSize)).TrimEnd(',');
+                // Add code cave jump return automatically
+                UInt64 returnAddress = GetCaveExitAddress(address);
+                // Place jump to return address
+                assembly = assembly.Trim()
+                    + Environment.NewLine
+                    + "jmp " + Conversions.ToHex(returnAddress, formatAsAddress: false, includePrefix: true);
+                assemblySize = this.GetAssemblySize(assembly, address);
 
                 // Allocate memory
-                UInt64 remoteAllocation = EngineCore.GetInstance().OperatingSystemAdapter.AllocateMemory(assemblySize).ToUInt64();
-                this.RemoteAllocations.Add(remoteAllocation);
+                UInt64 remoteAllocation;
+                if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
+                {
+                    remoteAllocation = this.AllocateMemory(assemblySize);
+                }
+                else
+                {
+                    remoteAllocation = this.AllocateMemory(assemblySize, address.ToIntPtr());
+                }
 
                 // Write injected code to new page
-                Byte[] injectionBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, remoteAllocation.ToIntPtr());
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(remoteAllocation.ToIntPtr(), injectionBytes);
+                Byte[] injectionBytes = this.GetAssemblyBytes(assembly, remoteAllocation);
+                this.WriteMemory(remoteAllocation, injectionBytes);
 
                 // Write in the jump to the code cave
-                String codeCaveJump = "jmp " + "0x" + Conversions.ToAddress(remoteAllocation) + "\n" + noOps;
-                Byte[] jumpBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), codeCaveJump, address.ToIntPtr());
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(address.ToIntPtr(), jumpBytes);
+                String codeCaveJump = ("jmp " + Conversions.ToHex(remoteAllocation, formatAsAddress: false, includePrefix: true) + Environment.NewLine + noOps).Trim();
+                Byte[] jumpBytes = this.GetAssemblyBytes(codeCaveJump, address);
+                this.WriteMemory(address, jumpBytes);
 
                 // Save this code cave for later deallocation
                 CodeCave codeCave = new CodeCave(address, remoteAllocation, originalBytes);
@@ -300,7 +317,7 @@
 
             Int32 assemblySize = this.GetAssemblySize(assembly, address);
 
-            Byte[] originalBytes = this.GetInstructionBytes(address, assemblySize);
+            Byte[] originalBytes = this.CollectOriginalBytes(address, assemblySize);
 
             if (originalBytes == null)
             {
@@ -328,7 +345,7 @@
         {
             this.PrintDebugTag();
 
-            Byte[] originalBytes = this.GetInstructionBytes(address, MemoryCore.JumpSize);
+            Byte[] originalBytes = this.CollectOriginalBytes(address, MemoryCore.JumpSize);
             Int32 originalByteSize;
 
             if (originalBytes != null && originalBytes.Length < MemoryCore.JumpSize)
@@ -399,10 +416,10 @@
         /// <param name="address">The address to which the keyword is bound.</param>
         public void SetKeyword(String keyword, UInt64 address)
         {
-            this.PrintDebugTag(keyword, address.ToString("x"));
+            this.PrintDebugTag(keyword?.ToLower(), address.ToString("x"));
 
-            String mapping = "0x" + Conversions.ToAddress(address);
-            this.Keywords[keyword] = mapping;
+            String mapping = "0x" + Conversions.ToHex(address);
+            this.Keywords[keyword?.ToLower()] = mapping;
         }
 
         /// <summary>
@@ -412,9 +429,56 @@
         /// <param name="address">The address to which the keyword is bound.</param>
         public void SetGlobalKeyword(String globalKeyword, UInt64 address)
         {
-            this.PrintDebugTag(globalKeyword, address.ToString("x"));
+            this.PrintDebugTag(globalKeyword?.ToLower(), address.ToString("x"));
 
-            MemoryCore.GlobalKeywords[globalKeyword] = "0x" + Conversions.ToAddress(address);
+            String mapping = "0x" + Conversions.ToHex(address);
+            MemoryCore.globalKeywords.Value[globalKeyword?.ToLower()] = mapping;
+        }
+
+        /// <summary>
+        /// Gets the value of a keyword.
+        /// </summary>
+        /// <param name="keyword">The keyword.</param>
+        /// <returns>The value of the keyword. If not found, returns 0.</returns>
+        public UInt64 GetKeywordValue(String keyword)
+        {
+            if (String.IsNullOrWhiteSpace(keyword))
+            {
+                return 0;
+            }
+
+            String result = null;
+            this.Keywords.TryGetValue(keyword?.ToLower(), out result);
+
+            if (!CheckSyntax.CanParseAddress(result))
+            {
+                return 0;
+            }
+
+            return Conversions.ParseHexStringAsDynamic(typeof(UInt64), result);
+        }
+
+        /// <summary>
+        /// Gets the value of a global keyword.
+        /// </summary>
+        /// <param name="keyword">The global keyword.</param>
+        /// <returns>The value of the global keyword. If not found, returns 0.</returns>
+        public UInt64 GetGlobalKeywordValue(String globalKeyword)
+        {
+            if (String.IsNullOrWhiteSpace(globalKeyword))
+            {
+                return 0;
+            }
+
+            String result = null;
+            MemoryCore.globalKeywords.Value.TryGetValue(globalKeyword?.ToLower(), out result);
+
+            if (!CheckSyntax.CanParseAddress(result))
+            {
+                return 0;
+            }
+
+            return Conversions.ParseHexStringAsDynamic(typeof(UInt64), result);
         }
 
         /// <summary>
@@ -441,9 +505,9 @@
             this.PrintDebugTag(globalKeyword);
 
             String valueRemoved;
-            if (MemoryCore.GlobalKeywords.ContainsKey(globalKeyword))
+            if (MemoryCore.globalKeywords.Value.ContainsKey(globalKeyword))
             {
-                MemoryCore.GlobalKeywords.TryRemove(globalKeyword, out valueRemoved);
+                MemoryCore.globalKeywords.Value.TryRemove(globalKeyword, out valueRemoved);
             }
         }
 
@@ -464,7 +528,7 @@
         {
             this.PrintDebugTag();
 
-            MemoryCore.GlobalKeywords.Clear();
+            MemoryCore.globalKeywords.Value.Clear();
         }
 
         /// <summary>
@@ -575,12 +639,12 @@
             // Resolve keywords
             foreach (KeyValuePair<String, String> keyword in this.Keywords)
             {
-                assembly = assembly.Replace("<" + keyword.Key + ">", keyword.Value);
+                assembly = assembly.Replace("<" + keyword.Key + ">", keyword.Value, StringComparison.OrdinalIgnoreCase);
             }
 
-            foreach (KeyValuePair<String, String> globalKeyword in MemoryCore.GlobalKeywords)
+            foreach (KeyValuePair<String, String> globalKeyword in MemoryCore.globalKeywords.Value.ToArray())
             {
-                assembly = assembly.Replace("<" + globalKeyword.Key + ">", globalKeyword.Value);
+                assembly = assembly.Replace("<" + globalKeyword.Key + ">", globalKeyword.Value, StringComparison.OrdinalIgnoreCase);
             }
 
             return assembly;

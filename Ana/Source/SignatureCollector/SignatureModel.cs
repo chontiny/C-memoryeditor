@@ -5,6 +5,7 @@
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
     using System.Text;
+
     [DataContract]
     internal class SignatureModel
     {
@@ -52,6 +53,15 @@
             String base64Signature = Convert.ToBase64String(bytes);
 
             return base64Signature;
+        }
+
+        public static SignatureModel Deserialize(String base64Signature)
+        {
+            Byte[] bytes = Convert.FromBase64String(base64Signature);
+            MemoryStream memoryStream = new MemoryStream(bytes);
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(SignatureModel));
+            SignatureModel signature = (SignatureModel)serializer.ReadObject(memoryStream);
+            return signature;
         }
     }
     //// End class

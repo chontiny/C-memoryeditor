@@ -10,29 +10,29 @@
     using Utils.Extensions;
 
     /// <summary>
-    /// Singleton class to resolve the address of managed objects in an external process
+    /// Singleton class to resolve the address of managed objects in an external process.
     /// </summary>
     internal class AddressResolver : RepeatedTask
     {
         /// <summary>
-        /// Time in ms of how often to poll and resolve addresses initially
+        /// Time in ms of how often to poll and resolve addresses initially.
         /// </summary>
         private const Int32 ResolveIntervalInitial = 200;
 
         /// <summary>
-        /// Time in ms of how often to poll and re-resolve addresses
+        /// Time in ms of how often to poll and re-resolve addresses.
         /// </summary>
         private const Int32 ResolveInterval = 5000;
 
         /// <summary>
-        /// Singleton instance of the <see cref="AddressResolver" /> class
+        /// Singleton instance of the <see cref="AddressResolver" /> class.
         /// </summary>
         private static Lazy<AddressResolver> addressResolverInstance = new Lazy<AddressResolver>(
             () => { return new AddressResolver(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="AddressResolver" /> class from being created
+        /// Prevents a default instance of the <see cref="AddressResolver" /> class from being created.
         /// </summary>
         private AddressResolver()
         {
@@ -40,35 +40,40 @@
         }
 
         /// <summary>
-        /// The managed language to be used when resolving the provided object
+        /// The managed language to be used when resolving the provided object.
         /// </summary>
         public enum ResolveTypeEnum
         {
             /// <summary>
-            /// A standard module in a native program
+            /// A standard module in a native program.
             /// </summary>
             Module,
 
             /// <summary>
-            /// A .Net object
+            /// A global keyword created by a script.
+            /// </summary>
+            GlobalKeyword,
+
+            /// <summary>
+            /// A .Net object.
             /// </summary>
             DotNet,
 
             /// <summary>
-            /// A Java object
+            /// A Java object.
             /// </summary>
             //// Java
         }
 
         /// <summary>
-        /// Gets or sets the mapping of object identifiers to their object
+        /// Gets or sets the mapping of object identifiers to their object.
         /// </summary>
         private Dictionary<String, DotNetObject> DotNetNameMap { get; set; }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="AddressResolver"/> class
+        /// Gets a singleton instance of the <see cref="AddressResolver"/> class.
         /// </summary>
-        /// <returns>A singleton instance of the class</returns>
+        /// <returns>A singleton instance of the class.</returns>
         public static AddressResolver GetInstance()
         {
             return AddressResolver.addressResolverInstance.Value;
@@ -83,8 +88,9 @@
         {
             IntPtr result = IntPtr.Zero;
 
+            identifier = identifier?.RemoveSuffixes(".exe", ".dll");
             IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().OperatingSystemAdapter.GetModules()
-                .Select(x => x)?.Where(x => x.Name.Equals(identifier, StringComparison.OrdinalIgnoreCase));
+                .Select(x => x)?.Where(x => x.Name.RemoveSuffixes(".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));
 
             if (modules.Count() > 0)
             {
@@ -92,6 +98,19 @@
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Determines the base address of a module given a global keyword.
+        /// </summary>
+        /// <param name="identifier">The global keyword identifier defined by a script.</param>
+        /// <returns>The base address as defined by the keyword.</returns>
+        public IntPtr ResolveGlobalKeyword(String identifier)
+        {
+            IntPtr result = IntPtr.Zero;
+
+            ScriptEngine.ScriptEngine scriptEngine = new ScriptEngine.ScriptEngine();
+            return scriptEngine.MemoryCore.GetGlobalKeywordValue(identifier).ToIntPtr();
         }
 
         /// <summary>

@@ -83,7 +83,7 @@
 
             if (!this.isValueHex && CheckSyntax.CanParseValue(elementType, value))
             {
-                this.addressValue = Utils.Validation.Conversions.ParseDecStringAsValue(elementType, value);
+                this.addressValue = Utils.Validation.Conversions.ParsePrimitiveStringAsDynamic(elementType, value);
             }
             else if (this.isValueHex && CheckSyntax.CanParseHex(elementType, value))
             {
@@ -271,10 +271,10 @@
         {
             if (this.Offsets != null && this.Offsets.Count() > 0)
             {
-                return "P->" + Conversions.ToAddress(this.EffectiveAddress);
+                return "P->" + Conversions.ToHex(this.EffectiveAddress);
             }
 
-            return Conversions.ToAddress(this.EffectiveAddress);
+            return Conversions.ToHex(this.EffectiveAddress);
         }
 
         /// <summary>
@@ -310,13 +310,16 @@
             {
                 case AddressResolver.ResolveTypeEnum.Module:
                     pointer = AddressResolver.GetInstance().ResolveModule(this.BaseIdentifier);
-                    pointer = pointer.Add(this.BaseAddress);
+                    break;
+                case AddressResolver.ResolveTypeEnum.GlobalKeyword:
+                    pointer = AddressResolver.GetInstance().ResolveGlobalKeyword(this.BaseIdentifier);
                     break;
                 case AddressResolver.ResolveTypeEnum.DotNet:
                     pointer = AddressResolver.GetInstance().ResolveDotNetObject(this.BaseIdentifier);
-                    pointer = pointer.Add(this.BaseAddress);
                     break;
             }
+
+            pointer = pointer.Add(this.BaseAddress);
 
             if (this.Offsets == null || this.Offsets.Count() == 0)
             {
