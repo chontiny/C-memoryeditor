@@ -48,6 +48,14 @@
         UInt64 AllocateMemory(Int32 size);
 
         /// <summary>
+        /// Allocates memory in the target process, and returns the address of the new memory.
+        /// </summary>
+        /// <param name="size">The size of the allocation.</param>
+        /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
+        /// <returns>The address of the allocated memory.</returns>
+        UInt64 AllocateMemory(Int32 size, IntPtr allocAddress);
+
+        /// <summary>
         /// Deallocates memory previously allocated at a specified address.
         /// </summary>
         /// <param name="address">The address to perform the deallocation.</param>

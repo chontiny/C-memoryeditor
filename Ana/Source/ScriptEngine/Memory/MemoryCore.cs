@@ -178,6 +178,22 @@
         }
 
         /// <summary>
+        /// Allocates memory in the target process, and returns the address of the new memory.
+        /// </summary>
+        /// <param name="size">The size of the allocation.</param>
+        /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
+        /// <returns>The address of the allocated memory.</returns>
+        public UInt64 AllocateMemory(Int32 size, IntPtr allocAddress)
+        {
+            this.PrintDebugTag();
+
+            UInt64 address = EngineCore.GetInstance().OperatingSystemAdapter.AllocateMemory(size, allocAddress).ToUInt64();
+            this.RemoteAllocations.Add(address);
+
+            return address;
+        }
+
+        /// <summary>
         /// Deallocates memory previously allocated at a specified address.
         /// </summary>
         /// <param name="address">The address to perform the deallocation.</param>
@@ -229,17 +245,20 @@
             // Determine size of our injected code
             Int32 assemblySize = this.GetAssemblySize(assembly, address);
 
+            // Determine the minimum number of bytes that need to be replaced
+            Int32 minimumReplacementSize = Math.Min(assemblySize, MemoryCore.JumpSize);
+
             // Gather the original bytes
-            Byte[] originalBytes = this.CollectOriginalBytes(address, MemoryCore.JumpSize);
+            Byte[] originalBytes = this.CollectOriginalBytes(address, minimumReplacementSize);
 
             // Determine number of no-ops to fill dangling bytes
-            String noOps = (originalBytes.Length - MemoryCore.JumpSize > 0 ? "db " + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - MemoryCore.JumpSize)).TrimEnd(',') : String.Empty);
+            String noOps = (originalBytes.Length - minimumReplacementSize > 0 ? "db " + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - minimumReplacementSize)).TrimEnd(',') : String.Empty);
 
             // Handle case where allocation is not needed
             if (assemblySize <= originalBytes.Length)
             {
-                Byte[] injectionBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly + "\n" + noOps, address.ToIntPtr());
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(address.ToIntPtr(), injectionBytes);
+                Byte[] injectionBytes = this.GetAssemblyBytes(assembly + "\n" + noOps, address);
+                this.WriteMemory(address, injectionBytes);
 
                 CodeCave codeCave = new CodeCave(address, 0, originalBytes);
                 this.CodeCaves.Add(codeCave);
@@ -250,21 +269,31 @@
             {
                 // Add code cave jump return automatically
                 UInt64 returnAddress = GetCaveExitAddress(address);
-                assembly = assembly + "\n" + "jmp " + "0x" + Conversions.ToAddress(returnAddress);
+                // Place jump to return address
+                assembly = assembly.Trim()
+                    + Environment.NewLine
+                    + "jmp " + Conversions.ToHex(returnAddress, formatAsAddress: false, includePrefix: true);
                 assemblySize = this.GetAssemblySize(assembly, address);
 
                 // Allocate memory
-                UInt64 remoteAllocation = EngineCore.GetInstance().OperatingSystemAdapter.AllocateMemory(assemblySize).ToUInt64();
-                this.RemoteAllocations.Add(remoteAllocation);
+                UInt64 remoteAllocation;
+                if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
+                {
+                    remoteAllocation = this.AllocateMemory(assemblySize);
+                }
+                else
+                {
+                    remoteAllocation = this.AllocateMemory(assemblySize, address.ToIntPtr());
+                }
 
                 // Write injected code to new page
-                Byte[] injectionBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, remoteAllocation.ToIntPtr());
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(remoteAllocation.ToIntPtr(), injectionBytes);
+                Byte[] injectionBytes = this.GetAssemblyBytes(assembly, remoteAllocation);
+                this.WriteMemory(remoteAllocation, injectionBytes);
 
                 // Write in the jump to the code cave
-                String codeCaveJump = "jmp " + "0x" + Conversions.ToAddress(remoteAllocation) + "\n" + noOps;
-                Byte[] jumpBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), codeCaveJump, address.ToIntPtr());
-                EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(address.ToIntPtr(), jumpBytes);
+                String codeCaveJump = ("jmp " + Conversions.ToHex(remoteAllocation, formatAsAddress: false, includePrefix: true) + Environment.NewLine + noOps).Trim();
+                Byte[] jumpBytes = this.GetAssemblyBytes(codeCaveJump, address);
+                this.WriteMemory(address, jumpBytes);
 
                 // Save this code cave for later deallocation
                 CodeCave codeCave = new CodeCave(address, remoteAllocation, originalBytes);
@@ -389,7 +418,7 @@
         {
             this.PrintDebugTag(keyword?.ToLower(), address.ToString("x"));
 
-            String mapping = "0x" + Conversions.ToAddress(address);
+            String mapping = "0x" + Conversions.ToHex(address);
             this.Keywords[keyword?.ToLower()] = mapping;
         }
 
@@ -402,7 +431,7 @@
         {
             this.PrintDebugTag(globalKeyword?.ToLower(), address.ToString("x"));
 
-            String mapping = "0x" + Conversions.ToAddress(address);
+            String mapping = "0x" + Conversions.ToHex(address);
             MemoryCore.globalKeywords.Value[globalKeyword?.ToLower()] = mapping;
         }
 
@@ -426,7 +455,7 @@
                 return 0;
             }
 
-            return Conversions.ParseHexStringAsValue(typeof(UInt64), result);
+            return Conversions.ParseHexStringAsDynamic(typeof(UInt64), result);
         }
 
         /// <summary>
@@ -449,7 +478,7 @@
                 return 0;
             }
 
-            return Conversions.ParseHexStringAsValue(typeof(UInt64), result);
+            return Conversions.ParseHexStringAsDynamic(typeof(UInt64), result);
         }
 
         /// <summary>

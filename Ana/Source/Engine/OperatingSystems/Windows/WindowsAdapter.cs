@@ -318,7 +318,18 @@
         /// <returns>A pointer to the location of the allocated memory</returns>
         public IntPtr AllocateMemory(Int32 size)
         {
-            return Memory.Allocate(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, size);
+            return Memory.Allocate(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, IntPtr.Zero, size);
+        }
+
+        /// <summary>
+        /// Allocates memory in the opened process
+        /// </summary>
+        /// <param name="size">The size of the memory allocation</param>
+        /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
+        /// <returns>A pointer to the location of the allocated memory</returns>
+        public IntPtr AllocateMemory(Int32 size, IntPtr allocAddress)
+        {
+            return Memory.Allocate(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, allocAddress, size);
         }
 
         /// <summary>

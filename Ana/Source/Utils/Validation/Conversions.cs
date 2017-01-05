@@ -16,7 +16,7 @@
         /// <returns>The type that corresponds to the given string</returns>
         public static Type StringToPrimitiveType(String value)
         {
-            return PrimitiveTypes.GetPrimitiveTypes().Where(x => x.Name == value).First();
+            return PrimitiveTypes.GetPrimitiveTypes().Where(x => String.Compare(x.Name, value, true) == 0).First();
         }
 
         /// <summary>
@@ -25,7 +25,7 @@
         /// <param name="valueType">The type the string represents</param>
         /// <param name="value">The string to convert</param>
         /// <returns>The value converted from the given string</returns>
-        public static dynamic ParseDecStringAsValue(Type valueType, String value)
+        public static dynamic ParsePrimitiveStringAsDynamic(Type valueType, String value)
         {
             switch (Type.GetTypeCode(valueType))
             {
@@ -61,14 +61,14 @@
         /// <param name="valueType">The type to convert the parsed hex to</param>
         /// <param name="value">The hex string to parse</param>
         /// <returns>The converted value from the hex</returns>
-        public static dynamic ParseHexStringAsValue(Type valueType, String value)
+        public static dynamic ParseHexStringAsDynamic(Type valueType, String value)
         {
-            return ParseDecStringAsValue(valueType, ParseHexStringAsDecString(valueType, value));
+            return ParsePrimitiveStringAsDynamic(valueType, ParseHexStringAsDecString(valueType, value));
         }
 
-        public static String ParseValueAsDec(Type valueType, dynamic value)
+        public static String ParseDynamicAsPrimitiveString(Type valueType, dynamic value)
         {
-            return ParseDecStringAsValue(valueType, value?.ToString()).ToString();
+            return ParsePrimitiveStringAsDynamic(valueType, value?.ToString()).ToString();
         }
 
         /// <summary>
@@ -77,9 +77,9 @@
         /// <param name="valueType"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static String ParseValueAsHex(Type valueType, dynamic value)
+        public static String ParseDynamicAsHex(Type valueType, dynamic value)
         {
-            return ParseDecStringAsHexString(valueType, value?.ToString());
+            return ParsePrimitiveStringAsHexString(valueType, value?.ToString());
         }
 
         /// <summary>
@@ -88,9 +88,9 @@
         /// <param name="valueType">The value type</param>
         /// <param name="value">The hex string to parse</param>
         /// <returns>The converted value from the hex</returns>
-        public static String ParseDecStringAsHexString(Type valueType, String value)
+        public static String ParsePrimitiveStringAsHexString(Type valueType, String value)
         {
-            dynamic realValue = ParseDecStringAsValue(valueType, value);
+            dynamic realValue = ParsePrimitiveStringAsDynamic(valueType, value);
 
             switch (Type.GetTypeCode(valueType))
             {
@@ -144,68 +144,80 @@
             }
         }
 
-        public static String ToAddress(Int32 value)
+        public static String ToHex(Int32 value, Boolean formatAsAddress = true, Boolean includePrefix = false)
         {
-            return ToAddress(unchecked((UInt32)value));
+            return ToHex(unchecked((UInt32)value));
         }
 
-        public static String ToAddress(UInt32 value)
+        public static String ToHex(UInt32 value, Boolean formatAsAddress = true, Boolean includePrefix = false)
         {
             String valueString = value.ToString();
+            String result = 0.ToString();
 
-            if (CheckSyntax.IsUInt32(valueString))
+            if (formatAsAddress)
             {
-                return String.Format("{0:X8}", Convert.ToUInt32(value));
-            }
-            else if (CheckSyntax.IsInt32(valueString))
-            {
-                return String.Format("{0:X8}", unchecked((UInt32)Convert.ToInt32(value)));
+                if (CheckSyntax.IsUInt32(valueString))
+                {
+                    result = String.Format("{0:X8}", Convert.ToUInt32(value));
+                }
+                else if (CheckSyntax.IsInt32(valueString))
+                {
+                    result = String.Format("{0:X8}", unchecked((UInt32)Convert.ToInt32(value)));
+                }
             }
             else
             {
-                return String.Empty;
+                result = value.ToString("X");
             }
+
+            return includePrefix ? "0x" + result : result;
         }
 
-        public static String ToAddress(Int64 value)
+        public static String ToHex(Int64 value, Boolean formatAsAddress = true, Boolean includePrefix = false)
         {
-            return ToAddress(unchecked(value));
+            return ToHex(unchecked((UInt64)value));
         }
 
-        public static String ToAddress(UInt64 value)
+        public static String ToHex(UInt64 value, Boolean formatAsAddress = true, Boolean includePrefix = false)
         {
             String valueString = value.ToString();
+            String result = 0.ToString();
 
-            if (CheckSyntax.IsUInt32(valueString))
+            if (formatAsAddress)
             {
-                return String.Format("{0:X8}", Convert.ToUInt32(value));
-            }
-            else if (CheckSyntax.IsInt32(valueString))
-            {
-                return String.Format("{0:X8}", unchecked((UInt32)Convert.ToInt32(value)));
-            }
-            else if (CheckSyntax.IsUInt64(valueString))
-            {
-                return String.Format("{0:X16}", Convert.ToUInt64(value));
-            }
-            else if (CheckSyntax.IsInt64(valueString))
-            {
-                return String.Format("{0:X16}", unchecked((UInt64)Convert.ToInt64(value)));
+                if (CheckSyntax.IsUInt32(valueString))
+                {
+                    result = String.Format("{0:X8}", Convert.ToUInt32(value));
+                }
+                else if (CheckSyntax.IsInt32(valueString))
+                {
+                    result = String.Format("{0:X8}", unchecked((UInt32)Convert.ToInt32(value)));
+                }
+                else if (CheckSyntax.IsUInt64(valueString))
+                {
+                    result = String.Format("{0:X16}", Convert.ToUInt64(value));
+                }
+                else if (CheckSyntax.IsInt64(valueString))
+                {
+                    result = String.Format("{0:X16}", unchecked((UInt64)Convert.ToInt64(value)));
+                }
             }
             else
             {
-                return String.Empty;
+                result = value.ToString("X");
             }
+
+            return includePrefix ? "0x" + result : result;
         }
 
-        public static String ToAddress(IntPtr value)
+        public static String ToHex(IntPtr value)
         {
-            return ToAddress(value.ToUInt64());
+            return ToHex(value.ToUInt64());
         }
 
-        public static String ToAddress(UIntPtr value)
+        public static String ToHex(UIntPtr value)
         {
-            return ToAddress(value.ToUInt64());
+            return ToHex(value.ToUInt64());
         }
 
         public static UInt64 AddressToValue(String address)

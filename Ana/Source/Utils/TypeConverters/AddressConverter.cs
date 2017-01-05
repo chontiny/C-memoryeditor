@@ -23,7 +23,7 @@
         {
             if (CheckSyntax.CanParseValue(typeof(UInt64), value.ToString()))
             {
-                return Conversions.ToAddress(Conversions.ParseDecStringAsValue(typeof(UInt64), value.ToString()));
+                return Conversions.ToHex(Conversions.ParsePrimitiveStringAsDynamic(typeof(UInt64), value.ToString()));
             }
 
             return base.ConvertTo(context, culture, value, destinationType);

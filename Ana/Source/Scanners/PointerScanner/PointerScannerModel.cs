@@ -164,7 +164,7 @@
 
         public String GetAddressAtIndex(Int32 index)
         {
-            return Conversions.ToAddress(this.AcceptedPointers[index].Item1);
+            return Conversions.ToHex(this.AcceptedPointers[index].Item1);
         }
 
         public IEnumerable<String> GetOffsetsAtIndex(Int32 index)

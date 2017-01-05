@@ -150,11 +150,11 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParseValueAsDec(this.ElementType, Conversions.ParseHexStringAsDecString(this.ElementType, this.Text));
+                return Conversions.ParseDynamicAsPrimitiveString(this.ElementType, Conversions.ParseHexStringAsDecString(this.ElementType, this.Text));
             }
             else
             {
-                return Conversions.ParseValueAsDec(this.ElementType, this.Text);
+                return Conversions.ParseDynamicAsPrimitiveString(this.ElementType, this.Text);
             }
         }
 
@@ -171,11 +171,11 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParseDecStringAsHexString(this.ElementType, Conversions.ParseHexStringAsDecString(this.ElementType, this.Text));
+                return Conversions.ParsePrimitiveStringAsHexString(this.ElementType, Conversions.ParseHexStringAsDecString(this.ElementType, this.Text));
             }
             else
             {
-                return Conversions.ParseDecStringAsHexString(this.ElementType, Conversions.ParseValueAsDec(this.ElementType, this.Text));
+                return Conversions.ParsePrimitiveStringAsHexString(this.ElementType, Conversions.ParseDynamicAsPrimitiveString(this.ElementType, this.Text));
             }
         }
 
@@ -192,11 +192,11 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParseHexStringAsValue(this.ElementType, this.Text);
+                return Conversions.ParseHexStringAsDynamic(this.ElementType, this.Text);
             }
             else
             {
-                return Conversions.ParseDecStringAsValue(this.ElementType, this.Text);
+                return Conversions.ParsePrimitiveStringAsDynamic(this.ElementType, this.Text);
             }
         }
 
@@ -220,11 +220,11 @@
 
             if (this.IsHex)
             {
-                this.Text = Conversions.ParseDecStringAsHexString(this.ElementType, valueString);
+                this.Text = Conversions.ParsePrimitiveStringAsHexString(this.ElementType, valueString);
             }
             else
             {
-                this.Text = Conversions.ParseValueAsDec(this.ElementType, valueString);
+                this.Text = Conversions.ParseDynamicAsPrimitiveString(this.ElementType, valueString);
             }
         }
 
@@ -313,7 +313,7 @@
         {
             if (CheckSyntax.CanParseValue(this.ElementType, this.Text))
             {
-                this.Text = Conversions.ParseDecStringAsHexString(this.ElementType, this.Text);
+                this.Text = Conversions.ParsePrimitiveStringAsHexString(this.ElementType, this.Text);
             }
 
             this.IsHex = true;

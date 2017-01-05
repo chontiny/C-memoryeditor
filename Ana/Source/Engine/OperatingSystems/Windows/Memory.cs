@@ -4,6 +4,7 @@
     using Processes;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Runtime.InteropServices;
     using Utils.Extensions;
     using static Native.Enumerations;
@@ -14,6 +15,10 @@
     /// </summary>
     internal static class Memory
     {
+        private const Int32 AllocateRetryCount = 12;
+
+        private static Random Random = new Random();
+
         /// <summary>
         /// Reads an array of bytes in the memory form the target process
         /// </summary>
@@ -63,18 +68,51 @@
         /// Reserves a region of memory within the virtual address space of a specified process.
         /// </summary>
         /// <param name="processHandle">The handle to a process.</param>
+        /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
         /// <param name="size">The size of the region of memory to allocate, in bytes.</param>
         /// <param name="protectionFlags">The memory protection for the region of pages to be allocated.</param>
         /// <param name="allocationFlags">The type of memory allocation.</param>
         /// <returns>The base address of the allocated region</returns>
         public static IntPtr Allocate(
             IntPtr processHandle,
+            IntPtr allocAddress,
             Int32 size,
             MemoryProtectionFlags protectionFlags = MemoryProtectionFlags.ExecuteReadWrite,
             MemoryAllocationFlags allocationFlags = MemoryAllocationFlags.Commit)
         {
-            // Allocate a memory page
-            return NativeMethods.VirtualAllocEx(processHandle, IntPtr.Zero, size, allocationFlags, protectionFlags);
+            if (allocAddress != IntPtr.Zero)
+            {
+                // A specific address has been given. We will modify it to support the following constraints:
+                // - Aligned by 0x10000 / 65536
+                // - Pointing to an unallocated region of memory
+                // - Within +/- 2GB (using 256MB for safety) of address space of the originally specified address, such as to always be in range of a far jump instruction
+                // Note: This does not seem to guarentee a valid result, so a retry count has been put in place.
+
+                Int32 retryCount = 0;
+                IntPtr result = IntPtr.Zero;
+                IEnumerable<MemoryBasicInformation64> freeMemory = UnallocatedMemory(processHandle, allocAddress.Subtract(Int32.MaxValue >> 2), allocAddress.Add(Int32.MaxValue >> 2));
+                do
+                {
+                    result = freeMemory.ElementAt(Memory.Random.Next(0, freeMemory.Count())).BaseAddress;
+                    result = result.Subtract(result.Mod(0x10000));
+                    result = NativeMethods.VirtualAllocEx(processHandle, result, size, allocationFlags, protectionFlags);
+
+                    if (result != IntPtr.Zero || retryCount >= Memory.AllocateRetryCount)
+                    {
+                        break;
+                    }
+
+                    retryCount++;
+
+                } while (result == IntPtr.Zero);
+
+                return result;
+            }
+            else
+            {
+                // Allocate a memory page
+                return NativeMethods.VirtualAllocEx(processHandle, allocAddress, size, allocationFlags, protectionFlags);
+            }
         }
 
         /// <summary>
@@ -126,6 +164,80 @@
             NativeMethods.VirtualProtectEx(processHandle, address, size, protection, out oldProtection);
 
             return oldProtection;
+        }
+
+        /// <summary>
+        /// Retrieves information about a range of pages within the virtual address space of a specified process
+        /// </summary>
+        /// <param name="processHandle">A handle to the process whose memory information is queried</param>
+        /// <param name="startAddress">A pointer to the starting address of the region of pages to be queried</param>
+        /// <param name="endAddress">A pointer to the ending address of the region of pages to be queried</param>
+        /// <returns>
+        /// A collection of <see cref="MemoryBasicInformation64"/> structures containing info about all virtual pages in the target process
+        /// </returns>
+        public static IEnumerable<MemoryBasicInformation64> UnallocatedMemory(
+            IntPtr processHandle,
+            IntPtr startAddress,
+            IntPtr endAddress)
+        {
+            if (startAddress.ToUInt64() >= endAddress.ToUInt64())
+            {
+                yield return new MemoryBasicInformation64();
+            }
+
+            Boolean wrappedAround = false;
+            Int32 queryResult;
+
+            // Enumerate the memory pages
+            do
+            {
+                // Allocate the structure to store information of memory
+                MemoryBasicInformation64 memoryInfo = new MemoryBasicInformation64();
+
+                if (!Environment.Is64BitProcess)
+                {
+                    // 32 Bit struct is not the same
+                    MemoryBasicInformation32 memoryInfo32 = new MemoryBasicInformation32();
+
+                    // Query the memory region (32 bit native method)
+                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress, out memoryInfo32, Marshal.SizeOf(memoryInfo32));
+
+                    // Copy from the 32 bit struct to the 64 bit struct
+                    memoryInfo.AllocationBase = memoryInfo32.AllocationBase;
+                    memoryInfo.AllocationProtect = memoryInfo32.AllocationProtect;
+                    memoryInfo.BaseAddress = memoryInfo32.BaseAddress;
+                    memoryInfo.Protect = memoryInfo32.Protect;
+                    memoryInfo.RegionSize = memoryInfo32.RegionSize;
+                    memoryInfo.State = memoryInfo32.State;
+                    memoryInfo.Type = memoryInfo32.Type;
+                }
+                else
+                {
+                    // Query the memory region (64 bit native method)
+                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress, out memoryInfo, Marshal.SizeOf(memoryInfo));
+                }
+
+                // Increment the starting address with the size of the page
+                IntPtr previousFrom = startAddress;
+                startAddress = startAddress.Add(memoryInfo.RegionSize);
+
+                if (previousFrom.ToUInt64() > startAddress.ToUInt64())
+                {
+                    wrappedAround = true;
+                }
+
+                if ((memoryInfo.State & MemoryStateFlags.Free) != 0)
+                {
+                    // Return the unallocated memory page
+                    yield return memoryInfo;
+                }
+                else
+                {
+                    // Ignore actual memory
+                    continue;
+                }
+            }
+            while (startAddress.ToUInt64() < endAddress.ToUInt64() && queryResult != 0 && !wrappedAround);
         }
 
         /// <summary>
