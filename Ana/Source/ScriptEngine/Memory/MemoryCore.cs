@@ -639,12 +639,12 @@
             // Resolve keywords
             foreach (KeyValuePair<String, String> keyword in this.Keywords)
             {
-                assembly = assembly.Replace("<" + keyword.Key + ">", keyword.Value);
+                assembly = assembly.Replace("<" + keyword.Key + ">", keyword.Value, StringComparison.OrdinalIgnoreCase);
             }
 
             foreach (KeyValuePair<String, String> globalKeyword in MemoryCore.globalKeywords.Value.ToArray())
             {
-                assembly = assembly.Replace("<" + globalKeyword.Key + ">", globalKeyword.Value);
+                assembly = assembly.Replace("<" + globalKeyword.Key + ">", globalKeyword.Value, StringComparison.OrdinalIgnoreCase);
             }
 
             return assembly;

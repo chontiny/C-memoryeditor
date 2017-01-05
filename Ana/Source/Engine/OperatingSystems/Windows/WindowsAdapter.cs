@@ -462,7 +462,14 @@
                 return normalizedModules;
             }
 
-            Process systemProcess = Process.GetProcessById(process.ProcessId);
+            try
+            {
+                Process systemProcess = Process.GetProcessById(process.ProcessId);
+            }
+            catch
+            {
+                return normalizedModules;
+            }
 
             if (systemProcess == null)
             {
