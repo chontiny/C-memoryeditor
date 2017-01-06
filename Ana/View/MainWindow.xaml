@@ -23,16 +23,18 @@
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
     </shell:WindowChrome.WindowChrome>
+    <intr:Interaction.Triggers>
+        <intr:EventTrigger EventName="Loaded">
+            <intr:InvokeCommandAction Command="{Binding LoadLayoutCommand}" CommandParameter="{Binding ., ElementName=dockManager}" />
+        </intr:EventTrigger>
+        <intr:EventTrigger EventName="ContentRendered">
+            <intr:InvokeCommandAction Command="{Binding DisplayChangeLogCommand}" />
+        </intr:EventTrigger>
+        <intr:EventTrigger EventName="Unloaded">
+            <intr:InvokeCommandAction Command="{Binding SaveLayoutCommand}" CommandParameter="{Binding ., ElementName=dockManager}" />
+        </intr:EventTrigger>
+    </intr:Interaction.Triggers>
     <shell:Grid>
-        <intr:Interaction.Triggers>
-            <intr:EventTrigger EventName="Loaded">
-                <intr:InvokeCommandAction Command="{Binding LoadLayoutCommand}" CommandParameter="{Binding ., ElementName=dockManager}" />
-            </intr:EventTrigger>
-            <intr:EventTrigger EventName="Unloaded">
-                <intr:InvokeCommandAction Command="{Binding SaveLayoutCommand}" CommandParameter="{Binding ., ElementName=dockManager}" />
-            </intr:EventTrigger>
-        </intr:Interaction.Triggers>
-
         <shell:Grid.RowDefinitions>
             <!--  Title Bar Row  -->
             <shell:RowDefinition Height="Auto" />

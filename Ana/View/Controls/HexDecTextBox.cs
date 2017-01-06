@@ -292,6 +292,7 @@
         private void HexidecimalMenuItemClick(Object sender, EventArgs e)
         {
             this.IsHex = true;
+            this.RaiseTextChangedEvent();
         }
 
         /// <summary>
@@ -302,6 +303,7 @@
         private void DecimalMenuItemClick(Object sender, EventArgs e)
         {
             this.IsHex = false;
+            this.RaiseTextChangedEvent();
         }
 
         /// <summary>
@@ -353,6 +355,13 @@
         private void HexDecTextChanged(Object sender, EventArgs e)
         {
             this.UpdateValidity();
+        }
+
+        private void RaiseTextChangedEvent()
+        {
+            String text = this.Text;
+            this.Text = String.Empty;
+            this.Text = text;
         }
     }
     //// End class

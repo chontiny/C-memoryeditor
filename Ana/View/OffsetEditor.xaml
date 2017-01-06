@@ -38,7 +38,12 @@
             x:Name="titlebar"
             Grid.Row="0"
             Height="24"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}" />
+            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            <shell:TextBlock
+                Padding="4"
+                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                Text="Offset Editor" />
+        </shell:Grid>
         <shell:Grid Grid.Row="1" Margin="4">
             <shell:Grid.ColumnDefinitions>
                 <shell:ColumnDefinition Width="*" />

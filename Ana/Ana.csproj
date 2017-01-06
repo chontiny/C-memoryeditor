@@ -31,11 +31,11 @@
     <ErrorReportUrl>https://www.anathena.com/</ErrorReportUrl>
     <ProductName>Anathena</ProductName>
     <PublisherName>Anathena</PublisherName>
-    <MinimumRequiredVersion>3.3.9.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>3.4.0.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.3.9.0</ApplicationVersion>
+    <ApplicationVersion>3.4.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -130,6 +130,7 @@
     <Reference Include="EasyHook, Version=2.7.5870.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
@@ -155,6 +156,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Content\ChangeLog.cs">
+      <DependentUpon>ChangeLog.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Content\Templates\GraphicsInjectionTemplate.cs">
       <DependentUpon>GraphicsInjectionTemplate.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -168,6 +174,7 @@
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\ActionScheduler\ActionChannels.cs" />
     <Compile Include="Source\ActionScheduler\IAction.cs" />
+    <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Source\Content\Images.cs" />
     <Compile Include="Source\Controls\HexDecBoxViewModel.cs" />
@@ -312,6 +319,8 @@
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\OffsetEditor\OffsetEditorViewModel.cs" />
+    <Compile Include="Source\Utils\TypeEditors\ValueEditor\ValueEditorModel.cs" />
+    <Compile Include="Source\Utils\TypeEditors\ValueEditor\ValueEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\ScriptEditor\ScriptEditorModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\ScriptEditor\ScriptEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
@@ -463,6 +472,12 @@
     </Compile>
     <Compile Include="View\Controls\ControlThreadingHelper.cs" />
     <Compile Include="View\Controls\TreeView\ProjectNode.cs" />
+    <Compile Include="View\ChangeLog.xaml.cs">
+      <DependentUpon>ChangeLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ValueEditor.xaml.cs">
+      <DependentUpon>ValueEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SignatureCollector.xaml.cs">
       <DependentUpon>SignatureCollector.xaml</DependentUpon>
     </Compile>
@@ -482,7 +497,6 @@
       <DependentUpon>ScriptEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Controls\DarkBrushes.cs" />
-    <Compile Include="View\Controls\Unfinished\HexDecBox.cs" />
     <Compile Include="View\Controls\HexDecTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -571,6 +585,14 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
+    <Page Include="View\ChangeLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ValueEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\SignatureCollector.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -594,10 +616,6 @@
     <Page Include="View\ScriptEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Controls\Unfinished\HexDecBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\InputCorrelator.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -703,6 +721,10 @@
     <Resource Include="Content\Icons\BlueBlocks4.png" />
     <Resource Include="Content\Icons\MainAppIcon.ico" />
     <EmbeddedResource Include="Content\StandardLayout.xml" />
+    <Content Include="Content\ChangeLog.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ChangeLog.cs</LastGenOutput>
+    </Content>
     <Content Include="Content\Icons\MainIcon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

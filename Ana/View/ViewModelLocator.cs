@@ -1,5 +1,6 @@
 ﻿namespace Ana.View
 {
+    using Source.ChangeLog;
     using Source.CheatBrowser;
     using Source.Controls;
     using Source.DotNetExplorer;
@@ -20,7 +21,7 @@
     using Source.UserSettings;
     using Source.Utils.HotkeyEditor;
     using Source.Utils.ScriptEditor;
-
+    using Source.Utils.ValueEditor;
     /// <summary>
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
@@ -35,7 +36,7 @@
         }
 
         /// <summary>
-        /// Gets the Main view model
+        /// Gets the Main view model.
         /// </summary>
         public MainViewModel MainViewModel
         {
@@ -46,7 +47,7 @@
         }
 
         /// <summary>
-        /// Gets the Process Selector view model
+        /// Gets the Process Selector view model.
         /// </summary>
         public ProcessSelectorViewModel ProcessSelectorViewModel
         {
@@ -57,7 +58,7 @@
         }
 
         /// <summary>
-        /// Gets the Change Counter view model
+        /// Gets the Change Counter view model.
         /// </summary>
         public ChangeCounterViewModel ChangeCounterViewModel
         {
@@ -68,7 +69,7 @@
         }
 
         /// <summary>
-        /// Gets the Input Correlator view model
+        /// Gets the Input Correlator view model.
         /// </summary>
         public InputCorrelatorViewModel InputCorrelatorViewModel
         {
@@ -79,7 +80,7 @@
         }
 
         /// <summary>
-        /// Gets the Label Thresholder view model
+        /// Gets the Label Thresholder view model.
         /// </summary>
         public LabelThresholderViewModel LabelThresholderViewModel
         {
@@ -90,7 +91,7 @@
         }
 
         /// <summary>
-        /// Gets the Manual Scanner view model
+        /// Gets the Manual Scanner view model.
         /// </summary>
         public ManualScannerViewModel ManualScannerViewModel
         {
@@ -101,7 +102,7 @@
         }
 
         /// <summary>
-        /// Gets the Pointer Scanner view model
+        /// Gets the Pointer Scanner view model.
         /// </summary>
         public PointerScannerViewModel PointerScannerViewModel
         {
@@ -112,7 +113,7 @@
         }
 
         /// <summary>
-        /// Gets the Snapshot Manager view model
+        /// Gets the Snapshot Manager view model.
         /// </summary>
         public SnapshotManagerViewModel SnapshotManagerViewModel
         {
@@ -123,7 +124,7 @@
         }
 
         /// <summary>
-        /// Gets the Scan Results view model
+        /// Gets the Scan Results view model.
         /// </summary>
         public ScanResultsViewModel ScanResultsViewModel
         {
@@ -134,7 +135,7 @@
         }
 
         /// <summary>
-        /// Gets the Pointer Scan Results view model
+        /// Gets the Pointer Scan Results view model.
         /// </summary>
         public PointerScanResultsViewModel PointerScanResultsViewModel
         {
@@ -145,7 +146,7 @@
         }
 
         /// <summary>
-        /// Gets the Cheat Browser view model
+        /// Gets the Cheat Browser view model.
         /// </summary>
         public CheatBrowserViewModel CheatBrowserViewModel
         {
@@ -156,7 +157,7 @@
         }
 
         /// <summary>
-        /// Gets the .Net Explorer view model
+        /// Gets the .Net Explorer view model.
         /// </summary>
         public DotNetExplorerViewModel DotNetExplorerViewModel
         {
@@ -167,7 +168,7 @@
         }
 
         /// <summary>
-        /// Gets the Property Viewer view model
+        /// Gets the Property Viewer view model.
         /// </summary>
         public PropertyViewerViewModel PropertyViewerViewModel
         {
@@ -178,7 +179,7 @@
         }
 
         /// <summary>
-        /// Gets the Settings view model
+        /// Gets the Settings view model.
         /// </summary>
         public SettingsViewModel SettingsViewModel
         {
@@ -189,7 +190,7 @@
         }
 
         /// <summary>
-        /// Gets the Project Explorer view model
+        /// Gets the Project Explorer view model.
         /// </summary>
         public ProjectExplorerViewModel ProjectExplorerViewModel
         {
@@ -200,7 +201,7 @@
         }
 
         /// <summary>
-        /// Gets the Project Explorer view model
+        /// Gets the Project Explorer view model.
         /// </summary>
         public ValueCollectorViewModel ValueCollectorViewModel
         {
@@ -222,7 +223,7 @@
         }
 
         /// <summary>
-        /// Gets the Script Editor view model
+        /// Gets the Script Editor view model.
         /// </summary>
         public ScriptEditorViewModel ScriptEditorViewModel
         {
@@ -233,7 +234,18 @@
         }
 
         /// <summary>
-        /// Gets a Offset Editor view model. Note: Not a singleton, will create a new object
+        /// Gets the Value Editor view model.
+        /// </summary>
+        public ValueEditorViewModel ValueEditorViewModel
+        {
+            get
+            {
+                return new ValueEditorViewModel();
+            }
+        }
+
+        /// <summary>
+        /// Gets a Offset Editor view model. Note: Not a singleton, will create a new object.
         /// </summary>
         public OffsetEditorViewModel OffsetEditorViewModel
         {
@@ -244,7 +256,7 @@
         }
 
         /// <summary>
-        /// Gets a Hotkey Editor view model. Note: Not a singleton, will create a new object
+        /// Gets a Hotkey Editor view model. Note: Not a singleton, will create a new object.
         /// </summary>
         public HotkeyEditorViewModel HotkeyEditorViewModel
         {
@@ -255,13 +267,24 @@
         }
 
         /// <summary>
-        /// Gets a Hex Dec Box view model. Note: Not a singleton, will create a new object
+        /// Gets a Hex Dec Box view model. Note: Not a singleton, will create a new object.
         /// </summary>
         public HexDecBoxViewModel HexDecBoxViewModel
         {
             get
             {
                 return new HexDecBoxViewModel();
+            }
+        }
+
+        /// <summary>
+        /// Gets a Change Log view model. Note: Not a singleton, will create a new object.
+        /// </summary>
+        public ChangeLogViewModel ChangeLogViewModel
+        {
+            get
+            {
+                return new ChangeLogViewModel();
             }
         }
     }
