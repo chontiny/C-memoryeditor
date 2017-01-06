@@ -26,7 +26,6 @@
             this.ContentId = ScriptEditorViewModel.ToolContentId;
             this.UpdateScriptCommand = new RelayCommand<String>((script) => this.UpdateScript(script), (script) => true);
             this.SaveScriptCommand = new RelayCommand<String>((script) => this.SaveScript(script), (script) => true);
-            this.ExitCommand = new RelayCommand(() => this.Exit(), () => true);
 
             Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
         }
@@ -35,11 +34,6 @@
         /// Gets a command to save the active script.
         /// </summary>
         public ICommand SaveScriptCommand { get; private set; }
-
-        /// <summary>
-        /// Gets a command to exit this window.
-        /// </summary>
-        public ICommand ExitCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to update the active script text.
@@ -81,14 +75,6 @@
         private void SaveScript(String script)
         {
             this.UpdateScript(script);
-        }
-
-        /// <summary>
-        /// Closes this window.
-        /// </summary>
-        private void Exit()
-        {
-            //// this.Close();
         }
     }
     //// End class

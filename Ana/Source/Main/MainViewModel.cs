@@ -9,6 +9,7 @@
     using Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
+    using System.Deployment.Application;
     using System.IO;
     using System.Reflection;
     using System.Threading;
@@ -64,6 +65,7 @@
             this.ResetLayoutStandardCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutStandard(dockingManager), (dockingManager) => true);
             this.ResetLayoutDeveloperCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutDeveloper(dockingManager), (dockingManager) => true);
             this.LoadLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.LoadLayout(dockingManager), (dockingManager) => true);
+            this.DisplayChangeLogCommand = new RelayCommand(() => this.DisplayChangeLog(), () => true);
             this.SaveLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.SaveLayout(dockingManager), (dockingManager) => true);
             this.StartBackgroundServices();
         }
@@ -92,6 +94,11 @@
         /// Gets the command to reset the current docking layout to the default.
         /// </summary>
         public ICommand ResetLayoutDeveloperCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to open the change log.
+        /// </summary>
+        public ICommand DisplayChangeLogCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to open the current docking layout.
@@ -209,6 +216,28 @@
         private void Minimize(Window window)
         {
             window.WindowState = WindowState.Minimized;
+        }
+
+        /// <summary>
+        /// Displays the change log to the user if there has been a recent update
+        /// </summary>
+        private void DisplayChangeLog()
+        {
+            try
+            {
+                if (!ApplicationDeployment.IsNetworkDeployed || !ApplicationDeployment.CurrentDeployment.IsFirstRun)
+                {
+                    return;
+                }
+            }
+            catch
+            {
+                return;
+            }
+
+            View.ChangeLog changeLog = new View.ChangeLog();
+            changeLog.Owner = Application.Current.MainWindow;
+            changeLog.ShowDialog();
         }
 
         /// <summary>

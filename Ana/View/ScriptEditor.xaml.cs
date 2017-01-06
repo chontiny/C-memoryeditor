@@ -171,7 +171,6 @@
         /// <param name="e">Event args</param>
         private void ExitFileMenuItemClick(Object sender, RoutedEventArgs e)
         {
-            this.ScriptEditorViewModel.ExitCommand.Execute(null);
             this.Close();
         }
 

@@ -42,6 +42,17 @@
         {
             get
             {
+                try
+                {
+                    if (this.systemProcess != null && this.systemProcess.HasExited)
+                    {
+                        this.systemProcess = null;
+                    }
+                }
+                catch
+                {
+                }
+
                 return this.systemProcess;
             }
 
@@ -455,23 +466,8 @@
         public IEnumerable<NormalizedModule> GetModules()
         {
             List<NormalizedModule> normalizedModules = new List<NormalizedModule>();
-            NormalizedProcess process = EngineCore.GetInstance().Processes.GetOpenedProcess();
 
-            if (process == null)
-            {
-                return normalizedModules;
-            }
-
-            try
-            {
-                Process systemProcess = Process.GetProcessById(process.ProcessId);
-            }
-            catch
-            {
-                return normalizedModules;
-            }
-
-            if (systemProcess == null)
+            if (this.SystemProcess == null)
             {
                 return normalizedModules;
             }
@@ -483,7 +479,7 @@
             try
             {
                 // Determine number of modules
-                if (!Native.NativeMethods.EnumProcessModulesEx(systemProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
+                if (!Native.NativeMethods.EnumProcessModulesEx(this.SystemProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
                 {
                     return normalizedModules;
                 }
@@ -491,16 +487,16 @@
                 Int32 totalNumberofModules = bytesNeeded / IntPtr.Size;
                 modulePointers = new IntPtr[totalNumberofModules];
 
-                if (Native.NativeMethods.EnumProcessModulesEx(systemProcess.Handle, modulePointers, bytesNeeded, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
+                if (Native.NativeMethods.EnumProcessModulesEx(this.SystemProcess.Handle, modulePointers, bytesNeeded, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
                 {
                     for (Int32 index = 0; index < totalNumberofModules; index++)
                     {
                         StringBuilder moduleFilePath = new StringBuilder(1024);
-                        Native.NativeMethods.GetModuleFileNameEx(systemProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)(moduleFilePath.Capacity));
+                        Native.NativeMethods.GetModuleFileNameEx(this.SystemProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)(moduleFilePath.Capacity));
 
                         String moduleName = Path.GetFileName(moduleFilePath.ToString());
                         ModuleInformation moduleInformation = new ModuleInformation();
-                        Native.NativeMethods.GetModuleInformation(systemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * (modulePointers.Length)));
+                        Native.NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * (modulePointers.Length)));
 
                         // Convert to a normalized module and add it to our list
                         NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.lpBaseOfDll, unchecked((Int32)moduleInformation.SizeOfImage));

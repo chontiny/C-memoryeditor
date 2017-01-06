@@ -13,6 +13,9 @@
     using Source.Utils;
     using Source.Utils.DataStructures;
     using Source.Utils.Extensions;
+    using Source.Utils.ScriptEditor;
+    using Source.Utils.Validation;
+    using Source.Utils.ValueEditor;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -454,7 +457,24 @@
             }
 
             ProjectItem projectItem = GetProjectItemFromNode(e.Node);
-            this.CheckItem(projectItem, !projectItem.IsActivated);
+
+            if (projectItem is AddressItem)
+            {
+                ValueEditorModel valueEditor = new ValueEditorModel();
+                AddressItem addressItem = projectItem as AddressItem;
+                dynamic result = valueEditor.EditValue(null, null, addressItem);
+
+                if (CheckSyntax.CanParseValue(addressItem.ElementType, result?.ToString()))
+                {
+                    addressItem.Value = result;
+                }
+            }
+            else if (projectItem is ScriptItem)
+            {
+                ScriptEditorModel scriptEditor = new ScriptEditorModel();
+                ScriptItem scriptItem = projectItem as ScriptItem;
+                scriptItem.Script = scriptEditor.EditValue(null, null, scriptItem.Script) as String;
+            }
         }
 
         private void ProjectExplorerTreeViewSelectionChanged(Object sender, EventArgs e)

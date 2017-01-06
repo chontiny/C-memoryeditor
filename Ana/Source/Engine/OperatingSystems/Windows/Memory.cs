@@ -15,7 +15,7 @@
     /// </summary>
     internal static class Memory
     {
-        private const Int32 AllocateRetryCount = 12;
+        private const Int32 AllocateRetryCount = 64;
 
         private static Random Random = new Random();
 
@@ -78,7 +78,7 @@
             IntPtr allocAddress,
             Int32 size,
             MemoryProtectionFlags protectionFlags = MemoryProtectionFlags.ExecuteReadWrite,
-            MemoryAllocationFlags allocationFlags = MemoryAllocationFlags.Commit)
+            MemoryAllocationFlags allocationFlags = MemoryAllocationFlags.Commit | MemoryAllocationFlags.Reserve)
         {
             if (allocAddress != IntPtr.Zero)
             {
@@ -94,7 +94,6 @@
                 do
                 {
                     result = freeMemory.ElementAt(Memory.Random.Next(0, freeMemory.Count())).BaseAddress;
-                    result = result.Subtract(result.Mod(0x10000));
                     result = NativeMethods.VirtualAllocEx(processHandle, result, size, allocationFlags, protectionFlags);
 
                     if (result != IntPtr.Zero || retryCount >= Memory.AllocateRetryCount)
