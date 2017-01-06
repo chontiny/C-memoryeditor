@@ -79,7 +79,7 @@
 
         private void EditHotkeys()
         {
-            View.HotkeyEditor hotkeyEditor = new View.HotkeyEditor(InputCorrelatorModel.HotKeys);
+            View.Editors.HotkeyEditor hotkeyEditor = new View.Editors.HotkeyEditor(InputCorrelatorModel.HotKeys);
 
             hotkeyEditor.Owner = Application.Current.MainWindow;
             if (hotkeyEditor.ShowDialog() == true)

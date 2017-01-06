@@ -176,9 +176,9 @@
     <Compile Include="Source\ActionScheduler\IAction.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
-    <Compile Include="Source\Content\Images.cs" />
-    <Compile Include="Source\Controls\HexDecBoxViewModel.cs" />
-    <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
+    <Compile Include="Content\Images.cs" />
+    <Compile Include="Source\CustomControls\HexDecBoxViewModel.cs" />
+    <Compile Include="Source\CustomControls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Engine\Hook\Client\HookClient.cs" />
@@ -467,43 +467,43 @@
     <Compile Include="Source\Utils\VirtualItemProvider\VirtualizingCollection.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="View\Controls\CenteredDialogBox.cs">
+    <Compile Include="Source\CustomControls\CenteredDialogBox.cs">
       <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="View\Controls\ControlThreadingHelper.cs" />
-    <Compile Include="View\Controls\TreeView\ProjectNode.cs" />
+    <Compile Include="Source\CustomControls\ControlThreadingHelper.cs" />
+    <Compile Include="Source\CustomControls\TreeView\ProjectNode.cs" />
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ValueEditor.xaml.cs">
+    <Compile Include="View\Editors\ValueEditor.xaml.cs">
       <DependentUpon>ValueEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SignatureCollector.xaml.cs">
       <DependentUpon>SignatureCollector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\HotkeyEditor.xaml.cs">
+    <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PointerScanner.xaml.cs">
       <DependentUpon>PointerScanner.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\OffsetEditor.xaml.cs">
+    <Compile Include="View\Editors\OffsetEditor.xaml.cs">
       <DependentUpon>OffsetEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PointerScanResults.xaml.cs">
       <DependentUpon>PointerScanResults.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ScriptEditor.xaml.cs">
+    <Compile Include="View\Editors\ScriptEditor.xaml.cs">
       <DependentUpon>ScriptEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Controls\DarkBrushes.cs" />
-    <Compile Include="View\Controls\HexDecTextBox.cs">
+    <Compile Include="Source\CustomControls\DarkBrushes.cs" />
+    <Compile Include="Source\CustomControls\HexDecTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\Controls\WatermarkTextBox.cs">
+    <Compile Include="Source\CustomControls\WatermarkTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="View\Controls\WinformsHostingHelper.cs" />
+    <Compile Include="Source\CustomControls\WinformsHostingHelper.cs" />
     <Compile Include="View\InputCorrelator.xaml.cs">
       <DependentUpon>InputCorrelator.xaml</DependentUpon>
     </Compile>
@@ -589,7 +589,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\ValueEditor.xaml">
+    <Page Include="View\Editors\ValueEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -597,7 +597,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\HotkeyEditor.xaml">
+    <Page Include="View\Editors\HotkeyEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -605,7 +605,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\OffsetEditor.xaml">
+    <Page Include="View\Editors\OffsetEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -613,7 +613,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\ScriptEditor.xaml">
+    <Page Include="View\Editors\ScriptEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -895,6 +895,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Source\Content\" />
     <Folder Include="Source\Engine\AddressResolver\Java\" />
     <Folder Include="Source\Engine\AddressResolver\Python\" />
     <Folder Include="Source\Mvvm\Behavior\" />

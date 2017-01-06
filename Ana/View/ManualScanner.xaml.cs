@@ -1,6 +1,5 @@
 ﻿namespace Ana.View
 {
-    using Controls;
     using Source.Results.ScanResults;
     using System;
     using System.Threading.Tasks;
@@ -19,9 +18,9 @@
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
-            this.ValueHexDecBox = new HexDecTextBox();
+            this.ValueHexDecBox = new Source.CustomControls.HexDecTextBox();
             this.ValueHexDecBox.TextChanged += this.ValueUpdated;
-            this.valueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
+            this.valueHexDecBox.Children.Add(Source.CustomControls.WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
         }
@@ -29,7 +28,7 @@
         /// <summary>
         /// Gets or sets the value hex dec box used to display the current value being edited
         /// </summary>
-        private HexDecTextBox ValueHexDecBox { get; set; }
+        private Source.CustomControls.HexDecTextBox ValueHexDecBox { get; set; }
 
         /// <summary>
         /// Updates the active type

@@ -1,10 +1,11 @@
-﻿namespace Ana.View
+﻿namespace Ana.View.Editors
 {
-    using Controls;
+    using Source.CustomControls;
     using Source.Project.ProjectItems;
     using Source.Utils.ValueEditor;
     using System;
     using System.Windows;
+
     /// <summary>
     /// Interaction logic for ValueEditor.xaml
     /// </summary>

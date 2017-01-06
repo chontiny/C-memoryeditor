@@ -1,4 +1,4 @@
-﻿namespace Ana.Source.Controls
+﻿namespace Ana.Source.CustomControls
 {
     using Mvvm;
     using System;

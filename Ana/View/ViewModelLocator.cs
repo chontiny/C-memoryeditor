@@ -2,7 +2,7 @@
 {
     using Source.ChangeLog;
     using Source.CheatBrowser;
-    using Source.Controls;
+    using Source.CustomControls;
     using Source.DotNetExplorer;
     using Source.Main;
     using Source.ProcessSelector;
@@ -22,6 +22,7 @@
     using Source.Utils.HotkeyEditor;
     using Source.Utils.ScriptEditor;
     using Source.Utils.ValueEditor;
+
     /// <summary>
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.

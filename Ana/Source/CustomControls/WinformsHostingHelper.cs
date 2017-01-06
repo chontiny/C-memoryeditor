@@ -1,4 +1,4 @@
-﻿namespace Ana.View.Controls
+﻿namespace Ana.Source.CustomControls
 {
     using System.Windows.Forms;
     using System.Windows.Forms.Integration;
