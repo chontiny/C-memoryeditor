@@ -1,6 +1,7 @@
 ﻿namespace Ana.Source.Engine.OperatingSystems.Windows
 {
     using Native;
+    using Output;
     using Pe;
     using Pe.Structures;
     using Processes;
@@ -507,9 +508,9 @@
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // TODO: Log to user
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error fetching modules from selected process: " + ex.ToString());
             }
 
             return normalizedModules;

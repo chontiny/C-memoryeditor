@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Output;
     using ScriptEngine;
     using System;
     using System.ComponentModel;
@@ -97,21 +98,21 @@
 
             if (this.IsCompiled)
             {
-                // TODO: Log to user, already compiled
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Script already compiled");
                 return null;
             }
 
             try
             {
                 ScriptItem clone = this.Clone() as ScriptItem;
+                clone.script = this.ScriptManager.CompileScript(clone.script);
                 clone.description += " - [Compiled]";
                 clone.isCompiled = true;
-                clone.script = this.ScriptManager.CompileScript(clone.script);
-
                 return clone;
             }
             catch
             {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to complete compile request.");
                 return null;
             }
         }
@@ -130,7 +131,7 @@
             if (this.IsActivated)
             {
                 // Try to run script.
-                if (!this.ScriptManager.RunActivationFunction(this.Script, this.IsCompiled))
+                if (!this.ScriptManager.RunActivationFunction(this))
                 {
                     // Script error -- clear activation.
                     this.ResetActivation();
@@ -138,12 +139,12 @@
                 }
 
                 // Run the update loop for the script
-                this.ScriptManager.RunUpdateFunction();
+                this.ScriptManager.RunUpdateFunction(this);
             }
             else
             {
                 // Try to deactivate script (we do not care if this fails)
-                this.ScriptManager.RunDeactivationFunction();
+                this.ScriptManager.RunDeactivationFunction(this);
             }
         }
     }

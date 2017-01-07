@@ -22,10 +22,13 @@ namespace AnathenaProxy
         {
         }
 
-        public Byte[] Assemble(Boolean isProcess32Bit, String assembly, UInt64 baseAddress)
+        public Byte[] Assemble(Boolean isProcess32Bit, String assembly, UInt64 baseAddress, out String logs)
         {
+            logs = "Starting instruction assembly" + Environment.NewLine;
+
             if (assembly == null)
             {
+                logs += "No assembly code given" + Environment.NewLine;
                 return null;
             }
 
@@ -39,8 +42,7 @@ namespace AnathenaProxy
                 assembly = String.Format("use64\n" + "org 0x{0:X16}\n", baseAddress) + assembly;
             }
 
-            // Print fully assembly to console
-            Console.WriteLine("\n" + assembly + "\n");
+            logs += assembly + Environment.NewLine;
 
             Byte[] result;
             try
@@ -48,14 +50,21 @@ namespace AnathenaProxy
                 // Call C++ FASM wrapper which will call the 32-bit FASM library which can assemble all x86/x64 instructions
                 result = FasmNet.Assemble(assembly);
 
-                // Print bytes to console
-                Array.ForEach(result, x => Console.Write(x.ToString() + " "));
+                logs += "Assembled byte results:" + Environment.NewLine;
+
+                foreach (Byte next in result)
+                {
+                    logs += next.ToString("X") + " ";
+                }
+
+                logs += Environment.NewLine;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error:" + ex.ToString());
+                logs += "Error:" + ex.ToString() + Environment.NewLine;
                 result = null;
             }
+
             return result;
         }
 
