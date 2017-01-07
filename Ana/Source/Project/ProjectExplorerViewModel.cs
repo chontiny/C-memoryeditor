@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Project
 {
+    using CustomControls;
     using Docking;
     using Main;
     using Microsoft.Win32;
@@ -18,7 +19,7 @@
     using System.Windows.Input;
     using UserSettings;
     using Utils.Extensions;
-    using View.Controls;
+
     /// <summary>
     /// View model for the Project Explorer
     /// </summary>

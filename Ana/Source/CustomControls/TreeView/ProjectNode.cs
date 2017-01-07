@@ -1,7 +1,7 @@
-﻿namespace Ana.View.Controls.TreeView
+﻿namespace Ana.Source.CustomControls.TreeView
 {
     using Aga.Controls.Tree;
-    using Source.Project.ProjectItems;
+    using Project.ProjectItems;
     using System;
     using System.Drawing;
 

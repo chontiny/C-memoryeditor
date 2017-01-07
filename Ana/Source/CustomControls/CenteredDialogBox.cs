@@ -1,4 +1,4 @@
-﻿namespace Ana.View.Controls
+﻿namespace Ana.Source.CustomControls
 {
     using System;
     using System.Drawing;

@@ -5,6 +5,7 @@
     using Engine.AddressResolver.DotNet;
     using Mvvm;
     using Mvvm.Command;
+    using Output;
     using Project;
     using Scanners.BackgroundScans.Prefilters;
     using System;
@@ -56,6 +57,8 @@
         /// </summary>
         private MainViewModel()
         {
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Anathena Started");
+
             this.tools = new HashSet<ToolViewModel>();
 
             // Note: These cannot be async, as the logic to update the layout or window cannot be on a new thread
@@ -172,6 +175,8 @@
             //// PointerCollector.GetInstance().Begin();
             DotNetObjectCollector.GetInstance().Begin();
             AddressResolver.GetInstance().Begin();
+
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background Services Started");
         }
 
         /// <summary>

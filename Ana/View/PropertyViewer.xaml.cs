@@ -1,6 +1,6 @@
 ﻿namespace Ana.View
 {
-    using Controls;
+    using Source.CustomControls;
     using Source.PropertyViewer;
     using Source.Utils.Extensions;
     using System;
@@ -9,6 +9,7 @@
     using System.Linq;
     using System.Reflection;
     using System.Windows.Controls;
+
     /// <summary>
     /// Interaction logic for PropertyViewer.xaml
     /// </summary>

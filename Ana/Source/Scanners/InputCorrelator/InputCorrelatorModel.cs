@@ -52,7 +52,7 @@
 
         public void EditKeys()
         {
-            View.HotkeyEditor hotKeyEditor = new View.HotkeyEditor(this.HotKeys);
+            View.Editors.HotkeyEditor hotKeyEditor = new View.Editors.HotkeyEditor(this.HotKeys);
 
             if (hotKeyEditor.ShowDialog() == true)
             {
