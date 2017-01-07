@@ -12,7 +12,7 @@
     x:Name="AnaWindow"
     Title="Anathena"
     Width="840"
-    Height="720"
+    Height="840"
     x:ClassModifier="internal"
     AllowsTransparency="False"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
@@ -44,6 +44,8 @@
             <shell:RowDefinition Height="Auto" />
             <!--  Docking Panel Row  -->
             <shell:RowDefinition Height="*" />
+            <!--  Status Bar Row  -->
+            <shell:RowDefinition Height="Auto" />
         </shell:Grid.RowDefinitions>
 
         <!--  Title Bar  -->
@@ -497,5 +499,15 @@
                 <avalonDock:LayoutPanel />
             </avalonDock:LayoutRoot>
         </avalonDock:DockingManager>
+
+        <!--  Status Bar  -->
+        <shell:Border
+            Grid.Row="4"
+            Padding="4"
+            Background="{StaticResource AvalonDock_Expression_BaseColor15}">
+            <shell:TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                Status: Ready
+            </shell:TextBlock>
+        </shell:Border>
     </shell:Grid>
 </shell:Window>

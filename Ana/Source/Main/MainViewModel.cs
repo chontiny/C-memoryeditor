@@ -270,7 +270,6 @@
         /// <param name="resourceName">Resource to load the layout from. This is optional.</param>
         private void LoadLayout(DockingManager dockManager, String resourceName = null)
         {
-            return;
             // Attempt to load from personal saved layout file
             if (String.IsNullOrEmpty(resourceName))
             {
