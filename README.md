@@ -6,7 +6,7 @@ Official web site: [anathena.com](https://www.anathena.com)
 
 ## Wiki Documentation
 
-You can find more documentation on the [Wiki](https://github.com/zcanann/Anathena/wiki)
+You can find more documentation on the [Wiki](https://github.com/Anathena/Anathena/wiki)
 
 ## Build
 
