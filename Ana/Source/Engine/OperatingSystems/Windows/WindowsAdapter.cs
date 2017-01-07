@@ -44,8 +44,9 @@
             {
                 try
                 {
-                    if (this.systemProcess != null && this.systemProcess.HasExited)
+                    if (this.systemProcess?.HasExited == true)
                     {
+                        EngineCore.GetInstance().Processes.OpenProcess(null);
                         this.systemProcess = null;
                     }
                 }
@@ -62,11 +63,12 @@
                 this.peFile = new PeFile(this.SystemProcess?.MainModule?.FileName);
             }
         }
+
         /// <summary>
-        /// Recieve a process update. This is an optimization over grabbing the process from the <see cref="IProcesses"/> component
-        /// of the <see cref="EngineCore"/> every time we need it, which would be cumbersome when doing hundreds of thousands of memory read/writes
+        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcesses"/> component
+        /// of the <see cref="EngineCore"/> every time we need it, which would be cumbersome when doing hundreds of thousands of memory read/writes.
         /// </summary>
-        /// <param name="process">The newly selected process</param>
+        /// <param name="process">The newly selected process.</param>
         public void Update(NormalizedProcess process)
         {
             try
@@ -75,7 +77,8 @@
             }
             catch
             {
-                this.SystemProcess = null;
+                // Avoid setter functions
+                this.systemProcess = null;
             }
         }
 
@@ -603,9 +606,7 @@
 
             try
             {
-                Process systemProcess = Process.GetProcessById(process.ProcessId);
-
-                if (systemProcess == null || !Native.NativeMethods.IsWow64Process(systemProcess.Handle, out isWow64))
+                if (this.SystemProcess == null || !Native.NativeMethods.IsWow64Process(this.SystemProcess.Handle, out isWow64))
                 {
                     // Error, assume 32 bit
                     return true;
@@ -716,7 +717,7 @@
                 // Formula: AddressOfRawEntryPoint (in exe file) = AddressOfEntryPoint + .text[PointerToRawData] - .text[VirtualAddress]
                 Int32 entryPoint = unchecked((Int32)(entryPointAddress + pointerToRawData - virtualAddress));
 
-                mainModuleHash = Convert.ToBase64String(File.ReadAllBytes(SystemProcess?.MainModule?.FileName).Skip(entryPoint).Take(BytesToRead).ToArray());
+                mainModuleHash = Convert.ToBase64String(File.ReadAllBytes(this.SystemProcess?.MainModule?.FileName).Skip(entryPoint).Take(BytesToRead).ToArray());
             }
             catch
             {

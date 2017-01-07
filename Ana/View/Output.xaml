@@ -21,21 +21,30 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor4}">
-            <Menu Padding="4" Background="Transparent" />
+            <Menu Padding="4" Background="Transparent">
+                <MenuItem Command="{Binding ClearOutputCommand}" ToolTip="Clear Output">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/Ana;component/Content/Icons/Cancel.png" />
+                    </MenuItem.Header>
+                </MenuItem>
+            </Menu>
         </WrapPanel>
-        <ScrollViewer Grid.Row="1">
-            <Grid>
-                <TextBox
-                    Margin="4"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                    IsReadOnly="True"
-                    Text="{Binding LogText, Mode=OneWay}"
-                    TextWrapping="Wrap" />
-            </Grid>
+        <ScrollViewer
+            Name="OutputScrollViewer"
+            Grid.Row="1"
+            ScrollChanged="OutputScrollViewerScrollChanged">
+            <TextBox
+                Margin="4"
+                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                IsReadOnly="True"
+                Text="{Binding LogText, Mode=OneWay}"
+                TextWrapping="Wrap" />
         </ScrollViewer>
     </Grid>
 </UserControl>

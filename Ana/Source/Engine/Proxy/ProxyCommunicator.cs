@@ -118,13 +118,13 @@
                 EndpointAddress endpoint = new EndpointAddress(channelServerName);
                 IProxyService proxyService = ChannelFactory<IProxyService>.CreateChannel(binding, endpoint);
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Started proxy service: " + executableName + " over channel " + channelServerName);
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Started proxy service: " + executableName + " over channel " + channelServerName);
 
                 return proxyService;
             }
             catch
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Failed to start proxy service: " + executableName + ". This may impact Scripts and .NET explorer");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Failed to start proxy service: " + executableName + ". This may impact Scripts and .NET explorer");
                 return null;
             }
         }

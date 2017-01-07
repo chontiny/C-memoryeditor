@@ -15,7 +15,7 @@
     /// <summary>
     /// View model for the Process Selector
     /// </summary>
-    internal class ProcessSelectorViewModel : ToolViewModel
+    internal class ProcessSelectorViewModel : ToolViewModel, IProcessObserver
     {
         /// <summary>
         /// The content id for the docking library associated with this view model
@@ -41,6 +41,8 @@
 
             // Subscribe async to avoid a deadlock situation
             Task.Run(() => { MainViewModel.GetInstance().Subscribe(this); });
+            // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
+            Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });
         }
 
         /// <summary>
@@ -86,6 +88,16 @@
         }
 
         /// <summary>
+        /// Recieves a process update.
+        /// </summary>
+        /// <param name="process">The newly selected process.</param>>
+        public void Update(NormalizedProcess process)
+        {
+            // Raise event to update process name in the view
+            this.RaisePropertyChanged(nameof(this.ProcessName));
+        }
+
+        /// <summary>
         /// Called when the visibility of this tool is changed.
         /// </summary>
         protected override void OnVisibilityChanged()
@@ -117,9 +129,6 @@
             }
 
             EngineCore.GetInstance().Processes.OpenProcess(process);
-
-            // Raise event to update process name in the view
-            this.RaisePropertyChanged(nameof(this.ProcessName));
             this.IsVisible = false;
         }
     }
