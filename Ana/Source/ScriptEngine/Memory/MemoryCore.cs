@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.ScriptEngine.Memory
 {
+    using Output;
     using Source.Engine;
     using Source.Engine.Architecture.Disassembler.SharpDisasm;
     using Source.Engine.OperatingSystems;
@@ -95,7 +96,7 @@
 
             assembly = this.ResolveKeywords(assembly);
 
-            Byte[] bytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
+            Byte[] bytes = this.GetAssemblyBytes(assembly, address);
 
             return bytes == null ? 0 : bytes.Length;
         }
@@ -111,8 +112,12 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
+            String logs;
+            Byte[] result = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out logs);
 
-            return EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, logs);
+
+            return result;
         }
 
         /// <summary>
@@ -327,7 +332,8 @@
             // Determine number of no-ops to fill dangling bytes
             String noOps = (originalBytes.Length - assemblySize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - assemblySize)).TrimEnd(',');
 
-            Byte[] injectionBytes = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly + "\n" + noOps, address.ToIntPtr());
+
+            Byte[] injectionBytes = this.GetAssemblyBytes(assembly + "\n" + noOps, address);
             EngineCore.GetInstance().OperatingSystemAdapter.WriteBytes(address.ToIntPtr(), injectionBytes);
 
             CodeCave codeCave = new CodeCave(address, 0, originalBytes);
