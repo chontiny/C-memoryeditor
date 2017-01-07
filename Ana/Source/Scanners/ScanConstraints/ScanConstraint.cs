@@ -143,20 +143,19 @@
         {
             get
             {
-                return this.constraintValue;
+                if (this.IsValuedConstraint())
+                {
+                    return this.constraintValue;
+                }
+                else
+                {
+                    return null;
+                }
             }
 
             set
             {
-                if (this.IsValuedConstraint())
-                {
-                    this.constraintValue = value;
-                }
-                else
-                {
-                    this.constraintValue = null;
-                }
-
+                this.constraintValue = value;
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ConstraintValue)));
             }
         }
