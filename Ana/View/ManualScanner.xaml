@@ -12,381 +12,333 @@
     xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
     x:Name="AnaManualScanner"
     d:DesignHeight="256"
-    d:DesignWidth="256"
+    d:DesignWidth="384"
     x:ClassModifier="internal"
     DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid.Resources>
             <converters:IconConverter x:Key="IconConverter" />
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
         </Grid.Resources>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Menu
-                Grid.Row="0"
-                Padding="4"
-                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
-                <MenuItem Command="{Binding ManualScannerViewModel.StartScanCommand}" ToolTip="Start Scan">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/Ana;component/Content/Icons/RightArrow.png" />
-                    </MenuItem.Header>
-                </MenuItem>
-                <Separator Style="{DynamicResource VerticalSeparator}" />
-                <MenuItem
-                    BorderThickness="0"
-                    Style="{StaticResource DropDownAutoClose}"
-                    ToolTip="Scan Constraints">
-                    <MenuItem.Header>
-                        <StackPanel Orientation="Horizontal">
+            <WrapPanel Background="{StaticResource AvalonDock_Expression_BaseColor1}">
+                <Menu
+                    Grid.Row="0"
+                    Padding="4"
+                    Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                    <MenuItem Command="{Binding ManualScannerViewModel.StartScanCommand}" ToolTip="Start Scan">
+                        <MenuItem.Header>
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="{Binding ManualScannerViewModel.ScanConstraintImage}" />
-                            <Grid
-                                x:Name="arrowGlyph"
-                                Grid.Column="1"
-                                Margin="4,3,4,3"
-                                IsHitTestVisible="False">
-                                <Path
-                                    x:Name="Arrow"
-                                    Width="7"
-                                    Height="4"
-                                    Data="M 0,1 C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1 z"
-                                    Fill="White" />
-                            </Grid>
-                        </StackPanel>
-                    </MenuItem.Header>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectChangedCommand}"
-                        ToolTip="Changed Value">
+                                Source="pack://application:,,,/Ana;component/Content/Icons/RightArrow.png" />
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <Separator Style="{DynamicResource VerticalSeparator}" />
+                    <MenuItem Command="{Binding ManualScannerViewModel.ClearConstraintsCommand}" ToolTip="Clear Constraints">
                         <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="pack://application:,,,/Ana;component/Content/Icons/Cancel.png" />
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <Separator Style="{DynamicResource VerticalSeparator}" />
+                    <MenuItem
+                        BorderThickness="0"
+                        Style="{StaticResource DropDownAutoClose}"
+                        ToolTip="Scan Constraints">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/Changed.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Changed" />
-                            </WrapPanel>
+                                    Source="{Binding ManualScannerViewModel.ScanConstraintImage}" />
+                                <Grid
+                                    x:Name="arrowGlyph"
+                                    Grid.Column="1"
+                                    Margin="4,3,4,3"
+                                    IsHitTestVisible="False">
+                                    <Path
+                                        x:Name="Arrow"
+                                        Width="7"
+                                        Height="4"
+                                        Data="M 0,1 C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1 z"
+                                        Fill="White" />
+                                </Grid>
+                            </StackPanel>
                         </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectUnchangedCommand}"
-                        ToolTip="Unchanged Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/Unchanged.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Unchanged" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectIncreasedCommand}"
-                        ToolTip="Increased Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/Increased.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Increased" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectDecreasedCommand}"
-                        ToolTip="Decreased Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/Decreased.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Decreased" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectEqualCommand}"
-                        ToolTip="Equal to Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/Equal.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Equal" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectNotEqualCommand}"
-                        ToolTip="Not Equal to Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/NotEqual.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Not Equal To" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectIncreasedByXCommand}"
-                        ToolTip="Increased by Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/PlusX.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Increased By" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectDecreasedByXCommand}"
-                        ToolTip="Decreased by Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/MinusX.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Decreased By" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectGreaterThanCommand}"
-                        ToolTip="Greater Than Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/GreaterThan.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Greater Than" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectGreaterThanOrEqualCommand}"
-                        ToolTip="Greater Than or Equal to Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/GreaterThanOrEqual.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Greater Than Or Equal To" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectLessThanCommand}"
-                        ToolTip="Less Than Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/LessThan.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Less Than" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectLessThanOrEqualCommand}"
-                        ToolTip="Less Than or Equal to Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/LessThanOrEqual.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Less Than Or Equal To" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ManualScannerViewModel.SelectNotScientificNotationCommand}"
-                        ToolTip="Exclude Scientific Notation Values">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Ana;component/Content/Icons/ENotation.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Not Scientific Notation" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                </MenuItem>
-                <Separator Style="{DynamicResource VerticalSeparator}" />
-                <MenuItem Command="{Binding ManualScannerViewModel.AddSelectedConstraintCommand}" ToolTip="Add Constraint">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/Ana;component/Content/Icons/DownArrows.png" />
-                    </MenuItem.Header>
-                </MenuItem>
-                <MenuItem Command="{Binding ManualScannerViewModel.RemoveSelectedConstraintCommand}" ToolTip="Remove Constraint">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/Ana;component/Content/Icons/X.png" />
-                    </MenuItem.Header>
-                </MenuItem>
-                <MenuItem Command="{Binding ManualScannerViewModel.ClearConstraintsCommand}" ToolTip="Clear Constraints">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/Ana;component/Content/Icons/Cancel.png" />
-                    </MenuItem.Header>
-                </MenuItem>
-            </Menu>
-            <Grid Grid.Row="1">
-                <WrapPanel Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor1}">
-                    <StackPanel>
-                        <WrapPanel>
-                            <Label Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
-                                Value:
-                            </Label>
-                            <Grid
-                                x:Name="valueHexDecBox"
-                                Width="196"
-                                Height="20" />
-                        </WrapPanel>
-                    </StackPanel>
-                </WrapPanel>
-            </Grid>
-            <ScrollViewer
-                Grid.Row="2"
-                Background="{StaticResource AvalonDock_Expression_BaseColor15}"
-                VerticalScrollBarVisibility="Auto">
-                <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
-                    <ListView.Resources>
-                        <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
-                    </ListView.Resources>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Focusable" Value="false" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <!--
-								<Grid.InputBindings>
-									<MouseBinding Gesture="LeftDoubleClick"
-												  Command="{Binding DataContext.AddAddressCommand, ElementName=AnaScanResults}"
-												  CommandParameter="{Binding .}"/>
-								</Grid.InputBindings>
-								-->
-                                <WrapPanel Grid.Column="0">
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectChangedCommand}"
+                            ToolTip="Changed Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{Binding Path=ConstraintImage}" />
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/Changed.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="{Binding Path=ConstraintName}" />
+                                        Text="Changed" />
                                 </WrapPanel>
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="{Binding Path=ConstraintValue}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectUnchangedCommand}"
+                            ToolTip="Unchanged Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/Unchanged.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Unchanged" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectIncreasedCommand}"
+                            ToolTip="Increased Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/Increased.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Increased" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectDecreasedCommand}"
+                            ToolTip="Decreased Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/Decreased.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Decreased" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectEqualCommand}"
+                            ToolTip="Equal to Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/Equal.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Equal" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectNotEqualCommand}"
+                            ToolTip="Not Equal to Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/NotEqual.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Not Equal To" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectIncreasedByXCommand}"
+                            ToolTip="Increased by Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/PlusX.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Increased By" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectDecreasedByXCommand}"
+                            ToolTip="Decreased by Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/MinusX.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Decreased By" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectGreaterThanCommand}"
+                            ToolTip="Greater Than Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/GreaterThan.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Greater Than" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectGreaterThanOrEqualCommand}"
+                            ToolTip="Greater Than or Equal to Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/GreaterThanOrEqual.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Greater Than Or Equal To" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectLessThanCommand}"
+                            ToolTip="Less Than Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/LessThan.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Less Than" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectLessThanOrEqualCommand}"
+                            ToolTip="Less Than or Equal to Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/LessThanOrEqual.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Less Than Or Equal To" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Command="{Binding ManualScannerViewModel.SelectNotScientificNotationCommand}"
+                            ToolTip="Exclude Scientific Notation Values">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Ana;component/Content/Icons/ENotation.png" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="Not Scientific Notation" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+                <Grid
+                    x:Name="valueHexDecBox"
+                    Width="196"
+                    Height="20"
+                    Margin="4,0,0,0"
+                    Background="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                <Menu
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}">
+                    <MenuItem Command="{Binding AddCurrentConstraintCommand}" ToolTip="Add Constraint">
+                        <MenuItem.Header>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="pack://application:,,,/Ana;component/Content/Icons/DownArrows.png" />
+                        </MenuItem.Header>
+                    </MenuItem>
+                </Menu>
+            </WrapPanel>
+
+            <!--  Column titles  -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
                     <ListView.Template>
                         <ControlTemplate>
                             <Grid HorizontalAlignment="Left">
@@ -415,23 +367,43 @@
                                         </Style>
                                     </Grid.Resources>
                                     <Border Grid.Column="0">
-                                        <TextBlock Text="Constraint" />
+                                        <TextBlock Text="Active Constraints" />
                                     </Border>
                                     <Border Grid.Column="1">
                                         <TextBlock Text="Value" />
                                     </Border>
                                 </Grid>
-                                <ItemsPresenter Grid.Row="1" />
                             </Grid>
                         </ControlTemplate>
                     </ListView.Template>
                 </ListView>
             </ScrollViewer>
-            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
-                <ListView BorderThickness="0" ItemsSource="{Binding Constraints}">
+
+            <!--  Pending constraint, visible if no constraints added  -->
+            <ScrollViewer
+                Grid.Row="3"
+                VerticalScrollBarVisibility="Auto"
+                Visibility="{Binding HasNoConstraints, Converter={StaticResource BoolToVisibilityConverter}}">
+                <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
                     <ListView.Resources>
                         <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
                     </ListView.Resources>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Focusable" Value="false" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.Template>
+                        <ControlTemplate>
+                            <Grid HorizontalAlignment="Left">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ItemsPresenter />
+                            </Grid>
+                        </ControlTemplate>
+                    </ListView.Template>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
@@ -439,17 +411,83 @@
                                     <ColumnDefinition />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
-                                <!--
-								<Grid.InputBindings>
-									<MouseBinding Gesture="LeftDoubleClick"
-												  Command="{Binding DataContext.AddAddressCommand, ElementName=AnaScanResults}"
-												  CommandParameter="{Binding .}"/>
-								</Grid.InputBindings>
-								-->
                                 <WrapPanel Grid.Column="0">
                                     <Image
                                         Width="16"
                                         Height="16"
+                                        Source="{Binding Path=ConstraintImage}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Text="{Binding Path=ConstraintName}" />
+                                </WrapPanel>
+                                <WrapPanel Grid.Column="1">
+                                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding Path=ConstraintValue}" />
+                                </WrapPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
+
+            <!--  Added constraints  -->
+            <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto">
+                <ListView BorderThickness="0" ItemsSource="{Binding Constraints}">
+                    <ListView.Resources>
+                        <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
+                    </ListView.Resources>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Focusable" Value="false" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.Template>
+                        <ControlTemplate>
+                            <Grid HorizontalAlignment="Left">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ItemsPresenter Grid.Row="1" />
+                            </Grid>
+                        </ControlTemplate>
+                    </ListView.Template>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <WrapPanel Grid.Column="0">
+                                    <Menu Name="debug" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                                        <MenuItem
+                                            Command="{Binding ElementName=AnaManualScanner, Path=DataContext.RemoveConstraintCommand}"
+                                            CommandParameter="{Binding .}"
+                                            ToolTip="Remove Constraint">
+                                            <MenuItem.Header>
+                                                <Image
+                                                    Width="16"
+                                                    Height="16"
+                                                    Source="pack://application:,,,/Ana;component/Content/Icons/X.png" />
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                        <MenuItem
+                                            Command="{Binding ElementName=AnaManualScanner, Path=DataContext.EditConstraintCommand}"
+                                            CommandParameter="{Binding .}"
+                                            ToolTip="Edit Constraint">
+                                            <MenuItem.Header>
+                                                <Image
+                                                    Width="16"
+                                                    Height="16"
+                                                    Source="pack://application:,,,/Ana;component/Content/Icons/MoveUp.png" />
+                                            </MenuItem.Header>
+                                        </MenuItem>
+                                    </Menu>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Margin="8,0,0,0"
                                         Source="{Binding Path=ConstraintImage}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
@@ -463,38 +501,6 @@
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
-                    <ListView.Template>
-                        <ControlTemplate>
-                            <Grid HorizontalAlignment="Left">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid
-                                    Grid.Row="0"
-                                    Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                                    VerticalAlignment="Center">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="5,0" />
-                                            <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                                            <Setter Property="FontWeight" Value="Bold" />
-                                        </Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="BorderThickness" Value="0" />
-                                            <Setter Property="Padding" Value="8,4,8,4" />
-                                            <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                                        </Style>
-                                    </Grid.Resources>
-                                </Grid>
-                                <ItemsPresenter Grid.Row="1" />
-                            </Grid>
-                        </ControlTemplate>
-                    </ListView.Template>
                 </ListView>
             </ScrollViewer>
         </Grid>
