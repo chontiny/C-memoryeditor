@@ -41,6 +41,7 @@
 
             // Subscribe async to avoid a deadlock situation
             Task.Run(() => { MainViewModel.GetInstance().Subscribe(this); });
+
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
             Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });
         }

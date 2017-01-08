@@ -6,27 +6,40 @@
     using System.Drawing;
 
     /// <summary>
-    /// Defines a node in the project explorer
+    /// Defines a <see cref="TreeViewAdv"/> node in the project explorer.
     /// </summary>
     internal class ProjectNode : Node
     {
-        public String EntryDescription { get; set; }
-        public String EntryValuePreview { get; set; }
-        public Image EntryIcon { get; set; }
-        public ProjectItem ProjectItem { get; set; }
-
         /// <summary>
-        /// Initializes a new MyNode class with a given Text property.
+        /// Initializes a new instance of the <see cref="ProjectNode" /> class.
         /// </summary>
-        /// <param name="text">String to set the text property with.</param>
+        /// <param name="entryDescription">String with which to set the description property.</param>
         public ProjectNode(String entryDescription) : base(String.Empty)
         {
             this.EntryDescription = entryDescription;
             this.EntryValuePreview = String.Empty;
-
-            EntryIcon = null;
+            this.EntryIcon = null;
         }
 
+        /// <summary>
+        /// Gets or sets the description of the project node.
+        /// </summary>
+        public String EntryDescription { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value preview of the project node.
+        /// </summary>
+        public String EntryValuePreview { get; set; }
+
+        /// <summary>
+        /// Gets or sets the icon of the project node.
+        /// </summary>
+        public Image EntryIcon { get; set; }
+
+        /// <summary>
+        /// Gets or sets the project item associated with this node.
+        /// </summary>
+        public ProjectItem ProjectItem { get; set; }
     }
     //// End class
 }

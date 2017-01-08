@@ -8,13 +8,17 @@
     using System.Collections.Generic;
     using System.Runtime.InteropServices;
     using UserSettings;
+    using Utils;
     using Utils.Extensions;
-    using Utils.Validation;
+
     /// <summary>
     /// Defines a region of memory in an external process.
     /// </summary>
     internal class SnapshotRegion : NormalizedRegion, IEnumerable
     {
+        /// <summary>
+        /// The memory alignment of this region.
+        /// </summary>
         private Int32 alignment;
 
         /// <summary>
@@ -56,7 +60,7 @@
         public Type LabelType { get; set; }
 
         /// <summary>
-        /// Gets or sets the memory alignment, typically aligned with external process pointer size
+        /// Gets or sets the memory alignment, typically aligned with external process pointer size.
         /// </summary>
         public Int32 Alignment
         {

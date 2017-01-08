@@ -68,7 +68,9 @@
         /// <param name="targetObjects">The selected target objects</param>
         public void Update(Object[] targetObjects)
         {
-            ControlThreadingHelper.InvokeControlAction(this.propertyGrid, () =>
+            ControlThreadingHelper.InvokeControlAction(
+                this.propertyGrid,
+                () =>
             {
                 this.propertyGrid.SelectedObjects = targetObjects == null || targetObjects.Contains(null) ? new Object[] { } : targetObjects;
             });

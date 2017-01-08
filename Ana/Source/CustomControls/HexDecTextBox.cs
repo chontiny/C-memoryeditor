@@ -1,6 +1,6 @@
 ﻿namespace Ana.Source.CustomControls
 {
-    using Source.Utils.Validation;
+    using Source.Utils;
     using System;
     using System.Drawing;
     using System.Windows.Forms;
@@ -150,11 +150,11 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParseDynamicAsPrimitiveString(this.ElementType, Conversions.ParseHexStringAsDecString(this.ElementType, this.Text));
+                return Conversions.ParseHexStringAsPrimitiveString(this.ElementType, this.Text);
             }
             else
             {
-                return Conversions.ParseDynamicAsPrimitiveString(this.ElementType, this.Text);
+                return this.Text;
             }
         }
 
@@ -171,11 +171,11 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParsePrimitiveStringAsHexString(this.ElementType, Conversions.ParseHexStringAsDecString(this.ElementType, this.Text));
+                return this.Text;
             }
             else
             {
-                return Conversions.ParsePrimitiveStringAsHexString(this.ElementType, Conversions.ParseDynamicAsPrimitiveString(this.ElementType, this.Text));
+                return Conversions.ParsePrimitiveStringAsHexString(this.ElementType, this.Text);
             }
         }
 
@@ -224,7 +224,7 @@
             }
             else
             {
-                this.Text = Conversions.ParseDynamicAsPrimitiveString(this.ElementType, valueString);
+                this.Text = valueString;
             }
         }
 
@@ -330,7 +330,7 @@
         {
             if (CheckSyntax.CanParseHex(this.ElementType, this.Text))
             {
-                this.Text = Conversions.ParseHexStringAsDecString(this.ElementType, this.Text);
+                this.Text = Conversions.ParseHexStringAsPrimitiveString(this.ElementType, this.Text);
             }
 
             this.IsHex = false;
@@ -357,6 +357,9 @@
             this.UpdateValidity();
         }
 
+        /// <summary>
+        /// Forces a text changed event to be raised.
+        /// </summary>
         private void RaiseTextChangedEvent()
         {
             String text = this.Text;

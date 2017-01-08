@@ -2,7 +2,7 @@
 {
     using Mvvm;
     using System;
-    using Utils.Validation;
+    using Utils;
 
     /// <summary>
     /// View model for the Hex Dec Box

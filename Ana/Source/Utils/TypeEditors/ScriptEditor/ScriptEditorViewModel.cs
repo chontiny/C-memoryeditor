@@ -45,6 +45,10 @@
         /// </summary>
         public String Script { get; private set; }
 
+        /// <summary>
+        /// Gets the code injection script template.
+        /// </summary>
+        /// <returns>The code injection script template.</returns>
         public String GetCodeInjectionTemplate()
         {
             CodeInjectionTemplate codeInjectionTemplate = new CodeInjectionTemplate();
@@ -52,6 +56,10 @@
             return codeInjectionTemplate.TransformText();
         }
 
+        /// <summary>
+        /// Gets the graphics injection script template.
+        /// </summary>
+        /// <returns>The graphics injection script template.</returns>
         public String GetGraphicsInjectionTemplate()
         {
             GraphicsInjectionTemplate graphicsInjectionTemplate = new GraphicsInjectionTemplate();

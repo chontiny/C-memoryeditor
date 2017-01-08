@@ -153,6 +153,7 @@
                             {
                                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error running update function: " + ex.ToString());
                             }
+
                             return;
                         }
 
