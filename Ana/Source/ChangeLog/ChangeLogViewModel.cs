@@ -5,7 +5,7 @@
     using System.Reflection;
 
     /// <summary>
-    /// View model for the Change Log
+    /// View model for the Change Log.
     /// </summary>
     internal class ChangeLogViewModel : ViewModelBase
     {

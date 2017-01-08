@@ -9,17 +9,17 @@
     using System.Windows.Input;
 
     /// <summary>
-    /// View model for the Script Editor
+    /// View model for the Script Editor.
     /// </summary>
     internal class ScriptEditorViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model
+        /// The content id for the docking library associated with this view model.
         /// </summary>
         public const String ToolContentId = nameof(ScriptEditorViewModel);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScriptEditorViewModel" /> class
+        /// Initializes a new instance of the <see cref="ScriptEditorViewModel" /> class.
         /// </summary>
         public ScriptEditorViewModel() : base("Script Editor")
         {

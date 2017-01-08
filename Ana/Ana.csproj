@@ -177,7 +177,6 @@
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Content\Images.cs" />
-    <Compile Include="Source\CustomControls\HexDecBoxViewModel.cs" />
     <Compile Include="Source\CustomControls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
@@ -584,13 +583,8 @@
     </Compile>
     <Compile Include="Source\Utils\CheckSyntax.cs" />
     <Compile Include="Source\Utils\Conversions.cs" />
-    <Compile Include="Source\Utils\VirtualItemProvider\AsyncVirtualizingCollection.cs" />
-    <Compile Include="Source\Utils\VirtualItemProvider\IItemsProvider.cs" />
-    <Compile Include="Source\Utils\VirtualItemProvider\VirtualizingCollection.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
     <Compile Include="Source\CustomControls\CenteredDialogBox.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\CustomControls\ControlThreadingHelper.cs" />
     <Compile Include="Source\CustomControls\TreeView\ProjectNode.cs" />
@@ -1028,7 +1022,6 @@
     <Folder Include="Source\Engine\AddressResolver\Java\" />
     <Folder Include="Source\Engine\AddressResolver\Python\" />
     <Folder Include="Source\Mvvm\Behavior\" />
-    <Folder Include="Source\Utils\Validation\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Content\Icons\SelectProcess.png" />

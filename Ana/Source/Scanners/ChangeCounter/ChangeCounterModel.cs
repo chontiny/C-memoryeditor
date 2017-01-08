@@ -16,7 +16,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the snapshot being labeled with change counts
+        /// Gets or sets the snapshot being labeled with change counts.
         /// </summary>
         private Snapshot Snapshot { get; set; }
 

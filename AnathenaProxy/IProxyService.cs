@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ServiceModel;
-
-namespace AnathenaProxy
+﻿namespace AnathenaProxy
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ServiceModel;
+
     [ServiceContract()]
     public interface IProxyService
     {
