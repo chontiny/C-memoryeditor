@@ -12,8 +12,8 @@
     using System.Linq;
     using System.Text;
     using System.Threading.Tasks;
+    using Utils;
     using Utils.Extensions;
-    using Utils.Validation;
     using static Native.Enumerations;
     using static Native.Structures;
 
@@ -22,9 +22,10 @@
     /// </summary>
     internal class WindowsAdapter : IOperatingSystemAdapter
     {
+        /// <summary>
+        /// A reference to target process.
+        /// </summary>
         private Process systemProcess;
-
-        private PeFile peFile;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="WindowsAdapter"/> class
@@ -36,8 +37,7 @@
         }
 
         /// <summary>
-        /// Gets a reference to the process running. This is an optimization to minimize accesses
-        /// to the Processes component of the Engine
+        /// Gets a reference to the target process. This is an optimization to minimize accesses to the Processes component of the Engine.
         /// </summary>
         public Process SystemProcess
         {
@@ -61,9 +61,14 @@
             private set
             {
                 this.systemProcess = value;
-                this.peFile = new PeFile(this.SystemProcess?.MainModule?.FileName);
+                this.PortableExecutableFile = new PeFile(this.SystemProcess?.MainModule?.FileName);
             }
         }
+
+        /// <summary>
+        /// Gets or sets the last file parsed as a PE file for signatures.
+        /// </summary>
+        private PeFile PortableExecutableFile { get; set; }
 
         /// <summary>
         /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcesses"/> component
@@ -496,14 +501,14 @@
                     for (Int32 index = 0; index < totalNumberofModules; index++)
                     {
                         StringBuilder moduleFilePath = new StringBuilder(1024);
-                        Native.NativeMethods.GetModuleFileNameEx(this.SystemProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)(moduleFilePath.Capacity));
+                        Native.NativeMethods.GetModuleFileNameEx(this.SystemProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)moduleFilePath.Capacity);
 
                         String moduleName = Path.GetFileName(moduleFilePath.ToString());
                         ModuleInformation moduleInformation = new ModuleInformation();
-                        Native.NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * (modulePointers.Length)));
+                        Native.NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
                         // Convert to a normalized module and add it to our list
-                        NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.lpBaseOfDll, unchecked((Int32)moduleInformation.SizeOfImage));
+                        NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase, unchecked((Int32)moduleInformation.SizeOfImage));
                         normalizedModules.Add(module);
                     }
                 }
@@ -651,7 +656,7 @@
 
             try
             {
-                binaryVersion = FileVersionInfo.GetVersionInfo(SystemProcess?.MainModule?.FileName)?.ProductVersion;
+                binaryVersion = FileVersionInfo.GetVersionInfo(this.SystemProcess?.MainModule?.FileName)?.ProductVersion;
             }
             catch
             {
@@ -670,7 +675,7 @@
 
             try
             {
-                binaryHeaderHash = peFile.SHA256;
+                binaryHeaderHash = this.PortableExecutableFile.SHA256;
             }
             catch
             {
@@ -689,7 +694,7 @@
 
             try
             {
-                binaryImportHash = peFile.ImpHash;
+                binaryImportHash = this.PortableExecutableFile.ImpHash;
             }
             catch
             {
@@ -710,8 +715,8 @@
 
             try
             {
-                IMAGE_SECTION_HEADER textHeader = peFile.ImageSectionHeaders.Where(x => Encoding.UTF8.GetString(x?.Name).TrimEnd('\0') == ".text")?.First();
-                UInt32 entryPointAddress = peFile.ImageNtHeaders.OptionalHeader.AddressOfEntryPoint;
+                IMAGE_SECTION_HEADER textHeader = this.PortableExecutableFile.ImageSectionHeaders.Where(x => Encoding.UTF8.GetString(x?.Name).TrimEnd('\0') == ".text")?.First();
+                UInt32 entryPointAddress = this.PortableExecutableFile.ImageNtHeaders.OptionalHeader.AddressOfEntryPoint;
                 UInt32 pointerToRawData = textHeader.PointerToRawData;
                 UInt32 virtualAddress = textHeader.VirtualAddress;
 

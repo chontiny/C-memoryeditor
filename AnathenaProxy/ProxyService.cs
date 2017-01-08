@@ -1,12 +1,12 @@
-﻿using Anathena.Assemblers.Fasm;
-using Microsoft.Diagnostics.Runtime;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel;
-
-namespace AnathenaProxy
+﻿namespace AnathenaProxy
 {
+    using Anathena.Assemblers.Fasm;
+    using Microsoft.Diagnostics.Runtime;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.ServiceModel;
+
     /// <summary>
     /// Proxy service to be contained by a 32 and 64 bit service, with services exposed via IPC. Useful for certain things that
     /// Anathena requires, such as:

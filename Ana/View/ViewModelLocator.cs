@@ -2,7 +2,6 @@
 {
     using Source.ChangeLog;
     using Source.CheatBrowser;
-    using Source.CustomControls;
     using Source.DotNetExplorer;
     using Source.Main;
     using Source.Output;
@@ -276,17 +275,6 @@
             get
             {
                 return new HotkeyEditorViewModel();
-            }
-        }
-
-        /// <summary>
-        /// Gets a Hex Dec Box view model. Note: Not a singleton, will create a new object.
-        /// </summary>
-        public HexDecBoxViewModel HexDecBoxViewModel
-        {
-            get
-            {
-                return new HexDecBoxViewModel();
             }
         }
 

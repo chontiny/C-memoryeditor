@@ -21,7 +21,7 @@
 
     /// <summary>
     /// Main view model
-    /// Note: There are several MVVM responsability violations in this class, but these are isolated and acceptable
+    /// Note: There are several MVVM responsability violations in this class, but these are isolated and acceptable.
     /// </summary>
     internal class MainViewModel : ViewModelBase
     {
