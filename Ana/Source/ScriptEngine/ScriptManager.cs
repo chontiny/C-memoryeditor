@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.ScriptEngine
 {
+    using Content.Templates;
     using CSScriptLibrary;
     using Output;
     using Project.ProjectItems;
@@ -25,6 +26,11 @@
         /// Update time in milliseconds.
         /// </summary>
         private const Int32 UpdateTime = 1000 / 15;
+
+        /// <summary>
+        /// The identifier to look for when inserting a classless script into the main script template.
+        /// </summary>
+        public const String ScriptCodeInsertionIdentifier = "{{STRING}}";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptManager" /> class.
@@ -59,6 +65,10 @@
 
             try
             {
+                // Embed the classless script within the main script template to get access to the engine functions
+                script = new ScriptTemplate().TransformText().Replace(ScriptCodeInsertionIdentifier, script);
+
+                // Compile the script
                 String compiledScriptFile = CSScript.CompileCode(script);
                 Byte[] compressedScript = Compression.Compress(File.ReadAllBytes(compiledScriptFile));
                 result = Convert.ToBase64String(compressedScript);
