@@ -11,6 +11,9 @@ using Ana.Source.ScriptEngine.Graphics;
 using Ana.Source.ScriptEngine.Hook;
 using Ana.Source.ScriptEngine.Input;
 using Ana.Source.ScriptEngine.Memory;
+	
+// The using statements, if any, will be inserted here:
+<# this.Write(Ana.Source.ScriptEngine.ScriptManager.ScriptUsingsInsertionIdentifier); #>
 
 /// <summary>
 /// A script template which includes all necessary engine components by default.

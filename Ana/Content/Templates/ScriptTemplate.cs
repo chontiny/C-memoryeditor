@@ -36,7 +36,16 @@ using Ana.Source.ScriptEngine.Graphics;
 using Ana.Source.ScriptEngine.Hook;
 using Ana.Source.ScriptEngine.Input;
 using Ana.Source.ScriptEngine.Memory;
-
+	
+// The using statements, if any, will be inserted here:
+");
+            
+            #line 16 "F:\Users\Zachary\Documents\Visual Studio 2015\Projects\Anathena\Ana\Content\Templates\ScriptTemplate.tt"
+ this.Write(Ana.Source.ScriptEngine.ScriptManager.ScriptUsingsInsertionIdentifier); 
+            
+            #line default
+            #line hidden
+            this.Write(@"
 /// <summary>
 /// A script template which includes all necessary engine components by default.
 /// </summary>
@@ -70,7 +79,7 @@ public class Script
 	// The script will be inserted here:
 	");
             
-            #line 46 "F:\Users\Zachary\Documents\Visual Studio 2015\Projects\Anathena\Ana\Content\Templates\ScriptTemplate.tt"
+            #line 49 "F:\Users\Zachary\Documents\Visual Studio 2015\Projects\Anathena\Ana\Content\Templates\ScriptTemplate.tt"
  this.Write(Ana.Source.ScriptEngine.ScriptManager.ScriptCodeInsertionIdentifier); 
             
             #line default
