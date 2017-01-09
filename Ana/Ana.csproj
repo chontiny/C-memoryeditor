@@ -161,6 +161,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Content\Templates\ScriptTemplate.cs">
+      <DependentUpon>ScriptTemplate.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Content\Templates\GraphicsInjectionTemplate.cs">
       <DependentUpon>GraphicsInjectionTemplate.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -868,6 +873,10 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Content\CSharp.xshd" />
+    <Content Include="Content\Templates\ScriptTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
+    </Content>
     <Content Include="Content\Templates\GraphicsInjectionTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>GraphicsInjectionTemplate.cs</LastGenOutput>

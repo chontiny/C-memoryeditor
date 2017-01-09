@@ -34,7 +34,7 @@
             this.InitializeComponent();
             this.LoadHightLightRules();
             this.InitializeCompleteionWindow();
-            this.ScriptEditorTextEditor.FontSize = 14;
+            this.ScriptEditorTextEditor.FontFamily = new FontFamily("Consolas");
             //// this.ScriptEditorTextEditor.TextArea.TextEntering += this.ScriptEditorTextEditorTextAreaTextEntering;
             //// this.ScriptEditorTextEditor.TextArea.TextEntered += this.ScriptEditorTextEditorTextAreaTextEntered;
             this.ScriptEditorTextEditor.TextChanged += this.ScriptEditorTextEditorTextChanged;

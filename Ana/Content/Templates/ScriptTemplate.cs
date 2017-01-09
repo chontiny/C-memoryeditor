@@ -12,15 +12,16 @@ namespace Ana.Content.Templates
     using System.Linq;
     using System.Text;
     using System.Collections.Generic;
+    using Ana;
     using System;
     
     /// <summary>
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2015\Projects\Anathena\Ana\Content\Templates\CodeInjectionTemplate.tt"
+    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2015\Projects\Anathena\Ana\Content\Templates\ScriptTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "14.0.0.0")]
-    public partial class CodeInjectionTemplate : CodeInjectionTemplateBase
+    public partial class ScriptTemplate : ScriptTemplateBase
     {
 #line hidden
         /// <summary>
@@ -28,27 +29,62 @@ namespace Ana.Content.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write(@"public void OnActivate()
+            this.Write(@"
+using System;
+using Ana.Source.ScriptEngine;
+using Ana.Source.ScriptEngine.Graphics;
+using Ana.Source.ScriptEngine.Hook;
+using Ana.Source.ScriptEngine.Input;
+using Ana.Source.ScriptEngine.Memory;
+	
+// The using statements, if any, will be inserted here:
+");
+            
+            #line 16 "F:\Users\Zachary\Documents\Visual Studio 2015\Projects\Anathena\Ana\Content\Templates\ScriptTemplate.tt"
+ this.Write(Ana.Source.ScriptEngine.ScriptManager.ScriptUsingsInsertionIdentifier); 
+            
+            #line default
+            #line hidden
+            this.Write(@"
+/// <summary>
+/// A script template which includes all necessary engine components by default.
+/// </summary>
+public class Script
 {
-	var moduleBase = Memory.GetModuleAddress(""moduleName"");
-	var entry = moduleBase + 0x1234;
-		
-	var code = @""
-		nop
-		"";
-		
-	Memory.CreateCodeCave(entry, code);
-}
+	/// <summary>
+	/// The engine to provide access to memory, graphics, input, etc
+	/// </summary>
+	private readonly ScriptEngine Engine = new ScriptEngine();
 
-public void OnUpdate(float elapsedTimeMillis)
-{
-}
+	/// <summary>
+	/// Gets the API to access memory in the target process.
+	/// </summary>
+	private IMemoryCore Memory { get { return Engine.MemoryCore; } }
 
-public void OnDeactivate()
-{
-	Memory.ClearAllKeywords();
-	Memory.RemoveAllCodeCaves();
-}");
+	/// <summary>
+	/// Gets the API to access graphics features (DirectX, OpenGL)
+	/// </summary>
+	private IGraphicsCore Graphics { get { return Engine.GraphicsCore; } }
+
+	/// <summary>
+	/// Gets the API to access process hook features (speed hack, unrandomizer, etc).
+	/// </summary>
+	private IHookCore Hook { get { return Engine.HookCore; } }
+	
+	/// <summary>
+	/// Gets the API to access user input.
+	/// </summary>
+	private IInputCore Input { get { return Engine.InputCore; } }
+	
+	// The script will be inserted here:
+	");
+            
+            #line 49 "F:\Users\Zachary\Documents\Visual Studio 2015\Projects\Anathena\Ana\Content\Templates\ScriptTemplate.tt"
+ this.Write(Ana.Source.ScriptEngine.ScriptManager.ScriptCodeInsertionIdentifier); 
+            
+            #line default
+            #line hidden
+            this.Write("}\r\n//// End class");
             return this.GenerationEnvironment.ToString();
         }
     }
@@ -60,7 +96,7 @@ public void OnDeactivate()
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "14.0.0.0")]
-    public class CodeInjectionTemplateBase
+    public class ScriptTemplateBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;
