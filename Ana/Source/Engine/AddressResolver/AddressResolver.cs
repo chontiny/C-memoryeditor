@@ -107,10 +107,8 @@
         /// <returns>The base address as defined by the keyword.</returns>
         public IntPtr ResolveGlobalKeyword(String identifier)
         {
-            IntPtr result = IntPtr.Zero;
-
             ScriptEngine.ScriptEngine scriptEngine = new ScriptEngine.ScriptEngine();
-            return scriptEngine.MemoryCore.GetGlobalKeywordValue(identifier).ToIntPtr();
+            return scriptEngine.MemoryCore.GetGlobalKeyword(identifier)?.ToIntPtr();
         }
 
         /// <summary>

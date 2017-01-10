@@ -6,6 +6,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.InteropServices;
+    using Utils;
     using Utils.Extensions;
     using static Native.Enumerations;
     using static Native.Structures;
@@ -19,11 +20,6 @@
         /// The number of retry attempts for 64-bit process allocation. This is a work around due to non-deterministic allocation failures.
         /// </summary>
         private const Int32 AllocateRetryCount = 64;
-
-        /// <summary>
-        /// Random class instance.
-        /// </summary>
-        private static readonly Random Random = new Random();
 
         /// <summary>
         /// Reads an array of bytes in the memory form the target process.
@@ -97,10 +93,11 @@
 
                 Int32 retryCount = 0;
                 IntPtr result = IntPtr.Zero;
-                IEnumerable<MemoryBasicInformation64> freeMemory = UnallocatedMemory(processHandle, allocAddress.Subtract(Int32.MaxValue >> 2), allocAddress.Add(Int32.MaxValue >> 2));
+                IEnumerable<MemoryBasicInformation64> freeMemory = Memory.UnallocatedMemory(processHandle, allocAddress.Subtract(Int32.MaxValue >> 2), allocAddress.Add(Int32.MaxValue >> 2));
+
                 do
                 {
-                    result = freeMemory.ElementAt(Memory.Random.Next(0, freeMemory.Count())).BaseAddress;
+                    result = freeMemory.ElementAt(StaticRandom.Next(0, freeMemory.Count())).BaseAddress;
                     result = NativeMethods.VirtualAllocEx(processHandle, result, size, allocationFlags, protectionFlags);
 
                     if (result != IntPtr.Zero || retryCount >= Memory.AllocateRetryCount)
