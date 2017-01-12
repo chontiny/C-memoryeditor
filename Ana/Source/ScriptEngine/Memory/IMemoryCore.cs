@@ -53,7 +53,7 @@
         /// <param name="size">The size of the allocation.</param>
         /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
         /// <returns>The address of the allocated memory.</returns>
-        UInt64 AllocateMemory(Int32 size, IntPtr allocAddress);
+        UInt64 AllocateMemory(Int32 size, UInt64 allocAddress);
 
         /// <summary>
         /// Deallocates memory previously allocated at a specified address.
@@ -105,29 +105,29 @@
         /// Binds a keyword to a given value for use in the script.
         /// </summary>
         /// <param name="keyword">The local keyword to bind.</param>
-        /// <param name="address">The address to which the keyword is bound.</param>
-        void SetKeyword(String keyword, UInt64 address);
+        /// <param name="value">The address to which the keyword is bound.</param>
+        void SetKeyword(String keyword, dynamic value);
 
         /// <summary>
         /// Binds a keyword to a given value for use in all scripts.
         /// </summary>
         /// <param name="globalKeyword">The global keyword to bind.</param>
-        /// <param name="address">The address to which the keyword is bound.</param>
-        void SetGlobalKeyword(String globalKeyword, UInt64 address);
+        /// <param name="value">The value to which the keyword is bound.</param>
+        void SetGlobalKeyword(String globalKeyword, dynamic value);
 
         /// <summary>
         /// Gets the value of a keyword.
         /// </summary>
         /// <param name="keyword">The keyword.</param>
         /// <returns>The value of the keyword. If not found, returns 0.</returns>
-        UInt64 GetKeywordValue(String keyword);
+        dynamic GetKeyword(String keyword);
 
         /// <summary>
         /// Gets the value of a global keyword.
         /// </summary>
         /// <param name="globalKeyword">The global keyword.</param>
         /// <returns>The value of the global keyword. If not found, returns 0.</returns>
-        UInt64 GetGlobalKeywordValue(String globalKeyword);
+        dynamic GetGlobalKeyword(String globalKeyword);
 
         /// <summary>
         /// Clears the specified keyword created by the parent script.

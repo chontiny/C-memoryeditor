@@ -398,7 +398,12 @@
         private IEnumerable<ProjectItem> GetSelectedProjectItems()
         {
             List<ProjectItem> nodes = new List<ProjectItem>();
-            this.projectExplorerTreeView.SelectedNodes.ForEach(x => nodes.Add(this.GetProjectItemFromNode(x)));
+
+            foreach (TreeNodeAdv node in this.projectExplorerTreeView.SelectedNodes.ToArray())
+            {
+                nodes.Add(this.GetProjectItemFromNode(node));
+            }
+
             return nodes;
         }
 
@@ -408,8 +413,12 @@
         /// <returns>A collection of the cloned project items.</returns>
         private IEnumerable<ProjectItem> CloneSelectedProjectItems()
         {
-            List<ProjectItem> nodes = new List<ProjectItem>();
-            this.projectExplorerTreeView.SelectedNodes.ForEach(x => nodes.Add(this.GetProjectItemFromNode(x).Clone()));
+            IList<ProjectItem> nodes = new List<ProjectItem>();
+            foreach (ProjectItem node in this.GetSelectedProjectItems())
+            {
+                nodes.Add(node);
+            }
+
             return nodes;
         }
 
@@ -428,14 +437,9 @@
         /// </summary>
         private void ActivateSelectedItems()
         {
-            if (this.projectExplorerTreeView.SelectedNodes == null || this.projectExplorerTreeView.SelectedNodes.Count <= 0)
-            {
-                return;
-            }
-
             IEnumerable<ProjectItem> selectedProjectItems = this.GetSelectedProjectItems();
 
-            if (selectedProjectItems == null || selectedProjectItems.Count() <= 0)
+            if (selectedProjectItems.IsNullOrEmpty())
             {
                 return;
             }
@@ -443,9 +447,8 @@
             // Behavior here is undefined, we could check only the selected items, or enforce the recursive rules of folders
             selectedProjectItems.ForEach(x => this.CheckItem(x, !x.IsActivated));
 
-            foreach (TreeNodeAdv projectNode in this.projectExplorerTreeView.SelectedNodes)
+            foreach (ProjectItem projectItem in this.GetSelectedProjectItems())
             {
-                ProjectItem projectItem = this.GetProjectItemFromNode(projectNode);
                 ProjectNode result;
 
                 if (this.nodeCache.TryGetValue(projectItem, out result))
@@ -462,14 +465,9 @@
         /// </summary>
         private void CompileSelectedItems()
         {
-            if (this.projectExplorerTreeView.SelectedNodes == null || this.projectExplorerTreeView.SelectedNodes.Count <= 0)
-            {
-                return;
-            }
-
             IEnumerable<ProjectItem> selectedProjectItems = this.GetSelectedProjectItems();
 
-            if (selectedProjectItems == null || selectedProjectItems.Count() <= 0)
+            if (selectedProjectItems.IsNullOrEmpty())
             {
                 return;
             }
@@ -493,7 +491,7 @@
         /// </summary>
         private void DeleteSelectedItems()
         {
-            if (this.projectExplorerTreeView.SelectedNodes == null || this.projectExplorerTreeView.SelectedNodes.Count <= 0)
+            if (this.GetSelectedProjectItems().IsNullOrEmpty())
             {
                 return;
             }
@@ -612,9 +610,9 @@
             // Update the view model with the selected nodes
             List<ProjectItem> projectItems = new List<ProjectItem>();
 
-            foreach (TreeNodeAdv node in this.projectExplorerTreeView.SelectedNodes.ToArray())
+            foreach (ProjectItem node in this.GetSelectedProjectItems())
             {
-                projectItems.Add(this.GetProjectItemFromNode(node));
+                projectItems.Add(node);
             }
 
             ProjectExplorerViewModel.GetInstance().SelectedProjectItems = projectItems;
@@ -816,7 +814,7 @@
         /// <param name="e">Event args.</param>
         private void ContextMenuStripOpening(Object sender, CancelEventArgs e)
         {
-            if (this.projectExplorerTreeView.SelectedNodes == null || this.projectExplorerTreeView.SelectedNodes.Count <= 0)
+            if (this.GetSelectedProjectItems().IsNullOrEmpty())
             {
                 this.deleteSelectionMenuItem.Enabled = false;
                 this.toggleSelectionMenuItem.Enabled = false;
@@ -831,7 +829,7 @@
                 this.copySelectionMenuItem.Enabled = true;
                 this.cutSelectionMenuItem.Enabled = true;
 
-                if (this.projectExplorerTreeView.SelectedNodes.All(x => this.GetProjectItemFromNode(x)?.GetType() == typeof(ScriptItem)))
+                if (this.GetSelectedProjectItems().All(x => x?.GetType() == typeof(ScriptItem)))
                 {
                     this.compileSelectionMenuItem.Visible = true;
                 }

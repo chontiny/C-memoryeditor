@@ -14,7 +14,6 @@
         /// </summary>
         public KeyboardCapture()
         {
-            SharpDX.RawInput.Device.RegisterDevice(SharpDX.Multimedia.UsagePage.Generic, SharpDX.Multimedia.UsageId.GenericKeyboard, SharpDX.RawInput.DeviceFlags.None);
             this.Subjects = new List<IKeyboardObserver>();
             this.DirectInput = new DirectInput();
             this.Keyboard = new Keyboard(this.DirectInput);
@@ -81,7 +80,7 @@
         {
             try
             {
-                this.CurrentKeyboardState = Keyboard.GetCurrentState();
+                this.CurrentKeyboardState = this.Keyboard.GetCurrentState();
 
                 if (this.PreviousKeyboardState == null)
                 {

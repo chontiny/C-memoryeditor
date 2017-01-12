@@ -442,6 +442,7 @@
     <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\StringExtensions.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
+    <Compile Include="Source\Utils\StaticRandom.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorViewModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\HotkeyEditor\HotkeyEditorModel.cs" />
     <Compile Include="Source\Utils\TypeEditors\OffsetEditor\OffsetEditorViewModel.cs" />

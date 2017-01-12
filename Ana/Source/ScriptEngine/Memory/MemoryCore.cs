@@ -30,8 +30,8 @@
         /// <summary>
         /// Gets or sets the keywords associated with all running scripts.
         /// </summary>
-        private static Lazy<ConcurrentDictionary<String, String>> globalKeywords = new Lazy<ConcurrentDictionary<String, String>>(
-            () => { return new ConcurrentDictionary<String, String>(); },
+        private static Lazy<ConcurrentDictionary<String, dynamic>> globalKeywords = new Lazy<ConcurrentDictionary<String, dynamic>>(
+            () => { return new ConcurrentDictionary<String, dynamic>(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
@@ -40,14 +40,14 @@
         public MemoryCore()
         {
             this.RemoteAllocations = new List<UInt64>();
-            this.Keywords = new ConcurrentDictionary<String, String>();
+            this.Keywords = new ConcurrentDictionary<String, dynamic>();
             this.CodeCaves = new List<CodeCave>();
         }
 
         /// <summary>
         /// Gets or sets the keywords associated with the calling script.
         /// </summary>
-        private ConcurrentDictionary<String, String> Keywords { get; set; }
+        private ConcurrentDictionary<String, dynamic> Keywords { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of allocations created in the external process;
@@ -188,11 +188,11 @@
         /// <param name="size">The size of the allocation.</param>
         /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
         /// <returns>The address of the allocated memory.</returns>
-        public UInt64 AllocateMemory(Int32 size, IntPtr allocAddress)
+        public UInt64 AllocateMemory(Int32 size, UInt64 allocAddress)
         {
             this.PrintDebugTag();
 
-            UInt64 address = EngineCore.GetInstance().OperatingSystemAdapter.AllocateMemory(size, allocAddress).ToUInt64();
+            UInt64 address = EngineCore.GetInstance().OperatingSystemAdapter.AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -289,7 +289,7 @@
                 }
                 else
                 {
-                    remoteAllocation = this.AllocateMemory(assemblySize, address.ToIntPtr());
+                    remoteAllocation = this.AllocateMemory(assemblySize, address);
                 }
 
                 // Write injected code to new page
@@ -419,26 +419,24 @@
         /// Binds a keyword to a given value for use in the script.
         /// </summary>
         /// <param name="keyword">The local keyword to bind.</param>
-        /// <param name="address">The address to which the keyword is bound.</param>
-        public void SetKeyword(String keyword, UInt64 address)
+        /// <param name="value">The value to which the keyword is bound.</param>
+        public void SetKeyword(String keyword, dynamic value)
         {
-            this.PrintDebugTag(keyword?.ToLower(), address.ToString("X"));
+            this.PrintDebugTag(keyword?.ToLower(), value?.ToString() as String);
 
-            String mapping = Conversions.ToHex(address, formatAsAddress: true, includePrefix: true);
-            this.Keywords[keyword?.ToLower()] = mapping;
+            this.Keywords[keyword?.ToLower()] = value;
         }
 
         /// <summary>
         /// Binds a keyword to a given value for use in all scripts.
         /// </summary>
         /// <param name="globalKeyword">The global keyword to bind.</param>
-        /// <param name="address">The address to which the keyword is bound.</param>
-        public void SetGlobalKeyword(String globalKeyword, UInt64 address)
+        /// <param name="value">The address to which the keyword is bound.</param>
+        public void SetGlobalKeyword(String globalKeyword, dynamic value)
         {
-            this.PrintDebugTag(globalKeyword?.ToLower(), address.ToString("X"));
+            this.PrintDebugTag(globalKeyword?.ToLower(), value.ToString() as String);
 
-            String mapping = Conversions.ToHex(address, formatAsAddress: true, includePrefix: true);
-            MemoryCore.globalKeywords.Value[globalKeyword?.ToLower()] = mapping;
+            MemoryCore.globalKeywords.Value[globalKeyword?.ToLower()] = value;
         }
 
         /// <summary>
@@ -446,22 +444,12 @@
         /// </summary>
         /// <param name="keyword">The keyword.</param>
         /// <returns>The value of the keyword. If not found, returns 0.</returns>
-        public UInt64 GetKeywordValue(String keyword)
+        public dynamic GetKeyword(String keyword)
         {
-            if (String.IsNullOrWhiteSpace(keyword))
-            {
-                return 0;
-            }
-
-            String result = null;
+            dynamic result;
             this.Keywords.TryGetValue(keyword?.ToLower(), out result);
 
-            if (!CheckSyntax.CanParseAddress(result))
-            {
-                return 0;
-            }
-
-            return Conversions.ParseHexStringAsDynamic(typeof(UInt64), result);
+            return result;
         }
 
         /// <summary>
@@ -469,22 +457,12 @@
         /// </summary>
         /// <param name="globalKeyword">The global keyword.</param>
         /// <returns>The value of the global keyword. If not found, returns 0.</returns>
-        public UInt64 GetGlobalKeywordValue(String globalKeyword)
+        public dynamic GetGlobalKeyword(String globalKeyword)
         {
-            if (String.IsNullOrWhiteSpace(globalKeyword))
-            {
-                return 0;
-            }
-
-            String result = null;
+            dynamic result;
             MemoryCore.globalKeywords.Value.TryGetValue(globalKeyword?.ToLower(), out result);
 
-            if (!CheckSyntax.CanParseAddress(result))
-            {
-                return 0;
-            }
-
-            return Conversions.ParseHexStringAsDynamic(typeof(UInt64), result);
+            return result;
         }
 
         /// <summary>
@@ -495,7 +473,7 @@
         {
             this.PrintDebugTag(keyword);
 
-            String result;
+            dynamic result;
             if (this.Keywords.ContainsKey(keyword))
             {
                 this.Keywords.TryRemove(keyword, out result);
@@ -510,9 +488,9 @@
         {
             this.PrintDebugTag(globalKeyword);
 
-            String valueRemoved;
             if (MemoryCore.globalKeywords.Value.ContainsKey(globalKeyword))
             {
+                dynamic valueRemoved;
                 MemoryCore.globalKeywords.Value.TryRemove(globalKeyword, out valueRemoved);
             }
         }
@@ -645,14 +623,14 @@
             assembly = assembly.Replace("\t", String.Empty);
 
             // Resolve keywords
-            foreach (KeyValuePair<String, String> keyword in this.Keywords)
+            foreach (KeyValuePair<String, dynamic> keyword in this.Keywords)
             {
-                assembly = assembly.Replace("<" + keyword.Key + ">", keyword.Value, StringComparison.OrdinalIgnoreCase);
+                assembly = assembly.Replace("<" + keyword.Key + ">", Conversions.ToHex(keyword.Value, formatAsAddress: false, includePrefix: true) as String, StringComparison.OrdinalIgnoreCase);
             }
 
-            foreach (KeyValuePair<String, String> globalKeyword in MemoryCore.globalKeywords.Value.ToArray())
+            foreach (KeyValuePair<String, dynamic> globalKeyword in MemoryCore.globalKeywords.Value.ToArray())
             {
-                assembly = assembly.Replace("<" + globalKeyword.Key + ">", globalKeyword.Value, StringComparison.OrdinalIgnoreCase);
+                assembly = assembly.Replace("<" + globalKeyword.Key + ">", Conversions.ToHex(globalKeyword.Value, formatAsAddress: false, includePrefix: true) as String, StringComparison.OrdinalIgnoreCase);
             }
 
             return assembly;
