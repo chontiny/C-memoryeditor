@@ -17,11 +17,6 @@
     internal class SnapshotRegion : NormalizedRegion, IEnumerable
     {
         /// <summary>
-        /// The memory alignment of this region.
-        /// </summary>
-        private Int32 alignment;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
         /// </summary>
         public SnapshotRegion() : this(IntPtr.Zero, 0)
@@ -60,36 +55,6 @@
         public Type LabelType { get; set; }
 
         /// <summary>
-        /// Gets or sets the memory alignment, typically aligned with external process pointer size.
-        /// </summary>
-        public Int32 Alignment
-        {
-            get
-            {
-                return this.alignment;
-            }
-
-            set
-            {
-                this.alignment = value;
-
-                if (this.BaseAddress.Mod(value).ToUInt64() == 0)
-                {
-                    return;
-                }
-
-                // Enforce alignment constraint on base address
-                unchecked
-                {
-                    IntPtr endAddress = this.EndAddress;
-                    this.BaseAddress = this.BaseAddress.Subtract(this.BaseAddress.Mod(this.alignment));
-                    this.BaseAddress = this.BaseAddress.Add(this.alignment);
-                    this.EndAddress = endAddress;
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the most recently read values.
         /// </summary>
         private unsafe Byte[] CurrentValues { get; set; }
@@ -100,7 +65,7 @@
         private unsafe Byte[] PreviousValues { get; set; }
 
         /// <summary>
-        /// Gets or sets the previously read values.
+        /// Gets or sets the element labels.
         /// </summary>
         private unsafe Object[] ElementLabels { get; set; }
 
@@ -144,17 +109,6 @@
         }
 
         /// <summary>
-        /// Expands a region by the element type size in both directions unconditionally.
-        /// </summary>
-        /// <param name="expandSize">The size by which to expand this region.</param>
-        public void Expand(Int32 expandSize)
-        {
-            // TODO: Rollovers
-            this.BaseAddress = this.BaseAddress.Subtract(expandSize);
-            this.RegionSize += expandSize;
-        }
-
-        /// <summary>
         /// Sets the current values of this region.
         /// </summary>
         /// <param name="newValues">The raw bytes of the values.</param>
@@ -170,6 +124,25 @@
         public void SetPreviousValues(Byte[] newValues)
         {
             this.PreviousValues = newValues;
+        }
+
+
+        /// <summary>
+        /// Gets the number of bytes that this snapshot spans.
+        /// </summary>
+        /// <returns>The number of bytes that this snapshot spans.</returns>
+        public Int64 GetByteCount()
+        {
+            return this.CurrentValues == null ? 0L : this.CurrentValues.LongLength;
+        }
+
+        /// <summary>
+        /// Gets the number of elements contained by this snapshot. Equal to ByteCount / Alignment.
+        /// </summary>
+        /// <returns>The number of elements contained by this snapshot.</returns>
+        public Int32 GetElementCount()
+        {
+            return unchecked((Int32)(this.CurrentValues == null ? 0L : this.CurrentValues.LongLength / this.Alignment));
         }
 
         /// <summary>
@@ -238,21 +211,6 @@
             }
 
             return newCurrentValues;
-        }
-
-        /// <summary>
-        /// Determines if an address is contained in this snapshot.
-        /// </summary>
-        /// <param name="address">The address for which to search.</param>
-        /// <returns>True if the address is contained.</returns>
-        public Boolean ContainsAddress(IntPtr address)
-        {
-            if (address.ToUInt64() >= this.BaseAddress.ToUInt64() && address.ToUInt64() <= this.EndAddress.ToUInt64())
-            {
-                return true;
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -331,24 +289,6 @@
 
             this.ValidBits = null;
             return validRegions;
-        }
-
-        /// <summary>
-        /// Gets the number of bytes that this snapshot spans.
-        /// </summary>
-        /// <returns>The number of bytes that this snapshot spans.</returns>
-        public Int64 GetByteCount()
-        {
-            return this.CurrentValues == null ? 0L : this.CurrentValues.LongLength;
-        }
-
-        /// <summary>
-        /// Gets the number of elements contained by this snapshot. Equal to ByteCount / Alignment.
-        /// </summary>
-        /// <returns>The number of elements contained by this snapshot.</returns>
-        public Int32 GetElementCount()
-        {
-            return unchecked((Int32)(this.CurrentValues == null ? 0L : this.CurrentValues.LongLength / this.Alignment));
         }
 
         /// <summary>

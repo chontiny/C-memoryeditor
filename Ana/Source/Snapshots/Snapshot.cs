@@ -119,7 +119,7 @@
 
             set
             {
-                this.alignment = value <= 0 ? 1 : value;
+                this.alignment = value.Clamp(1, Int32.MaxValue);
                 this.SnapshotRegions?.ForEach(x => x.Alignment = value);
             }
         }
