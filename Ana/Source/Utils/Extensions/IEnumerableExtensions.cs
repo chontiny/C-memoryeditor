@@ -21,6 +21,18 @@
             return enumeration == null || !enumeration.Any();
         }
 
+        public static UInt64 Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, UInt64> summation)
+        {
+            UInt64 total = 0;
+
+            foreach (TSource item in source)
+            {
+                total += summation(item);
+            }
+
+            return total;
+        }
+
         /// <summary>
         /// A foreach extension method to perform an action on all elements in an enumeration.
         /// </summary>

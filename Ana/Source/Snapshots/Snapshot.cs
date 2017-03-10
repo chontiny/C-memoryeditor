@@ -62,13 +62,37 @@
         public String SnapshotName { get; private set; }
 
         /// <summary>
-        /// Gets the total number of bytes contained in this snapshot.
+        /// Gets the number of regions contained in this snapshot.
         /// </summary>
-        public Int64 ByteCount
+        /// <returns>The number of regions contained in this snapshot.</returns>
+        public Int32 RegionCount
         {
             get
             {
-                return this.SnapshotRegions == null ? 0L : this.SnapshotRegions.AsEnumerable().Sum(x => x.GetByteCount());
+                return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.Count;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total number of bytes contained in this snapshot.
+        /// </summary>
+        public UInt64 ByteCount
+        {
+            get
+            {
+                return this.SnapshotRegions == null ? 0L : this.SnapshotRegions.AsEnumerable().Sum(x => x.ByteCount);
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of individual elements contained in this snapshot.
+        /// </summary>
+        /// <returns>The number of individual elements contained in this snapshot.</returns>
+        public UInt64 ElementCount
+        {
+            get
+            {
+                return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.AsEnumerable().Sum(x => x.ElementCount);
             }
         }
 
@@ -95,18 +119,17 @@
         private IList<SnapshotRegion> SnapshotRegions { get; set; }
 
         /// <summary>
-        /// Indexer to allow the retrieval of the element at the specified index. Notes: This does NOT index into a region. 
-        /// An individual region is only an Int32, but there may be many of these, so the indexer requires Int64.
+        /// Indexer to allow the retrieval of the element at the specified index. Notes: This does NOT index into a region.
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementRef this[Int64 index]
+        public SnapshotElementRef this[UInt64 index]
         {
             get
             {
                 foreach (SnapshotRegion region in this)
                 {
-                    Int64 elementCount = (Int64)region.GetElementCount();
+                    UInt64 elementCount = region.ElementCount;
 
                     if (index >= elementCount)
                     {
@@ -119,7 +142,6 @@
                 }
 
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Invalid snapshot index");
-
                 return null;
             }
         }
@@ -167,7 +189,7 @@
         /// Unconditionally expands all regions in this snapshot by the specified size.
         /// </summary>
         /// <param name="expandSize">The size by which to expand the snapshot regions.</param>
-        public void ExpandAllRegions(Int32 expandSize)
+        public void ExpandAllRegions(UInt64 expandSize)
         {
             this.SnapshotRegions?.ForEach(x => x.Expand(expandSize));
             this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
@@ -191,7 +213,7 @@
         /// <param name="label">The new snapshot label value.</param>
         public void SetElementLabels<LabelType>(LabelType label) where LabelType : struct, IComparable<LabelType>
         {
-            this.SnapshotRegions?.ForEach(x => x.SetElementLabels(Enumerable.Repeat(label, x.RegionSize).Cast<Object>().ToArray()));
+            this.SnapshotRegions?.ForEach(x => x.SetElementLabels(Enumerable.Repeat(label, x.RegionSize.ToInt32()).Cast<Object>().ToArray()));
         }
 
         /// <summary>
@@ -298,9 +320,9 @@
                 SnapshotRegion newRegion = new SnapshotRegion(currentRegion as NormalizedRegion);
                 newRegion.BaseAddress = currentRegion.BaseAddress + baseOffset;
                 newRegion.BaseAddress = Math.Min(currentMask.EndAddress.ToUInt64(), currentRegion.EndAddress.ToUInt64()).ToIntPtr();
-                newRegion.SetCurrentValues(currentRegion.CurrentValues.LargestSubArray(baseOffset, newRegion.RegionSize));
-                newRegion.SetPreviousValues(currentRegion.PreviousValues.LargestSubArray(baseOffset, newRegion.RegionSize));
-                newRegion.SetElementLabels(currentRegion.ElementLabels.LargestSubArray(baseOffset, newRegion.RegionSize));
+                newRegion.SetCurrentValues(currentRegion.CurrentValues.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt32()));
+                newRegion.SetPreviousValues(currentRegion.PreviousValues.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt32()));
+                newRegion.SetElementLabels(currentRegion.ElementLabels.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt32()));
                 newRegion.ElementType = currentRegion.ElementType;
                 newRegion.Alignment = currentRegion.Alignment;
                 resultRegions.Add(newRegion);
@@ -350,33 +372,6 @@
             }
 
             return this.ContainsAddress(address, this.SnapshotRegions.Count() / 2, 0, this.SnapshotRegions.Count());
-        }
-
-        /// <summary>
-        /// Gets the number of regions contained in this snapshot.
-        /// </summary>
-        /// <returns>The number of regions contained in this snapshot.</returns>
-        public Int32 GetRegionCount()
-        {
-            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.Count;
-        }
-
-        /// <summary>
-        /// Gets the number of bytes contained in this snapshot.
-        /// </summary>
-        /// <returns>The number of bytes contained in this snapshot.</returns>
-        public Int64 GetByteCount()
-        {
-            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.AsEnumerable().Sum(x => x.GetByteCount());
-        }
-
-        /// <summary>
-        /// Gets the number of individual elements contained in this snapshot.
-        /// </summary>
-        /// <returns>The number of individual elements contained in this snapshot.</returns>
-        public Int64 GetElementCount()
-        {
-            return this.SnapshotRegions == null ? 0 : this.SnapshotRegions.AsEnumerable().Sum(x => (Int64)x.GetElementCount());
         }
 
         /// <summary>
@@ -449,12 +444,12 @@
                 else if (top.EndAddress.ToUInt64() == sortedRegions[index].BaseAddress.ToUInt64())
                 {
                     // The regions are adjacent; merge them
-                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToUInt64();
                 }
                 else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
                 {
                     // The regions overlap
-                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToUInt64();
                 }
             }
 
@@ -491,7 +486,7 @@
                 else if (top.EndAddress.ToUInt64() == sortedRegions[index].BaseAddress.ToUInt64())
                 {
                     // The regions are adjacent; merge them
-                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToUInt64();
 
                     // Combine values and labels
                     top.SetElementLabels(top.ElementLabels?.Concat(sortedRegions[index].ElementLabels));
@@ -501,14 +496,14 @@
                 else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
                 {
                     // The regions overlap
-                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToUInt64();
 
                     Int32 overlapSize = unchecked((Int32)(sortedRegions[index].EndAddress.ToUInt64() - top.EndAddress.ToUInt64()));
 
                     // Overlap has conflicting values, so we prioritize the top region and trim the current region
-                    sortedRegions[index].SetElementLabels(sortedRegions[index].ElementLabels?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
-                    sortedRegions[index].SetCurrentValues(sortedRegions[index].CurrentValues?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
-                    sortedRegions[index].SetPreviousValues(sortedRegions[index].PreviousValues?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+                    sortedRegions[index].SetElementLabels(sortedRegions[index].ElementLabels?.SubArray(overlapSize, sortedRegions[index].RegionSize.ToInt32() - overlapSize));
+                    sortedRegions[index].SetCurrentValues(sortedRegions[index].CurrentValues?.SubArray(overlapSize, sortedRegions[index].RegionSize.ToInt32() - overlapSize));
+                    sortedRegions[index].SetPreviousValues(sortedRegions[index].PreviousValues?.SubArray(overlapSize, sortedRegions[index].RegionSize.ToInt32() - overlapSize));
 
                     // Combine values and labels
                     top.SetElementLabels(top.ElementLabels?.Concat(sortedRegions[index].ElementLabels));

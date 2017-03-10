@@ -165,7 +165,7 @@
                 }
 
                ((dynamic)this.PrefilteredSnapshot).AddSnapshotRegions(pointerRegions);
-                this.processedCount = Math.Max(this.processedCount, this.PrefilteredSnapshot.GetRegionCount());
+                this.processedCount = Math.Max(this.processedCount, this.PrefilteredSnapshot.RegionCount);
             }
         }
 
@@ -180,7 +180,7 @@
             {
                 if (this.PrefilteredSnapshot != null)
                 {
-                    regionCount = Math.Max(regionCount, this.PrefilteredSnapshot.GetRegionCount());
+                    regionCount = Math.Max(regionCount, this.PrefilteredSnapshot.RegionCount);
                 }
             }
         }

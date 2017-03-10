@@ -10,7 +10,7 @@
     using System.Threading.Tasks;
     using UserSettings;
     using Utils.DataStructures;
-
+    using Utils.Extensions;
     /// <summary>
     /// Class to collect all pointers in the running process.
     /// </summary>
@@ -93,13 +93,12 @@
         /// </summary>
         private void GatherPointers()
         {
-            Boolean isOpenedProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
-            dynamic invalidPointerMin = isOpenedProcess32Bit ? (UInt32)UInt16.MaxValue : (UInt64)UInt16.MaxValue;
-            dynamic invalidPointerMax = isOpenedProcess32Bit ? Int32.MaxValue : Int64.MaxValue;
+            dynamic invalidPointerMin = UInt16.MaxValue;
+            dynamic invalidPointerMax = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress.ToUInt64();
             ConcurrentHashSet<IntPtr> foundPointers = new ConcurrentHashSet<IntPtr>();
 
             // Test for conditions where we set the final found set and take a new snapshot to parse
-            if (this.CurrentSnapshot == null || this.CurrentSnapshot.GetRegionCount() <= 0 || this.processedCount >= this.CurrentSnapshot.GetRegionCount())
+            if (this.CurrentSnapshot == null || this.CurrentSnapshot.RegionCount <= 0 || this.processedCount >= this.CurrentSnapshot.RegionCount)
             {
                 this.processedCount = 0;
                 this.CurrentSnapshot = SnapshotManager.GetInstance().CollectSnapshot(useSettings: true, usePrefilter: false).Clone();

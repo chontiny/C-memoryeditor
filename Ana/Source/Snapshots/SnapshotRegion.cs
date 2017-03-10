@@ -19,7 +19,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
         /// </summary>
-        public SnapshotRegion() : this(IntPtr.Zero, 0)
+        public SnapshotRegion() : this(IntPtr.Zero, 0UL)
         {
         }
 
@@ -37,11 +37,35 @@
         /// </summary>
         /// <param name="baseAddress">The base address of this snapshot region.</param>
         /// <param name="regionSize">The size of this snapshot region.</param>
-        public SnapshotRegion(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
+        public SnapshotRegion(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
         {
             this.TimeSinceLastRead = DateTime.MinValue;
             this.Alignment = SettingsViewModel.GetInstance().Alignment;
             this.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
+        }
+
+        /// <summary>
+        /// Gets the number of bytes that this snapshot spans.
+        /// </summary>
+        /// <returns>The number of bytes that this snapshot spans.</returns>
+        public UInt64 ByteCount
+        {
+            get
+            {
+                return this.CurrentValues == null ? 0UL : this.CurrentValues.LongLength.ToUInt64();
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of elements contained by this snapshot. Equal to ByteCount / Alignment.
+        /// </summary>
+        /// <returns>The number of elements contained by this snapshot.</returns>
+        public UInt64 ElementCount
+        {
+            get
+            {
+                return (this.CurrentValues == null ? 0L : this.CurrentValues.LongLength / this.Alignment).ToUInt64();
+            }
         }
 
         /// <summary>
@@ -98,7 +122,7 @@
         /// <param name="isValid">Value indicating if valid bits will be marked as valid or invalid.</param>
         public void SetAllValidBits(Boolean isValid)
         {
-            this.ValidBits = new BitArray(this.RegionSize, isValid);
+            this.ValidBits = new BitArray(this.RegionSize.ToInt32(), isValid);
         }
 
         /// <summary>
@@ -117,24 +141,6 @@
         public void SetPreviousValues(Byte[] newValues)
         {
             this.PreviousValues = newValues;
-        }
-
-        /// <summary>
-        /// Gets the number of bytes that this snapshot spans.
-        /// </summary>
-        /// <returns>The number of bytes that this snapshot spans.</returns>
-        public Int64 GetByteCount()
-        {
-            return this.CurrentValues == null ? 0L : this.CurrentValues.LongLength;
-        }
-
-        /// <summary>
-        /// Gets the number of elements contained by this snapshot. Equal to ByteCount / Alignment.
-        /// </summary>
-        /// <returns>The number of elements contained by this snapshot.</returns>
-        public Int32 GetElementCount()
-        {
-            return unchecked((Int32)(this.CurrentValues == null ? 0L : this.CurrentValues.LongLength / this.Alignment));
         }
 
         /// <summary>
@@ -189,7 +195,7 @@
             this.TimeSinceLastRead = DateTime.Now;
 
             readSuccess = false;
-            Byte[] newCurrentValues = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
+            Byte[] newCurrentValues = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
 
             if (!readSuccess)
             {
@@ -235,18 +241,18 @@
                 while (startIndex + validRegionSize < this.ValidBits.Length && this.ValidBits[startIndex + validRegionSize]);
 
                 // Create new subregion from this valid region
-                SnapshotRegion subRegion = new SnapshotRegion(this.BaseAddress + startIndex, validRegionSize);
+                SnapshotRegion subRegion = new SnapshotRegion(this.BaseAddress + startIndex, validRegionSize.ToUInt64());
 
                 // Ensure region size is worth keeping. This can happen if we grab a misaligned segment
-                if (subRegion.RegionSize < Conversions.GetTypeSize(this.ElementType))
+                if (subRegion.RegionSize < Conversions.GetTypeSize(this.ElementType).ToUInt64())
                 {
                     continue;
                 }
 
                 // Copy the current values and labels.
-                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, subRegion.RegionSize));
-                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, subRegion.RegionSize));
-                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, subRegion.RegionSize));
+                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, subRegion.RegionSize.ToInt32()));
+                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, subRegion.RegionSize.ToInt32()));
+                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, subRegion.RegionSize.ToInt32()));
 
                 validRegions.Add(subRegion);
                 startIndex += validRegionSize;
@@ -263,10 +269,10 @@
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator<SnapshotElementRef> IterateElements(PointerIncrementMode pointerIncrementMode)
         {
-            Int32 elementCount = this.GetElementCount();
+            UInt64 elementCount = this.ElementCount;
             SnapshotElementRef snapshotElement = new SnapshotElementRef(this, pointerIncrementMode);
 
-            for (Int32 index = 0; index < elementCount; index++)
+            for (UInt64 index = 0; index < elementCount; index++)
             {
                 yield return snapshotElement;
                 snapshotElement.IncrementPointers();

@@ -428,7 +428,7 @@
             }
 
             return Memory.VirtualPages(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, startAddress, endAddress, requiredFlags, excludedFlags, allowedTypes)
-                .Select(x => new NormalizedRegion(x.BaseAddress, (Int32)x.RegionSize));
+                .Select(x => new NormalizedRegion(x.BaseAddress, x.RegionSize.ToUInt64()));
         }
 
         /// <summary>
@@ -463,15 +463,15 @@
         /// Gets the maximum usermode address possible in the target process
         /// </summary>
         /// <returns>The maximum usermode address possible in the target process</returns>
-        public IntPtr GetMaximumUserModeAddress()
+        public NormalizedRegion GetUserModeRegion()
         {
             if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
             {
-                return unchecked((IntPtr)Int32.MaxValue);
+                return new NormalizedRegion(IntPtr.Zero, Int32.MaxValue);
             }
             else
             {
-                return unchecked((IntPtr)Int64.MaxValue);
+                return new NormalizedRegion(IntPtr.Zero, Int64.MaxValue);
             }
         }
 
@@ -515,7 +515,7 @@
                         Native.NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
                         // Convert to a normalized module and add it to our list
-                        NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase, unchecked((Int32)moduleInformation.SizeOfImage));
+                        NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase, moduleInformation.SizeOfImage.ToUInt64());
                         normalizedModules.Add(module);
                     }
                 }

@@ -187,7 +187,7 @@
                 {
                     SnapshotRegion region = regionObject as SnapshotRegion;
 
-                    if (region.ElementLabels == null || region.GetElementCount() <= 0)
+                    if (region.ElementLabels == null || region.ElementCount <= 0)
                     {
                         return;
                     }
@@ -214,7 +214,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.GetRegionCount());
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
                     }
                     //// End foreach element
                 });

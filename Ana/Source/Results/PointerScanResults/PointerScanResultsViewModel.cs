@@ -44,12 +44,12 @@
         /// <summary>
         /// The current page of scan results.
         /// </summary>
-        private Int64 currentPage;
+        private UInt64 currentPage;
 
         /// <summary>
         /// The total number of addresses.
         /// </summary>
-        private Int64 addressCount;
+        private UInt64 addressCount;
 
         /// <summary>
         /// The addresses on the current page.
@@ -217,7 +217,7 @@
         /// <summary>
         /// Gets or sets the total number of addresses found.
         /// </summary>
-        public Int64 CurrentPage
+        public UInt64 CurrentPage
         {
             get
             {
@@ -235,7 +235,7 @@
         /// <summary>
         /// Gets the total number of addresses found.
         /// </summary>
-        public Int64 PageCount
+        public UInt64 PageCount
         {
             get
             {
@@ -246,7 +246,7 @@
         /// <summary>
         /// Gets or sets the total number of addresses found.
         /// </summary>
-        public Int64 ResultCount
+        public UInt64 ResultCount
         {
             get
             {
@@ -325,7 +325,7 @@
         /// <param name="snapshot">The active snapshot.</param>
         public void Update(Snapshot snapshot)
         {
-            this.ResultCount = snapshot == null ? 0 : snapshot.GetElementCount();
+            this.ResultCount = snapshot == null ? 0UL : snapshot.ElementCount;
             this.CurrentPage = 0;
         }
 
