@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
     using Utils.Extensions;
 
     /// <summary>
@@ -12,10 +13,27 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotElementRef" /> class.
         /// </summary>
-        /// <param name="parent">The parent region that contains this element</param>
-        public SnapshotElementRef(SnapshotRegion parent)
+        /// <param name="parent">The parent region that contains this element.</param>
+        /// <param name="index">The index of the element to begin pointing to.</param>
+        public SnapshotElementRef(SnapshotRegion parent, Int32 index = 0)
         {
             this.Parent = parent;
+
+            // The garbage collector can relocate variables at runtime. Since we use unsafe pointers, we need to keep these pinned
+            this.CurrentValuesHandle = GCHandle.Alloc(this.Parent.CurrentValues, GCHandleType.Pinned);
+            this.PreviousValuesHandle = GCHandle.Alloc(this.Parent.PreviousValues, GCHandleType.Pinned);
+
+            this.InitializePointers(index);
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="SnapshotElementRef" /> class.
+        /// </summary>
+        ~SnapshotElementRef()
+        {
+            // Let the GC do what it wants now
+            this.CurrentValuesHandle.Free();
+            this.PreviousValuesHandle.Free();
         }
 
         /// <summary>
@@ -36,14 +54,24 @@
         {
             get
             {
-                return this.Parent.GetElementLabels()[this.CurrentElementIndex];
+                return this.Parent.ElementLabels[this.CurrentElementIndex];
             }
 
             set
             {
-                this.Parent.GetElementLabels()[this.CurrentElementIndex] = value;
+                this.Parent.ElementLabels[this.CurrentElementIndex] = value;
             }
         }
+
+        /// <summary>
+        /// Gets or sets a garbage collector handle to the current value array.
+        /// </summary>
+        private GCHandle CurrentValuesHandle { get; set; }
+
+        /// <summary>
+        /// Gets or sets a garbage collector handle to the previous value array.
+        /// </summary>
+        private GCHandle PreviousValuesHandle { get; set; }
 
         /// <summary>
         /// Gets or sets the parent snapshot region.
@@ -72,42 +100,6 @@
         private TypeCode CurrentTypeCode { get; set; }
 
         /// <summary>
-        /// Initializes snapshot value reference pointers
-        /// </summary>
-        /// <param name="index">The index of the element to begin pointing to.</param>
-        public unsafe void InitializePointers(Int32 index = 0)
-        {
-            this.CurrentElementIndex = index;
-            this.CurrentTypeCode = Type.GetTypeCode(this.Parent.ElementType);
-            Byte[] currentValues = this.Parent.GetCurrentValues();
-            Byte[] previousValues = this.Parent.GetPreviousValues();
-
-            if (currentValues != null && currentValues.Length > 0)
-            {
-                fixed (Byte* pointerBase = &currentValues[index])
-                {
-                    this.CurrentValuePointer = pointerBase;
-                }
-            }
-            else
-            {
-                this.CurrentValuePointer = null;
-            }
-
-            if (previousValues != null && previousValues.Length > 0)
-            {
-                fixed (Byte* pointerBase = &previousValues[index])
-                {
-                    this.PreviousValuePointer = pointerBase;
-                }
-            }
-            else
-            {
-                this.PreviousValuePointer = null;
-            }
-        }
-
-        /// <summary>
         /// Increments all value and label pointers.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -128,6 +120,86 @@
             this.CurrentElementIndex += alignment;
             this.CurrentValuePointer += alignment;
             this.PreviousValuePointer += alignment;
+        }
+
+        /// <summary>
+        /// Increments all value pointers.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void IncrementPointersValuesOnly()
+        {
+            this.CurrentValuePointer++;
+            this.PreviousValuePointer++;
+        }
+
+        /// <summary>
+        /// Increments all value pointers by the given alignment.
+        /// </summary>
+        /// <param name="alignment">The alignment by which to increment.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void AddPointersValuesOnly(Int32 alignment)
+        {
+            this.CurrentValuePointer += alignment;
+            this.PreviousValuePointer += alignment;
+        }
+
+        /// <summary>
+        /// Increments all label pointers.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void IncrementPointersLabelsOnly()
+        {
+            this.CurrentElementIndex++;
+        }
+
+        /// <summary>
+        /// Increments all label pointers by the given alignment.
+        /// </summary>
+        /// <param name="alignment">The alignment by which to increment.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void AddPointersLabelsOnly(Int32 alignment)
+        {
+            this.CurrentElementIndex += alignment;
+        }
+
+        /// <summary>
+        /// Increments all value and label pointers, except for previous values.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void IncrementPointersNoPrevious()
+        {
+            this.CurrentElementIndex++;
+            this.CurrentValuePointer++;
+        }
+
+        /// <summary>
+        /// Increments all value and label pointers by the given alignment, except for previous values.
+        /// </summary>
+        /// <param name="alignment">The alignment by which to increment.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void AddPointersNoPrevious(Int32 alignment)
+        {
+            this.CurrentElementIndex += alignment;
+            this.CurrentValuePointer += alignment;
+        }
+
+        /// <summary>
+        /// Increments the current value pointer.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void IncrementPointersCurrentValueOnly()
+        {
+            this.CurrentValuePointer++;
+        }
+
+        /// <summary>
+        /// Increments the current value pointer by the given alignment.
+        /// </summary>
+        /// <param name="alignment">The alignment by which to increment.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void AddPointersCurrentValueOnly(Int32 alignment)
+        {
+            this.CurrentValuePointer += alignment;
         }
 
         /// <summary>
@@ -304,7 +376,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe dynamic GetElementLabel()
         {
-            return this.Parent.GetElementLabels() == null ? null : this.Parent.GetElementLabels()[this.CurrentElementIndex];
+            return this.Parent.ElementLabels == null ? null : this.Parent.ElementLabels[this.CurrentElementIndex];
         }
 
         /// <summary>
@@ -314,7 +386,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void SetElementLabel(dynamic newLabel)
         {
-            this.Parent.GetElementLabels()[this.CurrentElementIndex] = newLabel;
+            this.Parent.ElementLabels[this.CurrentElementIndex] = newLabel;
         }
 
         /// <summary>
@@ -345,6 +417,40 @@
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Initializes snapshot value reference pointers
+        /// </summary>
+        /// <param name="index">The index of the element to begin pointing to.</param>
+        private unsafe void InitializePointers(Int32 index = 0)
+        {
+            this.CurrentElementIndex = index;
+            this.CurrentTypeCode = Type.GetTypeCode(this.Parent.ElementType);
+
+            if (this.Parent.CurrentValues != null && this.Parent.CurrentValues.Length > 0)
+            {
+                fixed (Byte* pointerBase = &this.Parent.CurrentValues[index])
+                {
+                    this.CurrentValuePointer = pointerBase;
+                }
+            }
+            else
+            {
+                this.CurrentValuePointer = null;
+            }
+
+            if (this.Parent.PreviousValues != null && this.Parent.PreviousValues.Length > 0)
+            {
+                fixed (Byte* pointerBase = &this.Parent.PreviousValues[index])
+                {
+                    this.PreviousValuePointer = pointerBase;
+                }
+            }
+            else
+            {
+                this.PreviousValuePointer = null;
+            }
         }
 
         /// <summary>

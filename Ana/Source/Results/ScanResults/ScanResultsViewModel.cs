@@ -419,6 +419,11 @@
             {
                 SnapshotElementRef element = snapshot[index];
 
+                if (element == null)
+                {
+                    continue;
+                }
+
                 String label = String.Empty;
 
                 if (element.GetElementLabel() != null)

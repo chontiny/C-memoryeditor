@@ -281,12 +281,7 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(Type activeType)
         {
-            Snapshot activeSnapshot = this.GetActiveSnapshot(createIfNone: false);
-
-            if (activeSnapshot != null)
-            {
-                this.GetActiveSnapshot(createIfNone: false).ElementType = activeType;
-            }
+            this.GetActiveSnapshot(createIfNone: false)?.PropagateSettings();
         }
 
         /// <summary>

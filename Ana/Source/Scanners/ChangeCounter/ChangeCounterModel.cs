@@ -79,6 +79,7 @@
                     return;
                 }
 
+                region.PointerIncrementMode = SnapshotPointerIncrementMode.AllPointers;
                 foreach (SnapshotElementRef element in region)
                 {
                     if (element.Changed())

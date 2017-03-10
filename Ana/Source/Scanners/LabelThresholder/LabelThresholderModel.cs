@@ -122,9 +122,12 @@
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
+                        region.PointerIncrementMode = SnapshotPointerIncrementMode.LabelsOnly;
                         foreach (SnapshotElementRef element in region)
                         {
-                            if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
+                            dynamic label = element.GetElementLabel();
+
+                            if (label >= lowerValue && label <= upperValue)
                             {
                                 element.SetValid(true);
                             }
@@ -137,9 +140,12 @@
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
+                        region.PointerIncrementMode = SnapshotPointerIncrementMode.LabelsOnly;
                         foreach (SnapshotElementRef element in region)
                         {
-                            if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
+                            dynamic label = element.GetElementLabel();
+
+                            if (label >= lowerValue && label <= upperValue)
                             {
                                 element.SetValid(false);
                             }
@@ -179,22 +185,25 @@
                 {
                     SnapshotRegion region = regionObject as SnapshotRegion;
 
-                    if (((dynamic)region).GetElementLabels() == null || region.GetElementCount() <= 0)
+                    if (region.ElementLabels == null || region.GetElementCount() <= 0)
                     {
                         return;
                     }
 
+                    region.PointerIncrementMode = SnapshotPointerIncrementMode.LabelsOnly;
                     foreach (SnapshotElementRef element in region)
                     {
                         lock (this.ItemLock)
                         {
-                            if (histogram.ContainsKey(((dynamic)element).GetElementLabel()))
+                            dynamic label = element.GetElementLabel();
+
+                            if (histogram.ContainsKey(label))
                             {
-                                histogram[((dynamic)element).GetElementLabel()]++;
+                                histogram[label]++;
                             }
                             else
                             {
-                                histogram.TryAdd(((dynamic)element).GetElementLabel(), 1);
+                                histogram.TryAdd(label, 1);
                             }
                         }
                     }

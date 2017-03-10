@@ -136,11 +136,12 @@
                     return;
                 }
 
-                if (region.GetCurrentValues() == null || region.GetCurrentValues().Length <= 0)
+                if (region.CurrentValues == null || region.CurrentValues.Length <= 0)
                 {
                     return;
                 }
 
+                region.PointerIncrementMode = SnapshotPointerIncrementMode.CurrentValueOnly;
                 foreach (SnapshotElementRef element in region)
                 {
                     // Enforce user mode memory pointers

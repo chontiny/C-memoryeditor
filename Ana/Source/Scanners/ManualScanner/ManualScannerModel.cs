@@ -97,6 +97,7 @@
                     return;
                 }
 
+                region.PointerIncrementMode = SnapshotPointerIncrementMode.ValuesOnly;
                 foreach (SnapshotElementRef element in region)
                 {
                     // Enforce each value constraint on the element

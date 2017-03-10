@@ -1,6 +1,7 @@
 ﻿namespace Ana.Source.Snapshots
 {
     using Engine.OperatingSystems;
+    using Output;
     using Results.ScanResults;
     using System;
     using System.Collections;
@@ -35,11 +36,9 @@
         /// <param name="snapshotName">The snapshot generation method name.</param>
         public Snapshot(String snapshotName = null)
         {
-            this.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
             this.TimeSinceLastUpdate = DateTime.Now;
             this.SnapshotName = snapshotName == null ? String.Empty : snapshotName;
             this.SnapshotRegions = new List<SnapshotRegion>();
-            this.Alignment = SettingsViewModel.GetInstance().Alignment;
         }
 
         /// <summary>
@@ -74,23 +73,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the data type of the elements contained in this snapshot.
-        /// </summary>
-        public Type ElementType
-        {
-            get
-            {
-                return this.elementType;
-            }
-
-            set
-            {
-                this.elementType = value;
-                this.SnapshotRegions?.ForEach(x => x.ElementType = value);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the data type of the labels contained in this snapshot.
         /// </summary>
         public Type LabelType
@@ -104,23 +86,6 @@
             {
                 this.labelType = value;
                 this.SnapshotRegions?.ForEach(x => x.LabelType = value);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the memory alignment of the regions contained in the snapshot
-        /// </summary>
-        private Int32 Alignment
-        {
-            get
-            {
-                return this.alignment;
-            }
-
-            set
-            {
-                this.alignment = value.Clamp(1, Int32.MaxValue);
-                this.SnapshotRegions?.ForEach(x => x.Alignment = value);
             }
         }
 
@@ -149,11 +114,33 @@
                     }
                     else
                     {
-                        return region[(Int32)index * this.Alignment];
+                        return region[(Int32)index * region.Alignment];
                     }
                 }
 
-                throw new Exception("Invalid index");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Invalid snapshot index");
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Updates the alignment and type settings of all snapshot regions.
+        /// </summary>
+        public void PropagateSettings()
+        {
+            if (this.SnapshotRegions == null)
+            {
+                return;
+            }
+
+            Type activeType = ScanResultsViewModel.GetInstance().ActiveType;
+            Int32 alignment = SettingsViewModel.GetInstance().Alignment;
+
+            foreach (SnapshotRegion region in this)
+            {
+                region.ElementType = activeType;
+                region.Alignment = alignment;
             }
         }
 
@@ -222,10 +209,7 @@
                 snapshotRegions?.ForEach(x => this.SnapshotRegions.Add(x));
             }
 
-            // Re-update type and alignment, so that the newly added regions receive updates
-            this.ElementType = this.ElementType;
-            this.Alignment = this.Alignment;
-
+            this.PropagateSettings();
             this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
         }
 
@@ -314,9 +298,9 @@
                 SnapshotRegion newRegion = new SnapshotRegion(currentRegion as NormalizedRegion);
                 newRegion.BaseAddress = currentRegion.BaseAddress + baseOffset;
                 newRegion.BaseAddress = Math.Min(currentMask.EndAddress.ToUInt64(), currentRegion.EndAddress.ToUInt64()).ToIntPtr();
-                newRegion.SetCurrentValues(currentRegion.GetCurrentValues().LargestSubArray(baseOffset, newRegion.RegionSize));
-                newRegion.SetPreviousValues(currentRegion.GetPreviousValues().LargestSubArray(baseOffset, newRegion.RegionSize));
-                newRegion.SetElementLabels(currentRegion.GetElementLabels().LargestSubArray(baseOffset, newRegion.RegionSize));
+                newRegion.SetCurrentValues(currentRegion.CurrentValues.LargestSubArray(baseOffset, newRegion.RegionSize));
+                newRegion.SetPreviousValues(currentRegion.PreviousValues.LargestSubArray(baseOffset, newRegion.RegionSize));
+                newRegion.SetElementLabels(currentRegion.ElementLabels.LargestSubArray(baseOffset, newRegion.RegionSize));
                 newRegion.ElementType = currentRegion.ElementType;
                 newRegion.Alignment = currentRegion.Alignment;
                 resultRegions.Add(newRegion);
@@ -510,9 +494,9 @@
                     top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
 
                     // Combine values and labels
-                    top.SetElementLabels(top.GetElementLabels()?.Concat(sortedRegions[index].GetElementLabels()));
-                    top.SetCurrentValues(top.GetCurrentValues()?.Concat(sortedRegions[index].GetCurrentValues()));
-                    top.SetPreviousValues(top.GetPreviousValues()?.Concat(sortedRegions[index].GetPreviousValues()));
+                    top.SetElementLabels(top.ElementLabels?.Concat(sortedRegions[index].ElementLabels));
+                    top.SetCurrentValues(top.CurrentValues?.Concat(sortedRegions[index].CurrentValues));
+                    top.SetPreviousValues(top.PreviousValues?.Concat(sortedRegions[index].PreviousValues));
                 }
                 else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
                 {
@@ -522,14 +506,14 @@
                     Int32 overlapSize = unchecked((Int32)(sortedRegions[index].EndAddress.ToUInt64() - top.EndAddress.ToUInt64()));
 
                     // Overlap has conflicting values, so we prioritize the top region and trim the current region
-                    sortedRegions[index].SetElementLabels(sortedRegions[index].GetElementLabels()?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
-                    sortedRegions[index].SetCurrentValues(sortedRegions[index].GetCurrentValues()?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
-                    sortedRegions[index].SetPreviousValues(sortedRegions[index].GetPreviousValues()?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+                    sortedRegions[index].SetElementLabels(sortedRegions[index].ElementLabels?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+                    sortedRegions[index].SetCurrentValues(sortedRegions[index].CurrentValues?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
+                    sortedRegions[index].SetPreviousValues(sortedRegions[index].PreviousValues?.SubArray(overlapSize, sortedRegions[index].RegionSize - overlapSize));
 
                     // Combine values and labels
-                    top.SetElementLabels(top.GetElementLabels()?.Concat(sortedRegions[index].GetElementLabels()));
-                    top.SetCurrentValues(top.GetCurrentValues()?.Concat(sortedRegions[index].GetCurrentValues()));
-                    top.SetPreviousValues(top.GetPreviousValues()?.Concat(sortedRegions[index].GetPreviousValues()));
+                    top.SetElementLabels(top.ElementLabels?.Concat(sortedRegions[index].ElementLabels));
+                    top.SetCurrentValues(top.CurrentValues?.Concat(sortedRegions[index].CurrentValues));
+                    top.SetPreviousValues(top.PreviousValues?.Concat(sortedRegions[index].PreviousValues));
                 }
             }
 
