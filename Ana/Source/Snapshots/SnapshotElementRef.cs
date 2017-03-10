@@ -14,8 +14,12 @@
         /// Initializes a new instance of the <see cref="SnapshotElementRef" /> class.
         /// </summary>
         /// <param name="parent">The parent region that contains this element.</param>
-        /// <param name="index">The index of the element to begin pointing to.</param>
-        public SnapshotElementRef(SnapshotRegion parent, Int32 index = 0)
+        /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
+        /// <param name="elementIndex">The index of the element to begin pointing to.</param>
+        public unsafe SnapshotElementRef(
+            SnapshotRegion parent,
+            PointerIncrementMode pointerIncrementMode = PointerIncrementMode.AllPointers,
+            Int32 elementIndex = 0)
         {
             this.Parent = parent;
 
@@ -23,7 +27,90 @@
             this.CurrentValuesHandle = GCHandle.Alloc(this.Parent.CurrentValues, GCHandleType.Pinned);
             this.PreviousValuesHandle = GCHandle.Alloc(this.Parent.PreviousValues, GCHandleType.Pinned);
 
-            this.InitializePointers(index);
+            this.InitializePointers(elementIndex);
+
+            Int32 alignment = this.Parent.Alignment;
+
+            if (this.Parent.Alignment == 1)
+            {
+                switch (pointerIncrementMode)
+                {
+                    case PointerIncrementMode.AllPointers:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex++;
+                            this.CurrentValuePointer++;
+                            this.PreviousValuePointer++;
+                        };
+                        break;
+                    case PointerIncrementMode.CurrentOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentValuePointer++;
+                        };
+                        break;
+                    case PointerIncrementMode.LabelsOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex++;
+                        };
+                        break;
+                    case PointerIncrementMode.NoPrevious:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex++;
+                            this.CurrentValuePointer++;
+                        };
+                        break;
+                    case PointerIncrementMode.ValuesOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentValuePointer++;
+                            this.PreviousValuePointer++;
+                        };
+                        break;
+                }
+            }
+            else
+            {
+                switch (pointerIncrementMode)
+                {
+                    case PointerIncrementMode.AllPointers:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex += alignment;
+                            this.CurrentValuePointer += alignment;
+                            this.PreviousValuePointer += alignment;
+                        };
+                        break;
+                    case PointerIncrementMode.CurrentOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentValuePointer += alignment;
+                        };
+                        break;
+                    case PointerIncrementMode.LabelsOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex += alignment;
+                        };
+                        break;
+                    case PointerIncrementMode.NoPrevious:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex += alignment;
+                            this.CurrentValuePointer += alignment;
+                        };
+                        break;
+                    case PointerIncrementMode.ValuesOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentValuePointer += alignment;
+                            this.PreviousValuePointer += alignment;
+                        };
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -37,13 +124,18 @@
         }
 
         /// <summary>
+        /// Gets or sets an action to increment only the needed pointers.
+        /// </summary>
+        public Action IncrementPointers { get; set; }
+
+        /// <summary>
         /// Gets the base address of this element.
         /// </summary>
         public IntPtr BaseAddress
         {
             get
             {
-                return this.Parent.BaseAddress.Add(this.CurrentElementIndex);
+                return this.Parent.BaseAddress.Add(this.ElementIndex);
             }
         }
 
@@ -54,12 +146,12 @@
         {
             get
             {
-                return this.Parent.ElementLabels[this.CurrentElementIndex];
+                return this.Parent.ElementLabels[this.CurrentLabelIndex];
             }
 
             set
             {
-                this.Parent.ElementLabels[this.CurrentElementIndex] = value;
+                this.Parent.ElementLabels[this.CurrentLabelIndex] = value;
             }
         }
 
@@ -92,7 +184,33 @@
         /// Gets or sets the index of this element, used for setting and getting the label.
         /// Note that we cannot have a pointer to the label, as it is a non-blittable type.
         /// </summary>
-        private Int32 CurrentElementIndex { get; set; }
+        private Int32 CurrentLabelIndex { get; set; }
+
+        /// <summary>
+        /// Gets the index of this element.
+        /// </summary>
+        private unsafe Int32 ElementIndex
+        {
+            get
+            {
+                // Use the incremented current value pointer or label index to figure out the index of this element
+                if (this.CurrentLabelIndex != 0)
+                {
+                    return this.CurrentLabelIndex;
+                }
+                else if (this.CurrentValuePointer != null)
+                {
+                    fixed (Byte* pointerBase = &this.Parent.CurrentValues[0])
+                    {
+                        return (Int32)(this.CurrentValuePointer - pointerBase);
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
 
         /// <summary>
         /// Gets or sets the type code associated with the data type of this element.
@@ -100,115 +218,12 @@
         private TypeCode CurrentTypeCode { get; set; }
 
         /// <summary>
-        /// Increments all value and label pointers.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void IncrementPointers()
-        {
-            this.CurrentElementIndex++;
-            this.CurrentValuePointer++;
-            this.PreviousValuePointer++;
-        }
-
-        /// <summary>
-        /// Increments all value and label pointers by the given alignment.
-        /// </summary>
-        /// <param name="alignment">The alignment by which to increment.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void AddPointers(Int32 alignment)
-        {
-            this.CurrentElementIndex += alignment;
-            this.CurrentValuePointer += alignment;
-            this.PreviousValuePointer += alignment;
-        }
-
-        /// <summary>
-        /// Increments all value pointers.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void IncrementPointersValuesOnly()
-        {
-            this.CurrentValuePointer++;
-            this.PreviousValuePointer++;
-        }
-
-        /// <summary>
-        /// Increments all value pointers by the given alignment.
-        /// </summary>
-        /// <param name="alignment">The alignment by which to increment.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void AddPointersValuesOnly(Int32 alignment)
-        {
-            this.CurrentValuePointer += alignment;
-            this.PreviousValuePointer += alignment;
-        }
-
-        /// <summary>
-        /// Increments all label pointers.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void IncrementPointersLabelsOnly()
-        {
-            this.CurrentElementIndex++;
-        }
-
-        /// <summary>
-        /// Increments all label pointers by the given alignment.
-        /// </summary>
-        /// <param name="alignment">The alignment by which to increment.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void AddPointersLabelsOnly(Int32 alignment)
-        {
-            this.CurrentElementIndex += alignment;
-        }
-
-        /// <summary>
-        /// Increments all value and label pointers, except for previous values.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void IncrementPointersNoPrevious()
-        {
-            this.CurrentElementIndex++;
-            this.CurrentValuePointer++;
-        }
-
-        /// <summary>
-        /// Increments all value and label pointers by the given alignment, except for previous values.
-        /// </summary>
-        /// <param name="alignment">The alignment by which to increment.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void AddPointersNoPrevious(Int32 alignment)
-        {
-            this.CurrentElementIndex += alignment;
-            this.CurrentValuePointer += alignment;
-        }
-
-        /// <summary>
-        /// Increments the current value pointer.
-        /// </summary>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void IncrementPointersCurrentValueOnly()
-        {
-            this.CurrentValuePointer++;
-        }
-
-        /// <summary>
-        /// Increments the current value pointer by the given alignment.
-        /// </summary>
-        /// <param name="alignment">The alignment by which to increment.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void AddPointersCurrentValueOnly(Int32 alignment)
-        {
-            this.CurrentValuePointer += alignment;
-        }
-
-        /// <summary>
         /// Sets the valid bit of this element.
         /// </summary>
         /// <param name="isValid">Whether or not this element's valid bit is set.</param>
         public void SetValid(Boolean isValid)
         {
-            this.Parent.GetValidBits().Set(this.CurrentElementIndex, isValid);
+            this.Parent.GetValidBits().Set(this.ElementIndex, isValid);
         }
 
         /// <summary>
@@ -376,7 +391,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe dynamic GetElementLabel()
         {
-            return this.Parent.ElementLabels == null ? null : this.Parent.ElementLabels[this.CurrentElementIndex];
+            return this.Parent.ElementLabels == null ? null : this.Parent.ElementLabels[this.CurrentLabelIndex];
         }
 
         /// <summary>
@@ -386,7 +401,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void SetElementLabel(dynamic newLabel)
         {
-            this.Parent.ElementLabels[this.CurrentElementIndex] = newLabel;
+            this.Parent.ElementLabels[this.CurrentLabelIndex] = newLabel;
         }
 
         /// <summary>
@@ -425,7 +440,7 @@
         /// <param name="index">The index of the element to begin pointing to.</param>
         private unsafe void InitializePointers(Int32 index = 0)
         {
-            this.CurrentElementIndex = index;
+            this.CurrentLabelIndex = index;
             this.CurrentTypeCode = Type.GetTypeCode(this.Parent.ElementType);
 
             if (this.Parent.CurrentValues != null && this.Parent.CurrentValues.Length > 0)

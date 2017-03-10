@@ -137,7 +137,6 @@
                         return;
                     }
 
-                    region.PointerIncrementMode = SnapshotPointerIncrementMode.AllPointers;
                     foreach (SnapshotElementRef element in region)
                     {
                         if (element.Changed())
@@ -167,7 +166,6 @@
                         return;
                     }
 
-                    region.PointerIncrementMode = SnapshotPointerIncrementMode.AllPointers;
                     foreach (SnapshotElementRef element in region)
                     {
                         if (element.Changed())
@@ -196,11 +194,13 @@
         {
             // Prefilter items with negative penalties (ie constantly changing variables)
             this.Snapshot.SetAllValidBits(false);
+
             foreach (SnapshotRegion region in this.Snapshot)
             {
-                region.PointerIncrementMode = SnapshotPointerIncrementMode.LabelsOnly;
-                foreach (SnapshotElementRef element in region)
+                for (IEnumerator<SnapshotElementRef> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                 {
+                    SnapshotElementRef element = enumerator.Current;
+
                     if ((Int16)element.ElementLabel > 0)
                     {
                         element.SetValid(true);

@@ -5,6 +5,7 @@
     using ScanConstraints;
     using Snapshots;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using UserSettings;
@@ -97,9 +98,10 @@
                     return;
                 }
 
-                region.PointerIncrementMode = SnapshotPointerIncrementMode.ValuesOnly;
-                foreach (SnapshotElementRef element in region)
+                for (IEnumerator<SnapshotElementRef> enumerator = region.IterateElements(PointerIncrementMode.ValuesOnly); enumerator.MoveNext();)
                 {
+                    SnapshotElementRef element = enumerator.Current;
+
                     // Enforce each value constraint on the element
                     foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
                     {

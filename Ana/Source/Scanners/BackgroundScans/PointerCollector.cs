@@ -141,9 +141,10 @@
                     return;
                 }
 
-                region.PointerIncrementMode = SnapshotPointerIncrementMode.CurrentValueOnly;
-                foreach (SnapshotElementRef element in region)
+                for (IEnumerator<SnapshotElementRef> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
                 {
+                    SnapshotElementRef element = enumerator.Current;
+
                     // Enforce user mode memory pointers
                     if (element.LessThanValue(invalidPointerMin) || element.GreaterThanValue(invalidPointerMax))
                     {

@@ -3,7 +3,7 @@
     /// <summary>
     /// Enums determining which pointers need to be updated every iteration.
     /// </summary>
-    public enum SnapshotPointerIncrementMode
+    public enum PointerIncrementMode
     {
         /// <summary>
         /// Increment all pointers.
@@ -23,12 +23,12 @@
         /// <summary>
         /// Only increment current value pointer.
         /// </summary>
-        CurrentValueOnly,
+        CurrentOnly,
 
         /// <summary>
         /// Increment all pointers except the previous value pointer.
         /// </summary>
-        NoPreviousValue,
+        NoPrevious,
     }
     //// End enum
 }

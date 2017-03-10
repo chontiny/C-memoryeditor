@@ -433,7 +433,7 @@
     <Compile Include="Source\ScriptEngine\ScriptEngine.cs" />
     <Compile Include="Source\SignatureCollector\SignatureCollectorViewModel.cs" />
     <Compile Include="Source\SignatureCollector\SignatureModel.cs" />
-    <Compile Include="Source\Snapshots\SnapshotPointerIncrementMode.cs" />
+    <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />

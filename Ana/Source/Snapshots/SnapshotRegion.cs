@@ -42,7 +42,6 @@
             this.TimeSinceLastRead = DateTime.MinValue;
             this.Alignment = SettingsViewModel.GetInstance().Alignment;
             this.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
-            this.PointerIncrementMode = SnapshotPointerIncrementMode.AllPointers;
         }
 
         /// <summary>
@@ -56,24 +55,19 @@
         public Type LabelType { get; set; }
 
         /// <summary>
-        /// Gets or sets the most recently read values.
+        /// Gets the most recently read values.
         /// </summary>
         public unsafe Byte[] CurrentValues { get; private set; }
 
         /// <summary>
-        /// Gets or sets the previously read values.
+        /// Gets the previously read values.
         /// </summary>
         public unsafe Byte[] PreviousValues { get; private set; }
 
         /// <summary>
-        /// Gets or sets the element labels.
+        /// Gets the element labels.
         /// </summary>
         public unsafe Object[] ElementLabels { get; private set; }
-
-        /// <summary>
-        /// Gets or sets an enum to determine how pointers are incremented.
-        /// </summary>
-        public SnapshotPointerIncrementMode PointerIncrementMode { get; set; }
 
         /// <summary>
         /// Gets or sets the valid bits for use in filtering scans.
@@ -86,11 +80,6 @@
         private DateTime TimeSinceLastRead { get; set; }
 
         /// <summary>
-        /// Gets or sets the reference to the snapshot element being iterated over.
-        /// </summary>
-        private SnapshotElementRef SnapshotElementRef { get; set; }
-
-        /// <summary>
         /// Indexer to allow the retrieval of the element at the specified index.
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
@@ -99,7 +88,7 @@
         {
             get
             {
-                return new SnapshotElementRef(this, index);
+                return new SnapshotElementRef(this, PointerIncrementMode.AllPointers, index);
             }
         }
 
@@ -270,123 +259,27 @@
         /// <summary>
         /// Gets the enumerator for an element reference within this snapshot region.
         /// </summary>
+        /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
+        /// <returns>The enumerator for an element reference within this snapshot region.</returns>
+        public IEnumerator<SnapshotElementRef> IterateElements(PointerIncrementMode pointerIncrementMode)
+        {
+            Int32 elementCount = this.GetElementCount();
+            SnapshotElementRef snapshotElement = new SnapshotElementRef(this, pointerIncrementMode);
+
+            for (Int32 index = 0; index < elementCount; index++)
+            {
+                yield return snapshotElement;
+                snapshotElement.IncrementPointers();
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumerator for an element reference within this snapshot region.
+        /// </summary>
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator GetEnumerator()
         {
-            this.SnapshotElementRef = new SnapshotElementRef(this);
-            Int32 elementCount = this.GetElementCount();
-
-            // Note that the loops can be iterated millions of times. Any redundency here is an intentional optimization.
-            switch (this.PointerIncrementMode)
-            {
-                case SnapshotPointerIncrementMode.AllPointers:
-                    if (this.Alignment == 1)
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-
-                            // Utilizes ++ operators. This is fast operation wise, but slower because we check every address
-                            this.SnapshotElementRef.IncrementPointers();
-                        }
-                    }
-                    else
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-
-                            // Utilizes += operators. This is faster because we access far less addresses
-                            this.SnapshotElementRef.AddPointers(this.Alignment);
-                        }
-                    }
-                    break;
-                // Same logic as above, handling the case where we only want to increment the current and previous value pointers
-                case SnapshotPointerIncrementMode.ValuesOnly:
-                    if (this.Alignment == 1)
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-                            this.SnapshotElementRef.IncrementPointersValuesOnly();
-                        }
-                    }
-                    else
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-                            this.SnapshotElementRef.AddPointersValuesOnly(this.Alignment);
-                        }
-                    }
-                    break;
-                // Same logic as above, handling the case where we only want to increment the label pointers
-                case SnapshotPointerIncrementMode.LabelsOnly:
-                    if (this.Alignment == 1)
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-                            this.SnapshotElementRef.IncrementPointersLabelsOnly();
-                        }
-                    }
-                    else
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-                            this.SnapshotElementRef.AddPointersLabelsOnly(this.Alignment);
-                        }
-                    }
-                    break;
-                // Same logic as above, handling the case where we only want to increment the current value pointer
-                case SnapshotPointerIncrementMode.CurrentValueOnly:
-                    if (this.Alignment == 1)
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-
-                            this.SnapshotElementRef.IncrementPointersCurrentValueOnly();
-                        }
-                    }
-                    else
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-
-                            // Utilizes += operators. This is faster because we access far less addresses
-                            this.SnapshotElementRef.AddPointersCurrentValueOnly(this.Alignment);
-                        }
-                    }
-                    break;
-                // Same logic as above, handling the case where we only want to increment the current value and label pointers
-                case SnapshotPointerIncrementMode.NoPreviousValue:
-                    if (this.Alignment == 1)
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-
-                            this.SnapshotElementRef.IncrementPointersNoPrevious();
-                        }
-                    }
-                    else
-                    {
-                        for (Int32 index = 0; index < elementCount; index++)
-                        {
-                            yield return this.SnapshotElementRef;
-
-                            // Utilizes += operators. This is faster because we access far less addresses
-                            this.SnapshotElementRef.AddPointersNoPrevious(this.Alignment);
-                        }
-                    }
-                    break;
-                default:
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unknown pointer increment flags");
-                    break;
-            }
+            return this.IterateElements(PointerIncrementMode.AllPointers);
         }
 
         /// <summary>
