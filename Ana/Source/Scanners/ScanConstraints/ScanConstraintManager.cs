@@ -78,7 +78,7 @@
                 {
                     if (elementType != typeof(Single) && elementType != typeof(Double))
                     {
-                        this.ValueConstraints.Remove(scanConstraint);
+                        this.ValueConstraints = new ObservableCollection<ScanConstraint>(this.ValueConstraints.Where(x => x != scanConstraint));
                         continue;
                     }
                 }

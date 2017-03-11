@@ -249,24 +249,51 @@
         /// <returns>True if the constraints conflict, otherwise false.</returns>
         public Boolean ConflictsWith(ScanConstraint scanConstraint)
         {
-            bool thisRel = this.IsRelativeConstraint();
-            bool thisVal = this.IsValuedConstraint();
-            bool thatRel = scanConstraint.IsRelativeConstraint();
-            bool thatVal = scanConstraint.IsValuedConstraint();
-
-            if (this.Constraint == scanConstraint.Constraint ||
-                this.IsRelativeConstraint() && scanConstraint.IsRelativeConstraint() ||
-                (this.IsValuedConstraint() && scanConstraint.IsValuedConstraint() &&
-                (!this.IsRelativeConstraint() && !scanConstraint.IsRelativeConstraint())))
+            if (this.Constraint == scanConstraint.Constraint)
             {
                 return true;
+            }
+
+            if (this.IsRelativeConstraint() && scanConstraint.IsRelativeConstraint())
+            {
+                return true;
+            }
+
+            if (this.IsValuedConstraint() && scanConstraint.IsValuedConstraint())
+            {
+                if (!this.IsRelativeConstraint() && !scanConstraint.IsRelativeConstraint())
+                {
+                    if ((this.Constraint == ConstraintsEnum.LessThan || this.Constraint == ConstraintsEnum.LessThanOrEqual || this.Constraint == ConstraintsEnum.NotEqual) &&
+                        (scanConstraint.Constraint == ConstraintsEnum.GreaterThan || scanConstraint.Constraint == ConstraintsEnum.GreaterThanOrEqual || scanConstraint.Constraint == ConstraintsEnum.NotEqual))
+                    {
+                        if ((dynamic)this.ConstraintValue <= (dynamic)scanConstraint.ConstraintValue)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+
+                    if ((this.Constraint == ConstraintsEnum.GreaterThan || this.Constraint == ConstraintsEnum.GreaterThanOrEqual || this.Constraint == ConstraintsEnum.NotEqual) &&
+                        (scanConstraint.Constraint == ConstraintsEnum.LessThan || scanConstraint.Constraint == ConstraintsEnum.LessThanOrEqual || scanConstraint.Constraint == ConstraintsEnum.NotEqual))
+                    {
+                        if ((dynamic)this.ConstraintValue >= (dynamic)scanConstraint.ConstraintValue)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+
+                    return true;
+                }
             }
 
             return false;
         }
 
         /// <summary>
-        /// Gets a value indicating whether this constraint is a relative comparison constraint or not.
+        /// Gets a value indicating whether this constraint is a relative comparison constraint, requiring previous values.
         /// </summary>
         /// <returns>True if the constraint is a relative value constraint.</returns>
         public Boolean IsRelativeConstraint()
@@ -289,7 +316,7 @@
                 case ConstraintsEnum.NotScientificNotation:
                     return false;
                 default:
-                    throw new Exception("Unrecognized Constraint");
+                    throw new ArgumentException();
             }
         }
 
@@ -317,7 +344,7 @@
                 case ConstraintsEnum.Decreased:
                     return false;
                 default:
-                    throw new Exception("Unrecognized Constraint");
+                    throw new ArgumentException();
             }
         }
     }
