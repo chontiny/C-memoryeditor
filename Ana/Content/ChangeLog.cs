@@ -29,9 +29,12 @@ namespace Ana.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Added hotkey manager for binding project items to hotkeys\r\n- Added automatic co" +
-                    "nstraint conflict resolution in manual scanner\r\n- Improved interaction with webs" +
-                    "ite from Ana");
+            this.Write(@"- Optimizations to scanning (potentially an order of magnitude increase on manual scans)
+- Minor UI fixes
+- Now properly computing the module of an address when it is added from the scan results
+
+- Bug fixes to scan constraint manager conflicts
+- Fixes to backend memory snapshot management");
             return this.GenerationEnvironment.ToString();
         }
     }

@@ -39,6 +39,8 @@
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<NormalizedProcess>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
 
+            ProcessSelectorModel processSelectorModel = new ProcessSelectorModel(this.RefreshWindowedProcessList);
+
             // Subscribe async to avoid a deadlock situation
             Task.Run(() => { MainViewModel.GetInstance().Subscribe(this); });
 
@@ -68,7 +70,43 @@
         }
 
         /// <summary>
-        /// Gets the name of the opened process.
+        /// Gets the processes with a window running on the machine, as well as the selected process.
+        /// </summary>
+        public IEnumerable<NormalizedProcess> WindowedProcessList
+        {
+            get
+            {
+                List<NormalizedProcess> processes = new List<NormalizedProcess>();
+
+                processes.AddRange(EngineCore.GetInstance().Processes.GetWindowedProcesses());
+                if (this.SelectedProcess != null && !processes.Contains(this.SelectedProcess))
+                {
+                    processes.Insert(0, this.SelectedProcess);
+                }
+
+                return processes;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the selected process.
+        /// </summary>
+        public NormalizedProcess SelectedProcess
+        {
+            get
+            {
+                return EngineCore.GetInstance().Processes.GetOpenedProcess();
+            }
+
+            set
+            {
+                EngineCore.GetInstance().Processes.OpenProcess(value);
+                this.RaisePropertyChanged(nameof(this.SelectedProcess));
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the selected process.
         /// </summary>
         public String ProcessName
         {
@@ -119,6 +157,15 @@
         }
 
         /// <summary>
+        /// Refreshes the windowed process list.
+        /// </summary>
+        private void RefreshWindowedProcessList()
+        {
+            // Raise event to update the process list
+            this.RaisePropertyChanged(nameof(this.WindowedProcessList));
+        }
+
+        /// <summary>
         /// Makes the target process selection.
         /// </summary>
         /// <param name="process">The process being selected.</param>
@@ -129,7 +176,8 @@
                 return;
             }
 
-            EngineCore.GetInstance().Processes.OpenProcess(process);
+            this.SelectedProcess = process;
+            this.RaisePropertyChanged(nameof(this.WindowedProcessList));
             this.IsVisible = false;
         }
     }
