@@ -28,89 +28,8 @@
             this.PreviousValuesHandle = GCHandle.Alloc(this.Parent.PreviousValues, GCHandleType.Pinned);
 
             this.InitializePointers(elementIndex);
-
-            Int32 alignment = this.Parent.Alignment;
-
-            if (this.Parent.Alignment == 1)
-            {
-                switch (pointerIncrementMode)
-                {
-                    case PointerIncrementMode.AllPointers:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentLabelIndex++;
-                            this.CurrentValuePointer++;
-                            this.PreviousValuePointer++;
-                        };
-                        break;
-                    case PointerIncrementMode.CurrentOnly:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentValuePointer++;
-                        };
-                        break;
-                    case PointerIncrementMode.LabelsOnly:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentLabelIndex++;
-                        };
-                        break;
-                    case PointerIncrementMode.NoPrevious:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentLabelIndex++;
-                            this.CurrentValuePointer++;
-                        };
-                        break;
-                    case PointerIncrementMode.ValuesOnly:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentValuePointer++;
-                            this.PreviousValuePointer++;
-                        };
-                        break;
-                }
-            }
-            else
-            {
-                switch (pointerIncrementMode)
-                {
-                    case PointerIncrementMode.AllPointers:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentLabelIndex += alignment;
-                            this.CurrentValuePointer += alignment;
-                            this.PreviousValuePointer += alignment;
-                        };
-                        break;
-                    case PointerIncrementMode.CurrentOnly:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentValuePointer += alignment;
-                        };
-                        break;
-                    case PointerIncrementMode.LabelsOnly:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentLabelIndex += alignment;
-                        };
-                        break;
-                    case PointerIncrementMode.NoPrevious:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentLabelIndex += alignment;
-                            this.CurrentValuePointer += alignment;
-                        };
-                        break;
-                    case PointerIncrementMode.ValuesOnly:
-                        this.IncrementPointers = () =>
-                        {
-                            this.CurrentValuePointer += alignment;
-                            this.PreviousValuePointer += alignment;
-                        };
-                        break;
-                }
-            }
+            this.SetConstraintFunctions();
+            this.SetPointerFunction(pointerIncrementMode);
         }
 
         /// <summary>
@@ -124,9 +43,74 @@
         }
 
         /// <summary>
-        /// Gets or sets an action to increment only the needed pointers.
+        /// Gets an action to increment only the needed pointers.
         /// </summary>
-        public Action IncrementPointers { get; set; }
+        public Action IncrementPointers { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has changed.
+        /// </summary>
+        public Func<Boolean> Changed { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has not changed.
+        /// </summary>
+        public Func<Boolean> Unchanged { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has increased.
+        /// </summary>
+        public Func<Boolean> Increased { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has decreased.
+        /// </summary>
+        public Func<Boolean> Decreased { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has a value equal to the given value.
+        /// </summary>
+        public Func<Object, Boolean> EqualToValue { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has a value not equal to the given value.
+        /// </summary>
+        public Func<Object, Boolean> NotEqualToValue { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has a value greater than to the given value.
+        /// </summary>
+        public Func<Object, Boolean> GreaterThanValue { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has a value greater than or equal to the given value.
+        /// </summary>
+        public Func<Object, Boolean> GreaterThanOrEqualToValue { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has a value less than to the given value.
+        /// </summary>
+        public Func<Object, Boolean> LessThanValue { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if this element has a value less than to the given value.
+        /// </summary>
+        public Func<Object, Boolean> LessThanOrEqualToValue { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if the element has increased it's value by the given value.
+        /// </summary>
+        public Func<Object, Boolean> IncreasedByValue { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if the element has decreased it's value by the given value.
+        /// </summary>
+        public Func<Object, Boolean> DecreasedByValue { get; private set; }
+
+        /// <summary>
+        /// Gets a function which determines if the value is in scientific notation. Only applicable for Single and Double data types.
+        /// </summary>
+        public Func<Boolean> IsScientificNotation { get; private set; }
 
         /// <summary>
         /// Gets the base address of this element.
@@ -227,144 +211,6 @@
         }
 
         /// <summary>
-        /// Determines if this element has changed.
-        /// </summary>
-        /// <returns>True if the element changed.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean Changed()
-        {
-            return this.LoadValue(this.CurrentValuePointer) != this.LoadValue(this.PreviousValuePointer);
-        }
-
-        /// <summary>
-        /// Determines if this element has not changed.
-        /// </summary>
-        /// <returns>True if the element is unchanged.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean Unchanged()
-        {
-            return this.LoadValue(this.CurrentValuePointer) == this.LoadValue(this.PreviousValuePointer);
-        }
-
-        /// <summary>
-        /// Determines if this element has increased.
-        /// </summary>
-        /// <returns>True if the element increased.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean Increased()
-        {
-            return this.LoadValue(this.CurrentValuePointer) > this.LoadValue(this.PreviousValuePointer);
-        }
-
-        /// <summary>
-        /// Determines if this element has decreased.
-        /// </summary>
-        /// <returns>True if the element decreased.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean Decreased()
-        {
-            return this.LoadValue(this.CurrentValuePointer) < this.LoadValue(this.PreviousValuePointer);
-        }
-
-        /// <summary>
-        /// Determines if this element has a value equal to the given value.
-        /// </summary>
-        /// <param name="value">The value being compared against.</param>
-        /// <returns>True if the values are equal.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean EqualToValue(dynamic value)
-        {
-            return this.LoadValue(this.CurrentValuePointer) == value;
-        }
-
-        /// <summary>
-        /// Determines if this element has a value not equal to the given value.
-        /// </summary>
-        /// <param name="value">The value being compared against.</param>
-        /// <returns>True if the values are not equal.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean NotEqualToValue(dynamic value)
-        {
-            return this.LoadValue(this.CurrentValuePointer) != value;
-        }
-
-        /// <summary>
-        /// Determines if this element has a value greater than to the given value.
-        /// </summary>
-        /// <param name="value">The value being compared against.</param>
-        /// <returns>True if the element value is greater than the given value.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean GreaterThanValue(dynamic value)
-        {
-            return this.LoadValue(this.CurrentValuePointer) > value;
-        }
-
-        /// <summary>
-        /// Determines if this element has a value greater than or equal to the given value.
-        /// </summary>
-        /// <param name="value">The value being compared against.</param>
-        /// <returns>True if the element value is greater than or equal the given value.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean GreaterThanOrEqualToValue(dynamic value)
-        {
-            return this.LoadValue(this.CurrentValuePointer) >= value;
-        }
-
-        /// <summary>
-        /// Determines if this element has a value less than to the given value.
-        /// </summary>
-        /// <param name="value">The value being compared against.</param>
-        /// <returns>True if the element value is less than the given value.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean LessThanValue(dynamic value)
-        {
-            return this.LoadValue(this.CurrentValuePointer) < value;
-        }
-
-        /// <summary>
-        /// Determines if this element has a value less than or equal to the given value.
-        /// </summary>
-        /// <param name="value">The value being compared against.</param>
-        /// <returns>True if the element value is less than or equal to the given value.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean LessThanOrEqualToValue(dynamic value)
-        {
-            return this.LoadValue(this.CurrentValuePointer) <= value;
-        }
-
-        /// <summary>
-        /// Determines if the element has increased it's value by the given value
-        /// </summary>
-        /// <param name="value">The value being compared against.</param>
-        /// <returns>True if the element value has increased by the given value.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean IncreasedByValue(dynamic value)
-        {
-            return this.LoadValue(this.CurrentValuePointer) == unchecked(this.LoadValue(this.PreviousValuePointer) + value);
-        }
-
-        /// <summary>
-        /// Determines if the element has decreased it's value by the given value
-        /// </summary>
-        /// <param name="value">The value being compared against.</param>
-        /// <returns>True if the element value has decreased by the given value.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean DecreasedByValue(dynamic value)
-        {
-            return this.LoadValue(this.CurrentValuePointer) == unchecked(this.LoadValue(this.PreviousValuePointer) - value);
-        }
-
-        /// <summary>
-        /// Determines if the value is in scientific notation. Only applicable for Single and Double data types.
-        /// </summary>
-        /// <returns>True if the element is in scientific notation.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe Boolean IsScientificNotation()
-        {
-            return this.LoadValue(this.CurrentValuePointer).ToString().ToLower().Contains("e");
-        }
-
-        /// <summary>
         /// Gets the current value of this element.
         /// </summary>
         /// <returns>The current value of this element.</returns>
@@ -379,7 +225,7 @@
         /// </summary>
         /// <returns>The previous value of this element.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe dynamic GetPreviousValue()
+        public unsafe Object GetPreviousValue()
         {
             return this.LoadValue(this.PreviousValuePointer);
         }
@@ -389,7 +235,7 @@
         /// </summary>
         /// <returns>The label of this element.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe dynamic GetElementLabel()
+        public unsafe Object GetElementLabel()
         {
             return this.Parent.ElementLabels == null ? null : this.Parent.ElementLabels[this.CurrentLabelIndex];
         }
@@ -399,7 +245,7 @@
         /// </summary>
         /// <param name="newLabel">The new element label.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void SetElementLabel(dynamic newLabel)
+        public unsafe void SetElementLabel(Object newLabel)
         {
             this.Parent.ElementLabels[this.CurrentLabelIndex] = newLabel;
         }
@@ -465,6 +311,260 @@
             else
             {
                 this.PreviousValuePointer = null;
+            }
+        }
+
+        /// <summary>
+        /// Initializes all constraint functions for value comparisons.
+        /// </summary>
+        private unsafe void SetConstraintFunctions()
+        {
+            switch (this.CurrentTypeCode)
+            {
+                case TypeCode.Byte:
+                    this.Changed = () => { return *this.CurrentValuePointer != *this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *this.CurrentValuePointer == *this.PreviousValuePointer; };
+                    this.Increased = () => { return *this.CurrentValuePointer > *this.PreviousValuePointer; };
+                    this.Decreased = () => { return *this.CurrentValuePointer < *this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *this.CurrentValuePointer == (Byte)value; };
+                    this.NotEqualToValue = (value) => { return *this.CurrentValuePointer != *this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *this.CurrentValuePointer > (Byte)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *this.CurrentValuePointer >= (Byte)value; };
+                    this.LessThanValue = (value) => { return *this.CurrentValuePointer < (Byte)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *this.CurrentValuePointer <= (Byte)value; };
+                    this.IncreasedByValue = (value) => { return *this.CurrentValuePointer == unchecked(*this.PreviousValuePointer + (Byte)value); };
+                    this.DecreasedByValue = (value) => { return *this.CurrentValuePointer == unchecked(*this.PreviousValuePointer - (Byte)value); };
+                    this.IsScientificNotation = () => { return false; };
+                    break;
+                case TypeCode.SByte:
+                    this.Changed = () => { return *(SByte*)this.CurrentValuePointer != *(SByte*)this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *(SByte*)this.CurrentValuePointer == *(SByte*)this.PreviousValuePointer; };
+                    this.Increased = () => { return *(SByte*)this.CurrentValuePointer > *(SByte*)this.PreviousValuePointer; };
+                    this.Decreased = () => { return *(SByte*)this.CurrentValuePointer < *(SByte*)this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *(SByte*)this.CurrentValuePointer == (SByte)value; };
+                    this.NotEqualToValue = (value) => { return *(SByte*)this.CurrentValuePointer != *(SByte*)this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *(SByte*)this.CurrentValuePointer > (SByte)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *(SByte*)this.CurrentValuePointer >= (SByte)value; };
+                    this.LessThanValue = (value) => { return *(SByte*)this.CurrentValuePointer < (SByte)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *(SByte*)this.CurrentValuePointer <= (SByte)value; };
+                    this.IncreasedByValue = (value) => { return *(SByte*)this.CurrentValuePointer == unchecked(*(SByte*)this.PreviousValuePointer + (SByte)value); };
+                    this.DecreasedByValue = (value) => { return *(SByte*)this.CurrentValuePointer == unchecked(*(SByte*)this.PreviousValuePointer - (SByte)value); };
+                    this.IsScientificNotation = () => { return false; };
+                    break;
+                case TypeCode.Int16:
+                    this.Changed = () => { return *(Int16*)this.CurrentValuePointer != *(Int16*)this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *(Int16*)this.CurrentValuePointer == *(Int16*)this.PreviousValuePointer; };
+                    this.Increased = () => { return *(Int16*)this.CurrentValuePointer > *(Int16*)this.PreviousValuePointer; };
+                    this.Decreased = () => { return *(Int16*)this.CurrentValuePointer < *(Int16*)this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *(Int16*)this.CurrentValuePointer == (Int16)value; };
+                    this.NotEqualToValue = (value) => { return *(Int16*)this.CurrentValuePointer != *(Int16*)this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *(Int16*)this.CurrentValuePointer > (Int16)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *(Int16*)this.CurrentValuePointer >= (Int16)value; };
+                    this.LessThanValue = (value) => { return *(Int16*)this.CurrentValuePointer < (Int16)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *(Int16*)this.CurrentValuePointer <= (Int16)value; };
+                    this.IncreasedByValue = (value) => { return *(Int16*)this.CurrentValuePointer == unchecked(*(Int16*)this.PreviousValuePointer + (Int16)value); };
+                    this.DecreasedByValue = (value) => { return *(Int16*)this.CurrentValuePointer == unchecked(*(Int16*)this.PreviousValuePointer - (Int16)value); };
+                    this.IsScientificNotation = () => { return false; };
+                    break;
+                case TypeCode.Int32:
+                    this.Changed = () => { return *(Int32*)this.CurrentValuePointer != *(Int32*)this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *(Int32*)this.CurrentValuePointer == *(Int32*)this.PreviousValuePointer; };
+                    this.Increased = () => { return *(Int32*)this.CurrentValuePointer > *(Int32*)this.PreviousValuePointer; };
+                    this.Decreased = () => { return *(Int32*)this.CurrentValuePointer < *(Int32*)this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *(Int32*)this.CurrentValuePointer == (Int32)value; };
+                    this.NotEqualToValue = (value) => { return *(Int32*)this.CurrentValuePointer != *(Int32*)this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *(Int32*)this.CurrentValuePointer > (Int32)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *(Int32*)this.CurrentValuePointer >= (Int32)value; };
+                    this.LessThanValue = (value) => { return *(Int32*)this.CurrentValuePointer < (Int32)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *(Int32*)this.CurrentValuePointer <= (Int32)value; };
+                    this.IncreasedByValue = (value) => { return *(Int32*)this.CurrentValuePointer == unchecked(*(Int32*)this.PreviousValuePointer + (Int32)value); };
+                    this.DecreasedByValue = (value) => { return *(Int32*)this.CurrentValuePointer == unchecked(*(Int32*)this.PreviousValuePointer - (Int32)value); };
+                    this.IsScientificNotation = () => { return false; };
+                    break;
+                case TypeCode.Int64:
+                    this.Changed = () => { return *(Int64*)this.CurrentValuePointer != *(Int64*)this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *(Int64*)this.CurrentValuePointer == *(Int64*)this.PreviousValuePointer; };
+                    this.Increased = () => { return *(Int64*)this.CurrentValuePointer > *(Int64*)this.PreviousValuePointer; };
+                    this.Decreased = () => { return *(Int64*)this.CurrentValuePointer < *(Int64*)this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *(Int64*)this.CurrentValuePointer == (Int64)value; };
+                    this.NotEqualToValue = (value) => { return *(Int64*)this.CurrentValuePointer != *(Int64*)this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *(Int64*)this.CurrentValuePointer > (Int64)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *(Int64*)this.CurrentValuePointer >= (Int64)value; };
+                    this.LessThanValue = (value) => { return *(Int64*)this.CurrentValuePointer < (Int64)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *(Int64*)this.CurrentValuePointer <= (Int64)value; };
+                    this.IncreasedByValue = (value) => { return *(Int64*)this.CurrentValuePointer == unchecked(*(Int64*)this.PreviousValuePointer + (Int64)value); };
+                    this.DecreasedByValue = (value) => { return *(Int64*)this.CurrentValuePointer == unchecked(*(Int64*)this.PreviousValuePointer - (Int64)value); };
+                    this.IsScientificNotation = () => { return false; };
+                    break;
+                case TypeCode.UInt16:
+                    this.Changed = () => { return *(UInt16*)this.CurrentValuePointer != *(UInt16*)this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *(UInt16*)this.CurrentValuePointer == *(UInt16*)this.PreviousValuePointer; };
+                    this.Increased = () => { return *(UInt16*)this.CurrentValuePointer > *(UInt16*)this.PreviousValuePointer; };
+                    this.Decreased = () => { return *(UInt16*)this.CurrentValuePointer < *(UInt16*)this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *(UInt16*)this.CurrentValuePointer == (UInt16)value; };
+                    this.NotEqualToValue = (value) => { return *(UInt16*)this.CurrentValuePointer != *(UInt16*)this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *(UInt16*)this.CurrentValuePointer > (UInt16)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *(UInt16*)this.CurrentValuePointer >= (UInt16)value; };
+                    this.LessThanValue = (value) => { return *(UInt16*)this.CurrentValuePointer < (UInt16)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *(UInt16*)this.CurrentValuePointer <= (UInt16)value; };
+                    this.IncreasedByValue = (value) => { return *(UInt16*)this.CurrentValuePointer == unchecked(*(UInt16*)this.PreviousValuePointer + (UInt16)value); };
+                    this.DecreasedByValue = (value) => { return *(UInt16*)this.CurrentValuePointer == unchecked(*(UInt16*)this.PreviousValuePointer - (UInt16)value); };
+                    this.IsScientificNotation = () => { return false; };
+                    break;
+                case TypeCode.UInt32:
+                    this.Changed = () => { return *(UInt32*)this.CurrentValuePointer != *(UInt32*)this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *(UInt32*)this.CurrentValuePointer == *(UInt32*)this.PreviousValuePointer; };
+                    this.Increased = () => { return *(UInt32*)this.CurrentValuePointer > *(UInt32*)this.PreviousValuePointer; };
+                    this.Decreased = () => { return *(UInt32*)this.CurrentValuePointer < *(UInt32*)this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *(UInt32*)this.CurrentValuePointer == (UInt32)value; };
+                    this.NotEqualToValue = (value) => { return *(UInt32*)this.CurrentValuePointer != *(UInt32*)this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *(UInt32*)this.CurrentValuePointer > (UInt32)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *(UInt32*)this.CurrentValuePointer >= (UInt32)value; };
+                    this.LessThanValue = (value) => { return *(UInt32*)this.CurrentValuePointer < (UInt32)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *(UInt32*)this.CurrentValuePointer <= (UInt32)value; };
+                    this.IncreasedByValue = (value) => { return *(UInt32*)this.CurrentValuePointer == unchecked(*(UInt32*)this.PreviousValuePointer + (UInt32)value); };
+                    this.DecreasedByValue = (value) => { return *(UInt32*)this.CurrentValuePointer == unchecked(*(UInt32*)this.PreviousValuePointer - (UInt32)value); };
+                    this.IsScientificNotation = () => { return false; };
+                    break;
+                case TypeCode.UInt64:
+                    this.Changed = () => { return *(UInt64*)this.CurrentValuePointer != *(UInt64*)this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *(UInt64*)this.CurrentValuePointer == *(UInt64*)this.PreviousValuePointer; };
+                    this.Increased = () => { return *(UInt64*)this.CurrentValuePointer > *(UInt64*)this.PreviousValuePointer; };
+                    this.Decreased = () => { return *(UInt64*)this.CurrentValuePointer < *(UInt64*)this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *(UInt64*)this.CurrentValuePointer == (UInt64)value; };
+                    this.NotEqualToValue = (value) => { return *(UInt64*)this.CurrentValuePointer != *(UInt64*)this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *(UInt64*)this.CurrentValuePointer > (UInt64)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *(UInt64*)this.CurrentValuePointer >= (UInt64)value; };
+                    this.LessThanValue = (value) => { return *(UInt64*)this.CurrentValuePointer < (UInt64)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *(UInt64*)this.CurrentValuePointer <= (UInt64)value; };
+                    this.IncreasedByValue = (value) => { return *(UInt64*)this.CurrentValuePointer == unchecked(*(UInt64*)this.PreviousValuePointer + (UInt64)value); };
+                    this.DecreasedByValue = (value) => { return *(UInt64*)this.CurrentValuePointer == unchecked(*(UInt64*)this.PreviousValuePointer - (UInt64)value); };
+                    this.IsScientificNotation = () => { return false; };
+                    break;
+                case TypeCode.Single:
+                    // TODO: We can customize rounding, truncation, etc here with minimal penalty now that we are using anonymous functions
+                    this.Changed = () => { return *(Single*)this.CurrentValuePointer != *(Single*)this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *(Single*)this.CurrentValuePointer == *(Single*)this.PreviousValuePointer; };
+                    this.Increased = () => { return *(Single*)this.CurrentValuePointer > *(Single*)this.PreviousValuePointer; };
+                    this.Decreased = () => { return *(Single*)this.CurrentValuePointer < *(Single*)this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *(Single*)this.CurrentValuePointer == (Single)value; };
+                    this.NotEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer != *(Single*)this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *(Single*)this.CurrentValuePointer > (Single)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer >= (Single)value; };
+                    this.LessThanValue = (value) => { return *(Single*)this.CurrentValuePointer < (Single)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer <= (Single)value; };
+                    this.IncreasedByValue = (value) => { return *(Single*)this.CurrentValuePointer == unchecked(*(Single*)this.PreviousValuePointer + (Single)value); };
+                    this.DecreasedByValue = (value) => { return *(Single*)this.CurrentValuePointer == unchecked(*(Single*)this.PreviousValuePointer - (Single)value); };
+                    this.IsScientificNotation = () => { return (*this.CurrentValuePointer).ToString().Contains("E"); };
+                    break;
+                case TypeCode.Double:
+                    // TODO: We can customize rounding, truncation, etc here with minimal penalty now that we are using anonymous functions
+                    this.Changed = () => { return *(Double*)this.CurrentValuePointer != *(Double*)this.PreviousValuePointer; };
+                    this.Unchanged = () => { return *(Double*)this.CurrentValuePointer == *(Double*)this.PreviousValuePointer; };
+                    this.Increased = () => { return *(Double*)this.CurrentValuePointer > *(Double*)this.PreviousValuePointer; };
+                    this.Decreased = () => { return *(Double*)this.CurrentValuePointer < *(Double*)this.PreviousValuePointer; };
+                    this.EqualToValue = (value) => { return *(Double*)this.CurrentValuePointer == (Double)value; };
+                    this.NotEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer != *(Double*)this.PreviousValuePointer; };
+                    this.GreaterThanValue = (value) => { return *(Double*)this.CurrentValuePointer > (Double)value; };
+                    this.GreaterThanOrEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer >= (Double)value; };
+                    this.LessThanValue = (value) => { return *(Double*)this.CurrentValuePointer < (Double)value; };
+                    this.LessThanOrEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer <= (Double)value; };
+                    this.IncreasedByValue = (value) => { return *(Double*)this.CurrentValuePointer == unchecked(*(Double*)this.PreviousValuePointer + (Double)value); };
+                    this.DecreasedByValue = (value) => { return *(Double*)this.CurrentValuePointer == unchecked(*(Double*)this.PreviousValuePointer - (Double)value); };
+                    this.IsScientificNotation = () => { return (*this.CurrentValuePointer).ToString().Contains("E"); };
+                    break;
+                default:
+                    throw new ArgumentException();
+            }
+        }
+
+        /// <summary>
+        /// Initializes the pointer incrementing function based on the provided parameters.
+        /// </summary>
+        /// <param name="pointerIncrementMode">The method by which to increment pointers.</param>
+        private unsafe void SetPointerFunction(PointerIncrementMode pointerIncrementMode)
+        {
+            Int32 alignment = this.Parent.Alignment;
+
+            if (this.Parent.Alignment == 1)
+            {
+                switch (pointerIncrementMode)
+                {
+                    case PointerIncrementMode.AllPointers:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex++;
+                            this.CurrentValuePointer++;
+                            this.PreviousValuePointer++;
+                        };
+                        break;
+                    case PointerIncrementMode.CurrentOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentValuePointer++;
+                        };
+                        break;
+                    case PointerIncrementMode.LabelsOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex++;
+                        };
+                        break;
+                    case PointerIncrementMode.NoPrevious:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex++;
+                            this.CurrentValuePointer++;
+                        };
+                        break;
+                    case PointerIncrementMode.ValuesOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentValuePointer++;
+                            this.PreviousValuePointer++;
+                        };
+                        break;
+                }
+            }
+            else
+            {
+                switch (pointerIncrementMode)
+                {
+                    case PointerIncrementMode.AllPointers:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex += alignment;
+                            this.CurrentValuePointer += alignment;
+                            this.PreviousValuePointer += alignment;
+                        };
+                        break;
+                    case PointerIncrementMode.CurrentOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentValuePointer += alignment;
+                        };
+                        break;
+                    case PointerIncrementMode.LabelsOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex += alignment;
+                        };
+                        break;
+                    case PointerIncrementMode.NoPrevious:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentLabelIndex += alignment;
+                            this.CurrentValuePointer += alignment;
+                        };
+                        break;
+                    case PointerIncrementMode.ValuesOnly:
+                        this.IncrementPointers = () =>
+                        {
+                            this.CurrentValuePointer += alignment;
+                            this.PreviousValuePointer += alignment;
+                        };
+                        break;
+                }
             }
         }
 

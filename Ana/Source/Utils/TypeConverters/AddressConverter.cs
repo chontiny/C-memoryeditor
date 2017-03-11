@@ -22,7 +22,7 @@
         {
             if (CheckSyntax.CanParseValue(typeof(UInt64), value.ToString()))
             {
-                return Conversions.ToHex(Conversions.ParsePrimitiveStringAsDynamic(typeof(UInt64), value.ToString()), formatAsAddress: true, includePrefix: false);
+                return Conversions.ToHex(Conversions.ParsePrimitiveStringAsPrimitive(typeof(UInt64), value.ToString()), formatAsAddress: true, includePrefix: false);
             }
 
             return base.ConvertTo(context, culture, value, destinationType);

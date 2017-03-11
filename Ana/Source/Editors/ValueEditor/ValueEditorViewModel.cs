@@ -28,7 +28,7 @@
         /// <summary>
         /// Gets or sets the value being edited.
         /// </summary>
-        public dynamic Value { get; set; }
+        public Object Value { get; set; }
     }
     //// End class
 }

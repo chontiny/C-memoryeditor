@@ -103,9 +103,9 @@
         /// <param name="address">The address where the value is read</param>
         /// <param name="success">Whether or not the read succeeded</param>
         /// <returns>A value.</returns>
-        public dynamic Read(Type valueType, IntPtr address, out Boolean success)
+        public Object Read(Type valueType, IntPtr address, out Boolean success)
         {
-            dynamic value;
+            Object value;
 
             switch (Type.GetTypeCode(valueType))
             {
@@ -207,39 +207,39 @@
         /// <param name="elementType">The data type to write</param>
         /// <param name="address">The address to write to</param>
         /// <param name="value">The value to write</param>
-        public void Write(Type elementType, IntPtr address, dynamic value)
+        public void Write(Type elementType, IntPtr address, Object value)
         {
             switch (Type.GetTypeCode(elementType))
             {
                 case TypeCode.Byte:
-                    this.Write<Byte>(address, value);
+                    this.Write<Byte>(address, (Byte)value);
                     break;
                 case TypeCode.SByte:
-                    this.Write<SByte>(address, value);
+                    this.Write<SByte>(address, (SByte)value);
                     break;
                 case TypeCode.Int16:
-                    this.Write<Int16>(address, value);
+                    this.Write<Int16>(address, (Int16)value);
                     break;
                 case TypeCode.Int32:
-                    this.Write<Int32>(address, value);
+                    this.Write<Int32>(address, (Int32)value);
                     break;
                 case TypeCode.Int64:
-                    this.Write<Int64>(address, value);
+                    this.Write<Int64>(address, (Int64)value);
                     break;
                 case TypeCode.UInt16:
-                    this.Write<UInt16>(address, value);
+                    this.Write<UInt16>(address, (UInt16)value);
                     break;
                 case TypeCode.UInt32:
-                    this.Write<UInt32>(address, value);
+                    this.Write<UInt32>(address, (UInt32)value);
                     break;
                 case TypeCode.UInt64:
-                    this.Write<UInt64>(address, value);
+                    this.Write<UInt64>(address, (UInt64)value);
                     break;
                 case TypeCode.Single:
-                    this.Write<Single>(address, value);
+                    this.Write<Single>(address, (Single)value);
                     break;
                 case TypeCode.Double:
-                    this.Write<Double>(address, value);
+                    this.Write<Double>(address, (Double)value);
                     break;
                 default: return;
             }

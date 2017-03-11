@@ -49,7 +49,7 @@
         /// <param name="e">Event args.</param>
         private void ValueHexDecBoxTextChanged(Object sender, EventArgs e)
         {
-            dynamic value = this.ValueHexDecBox.GetValue();
+            Object value = this.ValueHexDecBox.GetValue();
 
             if (value == null)
             {

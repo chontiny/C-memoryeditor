@@ -183,7 +183,7 @@
         /// Gets the raw value being represented.
         /// </summary>
         /// <returns>The raw value.</returns>
-        public dynamic GetValue()
+        public Object GetValue()
         {
             if (!this.IsTextValid)
             {
@@ -192,11 +192,11 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParseHexStringAsDynamic(this.ElementType, this.Text);
+                return Conversions.ParseHexStringAsPrimitive(this.ElementType, this.Text);
             }
             else
             {
-                return Conversions.ParsePrimitiveStringAsDynamic(this.ElementType, this.Text);
+                return Conversions.ParsePrimitiveStringAsPrimitive(this.ElementType, this.Text);
             }
         }
 
@@ -204,14 +204,9 @@
         /// Sets the raw value being represented.
         /// </summary>
         /// <param name="value">The raw value.</param>
-        public void SetValue(dynamic value)
+        public void SetValue(Object value)
         {
-            if (value == null)
-            {
-                return;
-            }
-
-            String valueString = value.ToString();
+            String valueString = value?.ToString();
 
             if (!CheckSyntax.CanParseValue(this.ElementType, valueString))
             {

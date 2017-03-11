@@ -93,8 +93,8 @@
         /// </summary>
         private void GatherPointers()
         {
-            dynamic invalidPointerMin = UInt16.MaxValue;
-            dynamic invalidPointerMax = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress.ToUInt64();
+            UInt64 invalidPointerMin = UInt16.MaxValue;
+            UInt64 invalidPointerMax = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress.ToUInt64();
             ConcurrentHashSet<IntPtr> foundPointers = new ConcurrentHashSet<IntPtr>();
 
             // Test for conditions where we set the final found set and take a new snapshot to parse

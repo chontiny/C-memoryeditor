@@ -89,7 +89,7 @@
         /// <summary>
         /// The value associated with this constraint, if applicable.
         /// </summary>
-        private dynamic constraintValue;
+        private Object constraintValue;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScanConstraint" /> class.
@@ -105,7 +105,7 @@
         /// </summary>
         /// <param name="valueConstraint">The constraint type.</param>
         /// <param name="addressValue">The value associated with this constraint.</param>
-        public ScanConstraint(ConstraintsEnum valueConstraint, dynamic addressValue = null)
+        public ScanConstraint(ConstraintsEnum valueConstraint, Object addressValue = null)
         {
             this.Constraint = valueConstraint;
             this.ConstraintValue = addressValue;
@@ -139,7 +139,7 @@
         /// <summary>
         /// Gets or sets the value associated with this constraint, if applicable.
         /// </summary>
-        public dynamic ConstraintValue
+        public Object ConstraintValue
         {
             get
             {

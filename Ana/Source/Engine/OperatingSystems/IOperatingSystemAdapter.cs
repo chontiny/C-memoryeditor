@@ -148,7 +148,7 @@
         /// <param name="address">The address to read from.</param>
         /// <param name="success">Whether or not the read succeeded.</param>
         /// <returns>The value read from memory.</returns>
-        dynamic Read(Type elementType, IntPtr address, out Boolean success);
+        Object Read(Type elementType, IntPtr address, out Boolean success);
 
         /// <summary>
         /// Reads a value from the opened processes memory.
@@ -174,7 +174,7 @@
         /// <param name="elementType">The data type to write.</param>
         /// <param name="address">The address to write to.</param>
         /// <param name="value">The value to write.</param>
-        void Write(Type elementType, IntPtr address, dynamic value);
+        void Write(Type elementType, IntPtr address, Object value);
 
         /// <summary>
         /// Writes a value to memory in the opened process.
