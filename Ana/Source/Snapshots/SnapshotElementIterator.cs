@@ -334,7 +334,7 @@
                     this.Increased = () => { return *this.CurrentValuePointer > *this.PreviousValuePointer; };
                     this.Decreased = () => { return *this.CurrentValuePointer < *this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *this.CurrentValuePointer == (Byte)value; };
-                    this.NotEqualToValue = (value) => { return *this.CurrentValuePointer != *this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *this.CurrentValuePointer != (Byte)value; };
                     this.GreaterThanValue = (value) => { return *this.CurrentValuePointer > (Byte)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *this.CurrentValuePointer >= (Byte)value; };
                     this.LessThanValue = (value) => { return *this.CurrentValuePointer < (Byte)value; };
@@ -349,7 +349,7 @@
                     this.Increased = () => { return *(SByte*)this.CurrentValuePointer > *(SByte*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(SByte*)this.CurrentValuePointer < *(SByte*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *(SByte*)this.CurrentValuePointer == (SByte)value; };
-                    this.NotEqualToValue = (value) => { return *(SByte*)this.CurrentValuePointer != *(SByte*)this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *(SByte*)this.CurrentValuePointer != (SByte)value; };
                     this.GreaterThanValue = (value) => { return *(SByte*)this.CurrentValuePointer > (SByte)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(SByte*)this.CurrentValuePointer >= (SByte)value; };
                     this.LessThanValue = (value) => { return *(SByte*)this.CurrentValuePointer < (SByte)value; };
@@ -364,7 +364,7 @@
                     this.Increased = () => { return *(Int16*)this.CurrentValuePointer > *(Int16*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(Int16*)this.CurrentValuePointer < *(Int16*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *(Int16*)this.CurrentValuePointer == (Int16)value; };
-                    this.NotEqualToValue = (value) => { return *(Int16*)this.CurrentValuePointer != *(Int16*)this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *(Int16*)this.CurrentValuePointer != (Int16)value; };
                     this.GreaterThanValue = (value) => { return *(Int16*)this.CurrentValuePointer > (Int16)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(Int16*)this.CurrentValuePointer >= (Int16)value; };
                     this.LessThanValue = (value) => { return *(Int16*)this.CurrentValuePointer < (Int16)value; };
@@ -379,7 +379,7 @@
                     this.Increased = () => { return *(Int32*)this.CurrentValuePointer > *(Int32*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(Int32*)this.CurrentValuePointer < *(Int32*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *(Int32*)this.CurrentValuePointer == (Int32)value; };
-                    this.NotEqualToValue = (value) => { return *(Int32*)this.CurrentValuePointer != *(Int32*)this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *(Int32*)this.CurrentValuePointer != (Int32)value; };
                     this.GreaterThanValue = (value) => { return *(Int32*)this.CurrentValuePointer > (Int32)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(Int32*)this.CurrentValuePointer >= (Int32)value; };
                     this.LessThanValue = (value) => { return *(Int32*)this.CurrentValuePointer < (Int32)value; };
@@ -394,7 +394,7 @@
                     this.Increased = () => { return *(Int64*)this.CurrentValuePointer > *(Int64*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(Int64*)this.CurrentValuePointer < *(Int64*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *(Int64*)this.CurrentValuePointer == (Int64)value; };
-                    this.NotEqualToValue = (value) => { return *(Int64*)this.CurrentValuePointer != *(Int64*)this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *(Int64*)this.CurrentValuePointer != (Int64)value; };
                     this.GreaterThanValue = (value) => { return *(Int64*)this.CurrentValuePointer > (Int64)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(Int64*)this.CurrentValuePointer >= (Int64)value; };
                     this.LessThanValue = (value) => { return *(Int64*)this.CurrentValuePointer < (Int64)value; };
@@ -409,7 +409,7 @@
                     this.Increased = () => { return *(UInt16*)this.CurrentValuePointer > *(UInt16*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(UInt16*)this.CurrentValuePointer < *(UInt16*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *(UInt16*)this.CurrentValuePointer == (UInt16)value; };
-                    this.NotEqualToValue = (value) => { return *(UInt16*)this.CurrentValuePointer != *(UInt16*)this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *(UInt16*)this.CurrentValuePointer != (UInt16)value; };
                     this.GreaterThanValue = (value) => { return *(UInt16*)this.CurrentValuePointer > (UInt16)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(UInt16*)this.CurrentValuePointer >= (UInt16)value; };
                     this.LessThanValue = (value) => { return *(UInt16*)this.CurrentValuePointer < (UInt16)value; };
@@ -424,7 +424,7 @@
                     this.Increased = () => { return *(UInt32*)this.CurrentValuePointer > *(UInt32*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(UInt32*)this.CurrentValuePointer < *(UInt32*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *(UInt32*)this.CurrentValuePointer == (UInt32)value; };
-                    this.NotEqualToValue = (value) => { return *(UInt32*)this.CurrentValuePointer != *(UInt32*)this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *(UInt32*)this.CurrentValuePointer != (UInt32)value; };
                     this.GreaterThanValue = (value) => { return *(UInt32*)this.CurrentValuePointer > (UInt32)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(UInt32*)this.CurrentValuePointer >= (UInt32)value; };
                     this.LessThanValue = (value) => { return *(UInt32*)this.CurrentValuePointer < (UInt32)value; };
@@ -439,7 +439,7 @@
                     this.Increased = () => { return *(UInt64*)this.CurrentValuePointer > *(UInt64*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(UInt64*)this.CurrentValuePointer < *(UInt64*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *(UInt64*)this.CurrentValuePointer == (UInt64)value; };
-                    this.NotEqualToValue = (value) => { return *(UInt64*)this.CurrentValuePointer != *(UInt64*)this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *(UInt64*)this.CurrentValuePointer != (UInt64)value; };
                     this.GreaterThanValue = (value) => { return *(UInt64*)this.CurrentValuePointer > (UInt64)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(UInt64*)this.CurrentValuePointer >= (UInt64)value; };
                     this.LessThanValue = (value) => { return *(UInt64*)this.CurrentValuePointer < (UInt64)value; };
@@ -455,7 +455,7 @@
                     this.Increased = () => { return *(Single*)this.CurrentValuePointer > *(Single*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(Single*)this.CurrentValuePointer < *(Single*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *(Single*)this.CurrentValuePointer == (Single)value; };
-                    this.NotEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer != *(Single*)this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer != (Single)value; };
                     this.GreaterThanValue = (value) => { return *(Single*)this.CurrentValuePointer > (Single)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer >= (Single)value; };
                     this.LessThanValue = (value) => { return *(Single*)this.CurrentValuePointer < (Single)value; };
@@ -471,7 +471,7 @@
                     this.Increased = () => { return *(Double*)this.CurrentValuePointer > *(Double*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(Double*)this.CurrentValuePointer < *(Double*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return *(Double*)this.CurrentValuePointer == (Double)value; };
-                    this.NotEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer != *(Double*)this.PreviousValuePointer; };
+                    this.NotEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer != (Double)value; };
                     this.GreaterThanValue = (value) => { return *(Double*)this.CurrentValuePointer > (Double)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer >= (Double)value; };
                     this.LessThanValue = (value) => { return *(Double*)this.CurrentValuePointer < (Double)value; };
