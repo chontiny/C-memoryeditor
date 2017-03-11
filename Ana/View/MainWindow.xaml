@@ -60,33 +60,46 @@
                 <shell:ColumnDefinition Width="Auto" />
 
             </shell:Grid.ColumnDefinitions>
-            <shell:WrapPanel Grid.Column="0">
+            <shell:Grid Grid.Column="0">
+
+                <shell:Grid.ColumnDefinitions>
+                    <shell:ColumnDefinition Width="Auto" />
+                    <shell:ColumnDefinition Width="Auto" />
+                    <shell:ColumnDefinition Width="Auto" />
+                    <shell:ColumnDefinition Width="Auto" />
+                    <shell:ColumnDefinition Width="Auto" />
+                </shell:Grid.ColumnDefinitions>
                 <shell:Image
+                    Grid.Column="0"
                     Width="24"
                     Height="24"
                     Margin="4"
                     Source="pack://application:,,,/Ana;component/Content/Icons/MainAppIcon.ico" />
 
                 <shell:TextBlock
+                    Grid.Column="1"
                     VerticalAlignment="Center"
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
                     Text="* "
                     Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BoolToVisibilityConverter}}" />
                 <shell:TextBlock
+                    Grid.Column="2"
                     VerticalAlignment="Center"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
                     Text="Anathena" />
                 <shell:TextBlock
+                    Grid.Column="3"
                     VerticalAlignment="Center"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
                     Text=" - " />
                 <shell:TextBlock
+                    Grid.Column="4"
                     VerticalAlignment="Center"
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
                     Text="{Binding ProjectExplorerViewModel.ProjectFilePath}" />
-            </shell:WrapPanel>
+            </shell:Grid>
             <shell:Menu
                 Grid.Column="1"
                 VerticalAlignment="Center"

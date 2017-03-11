@@ -151,7 +151,7 @@
         /// <returns>The value converted to hex.</returns>
         public static String ToHex<T>(T value, Boolean formatAsAddress = true, Boolean includePrefix = false)
         {
-            Type dataType = typeof(T);
+            Type dataType = value.GetType();
 
             // If a pointer type, parse as a long integer
             if (dataType == typeof(IntPtr))

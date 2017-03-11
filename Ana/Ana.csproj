@@ -437,7 +437,7 @@
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
-    <Compile Include="Source\Snapshots\SnapshotElementRef.cs" />
+    <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
     <Compile Include="Source\Utils\Compression.cs" />
     <Compile Include="Source\Utils\DataStructures\BiDictionary.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>

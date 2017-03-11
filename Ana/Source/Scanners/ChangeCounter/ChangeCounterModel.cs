@@ -79,7 +79,7 @@
                     return;
                 }
 
-                foreach (SnapshotElementRef element in region)
+                foreach (SnapshotElementIterator element in region)
                 {
                     if (element.Changed())
                     {

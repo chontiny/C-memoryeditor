@@ -417,7 +417,7 @@
 
             for (UInt64 index = startIndex; index < endIndex; index++)
             {
-                SnapshotElementRef element = snapshot[index];
+                SnapshotElementIterator element = snapshot[index];
                 String label = String.Empty;
 
                 if (element.GetElementLabel() != null)

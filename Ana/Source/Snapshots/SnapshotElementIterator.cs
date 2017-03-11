@@ -8,15 +8,15 @@
     /// <summary>
     /// Defines a reference to an element within a snapshot region.
     /// </summary>
-    internal class SnapshotElementRef
+    internal class SnapshotElementIterator
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotElementRef" /> class.
+        /// Initializes a new instance of the <see cref="SnapshotElementIterator" /> class.
         /// </summary>
         /// <param name="parent">The parent region that contains this element.</param>
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
         /// <param name="elementIndex">The index of the element to begin pointing to.</param>
-        public unsafe SnapshotElementRef(
+        public unsafe SnapshotElementIterator(
             SnapshotRegion parent,
             PointerIncrementMode pointerIncrementMode = PointerIncrementMode.AllPointers,
             Int32 elementIndex = 0)
@@ -33,9 +33,9 @@
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="SnapshotElementRef" /> class.
+        /// Finalizes an instance of the <see cref="SnapshotElementIterator" /> class.
         /// </summary>
-        ~SnapshotElementRef()
+        ~SnapshotElementIterator()
         {
             // Let the GC do what it wants now
             this.CurrentValuesHandle.Free();
@@ -187,6 +187,13 @@
                     fixed (Byte* pointerBase = &this.Parent.CurrentValues[0])
                     {
                         return (Int32)(this.CurrentValuePointer - pointerBase);
+                    }
+                }
+                else if (this.PreviousValuePointer != null)
+                {
+                    fixed (Byte* pointerBase = &this.Parent.PreviousValues[0])
+                    {
+                        return (Int32)(this.PreviousValuePointer - pointerBase);
                     }
                 }
                 else
@@ -574,7 +581,7 @@
         /// <param name="array">The byte array from which to read a value.</param>
         /// <returns>The value at the start of this array casted as the proper data type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private unsafe dynamic LoadValue(Byte* array)
+        private unsafe Object LoadValue(Byte* array)
         {
             switch (this.CurrentTypeCode)
             {
@@ -599,7 +606,7 @@
                 case TypeCode.Double:
                     return *(Double*)array;
                 default:
-                    throw new Exception("Invalid element type");
+                    throw new ArgumentException();
             }
         }
     }

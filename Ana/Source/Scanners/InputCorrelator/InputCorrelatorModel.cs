@@ -137,7 +137,7 @@
                         return;
                     }
 
-                    foreach (SnapshotElementRef element in region)
+                    foreach (SnapshotElementIterator element in region)
                     {
                         if (element.Changed())
                         {
@@ -166,7 +166,7 @@
                         return;
                     }
 
-                    foreach (SnapshotElementRef element in region)
+                    foreach (SnapshotElementIterator element in region)
                     {
                         if (element.Changed())
                         {
@@ -197,9 +197,9 @@
 
             foreach (SnapshotRegion region in this.Snapshot)
             {
-                for (IEnumerator<SnapshotElementRef> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                 {
-                    SnapshotElementRef element = enumerator.Current;
+                    SnapshotElementIterator element = enumerator.Current;
 
                     if ((Int16)element.ElementLabel > 0)
                     {

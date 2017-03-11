@@ -108,11 +108,11 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementRef this[Int32 index]
+        public SnapshotElementIterator this[Int32 index]
         {
             get
             {
-                return new SnapshotElementRef(this, PointerIncrementMode.AllPointers, index);
+                return new SnapshotElementIterator(this, PointerIncrementMode.AllPointers, index);
             }
         }
 
@@ -267,10 +267,10 @@
         /// </summary>
         /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
-        public IEnumerator<SnapshotElementRef> IterateElements(PointerIncrementMode pointerIncrementMode)
+        public IEnumerator<SnapshotElementIterator> IterateElements(PointerIncrementMode pointerIncrementMode)
         {
             UInt64 elementCount = this.ElementCount;
-            SnapshotElementRef snapshotElement = new SnapshotElementRef(this, pointerIncrementMode);
+            SnapshotElementIterator snapshotElement = new SnapshotElementIterator(this, pointerIncrementMode);
 
             for (UInt64 index = 0; index < elementCount; index++)
             {

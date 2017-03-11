@@ -122,9 +122,9 @@
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        for (IEnumerator<SnapshotElementRef> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                         {
-                            SnapshotElementRef element = enumerator.Current;
+                            SnapshotElementIterator element = enumerator.Current;
 
                             dynamic label = element.GetElementLabel();
 
@@ -141,9 +141,9 @@
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        for (IEnumerator<SnapshotElementRef> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                         {
-                            SnapshotElementRef element = enumerator.Current;
+                            SnapshotElementIterator element = enumerator.Current;
 
                             dynamic label = element.GetElementLabel();
 
@@ -192,9 +192,9 @@
                         return;
                     }
 
-                    for (IEnumerator<SnapshotElementRef> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                    for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                     {
-                        SnapshotElementRef element = enumerator.Current;
+                        SnapshotElementIterator element = enumerator.Current;
 
                         lock (this.ItemLock)
                         {
