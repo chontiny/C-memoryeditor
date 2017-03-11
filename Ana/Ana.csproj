@@ -444,6 +444,8 @@
     </Compile>
     <Compile Include="Source\Utils\DataStructures\CircularLinkedList.cs" />
     <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\SingleExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\DoubleExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\StringExtensions.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />

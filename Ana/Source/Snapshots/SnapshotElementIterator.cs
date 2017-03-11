@@ -449,35 +449,33 @@
                     this.IsScientificNotation = () => { return false; };
                     break;
                 case TypeCode.Single:
-                    // TODO: We can customize rounding, truncation, etc here with minimal penalty now that we are using anonymous functions
-                    this.Changed = () => { return *(Single*)this.CurrentValuePointer != *(Single*)this.PreviousValuePointer; };
-                    this.Unchanged = () => { return *(Single*)this.CurrentValuePointer == *(Single*)this.PreviousValuePointer; };
+                    this.Changed = () => { return !(*(Single*)this.CurrentValuePointer).AlmostEquals(*(Single*)this.PreviousValuePointer); };
+                    this.Unchanged = () => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(*(Single*)this.PreviousValuePointer); };
                     this.Increased = () => { return *(Single*)this.CurrentValuePointer > *(Single*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(Single*)this.CurrentValuePointer < *(Single*)this.PreviousValuePointer; };
-                    this.EqualToValue = (value) => { return *(Single*)this.CurrentValuePointer == (Single)value; };
-                    this.NotEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer != (Single)value; };
+                    this.EqualToValue = (value) => { return (*(Single*)this.CurrentValuePointer).AlmostEquals((Single)value); };
+                    this.NotEqualToValue = (value) => { return !(*(Single*)this.CurrentValuePointer).AlmostEquals((Single)value); };
                     this.GreaterThanValue = (value) => { return *(Single*)this.CurrentValuePointer > (Single)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer >= (Single)value; };
                     this.LessThanValue = (value) => { return *(Single*)this.CurrentValuePointer < (Single)value; };
                     this.LessThanOrEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer <= (Single)value; };
-                    this.IncreasedByValue = (value) => { return *(Single*)this.CurrentValuePointer == unchecked(*(Single*)this.PreviousValuePointer + (Single)value); };
-                    this.DecreasedByValue = (value) => { return *(Single*)this.CurrentValuePointer == unchecked(*(Single*)this.PreviousValuePointer - (Single)value); };
+                    this.IncreasedByValue = (value) => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Single*)this.PreviousValuePointer + (Single)value)); };
+                    this.DecreasedByValue = (value) => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Single*)this.PreviousValuePointer - (Single)value)); };
                     this.IsScientificNotation = () => { return (*this.CurrentValuePointer).ToString().Contains("E"); };
                     break;
                 case TypeCode.Double:
-                    // TODO: We can customize rounding, truncation, etc here with minimal penalty now that we are using anonymous functions
-                    this.Changed = () => { return *(Double*)this.CurrentValuePointer != *(Double*)this.PreviousValuePointer; };
-                    this.Unchanged = () => { return *(Double*)this.CurrentValuePointer == *(Double*)this.PreviousValuePointer; };
+                    this.Changed = () => { return !(*(Double*)this.CurrentValuePointer).AlmostEquals(*(Double*)this.PreviousValuePointer); };
+                    this.Unchanged = () => { return (*(Double*)this.CurrentValuePointer).AlmostEquals(*(Double*)this.PreviousValuePointer); };
                     this.Increased = () => { return *(Double*)this.CurrentValuePointer > *(Double*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(Double*)this.CurrentValuePointer < *(Double*)this.PreviousValuePointer; };
-                    this.EqualToValue = (value) => { return *(Double*)this.CurrentValuePointer == (Double)value; };
-                    this.NotEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer != (Double)value; };
+                    this.EqualToValue = (value) => { return (*(Double*)this.CurrentValuePointer).AlmostEquals((Double)value); };
+                    this.NotEqualToValue = (value) => { return !(*(Double*)this.CurrentValuePointer).AlmostEquals((Double)value); };
                     this.GreaterThanValue = (value) => { return *(Double*)this.CurrentValuePointer > (Double)value; };
                     this.GreaterThanOrEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer >= (Double)value; };
                     this.LessThanValue = (value) => { return *(Double*)this.CurrentValuePointer < (Double)value; };
                     this.LessThanOrEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer <= (Double)value; };
-                    this.IncreasedByValue = (value) => { return *(Double*)this.CurrentValuePointer == unchecked(*(Double*)this.PreviousValuePointer + (Double)value); };
-                    this.DecreasedByValue = (value) => { return *(Double*)this.CurrentValuePointer == unchecked(*(Double*)this.PreviousValuePointer - (Double)value); };
+                    this.IncreasedByValue = (value) => { return (*(Double*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Double*)this.PreviousValuePointer + (Double)value)); };
+                    this.DecreasedByValue = (value) => { return (*(Double*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Double*)this.PreviousValuePointer - (Double)value)); };
                     this.IsScientificNotation = () => { return (*this.CurrentValuePointer).ToString().Contains("E"); };
                     break;
                 default:
