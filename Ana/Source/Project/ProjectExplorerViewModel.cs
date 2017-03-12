@@ -1,7 +1,10 @@
 ﻿namespace Ana.Source.Project
 {
-    using CustomControls;
+    using Controls;
     using Docking;
+    using Engine;
+    using Engine.AddressResolver;
+    using Engine.OperatingSystems;
     using HotkeyManager;
     using Main;
     using Microsoft.Win32;
@@ -197,11 +200,14 @@
             }
         }
 
+        /// <summary>
+        /// Gets project items that can be bound to a hotkey.
+        /// </summary>
         public ObservableCollection<ProjectItem> BindableProjectItems
         {
             get
             {
-                return new ObservableCollection<ProjectItem>(projectRoot.Children);
+                return new ObservableCollection<ProjectItem>(this.projectRoot.Children);
             }
         }
 
@@ -285,7 +291,28 @@
         /// <param name="elementType">The value type.</param>
         public void AddSpecificAddressItem(IntPtr baseAddress, Type elementType)
         {
-            this.AddNewProjectItems(true, new AddressItem(baseAddress, elementType));
+            // Check if the address is within a module, adding it as module format if so
+            foreach (NormalizedModule module in EngineCore.GetInstance().OperatingSystemAdapter.GetModules())
+            {
+                if (module.ContainsAddress(baseAddress))
+                {
+                    this.AddNewProjectItems(
+                        addToSelected: true,
+                        projectItems: new AddressItem(
+                            baseAddress: baseAddress.Subtract(module.BaseAddress),
+                            elementType: elementType,
+                            resolveType: AddressResolver.ResolveTypeEnum.Module,
+                            baseIdentifier: module.Name));
+
+                    return;
+                }
+            }
+
+            this.AddNewProjectItems(
+                addToSelected: true,
+                projectItems: new AddressItem(
+                    baseAddress: baseAddress,
+                    elementType: elementType));
         }
 
         /// <summary>
@@ -541,7 +568,7 @@
         {
             try
             {
-                if (!File.Exists(this.ProjectFilePath))
+                if (!Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
                 {
                     this.SaveAsProject();
                     return;

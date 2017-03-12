@@ -7,14 +7,14 @@
     using Mvvm.Command;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Utils;
-
-    /// <summary>
-    /// View model for the Process Selector.
-    /// </summary>
+    using Utils.Extensions;    /// <summary>
+                               /// View model for the Process Selector.
+                               /// </summary>
     internal class ProcessSelectorViewModel : ToolViewModel, IProcessObserver
     {
         /// <summary>
@@ -30,6 +30,11 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
+        /// The list of running processes.
+        /// </summary>
+        private IEnumerable<NormalizedProcess> processList;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="ProcessSelectorViewModel" /> class from being created.
         /// </summary>
         private ProcessSelectorViewModel() : base("Process Selector")
@@ -38,6 +43,8 @@
             this.IconSource = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/SelectProcess.png");
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<NormalizedProcess>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
+
+            ProcessSelectorModel processSelectorModel = new ProcessSelectorModel(this.RefreshProcessList);
 
             // Subscribe async to avoid a deadlock situation
             Task.Run(() => { MainViewModel.GetInstance().Subscribe(this); });
@@ -63,12 +70,48 @@
         {
             get
             {
-                return EngineCore.GetInstance().Processes.GetProcesses();
+                return this.processList;
+            }
+
+            set
+            {
+                this.processList = value;
+
+                this.RaisePropertyChanged(nameof(this.ProcessList));
+                this.RaisePropertyChanged(nameof(this.WindowedProcessList));
             }
         }
 
         /// <summary>
-        /// Gets the name of the opened process.
+        /// Gets the processes with a window running on the machine, as well as the selected process.
+        /// </summary>
+        public IEnumerable<NormalizedProcess> WindowedProcessList
+        {
+            get
+            {
+                return this.ProcessList?.Where(x => x.HasWindow).Select(x => x).PrependIfNotNull(this.SelectedProcess).Distinct();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the selected process.
+        /// </summary>
+        public NormalizedProcess SelectedProcess
+        {
+            get
+            {
+                return EngineCore.GetInstance().Processes.GetOpenedProcess();
+            }
+
+            set
+            {
+                EngineCore.GetInstance().Processes.OpenProcess(value);
+                this.RaisePropertyChanged(nameof(this.SelectedProcess));
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the selected process.
         /// </summary>
         public String ProcessName
         {
@@ -114,8 +157,7 @@
         /// </summary>
         private void RefreshProcessList()
         {
-            // Raise event to update the process list
-            this.RaisePropertyChanged(nameof(this.ProcessList));
+            this.ProcessList = EngineCore.GetInstance().Processes.GetProcesses();
         }
 
         /// <summary>
@@ -129,7 +171,8 @@
                 return;
             }
 
-            EngineCore.GetInstance().Processes.OpenProcess(process);
+            this.SelectedProcess = process;
+            this.RefreshProcessList();
             this.IsVisible = false;
         }
     }

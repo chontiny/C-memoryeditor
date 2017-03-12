@@ -137,7 +137,7 @@
 
             // Create snapshot from valid regions, do standard expand/mask operations to catch lost bytes for larger data types
             Snapshot prefilteredSnapshot = new Snapshot(regions);
-            prefilteredSnapshot.ExpandAllRegions(PrimitiveTypes.GetLargestPrimitiveSize() - 1);
+            prefilteredSnapshot.ExpandAllRegions((PrimitiveTypes.GetLargestPrimitiveSize() - 1).ToUInt64());
             prefilteredSnapshot.MaskRegions(prefilteredSnapshot);
 
             return prefilteredSnapshot;
@@ -324,7 +324,7 @@
                     }
 
                     // Read current page data for chunk
-                    Byte[] pageData = EngineCore.GetInstance().OperatingSystemAdapter?.ReadBytes(chunk.BaseAddress, chunk.RegionSize, out success);
+                    Byte[] pageData = EngineCore.GetInstance().OperatingSystemAdapter?.ReadBytes(chunk.BaseAddress, chunk.RegionSize.ToInt32(), out success);
 
                     // Read failed; Deallocated page
                     if (!success)
@@ -362,7 +362,7 @@
             /// </summary>
             /// <param name="baseAddress">The start address of this chunk.</param>
             /// <param name="regionSize">The size of this chunk.</param>
-            public RegionProperties(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
+            public RegionProperties(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
             {
                 this.Checksum = null;
                 this.HasChanged = false;

@@ -109,7 +109,7 @@
             lock (this.AccessLock)
             {
                 // Take a snapshot if there are none, or the current one is empty
-                if (this.Snapshots.Count == 0 || this.Snapshots.Peek() == null || this.Snapshots.Peek().GetElementCount() == 0)
+                if (this.Snapshots.Count == 0 || this.Snapshots.Peek() == null || this.Snapshots.Peek().ElementCount == 0)
                 {
                     if (createIfNone)
                     {
@@ -150,7 +150,7 @@
                 if (SettingsViewModel.GetInstance().IsUserMode)
                 {
                     startAddress = IntPtr.Zero;
-                    endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetMaximumUserModeAddress();
+                    endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress;
                 }
                 else
                 {
@@ -162,7 +162,7 @@
             {
                 // Standard pointer scan parameters
                 startAddress = IntPtr.Zero;
-                endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetMaximumUserModeAddress();
+                endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress;
                 requiredPageFlags = 0;
                 excludedPageFlags = 0;
                 allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image | MemoryTypeEnum.Mapped;
@@ -281,12 +281,7 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(Type activeType)
         {
-            Snapshot activeSnapshot = this.GetActiveSnapshot(createIfNone: false);
-
-            if (activeSnapshot != null)
-            {
-                this.GetActiveSnapshot(createIfNone: false).ElementType = activeType;
-            }
+            this.GetActiveSnapshot(createIfNone: false)?.PropagateSettings();
         }
 
         /// <summary>

@@ -139,16 +139,17 @@
                 this.IndexValueMap.TryGetValue(index, out pointerValue);
 
                 AddressItem newPointer = new AddressItem(
-                    this.AcceptedPointers[index].Item1,
-                    this.ElementType,
-                    "New Pointer",
-                    AddressResolver.ResolveTypeEnum.Module,
-                    String.Empty,
-                    this.AcceptedPointers[index].Item2,
-                    false,
-                    pointerValue);
+                    baseAddress: this.AcceptedPointers[index].Item1,
+                    elementType: this.ElementType,
+                    description: "New Pointer",
+                    resolveType: AddressResolver.ResolveTypeEnum.Module,
+                    baseIdentifier: String.Empty,
+                    offsets: this.AcceptedPointers[index].Item2,
+                    isValueHex: false,
+                    value: pointerValue
+                );
 
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, newPointer);
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: newPointer);
 
                 if (++count >= PointerScannerModel.MaxAdd)
                 {

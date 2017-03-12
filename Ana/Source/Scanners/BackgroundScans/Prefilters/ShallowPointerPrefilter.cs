@@ -141,9 +141,8 @@
         /// </summary>
         private void ProcessPages()
         {
-            Boolean isOpenedProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
-            dynamic invalidPointerMin = isOpenedProcess32Bit ? (UInt32)UInt16.MaxValue : (UInt64)UInt16.MaxValue;
-            dynamic invalidPointerMax = isOpenedProcess32Bit ? Int32.MaxValue : Int64.MaxValue;
+            UInt64 invalidPointerMin = UInt16.MaxValue;
+            UInt64 invalidPointerMax = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress.ToUInt64();
             ConcurrentHashSet<IntPtr> foundPointers = new ConcurrentHashSet<IntPtr>();
 
             // Add static bases
@@ -153,7 +152,7 @@
                 baseRegions.Add(new SnapshotRegion(normalizedModule.BaseAddress, normalizedModule.RegionSize));
             }
 
-            ((dynamic)this.PrefilteredSnapshot).AddSnapshotRegions(baseRegions);
+            this.PrefilteredSnapshot.AddSnapshotRegions(baseRegions);
 
             lock (this.RegionLock)
             {
@@ -164,8 +163,8 @@
                     pointerRegions.Add(new SnapshotRegion(pointer.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
                 }
 
-               ((dynamic)this.PrefilteredSnapshot).AddSnapshotRegions(pointerRegions);
-                this.processedCount = Math.Max(this.processedCount, this.PrefilteredSnapshot.GetRegionCount());
+                this.PrefilteredSnapshot.AddSnapshotRegions(pointerRegions);
+                this.processedCount = Math.Max(this.processedCount, this.PrefilteredSnapshot.RegionCount);
             }
         }
 
@@ -180,7 +179,7 @@
             {
                 if (this.PrefilteredSnapshot != null)
                 {
-                    regionCount = Math.Max(regionCount, this.PrefilteredSnapshot.GetRegionCount());
+                    regionCount = Math.Max(regionCount, this.PrefilteredSnapshot.RegionCount);
                 }
             }
         }

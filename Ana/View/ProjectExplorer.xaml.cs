@@ -4,8 +4,8 @@
     using Aga.Controls.Tree.NodeControls;
     using Content;
     using SharpDX.DirectInput;
-    using Source.CustomControls;
-    using Source.CustomControls.TreeView;
+    using Source.Controls;
+    using Source.Controls.TreeView;
     using Source.Editors.ScriptEditor;
     using Source.Editors.ValueEditor;
     using Source.Engine;

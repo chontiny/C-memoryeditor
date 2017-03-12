@@ -1,6 +1,6 @@
 ﻿namespace Ana.View.Editors
 {
-    using Source.CustomControls;
+    using Source.Controls;
     using Source.Editors.ValueEditor;
     using Source.Project.ProjectItems;
     using System;
@@ -49,7 +49,7 @@
         /// <param name="e">Event args.</param>
         private void ValueHexDecBoxTextChanged(Object sender, EventArgs e)
         {
-            dynamic value = this.ValueHexDecBox.GetValue();
+            Object value = this.ValueHexDecBox.GetValue();
 
             if (value == null)
             {

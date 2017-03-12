@@ -54,7 +54,7 @@
         /// The value at this address.
         /// </summary>
         [Browsable(false)]
-        private dynamic addressValue;
+        private Object addressValue;
 
         /// <summary>
         /// A value indicating whether the value at this address should be displayed as hex.
@@ -107,7 +107,7 @@
 
             if (!this.isValueHex && CheckSyntax.CanParseValue(elementType, value))
             {
-                this.addressValue = Conversions.ParsePrimitiveStringAsDynamic(elementType, value);
+                this.addressValue = Conversions.ParsePrimitiveStringAsPrimitive(elementType, value);
             }
             else if (this.isValueHex && CheckSyntax.CanParseHex(elementType, value))
             {
@@ -231,7 +231,7 @@
         /// </summary>
         [TypeConverter(typeof(DynamicConverter))]
         [Category("Properties"), DisplayName("Value"), Description("Value at the address")]
-        public dynamic Value
+        public Object Value
         {
             get
             {
@@ -297,7 +297,7 @@
             if (this.IsActivated)
             {
                 // Freeze current value if this entry is activated
-                dynamic value = this.Value;
+                Object value = this.Value;
                 if (value != null && value.GetType() == this.ElementType)
                 {
                     this.WriteValue(value);
@@ -387,7 +387,7 @@
         /// Writes a value to the computed address of this item.
         /// </summary>
         /// <param name="newValue">The value to write.</param>
-        private void WriteValue(dynamic newValue)
+        private void WriteValue(Object newValue)
         {
             if (newValue == null)
             {

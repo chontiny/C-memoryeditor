@@ -14,7 +14,7 @@
         /// <param name="valueType">The type the string represents.</param>
         /// <param name="value">The string to convert.</param>
         /// <returns>The value converted from the given string.</returns>
-        public static dynamic ParsePrimitiveStringAsDynamic(Type valueType, String value)
+        public static Object ParsePrimitiveStringAsPrimitive(Type valueType, String value)
         {
             switch (Type.GetTypeCode(valueType))
             {
@@ -50,9 +50,9 @@
         /// <param name="valueType">The type to convert the parsed hex to.</param>
         /// <param name="value">The hex string to parse.</param>
         /// <returns>The converted value from the hex.</returns>
-        public static dynamic ParseHexStringAsDynamic(Type valueType, String value)
+        public static Object ParseHexStringAsPrimitive(Type valueType, String value)
         {
-            return ParsePrimitiveStringAsDynamic(valueType, ParseHexStringAsPrimitiveString(valueType, value));
+            return ParsePrimitiveStringAsPrimitive(valueType, ParseHexStringAsPrimitiveString(valueType, value));
         }
 
         /// <summary>
@@ -61,7 +61,7 @@
         /// <param name="valueType">The data type of the value.</param>
         /// <param name="value">The raw value.</param>
         /// <returns>The converted hex string.</returns>
-        public static String ParseDynamicAsHexString(Type valueType, dynamic value)
+        public static String ParsePrimitiveAsHexString(Type valueType, Object value)
         {
             return ParsePrimitiveStringAsHexString(valueType, value?.ToString());
         }
@@ -74,24 +74,31 @@
         /// <returns>The converted value from the hex.</returns>
         public static String ParsePrimitiveStringAsHexString(Type valueType, String value)
         {
-            dynamic realValue = ParsePrimitiveStringAsDynamic(valueType, value);
+            Object realValue = ParsePrimitiveStringAsPrimitive(valueType, value);
 
             switch (Type.GetTypeCode(valueType))
             {
                 case TypeCode.Byte:
                 case TypeCode.Char:
+                    return ((Byte)realValue).ToString("X");
                 case TypeCode.SByte:
+                    return ((SByte)realValue).ToString("X");
                 case TypeCode.Int16:
+                    return ((Int16)realValue).ToString("X");
                 case TypeCode.Int32:
+                    return ((Int32)realValue).ToString("X");
                 case TypeCode.Int64:
+                    return ((Int64)realValue).ToString("X");
                 case TypeCode.UInt16:
+                    return ((UInt16)realValue).ToString("X");
                 case TypeCode.UInt32:
+                    return ((UInt32)realValue).ToString("X");
                 case TypeCode.UInt64:
-                    return realValue.ToString("X");
+                    return ((UInt64)realValue).ToString("X");
                 case TypeCode.Single:
-                    return BitConverter.ToUInt32(BitConverter.GetBytes(realValue), 0).ToString("X");
+                    return BitConverter.ToUInt32(BitConverter.GetBytes((Single)realValue), 0).ToString("X");
                 case TypeCode.Double:
-                    return BitConverter.ToUInt64(BitConverter.GetBytes(realValue), 0).ToString("X");
+                    return BitConverter.ToUInt64(BitConverter.GetBytes((Double)realValue), 0).ToString("X");
                 default: return null;
             }
         }
@@ -104,7 +111,7 @@
         /// <returns>The converted value from the dec.</returns>
         public static String ParseHexStringAsPrimitiveString(Type valueType, String value)
         {
-            UInt64 realValue = AddressToValue(value);
+            UInt64 realValue = Conversions.AddressToValue(value);
 
             switch (Type.GetTypeCode(valueType))
             {
@@ -144,7 +151,7 @@
         /// <returns>The value converted to hex.</returns>
         public static String ToHex<T>(T value, Boolean formatAsAddress = true, Boolean includePrefix = false)
         {
-            Type dataType = typeof(T);
+            Type dataType = value.GetType();
 
             // If a pointer type, parse as a long integer
             if (dataType == typeof(IntPtr))

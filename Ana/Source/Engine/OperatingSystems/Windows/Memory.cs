@@ -106,14 +106,14 @@
                     allocAddress.Add(Int32.MaxValue >> 1, wrapAround: false));
 
                 // Convert to normalized regions
-                IEnumerable<NormalizedRegion> regions = freeMemory.Select(x => new NormalizedRegion(x.BaseAddress, unchecked((Int32)x.RegionSize)));
+                IEnumerable<NormalizedRegion> regions = freeMemory.Select(x => new NormalizedRegion(x.BaseAddress, x.RegionSize.ToUInt64()));
 
                 // Chunk the large regions into smaller regions based on the allocation size (minimum size is the alloc alignment to prevent creating too many chunks)
                 List<NormalizedRegion> subRegions = new List<NormalizedRegion>();
                 foreach (NormalizedRegion region in regions)
                 {
                     region.BaseAddress = region.BaseAddress.Subtract(region.BaseAddress.Mod(Memory.AllocAlignment), wrapAround: false);
-                    subRegions.AddRange(region.ChunkNormalizedRegion(Math.Max(size, Memory.AllocAlignment)).Select(x => x).Where(x => x.RegionSize >= size));
+                    subRegions.AddRange(region.ChunkNormalizedRegion((UInt64)Math.Max(size, Memory.AllocAlignment)).Select(x => x).Where(x => x.RegionSize >= (UInt64)size));
                 }
 
                 do

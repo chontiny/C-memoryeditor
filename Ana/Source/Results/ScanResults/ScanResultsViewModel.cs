@@ -47,17 +47,17 @@
         /// <summary>
         /// The current page of scan results.
         /// </summary>
-        private Int64 currentPage;
+        private UInt64 currentPage;
 
         /// <summary>
         /// The total number of addresses.
         /// </summary>
-        private Int64 addressCount;
+        private UInt64 addressCount;
 
         /// <summary>
         /// The total number of bytes in memory.
         /// </summary>
-        private Int64 byteCount;
+        private UInt64 byteCount;
 
         /// <summary>
         /// The addresses on the current page.
@@ -264,7 +264,7 @@
         /// <summary>
         /// Gets or sets the total number of addresses found.
         /// </summary>
-        public Int64 CurrentPage
+        public UInt64 CurrentPage
         {
             get
             {
@@ -282,7 +282,7 @@
         /// <summary>
         /// Gets the total number of addresses found.
         /// </summary>
-        public Int64 PageCount
+        public UInt64 PageCount
         {
             get
             {
@@ -293,7 +293,7 @@
         /// <summary>
         /// Gets or sets the total number of bytes found.
         /// </summary>
-        public Int64 ByteCount
+        public UInt64 ByteCount
         {
             get
             {
@@ -310,7 +310,7 @@
         /// <summary>
         /// Gets or sets the total number of addresses found.
         /// </summary>
-        public Int64 ResultCount
+        public UInt64 ResultCount
         {
             get
             {
@@ -392,8 +392,8 @@
         /// <param name="snapshot">The active snapshot.</param>
         public void Update(Snapshot snapshot)
         {
-            this.ResultCount = snapshot == null ? 0 : snapshot.GetElementCount();
-            this.ByteCount = snapshot == null ? 0 : snapshot.GetByteCount();
+            this.ResultCount = snapshot == null ? 0 : snapshot.ElementCount;
+            this.ByteCount = snapshot == null ? 0 : snapshot.ByteCount;
             this.CurrentPage = 0;
         }
 
@@ -412,13 +412,12 @@
                 return;
             }
 
-            Int64 startIndex = Math.Min(ScanResultsViewModel.PageSize * this.CurrentPage, snapshot.GetElementCount());
-            Int64 endIndex = Math.Min((ScanResultsViewModel.PageSize * this.CurrentPage) + ScanResultsViewModel.PageSize, snapshot.GetElementCount());
+            UInt64 startIndex = Math.Min(ScanResultsViewModel.PageSize * this.CurrentPage, snapshot.ElementCount);
+            UInt64 endIndex = Math.Min((ScanResultsViewModel.PageSize * this.CurrentPage) + ScanResultsViewModel.PageSize, snapshot.ElementCount);
 
-            for (Int64 index = startIndex; index < endIndex; index++)
+            for (UInt64 index = startIndex; index < endIndex; index++)
             {
-                SnapshotElementRef element = snapshot[index];
-
+                SnapshotElementIterator element = snapshot[index];
                 String label = String.Empty;
 
                 if (element.GetElementLabel() != null)
@@ -492,7 +491,7 @@
         /// </summary>
         private void PreviousPage()
         {
-            this.CurrentPage = this.CurrentPage == 0 ? this.CurrentPage : this.CurrentPage - 1;
+            this.CurrentPage = (this.CurrentPage - 1).Clamp(0UL, this.PageCount);
         }
 
         /// <summary>
@@ -500,7 +499,7 @@
         /// </summary>
         private void NextPage()
         {
-            this.CurrentPage = this.CurrentPage >= this.PageCount ? this.CurrentPage : this.CurrentPage + 1;
+            this.CurrentPage = (this.CurrentPage + 1).Clamp(0UL, this.PageCount);
         }
 
         /// <summary>

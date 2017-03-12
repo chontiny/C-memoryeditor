@@ -21,8 +21,20 @@
         public ToolViewModel(String title)
         {
             this.Title = title;
+            this.Show = new RelayCommand(() => this.ShowExecute(), () => true);
+            this.Hide = new RelayCommand(() => this.HideExecute(), () => true);
             this.ToggleVisibility = new RelayCommand(() => this.ToggleVisibilityExecute(), () => true);
         }
+
+        /// <summary>
+        /// Gets a command that shows this tool.
+        /// </summary>
+        public ICommand Show { get; private set; }
+
+        /// <summary>
+        /// Gets a command that hides this tool.
+        /// </summary>
+        public ICommand Hide { get; private set; }
 
         /// <summary>
         /// Gets a command that toggles the visibility of this tool.
@@ -41,10 +53,29 @@
 
             set
             {
-                this.isVisible = value;
-                this.OnVisibilityChanged();
-                this.RaisePropertyChanged(nameof(this.IsVisible));
+                if (this.isVisible != value)
+                {
+                    this.isVisible = value;
+                    this.OnVisibilityChanged();
+                    this.RaisePropertyChanged(nameof(this.IsVisible));
+                }
             }
+        }
+
+        /// <summary>
+        /// Shows this tool.
+        /// </summary>
+        public void ShowExecute()
+        {
+            this.IsVisible = true;
+        }
+
+        /// <summary>
+        /// Hide this tool.
+        /// </summary>
+        public void HideExecute()
+        {
+            this.IsVisible = false;
         }
 
         /// <summary>

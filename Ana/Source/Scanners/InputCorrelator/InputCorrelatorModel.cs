@@ -126,18 +126,16 @@
             if (conditionValid)
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<Object>(),
+                this.Snapshot.Cast<SnapshotRegion>(),
                 SettingsViewModel.GetInstance().ParallelSettings,
-                (regionObject) =>
+                (region) =>
                 {
-                    SnapshotRegion region = regionObject as SnapshotRegion;
-
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (SnapshotElementRef element in region)
+                    foreach (SnapshotElementIterator element in region)
                     {
                         if (element.Changed())
                         {
@@ -148,25 +146,23 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.GetRegionCount());
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
                     }
                 });
             }
             else
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<Object>(),
+                this.Snapshot.Cast<SnapshotRegion>(),
                 SettingsViewModel.GetInstance().ParallelSettings,
-                (regionObject) =>
+                (region) =>
                 {
-                    SnapshotRegion region = regionObject as SnapshotRegion;
-
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (SnapshotElementRef element in region)
+                    foreach (SnapshotElementIterator element in region)
                     {
                         if (element.Changed())
                         {
@@ -177,7 +173,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.GetRegionCount());
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
                     }
                 });
             }
@@ -194,10 +190,13 @@
         {
             // Prefilter items with negative penalties (ie constantly changing variables)
             this.Snapshot.SetAllValidBits(false);
+
             foreach (SnapshotRegion region in this.Snapshot)
             {
-                foreach (SnapshotElementRef element in region)
+                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                 {
+                    SnapshotElementIterator element = enumerator.Current;
+
                     if ((Int16)element.ElementLabel > 0)
                     {
                         element.SetValid(true);

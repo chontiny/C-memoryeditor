@@ -167,7 +167,7 @@
         }
 
         /// <summary>
-        /// Called when the scheduled task is updated
+        /// Called when the scheduled task is updated.
         /// </summary>
         protected virtual void OnUpdate()
         {

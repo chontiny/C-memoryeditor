@@ -20,29 +20,10 @@
             <converters:IconConverter x:Key="IconConverter" />
         </Grid.Resources>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Border
-            Grid.Row="0"
-            Padding="8,4,8,4"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
-            <WrapPanel>
-                <Menu Background="Transparent">
-                    <MenuItem Command="{Binding RefreshProcessListCommand}">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="pack://application:,,,/Ana;component/Content/Icons/Undo.png"
-                                ToolTip="Refresh Process List" />
-                        </MenuItem.Header>
-                    </MenuItem>
-                </Menu>
-            </WrapPanel>
-        </Border>
         <ListView
-            Grid.Row="1"
+            Grid.Row="0"
             Background="{StaticResource AvalonDock_Expression_BaseColor3}"
             BorderThickness="0"
             ItemsSource="{Binding ProcessList}">
