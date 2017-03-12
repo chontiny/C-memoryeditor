@@ -37,6 +37,11 @@
         private ConcurrentHashSet<Int32> windowedProcessCache;
 
         /// <summary>
+        /// Collection of processes without a window.
+        /// </summary>
+        private ConcurrentHashSet<Int32> noWindowProcessCache;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ProcessAdapter" /> class.
         /// </summary>
         public ProcessAdapter()
@@ -45,6 +50,7 @@
             this.systemProcessCache = new ConcurrentHashSet<Int32>();
             this.noIconProcessCache = new ConcurrentHashSet<Int32>();
             this.windowedProcessCache = new ConcurrentHashSet<Int32>();
+            this.noWindowProcessCache = new ConcurrentHashSet<Int32>();
         }
 
         /// <summary>
@@ -189,19 +195,31 @@
         /// <returns>A value indicating whether or not the given process has a window.</returns>
         private Boolean isProcessWindowed(Process externalProcess)
         {
-            // Step 0: Check if we have already cached the result of this process.
             if (windowedProcessCache.Contains(externalProcess.Id))
             {
                 return true;
             }
 
-            // Step 1: Check if there is a window handle
+            if (noWindowProcessCache.Contains(externalProcess.Id))
+            {
+                return false;
+            }
+
+            // Check if the window handle is set
             if (externalProcess.MainWindowHandle != IntPtr.Zero)
             {
+                windowedProcessCache.Add(externalProcess.Id);
                 return true;
             }
 
-            // Step 2: Enumerate threads, looking for window threads that reference visible windows
+            // Ignore system processes
+            if (this.IsProcessSystemProcess(externalProcess))
+            {
+                this.noWindowProcessCache.Add(externalProcess.Id);
+                return false;
+            }
+
+            // Window handle was not set, so to be certain we must enumerate the process threads, looking for window threads
             foreach (ProcessThread threadInfo in externalProcess.Threads)
             {
                 IntPtr[] windows = GetWindowHandlesForThread(threadInfo.Id);
@@ -219,6 +237,7 @@
                 }
             }
 
+            this.noWindowProcessCache.Add(externalProcess.Id);
             return false;
         }
 

@@ -5,9 +5,10 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Ana" #>
+- Added process quick select and automatic refreshing
 - Optimizations to scanning (potentially an order of magnitude increase on manual scans)
 - Minor UI fixes
 - Now properly computing the module of an address when it is added from the scan results
-
 - Bug fixes to scan constraint manager conflicts
+- Bug fix to changing the result type with active manual scan constraints
 - Fixes to backend memory snapshot management

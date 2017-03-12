@@ -29,11 +29,12 @@ namespace Ana.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write(@"- Optimizations to scanning (potentially an order of magnitude increase on manual scans)
+            this.Write(@"- Added process quick select and automatic refreshing
+- Optimizations to scanning (potentially an order of magnitude increase on manual scans)
 - Minor UI fixes
 - Now properly computing the module of an address when it is added from the scan results
-
 - Bug fixes to scan constraint manager conflicts
+- Bug fix to changing the result type with active manual scan constraints
 - Fixes to backend memory snapshot management");
             return this.GenerationEnvironment.ToString();
         }
