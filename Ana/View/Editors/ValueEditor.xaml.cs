@@ -1,6 +1,6 @@
 ﻿namespace Ana.View.Editors
 {
-    using Source.CustomControls;
+    using Source.Controls;
     using Source.Editors.ValueEditor;
     using Source.Project.ProjectItems;
     using System;

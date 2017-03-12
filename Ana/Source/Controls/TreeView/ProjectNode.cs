@@ -1,4 +1,4 @@
-﻿namespace Ana.Source.CustomControls.TreeView
+﻿namespace Ana.Source.Controls.TreeView
 {
     using Aga.Controls.Tree;
     using Project.ProjectItems;

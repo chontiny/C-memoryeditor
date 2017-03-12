@@ -182,7 +182,7 @@
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Content\Images.cs" />
-    <Compile Include="Source\CustomControls\TreeViewItemViewModel.cs" />
+    <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Engine\Hook\Client\HookClient.cs" />
@@ -420,11 +420,11 @@
     </Compile>
     <Compile Include="Source\Utils\CheckSyntax.cs" />
     <Compile Include="Source\Utils\Conversions.cs" />
-    <Compile Include="Source\CustomControls\CenteredDialogBox.cs">
+    <Compile Include="Source\Controls\CenteredDialogBox.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Source\CustomControls\ControlThreadingHelper.cs" />
-    <Compile Include="Source\CustomControls\TreeView\ProjectNode.cs" />
+    <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
+    <Compile Include="Source\Controls\TreeView\ProjectNode.cs" />
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
@@ -455,11 +455,11 @@
     <Compile Include="View\Editors\ScriptEditor.xaml.cs">
       <DependentUpon>ScriptEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Source\CustomControls\DarkBrushes.cs" />
-    <Compile Include="Source\CustomControls\HexDecTextBox.cs">
+    <Compile Include="Source\Controls\DarkBrushes.cs" />
+    <Compile Include="Source\Controls\HexDecTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\CustomControls\WinformsHostingHelper.cs" />
+    <Compile Include="Source\Controls\WinformsHostingHelper.cs" />
     <Compile Include="View\InputCorrelator.xaml.cs">
       <DependentUpon>InputCorrelator.xaml</DependentUpon>
     </Compile>

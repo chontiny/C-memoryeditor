@@ -270,6 +270,11 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(Type activeType)
         {
+            // Create a temporary manager to update our current constraint
+            ScanConstraintManager manager = new ScanConstraintManager();
+            manager.AddConstraint(this.CurrentScanConstraint);
+            manager.SetElementType(activeType);
+
             this.ScanConstraintManager.SetElementType(activeType);
             this.UpdateAllProperties();
         }

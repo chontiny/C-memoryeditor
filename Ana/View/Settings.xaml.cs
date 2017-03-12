@@ -1,6 +1,6 @@
 ﻿namespace Ana.View
 {
-    using Source.CustomControls;
+    using Source.Controls;
     using Source.UserSettings;
     using System;
     using System.Windows.Controls;

@@ -1,6 +1,6 @@
 ﻿namespace Ana.View
 {
-    using Source.CustomControls;
+    using Source.Controls;
     using Source.PropertyViewer;
     using Source.Utils.Extensions;
     using System;

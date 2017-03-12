@@ -1,6 +1,6 @@
 ﻿namespace Ana.Source.Project
 {
-    using CustomControls;
+    using Controls;
     using Docking;
     using Engine;
     using Engine.AddressResolver;

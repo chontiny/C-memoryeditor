@@ -9,8 +9,10 @@
     using System.Linq;
     using System.Runtime.InteropServices;
     using Utils.DataStructures;
+
     /// <summary>
     /// A class responsible for collecting all running processes on the system.
+    /// TODO: Icon fetching and thread enumeration are native calls and should be placed in the Windows OS adapter.
     /// </summary>
     internal class ProcessAdapter : IProcesses
     {
@@ -20,11 +22,29 @@
         private ConcurrentHashSet<IProcessObserver> processListeners;
 
         /// <summary>
+        /// Collection of process ids that have caused access issues.
+        /// </summary>
+        private ConcurrentHashSet<Int32> systemProcessCache;
+
+        /// <summary>
+        /// Collection of process ids for which an icon could not be fetched.
+        /// </summary>
+        private ConcurrentHashSet<Int32> noIconProcessCache;
+
+        /// <summary>
+        /// Collection of processes with a window.
+        /// </summary>
+        private ConcurrentHashSet<Int32> windowedProcessCache;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ProcessAdapter" /> class.
         /// </summary>
         public ProcessAdapter()
         {
             this.processListeners = new ConcurrentHashSet<IProcessObserver>();
+            this.systemProcessCache = new ConcurrentHashSet<Int32>();
+            this.noIconProcessCache = new ConcurrentHashSet<Int32>();
+            this.windowedProcessCache = new ConcurrentHashSet<Int32>();
         }
 
         /// <summary>
@@ -57,17 +77,13 @@
         public IEnumerable<NormalizedProcess> GetProcesses()
         {
             return Process.GetProcesses()
-                .Select(externalProcess => new IntermediateProcess(
-                    this.IsProcessSystemProcess(externalProcess),
-                    this.isProcessWindowed(externalProcess),
-                    externalProcess))
-                .Select(intermediateProcess => new NormalizedProcess(
-                        intermediateProcess.ExternalProcess.Id,
-                        intermediateProcess.ExternalProcess.ProcessName,
-                        intermediateProcess.IsSystemProcess ? DateTime.MinValue : intermediateProcess.ExternalProcess.StartTime,
-                        intermediateProcess.IsSystemProcess,
-                        intermediateProcess.HasWindow,
-                        this.GetIcon(intermediateProcess)))
+                .Select(process => new NormalizedProcess(
+                        process.Id,
+                        process.ProcessName,
+                        this.IsProcessSystemProcess(process) ? DateTime.MinValue : process.StartTime,
+                        this.IsProcessSystemProcess(process),
+                        this.isProcessWindowed(process),
+                        this.GetIcon(process)))
                 .OrderByDescending(normalizedProcess => normalizedProcess.StartTime);
         }
 
@@ -137,8 +153,14 @@
         /// <returns>A value indicating whether or not the given process is a system process.</returns>
         private Boolean IsProcessSystemProcess(Process externalProcess)
         {
+            if (systemProcessCache.Contains(externalProcess.Id))
+            {
+                return true;
+            }
+
             if (externalProcess.SessionId == 0 || externalProcess.BasePriority == 13)
             {
+                systemProcessCache.Add(externalProcess.Id);
                 return true;
             }
 
@@ -153,6 +175,7 @@
             }
             catch
             {
+                systemProcessCache.Add(externalProcess.Id);
                 return true;
             }
 
@@ -166,6 +189,12 @@
         /// <returns>A value indicating whether or not the given process has a window.</returns>
         private Boolean isProcessWindowed(Process externalProcess)
         {
+            // Step 0: Check if we have already cached the result of this process.
+            if (windowedProcessCache.Contains(externalProcess.Id))
+            {
+                return true;
+            }
+
             // Step 1: Check if there is a window handle
             if (externalProcess.MainWindowHandle != IntPtr.Zero)
             {
@@ -183,6 +212,7 @@
                     {
                         if (IsWindowVisible(handle))
                         {
+                            windowedProcessCache.Add(externalProcess.Id);
                             return true;
                         }
                     }
@@ -228,23 +258,28 @@
         /// </summary>
         /// <param name="intermediateProcess">An intermediate process structure.</param>
         /// <returns>An Icon associated with the given process. Returns null if there is no icon.</returns>
-        private Icon GetIcon(IntermediateProcess intermediateProcess)
+        private Icon GetIcon(Process externalProcess)
         {
             const Icon NoIcon = null;
 
-            if (intermediateProcess.IsSystemProcess)
+            if (this.noIconProcessCache.Contains(externalProcess.Id))
             {
+                return NoIcon;
+            }
+
+            if (this.IsProcessSystemProcess(externalProcess))
+            {
+                this.noIconProcessCache.Add(externalProcess.Id);
                 return NoIcon;
             }
 
             try
             {
-                // TODO: This is a violation of the abstraction of native methods into just the OS adaptor. Either all process functions go into the OS Adapter,
-                // or this portion must be moved into the Windows Adapter
-                IntPtr iconHandle = NativeMethods.ExtractIcon(intermediateProcess.ExternalProcess.Handle, intermediateProcess.ExternalProcess.MainModule.FileName, 0);
+                IntPtr iconHandle = NativeMethods.ExtractIcon(externalProcess.Handle, externalProcess.MainModule.FileName, 0);
 
                 if (iconHandle == IntPtr.Zero)
                 {
+                    this.noIconProcessCache.Add(externalProcess.Id);
                     return NoIcon;
                 }
 
@@ -252,41 +287,9 @@
             }
             catch
             {
+                this.noIconProcessCache.Add(externalProcess.Id);
                 return NoIcon;
             }
-        }
-
-        /// <summary>
-        /// Temporary structure used in collecting all running processes.
-        /// </summary>
-        private struct IntermediateProcess
-        {
-            /// <summary>
-            /// Initializes a new instance of the <see cref="IntermediateProcess" /> struct.
-            /// </summary>
-            /// <param name="isSystemProcess">Whether or not the process is a system process.</param>
-            /// <param name="externalProcess">The external process.</param>
-            public IntermediateProcess(Boolean isSystemProcess, Boolean hasWindow, Process externalProcess)
-            {
-                this.IsSystemProcess = isSystemProcess;
-                this.HasWindow = hasWindow;
-                this.ExternalProcess = externalProcess;
-            }
-
-            /// <summary>
-            /// Gets a value indicating whether or not the process is a system process.
-            /// </summary>
-            public Boolean IsSystemProcess { get; private set; }
-
-            /// <summary>
-            /// Gets a value indicating whether or not the process has a window.
-            /// </summary>
-            public Boolean HasWindow { get; private set; }
-
-            /// <summary>
-            /// Gets the process associated with this intermediate structure.
-            /// </summary>
-            public Process ExternalProcess { get; private set; }
         }
     }
     //// End class
