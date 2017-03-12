@@ -27,12 +27,6 @@
         IEnumerable<NormalizedProcess> GetProcesses();
 
         /// <summary>
-        /// Gets all running processes on the system.
-        /// </summary>
-        /// <returns>An enumeration of see <see cref="NormalizedProcess" />.</returns>
-        IEnumerable<NormalizedProcess> GetWindowedProcesses();
-
-        /// <summary>
         /// Opens a process for editing.
         /// </summary>
         /// <param name="process">The process to be opened.</param>

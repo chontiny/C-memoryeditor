@@ -7,8 +7,8 @@
     using System.Diagnostics;
     using System.Drawing;
     using System.Linq;
+    using System.Runtime.InteropServices;
     using Utils.DataStructures;
-
     /// <summary>
     /// A class responsible for collecting all running processes on the system.
     /// </summary>
@@ -57,30 +57,16 @@
         public IEnumerable<NormalizedProcess> GetProcesses()
         {
             return Process.GetProcesses()
-                .Select(externalProcess => new IntermediateProcess(this.IsProcessSystemProcess(externalProcess), externalProcess))
+                .Select(externalProcess => new IntermediateProcess(
+                    this.IsProcessSystemProcess(externalProcess),
+                    this.isProcessWindowed(externalProcess),
+                    externalProcess))
                 .Select(intermediateProcess => new NormalizedProcess(
                         intermediateProcess.ExternalProcess.Id,
                         intermediateProcess.ExternalProcess.ProcessName,
                         intermediateProcess.IsSystemProcess ? DateTime.MinValue : intermediateProcess.ExternalProcess.StartTime,
                         intermediateProcess.IsSystemProcess,
-                        this.GetIcon(intermediateProcess)))
-                .OrderByDescending(normalizedProcess => normalizedProcess.StartTime);
-        }
-
-        /// <summary>
-        /// Gets all running processes on the system with a window.
-        /// </summary>
-        /// <returns>An enumeration of see <see cref="NormalizedProcess" />.</returns>
-        public IEnumerable<NormalizedProcess> GetWindowedProcesses()
-        {
-            return Process.GetProcesses()
-                .Where(x => x.MainWindowHandle != IntPtr.Zero)
-                .Select(externalProcess => new IntermediateProcess(this.IsProcessSystemProcess(externalProcess), externalProcess))
-                .Select(intermediateProcess => new NormalizedProcess(
-                        intermediateProcess.ExternalProcess.Id,
-                        intermediateProcess.ExternalProcess.ProcessName,
-                        intermediateProcess.IsSystemProcess ? DateTime.MinValue : intermediateProcess.ExternalProcess.StartTime,
-                        intermediateProcess.IsSystemProcess,
+                        intermediateProcess.HasWindow,
                         this.GetIcon(intermediateProcess)))
                 .OrderByDescending(normalizedProcess => normalizedProcess.StartTime);
         }
@@ -174,6 +160,70 @@
         }
 
         /// <summary>
+        /// Determines if a process has a window.
+        /// </summary>
+        /// <param name="externalProcess">The process to check.</param>
+        /// <returns>A value indicating whether or not the given process has a window.</returns>
+        private Boolean isProcessWindowed(Process externalProcess)
+        {
+            // Step 1: Check if there is a window handle
+            if (externalProcess.MainWindowHandle != IntPtr.Zero)
+            {
+                return true;
+            }
+
+            // Step 2: Enumerate threads, looking for window threads that reference visible windows
+            foreach (ProcessThread threadInfo in externalProcess.Threads)
+            {
+                IntPtr[] windows = GetWindowHandlesForThread(threadInfo.Id);
+
+                if (windows != null)
+                {
+                    foreach (IntPtr handle in windows)
+                    {
+                        if (IsWindowVisible(handle))
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private IntPtr[] GetWindowHandlesForThread(Int32 threadHandle)
+        {
+            results.Clear();
+            EnumWindows(WindowEnum, threadHandle);
+
+            return results.ToArray();
+        }
+
+        private delegate Int32 EnumWindowsProc(IntPtr hwnd, Int32 lParam);
+
+        [DllImport("user32")]
+        private static extern Int32 EnumWindows(EnumWindowsProc x, Int32 y);
+        [DllImport("user32")]
+        public static extern Int32 GetWindowThreadProcessId(IntPtr handle, out Int32 processId);
+        [DllImport("user32")]
+        static extern Boolean IsWindowVisible(IntPtr hWnd);
+
+        private List<IntPtr> results = new List<IntPtr>();
+
+        private Int32 WindowEnum(IntPtr hWnd, Int32 lParam)
+        {
+            Int32 processID = 0;
+            Int32 threadID = GetWindowThreadProcessId(hWnd, out processID);
+            if (threadID == lParam)
+            {
+                results.Add(hWnd);
+            }
+
+            return 1;
+        }
+
+        /// <summary>
         /// Fetches the icon associated with the provided process.
         /// </summary>
         /// <param name="intermediateProcess">An intermediate process structure.</param>
@@ -216,9 +266,10 @@
             /// </summary>
             /// <param name="isSystemProcess">Whether or not the process is a system process.</param>
             /// <param name="externalProcess">The external process.</param>
-            public IntermediateProcess(Boolean isSystemProcess, Process externalProcess)
+            public IntermediateProcess(Boolean isSystemProcess, Boolean hasWindow, Process externalProcess)
             {
                 this.IsSystemProcess = isSystemProcess;
+                this.HasWindow = hasWindow;
                 this.ExternalProcess = externalProcess;
             }
 
@@ -226,6 +277,11 @@
             /// Gets a value indicating whether or not the process is a system process.
             /// </summary>
             public Boolean IsSystemProcess { get; private set; }
+
+            /// <summary>
+            /// Gets a value indicating whether or not the process has a window.
+            /// </summary>
+            public Boolean HasWindow { get; private set; }
 
             /// <summary>
             /// Gets the process associated with this intermediate structure.

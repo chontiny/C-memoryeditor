@@ -7,14 +7,14 @@
     using Mvvm.Command;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Utils;
-
-    /// <summary>
-    /// View model for the Process Selector.
-    /// </summary>
+    using Utils.Extensions;    /// <summary>
+                               /// View model for the Process Selector.
+                               /// </summary>
     internal class ProcessSelectorViewModel : ToolViewModel, IProcessObserver
     {
         /// <summary>
@@ -30,6 +30,11 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
+        /// The list of running processes.
+        /// </summary>
+        private IEnumerable<NormalizedProcess> processList;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="ProcessSelectorViewModel" /> class from being created.
         /// </summary>
         private ProcessSelectorViewModel() : base("Process Selector")
@@ -39,7 +44,7 @@
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<NormalizedProcess>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
 
-            ProcessSelectorModel processSelectorModel = new ProcessSelectorModel(this.RefreshWindowedProcessList);
+            ProcessSelectorModel processSelectorModel = new ProcessSelectorModel(this.RefreshProcessList);
 
             // Subscribe async to avoid a deadlock situation
             Task.Run(() => { MainViewModel.GetInstance().Subscribe(this); });
@@ -65,7 +70,15 @@
         {
             get
             {
-                return EngineCore.GetInstance().Processes.GetProcesses();
+                return this.processList;
+            }
+
+            set
+            {
+                this.processList = value;
+
+                this.RaisePropertyChanged(nameof(this.ProcessList));
+                this.RaisePropertyChanged(nameof(this.WindowedProcessList));
             }
         }
 
@@ -76,15 +89,7 @@
         {
             get
             {
-                List<NormalizedProcess> processes = new List<NormalizedProcess>();
-
-                processes.AddRange(EngineCore.GetInstance().Processes.GetWindowedProcesses());
-                if (this.SelectedProcess != null && !processes.Contains(this.SelectedProcess))
-                {
-                    processes.Insert(0, this.SelectedProcess);
-                }
-
-                return processes;
+                return this.ProcessList?.Where(x => x.HasWindow).Select(x => x).PrependIfNotNull(this.SelectedProcess).Distinct();
             }
         }
 
@@ -152,17 +157,7 @@
         /// </summary>
         private void RefreshProcessList()
         {
-            // Raise event to update the process list
-            this.RaisePropertyChanged(nameof(this.ProcessList));
-        }
-
-        /// <summary>
-        /// Refreshes the windowed process list.
-        /// </summary>
-        private void RefreshWindowedProcessList()
-        {
-            // Raise event to update the process list
-            this.RaisePropertyChanged(nameof(this.WindowedProcessList));
+            this.ProcessList = EngineCore.GetInstance().Processes.GetProcesses();
         }
 
         /// <summary>
@@ -177,7 +172,7 @@
             }
 
             this.SelectedProcess = process;
-            this.RaisePropertyChanged(nameof(this.WindowedProcessList));
+            this.RefreshProcessList();
             this.IsVisible = false;
         }
     }
