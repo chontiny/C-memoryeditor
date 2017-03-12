@@ -494,12 +494,6 @@
                             <view:ProjectExplorer />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.ProjectExplorerViewTemplate>
-                    <!--  Signature Collector  -->
-                    <view:ViewTemplateSelector.SignatureCollectorViewTemplate>
-                        <shell:DataTemplate>
-                            <view:SignatureCollector />
-                        </shell:DataTemplate>
-                    </view:ViewTemplateSelector.SignatureCollectorViewTemplate>
                     <!--  Hotkey Manager  -->
                     <view:ViewTemplateSelector.HotkeyManagerViewTemplate>
                         <shell:DataTemplate>

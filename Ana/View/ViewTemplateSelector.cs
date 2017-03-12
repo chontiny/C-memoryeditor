@@ -17,7 +17,6 @@
     using Source.Scanners.LabelThresholder;
     using Source.Scanners.ManualScanner;
     using Source.Scanners.PointerScanner;
-    using Source.SignatureCollector;
     using Source.Snapshots;
     using Source.UserSettings;
     using System;
@@ -204,10 +203,6 @@
             else if (item is ProjectExplorerViewModel)
             {
                 return this.ProjectExplorerViewTemplate;
-            }
-            else if (item is SignatureCollectorViewModel)
-            {
-                return this.SignatureCollectorViewTemplate;
             }
             else if (item is OutputViewModel)
             {

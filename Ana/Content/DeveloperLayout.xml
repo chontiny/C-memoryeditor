@@ -22,7 +22,6 @@
           </LayoutAnchorablePane>
         </LayoutAnchorablePaneGroup>
         <LayoutAnchorablePane Id="618e3105-9254-49be-b1fe-be65419addeb" DockWidth="1.27193901842561*">
-          <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Signature Collector" ContentId="SignatureCollectorViewModel" LastActivationTimeStamp="01/06/2017 22:58:39" />
           <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Scan Results" IsSelected="True" ContentId="ScanResultsViewModel" LastActivationTimeStamp="03/01/2017 19:30:25" />
           <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Snapshot Manager" ContentId="SnapshotManagerViewModel" FloatingLeft="651" FloatingTop="654" FloatingWidth="353" FloatingHeight="612" LastActivationTimeStamp="03/01/2017 19:30:25" />
         </LayoutAnchorablePane>

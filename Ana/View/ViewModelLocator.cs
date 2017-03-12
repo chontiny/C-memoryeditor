@@ -22,7 +22,6 @@
     using Source.Scanners.ManualScanner;
     using Source.Scanners.PointerScanner;
     using Source.Scanners.ValueCollector;
-    using Source.SignatureCollector;
     using Source.Snapshots;
     using Source.UserSettings;
 
@@ -223,17 +222,6 @@
             get
             {
                 return ValueCollectorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets a Signature Collector view model.
-        /// </summary>
-        public SignatureCollectorViewModel SignatureCollectorViewModel
-        {
-            get
-            {
-                return SignatureCollectorViewModel.GetInstance();
             }
         }
 
