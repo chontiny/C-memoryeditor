@@ -568,7 +568,7 @@
         {
             try
             {
-                if (!File.Exists(this.ProjectFilePath))
+                if (!Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
                 {
                     this.SaveAsProject();
                     return;

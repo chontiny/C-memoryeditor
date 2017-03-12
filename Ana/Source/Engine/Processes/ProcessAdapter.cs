@@ -32,6 +32,11 @@
         private ConcurrentHashSet<Int32> noIconProcessCache;
 
         /// <summary>
+        /// Collection of icons fetched from processes.
+        /// </summary>
+        private Dictionary<Int32, Icon> iconCache;
+
+        /// <summary>
         /// Collection of processes with a window.
         /// </summary>
         private ConcurrentHashSet<Int32> windowedProcessCache;
@@ -49,6 +54,7 @@
             this.processListeners = new ConcurrentHashSet<IProcessObserver>();
             this.systemProcessCache = new ConcurrentHashSet<Int32>();
             this.noIconProcessCache = new ConcurrentHashSet<Int32>();
+            this.iconCache = new Dictionary<Int32, Icon>();
             this.windowedProcessCache = new ConcurrentHashSet<Int32>();
             this.noWindowProcessCache = new ConcurrentHashSet<Int32>();
         }
@@ -286,6 +292,11 @@
                 return NoIcon;
             }
 
+            if (this.iconCache.ContainsKey(externalProcess.Id))
+            {
+                return iconCache[externalProcess.Id];
+            }
+
             if (this.IsProcessSystemProcess(externalProcess))
             {
                 this.noIconProcessCache.Add(externalProcess.Id);
@@ -302,7 +313,10 @@
                     return NoIcon;
                 }
 
-                return Icon.FromHandle(iconHandle);
+                Icon icon = Icon.FromHandle(iconHandle);
+                iconCache.Add(externalProcess.Id, icon);
+
+                return icon;
             }
             catch
             {
