@@ -181,12 +181,10 @@
                 }
 
                 Parallel.ForEach(
-                    this.Snapshot.Cast<Object>(),
+                    this.Snapshot.Cast<SnapshotRegion>(),
                     SettingsViewModel.GetInstance().ParallelSettings,
-                    (regionObject) =>
+                    (region) =>
                 {
-                    SnapshotRegion region = regionObject as SnapshotRegion;
-
                     if (region.ElementLabels == null || region.ElementCount <= 0)
                     {
                         return;

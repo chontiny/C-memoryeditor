@@ -4,6 +4,7 @@
     using Engine.OperatingSystems;
     using Output;
     using Results.ScanResults;
+    using Scanners.ScanConstraints;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -112,7 +113,7 @@
         {
             get
             {
-                return new SnapshotElementIterator(this, PointerIncrementMode.AllPointers, index);
+                return new SnapshotElementIterator(parent: this, elementIndex: index, pointerIncrementMode: PointerIncrementMode.AllPointers);
             }
         }
 
@@ -266,11 +267,20 @@
         /// Gets the enumerator for an element reference within this snapshot region.
         /// </summary>
         /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
+        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
+        /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
-        public IEnumerator<SnapshotElementIterator> IterateElements(PointerIncrementMode pointerIncrementMode)
+        public IEnumerator<SnapshotElementIterator> IterateElements(
+            PointerIncrementMode pointerIncrementMode,
+            ConstraintsEnum compareActionConstraint = ConstraintsEnum.Changed,
+            Object compareActionValue = null)
         {
             UInt64 elementCount = this.ElementCount;
-            SnapshotElementIterator snapshotElement = new SnapshotElementIterator(this, pointerIncrementMode);
+            SnapshotElementIterator snapshotElement = new SnapshotElementIterator(
+                parent: this,
+                pointerIncrementMode: pointerIncrementMode,
+                compareActionConstraint: compareActionConstraint,
+                compareActionValue: compareActionValue);
 
             for (UInt64 index = 0; index < elementCount; index++)
             {

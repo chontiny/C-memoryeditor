@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Snapshots
 {
+    using Scanners.ScanConstraints;
     using System;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
@@ -14,12 +15,16 @@
         /// Initializes a new instance of the <see cref="SnapshotElementIterator" /> class.
         /// </summary>
         /// <param name="parent">The parent region that contains this element.</param>
-        /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
         /// <param name="elementIndex">The index of the element to begin pointing to.</param>
+        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
+        /// <param name="compareActionValue">The value to use for the element quick action.</param>
+        /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
         public unsafe SnapshotElementIterator(
             SnapshotRegion parent,
+            Int32 elementIndex = 0,
             PointerIncrementMode pointerIncrementMode = PointerIncrementMode.AllPointers,
-            Int32 elementIndex = 0)
+            ConstraintsEnum compareActionConstraint = ConstraintsEnum.Changed,
+            Object compareActionValue = null)
         {
             this.Parent = parent;
 
@@ -30,6 +35,7 @@
             this.InitializePointers(elementIndex);
             this.SetConstraintFunctions();
             this.SetPointerFunction(pointerIncrementMode);
+            this.SetCompareAction(compareActionConstraint, compareActionValue);
         }
 
         /// <summary>
@@ -46,6 +52,11 @@
         /// Gets an action to increment only the needed pointers.
         /// </summary>
         public Action IncrementPointers { get; private set; }
+
+        /// <summary>
+        /// Gets an action based on the element iterator scan constraint.
+        /// </summary>
+        public Func<Boolean> Compare { get; private set; }
 
         /// <summary>
         /// Gets a function which determines if this element has changed.
@@ -570,6 +581,57 @@
                         };
                         break;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Sets the default compare action to use for this element.
+        /// </summary>
+        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
+        /// <param name="compareActionValue">The value to use for the element quick action.</param>
+        private void SetCompareAction(ConstraintsEnum compareActionConstraint, Object compareActionValue)
+        {
+            switch (compareActionConstraint)
+            {
+                case ConstraintsEnum.Unchanged:
+                    this.Compare = this.Unchanged;
+                    break;
+                case ConstraintsEnum.Changed:
+                    this.Compare = this.Changed;
+                    break;
+                case ConstraintsEnum.Increased:
+                    this.Compare = this.Increased;
+                    break;
+                case ConstraintsEnum.Decreased:
+                    this.Compare = this.Decreased;
+                    break;
+                case ConstraintsEnum.IncreasedByX:
+                    this.Compare = () => this.IncreasedByValue(compareActionValue);
+                    break;
+                case ConstraintsEnum.DecreasedByX:
+                    this.Compare = () => this.DecreasedByValue(compareActionValue);
+                    break;
+                case ConstraintsEnum.Equal:
+                    this.Compare = () => this.EqualToValue(compareActionValue);
+                    break;
+                case ConstraintsEnum.NotEqual:
+                    this.Compare = () => this.NotEqualToValue(compareActionValue);
+                    break;
+                case ConstraintsEnum.GreaterThan:
+                    this.Compare = () => this.GreaterThanValue(compareActionValue);
+                    break;
+                case ConstraintsEnum.GreaterThanOrEqual:
+                    this.Compare = () => this.GreaterThanOrEqualToValue(compareActionValue);
+                    break;
+                case ConstraintsEnum.LessThan:
+                    this.Compare = () => this.LessThanValue(compareActionValue);
+                    break;
+                case ConstraintsEnum.LessThanOrEqual:
+                    this.Compare = () => this.LessThanValue(compareActionValue);
+                    break;
+                case ConstraintsEnum.NotScientificNotation:
+                    this.Compare = this.IsScientificNotation;
+                    break;
             }
         }
 

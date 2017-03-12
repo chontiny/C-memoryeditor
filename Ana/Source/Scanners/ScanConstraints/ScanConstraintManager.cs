@@ -102,7 +102,7 @@
         }
 
         /// <summary>
-        /// Determines if there is any constraint being managed which uses a relative value constraint.
+        /// Determines if there is any constraint being managed which uses a relative value constraint, requiring previous values.
         /// </summary>
         /// <returns>True if any constraint has a relative value constraint.</returns>
         public Boolean HasRelativeConstraint()
