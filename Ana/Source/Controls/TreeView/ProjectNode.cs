@@ -17,6 +17,7 @@
         public ProjectNode(String entryDescription) : base(String.Empty)
         {
             this.EntryDescription = entryDescription;
+            this.EntryHotkey = String.Empty;
             this.EntryValuePreview = String.Empty;
             this.EntryIcon = null;
         }
@@ -25,6 +26,11 @@
         /// Gets or sets the description of the project node.
         /// </summary>
         public String EntryDescription { get; set; }
+
+        /// <summary>
+        /// Gets or sets the value preview of the project node.
+        /// </summary>
+        public String EntryHotkey { get; set; }
 
         /// <summary>
         /// Gets or sets the value preview of the project node.

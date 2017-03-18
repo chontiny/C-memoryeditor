@@ -221,7 +221,9 @@
     <Compile Include="Source\Engine\Input\Controller\IControllerObserver.cs" />
     <Compile Include="Source\Engine\Input\Controller\IControllerSubject.cs" />
     <Compile Include="Source\Engine\Input\HotKeys\ControllerHotkey.cs" />
-    <Compile Include="Source\Engine\Input\HotKeys\IHotkey.cs" />
+    <Compile Include="Source\Engine\Input\HotKeys\Hotkey.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Source\Engine\Input\HotKeys\KeyboardHotkey.cs" />
     <Compile Include="Source\Engine\Input\HotKeys\MouseHotkey.cs" />
     <Compile Include="Source\Engine\Input\IInputCapture.cs" />
@@ -234,7 +236,7 @@
     <Compile Include="Source\Engine\Input\Mouse\IMouseSubject.cs" />
     <Compile Include="Source\Engine\Input\Mouse\MouseCapture.cs" />
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
-    <Compile Include="Source\HotkeyManager\HotkeyManagerViewModel.cs" />
+    <Compile Include="Source\Project\HotkeyManager.cs" />
     <Compile Include="Source\Mvvm\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\DataGridIndexConverter.cs" />
@@ -434,9 +436,6 @@
     <Compile Include="View\Editors\ValueEditor.xaml.cs">
       <DependentUpon>ValueEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\HotkeyManager.xaml.cs">
-      <DependentUpon>HotkeyManager.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
     </Compile>
@@ -551,10 +550,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Editors\ValueEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\HotkeyManager.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -866,6 +861,7 @@
   <ItemGroup>
     <Folder Include="Source\Engine\AddressResolver\Java\" />
     <Folder Include="Source\Engine\AddressResolver\Python\" />
+    <Folder Include="Source\HotkeyManager\" />
     <Folder Include="Source\Mvvm\Behavior\" />
   </ItemGroup>
   <ItemGroup>

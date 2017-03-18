@@ -494,12 +494,6 @@
                             <view:ProjectExplorer />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.ProjectExplorerViewTemplate>
-                    <!--  Hotkey Manager  -->
-                    <view:ViewTemplateSelector.HotkeyManagerViewTemplate>
-                        <shell:DataTemplate>
-                            <view:HotkeyManager />
-                        </shell:DataTemplate>
-                    </view:ViewTemplateSelector.HotkeyManagerViewTemplate>
                     <!--  Output  -->
                     <view:ViewTemplateSelector.OutputViewTemplate>
                         <shell:DataTemplate>

@@ -14,7 +14,7 @@
         /// Initializes a new instance of the <see cref="HotkeyEditor" /> class.
         /// </summary>
         /// <param name="hotkey">The initial hotkeys to edit.</param>
-        public HotkeyEditor(IHotkey hotkey = null)
+        public HotkeyEditor(Hotkey hotkey = null)
         {
             this.InitializeComponent();
             this.HotkeyEditorViewModel.ActiveHotkey = hotkey == null ? null : hotkey;

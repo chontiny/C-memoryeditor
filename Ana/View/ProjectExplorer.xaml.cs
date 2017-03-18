@@ -320,6 +320,7 @@
             // Create new node to insert
             ProjectNode projectNode = new ProjectNode(projectItem.Description);
             projectNode.ProjectItem = projectItem;
+            projectNode.EntryHotkey = projectItem.Hotkey == null ? String.Empty : "[" + projectItem.Hotkey.ToString() + "]";
             projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
             projectNode.EntryIcon = image;
             projectNode.IsChecked = projectItem.IsActivated;
@@ -363,9 +364,14 @@
                 return;
             }
 
-            if (projectItem is AddressItem && node != null)
+            if (node != null)
             {
-                node.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+                node.EntryHotkey = projectItem.Hotkey == null ? String.Empty : "[" + projectItem.Hotkey.ToString() + "]";
+
+                if (projectItem is AddressItem)
+                {
+                    node.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+                }
             }
 
             if (projectItem is FolderItem)
@@ -737,6 +743,13 @@
             entryDescription.ParentColumn = null;
             entryDescription.DrawText += this.EntryDescriptionDrawText;
 
+            NodeTextBox entryHotkey = new NodeTextBox();
+            entryHotkey.DataPropertyName = "EntryHotkey";
+            entryHotkey.IncrementalSearchEnabled = true;
+            entryHotkey.LeftMargin = 3;
+            entryHotkey.ParentColumn = null;
+            entryHotkey.DrawText += this.EntryHotkeyDrawText;
+
             NodeTextBox entryValuePreview = new NodeTextBox();
             entryValuePreview.DataPropertyName = "EntryValuePreview";
             entryValuePreview.IncrementalSearchEnabled = true;
@@ -792,6 +805,7 @@
             this.projectExplorerTreeView.NodeControls.Add(entryCheckBox);
             this.projectExplorerTreeView.NodeControls.Add(entryIcon);
             this.projectExplorerTreeView.NodeControls.Add(entryDescription);
+            this.projectExplorerTreeView.NodeControls.Add(entryHotkey);
             this.projectExplorerTreeView.NodeControls.Add(entryValuePreview);
             this.projectExplorerTreeView.SelectionMode = TreeSelectionMode.Multi;
             this.projectExplorerTreeView.BorderStyle = BorderStyle.None;
@@ -800,6 +814,7 @@
             this.projectExplorerTreeView.FullRowSelect = true;
             this.projectExplorerTreeView.ContextMenuStrip = this.contextMenuStrip;
 
+            this.projectExplorerTreeView.RowDraw += ProjectExplorerTreeViewRowDraw;
             this.projectExplorerTreeView.ItemDrag += this.ProjectExplorerTreeViewItemDrag;
             this.projectExplorerTreeView.NodeMouseDoubleClick += this.ProjectExplorerTreeViewNodeMouseDoubleClick;
             this.projectExplorerTreeView.SelectionChanged += this.ProjectExplorerTreeViewSelectionChanged;
@@ -812,6 +827,16 @@
             this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;
             this.projectExplorerTreeView.DragDropMarkColor = DarkBrushes.BaseColor11;
             this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
+        }
+
+        private void ProjectExplorerTreeViewRowDraw(Object sender, TreeViewRowDrawEventArgs e)
+        {
+            ProjectItem projectItem = this.GetProjectNodeFromTreeNodeAdv(e.Node)?.ProjectItem;
+
+            if (projectItem != null && projectItem.IsActivated)
+            {
+                e.Graphics.FillRectangle(new SolidBrush(DarkBrushes.BaseColor15), 0, e.RowRect.Top, ((Control)sender).Width, e.RowRect.Height);
+            }
         }
 
         /// <summary>
@@ -889,6 +914,16 @@
         private void EntryDescriptionDrawText(Object sender, DrawEventArgs e)
         {
             e.TextColor = DarkBrushes.BaseColor2;
+        }
+
+        /// <summary>
+        /// Event when drawing the value preview text. Sets the draw color.
+        /// </summary>
+        /// <param name="sender">Sending object.</param>
+        /// <param name="e">Event args.</param>
+        private void EntryHotkeyDrawText(Object sender, DrawEventArgs e)
+        {
+            e.TextColor = DarkBrushes.BaseColor11;
         }
 
         /// <summary>

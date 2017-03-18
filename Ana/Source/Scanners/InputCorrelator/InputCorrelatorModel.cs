@@ -18,7 +18,7 @@
 
     internal class InputCorrelatorModel : ScannerBase, IKeyboardObserver, IControllerObserver, IMouseObserver
     {
-        private List<IHotkey> hotKeys;
+        private List<Hotkey> hotKeys;
 
         public InputCorrelatorModel(Action updateScanCount) : base(
             scannerName: "Input Correlator",
@@ -27,10 +27,10 @@
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();
-            this.HotKeys = new List<IHotkey>();
+            this.HotKeys = new List<Hotkey>();
         }
 
-        public List<IHotkey> HotKeys
+        public List<Hotkey> HotKeys
         {
             get
             {

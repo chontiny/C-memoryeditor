@@ -37,12 +37,12 @@
         /// <returns>The updated values.</returns>
         public override Object EditValue(ITypeDescriptorContext context, IServiceProvider provider, Object value)
         {
-            View.Editors.HotkeyEditor hotkeyEditor = new View.Editors.HotkeyEditor(value == null ? null : (value as IHotkey));
+            View.Editors.HotkeyEditor hotkeyEditor = new View.Editors.HotkeyEditor(value == null ? null : (value as Hotkey));
             hotkeyEditor.Owner = Application.Current.MainWindow;
 
             if (hotkeyEditor.ShowDialog() == true)
             {
-                IHotkey newHotkey = hotkeyEditor.HotkeyEditorViewModel.Hotkey;
+                Hotkey newHotkey = hotkeyEditor.HotkeyEditorViewModel.Hotkey;
 
                 if (newHotkey != null)
                 {

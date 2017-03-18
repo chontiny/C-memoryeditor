@@ -317,6 +317,8 @@
         /// <param name="flattenedList">The current list of flattened items.</param>
         private void FlattenHelper(List<ProjectItem> flattenedList)
         {
+            flattenedList.Add(this);
+
             foreach (ProjectItem projectItem in this.Children)
             {
                 if (!(projectItem is FolderItem))

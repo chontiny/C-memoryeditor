@@ -25,7 +25,7 @@
                 return null;
             }
 
-            if (value is IHotkey)
+            if (value is Hotkey)
             {
                 return value.ToString();
             }

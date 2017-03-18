@@ -26,7 +26,7 @@
         /// <summary>
         /// The active hotkey being edited.
         /// </summary>
-        private IHotkey activeHotkey;
+        private Hotkey activeHotkey;
 
         /// <summary>
         /// The keyboard hotkey being constructed.
@@ -84,19 +84,18 @@
         /// <summary>
         /// Gets the hotkey.
         /// </summary>
-        public IHotkey Hotkey
+        public Hotkey Hotkey
         {
             get
             {
-                return this.activeHotkey.Clone();
+                return this.activeHotkey?.Clone();
             }
         }
-
 
         /// <summary>
         /// Gets or sets the active hotkey being edited.
         /// </summary>
-        public IHotkey ActiveHotkey
+        public Hotkey ActiveHotkey
         {
             get
             {
@@ -170,7 +169,7 @@
         /// Updates the active hotkey value.
         /// </summary>
         /// <param name="hotkey">The new active hotkey.</param>
-        private void UpdateActiveValue(IHotkey hotkey)
+        private void UpdateActiveValue(Hotkey hotkey)
         {
             this.ActiveHotkey = hotkey;
         }

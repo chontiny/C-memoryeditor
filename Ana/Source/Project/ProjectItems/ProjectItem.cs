@@ -1,7 +1,11 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Editors.HotkeyEditor;
     using Editors.TextEditor;
+    using Engine.Input.HotKeys;
+    using SharpDX.DirectInput;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Runtime.Serialization;
@@ -40,6 +44,12 @@
         /// </summary>
         [Browsable(false)]
         private Guid guid;
+
+        /// <summary>
+        /// The hotkey associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        private Hotkey hotkey;
 
         /// <summary>
         /// A value indicating whether this project item has been activated.
@@ -156,6 +166,29 @@
         }
 
         /// <summary>
+        /// Gets or sets the hotkey for this project item.
+        /// </summary>
+        [TypeConverter(typeof(HotkeyConverter))]
+        [Editor(typeof(HotkeyEditorModel), typeof(UITypeEditor))]
+        [Category("Properties"), DisplayName("Hotkey"), Description("The hotkey for this item")]
+        public Hotkey Hotkey
+        {
+            get
+            {
+                return this.hotkey;
+            }
+
+            set
+            {
+                this.hotkey = value;
+                this.Hotkey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.Hotkey));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not this item is activated.
         /// </summary>
         [Browsable(false)]
@@ -193,18 +226,14 @@
         }
 
         /// <summary>
-        /// Gets or sets the time since this item was last activated.
-        /// </summary>
-        [Browsable(false)]
-        private DateTime LastActivated { get; set; }
-
-        /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
         /// <param name="streamingContext">Streaming context</param>
         [OnDeserialized]
         public void OnDeserialized(StreamingContext streamingContext)
         {
+            this.Hotkey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
+
             if (this.Guid == null || this.Guid == Guid.Empty)
             {
                 this.guid = Guid.NewGuid();
@@ -231,6 +260,51 @@
         /// </summary>
         /// <returns>The clone of the project item.</returns>
         public abstract ProjectItem Clone();
+
+        /// <summary>
+        /// Updates the hotkey, bypassing setters to avoid triggering view updates.
+        /// </summary>
+        /// <param name="hotkey">The hotkey for this project item.</param>
+        public void LoadHotkey(Hotkey hotkey)
+        {
+            this.hotkey = hotkey;
+        }
+
+        /// <summary>
+        /// Event received when a key is released.
+        /// </summary>
+        /// <param name="key">The key that was released.</param>
+        public void OnKeyPress(Key key)
+        {
+        }
+
+        /// <summary>
+        /// Event received when a key is down.
+        /// </summary>
+        /// <param name="key">The key that is down.</param>
+        public void OnKeyRelease(Key key)
+        {
+        }
+
+        /// <summary>
+        /// Event received when a key is down.
+        /// </summary>
+        /// <param name="key">The key that is down.</param>
+        public void OnKeyDown(Key key)
+        {
+        }
+
+        /// <summary>
+        /// Event received when a set of keys are down.
+        /// </summary>
+        /// <param name="pressedKeys">The down keys.</param>
+        public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
+        {
+            if (this.Hotkey is KeyboardHotkey)
+            {
+                KeyboardHotkey keyboardHotkey = this.Hotkey as KeyboardHotkey;
+            }
+        }
 
         /// <summary>
         /// Indicates that a given property in this project item has changed.

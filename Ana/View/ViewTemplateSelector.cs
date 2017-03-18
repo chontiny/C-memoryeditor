@@ -5,7 +5,6 @@
     using Source.Editors.HotkeyEditor;
     using Source.Editors.ScriptEditor;
     using Source.Editors.TextEditor;
-    using Source.HotkeyManager;
     using Source.Output;
     using Source.ProcessSelector;
     using Source.Project;
@@ -219,10 +218,6 @@
             else if (item is HotkeyEditorViewModel)
             {
                 return this.HotkeyEditorViewTemplate;
-            }
-            else if (item is HotkeyManagerViewModel)
-            {
-                return this.HotkeyManagerViewTemplate;
             }
 
             return base.SelectTemplate(item, container);

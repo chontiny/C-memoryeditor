@@ -5,7 +5,6 @@
     using Engine;
     using Engine.AddressResolver;
     using Engine.OperatingSystems;
-    using HotkeyManager;
     using Main;
     using Microsoft.Win32;
     using Mvvm.Command;
@@ -498,7 +497,7 @@
                     this.HasUnsavedChanges = false;
                 }
 
-                HotkeyManagerViewModel.GetInstance().Open(this.ProjectFilePath);
+                HotkeyManager.GetInstance().Open(this.ProjectFilePath);
             }
             catch
             {
@@ -552,7 +551,7 @@
                     this.HasUnsavedChanges = true;
                 }
 
-                HotkeyManagerViewModel.GetInstance().Import(filename);
+                HotkeyManager.GetInstance().Import(filename);
             }
             catch
             {
@@ -580,7 +579,7 @@
                     serializer.WriteObject(fileStream, this.ProjectRoot);
                 }
 
-                HotkeyManagerViewModel.GetInstance().Save(this.ProjectFilePath);
+                HotkeyManager.GetInstance().Save(this.ProjectFilePath);
 
                 this.HasUnsavedChanges = false;
             }
