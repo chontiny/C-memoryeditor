@@ -39,6 +39,19 @@
         public HashSet<Key> ActivationKeys { get; set; }
 
         /// <summary>
+        /// Invoked when this object is deserialized.
+        /// </summary>
+        /// <param name="streamingContext">Streaming context</param>
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext streamingContext)
+        {
+            this.LastActivated = DateTime.MinValue;
+            this.ActivationDelay = KeyboardHotkey.DefaultActivationDelay;
+
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
+        }
+
+        /// <summary>
         /// Determines if the current set of activation hotkeys are empty.
         /// </summary>
         /// <returns>True if there are hotkeys, otherwise false.</returns>

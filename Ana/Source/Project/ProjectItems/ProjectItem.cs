@@ -232,8 +232,6 @@
         [OnDeserialized]
         public void OnDeserialized(StreamingContext streamingContext)
         {
-            this.Hotkey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
-
             if (this.Guid == null || this.Guid == Guid.Empty)
             {
                 this.guid = Guid.NewGuid();
@@ -268,6 +266,8 @@
         public void LoadHotkey(Hotkey hotkey)
         {
             this.hotkey = hotkey;
+
+            this.Hotkey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
         }
 
         /// <summary>
