@@ -141,26 +141,12 @@
         /// <summary>
         /// Adds a tool to the list of tools controlled by the main view model.
         /// </summary>
-        /// <param name="toolViewModel">The tool to be added.</param>
-        public void Subscribe(ToolViewModel toolViewModel)
+        /// <param name="observer">The tool to be added.</param>
+        public void RegisterTool(ToolViewModel observer)
         {
-            if (toolViewModel != null && !this.tools.Contains(toolViewModel))
+            if (observer != null && !this.tools.Contains(observer))
             {
-                this.tools?.Add(toolViewModel);
-            }
-
-            this.RaisePropertyChanged(nameof(this.Tools));
-        }
-
-        /// <summary>
-        /// Removes a tool from the list of tools controlled by the main view model.
-        /// </summary>
-        /// <param name="toolViewModel">The tool to be added.</param>
-        public void Unsubscribe(ToolViewModel toolViewModel)
-        {
-            if (toolViewModel != null && this.tools.Contains(toolViewModel))
-            {
-                this.tools?.Remove(toolViewModel);
+                this.tools?.Add(observer);
             }
 
             this.RaisePropertyChanged(nameof(this.Tools));

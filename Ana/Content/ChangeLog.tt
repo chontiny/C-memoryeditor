@@ -5,6 +5,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Ana" #>
+- Removed signature collector
 - Added process quick select and automatic refreshing
 - Optimizations to scanning (potentially an order of magnitude increase on manual scans)
 - Minor UI fixes

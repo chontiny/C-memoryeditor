@@ -61,6 +61,16 @@
         /// Base color 13.
         /// </summary>
         public static readonly Color BaseColor13 = Color.FromArgb(0x66, 0x66, 0x66);
+
+        /// <summary>
+        /// Base color 14.
+        /// </summary>
+        public static readonly Color BaseColor14 = Color.FromArgb(0xFF, 0xED, 0xBA);
+
+        /// <summary>
+        /// Base color 15.
+        /// </summary>
+        public static readonly Color BaseColor15 = Color.FromArgb(0x4D, 0x60, 0x82);
     }
     //// End class
 }

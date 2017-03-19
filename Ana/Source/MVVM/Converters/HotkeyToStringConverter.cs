@@ -25,7 +25,12 @@
                 return null;
             }
 
-            if (value is IHotkey)
+            if (value is Hotkey)
+            {
+                return value.ToString();
+            }
+
+            if (value is HotkeyBuilder)
             {
                 return value.ToString();
             }

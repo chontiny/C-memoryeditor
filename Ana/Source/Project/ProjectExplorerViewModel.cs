@@ -5,7 +5,6 @@
     using Engine;
     using Engine.AddressResolver;
     using Engine.OperatingSystems;
-    using HotkeyManager;
     using Main;
     using Microsoft.Win32;
     using Mvvm.Command;
@@ -74,7 +73,7 @@
         {
             this.ContentId = ProjectExplorerViewModel.ToolContentId;
             this.ObserverLock = new Object();
-            this.ProjectExplorerObservers = new List<IProjectExplorerObserver>();
+            this.ProjectExplorerObservers = new HashSet<IProjectExplorerObserver>();
 
             // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
@@ -90,7 +89,7 @@
             this.ProjectRoot = new ProjectRoot();
             this.Update();
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
@@ -236,7 +235,7 @@
         /// <summary>
         /// Gets or sets objects observing changes in the selected objects.
         /// </summary>
-        private List<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
+        private HashSet<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
@@ -498,7 +497,7 @@
                     this.HasUnsavedChanges = false;
                 }
 
-                HotkeyManagerViewModel.GetInstance().Open(this.ProjectFilePath);
+                HotkeyManager.GetInstance().Open(this.ProjectFilePath);
             }
             catch
             {
@@ -552,7 +551,7 @@
                     this.HasUnsavedChanges = true;
                 }
 
-                HotkeyManagerViewModel.GetInstance().Import(filename);
+                HotkeyManager.GetInstance().Import(filename);
             }
             catch
             {
@@ -580,7 +579,7 @@
                     serializer.WriteObject(fileStream, this.ProjectRoot);
                 }
 
-                HotkeyManagerViewModel.GetInstance().Save(this.ProjectFilePath);
+                HotkeyManager.GetInstance().Save(this.ProjectFilePath);
 
                 this.HasUnsavedChanges = false;
             }

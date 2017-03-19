@@ -8,7 +8,6 @@
     using Source.Editors.ScriptEditor;
     using Source.Editors.TextEditor;
     using Source.Editors.ValueEditor;
-    using Source.HotkeyManager;
     using Source.Main;
     using Source.Output;
     using Source.ProcessSelector;
@@ -237,68 +236,57 @@
         }
 
         /// <summary>
-        /// Gets the Script Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets the Script Editor view model.
         /// </summary>
         public ScriptEditorViewModel ScriptEditorViewModel
         {
             get
             {
-                return new ScriptEditorViewModel();
+                return ScriptEditorViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets the Text Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets the Text Editor view model.
         /// </summary>
         public TextEditorViewModel TextEditorViewModel
         {
             get
             {
-                return new TextEditorViewModel();
+                return TextEditorViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets the Value Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets the Value Editor view model.
         /// </summary>
         public ValueEditorViewModel ValueEditorViewModel
         {
             get
             {
-                return new ValueEditorViewModel();
+                return ValueEditorViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets a Offset Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets a Offset Editor view model.
         /// </summary>
         public OffsetEditorViewModel OffsetEditorViewModel
         {
             get
             {
-                return new OffsetEditorViewModel();
+                return OffsetEditorViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets a Hotkey Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets a Hotkey Editor view model.
         /// </summary>
         public HotkeyEditorViewModel HotkeyEditorViewModel
         {
             get
             {
-                return new HotkeyEditorViewModel();
-            }
-        }
-
-        /// <summary>
-        /// Gets a Hotkey Manager view model.
-        /// </summary>
-        public HotkeyManagerViewModel HotkeyManagerViewModel
-        {
-            get
-            {
-                return HotkeyManagerViewModel.GetInstance();
+                return HotkeyEditorViewModel.GetInstance();
             }
         }
 
@@ -309,7 +297,7 @@
         {
             get
             {
-                return new ChangeLogViewModel();
+                return ChangeLogViewModel.GetInstance();
             }
         }
     }

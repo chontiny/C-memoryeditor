@@ -5,6 +5,7 @@
     using Main;
     using Mvvm.Command;
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -19,15 +20,22 @@
         public const String ToolContentId = nameof(ScriptEditorViewModel);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScriptEditorViewModel" /> class.
+        /// Singleton instance of the <see cref="ScriptEditorViewModel" /> class.
         /// </summary>
-        public ScriptEditorViewModel() : base("Script Editor")
+        private static Lazy<ScriptEditorViewModel> scriptEditorViewModelInstance = new Lazy<ScriptEditorViewModel>(
+                () => { return new ScriptEditorViewModel(); },
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="ScriptEditorViewModel" /> class.
+        /// </summary>
+        private ScriptEditorViewModel() : base("Script Editor")
         {
             this.ContentId = ScriptEditorViewModel.ToolContentId;
             this.UpdateScriptCommand = new RelayCommand<String>((script) => this.UpdateScript(script), (script) => true);
             this.SaveScriptCommand = new RelayCommand<String>((script) => this.SaveScript(script), (script) => true);
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
@@ -44,6 +52,15 @@
         /// Gets the active script text.
         /// </summary>
         public String Script { get; private set; }
+
+        /// <summary>
+        /// Gets a singleton instance of the <see cref="ScriptEditorViewModel"/> class.
+        /// </summary>
+        /// <returns>A singleton instance of the class.</returns>
+        public static ScriptEditorViewModel GetInstance()
+        {
+            return ScriptEditorViewModel.scriptEditorViewModelInstance.Value;
+        }
 
         /// <summary>
         /// Gets the code injection script template.

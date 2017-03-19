@@ -83,7 +83,7 @@
             this.addresses = new ObservableCollection<PointerScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);
-            MainViewModel.GetInstance().Subscribe(this);
+            MainViewModel.GetInstance().RegisterTool(this);
 
             this.UpdateScanResults();
         }

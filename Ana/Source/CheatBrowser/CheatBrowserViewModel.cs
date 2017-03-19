@@ -40,7 +40,7 @@
             // Note: Cannot be async, navigation must take place on the same thread as GUI
             this.NavigateHomeCommand = new RelayCommand<WebBrowser>((browser) => this.NavigateHome(browser), (browser) => true);
 
-            MainViewModel.GetInstance().Subscribe(this);
+            MainViewModel.GetInstance().RegisterTool(this);
         }
 
         /// <summary>
