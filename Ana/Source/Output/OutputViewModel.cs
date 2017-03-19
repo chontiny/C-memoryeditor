@@ -51,7 +51,7 @@
             this.logText = new StringBuilder(OutputViewModel.LogCapacity);
             this.ClearOutputCommand = new RelayCommand(() => this.ClearOutput(), () => true);
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>

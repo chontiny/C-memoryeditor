@@ -89,7 +89,7 @@
             this.ProjectRoot = new ProjectRoot();
             this.Update();
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>

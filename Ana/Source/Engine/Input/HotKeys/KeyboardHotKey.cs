@@ -17,7 +17,7 @@
         /// <summary>
         /// The default delay in miliseconds between hotkey activations.
         /// </summary>
-        private const Int32 DefaultActivationDelay = 50000;
+        private const Int32 DefaultActivationDelay = 150;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KeyboardHotkey" /> class.
@@ -59,11 +59,16 @@
                 return;
             }
 
-            foreach (Key key in value.DownKeys)
+            // Check if one of the keys in the hotkey was released early
+            if (!this.IsReady())
             {
-                if (this.ActivationKeys.Any(x => key == x))
+                foreach (Key key in value.DownKeys)
                 {
-                    this.LastActivated = DateTime.MinValue;
+                    if (this.ActivationKeys.Any(x => key == x))
+                    {
+                        // Reset the activation timer so that this hotkey can be triggered again immediately
+                        this.LastActivated = DateTime.MinValue;
+                    }
                 }
             }
 

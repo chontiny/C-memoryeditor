@@ -46,7 +46,7 @@
             this.RefreshObjectsCommand = new RelayCommand(() => this.RefreshObjects(), () => true);
             this.AddDotNetObjectCommand = new RelayCommand<DotNetObjectViewModel>((dotNetObjectViewModel) => this.AddDotNetObject(dotNetObjectViewModel), (dotNetObjectViewModel) => true);
 
-            MainViewModel.GetInstance().Subscribe(this);
+            MainViewModel.GetInstance().RegisterTool(this);
         }
 
         /// <summary>

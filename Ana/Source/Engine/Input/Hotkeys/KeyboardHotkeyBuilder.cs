@@ -62,7 +62,7 @@
         /// </summary>
         public void ClearHotkeys()
         {
-            this.KeyboardHotkey.ActivationKeys.Clear();
+            this.KeyboardHotkey = new KeyboardHotkey();
             this.OnHotkeysUpdated();
         }
 

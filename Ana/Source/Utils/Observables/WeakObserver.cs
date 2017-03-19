@@ -47,6 +47,7 @@
         void IObserver<T>.OnNext(T value)
         {
             IObserver<T> observer = (IObserver<T>)this.reference.Target;
+
             if (observer != null)
             {
                 observer.OnNext(value);

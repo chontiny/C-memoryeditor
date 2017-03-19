@@ -865,7 +865,6 @@
   <ItemGroup>
     <Folder Include="Source\Engine\AddressResolver\Java\" />
     <Folder Include="Source\Engine\AddressResolver\Python\" />
-    <Folder Include="Source\HotkeyManager\" />
     <Folder Include="Source\Mvvm\Behavior\" />
   </ItemGroup>
   <ItemGroup>

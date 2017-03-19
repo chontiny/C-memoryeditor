@@ -6,7 +6,6 @@
     using Engine.Input.HotKeys;
     using Engine.Input.Keyboard;
     using LabelThresholder;
-    using SharpDX.DirectInput;
     using Snapshots;
     using System;
     using System.Collections.Generic;
@@ -14,6 +13,7 @@
     using System.Threading.Tasks;
     using UserSettings;
     using Utils.Extensions;
+
     internal class InputCorrelatorModel : ScannerBase, IObserver<KeyState>
     {
         private List<Hotkey> hotKeys;
@@ -56,6 +56,16 @@
 
         public void OnNext(KeyState value)
         {
+            if (value.PressedKeys.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            // If any of our keyboard hotkeys include the current set of pressed keys, trigger activation/deactivation
+            if (this.HotKeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.ActivationKeys.All(y => value.PressedKeys.Contains(y))))
+            {
+                this.LastActivated = DateTime.Now;
+            }
         }
 
         public void OnError(Exception error)
@@ -64,43 +74,6 @@
 
         public void OnCompleted()
         {
-        }
-
-        /// <summary>
-        /// Event received when a key is pressed.
-        /// </summary>
-        /// <param name="key">The key that was pressed.</param>
-        public void OnKeyPress(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a key is down.
-        /// </summary>
-        /// <param name="key">The key that is down.</param>
-        public void OnKeyDown(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a key is released.
-        /// </summary>
-        /// <param name="key">The key that was released.</param>
-        public void OnKeyRelease(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a set of keys are down.
-        /// </summary>
-        /// <param name="pressedKeys">The down keys.</param>
-        public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
-        {
-            // If any of our keyboard hotkeys include the current set of pressed keys, trigger activation/deactivation
-            if (this.HotKeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.ActivationKeys.All(y => pressedKeys.Contains(y))))
-            {
-                this.LastActivated = DateTime.Now;
-            }
         }
 
         protected override void OnBegin()

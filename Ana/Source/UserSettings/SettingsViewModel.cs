@@ -48,7 +48,7 @@
             this.ContentId = SettingsViewModel.ToolContentId;
 
             // Subscribe async to avoid a deadlock situation
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>

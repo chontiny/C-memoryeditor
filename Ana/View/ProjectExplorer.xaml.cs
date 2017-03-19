@@ -121,6 +121,7 @@
 
             this.nodeCache = new BiDictionary<ProjectItem, ProjectNode>();
             this.projectTree = new TreeModel();
+            this.AccessLock = new Object();
 
             this.InitializeDesigner();
             this.projectExplorerTreeViewContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.projectExplorerTreeView));
@@ -139,6 +140,8 @@
                 return this.DataContext as ProjectExplorerViewModel;
             }
         }
+
+        private Object AccessLock { get; set; }
 
         public void OnNext(KeyState value)
         {
@@ -209,7 +212,12 @@
             projectRoot?.BuildParents();
 
             this.projectExplorerTreeView.BeginUpdate();
-            this.projectTree.Nodes.Clear();
+
+            lock (this.AccessLock)
+            {
+                this.projectTree.Nodes.Clear();
+            }
+
             this.nodeCache.Clear();
 
             if (projectRoot != null)
@@ -323,7 +331,10 @@
             }
             else
             {
-                this.projectTree.Nodes.Add(projectNode);
+                lock (this.AccessLock)
+                {
+                    this.projectTree.Nodes.Add(projectNode);
+                }
             }
 
             this.nodeCache.Add(projectItem, projectNode);
@@ -380,14 +391,17 @@
         /// <returns>The project node if it exists, otherwise null.</returns>
         private ProjectNode GetProjectNodeFromTreeNodeAdv(TreeNodeAdv treeNodeAdv)
         {
-            Node node = this.projectTree.FindNode(this.projectExplorerTreeView.GetPath(treeNodeAdv));
-
-            if (node == null || !typeof(ProjectNode).IsAssignableFrom(node.GetType()))
+            lock (this.AccessLock)
             {
-                return null;
-            }
+                Node node = this.projectTree.FindNode(this.projectExplorerTreeView.GetPath(treeNodeAdv));
 
-            return node as ProjectNode;
+                if (node == null || !typeof(ProjectNode).IsAssignableFrom(node.GetType()))
+                {
+                    return null;
+                }
+
+                return node as ProjectNode;
+            }
         }
 
         /// <summary>

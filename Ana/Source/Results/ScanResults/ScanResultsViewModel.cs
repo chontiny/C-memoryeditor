@@ -91,7 +91,7 @@
             this.addresses = new ObservableCollection<ScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);
-            MainViewModel.GetInstance().Subscribe(this);
+            MainViewModel.GetInstance().RegisterTool(this);
 
             this.UpdateScanResults();
         }

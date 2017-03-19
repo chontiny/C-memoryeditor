@@ -12,9 +12,11 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using Utils;
-    using Utils.Extensions;    /// <summary>
-                               /// View model for the Process Selector.
-                               /// </summary>
+    using Utils.Extensions;
+
+    /// <summary>
+    /// View model for the Process Selector.
+    /// </summary>
     internal class ProcessSelectorViewModel : ToolViewModel, IProcessObserver
     {
         /// <summary>
@@ -47,7 +49,7 @@
             ProcessSelectorModel processSelectorModel = new ProcessSelectorModel(this.RefreshProcessList);
 
             // Subscribe async to avoid a deadlock situation
-            Task.Run(() => { MainViewModel.GetInstance().Subscribe(this); });
+            Task.Run(() => { MainViewModel.GetInstance().RegisterTool(this); });
 
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
             Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });

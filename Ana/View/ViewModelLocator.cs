@@ -236,57 +236,57 @@
         }
 
         /// <summary>
-        /// Gets the Script Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets the Script Editor view model.
         /// </summary>
         public ScriptEditorViewModel ScriptEditorViewModel
         {
             get
             {
-                return new ScriptEditorViewModel();
+                return ScriptEditorViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets the Text Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets the Text Editor view model.
         /// </summary>
         public TextEditorViewModel TextEditorViewModel
         {
             get
             {
-                return new TextEditorViewModel();
+                return TextEditorViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets the Value Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets the Value Editor view model.
         /// </summary>
         public ValueEditorViewModel ValueEditorViewModel
         {
             get
             {
-                return new ValueEditorViewModel();
+                return ValueEditorViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets a Offset Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets a Offset Editor view model.
         /// </summary>
         public OffsetEditorViewModel OffsetEditorViewModel
         {
             get
             {
-                return new OffsetEditorViewModel();
+                return OffsetEditorViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets a Hotkey Editor view model. Note: Not a singleton, will create a new object.
+        /// Gets a Hotkey Editor view model.
         /// </summary>
         public HotkeyEditorViewModel HotkeyEditorViewModel
         {
             get
             {
-                return new HotkeyEditorViewModel();
+                return HotkeyEditorViewModel.GetInstance();
             }
         }
 
@@ -297,7 +297,7 @@
         {
             get
             {
-                return new ChangeLogViewModel();
+                return ChangeLogViewModel.GetInstance();
             }
         }
     }

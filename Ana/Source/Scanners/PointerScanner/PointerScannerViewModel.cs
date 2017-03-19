@@ -35,7 +35,7 @@
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
             this.PointerScannerModel = new PointerScannerModel();
 
-            MainViewModel.GetInstance().Subscribe(this);
+            MainViewModel.GetInstance().RegisterTool(this);
         }
 
         public ICommand StartScanCommand { get; private set; }

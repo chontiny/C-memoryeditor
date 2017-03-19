@@ -5,6 +5,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -17,6 +18,13 @@
         /// The collection of offsets.
         /// </summary>
         private IList<PrimitiveBinding<Int32>> offsets;
+
+        /// <summary>
+        /// Singleton instance of the <see cref="OffsetEditorViewModel" /> class.
+        /// </summary>
+        private static Lazy<OffsetEditorViewModel> offsetEditorViewModelInstance = new Lazy<OffsetEditorViewModel>(
+                () => { return new OffsetEditorViewModel(); },
+                LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="OffsetEditorViewModel" /> class.
@@ -87,6 +95,15 @@
         /// Gets or sets the active offset value.
         /// </summary>
         private Int32 ActiveOffsetValue { get; set; }
+
+        /// <summary>
+        /// Gets a singleton instance of the <see cref="OffsetEditorViewModel" /> class.
+        /// </summary>
+        /// <returns>A singleton instance of the class.</returns>
+        public static OffsetEditorViewModel GetInstance()
+        {
+            return OffsetEditorViewModel.offsetEditorViewModelInstance.Value;
+        }
 
         /// <summary>
         /// Adds the currently selected offset to the offset list.

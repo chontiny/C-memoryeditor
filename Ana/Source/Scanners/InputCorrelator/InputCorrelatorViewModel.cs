@@ -41,7 +41,7 @@
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
             this.InputCorrelatorModel = new InputCorrelatorModel(this.ScanCountUpdated);
 
-            MainViewModel.GetInstance().Subscribe(this);
+            MainViewModel.GetInstance().RegisterTool(this);
         }
 
         public ICommand StartScanCommand { get; private set; }

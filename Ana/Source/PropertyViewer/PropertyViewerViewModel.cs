@@ -38,7 +38,7 @@
             this.ObserverLock = new Object();
             this.PropertyViewerObservers = new List<IPropertyViewerObserver>();
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>

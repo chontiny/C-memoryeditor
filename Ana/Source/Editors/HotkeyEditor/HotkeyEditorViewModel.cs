@@ -5,6 +5,7 @@
     using Main;
     using Mvvm.Command;
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -24,16 +25,23 @@
         private KeyboardHotkeyBuilder keyboardHotKeyBuilder;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="HotkeyEditorViewModel" /> class.
+        /// Singleton instance of the <see cref="HotkeyEditorViewModel" /> class.
         /// </summary>
-        public HotkeyEditorViewModel() : base("Hotkey Editor")
+        private static Lazy<HotkeyEditorViewModel> hotkeyEditorViewModelInstance = new Lazy<HotkeyEditorViewModel>(
+                () => { return new HotkeyEditorViewModel(); },
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="HotkeyEditorViewModel" /> class.
+        /// </summary>
+        private HotkeyEditorViewModel() : base("Hotkey Editor")
         {
             this.ContentId = HotkeyEditorViewModel.ToolContentId;
             this.ClearHotkeysCommand = new RelayCommand(() => this.ClearActiveHotkey(), () => true);
             this.keyboardHotKeyBuilder = new KeyboardHotkeyBuilder(this.OnHotkeysUpdated);
             this.AccessLock = new Object();
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
@@ -56,6 +64,15 @@
         /// Gets or sets the lock for the hotkey collection access.
         /// </summary>
         private Object AccessLock { get; set; }
+
+        /// <summary>
+        /// Gets a singleton instance of the <see cref="HotkeyEditorViewModel" /> class.
+        /// </summary>
+        /// <returns>A singleton instance of the class.</returns>
+        public static HotkeyEditorViewModel GetInstance()
+        {
+            return HotkeyEditorViewModel.hotkeyEditorViewModelInstance.Value;
+        }
 
         public void SetActiveHotkey(Hotkey hotkey)
         {

@@ -74,7 +74,7 @@
             this.ScanConstraintManager.SetElementType(typeof(Int32));
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
