@@ -62,7 +62,7 @@
             }
 
             // If any of our keyboard hotkeys include the current set of pressed keys, trigger activation/deactivation
-            if (this.HotKeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.ActivationKeys.All(y => value.PressedKeys.Contains(y))))
+            if (this.HotKeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.GetActivationKeys().All(y => value.PressedKeys.Contains(y))))
             {
                 this.LastActivated = DateTime.Now;
             }

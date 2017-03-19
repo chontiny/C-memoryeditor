@@ -24,7 +24,7 @@
         /// <param name="keyboardHotkey">The keyboard hotkey to edit.</param>
         public KeyboardHotkeyBuilder(Action callBackFunction, KeyboardHotkey keyboardHotkey = null) : base(callBackFunction)
         {
-            this.KeyboardHotkey = keyboardHotkey?.Clone() as KeyboardHotkey ?? new KeyboardHotkey();
+            this.SetHotkey(keyboardHotkey);
 
             EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
@@ -43,7 +43,7 @@
 
             foreach (Key key in value.DownKeys)
             {
-                this.KeyboardHotkey.ActivationKeys.Add(key);
+                this.KeyboardHotkey.AddKey(key);
             }
 
             this.OnHotkeysUpdated();
@@ -62,17 +62,22 @@
         /// </summary>
         public void ClearHotkeys()
         {
-            this.KeyboardHotkey = new KeyboardHotkey();
+            this.KeyboardHotkey.ClearHotkey();
             this.OnHotkeysUpdated();
+        }
+
+        public void SetHotkey(KeyboardHotkey keyboardHotkey)
+        {
+            this.KeyboardHotkey = (keyboardHotkey?.CopyTo(this.KeyboardHotkey) as KeyboardHotkey) ?? new KeyboardHotkey();
         }
 
         /// <summary>
         /// Creates a hotkey from this hotkey builder.
         /// </summary>
         /// <returns>The built hotkey.</returns>
-        public override Hotkey Build()
+        public override Hotkey Build(Hotkey targetHotkey)
         {
-            return this.KeyboardHotkey?.Clone();
+            return this.KeyboardHotkey?.CopyTo(targetHotkey);
         }
 
         /// <summary>

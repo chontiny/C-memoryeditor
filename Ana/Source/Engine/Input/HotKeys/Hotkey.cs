@@ -64,7 +64,13 @@
         /// Clones the hotkey.
         /// </summary>
         /// <returns>A clone of the hotkey.</returns>
-        public abstract Hotkey Clone();
+        public abstract Hotkey Clone(Boolean copyCallBackFunction = false);
+
+        /// <summary>
+        /// Copies the hotkey to another hotkey. A new hotkey is created if null is provided.
+        /// </summary>
+        /// <returns>A copy of the hotkey.</returns>
+        public abstract Hotkey CopyTo(Hotkey hotkey, Boolean copyCallBackFunction = false);
 
         /// <summary>
         /// Activates this hotkey, triggering the callback function.

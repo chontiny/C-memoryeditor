@@ -30,10 +30,18 @@
         /// Clones the hotkey.
         /// </summary>
         /// <returns>A clone of the hotkey.</returns>
-        public override Hotkey Clone()
+        public override Hotkey Clone(Boolean copyCallBackFunction = false)
         {
-            ControllerHotkey hotkey = new ControllerHotkey(this.CallBackFunction);
-            return hotkey;
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Copies the hotkey to another hotkey. A new hotkey is created if null is provided.
+        /// </summary>
+        /// <returns>A copy of the hotkey.</returns>
+        public override Hotkey CopyTo(Hotkey hotkey, Boolean copyCallBackFunction = false)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

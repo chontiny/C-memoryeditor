@@ -38,7 +38,6 @@
         {
             this.ContentId = HotkeyEditorViewModel.ToolContentId;
             this.ClearHotkeysCommand = new RelayCommand(() => this.ClearActiveHotkey(), () => true);
-            this.keyboardHotKeyBuilder = new KeyboardHotkeyBuilder(this.OnHotkeysUpdated);
             this.AccessLock = new Object();
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
@@ -78,11 +77,19 @@
         {
             lock (this.AccessLock)
             {
-                if (hotkey is KeyboardHotkey)
+                if (hotkey == null || hotkey is KeyboardHotkey)
                 {
                     KeyboardHotkey keyboardHotkey = hotkey as KeyboardHotkey;
 
-                    this.keyboardHotKeyBuilder = new KeyboardHotkeyBuilder(this.OnHotkeysUpdated, keyboardHotkey);
+                    if (this.keyboardHotKeyBuilder == null)
+                    {
+                        this.keyboardHotKeyBuilder = new KeyboardHotkeyBuilder(this.OnHotkeysUpdated, keyboardHotkey);
+                    }
+                    else
+                    {
+                        this.keyboardHotKeyBuilder.SetHotkey(keyboardHotkey);
+                    }
+
                     this.RaisePropertyChanged(nameof(this.ActiveHotkey));
                 }
             }

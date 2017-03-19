@@ -25,7 +25,7 @@
         /// Creates a hotkey from this hotkey builder.
         /// </summary>
         /// <returns>The built hotkey.</returns>
-        public abstract Hotkey Build();
+        public abstract Hotkey Build(Hotkey targetHotkey);
 
         /// <summary>
         /// Event triggered when the hotkeys are updated for this keyboard hotkey.

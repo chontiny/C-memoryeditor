@@ -29,6 +29,7 @@
             this.ActivationKeys = new HashSet<Key>(activationKeys);
             this.LastActivated = DateTime.MinValue;
             this.ActivationDelay = KeyboardHotkey.DefaultActivationDelay;
+            this.AccessLock = new object();
 
             EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
@@ -37,7 +38,9 @@
         /// Gets or sets the set of inputs corresponding to this hotkey.
         /// </summary>
         [DataMember]
-        public HashSet<Key> ActivationKeys { get; set; }
+        private HashSet<Key> ActivationKeys { get; set; }
+
+        private Object AccessLock { get; set; }
 
         /// <summary>
         /// Invoked when this object is deserialized.
@@ -48,33 +51,37 @@
         {
             this.LastActivated = DateTime.MinValue;
             this.ActivationDelay = KeyboardHotkey.DefaultActivationDelay;
+            this.AccessLock = new object();
 
             EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
 
         public void OnNext(KeyState value)
         {
-            if (this.ActivationKeys.IsNullOrEmpty())
+            lock (this.AccessLock)
             {
-                return;
-            }
-
-            // Check if one of the keys in the hotkey was released early
-            if (!this.IsReady())
-            {
-                foreach (Key key in value.DownKeys)
+                if (this.ActivationKeys.IsNullOrEmpty())
                 {
-                    if (this.ActivationKeys.Any(x => key == x))
+                    return;
+                }
+
+                // Check if one of the keys in the hotkey was released early
+                if (!this.IsReady())
+                {
+                    foreach (Key key in value.DownKeys)
                     {
-                        // Reset the activation timer so that this hotkey can be triggered again immediately
-                        this.LastActivated = DateTime.MinValue;
+                        if (this.ActivationKeys.Any(x => key == x))
+                        {
+                            // Reset the activation timer so that this hotkey can be triggered again immediately
+                            this.LastActivated = DateTime.MinValue;
+                        }
                     }
                 }
-            }
 
-            if (this.IsReady() && this.ActivationKeys.All(x => value.PressedKeys.Contains(x)))
-            {
-                this.Activate();
+                if (this.IsReady() && this.ActivationKeys.All(x => value.PressedKeys.Contains(x)))
+                {
+                    this.Activate();
+                }
             }
         }
 
@@ -86,24 +93,80 @@
         {
         }
 
+        public IEnumerable<Key> GetActivationKeys()
+        {
+            lock (this.AccessLock)
+            {
+                return this.ActivationKeys.ToArray();
+            }
+        }
+
+        public void AddKey(Key hotkey)
+        {
+            lock (this.AccessLock)
+            {
+                this.ActivationKeys.Add(hotkey);
+            }
+        }
+
+        public void ClearHotkey()
+        {
+            lock (this.AccessLock)
+            {
+                this.ActivationKeys.Clear();
+            }
+        }
+
         /// <summary>
         /// Determines if the current set of activation hotkeys are empty.
         /// </summary>
         /// <returns>True if there are hotkeys, otherwise false.</returns>
         public override Boolean HasHotkey()
         {
-            return this.ActivationKeys == null ? false : this.ActivationKeys.Count > 0;
+            lock (this.AccessLock)
+            {
+                return this.ActivationKeys == null ? false : this.ActivationKeys.Count > 0;
+            }
         }
 
         /// <summary>
         /// Clones the hotkey.
         /// </summary>
         /// <returns>A clone of the hotkey.</returns>
-        public override Hotkey Clone()
+        public override Hotkey Clone(Boolean copyCallBackFunction = false)
         {
-            KeyboardHotkey hotkey = new KeyboardHotkey(this.CallBackFunction);
-            hotkey.ActivationKeys = new HashSet<Key>(this.ActivationKeys);
-            return hotkey;
+            lock (this.AccessLock)
+            {
+                KeyboardHotkey hotkey = new KeyboardHotkey(copyCallBackFunction ? this.CallBackFunction : null);
+                hotkey.ActivationKeys = new HashSet<Key>(this.ActivationKeys);
+                return hotkey;
+            }
+        }
+
+        /// <summary>
+        /// Copies the hotkey to another hotkey. A new hotkey is created if null is provided.
+        /// </summary>
+        /// <returns>A copy of the hotkey.</returns>
+        public override Hotkey CopyTo(Hotkey hotkey, Boolean copyCallBackFunction = false)
+        {
+            lock (this.AccessLock)
+            {
+                KeyboardHotkey keyboardHotkey = hotkey as KeyboardHotkey;
+
+                if (keyboardHotkey == null)
+                {
+                    return this.Clone(copyCallBackFunction);
+                }
+
+                keyboardHotkey.ActivationKeys = new HashSet<Key>(this.ActivationKeys);
+
+                if (copyCallBackFunction)
+                {
+                    keyboardHotkey.SetCallBackFunction(this.CallBackFunction);
+                }
+
+                return keyboardHotkey;
+            }
         }
 
         /// <summary>
@@ -112,19 +175,22 @@
         /// <returns>The string representation of hotkey inputs.</returns>
         public override String ToString()
         {
-            String hotKeyString = String.Empty;
-
-            if (this.ActivationKeys.IsNullOrEmpty())
+            lock (this.AccessLock)
             {
-                return hotKeyString;
-            }
+                String hotKeyString = String.Empty;
 
-            foreach (Key key in this.ActivationKeys)
-            {
-                hotKeyString += key.ToString() + "+";
-            }
+                if (this.ActivationKeys.IsNullOrEmpty())
+                {
+                    return hotKeyString;
+                }
 
-            return hotKeyString.TrimEnd('+');
+                foreach (Key key in this.ActivationKeys)
+                {
+                    hotKeyString += key.ToString() + "+";
+                }
+
+                return hotKeyString.TrimEnd('+');
+            }
         }
 
         /// <summary>
