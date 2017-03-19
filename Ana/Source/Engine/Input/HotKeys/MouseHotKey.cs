@@ -39,7 +39,7 @@
         /// <summary>
         /// Gets the string representation of the hotkey inputs.
         /// </summary>
-        /// <returns>The string representatio of hotkey inputs.</returns>
+        /// <returns>The string representation of hotkey inputs.</returns>
         public override String ToString()
         {
             return base.ToString();

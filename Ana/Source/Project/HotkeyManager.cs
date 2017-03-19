@@ -56,7 +56,7 @@
                 using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Create, FileAccess.Write))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
-                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Where(x => x.Hotkey != null).Select(x => new ProjectItemHotkey(x.Hotkey, x.Guid)).ToArray();
+                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Where(x => x.HotKey != null).Select(x => new ProjectItemHotkey(x.HotKey, x.Guid)).ToArray();
                     serializer.WriteObject(fileStream, hotkeys);
                 }
             }

@@ -6,17 +6,18 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Runtime.Serialization;
+    using Utils.Extensions;
 
     /// <summary>
     /// A keyboard hotkey, which is activated by a given set of input.
     /// </summary>
     [DataContract]
-    internal class KeyboardHotkey : Hotkey, IKeyboardObserver
+    internal class KeyboardHotkey : Hotkey, IObserver<KeyState>
     {
         /// <summary>
-        /// The default delay in miliseconds between hotkey activations
+        /// The default delay in miliseconds between hotkey activations.
         /// </summary>
-        private const Int32 DefaultActivationDelay = 150;
+        private const Int32 DefaultActivationDelay = 50000;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="KeyboardHotkey" /> class.
@@ -29,7 +30,7 @@
             this.LastActivated = DateTime.MinValue;
             this.ActivationDelay = KeyboardHotkey.DefaultActivationDelay;
 
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
 
         /// <summary>
@@ -41,14 +42,43 @@
         /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
-        /// <param name="streamingContext">Streaming context</param>
+        /// <param name="streamingContext">Streaming context.</param>
         [OnDeserialized]
         public void OnDeserialized(StreamingContext streamingContext)
         {
             this.LastActivated = DateTime.MinValue;
             this.ActivationDelay = KeyboardHotkey.DefaultActivationDelay;
 
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+        }
+
+        public void OnNext(KeyState value)
+        {
+            if (this.ActivationKeys.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            foreach (Key key in value.DownKeys)
+            {
+                if (this.ActivationKeys.Any(x => key == x))
+                {
+                    this.LastActivated = DateTime.MinValue;
+                }
+            }
+
+            if (this.IsReady() && this.ActivationKeys.All(x => value.PressedKeys.Contains(x)))
+            {
+                this.Activate();
+            }
+        }
+
+        public void OnError(Exception error)
+        {
+        }
+
+        public void OnCompleted()
+        {
         }
 
         /// <summary>
@@ -72,54 +102,14 @@
         }
 
         /// <summary>
-        /// Event received when a key is pressed.
-        /// </summary>
-        /// <param name="key">The key that was pressed.</param>
-        public void OnKeyPress(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a key is released.
-        /// </summary>
-        /// <param name="key">The key that was released.</param>
-        public void OnKeyRelease(Key key)
-        {
-            if (DateTime.Now - this.LastActivated > TimeSpan.FromMilliseconds(this.ActivationDelay))
-            {
-                this.LastActivated = DateTime.Now;
-            }
-        }
-
-        /// <summary>
-        /// Event received when a key is down.
-        /// </summary>
-        /// <param name="key">The key that is down.</param>
-        public void OnKeyDown(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a set of keys are down.
-        /// </summary>
-        /// <param name="pressedKeys">The down keys.</param>
-        public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
-        {
-            if (this.IsReady() && this.ActivationKeys.All(x => pressedKeys.Contains(x)))
-            {
-                this.Activate();
-            }
-        }
-
-        /// <summary>
         /// Gets the string representation of the hotkey inputs.
         /// </summary>
-        /// <returns>The string representatio of hotkey inputs.</returns>
+        /// <returns>The string representation of hotkey inputs.</returns>
         public override String ToString()
         {
             String hotKeyString = String.Empty;
 
-            if (this.ActivationKeys == null)
+            if (this.ActivationKeys.IsNullOrEmpty())
             {
                 return hotKeyString;
             }

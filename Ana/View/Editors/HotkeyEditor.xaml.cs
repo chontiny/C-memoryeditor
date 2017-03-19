@@ -17,7 +17,7 @@
         public HotkeyEditor(Hotkey hotkey = null)
         {
             this.InitializeComponent();
-            this.HotkeyEditorViewModel.ActiveHotkey = hotkey == null ? null : hotkey;
+            this.HotkeyEditorViewModel.SetActiveHotkey(hotkey);
         }
 
         /// <summary>

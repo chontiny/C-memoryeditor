@@ -30,6 +30,11 @@
                 return value.ToString();
             }
 
+            if (value is HotkeyBuilder)
+            {
+                return value.ToString();
+            }
+
             return null;
         }
 

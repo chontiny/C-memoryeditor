@@ -3,10 +3,8 @@
     using ActionScheduler;
     using BackgroundScans.Prefilters;
     using Engine;
-    using Engine.Input.Controller;
     using Engine.Input.HotKeys;
     using Engine.Input.Keyboard;
-    using Engine.Input.Mouse;
     using LabelThresholder;
     using SharpDX.DirectInput;
     using Snapshots;
@@ -15,8 +13,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using UserSettings;
-
-    internal class InputCorrelatorModel : ScannerBase, IKeyboardObserver, IControllerObserver, IMouseObserver
+    using Utils.Extensions;
+    internal class InputCorrelatorModel : ScannerBase, IObserver<KeyState>
     {
         private List<Hotkey> hotKeys;
 
@@ -55,6 +53,18 @@
         private DateTime LastActivated { get; set; }
 
         private Object ProgressLock { get; set; }
+
+        public void OnNext(KeyState value)
+        {
+        }
+
+        public void OnError(Exception error)
+        {
+        }
+
+        public void OnCompleted()
+        {
+        }
 
         /// <summary>
         /// Event received when a key is pressed.
@@ -217,14 +227,12 @@
         private void InitializeObjects()
         {
             this.LastActivated = DateTime.MinValue;
-            this.InitializeListeners();
+            this.InitializeObservers();
         }
 
-        private void InitializeListeners()
+        private void InitializeObservers()
         {
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
-            EngineCore.GetInstance().Input?.GetControllerCapture().Subscribe(this);
-            EngineCore.GetInstance().Input?.GetMouseCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
 
         private Boolean IsInputConditionValid(DateTime updateTime)
@@ -242,8 +250,6 @@
             this.Snapshot = null;
 
             EngineCore.GetInstance().Input?.GetKeyboardCapture().Unsubscribe(this);
-            EngineCore.GetInstance().Input?.GetControllerCapture().Unsubscribe(this);
-            EngineCore.GetInstance().Input?.GetMouseCapture().Unsubscribe(this);
         }
     }
     //// End class

@@ -73,7 +73,7 @@
         {
             this.ContentId = ProjectExplorerViewModel.ToolContentId;
             this.ObserverLock = new Object();
-            this.ProjectExplorerObservers = new List<IProjectExplorerObserver>();
+            this.ProjectExplorerObservers = new HashSet<IProjectExplorerObserver>();
 
             // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
@@ -235,7 +235,7 @@
         /// <summary>
         /// Gets or sets objects observing changes in the selected objects.
         /// </summary>
-        private List<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
+        private HashSet<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ProjectExplorerViewModel" /> class.

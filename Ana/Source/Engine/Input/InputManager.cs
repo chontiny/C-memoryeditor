@@ -36,7 +36,7 @@
         /// <summary>
         /// Gets or sets the keyboard capture interface.
         /// </summary>
-        private IKeyboardSubject KeyboardSubject { get; set; }
+        private KeyboardCapture KeyboardSubject { get; set; }
 
         /// <summary>
         /// Gets or sets the mouse capture interface.
@@ -47,7 +47,7 @@
         /// Gets the keyboard capture interface.
         /// </summary>
         /// <returns>The keyboard capture interface.</returns>
-        public IKeyboardSubject GetKeyboardCapture()
+        public KeyboardCapture GetKeyboardCapture()
         {
             return this.KeyboardSubject;
         }

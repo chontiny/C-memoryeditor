@@ -171,7 +171,7 @@
         [TypeConverter(typeof(HotkeyConverter))]
         [Editor(typeof(HotkeyEditorModel), typeof(UITypeEditor))]
         [Category("Properties"), DisplayName("Hotkey"), Description("The hotkey for this item")]
-        public Hotkey Hotkey
+        public Hotkey HotKey
         {
             get
             {
@@ -181,9 +181,9 @@
             set
             {
                 this.hotkey = value;
-                this.Hotkey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
+                this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Hotkey));
+                this.NotifyPropertyChanged(nameof(this.HotKey));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -228,7 +228,7 @@
         /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
-        /// <param name="streamingContext">Streaming context</param>
+        /// <param name="streamingContext">Streaming context.</param>
         [OnDeserialized]
         public void OnDeserialized(StreamingContext streamingContext)
         {
@@ -267,7 +267,7 @@
         {
             this.hotkey = hotkey;
 
-            this.Hotkey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
+            this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
         }
 
         /// <summary>
@@ -300,9 +300,9 @@
         /// <param name="pressedKeys">The down keys.</param>
         public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
         {
-            if (this.Hotkey is KeyboardHotkey)
+            if (this.HotKey is KeyboardHotkey)
             {
-                KeyboardHotkey keyboardHotkey = this.Hotkey as KeyboardHotkey;
+                KeyboardHotkey keyboardHotkey = this.HotKey as KeyboardHotkey;
             }
         }
 

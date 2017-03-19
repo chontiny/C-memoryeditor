@@ -42,7 +42,7 @@
 
             if (hotkeyEditor.ShowDialog() == true)
             {
-                Hotkey newHotkey = hotkeyEditor.HotkeyEditorViewModel.Hotkey;
+                Hotkey newHotkey = hotkeyEditor.HotkeyEditorViewModel.ActiveHotkey.Build();
 
                 if (newHotkey != null)
                 {

@@ -25,7 +25,7 @@
     /// <summary>
     /// Interaction logic for ProjectExplorer.xaml.
     /// </summary>
-    internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IProjectExplorerObserver, IKeyboardObserver
+    internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IProjectExplorerObserver, IObserver<KeyState>
     {
         /// <summary>
         /// The project explorer tree view.
@@ -125,7 +125,7 @@
             this.InitializeDesigner();
             this.projectExplorerTreeViewContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.projectExplorerTreeView));
 
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
             ProjectExplorerViewModel.GetInstance().Subscribe(this);
         }
 
@@ -138,6 +138,66 @@
             {
                 return this.DataContext as ProjectExplorerViewModel;
             }
+        }
+
+        public void OnNext(KeyState value)
+        {
+            if (value.PressedKeys.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            foreach (Key key in value.PressedKeys)
+            {
+                ControlThreadingHelper.InvokeControlAction(
+                    this.projectExplorerTreeView,
+                    () =>
+                {
+                    if (!this.projectExplorerTreeView.Focused)
+                    {
+                        return;
+                    }
+
+                    switch (key)
+                    {
+                        case Key.Space:
+                            this.ActivateSelectedItems();
+                            break;
+                        case Key.Delete:
+                            this.DeleteSelectedItems();
+                            break;
+                        case Key.C:
+                            if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                            {
+                                this.CopySelection();
+                            }
+
+                            break;
+                        case Key.X:
+                            if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                            {
+                                this.CutSelection();
+                            }
+
+                            break;
+                        case Key.V:
+                            if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                            {
+                                this.PasteSelection();
+                            }
+
+                            break;
+                    }
+                });
+            }
+        }
+
+        public void OnError(Exception error)
+        {
+        }
+
+        public void OnCompleted()
+        {
         }
 
         /// <summary>
@@ -180,78 +240,6 @@
 
                 this.projectExplorerTreeView.EndUpdate();
             }
-        }
-
-        /// <summary>
-        /// Event received when a key is pressed.
-        /// </summary>
-        /// <param name="key">The key that was pressed.</param>
-        public void OnKeyPress(Key key)
-        {
-            ControlThreadingHelper.InvokeControlAction(
-                this.projectExplorerTreeView,
-                () =>
-            {
-                if (!this.projectExplorerTreeView.Focused)
-                {
-                    return;
-                }
-
-                switch (key)
-                {
-                    case Key.Space:
-                        this.ActivateSelectedItems();
-                        break;
-                    case Key.Delete:
-                        this.DeleteSelectedItems();
-                        break;
-                    case Key.C:
-                        if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                        {
-                            this.CopySelection();
-                        }
-
-                        break;
-                    case Key.X:
-                        if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                        {
-                            this.CutSelection();
-                        }
-
-                        break;
-                    case Key.V:
-                        if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                        {
-                            this.PasteSelection();
-                        }
-
-                        break;
-                }
-            });
-        }
-
-        /// <summary>
-        /// Event received when a key is released.
-        /// </summary>
-        /// <param name="key">The key that was released.</param>
-        public void OnKeyRelease(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a key is down.
-        /// </summary>
-        /// <param name="key">The key that is down.</param>
-        public void OnKeyDown(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a set of keys are down.
-        /// </summary>
-        /// <param name="pressedKeys">The down keys.</param>
-        public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
-        {
         }
 
         /// <summary>
@@ -320,7 +308,7 @@
             // Create new node to insert
             ProjectNode projectNode = new ProjectNode(projectItem.Description);
             projectNode.ProjectItem = projectItem;
-            projectNode.EntryHotkey = projectItem.Hotkey == null ? String.Empty : "[" + projectItem.Hotkey.ToString() + "]";
+            projectNode.EntryHotkey = projectItem.HotKey == null ? String.Empty : "[" + projectItem.HotKey.ToString() + "]";
             projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
             projectNode.EntryIcon = image;
             projectNode.IsChecked = projectItem.IsActivated;
@@ -366,7 +354,7 @@
 
             if (node != null)
             {
-                node.EntryHotkey = projectItem.Hotkey == null ? String.Empty : "[" + projectItem.Hotkey.ToString() + "]";
+                node.EntryHotkey = projectItem.HotKey == null ? String.Empty : "[" + projectItem.HotKey.ToString() + "]";
 
                 if (projectItem is AddressItem)
                 {

@@ -220,18 +220,21 @@
     <Compile Include="Source\Engine\Input\Controller\ControllerCapture.cs" />
     <Compile Include="Source\Engine\Input\Controller\IControllerObserver.cs" />
     <Compile Include="Source\Engine\Input\Controller\IControllerSubject.cs" />
-    <Compile Include="Source\Engine\Input\HotKeys\ControllerHotkey.cs" />
-    <Compile Include="Source\Engine\Input\HotKeys\Hotkey.cs">
+    <Compile Include="Source\Engine\Input\Hotkeys\ControllerHotkey.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\HotkeyBuilder.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\Hotkey.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Source\Engine\Input\HotKeys\KeyboardHotkey.cs" />
-    <Compile Include="Source\Engine\Input\HotKeys\MouseHotkey.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\KeyboardHotkeyBuilder.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\KeyboardHotkey.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\MouseHotkey.cs" />
     <Compile Include="Source\Engine\Input\IInputCapture.cs" />
     <Compile Include="Source\Engine\Input\IInputManager.cs" />
     <Compile Include="Source\Engine\Input\InputManager.cs" />
-    <Compile Include="Source\Engine\Input\Keyboard\IKeyboardObserver.cs" />
-    <Compile Include="Source\Engine\Input\Keyboard\IKeyboardSubject.cs" />
+    <Compile Include="Source\Engine\Input\Keyboard\KeyState.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyboardCapture.cs" />
+    <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
+    <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
     <Compile Include="Source\Engine\Input\Mouse\IMouseObserver.cs" />
     <Compile Include="Source\Engine\Input\Mouse\IMouseSubject.cs" />
     <Compile Include="Source\Engine\Input\Mouse\MouseCapture.cs" />
@@ -266,6 +269,7 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Utils\DataStructures\CircularLinkedList.cs" />
+    <Compile Include="Source\Utils\Extensions\IDisposableExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\SingleExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\DoubleExtensions.cs" />
