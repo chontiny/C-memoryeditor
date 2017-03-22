@@ -47,7 +47,7 @@
         {
             // Initialize labeled snapshot
             this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone();
-            this.Snapshot.LabelType = typeof(UInt16);
+            this.Snapshot.SetLabelType(typeof(UInt16));
 
             if (this.Snapshot == null)
             {

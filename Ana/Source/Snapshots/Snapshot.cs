@@ -16,21 +16,6 @@
     internal class Snapshot : IEnumerable
     {
         /// <summary>
-        /// The memory alignmnet of the regions in this snapshot.
-        /// </summary>
-        private Int32 alignment;
-
-        /// <summary>
-        /// The data type of the elements contained in this snapshot.
-        /// </summary>
-        private Type elementType;
-
-        /// <summary>
-        /// The label type of the elements contained in this snapshot.
-        /// </summary>
-        private Type labelType;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
         /// </summary>
         /// <param name="snapshotName">The snapshot generation method name.</param>
@@ -97,23 +82,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the data type of the labels contained in this snapshot.
-        /// </summary>
-        public Type LabelType
-        {
-            get
-            {
-                return this.labelType;
-            }
-
-            set
-            {
-                this.labelType = value;
-                this.SnapshotRegions?.ForEach(x => x.LabelType = value);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the snapshot regions contained in this snapshot
         /// </summary>
         private IList<SnapshotRegion> SnapshotRegions { get; set; }
@@ -144,6 +112,15 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Invalid snapshot index");
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Sets the data type of the labels contained in this snapshot.
+        /// </summary>
+        /// <param name="labelType"></param>
+        public void SetLabelType(Type labelType)
+        {
+            this.SnapshotRegions?.ForEach(x => x.LabelType = labelType);
         }
 
         /// <summary>
@@ -236,102 +213,6 @@
         }
 
         /// <summary>
-        /// Masks the given memory regions against the memory regions of a given snapshot, keeping the common elements of the two in O(n).
-        /// </summary>
-        /// <param name="groundTruth">The snapshot containing the regions to mask the target regions against.</param>
-        public void MaskRegions(Snapshot groundTruth)
-        {
-            this.MaskRegions(groundTruth.GetSnapshotRegions()?.Select(x => x as NormalizedRegion));
-        }
-
-        /// <summary>
-        /// Masks the given memory regions against the given memory regions, keeping the common elements of the two in O(n).
-        /// </summary>
-        /// <param name="groundTruth">The snapshot regions to mask the target regions against.</param>
-        public void MaskRegions(IEnumerable<NormalizedRegion> groundTruth)
-        {
-            List<SnapshotRegion> resultRegions = new List<SnapshotRegion>();
-
-            groundTruth = this.MergeAndSortRegions(groundTruth);
-
-            // if (this.SnapshotRegions == null || groundTruth == null || this.SnapshotRegions.Count <= 0 || groundTruth.Count() <= 0)
-            {
-                // this.SnapshotRegions = resultRegions;
-                // return;
-            }
-
-            this.MergeAndSortRegions();
-
-            // TODO: Resolve the masking issues below:
-            return;
-
-            // Initialize stacks with regions and masking regions
-            Queue<SnapshotRegion> candidateRegions = new Queue<SnapshotRegion>();
-            Queue<NormalizedRegion> maskingRegions = new Queue<NormalizedRegion>();
-
-            // Build candidate region queue from target region array
-            foreach (SnapshotRegion region in this.SnapshotRegions.OrderBy(x => x.BaseAddress.ToUInt64()))
-            {
-                candidateRegions.Enqueue(region);
-            }
-
-            // Build masking region queue from snapshot
-            foreach (NormalizedRegion maskRegion in groundTruth.OrderBy(x => x.BaseAddress.ToUInt64()))
-            {
-                maskingRegions.Enqueue(maskRegion);
-            }
-
-            if (candidateRegions.Count <= 0 || maskingRegions.Count <= 0)
-            {
-                this.SnapshotRegions = resultRegions;
-                return;
-            }
-
-            SnapshotRegion currentRegion;
-            NormalizedRegion currentMask = maskingRegions.Dequeue();
-
-            while (candidateRegions.Count > 0)
-            {
-                // Grab next region
-                currentRegion = candidateRegions.Dequeue();
-
-                // Grab the next mask following the current region
-                while (currentMask.EndAddress.ToUInt64() < currentRegion.BaseAddress.ToUInt64() && maskingRegions.Count > 0)
-                {
-                    currentMask = maskingRegions.Dequeue();
-                }
-
-                // Check for mask completely removing this region
-                if (currentMask.EndAddress.ToUInt64() < currentRegion.BaseAddress.ToUInt64() || currentMask.BaseAddress.ToUInt64() > currentRegion.EndAddress.ToUInt64())
-                {
-                    continue;
-                }
-
-                // Mask completely overlaps, just use the original region
-                if (currentMask.BaseAddress == currentRegion.BaseAddress && currentMask.EndAddress == currentRegion.EndAddress)
-                {
-                    resultRegions.Add(currentRegion);
-                    continue;
-                }
-
-                // Mask is within bounds; Grab the masked portion of this region
-                Int32 baseOffset = currentMask.BaseAddress.ToUInt64() <= currentRegion.BaseAddress.ToUInt64() ? 0 : currentMask.BaseAddress.Subtract(currentRegion.BaseAddress).ToInt32();
-
-                SnapshotRegion newRegion = new SnapshotRegion(currentRegion as NormalizedRegion);
-                newRegion.BaseAddress = currentRegion.BaseAddress + baseOffset;
-                newRegion.BaseAddress = Math.Min(currentMask.EndAddress.ToUInt64(), currentRegion.EndAddress.ToUInt64()).ToIntPtr();
-                newRegion.SetCurrentValues(currentRegion.CurrentValues.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt32()));
-                newRegion.SetPreviousValues(currentRegion.PreviousValues.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt32()));
-                newRegion.SetElementLabels(currentRegion.ElementLabels.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt32()));
-                newRegion.ElementType = currentRegion.ElementType;
-                newRegion.Alignment = currentRegion.Alignment;
-                resultRegions.Add(newRegion);
-            }
-
-            this.SnapshotRegions = resultRegions;
-        }
-
-        /// <summary>
         /// Gets the time since the last update was performed on this snapshot.
         /// </summary>
         /// <returns>The time since the last update.</returns>
@@ -371,7 +252,7 @@
                 return false;
             }
 
-            return this.ContainsAddress(address, this.SnapshotRegions.Count() / 2, 0, this.SnapshotRegions.Count());
+            return this.ContainsAddressHelper(address, this.SnapshotRegions.Count() / 2, 0, this.SnapshotRegions.Count());
         }
 
         /// <summary>
@@ -391,7 +272,7 @@
         /// <param name="min">The lower region index.</param>
         /// <param name="max">The upper region index.</param>
         /// <returns>True if the address was found.</returns>
-        private Boolean ContainsAddress(IntPtr address, Int32 middle, Int32 min, Int32 max)
+        private Boolean ContainsAddressHelper(IntPtr address, Int32 middle, Int32 min, Int32 max)
         {
             if (middle < 0 || middle == this.SnapshotRegions.Count() || max < min)
             {
@@ -400,16 +281,103 @@
 
             if (address.ToUInt64() < this.SnapshotRegions.ElementAt(middle).BaseAddress.ToUInt64())
             {
-                return this.ContainsAddress(address, (min + middle - 1) / 2, min, middle - 1);
+                return this.ContainsAddressHelper(address, (min + middle - 1) / 2, min, middle - 1);
             }
             else if (address.ToUInt64() > this.SnapshotRegions.ElementAt(middle).EndAddress.ToUInt64())
             {
-                return this.ContainsAddress(address, (middle + 1 + max) / 2, middle + 1, max);
+                return this.ContainsAddressHelper(address, (middle + 1 + max) / 2, middle + 1, max);
             }
             else
             {
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Masks the given memory regions against the given memory regions, keeping the common elements of the two in O(n).
+        /// </summary>
+        /// <param name="groundTruth">The snapshot regions to mask the target regions against.</param>
+        private void MaskRegions(IEnumerable<NormalizedRegion> groundTruth)
+        {
+            List<SnapshotRegion> resultRegions = new List<SnapshotRegion>();
+
+            groundTruth = this.MergeAndSortRegions(groundTruth);
+
+            if (this.SnapshotRegions.IsNullOrEmpty() || groundTruth.IsNullOrEmpty())
+            {
+                this.SnapshotRegions = resultRegions;
+                return;
+            }
+
+            this.MergeAndSortRegions();
+
+            // Initialize stacks with regions and masking regions
+            Queue<SnapshotRegion> snapshotRegionQueue = new Queue<SnapshotRegion>();
+            Queue<NormalizedRegion> groundTruthQueue = new Queue<NormalizedRegion>();
+
+            // Build candidate region queue from snapshot region array
+            foreach (SnapshotRegion region in this.SnapshotRegions.OrderBy(x => x.BaseAddress.ToUInt64()))
+            {
+                snapshotRegionQueue.Enqueue(region);
+            }
+
+            // Build masking region queue from snapshot
+            foreach (NormalizedRegion maskRegion in groundTruth.OrderBy(x => x.BaseAddress.ToUInt64()))
+            {
+                groundTruthQueue.Enqueue(maskRegion);
+            }
+
+            if (snapshotRegionQueue.Count <= 0 || groundTruthQueue.Count <= 0)
+            {
+                this.SnapshotRegions = resultRegions;
+                return;
+            }
+
+            SnapshotRegion nextSnapshotRegion;
+            NormalizedRegion groundTruthMask = groundTruthQueue.Dequeue();
+
+            while (snapshotRegionQueue.Count > 0)
+            {
+                // Grab next region
+                nextSnapshotRegion = snapshotRegionQueue.Dequeue();
+
+                // Grab the next mask following the current region
+                while (groundTruthMask.EndAddress.ToUInt64() < nextSnapshotRegion.BaseAddress.ToUInt64() && groundTruthQueue.Count > 0)
+                {
+                    groundTruthMask = groundTruthQueue.Dequeue();
+                }
+
+                // Check for mask completely removing this region
+                if (groundTruthMask.EndAddress.ToUInt64() < nextSnapshotRegion.BaseAddress.ToUInt64() || groundTruthMask.BaseAddress.ToUInt64() > nextSnapshotRegion.EndAddress.ToUInt64())
+                {
+                    continue;
+                }
+                // Check for mask completely engulfing this region
+                else if (groundTruthMask.BaseAddress.ToUInt64() <= nextSnapshotRegion.BaseAddress.ToUInt64() && groundTruthMask.EndAddress.ToUInt64() >= nextSnapshotRegion.EndAddress.ToUInt64())
+                {
+                    resultRegions.Add(nextSnapshotRegion);
+                    continue;
+                }
+                // There are no edge cases, we must mask and copy the valid portion of this region
+                else
+                {
+                    UInt64 baseAddress = Math.Max(groundTruthMask.BaseAddress.ToUInt64(), nextSnapshotRegion.BaseAddress.ToUInt64());
+                    UInt64 endAddress = Math.Min(groundTruthMask.EndAddress.ToUInt64(), nextSnapshotRegion.EndAddress.ToUInt64());
+                    Int64 baseOffset = unchecked((Int64)(baseAddress - nextSnapshotRegion.BaseAddress.ToUInt64()));
+
+                    SnapshotRegion newRegion = new SnapshotRegion(nextSnapshotRegion as NormalizedRegion);
+                    newRegion.BaseAddress = baseAddress.ToIntPtr();
+                    newRegion.EndAddress = endAddress.ToIntPtr();
+                    newRegion.SetCurrentValues(nextSnapshotRegion.CurrentValues.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt64()));
+                    newRegion.SetPreviousValues(nextSnapshotRegion.PreviousValues.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt64()));
+                    newRegion.SetElementLabels(nextSnapshotRegion.ElementLabels.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt64()));
+                    newRegion.ElementType = nextSnapshotRegion.ElementType;
+                    newRegion.Alignment = nextSnapshotRegion.Alignment;
+                    resultRegions.Add(newRegion);
+                }
+            }
+
+            this.SnapshotRegions = resultRegions;
         }
 
         /// <summary>

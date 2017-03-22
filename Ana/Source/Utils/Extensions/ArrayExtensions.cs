@@ -36,7 +36,7 @@
         /// <param name="index">The start index to take the subarray.</param>
         /// <param name="length">The size of the subarray.</param>
         /// <returns>Returns the specified subarray. Returns null if the specified index is out of bounds.</returns>
-        public static T[] LargestSubArray<T>(this T[] arrayA, Int32 index, Int32 length)
+        public static T[] LargestSubArray<T>(this T[] arrayA, Int64 index, Int64 length)
         {
             if (arrayA == null)
             {
