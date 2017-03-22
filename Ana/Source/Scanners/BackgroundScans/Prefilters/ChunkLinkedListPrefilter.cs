@@ -138,7 +138,6 @@
             // Create snapshot from valid regions, do standard expand/mask operations to catch lost bytes for larger data types
             Snapshot prefilteredSnapshot = new Snapshot(regions);
             prefilteredSnapshot.ExpandAllRegions((PrimitiveTypes.GetLargestPrimitiveSize() - 1).ToUInt64());
-            prefilteredSnapshot.MaskRegions(prefilteredSnapshot);
 
             return prefilteredSnapshot;
         }

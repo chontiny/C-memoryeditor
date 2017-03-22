@@ -251,9 +251,9 @@
                 }
 
                 // Copy the current values and labels.
-                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, subRegion.RegionSize.ToInt32()));
-                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, subRegion.RegionSize.ToInt32()));
-                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, subRegion.RegionSize.ToInt32()));
+                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, subRegion.RegionSize.ToInt64()));
+                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, subRegion.RegionSize.ToInt64()));
+                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, subRegion.RegionSize.ToInt64()));
 
                 validRegions.Add(subRegion);
                 startIndex += validRegionSize;

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Runtime.Serialization;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// An interface defining a hotkey, which is activated by a given set of input.
@@ -77,7 +78,7 @@
         /// </summary>
         protected virtual void Activate()
         {
-            this.CallBackFunction?.Invoke();
+            Task.Run(() => this.CallBackFunction?.Invoke());
         }
 
         /// <summary>

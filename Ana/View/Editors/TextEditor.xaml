@@ -15,7 +15,7 @@
     x:Name="AnaTextEditor"
     Title="Text Editor"
     Width="512"
-    Height="512"
+    Height="256"
     d:DesignHeight="256"
     d:DesignWidth="256"
     x:ClassModifier="internal"

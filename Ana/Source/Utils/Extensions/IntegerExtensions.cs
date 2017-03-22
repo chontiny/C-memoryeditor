@@ -78,6 +78,36 @@
         }
 
         /// <summary>
+        /// Converts the given integer to a <see cref="Int64"/>.
+        /// </summary>
+        /// <param name="integer">The integer to convert.</param>
+        /// <returns>The integer converted to a <see cref="Int64"/>.</returns>
+        public static Int64 ToInt64(this UInt64 integer)
+        {
+            return unchecked((Int64)integer);
+        }
+
+        /// <summary>
+        /// Converts the given integer to a <see cref="Int64"/>.
+        /// </summary>
+        /// <param name="integer">The integer to convert.</param>
+        /// <returns>The integer converted to a <see cref="Int64"/>.</returns>
+        public static Int64 ToInt64(this Int32 integer)
+        {
+            return unchecked((Int64)integer);
+        }
+
+        /// <summary>
+        /// Converts the given integer to a <see cref="Int64"/>.
+        /// </summary>
+        /// <param name="integer">The integer to convert.</param>
+        /// <returns>The integer converted to a <see cref="Int64"/>.</returns>
+        public static Int64 ToInt64(this UInt32 integer)
+        {
+            return unchecked((Int64)integer);
+        }
+
+        /// <summary>
         /// Converts the given integer to a <see cref="IntPtr"/>.
         /// </summary>
         /// <param name="integer">The integer to convert.</param>

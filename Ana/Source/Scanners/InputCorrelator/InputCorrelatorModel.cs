@@ -82,7 +82,7 @@
 
             // Initialize labeled snapshot
             this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
-            this.Snapshot.LabelType = typeof(Int16);
+            this.Snapshot.SetLabelType(typeof(Int16));
 
             if (this.Snapshot == null)
             {
