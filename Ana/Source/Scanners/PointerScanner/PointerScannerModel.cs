@@ -635,7 +635,7 @@
                     (baseAddress) =>
                 {
                     // Enforce static base constraint. Maxlevel pointers were already prefitlered, but not other levels.
-                    if (!this.AcceptedBases.ContainsAddress(baseAddress.Key))
+                    if (!this.AcceptedBases.ContainsAddress(baseAddress.Key.ToUInt64()))
                     {
                         return;
                     }

@@ -209,7 +209,7 @@
             }
 
             this.PropagateSettings();
-            this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
+            this.MergeAndSortRegions();
         }
 
         /// <summary>
@@ -245,7 +245,7 @@
         /// </summary>
         /// <param name="address">The address for which we are searching.</param>
         /// <returns>True if the address is contained.</returns>
-        public Boolean ContainsAddress(IntPtr address)
+        public Boolean ContainsAddress(UInt64 address)
         {
             if (this.SnapshotRegions == null || this.SnapshotRegions.Count() == 0)
             {
@@ -272,18 +272,18 @@
         /// <param name="min">The lower region index.</param>
         /// <param name="max">The upper region index.</param>
         /// <returns>True if the address was found.</returns>
-        private Boolean ContainsAddressHelper(IntPtr address, Int32 middle, Int32 min, Int32 max)
+        private Boolean ContainsAddressHelper(UInt64 address, Int32 middle, Int32 min, Int32 max)
         {
             if (middle < 0 || middle == this.SnapshotRegions.Count() || max < min)
             {
                 return false;
             }
 
-            if (address.ToUInt64() < this.SnapshotRegions.ElementAt(middle).BaseAddress.ToUInt64())
+            if (address < this.SnapshotRegions.ElementAt(middle).BaseAddress.ToUInt64())
             {
                 return this.ContainsAddressHelper(address, (min + middle - 1) / 2, min, middle - 1);
             }
-            else if (address.ToUInt64() > this.SnapshotRegions.ElementAt(middle).EndAddress.ToUInt64())
+            else if (address > this.SnapshotRegions.ElementAt(middle).EndAddress.ToUInt64())
             {
                 return this.ContainsAddressHelper(address, (middle + 1 + max) / 2, middle + 1, max);
             }
@@ -435,48 +435,48 @@
             }
 
             // First, sort by start address
-            IList<SnapshotRegion> sortedRegions = this.SnapshotRegions.OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
+            IEnumerable<SnapshotRegion> sortedRegions = this.SnapshotRegions.OrderBy(x => x.BaseAddress.ToUInt64());
 
             // Create and initialize the stack with the first region
             Stack<SnapshotRegion> combinedRegions = new Stack<SnapshotRegion>();
-            combinedRegions.Push(sortedRegions[0]);
+            combinedRegions.Push(sortedRegions.First());
 
             // Build the remaining regions
-            for (Int32 index = combinedRegions.Count; index < sortedRegions.Count; index++)
+            foreach (SnapshotRegion region in sortedRegions.Skip(1))
             {
                 SnapshotRegion top = combinedRegions.Peek();
 
-                if (top.EndAddress.ToUInt64() < sortedRegions[index].BaseAddress.ToUInt64())
+                // If the regions do not overlap, the new region is the top region
+                if (top.EndAddress.ToUInt64() < region.BaseAddress.ToUInt64())
                 {
-                    // If the interval does not overlap, put it on the top of the stack
-                    combinedRegions.Push(sortedRegions[index]);
+                    combinedRegions.Push(region);
                 }
-                else if (top.EndAddress.ToUInt64() == sortedRegions[index].BaseAddress.ToUInt64())
+                // The regions are exactly adjacent; merge them
+                else if (top.EndAddress.ToUInt64() == region.BaseAddress.ToUInt64())
                 {
-                    // The regions are adjacent; merge them
-                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToUInt64();
+                    top.RegionSize = region.EndAddress.Subtract(top.BaseAddress).ToUInt64();
 
                     // Combine values and labels
-                    top.SetElementLabels(top.ElementLabels?.Concat(sortedRegions[index].ElementLabels));
-                    top.SetCurrentValues(top.CurrentValues?.Concat(sortedRegions[index].CurrentValues));
-                    top.SetPreviousValues(top.PreviousValues?.Concat(sortedRegions[index].PreviousValues));
+                    top.SetElementLabels(top.ElementLabels?.Concat(region.ElementLabels));
+                    top.SetCurrentValues(top.CurrentValues?.Concat(region.CurrentValues));
+                    top.SetPreviousValues(top.PreviousValues?.Concat(region.PreviousValues));
                 }
-                else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
+                // The regions overlap
+                else if (top.EndAddress.ToUInt64() <= region.EndAddress.ToUInt64())
                 {
-                    // The regions overlap
-                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToUInt64();
+                    top.RegionSize = region.EndAddress.Subtract(top.BaseAddress).ToUInt64();
 
-                    Int32 overlapSize = unchecked((Int32)(sortedRegions[index].EndAddress.ToUInt64() - top.EndAddress.ToUInt64()));
+                    Int32 overlapSize = unchecked((Int32)(region.EndAddress.ToUInt64() - top.EndAddress.ToUInt64()));
 
                     // Overlap has conflicting values, so we prioritize the top region and trim the current region
-                    sortedRegions[index].SetElementLabels(sortedRegions[index].ElementLabels?.SubArray(overlapSize, sortedRegions[index].RegionSize.ToInt32() - overlapSize));
-                    sortedRegions[index].SetCurrentValues(sortedRegions[index].CurrentValues?.SubArray(overlapSize, sortedRegions[index].RegionSize.ToInt32() - overlapSize));
-                    sortedRegions[index].SetPreviousValues(sortedRegions[index].PreviousValues?.SubArray(overlapSize, sortedRegions[index].RegionSize.ToInt32() - overlapSize));
+                    region.SetElementLabels(region.ElementLabels?.SubArray(overlapSize, region.RegionSize.ToInt32() - overlapSize));
+                    region.SetCurrentValues(region.CurrentValues?.SubArray(overlapSize, region.RegionSize.ToInt32() - overlapSize));
+                    region.SetPreviousValues(region.PreviousValues?.SubArray(overlapSize, region.RegionSize.ToInt32() - overlapSize));
 
                     // Combine values and labels
-                    top.SetElementLabels(top.ElementLabels?.Concat(sortedRegions[index].ElementLabels));
-                    top.SetCurrentValues(top.CurrentValues?.Concat(sortedRegions[index].CurrentValues));
-                    top.SetPreviousValues(top.PreviousValues?.Concat(sortedRegions[index].PreviousValues));
+                    top.SetElementLabels(top.ElementLabels?.Concat(region.ElementLabels));
+                    top.SetCurrentValues(top.CurrentValues?.Concat(region.CurrentValues));
+                    top.SetPreviousValues(top.PreviousValues?.Concat(region.PreviousValues));
                 }
             }
 

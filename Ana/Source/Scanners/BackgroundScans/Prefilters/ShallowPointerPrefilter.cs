@@ -53,6 +53,10 @@
             this.PrefilteredSnapshot = new Snapshot();
             this.RegionLock = new Object();
             this.processedCount = 0;
+
+            // TEMP DEBUGGING:
+            this.UpdateProgress(1, 1);
+            this.IsTaskComplete = this.IsProgressComplete;
         }
 
         /// <summary>
@@ -141,8 +145,6 @@
         /// </summary>
         private void ProcessPages()
         {
-            UInt64 invalidPointerMin = UInt16.MaxValue;
-            UInt64 invalidPointerMax = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress.ToUInt64();
             ConcurrentHashSet<IntPtr> foundPointers = new ConcurrentHashSet<IntPtr>();
 
             // Add static bases
@@ -158,9 +160,9 @@
             {
                 List<SnapshotRegion> pointerRegions = new List<SnapshotRegion>();
 
-                foreach (IntPtr pointer in PointerCollector.GetInstance().GetFoundPointers())
+                foreach (KeyValuePair<IntPtr, IntPtr> pointer in PointerCollector.GetInstance().GetFoundPointers())
                 {
-                    pointerRegions.Add(new SnapshotRegion(pointer.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
+                    pointerRegions.Add(new SnapshotRegion(pointer.Value.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
                 }
 
                 this.PrefilteredSnapshot.AddSnapshotRegions(pointerRegions);
