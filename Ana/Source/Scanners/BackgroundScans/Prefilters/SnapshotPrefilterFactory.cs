@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Scanners.BackgroundScans.Prefilters
 {
+    using Snapshots;
     using System;
 
     /// <summary>
@@ -7,6 +8,19 @@
     /// </summary>
     internal static class SnapshotPrefilterFactory
     {
+        public static void StartPrefilter(Type prefilterClass)
+        {
+            SnapshotPrefilterFactory.PrefilterClass = prefilterClass;
+            SnapshotPrefilterFactory.GetSnapshotPrefilter(prefilterClass).BeginPrefilter();
+        }
+
+        public static Snapshot GetPrefilteredSnapshot()
+        {
+            return SnapshotPrefilterFactory.GetSnapshotPrefilter(SnapshotPrefilterFactory.PrefilterClass).GetPrefilteredSnapshot();
+        }
+
+        private static Type PrefilterClass { get; set; }
+
         /// <summary>
         /// Gets a prefilter based on the provided class type.
         /// </summary>

@@ -50,6 +50,7 @@
             this.ContentId = OutputViewModel.ToolContentId;
             this.logText = new StringBuilder(OutputViewModel.LogCapacity);
             this.ClearOutputCommand = new RelayCommand(() => this.ClearOutput(), () => true);
+            this.AccessLock = new Object();
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
@@ -97,9 +98,14 @@
         {
             get
             {
-                return this.logText.ToString();
+                lock (this.AccessLock)
+                {
+                    return this.logText.ToString();
+                }
             }
         }
+
+        private Object AccessLock { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="OutputViewModel"/> class.
@@ -117,17 +123,20 @@
         /// <param name="message">The log message.</param>
         public void Log(LogLevel logLevel, String message)
         {
-            // Over capacity, remove some of the first lines based on the minimum clear size
-            if (this.logText.Length > OutputViewModel.LogCapacity)
+            lock (this.AccessLock)
             {
-                String currentText = this.LogText.Substring(Math.Min(this.LogText.Length, OutputViewModel.MinimumClearSize));
-                this.logText = new StringBuilder(currentText.Substring(currentText.IndexOf(Environment.NewLine) + 1));
-            }
+                // Over capacity, remove some of the first lines based on the minimum clear size
+                if (this.logText.Length > OutputViewModel.LogCapacity)
+                {
+                    String currentText = this.LogText.Substring(Math.Min(this.LogText.Length, OutputViewModel.MinimumClearSize));
+                    this.logText = new StringBuilder(currentText.Substring(currentText.IndexOf(Environment.NewLine) + 1));
+                }
 
-            // Write log message. We do this after the capacity check to avoid any chance of accidentally clearing out this message.
-            message = DateTime.Now.ToString("mm:ss.fff") + String.Concat(Enumerable.Repeat(" ", 4)) + "[" + logLevel.ToString() + "] - " + message;
-            Console.WriteLine(message);
-            this.logText.AppendLine(message);
+                // Write log message. We do this after the capacity check to avoid any chance of accidentally clearing out this message.
+                message = DateTime.Now.ToString("mm:ss.fff") + String.Concat(Enumerable.Repeat(" ", 4)) + "[" + logLevel.ToString() + "] - " + message;
+                Console.WriteLine(message);
+                this.logText.AppendLine(message);
+            }
 
             this.RaisePropertyChanged(nameof(this.LogText));
         }
@@ -137,7 +146,11 @@
         /// </summary>
         private void ClearOutput()
         {
-            this.logText.Clear();
+            lock (this.AccessLock)
+            {
+                this.logText.Clear();
+            }
+
             this.RaisePropertyChanged(nameof(this.LogText));
         }
     }

@@ -193,7 +193,7 @@
         {
             if (usePrefilter)
             {
-                return SnapshotPrefilterFactory.GetSnapshotPrefilter(typeof(ChunkLinkedListPrefilter)).GetPrefilteredSnapshot();
+                return SnapshotPrefilterFactory.GetPrefilteredSnapshot();
             }
 
             IEnumerable<NormalizedRegion> virtualPages = this.CollectSnapshotRegions(useSettings);

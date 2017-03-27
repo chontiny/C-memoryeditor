@@ -4,30 +4,36 @@
     using Engine;
     using Snapshots;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using UserSettings;
-    using Utils.DataStructures;
     using Utils.Extensions;
+
     /// <summary>
     /// Class to collect all pointers in the running process.
     /// </summary>
     internal class PointerCollector : ScheduledTask
     {
         /// <summary>
-        /// Time in milliseconds between scans
+        /// Time in milliseconds between scans.
         /// </summary>
         private const Int32 RescanTime = 128;
 
         /// <summary>
-        /// The maximum number of regions we parse per scan
+        /// The maximum number of regions we parse per scan.
         /// </summary>
         private const Int32 RegionLimit = 8;
 
         /// <summary>
-        /// Gets or sets the number of regions processed by this prefilter
+        /// The rounding size for pointer destinations.
+        /// </summary>
+        private const Int32 ChunkSize = 1024;
+
+        /// <summary>
+        /// Gets or sets the number of regions processed by this prefilter.
         /// </summary>
         private Int64 processedCount;
 
@@ -43,24 +49,27 @@
         /// </summary>
         private PointerCollector() : base("Pointer Collector", isRepeated: true, trackProgress: true)
         {
-            this.FoundPointers = new HashSet<IntPtr>();
-            this.ConstructingSet = new HashSet<IntPtr>();
+            this.AccessLock = new Object();
+            this.FoundPointers = new ConcurrentDictionary<IntPtr, IntPtr>();
+            this.ConstructingSet = new ConcurrentDictionary<IntPtr, IntPtr>();
         }
 
         /// <summary>
-        /// Gets or sets the pointers found in the target process
+        /// Gets or sets the pointers found in the target process.
         /// </summary>
-        private HashSet<IntPtr> FoundPointers { get; set; }
+        private ConcurrentDictionary<IntPtr, IntPtr> FoundPointers { get; set; }
 
         /// <summary>
         /// Gets or sets the new found pointers being constructed, which will replace the found pointers upon snapshot parse completion.
         /// </summary>
-        private HashSet<IntPtr> ConstructingSet { get; set; }
+        private ConcurrentDictionary<IntPtr, IntPtr> ConstructingSet { get; set; }
 
         /// <summary>
         /// Gets or sets the current snapshot being parsed. A new one is collected after the current one is parsed.
         /// </summary>
         private Snapshot CurrentSnapshot { get; set; }
+
+        private Object AccessLock { get; set; }
 
         public static PointerCollector GetInstance()
         {
@@ -68,12 +77,18 @@
         }
 
         /// <summary>
-        /// Gets all found pointers in the external process
+        /// Gets all found pointers in the external process.
         /// </summary>
-        /// <returns>A set of all found pointers</returns>
-        public HashSet<IntPtr> GetFoundPointers()
+        /// <returns>A set of all found pointers.</returns>
+        public IEnumerable<KeyValuePair<IntPtr, IntPtr>> GetFoundPointers()
         {
-            return this.FoundPointers;
+            lock (this.AccessLock)
+            {
+                foreach (KeyValuePair<IntPtr, IntPtr> pointer in this.FoundPointers)
+                {
+                    yield return pointer;
+                }
+            }
         }
 
         protected override void OnBegin()
@@ -93,17 +108,20 @@
         /// </summary>
         private void GatherPointers()
         {
-            UInt64 invalidPointerMin = UInt16.MaxValue;
-            UInt64 invalidPointerMax = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress.ToUInt64();
-            ConcurrentHashSet<IntPtr> foundPointers = new ConcurrentHashSet<IntPtr>();
+            ConcurrentDictionary<IntPtr, IntPtr> foundPointers = new ConcurrentDictionary<IntPtr, IntPtr>();
 
             // Test for conditions where we set the final found set and take a new snapshot to parse
             if (this.CurrentSnapshot == null || this.CurrentSnapshot.RegionCount <= 0 || this.processedCount >= this.CurrentSnapshot.RegionCount)
             {
                 this.processedCount = 0;
-                this.CurrentSnapshot = SnapshotManager.GetInstance().CollectSnapshot(useSettings: true, usePrefilter: false).Clone();
-                this.FoundPointers = this.ConstructingSet;
-                this.ConstructingSet = new HashSet<IntPtr>();
+                this.CurrentSnapshot = SnapshotManager.GetInstance().CollectSnapshot(useSettings: false, usePrefilter: false).Clone();
+
+                lock (this.AccessLock)
+                {
+                    this.FoundPointers = this.ConstructingSet;
+                }
+
+                this.ConstructingSet = new ConcurrentDictionary<IntPtr, IntPtr>();
             }
 
             List<SnapshotRegion> sortedRegions = new List<SnapshotRegion>(this.CurrentSnapshot.GetSnapshotRegions().OrderBy(x => x.GetTimeSinceLastRead()));
@@ -144,24 +162,19 @@
                 {
                     SnapshotElementIterator element = enumerator.Current;
 
-                    // Enforce user mode memory pointers
-                    if (element.LessThanValue(invalidPointerMin) || element.GreaterThanValue(invalidPointerMax))
-                    {
-                        continue;
-                    }
-
                     // Enforce 4-byte alignment of destination
                     if (element.GetCurrentValue() % 4 != 0)
                     {
                         continue;
                     }
 
-                    IntPtr Value = new IntPtr(element.GetCurrentValue());
+                    UInt64 value = unchecked((UInt64)element.GetCurrentValue());
 
                     // Check if it is possible that this pointer is valid, if so keep it
-                    if (this.CurrentSnapshot.ContainsAddress(Value))
+                    if (this.CurrentSnapshot.ContainsAddress(value))
                     {
-                        foundPointers.Add(Value);
+                        value = value - value % PointerCollector.ChunkSize;
+                        foundPointers.TryAdd(element.BaseAddress, value.ToIntPtr());
                     }
                 }
 
@@ -169,9 +182,14 @@
                 region.SetCurrentValues(null);
             });
 
-            IEnumerable<IntPtr> pointers = foundPointers.ToList();
-            this.ConstructingSet.UnionWith(pointers);
-            this.FoundPointers.UnionWith(pointers);
+            lock (this.AccessLock)
+            {
+                foreach (KeyValuePair<IntPtr, IntPtr> pointer in foundPointers)
+                {
+                    this.ConstructingSet.TryAdd(pointer.Key, pointer.Value);
+                    this.FoundPointers.TryAdd(pointer.Key, pointer.Value);
+                }
+            }
         }
     }
     //// End class

@@ -89,13 +89,21 @@
         public IEnumerable<NormalizedProcess> GetProcesses()
         {
             return Process.GetProcesses()
-                .Select(process => new NormalizedProcess(
-                        process.Id,
-                        process.ProcessName,
-                        this.IsProcessSystemProcess(process) ? DateTime.MinValue : process.StartTime,
-                        this.IsProcessSystemProcess(process),
-                        this.isProcessWindowed(process),
-                        this.GetIcon(process)))
+                .Select(process =>
+                    new
+                    {
+                        baseProcess = process,
+                        isSystemProcess = this.IsProcessSystemProcess(process),
+                        isProcessWindowed = this.isProcessWindowed(process),
+                        icon = this.GetIcon(process),
+                    })
+                .Select(intermediateProcess => new NormalizedProcess(
+                        intermediateProcess.baseProcess.Id,
+                        intermediateProcess.baseProcess.ProcessName,
+                        intermediateProcess.isSystemProcess ? DateTime.MinValue : intermediateProcess.baseProcess.StartTime,
+                        intermediateProcess.isSystemProcess,
+                        intermediateProcess.isProcessWindowed,
+                        intermediateProcess.icon))
                 .OrderByDescending(normalizedProcess => normalizedProcess.StartTime);
         }
 
