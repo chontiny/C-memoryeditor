@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Controls;
     using Editors.ScriptEditor;
     using Output;
     using ScriptEngine;
@@ -55,7 +56,7 @@
         [ReadOnly(false)]
         [TypeConverter(typeof(ScriptConverter))]
         [Editor(typeof(ScriptEditorModel), typeof(UITypeEditor))]
-        [Category("Properties"), DisplayName("Script"), Description("C# script to interface with engine")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Script"), Description("C# script to interface with engine")]
         public String Script
         {
             get
@@ -76,7 +77,7 @@
         [DataMember]
         [ReadOnly(true)]
         [RefreshProperties(RefreshProperties.All)]
-        [Category("Properties"), DisplayName("Compiled"), Description("Whether or not this script has been compiled.")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Compiled"), Description("Whether or not this script has been compiled.")]
         public Boolean IsCompiled
         {
             get

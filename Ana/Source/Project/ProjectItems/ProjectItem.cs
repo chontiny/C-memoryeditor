@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Controls;
     using Editors.HotkeyEditor;
     using Editors.TextEditor;
     using Engine.Input.HotKeys;
@@ -104,7 +105,7 @@
         /// Gets or sets the description for this object.
         /// </summary>
         [DataMember]
-        [Category("Properties"), DisplayName("Description"), Description("Description to be shown for the Project Items")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Description"), Description("Description to be shown for the Project Items")]
         public String Description
         {
             get
@@ -127,7 +128,7 @@
         [DataMember]
         [TypeConverter(typeof(TextConverter))]
         [Editor(typeof(TextEditorModel), typeof(UITypeEditor))]
-        [Category("Properties"), DisplayName("Extended Description"), Description("Extended description for additional information about this item")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Extended Description"), Description("Extended description for additional information about this item")]
         public String ExtendedDescription
         {
             get
@@ -170,7 +171,7 @@
         /// </summary>
         [TypeConverter(typeof(HotkeyConverter))]
         [Editor(typeof(HotkeyEditorModel), typeof(UITypeEditor))]
-        [Category("Properties"), DisplayName("Hotkey"), Description("The hotkey for this item")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Hotkey"), Description("The hotkey for this item")]
         public Hotkey HotKey
         {
             get
@@ -268,6 +269,14 @@
             this.hotkey = hotkey;
 
             this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
+        }
+
+        /// <summary>
+        /// Randomizes the guid of this project item.
+        /// </summary>
+        public void ResetGuid()
+        {
+            this.Guid = Guid.NewGuid();
         }
 
         /// <summary>

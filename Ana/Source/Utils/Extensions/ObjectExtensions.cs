@@ -7,7 +7,7 @@
     /// <summary>
     /// Extension methods for all objects.
     /// </summary>
-    public static class ObjectExtensions
+    internal static class ObjectExtensions
     {
         /// <summary>
         /// Prints the method that called this function, as well as any provided parameters.
