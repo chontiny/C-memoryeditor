@@ -219,6 +219,7 @@
         public IEnumerable<SnapshotRegion> GetValidRegions()
         {
             List<SnapshotRegion> validRegions = new List<SnapshotRegion>();
+            Int32 elementSize = this.GetElementSize();
 
             if (this.ValidBits == null)
             {
@@ -237,7 +238,7 @@
                 do
                 {
                     // We only care if the aligned elements are valid
-                    validRegionSize += this.Alignment;
+                    validRegionSize += elementSize;
                 }
                 while (startIndex + validRegionSize < this.ValidBits.Length && this.ValidBits[startIndex + validRegionSize]);
 
@@ -305,7 +306,7 @@
         private Int32 GetElementSize()
         {
             // Switch on type code. Could also do Marshal.SizeOf(DataType), but it is slower
-            switch (Type.GetTypeCode(this.GetElementType()))
+            switch (Type.GetTypeCode(this.ElementType))
             {
                 case TypeCode.Byte:
                     return sizeof(Byte);

@@ -11,22 +11,27 @@
         /// Determines if two doubles are almost equal in value via https://en.wikipedia.org/wiki/Unit_in_the_last_place distance.
         /// Note that, ULP tests do not work well for small numbers, so this will fall back on a delta test if the ULP fails.
         /// </summary>
-        /// <param name="float1">The first double.</param>
-        /// <param name="float2">The second double.</param>
+        /// <param name="double1">The first double.</param>
+        /// <param name="double2">The second double.</param>
         /// <returns>Returns true if the doubles are almost equal.</returns>
-        public static unsafe Boolean AlmostEquals(this Double float1, Double float2)
+        public static unsafe Boolean AlmostEquals(this Double double1, Double double2)
         {
             const Int32 MaxDeltaBits = 32;
             const Single MaxDelta = 0.001f;
 
+            if (double1 > 90.0 && double1 <= 110)
+            {
+                int i = 0;
+            }
+
             // Step 1: Try a ULP distance test
-            Int64 int1 = *((Int64*)&float1);
+            Int64 int1 = *((Int64*)&double1);
             if (int1 < 0)
             {
                 int1 = Int64.MinValue - int1;
             }
 
-            Int64 int2 = *((Int64*)&float2);
+            Int64 int2 = *((Int64*)&double2);
             if (int2 < 0)
             {
                 int2 = Int64.MinValue - int2;
@@ -41,7 +46,7 @@
             }
 
             // Step 2: Try a delta test
-            Double delta = float1 - float2;
+            Double delta = double1 - double2;
             Double absoluteDelta = delta > 0 ? delta : -delta;
 
             return absoluteDelta < MaxDelta;
