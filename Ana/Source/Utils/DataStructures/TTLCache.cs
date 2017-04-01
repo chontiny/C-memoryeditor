@@ -60,7 +60,7 @@
 
                 if (this.cache.TryGetValue(value, out result))
                 {
-                    if (DateTime.Now <= result)
+                    if (DateTime.Now <= result || result == DateTime.MaxValue)
                     {
                         // Cache contains valid unexpired entry
                         return true;
@@ -125,7 +125,7 @@
 
             if (this.cache.TryGetValue(key, out result))
             {
-                if (DateTime.Now > result.Item2)
+                if (DateTime.Now <= result.Item2 || result.Item2 == DateTime.MaxValue)
                 {
                     // Cache contains valid unexpired entry
                     value = result.Item1;
