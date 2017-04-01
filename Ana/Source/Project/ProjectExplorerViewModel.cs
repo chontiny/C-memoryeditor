@@ -198,6 +198,7 @@
 
             private set
             {
+                this.projectRoot?.RemoveAllNodes();
                 this.projectRoot = value;
                 this.NotifyObserversStructureChange();
                 this.RaisePropertyChanged(nameof(this.ProjectRoot));
@@ -503,9 +504,9 @@
                     this.HasUnsavedChanges = false;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open project.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open project - " + ex?.ToString());
             }
 
             // Open the hotkey file
@@ -524,9 +525,9 @@
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile - " + ex?.ToString());
             }
         }
 
@@ -578,9 +579,9 @@
                     this.HasUnsavedChanges = true;
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to import project.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to import project - " + ex?.ToString());
             }
 
             // Import the hotkey file
@@ -600,9 +601,9 @@
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile - " + ex?.ToString());
             }
 
             // Randomize the guid for imported project items, preventing possible conflicts
@@ -634,9 +635,9 @@
 
                 this.HasUnsavedChanges = false;
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project - " + ex?.ToString());
                 return;
             }
 
@@ -652,9 +653,9 @@
                     serializer.WriteObject(fileStream, hotkeys);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to save hotkey profile.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to save hotkey profile - " + ex?.ToString());
                 return;
             }
         }

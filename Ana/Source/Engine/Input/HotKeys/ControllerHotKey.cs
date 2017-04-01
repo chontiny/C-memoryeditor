@@ -17,6 +17,11 @@
         {
         }
 
+        public override void Dispose()
+        {
+
+        }
+
         /// <summary>
         /// Determines if the current set of activation hotkeys are empty.
         /// </summary>

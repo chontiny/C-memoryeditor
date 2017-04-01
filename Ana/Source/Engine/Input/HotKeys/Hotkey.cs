@@ -11,7 +11,7 @@
     [KnownType(typeof(KeyboardHotkey))]
     [KnownType(typeof(MouseHotkey))]
     [DataContract]
-    internal abstract class Hotkey
+    internal abstract class Hotkey : IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Hotkey" /> class.
@@ -36,6 +36,8 @@
         /// Gets or sets the minimum delay between hotkey activations.
         /// </summary>
         protected Int32 ActivationDelay { get; set; }
+
+        public abstract void Dispose();
 
         /// <summary>
         /// Sets the callback function to be triggered by this hotkey.

@@ -79,6 +79,18 @@
         }
 
         /// <summary>
+        /// Unsubscribes from keyboard capture events.
+        /// </summary>
+        /// <param name="subject">The weak observer to unsubscribe.</param>
+        public void Unsubscribe(IDisposable subject)
+        {
+            lock (this.ObserverLock)
+            {
+                subject?.Dispose();
+            }
+        }
+
+        /// <summary>
         /// Updates keyboard capture, gathering the input state and raising necessary events.
         /// </summary>
         public void Update()

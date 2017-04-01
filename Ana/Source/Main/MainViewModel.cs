@@ -158,7 +158,7 @@
         private void StartBackgroundServices()
         {
             SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
-            // PointerCollector.GetInstance().Begin();
+            //// PointerCollector.GetInstance().Begin();
             DotNetObjectCollector.GetInstance().Begin();
             AddressResolver.GetInstance().Begin();
 

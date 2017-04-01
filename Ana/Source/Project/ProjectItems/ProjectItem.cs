@@ -20,7 +20,7 @@
     [KnownType(typeof(ScriptItem))]
     [KnownType(typeof(AddressItem))]
     [DataContract]
-    internal abstract class ProjectItem : INotifyPropertyChanged
+    internal abstract class ProjectItem : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// The parent of this project item.
@@ -269,6 +269,11 @@
             this.hotkey = hotkey;
 
             this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
+        }
+
+        public void Dispose()
+        {
+            this.HotKey?.Dispose();
         }
 
         /// <summary>

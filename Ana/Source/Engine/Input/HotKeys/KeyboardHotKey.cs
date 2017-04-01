@@ -31,7 +31,7 @@
             this.ActivationDelay = KeyboardHotkey.DefaultActivationDelay;
             this.AccessLock = new object();
 
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+            this.Subscription = EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
 
         /// <summary>
@@ -41,6 +41,8 @@
         private HashSet<Key> ActivationKeys { get; set; }
 
         private Object AccessLock { get; set; }
+
+        private IDisposable Subscription { get; set; }
 
         /// <summary>
         /// Invoked when this object is deserialized.
@@ -53,7 +55,12 @@
             this.ActivationDelay = KeyboardHotkey.DefaultActivationDelay;
             this.AccessLock = new object();
 
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+            this.Subscription = EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+        }
+
+        public override void Dispose()
+        {
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().Unsubscribe(this.Subscription);
         }
 
         public void OnNext(KeyState value)

@@ -261,6 +261,21 @@
         }
 
         /// <summary>
+        /// Removes the specified items from this item's children recursively.
+        /// </summary>
+        /// <param name="projectItems">The items to remove.</param>
+        public void RemoveAllNodes()
+        {
+            lock (this.ChildrenLock)
+            {
+                foreach (ProjectItem projectItem in this.Children.ToArray())
+                {
+                    this.RemoveNode(projectItem);
+                }
+            }
+        }
+
+        /// <summary>
         /// Removes the specified item from this item's children recursively.
         /// </summary>
         /// <param name="projectItem">The item to remove.</param>
@@ -280,7 +295,9 @@
                 {
                     projectItem.Parent = null;
                     this.Children.Remove(projectItem);
+                    projectItem.Dispose();
                     removeSuccess = true;
+                    (projectItem as FolderItem)?.RemoveAllNodes();
                 }
                 else
                 {
@@ -288,7 +305,7 @@
                     {
                         if (child is FolderItem)
                         {
-                            if (child != null && (child as FolderItem).RemoveNode(projectItem))
+                            if ((child as FolderItem).RemoveNode(projectItem))
                             {
                                 removeSuccess = true;
                             }
