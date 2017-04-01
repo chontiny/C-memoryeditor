@@ -169,7 +169,7 @@
         public void ExpandAllRegions(UInt64 expandSize)
         {
             this.SnapshotRegions?.ForEach(x => x.Expand(expandSize));
-            this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
+            this.MaskRegions(SnapshotManager.GetInstance().CreateSnapshotFromSettings()?.GetSnapshotRegions());
         }
 
         /// <summary>
@@ -179,7 +179,7 @@
         {
             Boolean readSuccess;
             this.TimeSinceLastUpdate = DateTime.Now;
-            this.MaskRegions(SnapshotManager.GetInstance().CollectSnapshotRegions(useSettings: false));
+            this.MaskRegions(SnapshotManager.GetInstance().CreateSnapshotFromSettings()?.GetSnapshotRegions());
             this.SnapshotRegions?.ForEach(x => x.ReadAllRegionMemory(out readSuccess, keepValues: true));
         }
 

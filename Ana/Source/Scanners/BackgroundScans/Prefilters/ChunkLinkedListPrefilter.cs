@@ -208,7 +208,7 @@
             List<RegionProperties> newRegions = new List<RegionProperties>();
 
             // Gather current regions from the target process
-            IEnumerable<NormalizedRegion> queriedVirtualRegions = SnapshotManager.GetInstance().CollectSnapshotRegions();
+            IEnumerable<NormalizedRegion> queriedVirtualRegions = SnapshotManager.GetInstance().CreateSnapshotFromSettings().GetSnapshotRegions();
             List<NormalizedRegion> queriedChunkedRegions = new List<NormalizedRegion>();
 
             // Chunk all virtual regions into a standardized size
