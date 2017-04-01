@@ -234,6 +234,7 @@
     <Compile Include="Source\Engine\Input\InputManager.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyState.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyboardCapture.cs" />
+    <Compile Include="Source\Utils\DataStructures\TTLCache.cs" />
     <Compile Include="Source\Utils\Extensions\EnumExtensions.cs" />
     <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
     <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
