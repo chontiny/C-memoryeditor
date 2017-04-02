@@ -7,6 +7,7 @@
     using Mvvm.Command;
     using Output;
     using Project;
+    using Scanners.BackgroundScans;
     using Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
@@ -157,8 +158,8 @@
         /// </summary>
         private void StartBackgroundServices()
         {
-            SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
-            //// PointerCollector.GetInstance().Begin();
+            SnapshotPrefilterFactory.StartPrefilter(typeof(ShallowPointerPrefilter));
+            PointerCollector.GetInstance().Begin();
             DotNetObjectCollector.GetInstance().Begin();
             AddressResolver.GetInstance().Begin();
 

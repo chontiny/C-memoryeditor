@@ -631,7 +631,7 @@
             {
                 Parallel.ForEach(
                     this.ConnectedPointers[currentMaximum],
-                    SettingsViewModel.GetInstance().ParallelSettings,
+                    SettingsViewModel.GetInstance().ParallelSettingsFast,
                     (baseAddress) =>
                 {
                     // Enforce static base constraint. Maxlevel pointers were already prefitlered, but not other levels.
@@ -658,7 +658,7 @@
 
             Parallel.ForEach(
                 this.ConnectedPointers[level - 1],
-                SettingsViewModel.GetInstance().ParallelSettings,
+                SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (target) =>
             {
                 if (pointerDestination.ToUInt64() < target.Key.Subtract(this.MaxPointerOffset).ToUInt64())

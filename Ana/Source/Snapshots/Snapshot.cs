@@ -247,12 +247,12 @@
         /// <returns>True if the address is contained.</returns>
         public Boolean ContainsAddress(UInt64 address)
         {
-            if (this.SnapshotRegions == null || this.SnapshotRegions.Count() == 0)
+            if (this.SnapshotRegions == null || this.SnapshotRegions.Count == 0)
             {
                 return false;
             }
 
-            return this.ContainsAddressHelper(address, this.SnapshotRegions.Count() / 2, 0, this.SnapshotRegions.Count());
+            return this.ContainsAddressHelper(address, this.SnapshotRegions.Count / 2, 0, this.SnapshotRegions.Count);
         }
 
         /// <summary>
@@ -274,7 +274,7 @@
         /// <returns>True if the address was found.</returns>
         private Boolean ContainsAddressHelper(UInt64 address, Int32 middle, Int32 min, Int32 max)
         {
-            if (middle < 0 || middle == this.SnapshotRegions.Count() || max < min)
+            if (middle < 0 || middle == this.SnapshotRegions.Count || max < min)
             {
                 return false;
             }

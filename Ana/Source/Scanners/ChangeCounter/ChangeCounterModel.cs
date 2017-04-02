@@ -69,7 +69,7 @@
 
             Parallel.ForEach(
                 this.Snapshot.Cast<SnapshotRegion>(),
-                SettingsViewModel.GetInstance().ParallelSettings,
+                SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
             {
                 if (!region.CanCompare())

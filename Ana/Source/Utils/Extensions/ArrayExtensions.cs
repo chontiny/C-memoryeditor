@@ -48,7 +48,7 @@
                 length = arrayA.Length - index;
             }
 
-            if (length == 0)
+            if (length <= 0)
             {
                 return null;
             }

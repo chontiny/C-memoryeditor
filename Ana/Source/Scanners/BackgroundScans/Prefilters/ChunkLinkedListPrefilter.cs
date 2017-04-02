@@ -296,7 +296,7 @@
                 Parallel.For(
                     0,
                     Math.Min(this.ChunkList.Count, chunkLimit),
-                    SettingsViewModel.GetInstance().ParallelSettings,
+                    SettingsViewModel.GetInstance().ParallelSettingsFast,
                     index =>
                 {
                     RegionProperties chunk;

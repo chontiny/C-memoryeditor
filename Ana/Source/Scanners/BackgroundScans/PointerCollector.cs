@@ -4,12 +4,12 @@
     using Engine;
     using Snapshots;
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using UserSettings;
+    using Utils.DataStructures;
     using Utils.Extensions;
 
     /// <summary>
@@ -20,12 +20,12 @@
         /// <summary>
         /// Time in milliseconds between scans.
         /// </summary>
-        private const Int32 RescanTime = 128;
+        private const Int32 RescanTime = 256;
 
         /// <summary>
-        /// The maximum number of regions we parse per scan.
+        /// Limit the number of bytes to read per iteration.
         /// </summary>
-        private const Int32 RegionLimit = 8;
+        private const UInt64 ByteLimit = 2 << 20; // 2 MB
 
         /// <summary>
         /// The rounding size for pointer destinations.
@@ -50,19 +50,19 @@
         private PointerCollector() : base("Pointer Collector", isRepeated: true, trackProgress: true)
         {
             this.AccessLock = new Object();
-            this.FoundPointers = new ConcurrentDictionary<IntPtr, IntPtr>();
-            this.ConstructingSet = new ConcurrentDictionary<IntPtr, IntPtr>();
+            this.FoundPointerDestinations = new ConcurrentHashSet<IntPtr>();
+            this.InProgressPointerDestinations = new ConcurrentHashSet<IntPtr>();
         }
 
         /// <summary>
         /// Gets or sets the pointers found in the target process.
         /// </summary>
-        private ConcurrentDictionary<IntPtr, IntPtr> FoundPointers { get; set; }
+        private ConcurrentHashSet<IntPtr> FoundPointerDestinations { get; set; }
 
         /// <summary>
         /// Gets or sets the new found pointers being constructed, which will replace the found pointers upon snapshot parse completion.
         /// </summary>
-        private ConcurrentDictionary<IntPtr, IntPtr> ConstructingSet { get; set; }
+        private ConcurrentHashSet<IntPtr> InProgressPointerDestinations { get; set; }
 
         /// <summary>
         /// Gets or sets the current snapshot being parsed. A new one is collected after the current one is parsed.
@@ -80,13 +80,13 @@
         /// Gets all found pointers in the external process.
         /// </summary>
         /// <returns>A set of all found pointers.</returns>
-        public IEnumerable<KeyValuePair<IntPtr, IntPtr>> GetFoundPointers()
+        public IEnumerable<IntPtr> GetFoundPointerDestinations()
         {
             lock (this.AccessLock)
             {
-                foreach (KeyValuePair<IntPtr, IntPtr> pointer in this.FoundPointers)
+                foreach (IntPtr pointerDestination in this.FoundPointerDestinations)
                 {
-                    yield return pointer;
+                    yield return pointerDestination;
                 }
             }
         }
@@ -108,7 +108,7 @@
         /// </summary>
         private void GatherPointers()
         {
-            ConcurrentDictionary<IntPtr, IntPtr> foundPointers = new ConcurrentDictionary<IntPtr, IntPtr>();
+            ConcurrentHashSet<UInt64> foundPointerDestinations = new ConcurrentHashSet<UInt64>();
 
             // Test for conditions where we set the final found set and take a new snapshot to parse
             if (this.CurrentSnapshot == null || this.CurrentSnapshot.RegionCount <= 0 || this.processedCount >= this.CurrentSnapshot.RegionCount)
@@ -118,19 +118,27 @@
 
                 lock (this.AccessLock)
                 {
-                    this.FoundPointers = this.ConstructingSet;
+                    this.FoundPointerDestinations = this.InProgressPointerDestinations;
                 }
 
-                this.ConstructingSet = new ConcurrentDictionary<IntPtr, IntPtr>();
+                this.InProgressPointerDestinations = new ConcurrentHashSet<IntPtr>();
             }
 
             List<SnapshotRegion> sortedRegions = new List<SnapshotRegion>(this.CurrentSnapshot.GetSnapshotRegions().OrderBy(x => x.GetTimeSinceLastRead()));
 
+            UInt64 total = 0;
+            Int32 regionCount = sortedRegions.TakeWhile(x =>
+            {
+                UInt64 previousTotal = total;
+                total += x.RegionSize;
+                return previousTotal == 0 || total < PointerCollector.ByteLimit;
+            }).Count();
+
             // Process the allowed amount of chunks from the priority queue
             Parallel.For(
                 0,
-                Math.Min(sortedRegions.Count, PointerCollector.RegionLimit),
-                SettingsViewModel.GetInstance().ParallelSettings,
+                Math.Min(sortedRegions.Count, regionCount),
+                SettingsViewModel.GetInstance().ParallelSettingsMedium,
                 (index) =>
             {
                 Interlocked.Increment(ref this.processedCount);
@@ -161,20 +169,19 @@
                 for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
                 {
                     SnapshotElementIterator element = enumerator.Current;
+                    UInt64 value = unchecked((UInt64)element.GetCurrentValue());
 
-                    // Enforce 4-byte alignment of destination
-                    if (element.GetCurrentValue() % 4 != 0)
+                    // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
+                    if (value < UInt16.MaxValue || value % 4 != 0)
                     {
                         continue;
                     }
-
-                    UInt64 value = unchecked((UInt64)element.GetCurrentValue());
 
                     // Check if it is possible that this pointer is valid, if so keep it
                     if (this.CurrentSnapshot.ContainsAddress(value))
                     {
                         value = value - value % PointerCollector.ChunkSize;
-                        foundPointers.TryAdd(element.BaseAddress, value.ToIntPtr());
+                        foundPointerDestinations.Add(value);
                     }
                 }
 
@@ -184,10 +191,12 @@
 
             lock (this.AccessLock)
             {
-                foreach (KeyValuePair<IntPtr, IntPtr> pointer in foundPointers)
+                foreach (UInt64 pointerDestination in foundPointerDestinations)
                 {
-                    this.ConstructingSet.TryAdd(pointer.Key, pointer.Value);
-                    this.FoundPointers.TryAdd(pointer.Key, pointer.Value);
+                    IntPtr pointerDestinationPtr = pointerDestination.ToIntPtr();
+
+                    this.InProgressPointerDestinations.Add(pointerDestinationPtr);
+                    this.FoundPointerDestinations.Add(pointerDestinationPtr);
                 }
             }
         }
