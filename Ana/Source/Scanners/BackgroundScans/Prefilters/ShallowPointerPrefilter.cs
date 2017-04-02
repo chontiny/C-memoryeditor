@@ -43,15 +43,13 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="ShallowPointerPrefilter" /> class from being created.
         /// </summary>
-        private ShallowPointerPrefilter() : base("Prefilter", isRepeated: true, trackProgress: true)
+        private ShallowPointerPrefilter() : base("Prefilter", isRepeated: true, trackProgress: false)
         {
             this.PrefilteredSnapshot = new Snapshot();
             this.RegionLock = new Object();
             this.processedCount = 0;
 
-            // TEMP DEBUGGING:
-            this.UpdateProgress(1, 1);
-            this.IsTaskComplete = this.IsProgressComplete;
+            PointerCollector.GetInstance().Begin();
         }
 
         /// <summary>

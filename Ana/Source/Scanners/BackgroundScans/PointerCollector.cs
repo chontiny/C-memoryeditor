@@ -47,7 +47,7 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="PointerCollector" /> class from being created.
         /// </summary>
-        private PointerCollector() : base("Pointer Collector", isRepeated: true, trackProgress: true)
+        private PointerCollector() : base("Pointer Collector", isRepeated: true, trackProgress: false)
         {
             this.AccessLock = new Object();
             this.FoundPointerDestinations = new ConcurrentHashSet<IntPtr>();
