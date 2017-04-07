@@ -84,10 +84,7 @@
         /// <param name="subject">The weak observer to unsubscribe.</param>
         public void Unsubscribe(IDisposable subject)
         {
-            lock (this.ObserverLock)
-            {
-                subject?.Dispose();
-            }
+            subject?.Dispose();
         }
 
         /// <summary>

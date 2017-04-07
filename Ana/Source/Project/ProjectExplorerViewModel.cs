@@ -607,9 +607,12 @@
             }
 
             // Randomize the guid for imported project items, preventing possible conflicts
-            foreach (ProjectItem child in importedProjectRoot?.Flatten())
+            if (importedProjectRoot != null)
             {
-                child.ResetGuid();
+                foreach (ProjectItem child in importedProjectRoot.Flatten())
+                {
+                    child.ResetGuid();
+                }
             }
         }
 

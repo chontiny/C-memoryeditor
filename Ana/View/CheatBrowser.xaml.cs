@@ -1,12 +1,13 @@
 ﻿namespace Ana.View
 {
     using Source.CheatBrowser;
+    using Source.Output;
     using Source.Project;
     using System;
     using System.Collections.Specialized;
     using System.Diagnostics;
     using System.IO;
-    using System.Net;
+    using System.Runtime.InteropServices;
     using System.Web;
     using System.Windows;
     using System.Windows.Navigation;
@@ -65,9 +66,19 @@
                 if (cheatName != null && cheatName.EndsWith(CheatBrowser.FileExtension))
                 {
                     e.Cancel = true;
-                    WebClient client = new WebClient();
-                    client.DownloadDataCompleted += (source, args) => this.DownloadDataCompleted(source, args);
-                    client.DownloadDataAsync(e.Uri);
+
+                    try
+                    {
+                        // Load and import the file.
+                        String file = Path.GetTempFileName();
+                        URLDownloadToFile(null, e.Uri.AbsoluteUri, file, 0, IntPtr.Zero);
+                        ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(file);
+                    }
+                    catch (Exception ex)
+                    {
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, ex.ToString());
+                    }
+
                     return;
                 }
 
@@ -77,27 +88,9 @@
                     Process.Start(new Uri(new Uri(CheatBrowserViewModel.HomeUrl), native).AbsoluteUri);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-            }
-        }
-
-        /// <summary>
-        /// Event invoked when a download has been completed in the browser.
-        /// </summary>
-        /// <param name="sender">Sending object.</param>
-        /// <param name="e">Download event args.</param>
-        private void DownloadDataCompleted(Object sender, DownloadDataCompletedEventArgs e)
-        {
-            try
-            {
-                // Load and import the file.
-                String file = Path.GetTempFileName();
-                File.WriteAllBytes(file, e.Result);
-                ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(file);
-            }
-            catch
-            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, ex.ToString());
             }
         }
 
@@ -110,6 +103,10 @@
         {
             this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
         }
+
+        [DllImport("urlmon.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern Int32 URLDownloadToFile([MarshalAs(UnmanagedType.IUnknown)] Object callerPointer, [MarshalAs(UnmanagedType.LPWStr)] String url,
+            [MarshalAs(UnmanagedType.LPWStr)] String filePathWithName, Int32 reserved, IntPtr callBack);
     }
     //// End class
 }

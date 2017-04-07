@@ -21,7 +21,7 @@
         /// <summary>
         /// The home url for the cheat browser.
         /// </summary>
-        public const String HomeUrl = "http://www.anathena.com/CheatBrowser/Index";
+        public const String HomeUrl = "https://www.anathena.com/CheatBrowser/Index";
 
         /// <summary>
         /// Singleton instance of the <see cref="CheatBrowserViewModel" /> class.
@@ -63,7 +63,7 @@
         /// <param name="browser">The web browser.</param>
         private void NavigateHome(WebBrowser browser)
         {
-            browser.Navigate(HomeUrl);
+            browser.Navigate(CheatBrowserViewModel.HomeUrl);
         }
     }
     //// End class
