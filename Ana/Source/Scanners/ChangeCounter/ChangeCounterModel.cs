@@ -60,7 +60,7 @@
             base.OnBegin();
         }
 
-        protected override void OnUpdate()
+        protected unsafe override void OnUpdate()
         {
             Int32 processedPages = 0;
 
@@ -79,10 +79,7 @@
 
                 foreach (SnapshotElementIterator element in region)
                 {
-                    if (element.Changed())
-                    {
-                        ((dynamic)element).ElementLabel++;
-                    }
+                    element.ElementLabel = (UInt16)element.ElementLabel + 1;
                 }
 
                 lock (this.ProgressLock)
