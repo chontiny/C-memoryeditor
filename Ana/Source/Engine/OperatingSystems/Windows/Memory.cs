@@ -55,17 +55,28 @@
         /// <returns>The number of bytes written.</returns>
         public static Int32 WriteBytes(IntPtr processHandle, IntPtr address, Byte[] byteArray)
         {
-            // Create the variable storing the number of bytes written
+            MemoryProtectionFlags oldProtection;
             Int32 bytesWritten;
 
-            // Write the data to the target process
-            if (NativeMethods.WriteProcessMemory(processHandle, address, byteArray, byteArray.Length, out bytesWritten))
+            try
             {
-                // Check whether the length of the data written is equal to the inital array
-                if (bytesWritten == byteArray.Length)
+                NativeMethods.VirtualProtectEx(processHandle, (IntPtr)address, byteArray.Length, MemoryProtectionFlags.ExecuteReadWrite, out oldProtection);
+
+                // Write the data to the target process
+                if (NativeMethods.WriteProcessMemory(processHandle, address, byteArray, byteArray.Length, out bytesWritten))
                 {
-                    return bytesWritten;
+                    // Check whether all bytes were written
+                    if (bytesWritten == byteArray.Length)
+                    {
+                        return bytesWritten;
+                    }
                 }
+
+                NativeMethods.VirtualProtectEx(processHandle, (IntPtr)address, byteArray.Length, oldProtection, out oldProtection);
+            }
+            catch
+            {
+
             }
 
             return 0;

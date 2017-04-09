@@ -286,7 +286,7 @@
         {
             get
             {
-                return this.ResultCount / ScanResultsViewModel.PageSize;
+                return this.ResultCount == 0 ? 0 : (this.ResultCount - 1) / ScanResultsViewModel.PageSize;
             }
         }
 

@@ -59,8 +59,10 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
                 var layout = serializer.Deserialize(stream) as LayoutRoot;
                 FixupLayout(layout);
                 var visibleItems = layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.IsVisible).ToArray();
+                var selectedItems = layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.IsSelected).ToArray();
                 Manager.Layout = layout;
                 visibleItems.ForEach(x => x.IsVisible = true);
+                selectedItems.ForEach(x => x.IsSelected = true);
             }
             finally
             {
@@ -77,8 +79,10 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
                 var layout = serializer.Deserialize(reader) as LayoutRoot;
                 FixupLayout(layout);
                 var visibleItems = layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.IsVisible).ToArray();
+                var selectedItems = layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.IsSelected).ToArray();
                 Manager.Layout = layout;
                 visibleItems.ForEach(x => x.IsVisible = true);
+                selectedItems.ForEach(x => x.IsSelected = true);
             }
             finally
             {
@@ -95,8 +99,10 @@ namespace Xceed.Wpf.AvalonDock.Layout.Serialization
                 var layout = serializer.Deserialize(reader) as LayoutRoot;
                 FixupLayout(layout);
                 var visibleItems = layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.IsVisible).ToArray();
+                var selectedItems = layout.Descendents().OfType<LayoutAnchorable>().Where(x => x.IsSelected).ToArray();
                 Manager.Layout = layout;
                 visibleItems.ForEach(x => x.IsVisible = true);
+                selectedItems.ForEach(x => x.IsSelected = true);
             }
             finally
             {

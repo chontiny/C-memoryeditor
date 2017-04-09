@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Controls;
     using Editors.OffsetEditor;
     using Engine;
     using Engine.AddressResolver;
@@ -120,7 +121,7 @@
         /// </summary>
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
-        [Category("Properties"), DisplayName("Resolve Type"), Description("Method to use for resolving the address base. If there is an identifier to resolve, the address is treated as an offset.")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Resolve Type"), Description("Method to use for resolving the address base. If there is an identifier to resolve, the address is treated as an offset.")]
         public AddressResolver.ResolveTypeEnum ResolveType
         {
             get
@@ -141,7 +142,7 @@
         /// </summary>
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
-        [Category("Properties"), DisplayName("Resolve Id"), Description("Text identifier to use when resolving the base address, such as a module or .NET Object name")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Resolve Id"), Description("Text identifier to use when resolving the base address, such as a module or .NET Object name")]
         public String BaseIdentifier
         {
             get
@@ -163,7 +164,7 @@
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(AddressConverter))]
-        [Category("Properties"), DisplayName("Address Base"), Description("Base address")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Address Base"), Description("Base address")]
         public IntPtr BaseAddress
         {
             get
@@ -187,7 +188,7 @@
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(OffsetConverter))]
         [Editor(typeof(OffsetEditorModel), typeof(UITypeEditor))]
-        [Category("Properties"), DisplayName("Address Offsets"), Description("Address offsets")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Address Offsets"), Description("Address offsets")]
         public IEnumerable<Int32> Offsets
         {
             get
@@ -208,7 +209,7 @@
         /// </summary>
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(ValueTypeConverter))]
-        [Category("Properties"), DisplayName("Value Type"), Description("Data type of the address")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value Type"), Description("Data type of the address")]
         public Type ElementType
         {
             get
@@ -230,7 +231,7 @@
         /// Gets or sets the value at this address.
         /// </summary>
         [TypeConverter(typeof(DynamicConverter))]
-        [Category("Properties"), DisplayName("Value"), Description("Value at the address")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value"), Description("Value at the address")]
         public Object Value
         {
             get
@@ -251,7 +252,7 @@
         /// </summary>
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
-        [Category("Properties"), DisplayName("Value as Hex"), Description("Whether or not to display value as hexedecimal")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether or not to display value as hexedecimal")]
         public Boolean IsValueHex
         {
             get
@@ -272,7 +273,7 @@
         /// </summary>
         [ReadOnly(true)]
         [TypeConverter(typeof(AddressConverter))]
-        [Category("Properties"), DisplayName("Address"), Description("Effective address")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Address"), Description("Effective address")]
         public IntPtr EffectiveAddress
         {
             get

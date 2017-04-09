@@ -26,13 +26,15 @@
         {
             this.SetHotkey(keyboardHotkey);
 
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+            this.Subscription = EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
 
         /// <summary>
         /// Gets or sets the hotkey being constructed.
         /// </summary>
         private KeyboardHotkey KeyboardHotkey { get; set; }
+
+        private IDisposable Subscription { get; set; }
 
         public void OnNext(KeyState value)
         {

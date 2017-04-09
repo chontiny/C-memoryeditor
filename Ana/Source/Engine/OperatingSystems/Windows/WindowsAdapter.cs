@@ -233,7 +233,8 @@
                 case TypeCode.Double:
                     this.Write<Double>(address, (Double)value);
                     break;
-                default: return;
+                default:
+                    throw new ArgumentException("Invalid type provided");
             }
         }
 
@@ -243,7 +244,7 @@
         /// <typeparam name="T">The type of the value.</typeparam>
         /// <param name="address">The address where the value is written.</param>
         /// <param name="value">The value to write.</param>
-        public unsafe void Write<T>(IntPtr address, T value)
+        public void Write<T>(IntPtr address, T value)
         {
             Byte[] bytes;
             switch (Type.GetTypeCode(typeof(T)))
@@ -256,7 +257,7 @@
                     bytes = BitConverter.GetBytes((SByte)(Object)value);
                     break;
                 case TypeCode.Char:
-                    bytes = Encoding.UTF8.GetBytes(new[] { (Char)(Object)value });
+                    bytes = Encoding.UTF8.GetBytes(new Char[] { (Char)(Object)value });
                     break;
                 case TypeCode.Double:
                     bytes = BitConverter.GetBytes((Double)(Object)value);

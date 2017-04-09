@@ -233,7 +233,7 @@
         /// </summary>
         /// <returns>The current value of this element.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe dynamic GetCurrentValue()
+        public unsafe Object GetCurrentValue()
         {
             return this.LoadValue(this.CurrentValuePointer);
         }

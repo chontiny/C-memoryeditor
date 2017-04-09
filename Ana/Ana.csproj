@@ -27,16 +27,16 @@
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://www.anathena.com/Release/</InstallUrl>
-    <UpdateUrl>https://www.anathena.com/Content/Release/</UpdateUrl>
+    <UpdateUrl>https://www.anathena.com/Release/</UpdateUrl>
     <SupportUrl>https://www.anathena.com/</SupportUrl>
     <ErrorReportUrl>https://www.anathena.com/</ErrorReportUrl>
     <ProductName>Anathena</ProductName>
     <PublisherName>Anathena</PublisherName>
-    <MinimumRequiredVersion>3.5.0.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>3.5.1.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.5.0.0</ApplicationVersion>
+    <ApplicationVersion>3.5.1.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -182,6 +182,7 @@
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Content\Images.cs" />
+    <Compile Include="Source\Controls\SortedCategory.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
@@ -233,13 +234,14 @@
     <Compile Include="Source\Engine\Input\InputManager.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyState.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyboardCapture.cs" />
+    <Compile Include="Source\Utils\DataStructures\TTLCache.cs" />
+    <Compile Include="Source\Utils\Extensions\EnumExtensions.cs" />
     <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
     <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
     <Compile Include="Source\Engine\Input\Mouse\IMouseObserver.cs" />
     <Compile Include="Source\Engine\Input\Mouse\IMouseSubject.cs" />
     <Compile Include="Source\Engine\Input\Mouse\MouseCapture.cs" />
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
-    <Compile Include="Source\Project\HotkeyManager.cs" />
     <Compile Include="Source\Mvvm\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\DataGridIndexConverter.cs" />

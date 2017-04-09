@@ -151,6 +151,9 @@
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern Boolean ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [Out] Byte[] lpBuffer, Int32 dwSize, out Int32 lpNumberOfBytesRead);
 
+        [DllImport("kernel32.dll")]
+        static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+
         /// <summary>
         /// Reserves or commits a region of memory within the virtual address space of a specified process. The function initializes the memory it allocates to zero, unless MEM_RESET is used.
         /// To specify the NUMA node for the physical memory, see VirtualAllocExNuma.
