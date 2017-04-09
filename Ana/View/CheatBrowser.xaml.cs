@@ -45,6 +45,24 @@
         }
 
         /// <summary>
+        /// The URLMON library contains this function, URLDownloadToFile, which is a way to download files without user prompts. The ExecWB( _SAVEAS ) function always
+        /// prompts the user, even if _DONTPROMPTUSER parameter is specified, for "internet security reasons". This function gets around those reasons.
+        /// </summary>
+        /// <param name="callerPointer">Pointer to caller object (AX).</param>
+        /// <param name="url">String of the URL.</param>
+        /// <param name="filePathWithName">String of the destination filename/path.</param>
+        /// <param name="reserved">Reserved parameter.</param>
+        /// <param name="callBack">A callback function to monitor progress or abort.</param>
+        /// <returns>0 for okay.</returns>
+        [DllImport("urlmon.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern Int32 URLDownloadToFile(
+            [MarshalAs(UnmanagedType.IUnknown)] Object callerPointer,
+            [MarshalAs(UnmanagedType.LPWStr)] String url,
+            [MarshalAs(UnmanagedType.LPWStr)] String filePathWithName,
+            Int32 reserved,
+            IntPtr callBack);
+
+        /// <summary>
         /// Invoked when the browser is about to navigate to a new page.
         /// </summary>
         /// <param name="sender">Sending object.</param>
@@ -103,10 +121,6 @@
         {
             this.CheatBrowserViewModel.NavigateHomeCommand.Execute(this.browser);
         }
-
-        [DllImport("urlmon.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern Int32 URLDownloadToFile([MarshalAs(UnmanagedType.IUnknown)] Object callerPointer, [MarshalAs(UnmanagedType.LPWStr)] String url,
-            [MarshalAs(UnmanagedType.LPWStr)] String filePathWithName, Int32 reserved, IntPtr callBack);
     }
     //// End class
 }
