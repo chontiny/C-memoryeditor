@@ -29,14 +29,9 @@ namespace Ana.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write(@"- Removed signature collector
-- Added process quick select and automatic refreshing
-- Optimizations to scanning (potentially an order of magnitude increase on manual scans)
-- Minor UI fixes
-- Now properly computing the module of an address when it is added from the scan results
-- Bug fixes to scan constraint manager conflicts
-- Bug fix to changing the result type with active manual scan constraints
-- Fixes to backend memory snapshot management");
+            this.Write("- Bug fixes to hotkeys\r\n- Bug fixes and optimizations to quick process selector\r\n" +
+                    "- New prefilter algorithm\r\n- Adjustments to importing files from cheat browser\r\n" +
+                    "- Fixes to writing addresses with non-writable page flags");
             return this.GenerationEnvironment.ToString();
         }
     }
