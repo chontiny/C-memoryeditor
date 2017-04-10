@@ -113,6 +113,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
+  <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
@@ -944,27 +947,27 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\DeveloperLayout.xml" />
-    <Content Include="Libraries\EasyHook\EasyHook.dll">
+    <None Include="Libraries\EasyHook\EasyHook.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook32.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook32Svc.exe">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook32Svc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook64.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook64Svc.exe">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook64Svc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyLoad32.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyLoad32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyLoad64.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyLoad64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

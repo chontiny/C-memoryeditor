@@ -28,7 +28,6 @@ namespace SharpDX.Multimedia
     /// </summary>
     public class SoundStream : Stream
     {
-        private readonly bool isOwnerOfInput;
         private Stream input;
         private long startPositionOfData;
         private long length;
@@ -96,8 +95,9 @@ namespace SharpDX.Multimedia
                 // Check for "dpds" chunk
                 // Get the dpds decoded packed cumulative bytes
                 var dpdsChunk = Chunk(chunks, "dpds");
-                DecodedPacketsInfo = dpdsChunk.GetDataAsArray<uint>();                
-            } else
+                DecodedPacketsInfo = dpdsChunk.GetDataAsArray<uint>();
+            }
+            else
             {
                 switch (Format.Encoding)
                 {
@@ -109,7 +109,7 @@ namespace SharpDX.Multimedia
                     default:
                         ThrowInvalidFileFormat();
                         break;
-                }                
+                }
             }
 
             // Check for "data" chunk
@@ -144,7 +144,7 @@ namespace SharpDX.Multimedia
         public DataStream ToDataStream()
         {
             var buffer = new byte[Length];
-            if ( Read(buffer, 0, (int)Length) != Length)
+            if (Read(buffer, 0, (int)Length) != Length)
                 throw new InvalidOperationException("Unable to get a valid DataStream");
 
             return DataStream.Create(buffer, true, true);
@@ -296,7 +296,7 @@ namespace SharpDX.Multimedia
                     break;
             }
 
-            if (newPosition < startPositionOfData || newPosition > (startPositionOfData+length))
+            if (newPosition < startPositionOfData || newPosition > (startPositionOfData + length))
                 throw new InvalidOperationException("Cannot seek outside the range of this stream");
 
             return input.Seek(newPosition, SeekOrigin.Begin);
