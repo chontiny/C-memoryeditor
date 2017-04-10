@@ -316,7 +316,8 @@
             // Create new node to insert
             ProjectNode projectNode = new ProjectNode(projectItem.Description);
             projectNode.ProjectItem = projectItem;
-            projectNode.EntryHotkey = projectItem.HotKey == null ? String.Empty : "[" + projectItem.HotKey.ToString() + "]";
+            String hotkeyString = projectItem.HotKey?.ToString();
+            projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
             projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
             projectNode.EntryIcon = image;
             projectNode.IsChecked = projectItem.IsActivated;
@@ -365,7 +366,8 @@
 
             if (node != null)
             {
-                node.EntryHotkey = projectItem.HotKey == null ? String.Empty : "[" + projectItem.HotKey.ToString() + "]";
+                String hotkeyString = projectItem.HotKey?.ToString();
+                node.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
 
                 if (projectItem is AddressItem)
                 {
