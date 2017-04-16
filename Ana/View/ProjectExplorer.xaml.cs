@@ -368,6 +368,7 @@
             {
                 String hotkeyString = projectItem.HotKey?.ToString();
                 node.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
+                node.IsChecked = projectItem.IsActivated;
 
                 if (projectItem is AddressItem)
                 {

@@ -172,16 +172,20 @@
                         Header="Open"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
-                        Command="{Binding ProjectExplorerViewModel.ImportProjectCommand}"
-                        Header="Import Project"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
                         Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}"
                         Header="Save"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
                         Command="{Binding ProjectExplorerViewModel.SaveAsProjectCommand}"
                         Header="Save As"
+                        Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
+                        Command="{Binding ProjectExplorerViewModel.ImportProjectCommand}"
+                        Header="Import Project"
+                        Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
+                        Command="{Binding ProjectExplorerViewModel.ExportProjectCommand}"
+                        Header="Export Project"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
                         Command="{Binding MainViewModel.CloseCommand}"

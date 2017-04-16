@@ -140,7 +140,7 @@
             }
             catch
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to complete compile request.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Unable to complete compile request.");
                 return null;
             }
         }

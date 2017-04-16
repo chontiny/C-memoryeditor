@@ -4,7 +4,7 @@
     using System.Windows.Forms;
 
     /// <summary>
-    /// Class that allows threads outside of a windows form (Presenter in an MVP) to update controls in the windows form.
+    /// Class that allows threads outside of a windows form to update controls in the windows form.
     /// </summary>
     public static class ControlThreadingHelper
     {
