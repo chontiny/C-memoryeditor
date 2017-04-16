@@ -318,7 +318,17 @@
             projectNode.ProjectItem = projectItem;
             String hotkeyString = projectItem.HotKey?.ToString();
             projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
-            projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
+
+            if (projectItem is AddressItem)
+            {
+                projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+            }
+
+            if (projectItem is FolderItem)
+            {
+                projectNode.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
+            }
+
             projectNode.EntryIcon = image;
             projectNode.IsChecked = projectItem.IsActivated;
 
@@ -366,13 +376,21 @@
 
             if (node != null)
             {
+                node.IsChecked = projectItem.IsActivated;
                 String hotkeyString = projectItem.HotKey?.ToString();
+                node.EntryDescription = projectItem.Description;
                 node.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
+                node.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
                 node.IsChecked = projectItem.IsActivated;
 
                 if (projectItem is AddressItem)
                 {
                     node.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+                }
+
+                if (projectItem is FolderItem)
+                {
+                    node.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
                 }
             }
 
