@@ -106,6 +106,7 @@
         {
             ScriptItem clone = new ScriptItem();
             clone.Description = this.Description;
+            clone.ExtendedDescription = this.ExtendedDescription;
             clone.Parent = this.Parent;
             clone.script = this.Script;
             clone.isCompiled = this.IsCompiled;
@@ -133,7 +134,6 @@
             try
             {
                 ScriptItem clone = this.Clone() as ScriptItem;
-                clone.Description += " - [Compiled]";
                 clone.isCompiled = true;
                 clone.script = this.ScriptManager.CompileScript(clone.script);
                 return clone;

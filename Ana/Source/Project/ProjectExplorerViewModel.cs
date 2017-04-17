@@ -690,7 +690,10 @@
                 {
                     String folderPath = Path.GetDirectoryName(saveFileDialog.FileName);
 
-                    foreach (ProjectItem projectItem in this.ProjectRoot.Flatten().Where(x => !(x is FolderItem)))
+                    Parallel.ForEach(
+                        this.ProjectRoot.Flatten().Where(x => !(x is FolderItem)),
+                        SettingsViewModel.GetInstance().ParallelSettingsFast,
+                        (projectItem) =>
                     {
                         ProjectItem targetProjectItem = projectItem;
 
@@ -708,7 +711,7 @@
                             catch (Exception ex)
                             {
                                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to compile a project item - " + targetProjectItem?.Description + " - " + ex?.ToString());
-                                continue;
+                                return;
                             }
                         }
 
@@ -722,7 +725,7 @@
                             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
                             serializer.WriteObject(fileStream, newProjectRoot);
                         }
-                    }
+                    });
                 }
             }
             catch (Exception ex)
