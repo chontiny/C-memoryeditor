@@ -5,8 +5,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Ana" #>
-- Bug fixes to hotkeys
-- Bug fixes and optimizations to quick process selector
-- New prefilter algorithm
-- Adjustments to importing files from cheat browser
-- Fixes to writing addresses with non-writable page flags
+- Added project exporting, allowing for quick saving of compiled project items as their own separate files from a large project.
+- Fixed display bug for empty hotkeys
+- Fixed a potential deadlock bug in the project explorer
+- Fixed a bug where a copy pasted script would not transfer over the extended description

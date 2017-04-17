@@ -29,9 +29,10 @@ namespace Ana.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Bug fixes to hotkeys\r\n- Bug fixes and optimizations to quick process selector\r\n" +
-                    "- New prefilter algorithm\r\n- Adjustments to importing files from cheat browser\r\n" +
-                    "- Fixes to writing addresses with non-writable page flags");
+            this.Write(@"- Added project exporting, allowing for quick saving of compiled project items as their own separate files from a large project.
+- Fixed display bug for empty hotkeys
+- Fixed a potential deadlock bug in the project explorer
+- Fixed a bug where a copy pasted script would not transfer over the extended description");
             return this.GenerationEnvironment.ToString();
         }
     }
