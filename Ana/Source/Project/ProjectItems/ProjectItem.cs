@@ -115,6 +115,11 @@
 
             set
             {
+                if (this.description == value)
+                {
+                    return;
+                }
+
                 this.description = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Description));
@@ -138,6 +143,11 @@
 
             set
             {
+                if (this.extendedDescription == value)
+                {
+                    return;
+                }
+
                 this.extendedDescription = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.ExtendedDescription));
@@ -159,6 +169,11 @@
 
             set
             {
+                if (this.guid == value)
+                {
+                    return;
+                }
+
                 this.guid = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Guid));
@@ -181,6 +196,11 @@
 
             set
             {
+                if (this.hotkey == value)
+                {
+                    return;
+                }
+
                 this.hotkey = value;
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
@@ -202,13 +222,22 @@
 
             set
             {
-                if (!this.CanActivate)
+                if (this.isActivated == value || !this.CanActivate)
                 {
                     return;
                 }
 
+                Boolean previousValue = this.isActivated;
+
                 this.isActivated = value;
                 this.OnActivationChanged();
+
+                // Activation failed
+                if (this.isActivated == previousValue)
+                {
+                    return;
+                }
+
                 this.NotifyPropertyChanged(nameof(this.IsActivated));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }

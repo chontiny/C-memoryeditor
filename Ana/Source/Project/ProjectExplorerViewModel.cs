@@ -40,6 +40,11 @@
         public const String ProjectExtensionFilter = "Cheat File (*.Hax)|*.hax|All files (*.*)|*.*";
 
         /// <summary>
+        /// The file extension for project items.
+        /// </summary>
+        private const String ProjectFileExtension = ".hax";
+
+        /// <summary>
         /// The file extension for hotkeys.
         /// </summary>
         private const String HotkeyFileExtension = ".hotkeys";
@@ -83,6 +88,7 @@
             // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
             this.ImportProjectCommand = new RelayCommand(() => this.ImportProject(), () => true);
+            this.ExportProjectCommand = new RelayCommand(() => this.ExportProject(), () => true);
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
             this.SaveAsProjectCommand = new RelayCommand(() => this.SaveAsProject(), () => true);
@@ -103,9 +109,14 @@
         public ICommand OpenProjectCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to open a project from disk.
+        /// Gets the command to import another project from disk.
         /// </summary>
         public ICommand ImportProjectCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to export a project to separate files.
+        /// </summary>
+        public ICommand ExportProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to open a specific project from disk, used for loading downloaded web projects.
@@ -367,7 +378,7 @@
         /// </summary>
         public void OnPropertyUpdate()
         {
-            this.NotifyObserversStructureChange();
+            this.NotifyObserversValueChange();
         }
 
         /// <summary>
@@ -661,6 +672,70 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to save hotkey profile - " + ex?.ToString());
                 return;
             }
+        }
+
+        /// <summary>
+        /// Export a project to separate files.
+        /// </summary>
+        private void ExportProject()
+        {
+            // Export the project items to thier own individual files
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.FileName = "Select a Folder to Export Project Items";
+                saveFileDialog.Title = "Export Project";
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    String folderPath = Path.GetDirectoryName(saveFileDialog.FileName);
+
+                    Parallel.ForEach(
+                        this.ProjectRoot.Flatten().Where(x => !(x is FolderItem)),
+                        SettingsViewModel.GetInstance().ParallelSettingsFast,
+                        (projectItem) =>
+                    {
+                        ProjectItem targetProjectItem = projectItem;
+
+                        if (projectItem is ScriptItem)
+                        {
+                            ScriptItem scriptItem = projectItem as ScriptItem;
+
+                            try
+                            {
+                                if (!scriptItem.IsCompiled)
+                                {
+                                    targetProjectItem = scriptItem?.Compile();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to compile a project item - " + targetProjectItem?.Description + " - " + ex?.ToString());
+                                return;
+                            }
+                        }
+
+                        String filePath = Path.Combine(folderPath, targetProjectItem.Description + ProjectExplorerViewModel.ProjectFileExtension);
+
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                        {
+                            ProjectRoot newProjectRoot = new ProjectRoot();
+                            newProjectRoot.AddChild(targetProjectItem);
+
+                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                            serializer.WriteObject(fileStream, newProjectRoot);
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to complete export project - " + ex?.ToString());
+                return;
+            }
+
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Project export complete.");
+
         }
 
         /// <summary>

@@ -18,12 +18,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using SharpDX.Mathematics.Interop;
+using SharpDX.Win32;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using SharpDX.Mathematics.Interop;
-using SharpDX.Win32;
-using SharpDX.IO;
 
 #if STORE_APP
 using Windows.Storage.Streams;
@@ -37,7 +36,6 @@ namespace SharpDX.MediaFoundation
     public partial class ByteStream
     {
         private Stream sourceStream;
-        private ComStream comStream;
         private ComStreamProxy streamProxy;
         private ComObject randomAccessStreamCom;
 
@@ -58,7 +56,7 @@ namespace SharpDX.MediaFoundation
             streamProxy = new ComStreamProxy(sourceStream);
             IByteStream localStream;
             MediaFactory.CreateMFByteStreamOnStream(ComStream.ToIntPtr(streamProxy), out localStream);
-            NativePointer = ((ByteStream) localStream).NativePointer;
+            NativePointer = ((ByteStream)localStream).NativePointer;
 #endif
         }
 
@@ -201,7 +199,7 @@ namespace SharpDX.MediaFoundation
         {
             int result;
             fixed (void* ptr = &bRef[offset])
-                Read_((System.IntPtr) ptr, count, out result);
+                Read_((System.IntPtr)ptr, count, out result);
             return result;
         }
 
@@ -223,7 +221,7 @@ namespace SharpDX.MediaFoundation
         public unsafe void BeginRead(byte[] bRef, int offset, int count, SharpDX.MediaFoundation.IAsyncCallback callbackRef, object context)
         {
             fixed (void* ptr = &bRef[offset])
-                BeginRead__((System.IntPtr) ptr, count, AsyncCallbackShadow.ToIntPtr(callbackRef), context != null ? Marshal.GetIUnknownForObject(context) : IntPtr.Zero);
+                BeginRead__((System.IntPtr)ptr, count, AsyncCallbackShadow.ToIntPtr(callbackRef), context != null ? Marshal.GetIUnknownForObject(context) : IntPtr.Zero);
         }
 
         /// <summary>	
@@ -261,7 +259,7 @@ namespace SharpDX.MediaFoundation
         {
             int result;
             fixed (void* ptr = &bRef[offset])
-                Write_((IntPtr) ptr, count, out result);
+                Write_((IntPtr)ptr, count, out result);
             return result;
         }
 

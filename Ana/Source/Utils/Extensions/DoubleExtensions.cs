@@ -19,11 +19,6 @@
             const Int32 MaxDeltaBits = 32;
             const Single MaxDelta = 0.001f;
 
-            if (double1 > 90.0 && double1 <= 110)
-            {
-                int i = 0;
-            }
-
             // Step 1: Try a ULP distance test
             Int64 int1 = *((Int64*)&double1);
             if (int1 < 0)

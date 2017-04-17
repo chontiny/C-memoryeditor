@@ -316,8 +316,24 @@
             // Create new node to insert
             ProjectNode projectNode = new ProjectNode(projectItem.Description);
             projectNode.ProjectItem = projectItem;
-            projectNode.EntryHotkey = projectItem.HotKey == null ? String.Empty : "[" + projectItem.HotKey.ToString() + "]";
-            projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
+            String hotkeyString = projectItem.HotKey?.ToString();
+            projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
+
+            if (projectItem is AddressItem)
+            {
+                projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+            }
+
+            if (projectItem is FolderItem)
+            {
+                projectNode.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
+            }
+
+            if (projectItem is ScriptItem && (projectItem as ScriptItem).IsCompiled)
+            {
+                projectNode.EntryValuePreview = "[Compiled]";
+            }
+
             projectNode.EntryIcon = image;
             projectNode.IsChecked = projectItem.IsActivated;
 
@@ -356,20 +372,35 @@
         /// <param name="projectItem">The project item for which to update the corresponding node.</param>
         private void UpdateNodes(ProjectItem projectItem)
         {
-            ProjectNode node;
+            ProjectNode projectNode;
 
-            if (!this.nodeCache.TryGetValue(projectItem, out node))
+            if (!this.nodeCache.TryGetValue(projectItem, out projectNode))
             {
                 return;
             }
 
-            if (node != null)
+            if (projectNode != null)
             {
-                node.EntryHotkey = projectItem.HotKey == null ? String.Empty : "[" + projectItem.HotKey.ToString() + "]";
+                projectNode.IsChecked = projectItem.IsActivated;
+                String hotkeyString = projectItem.HotKey?.ToString();
+                projectNode.EntryDescription = projectItem.Description;
+                projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
+                projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
+                projectNode.IsChecked = projectItem.IsActivated;
 
                 if (projectItem is AddressItem)
                 {
-                    node.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+                    projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+                }
+
+                if (projectItem is FolderItem)
+                {
+                    projectNode.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
+                }
+
+                if (projectItem is ScriptItem && (projectItem as ScriptItem).IsCompiled)
+                {
+                    projectNode.EntryValuePreview = "[Compiled]";
                 }
             }
 

@@ -32,11 +32,11 @@
     <ErrorReportUrl>https://www.anathena.com/</ErrorReportUrl>
     <ProductName>Anathena</ProductName>
     <PublisherName>Anathena</PublisherName>
-    <MinimumRequiredVersion>3.5.1.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>3.5.2.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.5.1.0</ApplicationVersion>
+    <ApplicationVersion>3.5.2.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -111,6 +111,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -944,27 +947,27 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\DeveloperLayout.xml" />
-    <Content Include="Libraries\EasyHook\EasyHook.dll">
+    <None Include="Libraries\EasyHook\EasyHook.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook32.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook32Svc.exe">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook32Svc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook64.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook64Svc.exe">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook64Svc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyLoad32.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyLoad32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyLoad64.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyLoad64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -106,6 +106,7 @@
         {
             ScriptItem clone = new ScriptItem();
             clone.Description = this.Description;
+            clone.ExtendedDescription = this.ExtendedDescription;
             clone.Parent = this.Parent;
             clone.script = this.Script;
             clone.isCompiled = this.IsCompiled;
@@ -133,14 +134,13 @@
             try
             {
                 ScriptItem clone = this.Clone() as ScriptItem;
-                clone.Description += " - [Compiled]";
                 clone.isCompiled = true;
                 clone.script = this.ScriptManager.CompileScript(clone.script);
                 return clone;
             }
             catch
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to complete compile request.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Unable to complete compile request.");
                 return null;
             }
         }
