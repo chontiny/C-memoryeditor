@@ -25,22 +25,21 @@
             Padding="8,4,8,4"
             Background="{StaticResource AvalonDock_Expression_BaseColor4}">
             <Menu Background="Transparent">
-                <MenuItem Command="{Binding ConnectCommand}">
+                <MenuItem Command="{Binding ToggleConnectionCommand}">
                     <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/Ana;component/Content/Icons/Connect.png"
-                            ToolTip="Connect to Twitch" />
-                    </MenuItem.Header>
-                </MenuItem>
-                <MenuItem Command="{Binding DisconnectCommand}">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/Ana;component/Content/Icons/Cancel.png"
-                            ToolTip="Disconnect from Twitch" />
+                        <WrapPanel>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="pack://application:,,,/Ana;component/Content/Icons/Connect.png"
+                                ToolTip="Disconnect from Twitch" />
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="{Binding ConnectionImage}"
+                                ToolTip="Connect/Disconnect from Twitch" />
+                            <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ConnectionOption}" />
+                        </WrapPanel>
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>

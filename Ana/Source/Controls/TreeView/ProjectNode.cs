@@ -14,9 +14,10 @@
         /// Initializes a new instance of the <see cref="ProjectNode" /> class.
         /// </summary>
         /// <param name="entryDescription">String with which to set the description property.</param>
-        public ProjectNode(String entryDescription) : base(String.Empty)
+        public ProjectNode() : base(String.Empty)
         {
-            this.EntryDescription = entryDescription;
+            this.EntryDescription = String.Empty;
+            this.EntryStreamCommand = String.Empty;
             this.EntryHotkey = String.Empty;
             this.EntryValuePreview = String.Empty;
             this.EntryIcon = null;
@@ -28,7 +29,12 @@
         public String EntryDescription { get; set; }
 
         /// <summary>
-        /// Gets or sets the value preview of the project node.
+        /// Gets or sets the stream command preview of the project node.
+        /// </summary>
+        public String EntryStreamCommand { get; set; }
+
+        /// <summary>
+        /// Gets or sets the hotkey preview of the project node.
         /// </summary>
         public String EntryHotkey { get; set; }
 

@@ -362,14 +362,6 @@
                             Source="pack://application:,,,/Ana;component/Content/Icons/New.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
-                <shell:MenuItem Command="{Binding SnapshotManagerViewModel.UndoSnapshotCommand}" ToolTip="Undo Scan">
-                    <shell:MenuItem.Header>
-                        <shell:Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/Ana;component/Content/Icons/Undo.png" />
-                    </shell:MenuItem.Header>
-                </shell:MenuItem>
                 <shell:MenuItem Command="{Binding ValueCollectorViewModel.CollectValuesCommand}" ToolTip="Collect Values">
                     <shell:MenuItem.Header>
                         <shell:Image

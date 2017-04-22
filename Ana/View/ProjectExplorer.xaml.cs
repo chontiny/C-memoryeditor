@@ -314,28 +314,9 @@
             image?.MakeTransparent();
 
             // Create new node to insert
-            ProjectNode projectNode = new ProjectNode(projectItem.Description);
-            projectNode.ProjectItem = projectItem;
-            String hotkeyString = projectItem.HotKey?.ToString();
-            projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
-
-            if (projectItem is AddressItem)
-            {
-                projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
-            }
-
-            if (projectItem is FolderItem)
-            {
-                projectNode.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
-            }
-
-            if (projectItem is ScriptItem && (projectItem as ScriptItem).IsCompiled)
-            {
-                projectNode.EntryValuePreview = "[Compiled]";
-            }
-
+            ProjectNode projectNode = new ProjectNode();
             projectNode.EntryIcon = image;
-            projectNode.IsChecked = projectItem.IsActivated;
+            this.UpdateProjectNode(projectNode, projectItem);
 
             if (parent != null && this.nodeCache.ContainsKey(parent))
             {
@@ -379,30 +360,7 @@
                 return;
             }
 
-            if (projectNode != null)
-            {
-                projectNode.IsChecked = projectItem.IsActivated;
-                String hotkeyString = projectItem.HotKey?.ToString();
-                projectNode.EntryDescription = projectItem.Description;
-                projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
-                projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
-                projectNode.IsChecked = projectItem.IsActivated;
-
-                if (projectItem is AddressItem)
-                {
-                    projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
-                }
-
-                if (projectItem is FolderItem)
-                {
-                    projectNode.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
-                }
-
-                if (projectItem is ScriptItem && (projectItem as ScriptItem).IsCompiled)
-                {
-                    projectNode.EntryValuePreview = "[Compiled]";
-                }
-            }
+            this.UpdateProjectNode(projectNode, projectItem);
 
             if (projectItem is FolderItem)
             {
@@ -412,6 +370,38 @@
                 {
                     this.UpdateNodes(child);
                 }
+            }
+        }
+
+        private void UpdateProjectNode(ProjectNode projectNode, ProjectItem projectItem)
+        {
+            if (projectNode == null || projectItem == null)
+            {
+                return;
+            }
+
+            projectNode.ProjectItem = projectItem;
+            projectNode.IsChecked = projectItem.IsActivated;
+            String hotkeyString = projectItem.HotKey?.ToString();
+            projectNode.EntryDescription = projectItem.Description;
+            projectNode.EntryStreamCommand = String.IsNullOrEmpty(projectItem.StreamCommand) ? String.Empty : "[" + projectItem.StreamCommand + "]";
+            projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
+            projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
+            projectNode.IsChecked = projectItem.IsActivated;
+
+            if (projectItem is AddressItem)
+            {
+                projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+            }
+
+            if (projectItem is FolderItem)
+            {
+                projectNode.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
+            }
+
+            if (projectItem is ScriptItem && (projectItem as ScriptItem).IsCompiled)
+            {
+                projectNode.EntryValuePreview = "[Compiled]";
             }
         }
 
@@ -778,34 +768,45 @@
             entryCheckBox.LeftMargin = 0;
             entryCheckBox.ParentColumn = null;
             entryCheckBox.IsEditEnabledValueNeeded += this.CheckIndex;
-            entryCheckBox.IsVisibleValueNeeded += EntryCheckBox_IsVisibleValueNeeded;
+            entryCheckBox.IsVisibleValueNeeded += this.EntryCheckBoxIsVisibleValueNeeded;
 
             NodeIcon entryIcon = new NodeIcon();
             entryIcon.DataPropertyName = "EntryIcon";
-            entryIcon.LeftMargin = 1;
+            entryIcon.LeftMargin = 0;
             entryIcon.ParentColumn = null;
             entryIcon.ScaleMode = ImageScaleMode.Clip;
 
             NodeTextBox entryDescription = new NodeTextBox();
             entryDescription.DataPropertyName = "EntryDescription";
             entryDescription.IncrementalSearchEnabled = true;
-            entryDescription.LeftMargin = 3;
+            entryDescription.LeftMargin = 0;
             entryDescription.ParentColumn = null;
             entryDescription.DrawText += this.EntryDescriptionDrawText;
+            entryDescription.IsVisibleValueNeeded += EntryDescriptionIsVisibleValueNeeded;
+
+            NodeTextBox entryStreamCommand = new NodeTextBox();
+            entryStreamCommand.DataPropertyName = "EntryStreamCommand";
+            entryStreamCommand.IncrementalSearchEnabled = true;
+            entryStreamCommand.LeftMargin = 0;
+            entryStreamCommand.ParentColumn = null;
+            entryStreamCommand.DrawText += this.EntryStreamCommandDrawText;
+            entryStreamCommand.IsVisibleValueNeeded += this.EntryStreamCommandIsVisibleValueNeeded;
 
             NodeTextBox entryHotkey = new NodeTextBox();
             entryHotkey.DataPropertyName = "EntryHotkey";
             entryHotkey.IncrementalSearchEnabled = true;
-            entryHotkey.LeftMargin = 3;
+            entryHotkey.LeftMargin = 0;
             entryHotkey.ParentColumn = null;
             entryHotkey.DrawText += this.EntryHotkeyDrawText;
+            entryHotkey.IsVisibleValueNeeded += this.EntryHotkeyIsVisibleValueNeeded;
 
             NodeTextBox entryValuePreview = new NodeTextBox();
             entryValuePreview.DataPropertyName = "EntryValuePreview";
             entryValuePreview.IncrementalSearchEnabled = true;
-            entryValuePreview.LeftMargin = 3;
+            entryValuePreview.LeftMargin = 0;
             entryValuePreview.ParentColumn = null;
             entryValuePreview.DrawText += this.EntryValuePreviewDrawText;
+            entryValuePreview.IsVisibleValueNeeded += this.EntryValuePreviewIsVisibleValueNeeded;
 
             this.projectItemToolTip = new ToolTip();
             this.toggleSelectionMenuItem = new ToolStripMenuItem("Toggle");
@@ -855,6 +856,7 @@
             this.projectExplorerTreeView.NodeControls.Add(entryCheckBox);
             this.projectExplorerTreeView.NodeControls.Add(entryIcon);
             this.projectExplorerTreeView.NodeControls.Add(entryDescription);
+            this.projectExplorerTreeView.NodeControls.Add(entryStreamCommand);
             this.projectExplorerTreeView.NodeControls.Add(entryHotkey);
             this.projectExplorerTreeView.NodeControls.Add(entryValuePreview);
             this.projectExplorerTreeView.SelectionMode = TreeSelectionMode.Multi;
@@ -879,7 +881,102 @@
             this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
         }
 
-        private void EntryCheckBox_IsVisibleValueNeeded(Object sender, NodeControlValueEventArgs e)
+        private void EntryValuePreviewIsVisibleValueNeeded(Object sender, NodeControlValueEventArgs e)
+        {
+            ProjectItem projectItem = GetProjectItemFromNode(e.Node);
+
+            if (projectItem == null)
+            {
+                return;
+            }
+
+            String previewText = String.Empty;
+
+            if (projectItem is AddressItem)
+            {
+                if (String.IsNullOrWhiteSpace((projectItem as AddressItem).Value?.ToString()))
+                {
+                    e.Value = false;
+                    return;
+                }
+            }
+
+            if (projectItem is FolderItem)
+            {
+                if (String.IsNullOrWhiteSpace((projectItem as FolderItem).Children?.Count.ToString()))
+                {
+                    e.Value = false;
+                    return;
+                }
+            }
+
+            if (projectItem is ScriptItem && !(projectItem as ScriptItem).IsCompiled)
+            {
+                e.Value = false;
+                return;
+            }
+
+            e.Value = true;
+        }
+
+        private void EntryHotkeyIsVisibleValueNeeded(Object sender, NodeControlValueEventArgs e)
+        {
+            ProjectItem projectItem = GetProjectItemFromNode(e.Node);
+
+            if (projectItem == null)
+            {
+                return;
+            }
+
+            if (String.IsNullOrWhiteSpace(projectItem.HotKey?.ToString()))
+            {
+                e.Value = false;
+            }
+            else
+            {
+                e.Value = true;
+            }
+        }
+
+        private void EntryStreamCommandIsVisibleValueNeeded(Object sender, NodeControlValueEventArgs e)
+        {
+            ProjectItem projectItem = GetProjectItemFromNode(e.Node);
+
+            if (projectItem == null)
+            {
+                return;
+            }
+
+            if (String.IsNullOrWhiteSpace(projectItem.StreamCommand))
+            {
+                e.Value = false;
+            }
+            else
+            {
+                e.Value = true;
+            }
+        }
+
+        private void EntryDescriptionIsVisibleValueNeeded(Object sender, NodeControlValueEventArgs e)
+        {
+            ProjectItem projectItem = GetProjectItemFromNode(e.Node);
+
+            if (projectItem == null)
+            {
+                return;
+            }
+
+            if (String.IsNullOrWhiteSpace(projectItem.Description))
+            {
+                e.Value = false;
+            }
+            else
+            {
+                e.Value = true;
+            }
+        }
+
+        private void EntryCheckBoxIsVisibleValueNeeded(Object sender, NodeControlValueEventArgs e)
         {
             ProjectItem projectItem = GetProjectItemFromNode(e.Node);
 
@@ -979,13 +1076,23 @@
         }
 
         /// <summary>
-        /// Event when drawing the value preview text. Sets the draw color.
+        /// Event when drawing the stream command preview text. Sets the draw color.
+        /// </summary>
+        /// <param name="sender">Sending object.</param>
+        /// <param name="e">Event args.</param>
+        private void EntryStreamCommandDrawText(Object sender, DrawEventArgs e)
+        {
+            e.TextColor = DarkBrushes.BaseColor16;
+        }
+
+        /// <summary>
+        /// Event when drawing the hotkey preview text. Sets the draw color.
         /// </summary>
         /// <param name="sender">Sending object.</param>
         /// <param name="e">Event args.</param>
         private void EntryHotkeyDrawText(Object sender, DrawEventArgs e)
         {
-            e.TextColor = DarkBrushes.BaseColor11;
+            e.TextColor = DarkBrushes.BaseColor15;
         }
 
         /// <summary>

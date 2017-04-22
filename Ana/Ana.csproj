@@ -703,6 +703,8 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ChangeLog.cs</LastGenOutput>
     </Content>
+    <Resource Include="Content\Icons\Connected.png" />
+    <Resource Include="Content\Icons\Disconnected.png" />
     <Resource Include="Content\Icons\Connect.png" />
     <Content Include="Content\Icons\MainIcon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

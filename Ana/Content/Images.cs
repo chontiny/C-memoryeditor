@@ -34,9 +34,14 @@
         public static readonly BitmapImage Cancel = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/Cancel.png");
 
         /// <summary>
-        /// Image for cancel operations.
+        /// Image for a connection.
         /// </summary>
         public static readonly BitmapImage Connect = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/Connect.png");
+
+        /// <summary>
+        /// Image for an active connection.
+        /// </summary>
+        public static readonly BitmapImage Connected = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/Connected.png");
 
         /// <summary>
         /// Image for a changed scan.
@@ -52,6 +57,11 @@
         /// Image for a decreased scan.
         /// </summary>
         public static readonly BitmapImage Decreased = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/Decreased.png");
+
+        /// <summary>
+        /// Image for an inactive connection.
+        /// </summary>
+        public static readonly BitmapImage Disconnected = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/Disconnected.png");
 
         /// <summary>
         /// Image of two down arrows.

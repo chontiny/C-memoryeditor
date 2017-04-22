@@ -53,6 +53,12 @@
         private Hotkey hotkey;
 
         /// <summary>
+        /// The stream command associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        private String streamCommand;
+
+        /// <summary>
         /// A value indicating whether this project item has been activated.
         /// </summary>
         [Browsable(false)]
@@ -205,6 +211,31 @@
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.HotKey));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the stream command for this project item.
+        /// </summary>
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Stream Command"), Description("The stream command for this item")]
+        public String StreamCommand
+        {
+            get
+            {
+                return this.streamCommand;
+            }
+
+            set
+            {
+                if (this.streamCommand == value)
+                {
+                    return;
+                }
+
+                this.streamCommand = value;
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.StreamCommand));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
