@@ -227,8 +227,17 @@
                     return;
                 }
 
-                Boolean previousValue = this.isActivated;
+                // If this project item is in a unique group, disable all siblings
+                if (this.Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup)
+                {
+                    foreach (ProjectItem projectItem in this.Parent.Children)
+                    {
+                        projectItem.IsActivated = false;
+                    }
+                }
 
+                // Change activation state
+                Boolean previousValue = this.isActivated;
                 this.isActivated = value;
                 this.OnActivationChanged();
 
