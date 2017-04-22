@@ -220,7 +220,7 @@
                     <shell:MenuItem
                         Command="{Binding MainViewModel.ResetLayoutStandardCommand}"
                         CommandParameter="{Binding ., ElementName=dockManager}"
-                        Header="Standard Layout"
+                        Header="Simple Layout"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
                         Command="{Binding MainViewModel.ResetLayoutDeveloperCommand}"
@@ -281,9 +281,9 @@
                         IsChecked="{Binding HotkeyManagerViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
-                        Header="Signature Collector"
+                        Header="Stream Weaver"
                         IsCheckable="True"
-                        IsChecked="{Binding SignatureCollectorViewModel.IsVisible, Mode=TwoWay}"
+                        IsChecked="{Binding StreamWeaverViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
 
@@ -474,6 +474,12 @@
                             <view:CheatBrowser />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.CheatBrowserViewTemplate>
+                    <!--  Stream Weaver  -->
+                    <view:ViewTemplateSelector.StreamWeaverViewTemplate>
+                        <shell:DataTemplate>
+                            <view:StreamWeaver />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.StreamWeaverViewTemplate>
                     <!--  .Net Explorer  -->
                     <view:ViewTemplateSelector.DotNetExplorerViewTemplate>
                         <shell:DataTemplate>

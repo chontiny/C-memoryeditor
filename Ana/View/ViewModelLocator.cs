@@ -22,6 +22,7 @@
     using Source.Scanners.PointerScanner;
     using Source.Scanners.ValueCollector;
     using Source.Snapshots;
+    using Source.StreamWeaver;
     using Source.UserSettings;
 
     /// <summary>
@@ -166,6 +167,17 @@
             get
             {
                 return CheatBrowserViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Stream Weaver view model.
+        /// </summary>
+        public StreamWeaverViewModel StreamWeaverViewModel
+        {
+            get
+            {
+                return StreamWeaverViewModel.GetInstance();
             }
         }
 

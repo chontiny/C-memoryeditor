@@ -17,6 +17,7 @@
     using Source.Scanners.ManualScanner;
     using Source.Scanners.PointerScanner;
     using Source.Snapshots;
+    using Source.StreamWeaver;
     using Source.UserSettings;
     using System;
     using System.Windows;
@@ -83,6 +84,11 @@
         /// Gets or sets the template for the Cheat Browser.
         /// </summary>
         public DataTemplate CheatBrowserViewTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the template for the Stream Weaver.
+        /// </summary>
+        public DataTemplate StreamWeaverViewTemplate { get; set; }
 
         /// <summary>
         /// Gets or sets the template for the .Net Explorer.
@@ -186,6 +192,10 @@
             else if (item is CheatBrowserViewModel)
             {
                 return this.CheatBrowserViewTemplate;
+            }
+            else if (item is StreamWeaverViewModel)
+            {
+                return this.StreamWeaverViewTemplate;
             }
             else if (item is DotNetExplorerViewModel)
             {

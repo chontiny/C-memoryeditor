@@ -16,6 +16,7 @@
     using System.Threading;
     using System.Windows;
     using System.Windows.Input;
+    using UserSettings;
     using Xceed.Wpf.AvalonDock;
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
@@ -175,6 +176,7 @@
                 return;
             }
 
+            SettingsViewModel.GetInstance().Save();
             window.Close();
         }
 

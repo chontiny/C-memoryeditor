@@ -29,3 +29,6 @@ Library | Description
 [FASM](https://flatassembler.net/) | Flat Assembler (C# Invocation done via MemorySharp)
 [TreeViewAdv](https://sourceforge.net/projects/treeviewadv/) | Advanced Tree View Control
 [WPFToolKit](http://wpftoolkit.codeplex.com/) | Toolkit for WPF Applications
+[TwitchLib](https://github.com/swiftyspiffy/TwitchLib) | Twitch API Wrapper
+[WebSocketSharp](https://github.com/sta/websocket-sharp) | WebSocket Protocol Implementation
+[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) | JSON Framework

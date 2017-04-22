@@ -34,6 +34,11 @@
         public static readonly BitmapImage Cancel = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/Cancel.png");
 
         /// <summary>
+        /// Image for cancel operations.
+        /// </summary>
+        public static readonly BitmapImage Connect = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/Connect.png");
+
+        /// <summary>
         /// Image for a changed scan.
         /// </summary>
         public static readonly BitmapImage Changed = ImageUtils.LoadImage("pack://application:,,,/Ana;component/Content/Icons/Changed.png");

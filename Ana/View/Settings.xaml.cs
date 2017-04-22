@@ -3,8 +3,9 @@
     using Source.Controls;
     using Source.UserSettings;
     using System;
+    using System.Diagnostics;
     using System.Windows.Controls;
-
+    using System.Windows.Navigation;
     /// <summary>
     /// Interaction logic for Settings.xaml.
     /// </summary>
@@ -16,6 +17,12 @@
         public Settings()
         {
             this.InitializeComponent();
+
+            this.twitchUsername.Text = this.SettingsViewModel.TwitchUsername;
+            this.twitchUsername.TextChanged += TwitchUserNameTextChanged;
+
+            this.twitchAccessToken.Text = this.SettingsViewModel.TwitchAccessToken;
+            this.twitchAccessToken.TextChanged += TwitchAccessTokenTextChanged;
 
             // Windows Forms hosting -- TODO: Phase this out
             this.AlignmentHexDecBox = new HexDecTextBox(typeof(Int32));
@@ -247,6 +254,21 @@
             }
 
             this.SettingsViewModel.InputCorrelatorTimeOutInterval = (Int32)value;
+        }
+
+        private void TwitchUserNameTextChanged(Object sender, TextChangedEventArgs e)
+        {
+            this.SettingsViewModel.TwitchUsername = this.twitchUsername.Text;
+        }
+
+        private void TwitchAccessTokenTextChanged(Object sender, TextChangedEventArgs e)
+        {
+            this.SettingsViewModel.TwitchAccessToken = this.twitchAccessToken.Text;
+        }
+
+        private void HyperlinkRequestNavigate(Object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(e.Uri.AbsoluteUri);
         }
     }
     //// End class

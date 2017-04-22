@@ -413,6 +413,38 @@
         }
 
         /// <summary>
+        /// Gets or sets the Twitch API Username.
+        /// </summary>
+        public String TwitchUsername
+        {
+            get
+            {
+                return Settings.Default.TwitchUsername;
+            }
+
+            set
+            {
+                Settings.Default.TwitchUsername = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the Twitch API Access Token.
+        /// </summary>
+        public String TwitchAccessToken
+        {
+            get
+            {
+                return Settings.Default.TwitchAccessToken;
+            }
+
+            set
+            {
+                Settings.Default.TwitchAccessToken = value.Replace("oauth:", String.Empty);
+            }
+        }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -502,6 +534,14 @@
             }
 
             return result;
+        }
+
+        /// <summary>
+        /// Saves the current settings.
+        /// </summary>
+        public void Save()
+        {
+            Settings.Default.Save();
         }
     }
     //// End class

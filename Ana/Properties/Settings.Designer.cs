@@ -250,5 +250,29 @@ namespace Ana.Properties {
                 this["IsUserMode"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwitchUsername {
+            get {
+                return ((string)(this["TwitchUsername"]));
+            }
+            set {
+                this["TwitchUsername"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwitchAccessToken {
+            get {
+                return ((string)(this["TwitchAccessToken"]));
+            }
+            set {
+                this["TwitchAccessToken"] = value;
+            }
+        }
     }
 }

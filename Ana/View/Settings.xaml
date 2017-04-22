@@ -41,6 +41,57 @@
         </TabControl.Resources>
         <TabItem Background="Transparent" Header="General">
             <Grid>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="2">
+                    <GroupBox
+                        Padding="4"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Header="Twitch">
+                        <StackPanel>
+                            <TextBlock>Username:</TextBlock>
+                            <TextBox
+                                Name="twitchUsername"
+                                Width="196"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                BorderBrush="White"
+                                BorderThickness="1"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                            <TextBlock>Access Token:</TextBlock>
+                            <TextBox
+                                Name="twitchAccessToken"
+                                Width="196"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                BorderBrush="White"
+                                BorderThickness="1"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                            <TextBlock FontSize="12">
+                                <Hyperlink NavigateUri="https://twitchapps.com/tmi/" RequestNavigate="HyperlinkRequestNavigate">
+                                    Obtain Access Token Here
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Background="Transparent" Header="Memory">
+            <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
