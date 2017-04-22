@@ -39,12 +39,14 @@
         /// <typeparam name="T">The type of the enumeration.</typeparam>
         /// <param name="enumeration">The enumeration to iterate through.</param>
         /// <param name="action">The action to perform for each item.</param>
-        public static void ForEach<T>(this IEnumerable<T> enumeration, Action<T> action)
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> enumeration, Action<T> action)
         {
             foreach (T item in enumeration)
             {
                 action(item);
             }
+
+            return enumeration;
         }
 
         /// <summary>

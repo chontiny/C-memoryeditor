@@ -663,7 +663,7 @@
                 using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Create, FileAccess.Write))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
-                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Where(x => x.HotKey != null).Select(x => new ProjectItemHotkey(x.HotKey, x.Guid)).ToArray();
+                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Select(x => new ProjectItemHotkey(x.HotKey, x.StreamCommand, x.Guid)).ToArray();
                     serializer.WriteObject(fileStream, hotkeys);
                 }
             }
@@ -766,16 +766,14 @@
                 return;
             }
 
-            IEnumerable<KeyValuePair<ProjectItemHotkey, ProjectItem>> bindings = projectItemHotkeys.Join(
-                projectItems,
-                hotkey => hotkey.ProjectItemGuid,
-                item => item.Guid,
-                (hotkey, item) => new KeyValuePair<ProjectItemHotkey, ProjectItem>(hotkey, item));
-
-            foreach (KeyValuePair<ProjectItemHotkey, ProjectItem> binding in bindings)
-            {
-                binding.Value.LoadHotkey(binding.Key.Hotkey);
-            }
+            projectItemHotkeys
+                .Join(
+                    projectItems,
+                    binding => binding.ProjectItemGuid,
+                    item => item.Guid,
+                    (binding, item) => new { binding = binding, item = item })
+                .ForEach(x => x.item.LoadHotkey(x.binding.Hotkey))
+                .ForEach(x => x.item.StreamCommand = x.binding.StreamCommand);
         }
 
         /// <summary>

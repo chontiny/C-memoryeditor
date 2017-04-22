@@ -23,13 +23,19 @@
         private Hotkey hotkey;
 
         /// <summary>
+        /// The stream command bound to the project item.
+        /// </summary>
+        private String streamCommand;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ProjectItemHotkey" /> class.
         /// </summary>
         /// <param name="hotkey">The initial hotkey bound to the project item.</param>
-        public ProjectItemHotkey(Hotkey hotkey, Guid projectItemGuid)
+        public ProjectItemHotkey(Hotkey hotkey, String streamCommand, Guid projectItemGuid)
         {
             this.ProjectItemGuid = projectItemGuid;
             this.Hotkey = hotkey;
+            this.StreamCommand = streamCommand;
         }
 
         /// <summary>
@@ -70,6 +76,24 @@
             {
                 this.hotkey = value;
                 this.NotifyPropertyChanged(nameof(this.Hotkey));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the stream command bound to the project item.
+        /// </summary>
+        [DataMember]
+        public String StreamCommand
+        {
+            get
+            {
+                return this.streamCommand;
+            }
+
+            set
+            {
+                this.streamCommand = value;
+                this.NotifyPropertyChanged(nameof(this.StreamCommand));
             }
         }
 

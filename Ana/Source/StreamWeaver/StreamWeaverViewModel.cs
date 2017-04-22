@@ -6,6 +6,7 @@
     using Mvvm.Command;
     using Output;
     using System;
+    using System.Collections.Concurrent;
     using System.Threading;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
@@ -42,6 +43,7 @@
         private StreamWeaverViewModel() : base("Stream Weaver")
         {
             this.ContentId = StreamWeaverViewModel.ToolContentId;
+            this.CommandVotes = new ConcurrentDictionary<String, Int64>();
 
             // Note: Cannot be async, navigation must take place on the same thread as GUI
             this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
@@ -115,6 +117,11 @@
         private TwitchClient Client { get; set; }
 
         /// <summary>
+        /// Gets or sets the current command votes.
+        /// </summary>
+        private ConcurrentDictionary<String, Int64> CommandVotes { get; set; }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="StreamWeaverViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -148,7 +155,7 @@
 
             ConnectionCredentials credentials = new ConnectionCredentials(username, accessToken);
 
-            this.Client = new TwitchClient(credentials, username);
+            this.Client = new TwitchClient(credentials, "eulcs1");
             this.Client.OnMessageReceived += this.OnMessageReceived;
             this.Client.Connect();
 
@@ -224,8 +231,7 @@
         /// <param name="command">The command given by the user.</param>
         private void ProcessCommand(Int64 userId, String command)
         {
-            // ProjectItem projectItem = ProjectExplorerViewModel.GetInstance().ProjectRoot.Children[0];
-            //  projectItem.IsActivated = !projectItem.IsActivated;
+            this.CommandVotes.AddOrUpdate(command, 1, (key, count) => count + 1);
 
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, userId + " - " + command);
         }
