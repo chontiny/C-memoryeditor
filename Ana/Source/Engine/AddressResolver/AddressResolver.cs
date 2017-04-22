@@ -5,6 +5,7 @@
     using OperatingSystems;
     using System;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using System.Threading;
     using Utils.Extensions;
@@ -47,21 +48,25 @@
             /// <summary>
             /// A standard module in a native program.
             /// </summary>
+            [Description("Module")]
             Module,
 
             /// <summary>
             /// A global keyword created by a script.
             /// </summary>
+            [Description("Global Keyword")]
             GlobalKeyword,
 
             /// <summary>
             /// A .Net object.
             /// </summary>
+            [Description(".NET Object")]
             DotNet,
 
             /// <summary>
             /// A Java object.
             /// </summary>
+            //// [Description("Java Object")]
             //// Java
         }
 

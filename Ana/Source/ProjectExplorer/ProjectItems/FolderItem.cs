@@ -1,10 +1,11 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Controls;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Runtime.Serialization;
-
+    using Utils.TypeConverters;
     /// <summary>
     /// Defines a folder that can be added to the project explorer, which can contain other project items.
     /// </summary>
@@ -16,6 +17,12 @@
         /// </summary>
         [Browsable(false)]
         private List<ProjectItem> children;
+
+        /// <summary>
+        /// The type of this folder.
+        /// </summary>
+        [Browsable(false)]
+        private FolderTypeEnum folderType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FolderItem" /> class.
@@ -32,6 +39,43 @@
         {
             this.children = new List<ProjectItem>();
             this.ChildrenLock = new Object();
+        }
+
+        /// <summary>
+        /// Defines the activation behavior of a folder.
+        /// </summary>
+        public enum FolderTypeEnum
+        {
+            [Description("Normal")]
+            Normal,
+
+            [Description("Group")]
+            Group,
+
+            [Description("Unique Group")]
+            UniqueGroup,
+        }
+
+        /// <summary>
+        /// Gets or sets the identifier type for this address item.
+        /// </summary>
+        [DataMember]
+        [RefreshProperties(RefreshProperties.All)]
+        [TypeConverter(typeof(EnumDescriptionConverter))]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Folder Type"), Description("Defines the behavior for activating this folder and the items contained by this folder.")]
+        public FolderTypeEnum FolderType
+        {
+            get
+            {
+                return this.folderType;
+            }
+
+            set
+            {
+                this.folderType = value;
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.FolderType));
+            }
         }
 
         /// <summary>
@@ -325,7 +369,15 @@
         /// <returns>Always false for folders.</returns>
         protected override Boolean IsActivatable()
         {
-            return false;
+            switch (this.FolderType)
+            {
+                case FolderTypeEnum.Group:
+                case FolderTypeEnum.UniqueGroup:
+                    return true;
+                case FolderTypeEnum.Normal:
+                default:
+                    return false;
+            }
         }
 
         /// <summary>

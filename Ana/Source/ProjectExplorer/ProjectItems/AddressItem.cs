@@ -121,6 +121,7 @@
         /// </summary>
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
+        [TypeConverter(typeof(EnumDescriptionConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Resolve Type"), Description("Method to use for resolving the address base. If there is an identifier to resolve, the address is treated as an offset.")]
         public AddressResolver.ResolveTypeEnum ResolveType
         {

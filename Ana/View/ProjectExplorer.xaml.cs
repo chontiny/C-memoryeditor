@@ -571,6 +571,11 @@
                 return;
             }
 
+            if (!projectItem.CanActivate)
+            {
+                return;
+            }
+
             projectItem.IsActivated = activated;
 
             ProjectNode node;
@@ -581,10 +586,21 @@
 
             if (projectItem is FolderItem)
             {
-                foreach (ProjectItem child in (projectItem as FolderItem).Children.ToArray())
+                FolderItem folderitem = projectItem as FolderItem;
+
+                switch (folderitem.FolderType)
                 {
-                    this.CheckItem(child, activated);
+                    case FolderItem.FolderTypeEnum.Group:
+                        foreach (ProjectItem child in folderitem.Children.ToArray())
+                        {
+                            this.CheckItem(child, activated);
+                        }
+                        break;
+                    case FolderItem.FolderTypeEnum.Normal:
+                    case FolderItem.FolderTypeEnum.UniqueGroup:
+                        break;
                 }
+
             }
         }
 
@@ -762,6 +778,7 @@
             entryCheckBox.LeftMargin = 0;
             entryCheckBox.ParentColumn = null;
             entryCheckBox.IsEditEnabledValueNeeded += this.CheckIndex;
+            entryCheckBox.IsVisibleValueNeeded += EntryCheckBox_IsVisibleValueNeeded;
 
             NodeIcon entryIcon = new NodeIcon();
             entryIcon.DataPropertyName = "EntryIcon";
@@ -860,6 +877,18 @@
             this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;
             this.projectExplorerTreeView.DragDropMarkColor = DarkBrushes.BaseColor11;
             this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
+        }
+
+        private void EntryCheckBox_IsVisibleValueNeeded(Object sender, NodeControlValueEventArgs e)
+        {
+            ProjectItem projectItem = GetProjectItemFromNode(e.Node);
+
+            if (projectItem == null)
+            {
+                return;
+            }
+
+            e.Value = projectItem.CanActivate;
         }
 
         private void ProjectExplorerTreeViewRowDraw(Object sender, TreeViewRowDrawEventArgs e)
