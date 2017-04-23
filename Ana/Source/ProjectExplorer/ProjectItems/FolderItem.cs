@@ -130,6 +130,7 @@
         public override ProjectItem Clone()
         {
             FolderItem clone = new FolderItem();
+            clone.Category = this.Category;
             clone.Description = this.Description;
             clone.Parent = this.Parent;
             clone.children = new List<ProjectItem>();

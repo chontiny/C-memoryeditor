@@ -22,7 +22,7 @@
     using TwitchLib.Events.Client;
     using TwitchLib.Models.Client;
     using UserSettings;
-
+    using Utils.Extensions;
     /// <summary>
     /// View model for the Stream Weaver.
     /// </summary>
@@ -66,9 +66,15 @@
             StreamWeaverTask streamWeaverTask = new StreamWeaverTask(this.OnUpdate);
 
             this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
+            this.ClearVotesCommand = new RelayCommand(() => this.ClearVotes(), () => true);
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
+
+        /// <summary>
+        /// Gets the command to clear votes.
+        /// </summary>
+        public ICommand ClearVotesCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to connect to Twitch.
@@ -243,6 +249,11 @@
         private ConcurrentDictionary<String, Int64> CommandVotes { get; set; }
 
         /// <summary>
+        /// Gets or sets the last vote total.
+        /// </summary>
+        private Int64 LastVoteTotal { get; set; }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="StreamWeaverViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -256,11 +267,6 @@
         /// </summary>
         private void OnUpdate()
         {
-            if (!this.IsConnected)
-            {
-                return;
-            }
-
             // Collect project items
             IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
                 .Select(item => item)
@@ -275,6 +281,53 @@
                      item => item.StreamCommand,
                      (votes, item) => new { command = votes, item = item })
                 .OrderBy(x => x.item.Category);
+
+            Int64 totalVotes = itemVotes.Sum(tally => tally.command.Value);
+
+            if (totalVotes == this.LastVoteTotal)
+            {
+                return;
+            }
+
+            this.LastVoteTotal = totalVotes;
+
+            // Activate top votes
+            foreach (ProjectItem.ProjectItemCategory category in Enum.GetValues(typeof(ProjectItem.ProjectItemCategory)))
+            {
+                Int32 numberToActivate = 0;
+
+                switch (category)
+                {
+                    case ProjectItem.ProjectItemCategory.Glitch:
+                        numberToActivate = this.NumberOfGlitches;
+                        break;
+                    case ProjectItem.ProjectItemCategory.Curse:
+                        numberToActivate = this.NumberOfCurses;
+                        break;
+                    case ProjectItem.ProjectItemCategory.Buff:
+                        numberToActivate = this.NumberOfBuffs;
+                        break;
+                    case ProjectItem.ProjectItemCategory.Utility:
+                        numberToActivate = this.NumberOfUtilities;
+                        break;
+                }
+
+                IEnumerable<ProjectItem> candidateItems = itemVotes
+                    .Select(tally => tally)
+                    .OrderByDescending(tally => tally.command.Value)
+                    .Where(tally => tally.item.Category == category)
+                    .Select(tally => tally.item);
+
+                // Handle deactivations
+                candidateItems
+                    .Skip(numberToActivate)
+                    .ForEach(item => item.IsActivated = false);
+
+                // Handle activations
+                candidateItems
+                    .Take(numberToActivate)
+                    .ForEach(item => item.IsActivated = true);
+            }
 
             // Collect labels
             this.ChartLabels = itemVotes.Select(x => x.command.Key).ToArray();
@@ -442,6 +495,14 @@
             {
                 this.Connect();
             }
+        }
+
+        /// <summary>
+        /// Clears the current votes.
+        /// </summary>
+        private void ClearVotes()
+        {
+            this.CommandVotes.Clear();
         }
 
         /// <summary>

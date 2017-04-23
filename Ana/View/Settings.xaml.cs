@@ -4,6 +4,7 @@
     using Source.UserSettings;
     using System;
     using System.Diagnostics;
+    using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Navigation;
     /// <summary>
@@ -21,8 +22,8 @@
             this.twitchUsername.Text = this.SettingsViewModel.TwitchUsername;
             this.twitchUsername.TextChanged += TwitchUserNameTextChanged;
 
-            this.twitchAccessToken.Text = this.SettingsViewModel.TwitchAccessToken;
-            this.twitchAccessToken.TextChanged += TwitchAccessTokenTextChanged;
+            this.twitchAccessToken.Password = this.SettingsViewModel.TwitchAccessToken;
+            this.twitchAccessToken.PasswordChanged += TwitchAccessToken_PasswordChanged;
 
             // Windows Forms hosting -- TODO: Phase this out
             this.AlignmentHexDecBox = new HexDecTextBox(typeof(Int32));
@@ -261,9 +262,9 @@
             this.SettingsViewModel.TwitchUsername = this.twitchUsername.Text;
         }
 
-        private void TwitchAccessTokenTextChanged(Object sender, TextChangedEventArgs e)
+        private void TwitchAccessToken_PasswordChanged(Object sender, RoutedEventArgs e)
         {
-            this.SettingsViewModel.TwitchAccessToken = this.twitchAccessToken.Text;
+            this.SettingsViewModel.TwitchAccessToken = this.twitchAccessToken.Password;
         }
 
         private void HyperlinkRequestNavigate(Object sender, RequestNavigateEventArgs e)

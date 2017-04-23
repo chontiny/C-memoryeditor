@@ -320,6 +320,7 @@
         public override ProjectItem Clone()
         {
             AddressItem clone = new AddressItem();
+            clone.Category = this.Category;
             clone.Description = this.Description;
             clone.Parent = this.Parent;
             clone.resolveType = this.resolveType;

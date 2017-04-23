@@ -70,7 +70,7 @@
                                 BorderThickness="1"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
                             <TextBlock>Access Token:</TextBlock>
-                            <TextBox
+                            <PasswordBox
                                 Name="twitchAccessToken"
                                 Width="196"
                                 Height="18"

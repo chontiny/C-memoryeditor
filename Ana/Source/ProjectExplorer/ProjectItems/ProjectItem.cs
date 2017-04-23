@@ -88,6 +88,7 @@
             this.parent = null;
             this.isActivated = false;
             this.guid = Guid.NewGuid();
+            this.ActivationLock = new Object();
         }
 
         /// <summary>
@@ -317,33 +318,36 @@
 
             set
             {
-                if (this.isActivated == value || !this.CanActivate)
+                lock (this.ActivationLock)
                 {
-                    return;
-                }
-
-                // If this project item is in a unique group, disable all siblings
-                if (value == true && this.Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup)
-                {
-                    foreach (ProjectItem projectItem in this.Parent.Children)
+                    if (this.isActivated == value || !this.CanActivate)
                     {
-                        projectItem.IsActivated = false;
+                        return;
                     }
+
+                    // If this project item is in a unique group, disable all siblings
+                    if (value == true && this.Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup)
+                    {
+                        foreach (ProjectItem projectItem in this.Parent.Children)
+                        {
+                            projectItem.IsActivated = false;
+                        }
+                    }
+
+                    // Change activation state
+                    Boolean previousValue = this.isActivated;
+                    this.isActivated = value;
+                    this.OnActivationChanged();
+
+                    // Activation failed
+                    if (this.isActivated == previousValue)
+                    {
+                        return;
+                    }
+
+                    this.NotifyPropertyChanged(nameof(this.IsActivated));
+                    ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
                 }
-
-                // Change activation state
-                Boolean previousValue = this.isActivated;
-                this.isActivated = value;
-                this.OnActivationChanged();
-
-                // Activation failed
-                if (this.isActivated == previousValue)
-                {
-                    return;
-                }
-
-                this.NotifyPropertyChanged(nameof(this.IsActivated));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -360,6 +364,11 @@
         }
 
         /// <summary>
+        /// Controls access to activating project items.
+        /// </summary>
+        private Object ActivationLock { get; set; }
+
+        /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
         /// <param name="streamingContext">Streaming context.</param>
@@ -370,6 +379,8 @@
             {
                 this.guid = Guid.NewGuid();
             }
+
+            this.ActivationLock = new Object();
         }
 
         /// <summary>
@@ -467,8 +478,11 @@
         /// </summary>
         protected void ResetActivation()
         {
-            this.isActivated = false;
-            this.NotifyPropertyChanged(nameof(this.IsActivated));
+            lock (this.ActivationLock)
+            {
+                this.isActivated = false;
+                this.NotifyPropertyChanged(nameof(this.IsActivated));
+            }
         }
 
         /// <summary>

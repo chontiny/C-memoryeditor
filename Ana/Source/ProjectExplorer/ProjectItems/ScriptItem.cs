@@ -77,7 +77,7 @@
         [DataMember]
         [ReadOnly(true)]
         [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Compiled"), Description("Whether or not this script has been compiled.")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Compiled"), Description("Whether or not this script has been compiled.")]
         public Boolean IsCompiled
         {
             get
@@ -105,6 +105,7 @@
         public override ProjectItem Clone()
         {
             ScriptItem clone = new ScriptItem();
+            clone.Category = this.Category;
             clone.Description = this.Description;
             clone.ExtendedDescription = this.ExtendedDescription;
             clone.Parent = this.Parent;
