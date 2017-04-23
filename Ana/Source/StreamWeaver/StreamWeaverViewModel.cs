@@ -451,7 +451,7 @@
         /// <param name="command">The command given by the user.</param>
         private void ProcessCommand(Int64 userId, String command)
         {
-            command = DebugMap(command);
+            command = this.DebugMap(command);
 
             this.CommandVotes.AddOrUpdate(command, 1, (key, count) => count + 1);
 
