@@ -296,26 +296,8 @@
                 return;
             }
 
-            Bitmap image = null;
-
-            if (projectItem is AddressItem)
-            {
-                image = ImageUtils.BitmapImageToBitmap(Images.CollectValues);
-            }
-            else if (projectItem is ScriptItem)
-            {
-                image = ImageUtils.BitmapImageToBitmap(Images.CollectValues);
-            }
-            else if (projectItem is FolderItem)
-            {
-                image = ImageUtils.BitmapImageToBitmap(Images.Open);
-            }
-
-            image?.MakeTransparent();
-
             // Create new node to insert
             ProjectNode projectNode = new ProjectNode();
-            projectNode.EntryIcon = image;
             this.UpdateProjectNode(projectNode, projectItem);
 
             if (parent != null && this.nodeCache.ContainsKey(parent))
@@ -388,6 +370,38 @@
             projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
             projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
             projectNode.IsChecked = projectItem.IsActivated;
+
+            Bitmap image = null;
+
+            if (projectItem is AddressItem || projectItem is ScriptItem)
+            {
+                switch (projectItem.Category)
+                {
+                    case ProjectItem.ProjectItemCategory.Glitch:
+                        image = ImageUtils.BitmapImageToBitmap(Images.Glitch);
+                        break;
+                    case ProjectItem.ProjectItemCategory.Curse:
+                        image = ImageUtils.BitmapImageToBitmap(Images.Curse);
+                        break;
+                    case ProjectItem.ProjectItemCategory.Buff:
+                        image = ImageUtils.BitmapImageToBitmap(Images.Heart);
+                        break;
+                    case ProjectItem.ProjectItemCategory.Utility:
+                        image = ImageUtils.BitmapImageToBitmap(Images.Cog);
+                        break;
+                    case ProjectItem.ProjectItemCategory.None:
+                    default:
+                        image = ImageUtils.BitmapImageToBitmap(Images.CollectValues);
+                        break;
+                }
+            }
+
+            if (projectItem is FolderItem)
+            {
+                image = ImageUtils.BitmapImageToBitmap(Images.Open);
+            }
+
+            projectNode.EntryIcon = image;
 
             if (projectItem is AddressItem)
             {

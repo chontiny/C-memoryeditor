@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Utils
 {
+    using DataStructures;
     using System;
     using System.Drawing;
     using System.IO;
@@ -10,6 +11,11 @@
     /// </summary>
     internal static class ImageUtils
     {
+        /// <summary>
+        /// Cached bitmap mappings stored by this utility.
+        /// </summary>
+        private static TTLCache<String, Bitmap> bitmapCache = new TTLCache<String, Bitmap>();
+
         /// <summary>
         /// Loads an image from the given uri.
         /// </summary>
@@ -34,12 +40,26 @@
         /// <returns>The resulting bitmap.</returns>
         public static Bitmap BitmapImageToBitmap(BitmapImage bitmapImage)
         {
+            String uri = bitmapImage?.UriSource?.AbsoluteUri;
+
+            if (ImageUtils.bitmapCache.Contains(uri))
+            {
+                Bitmap result;
+
+                if (ImageUtils.bitmapCache.TryGetValue(uri, out result))
+                {
+                    return result;
+                }
+            }
+
             using (MemoryStream outStream = new MemoryStream())
             {
                 BitmapEncoder enc = new BmpBitmapEncoder();
                 enc.Frames.Add(BitmapFrame.Create(bitmapImage));
                 enc.Save(outStream);
                 Bitmap bitmap = new Bitmap(outStream);
+                bitmap?.MakeTransparent();
+                ImageUtils.bitmapCache.Add(uri, bitmap);
 
                 return new Bitmap(bitmap);
             }

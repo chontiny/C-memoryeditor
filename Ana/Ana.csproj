@@ -707,6 +707,10 @@
     <Resource Include="Content\Icons\Connected.png" />
     <Resource Include="Content\Icons\Disconnected.png" />
     <Resource Include="Content\Icons\Connect.png" />
+    <Resource Include="Content\Icons\Curse.png" />
+    <Resource Include="Content\Icons\Heart.png" />
+    <Resource Include="Content\Icons\Cog.png" />
+    <Resource Include="Content\Icons\Glitch.png" />
     <Content Include="Content\Icons\MainIcon.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

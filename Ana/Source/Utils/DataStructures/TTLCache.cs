@@ -94,6 +94,28 @@
             this.cache = new ConcurrentDictionary<K, Tuple<V, DateTime>>();
         }
 
+        public new Boolean Contains(K key)
+        {
+            if (this.cache.ContainsKey(key))
+            {
+                Tuple<V, DateTime> result;
+
+                if (this.cache.TryGetValue(key, out result))
+                {
+                    if (DateTime.Now <= result.Item2 || result.Item2 == DateTime.MaxValue)
+                    {
+                        // Cache contains valid unexpired entry
+                        return true;
+                    }
+
+                    // Cache expired
+                    this.cache.TryRemove(key, out result);
+                }
+            }
+
+            return false;
+        }
+
         public void Add(K key, V value)
         {
             if (this.RandomTimeToLiveOffset != null)
