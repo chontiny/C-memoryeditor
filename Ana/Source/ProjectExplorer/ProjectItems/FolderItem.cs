@@ -62,7 +62,7 @@
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(EnumDescriptionConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Folder Type"), Description("Defines the behavior for activating this folder and the items contained by this folder.")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Folder Type"), Description("Defines the behavior for activating this folder and the items contained by this folder.")]
         public FolderTypeEnum FolderType
         {
             get
@@ -372,8 +372,8 @@
             switch (this.FolderType)
             {
                 case FolderTypeEnum.Group:
-                case FolderTypeEnum.UniqueGroup:
                     return true;
+                case FolderTypeEnum.UniqueGroup:
                 case FolderTypeEnum.Normal:
                 default:
                     return false;

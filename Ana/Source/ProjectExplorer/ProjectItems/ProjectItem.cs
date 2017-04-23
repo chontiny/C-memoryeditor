@@ -259,7 +259,7 @@
                 }
 
                 // If this project item is in a unique group, disable all siblings
-                if (this.Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup)
+                if (value == true && this.Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup)
                 {
                     foreach (ProjectItem projectItem in this.Parent.Children)
                     {

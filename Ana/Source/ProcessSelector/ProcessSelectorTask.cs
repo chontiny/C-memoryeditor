@@ -4,9 +4,9 @@
     using System;
 
     /// <summary>
-    /// Model for the Process Selector.
+    /// Task for the Process Selector.
     /// </summary>
-    internal class ProcessSelectorModel : ScheduledTask
+    internal class ProcessSelectorTask : ScheduledTask
     {
         /// <summary>
         /// The interval between refreshes.
@@ -14,12 +14,12 @@
         private const Int32 RefreshInterval = 5000;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ProcessSelectorModel" /> class.
+        /// Initializes a new instance of the <see cref="ProcessSelectorTask" /> class.
         /// </summary>
-        public ProcessSelectorModel(Action refreshAction) : base(taskName: "Process Selector", isRepeated: true, trackProgress: false)
+        public ProcessSelectorTask(Action refreshAction) : base(taskName: "Process Selector", isRepeated: true, trackProgress: false)
         {
             this.RefreshAction = refreshAction;
-            this.UpdateInterval = ProcessSelectorModel.RefreshInterval;
+            this.UpdateInterval = ProcessSelectorTask.RefreshInterval;
 
             this.Begin();
         }

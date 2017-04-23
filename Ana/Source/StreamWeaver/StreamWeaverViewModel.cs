@@ -2,13 +2,20 @@
 {
     using Content;
     using Docking;
+    using LiveCharts;
+    using LiveCharts.Wpf;
     using Main;
     using Mvvm.Command;
     using Output;
+    using Project;
     using System;
     using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
+    using System.Windows;
     using System.Windows.Input;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
     using TwitchLib;
     using TwitchLib.Events.Client;
@@ -38,12 +45,26 @@
         private Boolean isConnected;
 
         /// <summary>
+        /// The histogram collection object.
+        /// </summary>
+        private SeriesCollection seriesCollection;
+
+        /// <summary>
+        /// The histogram of label values which will be kept if the filter is applied.
+        /// </summary>
+        private IChartValues chartValues;
+
+        private String[] chartLabels;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="StreamWeaverViewModel" /> class from being created.
         /// </summary>
         private StreamWeaverViewModel() : base("Stream Weaver")
         {
             this.ContentId = StreamWeaverViewModel.ToolContentId;
             this.CommandVotes = new ConcurrentDictionary<String, Int64>();
+
+            StreamWeaverTask streamWeaverTask = new StreamWeaverTask(this.OnUpdate);
 
             // Note: Cannot be async, navigation must take place on the same thread as GUI
             this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
@@ -55,6 +76,57 @@
         /// Gets the command to connect to Twitch.
         /// </summary>
         public ICommand ToggleConnectionCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the histogram collection object.
+        /// </summary>
+        public SeriesCollection SeriesCollection
+        {
+            get
+            {
+                return this.seriesCollection;
+            }
+
+            set
+            {
+                this.seriesCollection = value;
+                this.RaisePropertyChanged(nameof(this.SeriesCollection));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the histogram of label values which will be kept if the filter is applied.
+        /// </summary>
+        public IChartValues ChartValues
+        {
+            get
+            {
+                return this.chartValues;
+            }
+
+            set
+            {
+                this.chartValues = value;
+                this.RaisePropertyChanged(nameof(this.ChartValues));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the histogram of label values which will be kept if the filter is applied.
+        /// </summary>
+        public String[] ChartLabels
+        {
+            get
+            {
+                return this.chartLabels;
+            }
+
+            set
+            {
+                this.chartLabels = value;
+                this.RaisePropertyChanged(nameof(this.ChartLabels));
+            }
+        }
 
         /// <summary>
         /// Gets the image indicating the current connection status.
@@ -127,7 +199,44 @@
         /// <returns>A singleton instance of the class.</returns>
         public static StreamWeaverViewModel GetInstance()
         {
-            return cheatBrowserViewModelInstance.Value;
+            return StreamWeaverViewModel.cheatBrowserViewModelInstance.Value;
+        }
+
+        /// <summary>
+        /// Event fired when the stream commands need to be update.
+        /// </summary>
+        private void OnUpdate()
+        {
+            IEnumerable<String> possibleThings = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten().Select(x => x.StreamCommand).Where(x => !String.IsNullOrWhiteSpace(x));
+
+            foreach (KeyValuePair<String, Int64> k in this.CommandVotes)
+            {
+                this.CommandVotes[k.Key] = (Int64)Math.Ceiling(k.Value * 0.75);
+            }
+
+            this.ChartValues = new ChartValues<Int64>(this.CommandVotes.Values);
+            this.ChartLabels = this.CommandVotes.Keys.ToArray();
+
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                if (this.SeriesCollection == null)
+                {
+
+                    this.SeriesCollection = new SeriesCollection()
+                    {
+                        new ColumnSeries
+                        {
+                            Values = this.ChartValues,
+                            Fill = Brushes.Blue,
+                            DataLabels = true
+                        }
+                    };
+                }
+                else
+                {
+                    this.SeriesCollection[0].Values = this.ChartValues;
+                }
+            });
         }
 
         /// <summary>
@@ -155,7 +264,7 @@
 
             ConnectionCredentials credentials = new ConnectionCredentials(username, accessToken);
 
-            this.Client = new TwitchClient(credentials, "eulcs1");
+            this.Client = new TwitchClient(credentials, "beyondthesummit");
             this.Client.OnMessageReceived += this.OnMessageReceived;
             this.Client.Connect();
 

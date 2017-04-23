@@ -183,6 +183,7 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\StreamWeaver\StreamWeaverTask.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Content\Images.cs" />
@@ -510,7 +511,7 @@
     <Compile Include="View\ProcessSelector.xaml.cs">
       <DependentUpon>ProcessSelector.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Source\ProcessSelector\ProcessSelectorModel.cs" />
+    <Compile Include="Source\ProcessSelector\ProcessSelectorTask.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>

@@ -46,7 +46,7 @@
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<NormalizedProcess>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
 
-            ProcessSelectorModel processSelectorModel = new ProcessSelectorModel(this.RefreshProcessList);
+            ProcessSelectorTask processSelectorTask = new ProcessSelectorTask(this.RefreshProcessList);
 
             // Subscribe async to avoid a deadlock situation
             Task.Run(() => { MainViewModel.GetInstance().RegisterTool(this); });

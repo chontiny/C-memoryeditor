@@ -300,6 +300,11 @@
             return true;
         }
 
+        public void ActivateStreamCommands(IEnumerable<String> streamCommands)
+        {
+
+        }
+
         /// <summary>
         /// Adds a specific address to the project explorer.
         /// </summary>
