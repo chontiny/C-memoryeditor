@@ -8,6 +8,7 @@
     using Mvvm.Command;
     using Output;
     using Project;
+    using Project.ProjectItems;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -50,10 +51,8 @@
         private SeriesCollection seriesCollection;
 
         /// <summary>
-        /// The histogram of label values which will be kept if the filter is applied.
+        /// The labels for the chart.
         /// </summary>
-        private IChartValues chartValues;
-
         private String[] chartLabels;
 
         /// <summary>
@@ -66,7 +65,6 @@
 
             StreamWeaverTask streamWeaverTask = new StreamWeaverTask(this.OnUpdate);
 
-            // Note: Cannot be async, navigation must take place on the same thread as GUI
             this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
 
             MainViewModel.GetInstance().RegisterTool(this);
@@ -76,6 +74,74 @@
         /// Gets the command to connect to Twitch.
         /// </summary>
         public ICommand ToggleConnectionCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the number of glitches to allow to be activated at once via stream commands.
+        /// </summary>
+        public Int32 NumberOfGlitches
+        {
+            get
+            {
+                return SettingsViewModel.GetInstance().NumberOfGlitches;
+            }
+
+            set
+            {
+                SettingsViewModel.GetInstance().NumberOfGlitches = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfGlitches));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of curses to allow to be activated at once via stream commands.
+        /// </summary>
+        public Int32 NumberOfCurses
+        {
+            get
+            {
+                return SettingsViewModel.GetInstance().NumberOfCurses;
+            }
+
+            set
+            {
+                SettingsViewModel.GetInstance().NumberOfCurses = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfCurses));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of buffs to allow to be activated at once via stream commands.
+        /// </summary>
+        public Int32 NumberOfBuffs
+        {
+            get
+            {
+                return SettingsViewModel.GetInstance().NumberOfBuffs;
+            }
+
+            set
+            {
+                SettingsViewModel.GetInstance().NumberOfBuffs = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfBuffs));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of utilities to allow to be activated at once via stream commands.
+        /// </summary>
+        public Int32 NumberOfUtilities
+        {
+            get
+            {
+                return SettingsViewModel.GetInstance().NumberOfUtilities;
+            }
+
+            set
+            {
+                SettingsViewModel.GetInstance().NumberOfUtilities = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfUtilities));
+            }
+        }
 
         /// <summary>
         /// Gets or sets the histogram collection object.
@@ -95,24 +161,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the histogram of label values which will be kept if the filter is applied.
-        /// </summary>
-        public IChartValues ChartValues
-        {
-            get
-            {
-                return this.chartValues;
-            }
-
-            set
-            {
-                this.chartValues = value;
-                this.RaisePropertyChanged(nameof(this.ChartValues));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the histogram of label values which will be kept if the filter is applied.
+        /// Gets or sets the histogram labels.
         /// </summary>
         public String[] ChartLabels
         {
@@ -207,15 +256,34 @@
         /// </summary>
         private void OnUpdate()
         {
-            IEnumerable<String> possibleThings = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten().Select(x => x.StreamCommand).Where(x => !String.IsNullOrWhiteSpace(x));
-
-            foreach (KeyValuePair<String, Int64> k in this.CommandVotes)
+            if (!this.IsConnected)
             {
-                this.CommandVotes[k.Key] = (Int64)Math.Ceiling(k.Value * 0.75);
+                return;
             }
 
-            this.ChartValues = new ChartValues<Int64>(this.CommandVotes.Values);
-            this.ChartLabels = this.CommandVotes.Keys.ToArray();
+            // Collect project items
+            IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
+                .Select(item => item)
+                .Where(item => item.Category != ProjectItem.ProjectItemCategory.None)
+                .Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand));
+
+            // Tally up votes for each project item
+            var itemVotes = this.CommandVotes
+                 .Join(
+                     candidateProjectItems,
+                     votes => votes.Key,
+                     item => item.StreamCommand,
+                     (votes, item) => new { command = votes, item = item })
+                .OrderBy(x => x.item.Category);
+
+            // Collect labels
+            this.ChartLabels = itemVotes.Select(x => x.command.Key).ToArray();
+
+            // Collect values
+            IChartValues chartGlitchValues = new ChartValues<Int64>(itemVotes.Select(tally => tally.item.Category == ProjectItem.ProjectItemCategory.Glitch ? tally.command.Value : 0));
+            IChartValues chartCurseValues = new ChartValues<Int64>(itemVotes.Select(tally => tally.item.Category == ProjectItem.ProjectItemCategory.Curse ? tally.command.Value : 0));
+            IChartValues chartBuffValues = new ChartValues<Int64>(itemVotes.Select(tally => tally.item.Category == ProjectItem.ProjectItemCategory.Buff ? tally.command.Value : 0));
+            IChartValues chartUtilityValues = new ChartValues<Int64>(itemVotes.Select(tally => tally.item.Category == ProjectItem.ProjectItemCategory.Utility ? tally.command.Value : 0));
 
             Application.Current.Dispatcher.Invoke((Action)delegate
             {
@@ -224,17 +292,45 @@
 
                     this.SeriesCollection = new SeriesCollection()
                     {
+                        // Glitches
                         new ColumnSeries
                         {
-                            Values = this.ChartValues,
+                            Values = chartGlitchValues,
+                            Fill = Brushes.Green,
+                            DataLabels = true
+                        },
+                        
+                        // Curses
+                        new ColumnSeries
+                        {
+                            Values = chartCurseValues,
+                            Fill = Brushes.Red,
+                            DataLabels = true
+                        },
+
+                        // Buffs
+                        new ColumnSeries
+                        {
+                            Values = chartBuffValues,
                             Fill = Brushes.Blue,
+                            DataLabels = true
+                        },
+                        
+                        // Utilities
+                        new ColumnSeries
+                        {
+                            Values = chartUtilityValues,
+                            Fill = Brushes.Yellow,
                             DataLabels = true
                         }
                     };
                 }
                 else
                 {
-                    this.SeriesCollection[0].Values = this.ChartValues;
+                    this.SeriesCollection[0].Values = chartGlitchValues;
+                    this.SeriesCollection[1].Values = chartCurseValues;
+                    this.SeriesCollection[2].Values = chartBuffValues;
+                    this.SeriesCollection[3].Values = chartUtilityValues;
                 }
             });
         }
@@ -283,6 +379,21 @@
 
             this.IsConnected = false;
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Twitch chat connection unsuccessful. Please check your username and access token in the settings.");
+        }
+
+        private Random random = new Random();
+        private String DebugMap(String command)
+        {
+            IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
+                .Select(item => item)
+                .Where(item => item.Category != ProjectItem.ProjectItemCategory.None)
+                .Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand));
+
+            Int32 index = random.Next(0, candidateProjectItems.Count());
+
+            command = candidateProjectItems.ElementAt(index).StreamCommand;
+
+            return command;
         }
 
         /// <summary>
@@ -340,6 +451,8 @@
         /// <param name="command">The command given by the user.</param>
         private void ProcessCommand(Int64 userId, String command)
         {
+            command = DebugMap(command);
+
             this.CommandVotes.AddOrUpdate(command, 1, (key, count) => count + 1);
 
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, userId + " - " + command);

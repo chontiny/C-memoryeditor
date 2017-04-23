@@ -285,6 +285,70 @@
         }
 
         /// <summary>
+        /// Gets or sets the number of glitches to allow to be activated at once via stream commands.
+        /// </summary>
+        public Int32 NumberOfGlitches
+        {
+            get
+            {
+                return Settings.Default.NumberOfGlitches;
+            }
+
+            set
+            {
+                Settings.Default.NumberOfGlitches = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of curses to allow to be activated at once via stream commands.
+        /// </summary>
+        public Int32 NumberOfCurses
+        {
+            get
+            {
+                return Settings.Default.NumberOfCurses;
+            }
+
+            set
+            {
+                Settings.Default.NumberOfCurses = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of buffs to allow to be activated at once via stream commands.
+        /// </summary>
+        public Int32 NumberOfBuffs
+        {
+            get
+            {
+                return Settings.Default.NumberOfBuffs;
+            }
+
+            set
+            {
+                Settings.Default.NumberOfBuffs = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the number of utilities to allow to be activated at once via stream commands.
+        /// </summary>
+        public Int32 NumberOfUtilities
+        {
+            get
+            {
+                return Settings.Default.NumberOfUtilities;
+            }
+
+            set
+            {
+                Settings.Default.NumberOfUtilities = value;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a the interval of reupdating frozen values.
         /// </summary>
         public Int32 FreezeInterval

@@ -19,6 +19,7 @@
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
         <Border
@@ -46,25 +47,119 @@
             </Menu>
         </Border>
         <Border Grid.Row="1">
-            <charts:CartesianChart
-                Grid.Row="1"
-                Grid.Column="0"
-                DisableAnimations="True"
-                Series="{Binding SeriesCollection}">
-                <charts:CartesianChart.AxisX>
-                    <charts:Axis
-                        Labels="{Binding ChartLabels}"
-                        LabelsRotation="-15"
-                        ShowLabels="True">
-                        <charts:Axis.Separator>
-                            <charts:Separator IsEnabled="False" Step="1" />
-                        </charts:Axis.Separator>
-                    </charts:Axis>
-                </charts:CartesianChart.AxisX>
-                <charts:CartesianChart.AxisY>
-                    <charts:Axis MinValue="0" />
-                </charts:CartesianChart.AxisY>
-            </charts:CartesianChart>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="128" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <WrapPanel
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    ToolTip="Number of Glitches to Activate">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        Source="pack://application:,,,/Ana;component/Content/Icons/Glitch.png" />
+                    <TextBox
+                        Name="glitchCount"
+                        Width="64"
+                        Height="18"
+                        Margin="4,2,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="{Binding NumberOfGlitches, Mode=TwoWay}" />
+                </WrapPanel>
+                <WrapPanel
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    ToolTip="Number of Curses to Activate">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        Source="pack://application:,,,/Ana;component/Content/Icons/Curse.png" />
+                    <TextBox
+                        Name="curseCount"
+                        Width="64"
+                        Height="18"
+                        Margin="4,2,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="{Binding NumberOfCurses, Mode=TwoWay}" />
+                </WrapPanel>
+                <WrapPanel
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    ToolTip="Number of Buffs to Activate">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        Source="pack://application:,,,/Ana;component/Content/Icons/Heart.png" />
+                    <TextBox
+                        Name="heartIcon"
+                        Width="64"
+                        Height="18"
+                        Margin="4,2,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="{Binding NumberOfBuffs, Mode=TwoWay}" />
+                </WrapPanel>
+                <WrapPanel
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    ToolTip="Number of Utilities to Activate">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        Source="pack://application:,,,/Ana;component/Content/Icons/Cog.png" />
+                    <TextBox
+                        Name="utilityCount"
+                        Width="64"
+                        Height="18"
+                        Margin="4,2,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="{Binding NumberOfUtilities, Mode=TwoWay}" />
+                </WrapPanel>
+            </Grid>
         </Border>
+        <charts:CartesianChart
+            Grid.Row="2"
+            Grid.Column="0"
+            DisableAnimations="True"
+            Series="{Binding SeriesCollection}">
+            <charts:CartesianChart.AxisX>
+                <charts:Axis
+                    Labels="{Binding ChartLabels}"
+                    LabelsRotation="-15"
+                    ShowLabels="True">
+                    <charts:Axis.Separator>
+                        <charts:Separator IsEnabled="False" Step="1" />
+                    </charts:Axis.Separator>
+                </charts:Axis>
+            </charts:CartesianChart.AxisX>
+            <charts:CartesianChart.AxisY>
+                <charts:Axis MinValue="0" />
+            </charts:CartesianChart.AxisY>
+        </charts:CartesianChart>
     </Grid>
 </UserControl>

@@ -274,5 +274,53 @@ namespace Ana.Properties {
                 this["TwitchAccessToken"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int NumberOfGlitches {
+            get {
+                return ((int)(this["NumberOfGlitches"]));
+            }
+            set {
+                this["NumberOfGlitches"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int NumberOfCurses {
+            get {
+                return ((int)(this["NumberOfCurses"]));
+            }
+            set {
+                this["NumberOfCurses"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int NumberOfBuffs {
+            get {
+                return ((int)(this["NumberOfBuffs"]));
+            }
+            set {
+                this["NumberOfBuffs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4")]
+        public int NumberOfUtilities {
+            get {
+                return ((int)(this["NumberOfUtilities"]));
+            }
+            set {
+                this["NumberOfUtilities"] = value;
+            }
+        }
     }
 }
