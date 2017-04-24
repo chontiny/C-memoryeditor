@@ -112,6 +112,7 @@
 
                 // Create connection
                 NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+                binding.ReceiveTimeout = TimeSpan.MaxValue;
                 binding.MaxReceivedMessageSize = Int32.MaxValue;
                 binding.MaxBufferSize = Int32.MaxValue;
 

@@ -13,7 +13,7 @@
     /// - FASM Compiler, which can only be run in 32 bit mode
     /// - Microsoft.Diagnostics.Runtime, which can only be used on processes of the same bitness
     /// </summary>
-    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.Single, ConcurrencyMode = ConcurrencyMode.Single)]
     public class ProxyService : IProxyService
     {
         private const Int32 AttachTimeout = 5000;

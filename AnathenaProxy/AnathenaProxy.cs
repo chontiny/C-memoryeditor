@@ -37,6 +37,7 @@
             serviceHost.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
             serviceHost.Description.Behaviors.Add(new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true });
             NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
+            binding.ReceiveTimeout = TimeSpan.MaxValue;
             serviceHost.AddServiceEndpoint(typeof(IProxyService), binding, pipeName);
             serviceHost.Open();
 

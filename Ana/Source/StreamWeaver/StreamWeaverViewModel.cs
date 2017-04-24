@@ -435,6 +435,7 @@
         }
 
         private Random random = new Random();
+
         private String DebugMap(String command)
         {
             IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
