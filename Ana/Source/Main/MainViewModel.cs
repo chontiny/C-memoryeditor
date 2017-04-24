@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Main
 {
+    using Analytics;
     using Docking;
     using Engine.AddressResolver;
     using Engine.AddressResolver.DotNet;
@@ -161,7 +162,9 @@
             SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
             DotNetObjectCollector.GetInstance().Begin();
             AddressResolver.GetInstance().Begin();
+            AnalyticsService.GetInstance().Start();
 
+            AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start", "1");
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background Services Started");
         }
 

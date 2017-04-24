@@ -12,7 +12,7 @@
     xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
     x:Name="AnaStreamWeaver"
     d:DesignHeight="256"
-    d:DesignWidth="256"
+    d:DesignWidth="480"
     x:ClassModifier="internal"
     DataContext="{Binding StreamWeaverViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
@@ -59,10 +59,11 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="128" />
+                    <ColumnDefinition Width="96" />
+                    <ColumnDefinition Width="96" />
+                    <ColumnDefinition Width="96" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <WrapPanel
@@ -108,8 +109,8 @@
                         Text="{Binding NumberOfCurses, Mode=TwoWay}" />
                 </WrapPanel>
                 <WrapPanel
-                    Grid.Row="1"
-                    Grid.Column="0"
+                    Grid.Row="0"
+                    Grid.Column="2"
                     ToolTip="Number of Buffs to Activate">
                     <Image
                         Width="16"
@@ -129,8 +130,8 @@
                         Text="{Binding NumberOfBuffs, Mode=TwoWay}" />
                 </WrapPanel>
                 <WrapPanel
-                    Grid.Row="1"
-                    Grid.Column="1"
+                    Grid.Row="0"
+                    Grid.Column="3"
                     ToolTip="Number of Utilities to Activate">
                     <Image
                         Width="16"

@@ -182,6 +182,7 @@
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
+    <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverTask.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverViewModel.cs" />
@@ -778,6 +779,10 @@
     <ProjectReference Include="..\Deploy\Deploy.csproj">
       <Project>{8b2579c2-faa1-4cc7-a48e-2b6d4901c503}</Project>
       <Name>Deploy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Garlic\Garlic\Garlic.csproj">
+      <Project>{cc6dca91-9d5a-4603-b8ca-c9597a9d3107}</Project>
+      <Name>Garlic</Name>
     </ProjectReference>
     <ProjectReference Include="..\LiveCharts\Core\LiveCharts.csproj">
       <Project>{d447642c-a85f-4ab0-96d9-c66cff91aada}</Project>

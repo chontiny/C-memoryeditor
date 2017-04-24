@@ -413,7 +413,7 @@
 
             ConnectionCredentials credentials = new ConnectionCredentials(username, accessToken);
 
-            this.Client = new TwitchClient(credentials, "beyondthesummit");
+            this.Client = new TwitchClient(credentials, "tsm_dyrus");
             this.Client.OnMessageReceived += this.OnMessageReceived;
             this.Client.Connect();
 
