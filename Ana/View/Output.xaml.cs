@@ -31,7 +31,7 @@
         private void OutputScrollViewerScrollChanged(Object sender, ScrollChangedEventArgs e)
         {
             // User scroll event: set or unset autoscroll mode
-            if (e.ExtentHeightChange == 0)
+            if (e.ExtentHeightChange <= 0)
             {
                 // Content unchanged: user scroll event
                 if (this.OutputScrollViewer.VerticalOffset == this.OutputScrollViewer.ScrollableHeight)
