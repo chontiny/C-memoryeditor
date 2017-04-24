@@ -264,6 +264,14 @@
         }
 
         /// <summary>
+        /// Disables all active cheats.
+        /// </summary>
+        public void DisableAll()
+        {
+            this.ProjectRoot.Flatten().ForEach(item => item.IsActivated = false);
+        }
+
+        /// <summary>
         /// Prompts the user to save the project if there are unsaved changes.
         /// </summary>
         /// <returns>Returns false if canceled, otherwise true.</returns>

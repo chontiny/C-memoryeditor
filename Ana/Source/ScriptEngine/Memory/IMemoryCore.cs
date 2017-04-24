@@ -1,7 +1,7 @@
 ﻿namespace Ana.Source.ScriptEngine.Memory
 {
     using System;
-
+    using System.Collections.Generic;
     /// <summary>
     /// Interface to provide access to memory manipulations in an external process.
     /// </summary>
@@ -171,6 +171,8 @@
         /// <param name="pattern">The array of bytes to search for.</param>
         /// <returns>The addresses of all matches.</returns>
         UInt64[] SearchAllAob(String pattern);
+
+        UInt64 EvaluatePointer(UInt64 address, IEnumerable<Int32> offsets);
 
         /// <summary>
         /// Reads the Double at the given address.

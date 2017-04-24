@@ -177,6 +177,8 @@
             }
 
             SettingsViewModel.GetInstance().Save();
+            ProjectExplorerViewModel.GetInstance().DisableAll();
+
             window.Close();
         }
 

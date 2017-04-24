@@ -557,6 +557,21 @@
             return convertedAobs.ToArray();
         }
 
+        public UInt64 EvaluatePointer(UInt64 address, IEnumerable<Int32> offsets)
+        {
+            UInt64 finalAddress = address;
+
+            if (offsets != null)
+            {
+                foreach (Int32 offset in offsets)
+                {
+                    finalAddress = (this.Read<UInt64>(finalAddress).ToInt64() + offset).ToUInt64();
+                }
+            }
+
+            return finalAddress;
+        }
+
         /// <summary>
         /// Reads the value at the given address.
         /// </summary>
