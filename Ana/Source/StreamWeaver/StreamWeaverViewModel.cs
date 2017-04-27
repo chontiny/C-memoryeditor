@@ -63,7 +63,7 @@
         {
             this.ContentId = StreamWeaverViewModel.ToolContentId;
             this.CommandVotes = new ConcurrentDictionary<String, Int64>();
-            this.OverlayService = new OverlayService("Content/Overlay/");
+            this.OverlayService = new OverlayService();
 
             StreamWeaverTask streamWeaverTask = new StreamWeaverTask(this.OnUpdate);
 
@@ -431,7 +431,7 @@
             this.Client.OnMessageReceived += this.OnMessageReceived;
             this.Client.Connect();
 
-            // this.OverlayService.Start();
+            this.OverlayService.Start();
 
             try
             {
@@ -471,7 +471,7 @@
         /// </summary>
         private void Disconnect()
         {
-            // this.OverlayService.Stop();
+            this.OverlayService.Stop();
 
             if (this.Client == null)
             {

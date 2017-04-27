@@ -525,6 +525,22 @@
         }
 
         /// <summary>
+        /// Gets or sets the port for the overlay service.
+        /// </summary>
+        public Int32 OverlayPort
+        {
+            get
+            {
+                return Settings.Default.OverlayPort;
+            }
+
+            set
+            {
+                Settings.Default.OverlayPort = value;
+            }
+        }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>

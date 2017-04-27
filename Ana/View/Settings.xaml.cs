@@ -26,7 +26,10 @@
             this.twitchChannel.TextChanged += TwitchChannelTextChanged;
 
             this.twitchAccessToken.Password = this.SettingsViewModel.TwitchAccessToken;
-            this.twitchAccessToken.PasswordChanged += TwitchAccessToken_PasswordChanged;
+            this.twitchAccessToken.PasswordChanged += TwitchAccessTokenPasswordChanged;
+
+            this.overlayPort.Text = this.SettingsViewModel.OverlayPort.ToString();
+            this.overlayPort.TextChanged += this.OverlayPortTextChanged;
 
             // Windows Forms hosting -- TODO: Phase this out
             this.AlignmentHexDecBox = new HexDecTextBox(typeof(Int32));
@@ -270,9 +273,19 @@
             this.SettingsViewModel.TwitchChannel = this.twitchChannel.Text;
         }
 
-        private void TwitchAccessToken_PasswordChanged(Object sender, RoutedEventArgs e)
+        private void TwitchAccessTokenPasswordChanged(Object sender, RoutedEventArgs e)
         {
             this.SettingsViewModel.TwitchAccessToken = this.twitchAccessToken.Password;
+        }
+
+        private void OverlayPortTextChanged(Object sender, TextChangedEventArgs e)
+        {
+            Int32 value;
+
+            if (Int32.TryParse(this.overlayPort.Text, out value))
+            {
+                this.SettingsViewModel.OverlayPort = value;
+            }
         }
 
         private void HyperlinkRequestNavigate(Object sender, RequestNavigateEventArgs e)

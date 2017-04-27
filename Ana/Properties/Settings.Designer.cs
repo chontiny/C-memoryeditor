@@ -334,5 +334,17 @@ namespace Ana.Properties {
                 this["TwitchChannel"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6969")]
+        public int OverlayPort {
+            get {
+                return ((int)(this["OverlayPort"]));
+            }
+            set {
+                this["OverlayPort"] = value;
+            }
+        }
     }
 }

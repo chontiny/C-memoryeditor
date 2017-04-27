@@ -5,22 +5,18 @@
     using System.Net;
     using System.Text;
     using System.Web;
+    using UserSettings;
 
     internal class OverlayService : IDisposable
     {
         private const Int32 BufferSize = 1024 * 512;
 
-        public OverlayService(String rootPath)
+        private const String OverlayRoot = "Content/Overlay/";
+
+        public OverlayService()
         {
-            this.RootPath = rootPath;
-
             this.HttpListener = new HttpListener();
-            this.HttpListener.Prefixes.Add("http://localhost:8083/");
-            this.HttpListener.Start();
-            this.HttpListener.BeginGetContext(RequestWait, null);
         }
-
-        private String RootPath { get; set; }
 
         private HttpListener HttpListener { get; set; }
 
@@ -29,71 +25,51 @@
             this.HttpListener.Stop();
         }
 
-        private void RequestWait(IAsyncResult ar)
+        public void Start()
+        {
+            Int32 port = SettingsViewModel.GetInstance().OverlayPort;
+
+            this.HttpListener.Prefixes.Add("http://localhost:" + port.ToString() + "/");
+            this.HttpListener.Start();
+            this.HttpListener.BeginGetContext(this.RequestWait, null);
+        }
+
+        public void Stop()
+        {
+            this.HttpListener.Stop();
+        }
+
+        private void RequestWait(IAsyncResult asyncResult)
         {
             if (!this.HttpListener.IsListening)
             {
                 return;
             }
 
-            HttpListenerContext c = this.HttpListener.EndGetContext(ar);
+            HttpListenerContext context = this.HttpListener.EndGetContext(asyncResult);
             this.HttpListener.BeginGetContext(RequestWait, null);
 
-            String url = TuneUrl(c.Request.RawUrl);
-
-            String fullPath = string.IsNullOrEmpty(url) ? RootPath : Path.Combine(RootPath, url);
+            String url = this.TuneUrl(context.Request.RawUrl);
+            String fullPath = String.IsNullOrEmpty(url) ? OverlayService.OverlayRoot : Path.Combine(OverlayService.OverlayRoot, url);
 
             if (Directory.Exists(fullPath))
             {
-                returnDirContents(c, fullPath);
+                this.ReturnFile(context, Path.Combine(fullPath, "index.html"));
             }
             else if (File.Exists(fullPath))
             {
-                ReturnFile(c, fullPath);
+                this.ReturnFile(context, fullPath);
             }
             else
             {
-                return404(c);
+                this.Return404(context);
             }
-        }
-
-        private void returnDirContents(HttpListenerContext context, String dirPath)
-        {
-
-            context.Response.ContentType = "text/html";
-            context.Response.ContentEncoding = Encoding.UTF8;
-            using (StreamWriter writer = new StreamWriter(context.Response.OutputStream))
-            {
-                writer.WriteLine("<html>");
-                writer.WriteLine("<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head>");
-                writer.WriteLine("<body><ul>");
-
-                String[] directories = Directory.GetDirectories(dirPath);
-
-                foreach (String directory in directories)
-                {
-                    String link = directory.Replace(RootPath, "").Replace('\\', '/');
-                    writer.WriteLine("<li>&lt;DIR&gt; <a href=\"" + link + "\">" + Path.GetFileName(directory) + "</a></li>");
-                }
-
-                String[] files = Directory.GetFiles(dirPath);
-
-                foreach (String file in files)
-                {
-                    String link = file.Replace(RootPath, "").Replace('\\', '/');
-                    writer.WriteLine("<li><a href=\"" + link + "\">" + Path.GetFileName(file) + "</a></li>");
-                }
-
-                writer.WriteLine("</ul></body></html>");
-            }
-
-            context.Response.OutputStream.Close();
         }
 
         private void ReturnFile(HttpListenerContext context, String filePath)
         {
-            context.Response.ContentType = GetcontentType(Path.GetExtension(filePath));
-            Byte[] buffer = new Byte[BufferSize];
+            context.Response.ContentType = this.GetcontentType(Path.GetExtension(filePath));
+            Byte[] buffer = new Byte[OverlayService.BufferSize];
 
             using (FileStream fileStream = File.OpenRead(filePath))
             {
@@ -110,7 +86,7 @@
             context.Response.OutputStream.Close();
         }
 
-        private void return404(HttpListenerContext context)
+        private void Return404(HttpListenerContext context)
         {
             context.Response.StatusCode = 404;
             context.Response.Close();
@@ -121,6 +97,7 @@
             url = url.Replace('/', '\\');
             url = HttpUtility.UrlDecode(url, Encoding.UTF8);
             url = url.Substring(1);
+
             return url;
         }
 
