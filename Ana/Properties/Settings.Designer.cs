@@ -322,5 +322,17 @@ namespace Ana.Properties {
                 this["NumberOfUtilities"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TwitchChannel {
+            get {
+                return ((string)(this["TwitchChannel"]));
+            }
+            set {
+                this["TwitchChannel"] = value;
+            }
+        }
     }
 }

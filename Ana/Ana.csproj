@@ -184,6 +184,7 @@
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\StreamWeaver\OverlayService.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverTask.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
@@ -696,6 +697,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Content Include="Content\Overlay\Index.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Resource Include="Content\Icons\BlueBlocks1.png" />
     <Resource Include="Content\Icons\BlueBlocks2.png" />
     <Resource Include="Content\Icons\BlueBlocks4.png" />
@@ -883,6 +887,10 @@
     <ProjectReference Include="..\TwitchLib\TwitchLib\TwitchLib.csproj">
       <Project>{5D5746FD-63B3-4DB0-9389-7FEDA1A05A09}</Project>
       <Name>TwitchLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebSocketSharp\websocket-sharp\WebSocketSharp.csproj">
+      <Project>{B357BAC7-529E-4D81-A0D2-71041B19C8DE}</Project>
+      <Name>WebSocketSharp</Name>
     </ProjectReference>
     <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
       <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>

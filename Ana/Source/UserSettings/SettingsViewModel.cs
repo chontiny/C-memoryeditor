@@ -493,6 +493,22 @@
         }
 
         /// <summary>
+        /// Gets or sets the Twitch API channel.
+        /// </summary>
+        public String TwitchChannel
+        {
+            get
+            {
+                return Settings.Default.TwitchChannel;
+            }
+
+            set
+            {
+                Settings.Default.TwitchChannel = value;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the Twitch API Access Token.
         /// </summary>
         public String TwitchAccessToken

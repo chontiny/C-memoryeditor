@@ -22,6 +22,9 @@
             this.twitchUsername.Text = this.SettingsViewModel.TwitchUsername;
             this.twitchUsername.TextChanged += TwitchUserNameTextChanged;
 
+            this.twitchChannel.Text = this.SettingsViewModel.TwitchChannel;
+            this.twitchChannel.TextChanged += TwitchChannelTextChanged;
+
             this.twitchAccessToken.Password = this.SettingsViewModel.TwitchAccessToken;
             this.twitchAccessToken.PasswordChanged += TwitchAccessToken_PasswordChanged;
 
@@ -260,6 +263,11 @@
         private void TwitchUserNameTextChanged(Object sender, TextChangedEventArgs e)
         {
             this.SettingsViewModel.TwitchUsername = this.twitchUsername.Text;
+        }
+
+        private void TwitchChannelTextChanged(Object sender, TextChangedEventArgs e)
+        {
+            this.SettingsViewModel.TwitchChannel = this.twitchChannel.Text;
         }
 
         private void TwitchAccessToken_PasswordChanged(Object sender, RoutedEventArgs e)

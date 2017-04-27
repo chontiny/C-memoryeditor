@@ -23,6 +23,7 @@
     using TwitchLib.Models.Client;
     using UserSettings;
     using Utils.Extensions;
+
     /// <summary>
     /// View model for the Stream Weaver.
     /// </summary>
@@ -62,11 +63,13 @@
         {
             this.ContentId = StreamWeaverViewModel.ToolContentId;
             this.CommandVotes = new ConcurrentDictionary<String, Int64>();
+            this.OverlayService = new OverlayService("Content/Overlay/");
 
             StreamWeaverTask streamWeaverTask = new StreamWeaverTask(this.OnUpdate);
 
-            this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
             this.ClearVotesCommand = new RelayCommand(() => this.ClearVotes(), () => true);
+            this.CopyMarkdownCommand = new RelayCommand(() => this.CopyMarkdown(), () => true);
+            this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
@@ -75,6 +78,11 @@
         /// Gets the command to clear votes.
         /// </summary>
         public ICommand ClearVotesCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to copy the Twitch markdown for the current cheats.
+        /// </summary>
+        public ICommand CopyMarkdownCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to connect to Twitch.
@@ -244,6 +252,11 @@
         private TwitchClient Client { get; set; }
 
         /// <summary>
+        /// Gets or sets the web service that generates the overlays for streams.
+        /// </summary>
+        private OverlayService OverlayService { get; set; }
+
+        /// <summary>
         /// Gets or sets the current command votes.
         /// </summary>
         private ConcurrentDictionary<String, Int64> CommandVotes { get; set; }
@@ -409,13 +422,16 @@
             }
 
             String username = SettingsViewModel.GetInstance().TwitchUsername;
+            String channel = SettingsViewModel.GetInstance().TwitchChannel;
             String accessToken = SettingsViewModel.GetInstance().TwitchAccessToken;
 
             ConnectionCredentials credentials = new ConnectionCredentials(username, accessToken);
 
-            this.Client = new TwitchClient(credentials, "tsm_dyrus");
+            this.Client = new TwitchClient(credentials, channel);
             this.Client.OnMessageReceived += this.OnMessageReceived;
             this.Client.Connect();
+
+            // this.OverlayService.Start();
 
             try
             {
@@ -455,6 +471,8 @@
         /// </summary>
         private void Disconnect()
         {
+            // this.OverlayService.Stop();
+
             if (this.Client == null)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Twitch connection is already disconnected.");
@@ -496,6 +514,40 @@
             {
                 this.Connect();
             }
+        }
+
+        /// <summary>
+        /// Copys the stream commands to clipboard.
+        /// </summary>
+        private void CopyMarkdown()
+        {
+            IEnumerable<ProjectItem> commandItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
+                .Select(item => item)
+                .Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand))
+                .OrderByDescending(item => item.Category);
+
+            const String seperator = " | ";
+
+            String markdown = (seperator + "Command"
+                + seperator + "Name"
+                + seperator + "Category"
+                + seperator + "Description"
+                + seperator).Trim() + Environment.NewLine;
+
+            markdown += "| ---- | :--: | :--: | :--: |";
+
+            foreach (ProjectItem projectItem in commandItems)
+            {
+                markdown += Environment.NewLine;
+                markdown += (seperator + "**" + projectItem.StreamCommand + "**" + seperator
+                    + projectItem.Description + seperator
+                    + projectItem.Category.ToString() + seperator
+                    + projectItem.ExtendedDescription?.ToString() + seperator).Trim();
+            }
+
+            Clipboard.SetText(markdown);
+
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Twitch Markdown copied to clipboard!");
         }
 
         /// <summary>

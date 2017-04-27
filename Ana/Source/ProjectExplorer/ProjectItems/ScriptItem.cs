@@ -43,8 +43,8 @@
         /// <param name="compiled">Whether or not this script is compiled.</param>
         public ScriptItem(String description, String script, Boolean compiled = false) : base(description)
         {
-            this.Script = script;
-            this.IsCompiled = compiled;
+            this.script = script;
+            this.isCompiled = compiled;
 
             this.ScriptManager = null;
         }

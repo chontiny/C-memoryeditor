@@ -786,7 +786,7 @@
                     item => item.Guid,
                     (binding, item) => new { binding = binding, item = item })
                 .ForEach(x => x.item.LoadHotkey(x.binding.Hotkey))
-                .ForEach(x => x.item.StreamCommand = x.binding.StreamCommand);
+                .ForEach(x => x.item.LoadStreamCommand(x.binding.StreamCommand));
         }
 
         /// <summary>

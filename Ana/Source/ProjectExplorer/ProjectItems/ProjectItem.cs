@@ -415,6 +415,15 @@
             this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
         }
 
+        /// <summary>
+        /// Updates the stream command, bypassing setters to avoid triggering view updates.
+        /// </summary>
+        /// <param name="streamCommand">The stream command for this project item.</param>
+        public void LoadStreamCommand(String streamCommand)
+        {
+            this.streamCommand = streamCommand;
+        }
+
         public void Dispose()
         {
             this.HotKey?.Dispose();

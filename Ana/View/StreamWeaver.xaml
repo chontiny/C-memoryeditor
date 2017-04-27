@@ -44,6 +44,16 @@
                         </WrapPanel>
                     </MenuItem.Header>
                 </MenuItem>
+                <MenuItem Command="{Binding CopyMarkdownCommand}">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/Ana;component/Content/Icons/new.png"
+                            ToolTip="Copy Twitch Markdown" />
+                    </MenuItem.Header>
+                </MenuItem>
+                <Separator Style="{DynamicResource VerticalSeparator}" />
                 <MenuItem Command="{Binding ClearVotesCommand}">
                     <MenuItem.Header>
                         <Image

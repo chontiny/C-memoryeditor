@@ -39,17 +39,17 @@
         /// <summary>
         /// The maximum number of chunks to process in a given update cycle.
         /// </summary>
-        private const Int32 ChunkLimit = 0x4000;
+        private const Int32 ChunkLimit = 0x2000;
 
         /// <summary>
         /// The maximum number of chunks to process in a given update cycle when ramping up.
         /// </summary>
-        private const Int32 RampUpChunkLimit = 0x8000;
+        private const Int32 RampUpChunkLimit = 0x4000;
 
         /// <summary>
         /// The size of a chunk.
         /// </summary>
-        private const Int32 ChunkSize = 0x1000;
+        private const Int32 ChunkSize = 0x2000;
 
         /// <summary>
         /// The time between each update cycle.

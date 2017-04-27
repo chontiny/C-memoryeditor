@@ -69,6 +69,17 @@
                                 BorderBrush="White"
                                 BorderThickness="1"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                            <TextBlock>Channel:</TextBlock>
+                            <TextBox
+                                Name="twitchChannel"
+                                Width="196"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                BorderBrush="White"
+                                BorderThickness="1"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
                             <TextBlock>Access Token:</TextBlock>
                             <PasswordBox
                                 Name="twitchAccessToken"
