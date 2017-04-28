@@ -184,6 +184,7 @@
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\StreamWeaver\OverlayItem.cs" />
     <Compile Include="Source\StreamWeaver\OverlayService.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverTask.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverViewModel.cs" />
@@ -736,6 +737,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Content\CSharp.xshd" />
     <Content Include="Content\Overlay\css\main.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\js\site.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Templates\ScriptTemplate.tt">

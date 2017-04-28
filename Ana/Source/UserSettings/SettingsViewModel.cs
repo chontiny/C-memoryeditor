@@ -101,6 +101,7 @@
             set
             {
                 Settings.Default.RequiredWrite = value;
+                this.RaisePropertyChanged(nameof(this.RequiredProtectionWrite));
             }
         }
 
@@ -117,6 +118,7 @@
             set
             {
                 Settings.Default.RequiredExecute = value;
+                this.RaisePropertyChanged(nameof(this.RequiredProtectionExecute));
             }
         }
 
@@ -133,6 +135,7 @@
             set
             {
                 Settings.Default.RequiredCopyOnWrite = value;
+                this.RaisePropertyChanged(nameof(this.RequiredProtectionCopyOnWrite));
             }
         }
 
@@ -149,6 +152,7 @@
             set
             {
                 Settings.Default.ExcludedWrite = value;
+                this.RaisePropertyChanged(nameof(this.ExcludedProtectionWrite));
             }
         }
 
@@ -165,6 +169,7 @@
             set
             {
                 Settings.Default.ExcludedExecute = value;
+                this.RaisePropertyChanged(nameof(this.ExcludedProtectionExecute));
             }
         }
 
@@ -181,6 +186,7 @@
             set
             {
                 Settings.Default.ExcludedCopyOnWrite = value;
+                this.RaisePropertyChanged(nameof(this.ExcludedProtectionCopyOnWrite));
             }
         }
 
@@ -197,6 +203,7 @@
             set
             {
                 Settings.Default.MemoryTypeNone = value;
+                this.RaisePropertyChanged(nameof(this.MemoryTypeNone));
             }
         }
 
@@ -213,6 +220,7 @@
             set
             {
                 Settings.Default.MemoryTypePrivate = value;
+                this.RaisePropertyChanged(nameof(this.MemoryTypePrivate));
             }
         }
 
@@ -229,6 +237,7 @@
             set
             {
                 Settings.Default.MemoryTypeMapped = value;
+                this.RaisePropertyChanged(nameof(this.MemoryTypeMapped));
             }
         }
 
@@ -245,6 +254,7 @@
             set
             {
                 Settings.Default.MemoryTypeImage = value;
+                this.RaisePropertyChanged(nameof(this.MemoryTypeImage));
             }
         }
 
@@ -297,6 +307,7 @@
             set
             {
                 Settings.Default.NumberOfGlitches = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfGlitches));
             }
         }
 
@@ -313,6 +324,7 @@
             set
             {
                 Settings.Default.NumberOfCurses = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfCurses));
             }
         }
 
@@ -329,6 +341,7 @@
             set
             {
                 Settings.Default.NumberOfBuffs = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfBuffs));
             }
         }
 
@@ -345,6 +358,7 @@
             set
             {
                 Settings.Default.NumberOfUtilities = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfUtilities));
             }
         }
 
@@ -361,6 +375,7 @@
             set
             {
                 Settings.Default.FreezeInterval = value;
+                this.RaisePropertyChanged(nameof(this.FreezeInterval));
             }
         }
 
@@ -377,6 +392,7 @@
             set
             {
                 Settings.Default.RescanInterval = value;
+                this.RaisePropertyChanged(nameof(this.RescanInterval));
             }
         }
 
@@ -393,6 +409,7 @@
             set
             {
                 Settings.Default.ResultReadInterval = value;
+                this.RaisePropertyChanged(nameof(this.ResultReadInterval));
             }
         }
 
@@ -409,6 +426,7 @@
             set
             {
                 Settings.Default.TableReadInterval = value;
+                this.RaisePropertyChanged(nameof(this.TableReadInterval));
             }
         }
 
@@ -425,6 +443,7 @@
             set
             {
                 Settings.Default.InputCorrelatorTimeOutInterval = value;
+                this.RaisePropertyChanged(nameof(this.InputCorrelatorTimeOutInterval));
             }
         }
 
@@ -441,6 +460,7 @@
             set
             {
                 Settings.Default.Alignment = value;
+                this.RaisePropertyChanged(nameof(this.Alignment));
             }
         }
 
@@ -457,6 +477,7 @@
             set
             {
                 Settings.Default.StartAddress = value;
+                this.RaisePropertyChanged(nameof(this.StartAddress));
             }
         }
 
@@ -473,6 +494,7 @@
             set
             {
                 Settings.Default.EndAddress = value;
+                this.RaisePropertyChanged(nameof(this.EndAddress));
             }
         }
 
@@ -489,6 +511,7 @@
             set
             {
                 Settings.Default.TwitchUsername = value;
+                this.RaisePropertyChanged(nameof(this.TwitchUsername));
             }
         }
 
@@ -505,6 +528,7 @@
             set
             {
                 Settings.Default.TwitchChannel = value;
+                this.RaisePropertyChanged(nameof(this.TwitchChannel));
             }
         }
 
@@ -521,6 +545,7 @@
             set
             {
                 Settings.Default.TwitchAccessToken = value.Replace("oauth:", String.Empty);
+                this.RaisePropertyChanged(nameof(this.TwitchAccessToken));
             }
         }
 
@@ -537,6 +562,16 @@
             set
             {
                 Settings.Default.OverlayPort = value;
+                this.RaisePropertyChanged(nameof(this.OverlayPort));
+                this.RaisePropertyChanged(nameof(this.OverlayUrl));
+            }
+        }
+
+        public String OverlayUrl
+        {
+            get
+            {
+                return "http://localhost:" + this.OverlayPort.ToString() + "/";
             }
         }
 

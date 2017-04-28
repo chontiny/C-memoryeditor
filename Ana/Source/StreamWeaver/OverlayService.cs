@@ -1,19 +1,23 @@
 ﻿namespace Ana.Source.StreamWeaver
 {
+    using ActionScheduler;
+    using Project;
     using System;
+    using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Net;
+    using System.Runtime.Serialization.Json;
     using System.Text;
     using System.Web;
     using UserSettings;
-
-    internal class OverlayService : IDisposable
+    internal class OverlayService : ScheduledTask, IDisposable
     {
         private const Int32 BufferSize = 1024 * 512;
 
         private const String OverlayRoot = "Content/Overlay/";
 
-        public OverlayService()
+        public OverlayService() : base(taskName: "Overlay Service", isRepeated: true, trackProgress: false)
         {
             this.HttpListener = new HttpListener();
         }
@@ -27,16 +31,21 @@
 
         public void Start()
         {
-            Int32 port = SettingsViewModel.GetInstance().OverlayPort;
-
-            this.HttpListener.Prefixes.Add("http://localhost:" + port.ToString() + "/");
+            this.HttpListener.Prefixes.Add(SettingsViewModel.GetInstance().OverlayUrl);
             this.HttpListener.Start();
             this.HttpListener.BeginGetContext(this.RequestWait, null);
+            base.Begin();
         }
 
         public void Stop()
         {
             this.HttpListener.Stop();
+            base.Cancel();
+        }
+
+        protected override void OnUpdate()
+        {
+            base.OnUpdate();
         }
 
         private void RequestWait(IAsyncResult asyncResult)
@@ -68,6 +77,8 @@
 
         private void ReturnFile(HttpListenerContext context, String filePath)
         {
+            this.BuildOverlayHeaders(context);
+
             context.Response.ContentType = this.GetcontentType(Path.GetExtension(filePath));
             Byte[] buffer = new Byte[OverlayService.BufferSize];
 
@@ -84,6 +95,27 @@
             }
 
             context.Response.OutputStream.Close();
+        }
+
+        private void BuildOverlayHeaders(HttpListenerContext context)
+        {
+            String headerContent = String.Empty;
+
+            IEnumerable<OverlayItem> activeBuffs = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
+                    .Select(item => item)
+                    .Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand))
+                    .Where(item => item.IsActivated)
+                    .Select(item => new OverlayItem(item));
+
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(OverlayItem[]));
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                serializer.WriteObject(memoryStream, activeBuffs.ToArray());
+                headerContent = Encoding.Default.GetString(memoryStream.ToArray());
+            }
+
+            context.Response.Headers.Add("Buffs", headerContent);
         }
 
         private void Return404(HttpListenerContext context)

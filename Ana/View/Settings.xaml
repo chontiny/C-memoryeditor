@@ -121,7 +121,9 @@
                                 Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                                 BorderBrush="White"
                                 BorderThickness="1"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                IsReadOnly="True"
+                                Text="{Binding OverlayUrl, Mode=OneWay}" />
                             <TextBlock
                                 FontSize="11"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
