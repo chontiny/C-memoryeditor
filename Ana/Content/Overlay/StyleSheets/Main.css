@@ -1,0 +1,17 @@
+﻿body {
+	margin-top: 66px;
+	background-color: transparent;
+}
+
+p {
+	color: red;
+}
+
+h1 {
+	color: red;
+}
+
+.buff{
+  width: 64px;
+  height: 64px;
+}

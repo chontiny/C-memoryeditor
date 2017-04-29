@@ -11,6 +11,7 @@
     using System.Text;
     using System.Web;
     using UserSettings;
+
     internal class OverlayService : ScheduledTask, IDisposable
     {
         private const Int32 BufferSize = 1024 * 512;
@@ -63,7 +64,7 @@
 
             if (Directory.Exists(fullPath))
             {
-                this.ReturnFile(context, Path.Combine(fullPath, "index.html"));
+                this.ReturnFile(context, Path.Combine(fullPath, "Index.html"));
             }
             else if (File.Exists(fullPath))
             {
