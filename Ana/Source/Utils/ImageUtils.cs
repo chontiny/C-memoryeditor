@@ -1,6 +1,7 @@
 ﻿namespace Ana.Source.Utils
 {
     using DataStructures;
+    using Svg;
     using System;
     using System.Drawing;
     using System.IO;
@@ -31,6 +32,20 @@
             bitmapImage.Freeze();
 
             return bitmapImage;
+        }
+
+        /// <summary>
+        /// Loads an svg image from the given path.
+        /// </summary>
+        /// <param name="uri">The path specifying from where to load the svg image.</param>
+        /// <returns>The bitmap image loaded from the given path.</returns>
+        public static Bitmap LoadSvg(String relativePath)
+        {
+            SvgDocument svgDoc = SvgDocument.Open(relativePath);
+            svgDoc.Height = 64;
+            svgDoc.Width = 64;
+
+            return new Bitmap(svgDoc.Draw());
         }
 
         /// <summary>
