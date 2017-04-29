@@ -32,3 +32,13 @@ Library | Description
 [TwitchLib](https://github.com/swiftyspiffy/TwitchLib) | Twitch API Wrapper
 [WebSocketSharp](https://github.com/sta/websocket-sharp) | WebSocket Protocol Implementation
 [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) | JSON Framework
+
+Buff icons made by:
+- Carl Olsen, https://twitter.com/unstoppableCarl
+- Cathelineau
+- Delapouite, http://delapouite.com
+- Faithtoken, http://fungustoken.deviantart.com
+- Lorc, http://lorcblog.blogspot.com
+- PriorBlue
+- Skoll
+- Zeromancer - CC0
