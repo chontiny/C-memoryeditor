@@ -93,9 +93,9 @@
         {
             IntPtr result = IntPtr.Zero;
 
-            identifier = identifier?.RemoveSuffixes(".exe", ".dll");
+            identifier = identifier?.RemoveSuffixes(true, ".exe", ".dll");
             IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().OperatingSystemAdapter.GetModules()
-                .Select(x => x)?.Where(x => x.Name.RemoveSuffixes(".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));
+                .Select(x => x)?.Where(x => x.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));
 
             if (modules.Count() > 0)
             {

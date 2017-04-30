@@ -68,12 +68,12 @@
         {
             this.PrintDebugTag();
 
-            moduleName = moduleName?.RemoveSuffixes(".exe", ".dll");
+            moduleName = moduleName?.RemoveSuffixes(true, ".exe", ".dll");
 
             UInt64 address = 0;
             foreach (NormalizedModule module in EngineCore.GetInstance().OperatingSystemAdapter.GetModules())
             {
-                String targetModuleName = module?.Name?.RemoveSuffixes(".exe", ".dll");
+                String targetModuleName = module?.Name?.RemoveSuffixes(true, ".exe", ".dll");
                 if (targetModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
                 {
                     address = module.BaseAddress.ToUInt64();

@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Editors.StreamIconEditor
 {
+    using Ana.Source.UserSettings;
     using Docking;
     using Main;
     using Mvvm.Command;
@@ -42,8 +43,10 @@
         {
             this.ContentId = StreamIconEditorViewModel.ToolContentId;
             this.SelectIconCommand = new RelayCommand<StreamIcon>((streamIcon) => this.UpdateStreamIconPath(streamIcon), (streamIcon) => true);
+            this.StreamIconListLock = new Object();
+            this.StreamIconItemLock = new Object();
 
-            Task.Run(() => this.BuildStreamIconList());
+            Task.Run(() => this.RebuildStreamIconList());
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
@@ -53,14 +56,24 @@
         public ICommand SelectIconCommand { get; private set; }
 
         /// <summary>
-        /// Gets the stream icon path.
+        /// Gets the stream icon name.
         /// </summary>
-        public String StreamIconPath { get; private set; }
+        public String StreamIconName { get; private set; }
 
         /// <summary>
         /// Gets or sets the selection callback.
         /// </summary>
         public Action SelectionCallBack { get; set; }
+
+        /// <summary>
+        /// Gets or sets the icon list access lock.
+        /// </summary>
+        private Object StreamIconListLock { get; set; }
+
+        /// <summary>
+        /// Gets or sets the icon item access lock.
+        /// </summary>
+        private Object StreamIconItemLock { get; set; }
 
         /// <summary>
         /// Gets the processes running on the machine.
@@ -91,16 +104,27 @@
         /// <summary>
         /// Lodas all stream icons from disk.
         /// </summary>
-        private void BuildStreamIconList()
+        public void RebuildStreamIconList()
         {
-            this.StreamIconList = new ObservableCollection<StreamIcon>();
-
-            foreach (String filePath in Directory.EnumerateFiles(StreamIconEditorViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")))
+            lock (this.StreamIconListLock)
             {
-                App.Current.Dispatcher.Invoke(delegate
+                this.StreamIconList = new ObservableCollection<StreamIcon>();
+
+                Parallel.ForEach(
+                    Directory.EnumerateFiles(StreamIconEditorViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")),
+                    SettingsViewModel.GetInstance().ParallelSettingsFast,
+                    (filePath) =>
                 {
-                    this.StreamIconList.Add(new StreamIcon(filePath));
-                    this.RaisePropertyChanged(nameof(this.StreamIconList));
+                    StreamIcon streamIcon = new StreamIcon(filePath);
+
+                    lock (this.StreamIconItemLock)
+                    {
+                        App.Current.Dispatcher.Invoke(delegate
+                        {
+                            this.StreamIconList.Add(streamIcon);
+                            this.RaisePropertyChanged(nameof(this.StreamIconList));
+                        });
+                    }
                 });
             }
         }
@@ -116,7 +140,7 @@
                 return;
             }
 
-            this.StreamIconPath = streamIcon.FilePath;
+            this.StreamIconName = streamIcon.IconName + ".svg";
             this.SelectionCallBack?.Invoke();
         }
     }

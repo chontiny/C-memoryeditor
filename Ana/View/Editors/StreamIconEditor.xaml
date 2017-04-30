@@ -14,8 +14,8 @@
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     x:Name="AnaStreamIconEditor"
     Title="Icon Editor"
-    Width="256"
-    Height="256"
+    Width="480"
+    Height="512"
     d:DesignHeight="256"
     d:DesignWidth="256"
     x:ClassModifier="internal"
@@ -85,7 +85,7 @@
                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                                 Margin="6,0,0,0"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                Text="{Binding Path=Name}" />
+                                Text="{Binding Path=IconName}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

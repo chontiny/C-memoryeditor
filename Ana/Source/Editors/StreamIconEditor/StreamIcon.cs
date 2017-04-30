@@ -1,6 +1,7 @@
 ﻿namespace Ana.Source.Editors.StreamIconEditor
 {
     using Ana.Source.Utils;
+    using Ana.Source.Utils.Extensions;
     using System;
     using System.Drawing;
     using System.IO;
@@ -10,20 +11,14 @@
     {
         public StreamIcon(String filePath)
         {
-            this.Name = filePath;
-            this.FilePath = Path.GetFileName(filePath);
+            this.IconName = Path.GetFileName(filePath)?.RemoveSuffixes(true, ".svg");
             this.Icon = ImageUtils.BitmapToBitmapImage(ImageUtils.LoadSvg(filePath, 64, 64, Color.White));
         }
 
         /// <summary>
         /// Gets the name of the icon.
         /// </summary>
-        public String Name { get; private set; }
-
-        /// <summary>
-        /// Gets the path to the icon.
-        /// </summary>
-        public String FilePath { get; private set; }
+        public String IconName { get; private set; }
 
         /// <summary>
         /// Gets the icon associated with this process.

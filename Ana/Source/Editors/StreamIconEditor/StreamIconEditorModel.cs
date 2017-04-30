@@ -41,7 +41,7 @@
             streamIconEditor.Owner = Application.Current.MainWindow;
             if (streamIconEditor.ShowDialog() == true)
             {
-                return streamIconEditor.StreamIconEditorViewModel.StreamIconPath ?? String.Empty;
+                return streamIconEditor.StreamIconEditorViewModel.StreamIconName ?? String.Empty;
             }
 
             return value;

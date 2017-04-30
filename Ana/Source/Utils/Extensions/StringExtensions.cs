@@ -14,17 +14,19 @@
         /// <param name="str">The provided string.</param>
         /// <param name="suffixes">The suffixes to search for and remove.</param>
         /// <returns>The string with the trimmed suffix, if any were found.</returns>
-        public static String RemoveSuffixes(this String str, params String[] suffixes)
+        public static String RemoveSuffixes(this String str, Boolean ignoreCase, params String[] suffixes)
         {
             if (suffixes == null)
             {
                 return str;
             }
 
+            String strLower = ignoreCase ? str.ToLower() : str;
             String suffix = String.Empty;
+
             foreach (String nextSuffix in suffixes)
             {
-                if (str.EndsWith(nextSuffix))
+                if (strLower.EndsWith(ignoreCase ? nextSuffix.ToLower() : nextSuffix))
                 {
                     suffix = nextSuffix;
                     break;
