@@ -1,10 +1,13 @@
 ﻿namespace Ana.Source.Utils
 {
+    using Ana.Source.Utils.Extensions;
     using DataStructures;
     using Svg;
     using System;
     using System.Drawing;
+    using System.Drawing.Imaging;
     using System.IO;
+    using System.Linq;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -39,11 +42,22 @@
         /// </summary>
         /// <param name="uri">The path specifying from where to load the svg image.</param>
         /// <returns>The bitmap image loaded from the given path.</returns>
-        public static Bitmap LoadSvg(String relativePath)
+        public static Bitmap LoadSvg(String relativePath, Int32 width, Int32 height)
         {
+            // image = ImageUtils.LoadSvg(@"Content\Overlay\Images\Buffs\deadly-strike.svg");
+
             SvgDocument svgDoc = SvgDocument.Open(relativePath);
-            svgDoc.Height = 64;
-            svgDoc.Width = 64;
+
+            svgDoc.Children.Select(child => child)
+                .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == Color.White)
+                .ForEach(child => child.Fill = new SvgColourServer(Color.Cyan));
+
+            svgDoc.Children.Select(child => child)
+                .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == Color.Black)
+                .ForEach(child => child.Fill = new SvgColourServer(Color.Transparent));
+
+            svgDoc.Width = width;
+            svgDoc.Height = height;
 
             return new Bitmap(svgDoc.Draw());
         }
@@ -77,6 +91,24 @@
                 ImageUtils.bitmapCache.Add(uri, bitmap);
 
                 return new Bitmap(bitmap);
+            }
+        }
+
+        public static BitmapImage BitmapToBitmapImage(Bitmap bitmap)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                bitmap.Save(memory, ImageFormat.Png);
+                memory.Position = 0;
+
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+
+                return bitmapImage;
             }
         }
     }

@@ -184,6 +184,9 @@
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\StreamIcon.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorViewModel.cs" />
     <Compile Include="Source\StreamWeaver\OverlayItem.cs" />
     <Compile Include="Source\StreamWeaver\OverlayService.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverTask.cs" />
@@ -445,6 +448,9 @@
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Editors\StreamIconEditor.xaml.cs">
+      <DependentUpon>StreamIconEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\StreamWeaver.xaml.cs">
       <DependentUpon>StreamWeaver.xaml</DependentUpon>
     </Compile>
@@ -560,6 +566,10 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Page Include="View\ChangeLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Editors\StreamIconEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -2953,6 +2963,10 @@
     <ProjectReference Include="..\SharpDX\SharpDX\SharpDX.csproj">
       <Project>{6a41eaf1-67d4-43f0-b6b8-1a1395b07235}</Project>
       <Name>SharpDX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Svg\Svg.csproj">
+      <Project>{886a98c5-37c0-4e8b-885e-30c1d2f98b47}</Project>
+      <Name>Svg</Name>
     </ProjectReference>
     <ProjectReference Include="..\TreeViewAdv\TreeViewAdv.csproj">
       <Project>{e73bb233-d88b-44a7-a98f-d71ee158381d}</Project>

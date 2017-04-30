@@ -323,6 +323,8 @@
             clone.Category = this.Category;
             clone.Description = this.Description;
             clone.Parent = this.Parent;
+            clone.ExtendedDescription = this.ExtendedDescription;
+            clone.StreamIconPath = this.StreamIconPath;
             clone.resolveType = this.resolveType;
             clone.baseIdentifier = this.baseIdentifier;
             clone.baseAddress = this.baseAddress;

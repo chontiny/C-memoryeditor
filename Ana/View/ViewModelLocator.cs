@@ -1,5 +1,6 @@
 ﻿namespace Ana.View
 {
+    using Ana.Source.Editors.StreamIconEditor;
     using Source.ActionScheduler;
     using Source.ChangeLog;
     using Source.CheatBrowser;
@@ -266,6 +267,17 @@
             get
             {
                 return TextEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Stream Icon Editor view model.
+        /// </summary>
+        public StreamIconEditorViewModel StreamIconEditorViewModel
+        {
+            get
+            {
+                return StreamIconEditorViewModel.GetInstance();
             }
         }
 

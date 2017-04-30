@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Ana.Source.Editors.StreamIconEditor;
     using Controls;
     using Editors.HotkeyEditor;
     using Editors.TextEditor;
@@ -57,6 +58,12 @@
         /// </summary>
         [Browsable(false)]
         private Hotkey hotkey;
+
+        /// <summary>
+        /// The stream icon path associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        private String streamIconPath;
 
         /// <summary>
         /// The stream command associated with this project item.
@@ -276,6 +283,33 @@
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.HotKey));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the stream icon path for this project item.
+        /// </summary>
+        [DataMember]
+        [Editor(typeof(StreamIconEditorModel), typeof(UITypeEditor))]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Stream Icon"), Description("The stream icon for this item")]
+        public String StreamIconPath
+        {
+            get
+            {
+                return this.streamIconPath;
+            }
+
+            set
+            {
+                if (this.streamIconPath == value)
+                {
+                    return;
+                }
+
+                this.streamIconPath = value;
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.StreamIconPath));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }

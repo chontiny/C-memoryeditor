@@ -132,6 +132,8 @@
             FolderItem clone = new FolderItem();
             clone.Category = this.Category;
             clone.Description = this.Description;
+            clone.ExtendedDescription = this.ExtendedDescription;
+            clone.StreamIconPath = this.StreamIconPath;
             clone.Parent = this.Parent;
             clone.children = new List<ProjectItem>();
 

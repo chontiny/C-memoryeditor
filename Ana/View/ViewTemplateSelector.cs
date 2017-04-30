@@ -1,5 +1,6 @@
 ﻿namespace Ana.View
 {
+    using Ana.Source.Editors.StreamIconEditor;
     using Source.CheatBrowser;
     using Source.DotNetExplorer;
     using Source.Editors.HotkeyEditor;
@@ -89,6 +90,11 @@
         /// Gets or sets the template for the Stream Weaver.
         /// </summary>
         public DataTemplate StreamWeaverViewTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets the template for the Stream Icon Editor.
+        /// </summary>
+        public DataTemplate StreamIconEditorViewTemplate { get; set; }
 
         /// <summary>
         /// Gets or sets the template for the .Net Explorer.
@@ -196,6 +202,10 @@
             else if (item is StreamWeaverViewModel)
             {
                 return this.StreamWeaverViewTemplate;
+            }
+            else if (item is StreamIconEditorViewModel)
+            {
+                return this.StreamIconEditorViewTemplate;
             }
             else if (item is DotNetExplorerViewModel)
             {

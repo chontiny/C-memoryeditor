@@ -108,6 +108,7 @@
             clone.Category = this.Category;
             clone.Description = this.Description;
             clone.ExtendedDescription = this.ExtendedDescription;
+            clone.StreamIconPath = this.StreamIconPath;
             clone.Parent = this.Parent;
             clone.script = this.Script;
             clone.isCompiled = this.IsCompiled;
