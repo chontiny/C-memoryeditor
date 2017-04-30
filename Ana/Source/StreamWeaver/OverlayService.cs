@@ -78,24 +78,35 @@
 
         private void ReturnFile(HttpListenerContext context, String filePath)
         {
-            this.BuildOverlayHeaders(context);
-
-            context.Response.ContentType = this.GetcontentType(Path.GetExtension(filePath));
-            Byte[] buffer = new Byte[OverlayService.BufferSize];
-
-            using (FileStream fileStream = File.OpenRead(filePath))
+            if (!File.Exists(filePath))
             {
-                context.Response.ContentLength64 = fileStream.Length;
-
-                Int32 read;
-
-                while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    context.Response.OutputStream.Write(buffer, 0, read);
-                }
+                return;
             }
 
-            context.Response.OutputStream.Close();
+            try
+            {
+                this.BuildOverlayHeaders(context);
+
+                context.Response.ContentType = this.GetcontentType(Path.GetExtension(filePath));
+                Byte[] buffer = new Byte[OverlayService.BufferSize];
+
+                using (FileStream fileStream = File.OpenRead(filePath))
+                {
+                    context.Response.ContentLength64 = fileStream.Length;
+
+                    Int32 read;
+
+                    while ((read = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        context.Response.OutputStream.Write(buffer, 0, read);
+                    }
+                }
+
+                context.Response.OutputStream.Close();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void BuildOverlayHeaders(HttpListenerContext context)
@@ -162,6 +173,8 @@
                     return "application/pdf";
                 case ".ppt":
                     return "application/vnd.ms-powerpoint";
+                case ".svg":
+                    return "image/svg+xml";
                 case ".zip":
                     return "application/zip";
                 case ".txt":

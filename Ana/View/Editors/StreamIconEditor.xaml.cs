@@ -16,6 +16,8 @@
         public StreamIconEditor(String path = null)
         {
             this.InitializeComponent();
+
+            this.StreamIconEditorViewModel.SelectionCallBack = this.OnSelect;
         }
 
         /// <summary>
@@ -58,6 +60,16 @@
         /// <param name="e">Event args.</param>
         private void ExitFileMenuItemClick(Object sender, RoutedEventArgs e)
         {
+            this.DialogResult = false;
+            this.Close();
+        }
+
+        /// <summary>
+        /// Callback function for when a selection event is triggered.
+        /// </summary>
+        private void OnSelect()
+        {
+            this.DialogResult = true;
             this.Close();
         }
     }

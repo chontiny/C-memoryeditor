@@ -6,6 +6,7 @@
     using System;
     using System.Collections.ObjectModel;
     using System.IO;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -21,7 +22,7 @@
         public const String ToolContentId = nameof(StreamIconEditorViewModel);
 
         /// <summary>
-        /// The path to the stream icons
+        /// The path to the stream icons.
         /// </summary>
         private const String StreamIconsPath = @"Content/Overlay/Images/Buffs/";
 
@@ -57,6 +58,11 @@
         public String StreamIconPath { get; private set; }
 
         /// <summary>
+        /// Gets or sets the selection callback.
+        /// </summary>
+        public Action SelectionCallBack { get; set; }
+
+        /// <summary>
         /// Gets the processes running on the machine.
         /// </summary>
         public ObservableCollection<StreamIcon> StreamIconList
@@ -82,11 +88,14 @@
             return StreamIconEditorViewModel.streamIconEditorViewModelInstance.Value;
         }
 
+        /// <summary>
+        /// Lodas all stream icons from disk.
+        /// </summary>
         private void BuildStreamIconList()
         {
             this.StreamIconList = new ObservableCollection<StreamIcon>();
 
-            foreach (String filePath in Directory.EnumerateFiles(StreamIconEditorViewModel.StreamIconsPath))
+            foreach (String filePath in Directory.EnumerateFiles(StreamIconEditorViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")))
             {
                 App.Current.Dispatcher.Invoke(delegate
                 {
@@ -102,7 +111,13 @@
         /// <param name="text">The stream icon path.</param>
         private void UpdateStreamIconPath(StreamIcon streamIcon)
         {
-            this.StreamIconPath = streamIcon.Path;
+            if (streamIcon == null)
+            {
+                return;
+            }
+
+            this.StreamIconPath = streamIcon.FilePath;
+            this.SelectionCallBack?.Invoke();
         }
     }
     //// End class

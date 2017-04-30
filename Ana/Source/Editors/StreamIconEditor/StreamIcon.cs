@@ -2,6 +2,8 @@
 {
     using Ana.Source.Utils;
     using System;
+    using System.Drawing;
+    using System.IO;
     using System.Windows.Media.Imaging;
 
     internal class StreamIcon
@@ -9,8 +11,8 @@
         public StreamIcon(String filePath)
         {
             this.Name = filePath;
-            this.Path = filePath;
-            this.Icon = ImageUtils.BitmapToBitmapImage(ImageUtils.LoadSvg(filePath, 64, 64));
+            this.FilePath = Path.GetFileName(filePath);
+            this.Icon = ImageUtils.BitmapToBitmapImage(ImageUtils.LoadSvg(filePath, 64, 64, Color.White));
         }
 
         /// <summary>
@@ -21,7 +23,7 @@
         /// <summary>
         /// Gets the path to the icon.
         /// </summary>
-        public String Path { get; private set; }
+        public String FilePath { get; private set; }
 
         /// <summary>
         /// Gets the icon associated with this process.

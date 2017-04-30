@@ -42,15 +42,13 @@
         /// </summary>
         /// <param name="uri">The path specifying from where to load the svg image.</param>
         /// <returns>The bitmap image loaded from the given path.</returns>
-        public static Bitmap LoadSvg(String relativePath, Int32 width, Int32 height)
+        public static Bitmap LoadSvg(String relativePath, Int32 width, Int32 height, Color color)
         {
-            // image = ImageUtils.LoadSvg(@"Content\Overlay\Images\Buffs\deadly-strike.svg");
-
             SvgDocument svgDoc = SvgDocument.Open(relativePath);
 
             svgDoc.Children.Select(child => child)
                 .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == Color.White)
-                .ForEach(child => child.Fill = new SvgColourServer(Color.Cyan));
+                .ForEach(child => child.Fill = new SvgColourServer(color));
 
             svgDoc.Children.Select(child => child)
                 .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == Color.Black)
