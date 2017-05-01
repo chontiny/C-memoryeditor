@@ -82,14 +82,18 @@
         }
 
         /// <summary>
-        /// Gets or sets the stream table
+        /// Gets or sets the stream table.
         /// </summary>
-        public IEnumerable<StreamIcon> StreamTable
+        public IEnumerable<StreamTableItem> StreamTable
         {
             get
             {
-                return this.StreamIconList.Join(ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten(),
-                    streamIcon => streamIcon.IconName, projectItem => projectItem.StreamIconPath?.RemoveSuffixes(true, ".svg"), (streamIcon, projectItem) => streamIcon);
+                return this.StreamIconList.Join(
+                    ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
+                    .Where(projectItem => !String.IsNullOrWhiteSpace(projectItem.StreamCommand)),
+                    streamIcon => streamIcon.IconName,
+                        projectItem => projectItem.StreamIconPath?.RemoveSuffixes(true, ".svg"),
+                        (streamIcon, projectItem) => new StreamTableItem(projectItem, streamIcon));
             }
         }
 

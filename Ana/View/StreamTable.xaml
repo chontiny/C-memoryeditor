@@ -18,6 +18,7 @@
     Height="512"
     d:DesignHeight="256"
     d:DesignWidth="256"
+    SizeToContent="Height"
     x:ClassModifier="internal"
     BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
     BorderThickness="2"
@@ -45,29 +46,59 @@
                 <shell:TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="Stream Table" />
             </shell:WrapPanel>
         </shell:Grid>
-        <shell:Grid Grid.Row="1">
+
+        <Grid Grid.Row="1" ShowGridLines="True" Height="Auto" Name="StreamTableListView">
             <Grid.RowDefinitions>
-                <RowDefinition />
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
-            <ListView
-                Grid.Row="0"
-                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                BorderThickness="0"
-                ItemsSource="{Binding StreamTable}">
-                <ListView.Resources>
-                    <DataTemplate x:Key="Template">
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="{Binding Path=Icon}" />
-                    </DataTemplate>
-                </ListView.Resources>
+            <Grid Grid.Row="0" Margin="0 4 0 4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="64"/>
+                    <ColumnDefinition Width="72"/>
+                    <ColumnDefinition Width="128"/>
+                    <ColumnDefinition Width="184"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Grid.Column="0"
+                    Margin="4 0 0 0"
+                    HorizontalAlignment="Center"
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                    Text="Image" />
+                <TextBlock
+                    Grid.Column="1"
+                    Margin="4 0 0 0"
+                    Text="Command" 
+                    HorizontalAlignment="Center"
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}" />
+                <TextBlock
+                    TextWrapping="Wrap"
+                    Margin="4 0 0 0"
+                    Grid.Column="2"
+                    Text="Name" 
+                    HorizontalAlignment="Center"
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}" />
+                <TextBlock
+                    TextWrapping="Wrap"
+                    Margin="4 0 0 0"
+                    Grid.Column="3"
+                    Text="Description"
+                    HorizontalAlignment="Center" 
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}" />
+            </Grid>
+            <ListView Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                      BorderThickness="0"
+                      Grid.Row="1"
+                      Height="Auto"
+                      ItemsSource="{Binding StreamTable}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid ShowGridLines="True" Background="Teal">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
+                                <ColumnDefinition Width="64"/>
+                                <ColumnDefinition Width="72"/>
+                                <ColumnDefinition Width="128"/>
+                                <ColumnDefinition Width="184"/>
                             </Grid.ColumnDefinitions>
                             <Image
                                 Grid.Column="0"
@@ -76,15 +107,27 @@
                                 Source="{Binding Path=Icon}" />
                             <TextBlock
                                 Grid.Column="1"
-                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                                Margin="6,0,0,0"
+                                Margin="4 0 0 0"
+                                TextWrapping="Wrap"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                Text="{Binding Path=IconName}" />
+                                Text="{Binding Path=StreamCommand}" />
+                            <TextBlock
+                                Grid.Column="2"
+                                Margin="4 0 0 0"
+                                TextWrapping="Wrap"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                Text="{Binding Path=Description}" />
+                            <TextBlock
+                                TextWrapping="Wrap"
+                                Margin="4 0 0 0"
+                                Grid.Column="3"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                Text="{Binding Path=ExtendedDescription}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </shell:Grid>
+        </Grid>
 
         <shell:Grid Grid.Row="2" Margin="8">
             <shell:Button

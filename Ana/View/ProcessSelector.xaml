@@ -27,14 +27,6 @@
             Background="{StaticResource AvalonDock_Expression_BaseColor3}"
             BorderThickness="0"
             ItemsSource="{Binding ProcessList}">
-            <ListView.Resources>
-                <DataTemplate x:Key="Template">
-                    <Image
-                        Width="16"
-                        Height="16"
-                        Source="{Binding Path=Icon, Converter={StaticResource IconConverter}}" />
-                </DataTemplate>
-            </ListView.Resources>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -56,7 +48,7 @@
                         <TextBlock
                             Grid.Column="1"
                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                            Margin="6,0,0,0"
+                            Margin="4,0,0,0"
                             Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                             Text="{Binding Path=ProcessName}" />
                     </Grid>
