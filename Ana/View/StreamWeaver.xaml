@@ -49,7 +49,16 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Ana;component/Content/Icons/new.png"
+                            Source="pack://application:,,,/Ana;component/Content/Icons/New.png"
+                            ToolTip="Copy Twitch Markdown" />
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Command="{Binding SaveStreamTableCommand}">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/Ana;component/Content/Icons/Save.png"
                             ToolTip="Copy Twitch Markdown" />
                     </MenuItem.Header>
                 </MenuItem>

@@ -3,6 +3,7 @@
     using Ana.Source.Editors.StreamIconEditor;
     using System;
     using System.Windows;
+    using System.Windows.Controls;
 
     /// <summary>
     /// Interaction logic for StreamIconEditor.xaml.
@@ -17,7 +18,7 @@
         {
             this.InitializeComponent();
 
-            this.StreamIconEditorViewModel.SelectionCallBack = this.OnSelect;
+            this.StreamIconEditorViewModel.SelectionCallBack = this.TakeSelection;
         }
 
         /// <summary>
@@ -49,8 +50,7 @@
         /// <param name="e">Event args.</param>
         private void AcceptButtonClick(Object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Close();
+            this.StreamIconEditorViewModel.SetIconCommand.Execute(this.StreamIconEditorViewModel.SelectedStreamIcon);
         }
 
         /// <summary>
@@ -67,10 +67,15 @@
         /// <summary>
         /// Callback function for when a selection event is triggered.
         /// </summary>
-        private void OnSelect()
+        private void TakeSelection()
         {
             this.DialogResult = true;
             this.Close();
+        }
+
+        private void ListViewSelectionChanged(Object sender, SelectionChangedEventArgs e)
+        {
+            this.StreamIconEditorViewModel.SelectIconCommand.Execute(e.AddedItems.Count > 0 ? e.AddedItems[0] : null);
         }
     }
     //// End class

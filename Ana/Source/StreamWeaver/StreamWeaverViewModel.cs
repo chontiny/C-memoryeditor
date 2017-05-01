@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.StreamWeaver
 {
+    using Ana.View;
     using Content;
     using Docking;
     using LiveCharts;
@@ -69,6 +70,7 @@
 
             this.ClearVotesCommand = new RelayCommand(() => this.ClearVotes(), () => true);
             this.CopyMarkdownCommand = new RelayCommand(() => this.CopyMarkdown(), () => true);
+            this.SaveStreamTableCommand = new RelayCommand(() => this.SaveStreamTable(), () => true);
             this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
 
             MainViewModel.GetInstance().RegisterTool(this);
@@ -83,6 +85,11 @@
         /// Gets the command to copy the Twitch markdown for the current cheats.
         /// </summary>
         public ICommand CopyMarkdownCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command save a stream table image.
+        /// </summary>
+        public ICommand SaveStreamTableCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to connect to Twitch.
@@ -450,22 +457,6 @@
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Twitch chat connection unsuccessful. Please check your username and access token in the settings.");
         }
 
-        private Random random = new Random();
-
-        private String DebugMap(String command)
-        {
-            IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
-                .Select(item => item)
-                .Where(item => item.Category != ProjectItem.ProjectItemCategory.None)
-                .Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand));
-
-            Int32 index = random.Next(0, candidateProjectItems.Count());
-
-            command = candidateProjectItems.ElementAt(index).StreamCommand;
-
-            return command;
-        }
-
         /// <summary>
         /// Disconnects the Twitch client.
         /// </summary>
@@ -539,7 +530,7 @@
             foreach (ProjectItem projectItem in commandItems)
             {
                 markdown += Environment.NewLine;
-                markdown += (seperator + "**" + projectItem.StreamCommand + "**" + seperator
+                markdown += (seperator + "**" + "!" + projectItem.StreamCommand + "**" + seperator
                     + projectItem.Description + seperator
                     + projectItem.Category.ToString() + seperator
                     + projectItem.ExtendedDescription?.ToString() + seperator).Trim();
@@ -548,6 +539,12 @@
             Clipboard.SetText(markdown);
 
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Twitch Markdown copied to clipboard!");
+        }
+
+        private void SaveStreamTable()
+        {
+            StreamTable streamTable = new StreamTable();
+            streamTable.ShowDialog();
         }
 
         /// <summary>
@@ -565,7 +562,7 @@
         /// <param name="command">The command given by the user.</param>
         private void ProcessCommand(Int64 userId, String command)
         {
-            command = this.DebugMap(command);
+            // command = this.DebugMap(command);
 
             this.CommandVotes.AddOrUpdate(command, 1, (key, count) => count + 1);
 
@@ -579,12 +576,33 @@
         /// <param name="e">The message event.</param>
         private void OnMessageReceived(Object sender, OnMessageReceivedArgs e)
         {
+            if (String.IsNullOrWhiteSpace(e.ChatMessage?.Message) || !e.ChatMessage.Message.StartsWith("!"))
+            {
+                return;
+            }
+
             Int64 userId;
 
             if (Int64.TryParse(e.ChatMessage?.UserId, out userId))
             {
-                this.ProcessCommand(userId, e.ChatMessage?.Message);
+                this.ProcessCommand(userId, e.ChatMessage?.Message.TrimStart('!'));
             }
+        }
+
+        private Random random = new Random();
+
+        private String DebugMap(String command)
+        {
+            IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
+                .Select(item => item)
+                .Where(item => item.Category != ProjectItem.ProjectItemCategory.None)
+                .Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand));
+
+            Int32 index = random.Next(0, candidateProjectItems.Count());
+
+            command = candidateProjectItems.ElementAt(index).StreamCommand;
+
+            return command;
         }
     }
     //// End class

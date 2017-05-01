@@ -183,7 +183,7 @@
         /// Gets or sets the category of this project item.
         /// </summary>
         [DataMember]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Category"), Description("The category for this project item")]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Category"), Description("The category for this project item")]
         public ProjectItemCategory Category
         {
             get
@@ -292,7 +292,7 @@
         /// </summary>
         [DataMember]
         [Editor(typeof(StreamIconEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Stream Icon"), Description("The stream icon for this item")]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Icon"), Description("The stream icon for this item")]
         public String StreamIconPath
         {
             get
@@ -317,7 +317,7 @@
         /// <summary>
         /// Gets or sets the stream command for this project item.
         /// </summary>
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Stream Command"), Description("The stream command for this item")]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Command"), Description("The stream command for this item")]
         public String StreamCommand
         {
             get

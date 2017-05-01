@@ -1,13 +1,11 @@
 ﻿namespace Ana.Source.Editors.StreamIconEditor
 {
-    using Ana.Source.UserSettings;
+    using Ana.Source.StreamWeaver;
     using Docking;
     using Main;
     using Mvvm.Command;
     using System;
     using System.Collections.ObjectModel;
-    using System.IO;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -34,24 +32,25 @@
                 () => { return new StreamIconEditorViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
-        private ObservableCollection<StreamIcon> streamIconList;
-
         /// <summary>
         /// Prevents a default instance of the <see cref="StreamIconEditorViewModel" /> class.
         /// </summary>
         private StreamIconEditorViewModel() : base("Stream Icon Editor")
         {
             this.ContentId = StreamIconEditorViewModel.ToolContentId;
-            this.SelectIconCommand = new RelayCommand<StreamIcon>((streamIcon) => this.UpdateStreamIconPath(streamIcon), (streamIcon) => true);
-            this.StreamIconListLock = new Object();
-            this.StreamIconItemLock = new Object();
+            this.SetIconCommand = new RelayCommand<StreamIcon>((streamIcon) => this.UpdateStreamIconPath(streamIcon), (streamIcon) => true);
+            this.SelectIconCommand = new RelayCommand<StreamIcon>((streamIcon) => this.ChangeSelectedIcon(streamIcon), (streamIcon) => true);
 
-            Task.Run(() => this.RebuildStreamIconList());
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
-        /// Gets the command to select a target process.
+        /// Gets the command to set the stream icon.
+        /// </summary>
+        public ICommand SetIconCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to select a stream icon.
         /// </summary>
         public ICommand SelectIconCommand { get; private set; }
 
@@ -66,14 +65,9 @@
         public Action SelectionCallBack { get; set; }
 
         /// <summary>
-        /// Gets or sets the icon list access lock.
+        /// Gets the selected stream icon.
         /// </summary>
-        private Object StreamIconListLock { get; set; }
-
-        /// <summary>
-        /// Gets or sets the icon item access lock.
-        /// </summary>
-        private Object StreamIconItemLock { get; set; }
+        public StreamIcon SelectedStreamIcon { get; private set; }
 
         /// <summary>
         /// Gets the processes running on the machine.
@@ -82,13 +76,7 @@
         {
             get
             {
-                return this.streamIconList;
-            }
-
-            set
-            {
-                this.streamIconList = value;
-                this.RaisePropertyChanged(nameof(this.StreamIconList));
+                return StreamTableViewModel.GetInstance().StreamIconList;
             }
         }
 
@@ -102,31 +90,12 @@
         }
 
         /// <summary>
-        /// Lodas all stream icons from disk.
+        /// Updates the selected stream icon
         /// </summary>
-        public void RebuildStreamIconList()
+        /// <param name="text">The stream icon path.</param>
+        private void ChangeSelectedIcon(StreamIcon streamIcon)
         {
-            lock (this.StreamIconListLock)
-            {
-                this.StreamIconList = new ObservableCollection<StreamIcon>();
-
-                Parallel.ForEach(
-                    Directory.EnumerateFiles(StreamIconEditorViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")),
-                    SettingsViewModel.GetInstance().ParallelSettingsFast,
-                    (filePath) =>
-                {
-                    StreamIcon streamIcon = new StreamIcon(filePath);
-
-                    lock (this.StreamIconItemLock)
-                    {
-                        App.Current.Dispatcher.Invoke(delegate
-                        {
-                            this.StreamIconList.Add(streamIcon);
-                            this.RaisePropertyChanged(nameof(this.StreamIconList));
-                        });
-                    }
-                });
-            }
+            this.SelectedStreamIcon = streamIcon;
         }
 
         /// <summary>

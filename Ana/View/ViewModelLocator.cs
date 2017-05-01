@@ -183,6 +183,17 @@
         }
 
         /// <summary>
+        /// Gets the Stream Table view model.
+        /// </summary>
+        public StreamTableViewModel StreamTableViewModel
+        {
+            get
+            {
+                return StreamTableViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
         /// Gets the .Net Explorer view model.
         /// </summary>
         public DotNetExplorerViewModel DotNetExplorerViewModel

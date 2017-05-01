@@ -1,17 +1,14 @@
 ﻿body {
-	margin-top: 66px;
-	background-color: transparent;
-}
-
-p {
-	color: red;
+    background-color: transparent;
 }
 
 h1 {
-	color: red;
+    font-family: 'Hobo Std';
+    font-weight: bold;
+    color: white;
 }
 
-.buff{
-  width: 64px;
-  height: 64px;
+.buff {
+    width: 64px;
+    height: 64px;
 }

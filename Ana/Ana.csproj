@@ -184,11 +184,12 @@
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
-    <Compile Include="Source\Editors\StreamIconEditor\StreamIcon.cs" />
+    <Compile Include="Source\StreamWeaver\StreamIcon.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorViewModel.cs" />
     <Compile Include="Source\StreamWeaver\OverlayItem.cs" />
     <Compile Include="Source\StreamWeaver\OverlayService.cs" />
+    <Compile Include="Source\StreamWeaver\StreamTableViewModel.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverTask.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
@@ -448,6 +449,9 @@
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\StreamTable.xaml.cs">
+      <DependentUpon>StreamTable.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Editors\StreamIconEditor.xaml.cs">
       <DependentUpon>StreamIconEditor.xaml</DependentUpon>
     </Compile>
@@ -566,6 +570,10 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Page Include="View\ChangeLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\StreamTable.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

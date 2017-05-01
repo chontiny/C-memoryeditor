@@ -92,6 +92,11 @@
         public DataTemplate StreamWeaverViewTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the template for the Stream Table.
+        /// </summary>
+        public DataTemplate StreamTableViewTemplate { get; set; }
+
+        /// <summary>
         /// Gets or sets the template for the Stream Icon Editor.
         /// </summary>
         public DataTemplate StreamIconEditorViewTemplate { get; set; }
@@ -202,6 +207,10 @@
             else if (item is StreamWeaverViewModel)
             {
                 return this.StreamWeaverViewTemplate;
+            }
+            else if (item is StreamTableViewModel)
+            {
+                return this.StreamTableViewTemplate;
             }
             else if (item is StreamIconEditorViewModel)
             {

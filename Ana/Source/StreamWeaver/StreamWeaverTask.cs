@@ -11,7 +11,7 @@
         /// <summary>
         /// The interval between refreshes.
         /// </summary>
-        private const Int32 RefreshInterval = 1000;
+        private const Int32 RefreshInterval = 3000;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="StreamWeaverTask" /> class.
