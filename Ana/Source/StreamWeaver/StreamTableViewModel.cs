@@ -51,7 +51,6 @@
             this.ContentId = StreamTableViewModel.ToolContentId;
             this.StreamIconListLock = new Object();
 
-            Task.Run(() => this.BuildStreamIconListAsync());
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
@@ -73,10 +72,9 @@
         {
             get
             {
-                this.streamIconList = new ObservableCollection<StreamIcon>(BuildStreamIconList());
-                this.RaisePropertyChanged(nameof(this.StreamIconList));
-
-                return this.StreamIconList.Join(
+                lock (this.StreamIconListLock)
+                {
+                    return this.StreamIconList.Join(
                     ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
                         .Where(projectItem => !String.IsNullOrWhiteSpace(projectItem.StreamCommand)),
                         streamIcon => streamIcon.IconName,
@@ -84,6 +82,7 @@
                             (streamIcon, projectItem) => new StreamTableItem(projectItem, streamIcon))
                         .OrderBy(streamTableItem => streamTableItem.StreamCommand)
                         .OrderBy(streamTableItem => streamTableItem.Category);
+                }
             }
         }
 
@@ -118,55 +117,32 @@
         /// <summary>
         /// Lodas all stream icons from disk.
         /// </summary>
-        public void BuildStreamIconListAsync()
+        public void RebuildStreamIconList()
         {
-            lock (this.StreamIconListLock)
+            Task.Run(() =>
             {
-                if (this.StreamIconList != null)
+                lock (this.StreamIconListLock)
                 {
-                    return;
-                }
-
-                this.streamIconList = new ObservableCollection<StreamIcon>();
-
-                Parallel.ForEach(
-                    Directory.EnumerateFiles(StreamTableViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")),
-                    SettingsViewModel.GetInstance().ParallelSettingsFast,
-                    (filePath) =>
+                    if (this.StreamIconList != null)
                     {
-                        App.Current.Dispatcher.Invoke(delegate
+                        return;
+                    }
+
+                    this.streamIconList = new ObservableCollection<StreamIcon>();
+
+                    Parallel.ForEach(
+                        Directory.EnumerateFiles(StreamTableViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")),
+                        SettingsViewModel.GetInstance().ParallelSettingsFast,
+                        (filePath) =>
                         {
-                            streamIconList.Add(new StreamIcon(filePath));
-                            this.RaisePropertyChanged(nameof(this.StreamIconList));
+                            App.Current.Dispatcher.Invoke(delegate
+                            {
+                                streamIconList.Add(new StreamIcon(filePath));
+                                this.RaisePropertyChanged(nameof(this.StreamIconList));
+                            });
                         });
-                    });
-            }
-        }
-
-        /// <summary>
-        /// Lodas all stream icons from disk, without calling any property changed notification events.
-        /// </summary>
-        public IEnumerable<StreamIcon> BuildStreamIconList()
-        {
-            lock (this.StreamIconListLock)
-            {
-                if (this.StreamIconList != null)
-                {
-                    return this.StreamIconList;
                 }
-
-                List<StreamIcon> streamIcons = new List<StreamIcon>();
-
-                Parallel.ForEach(
-                    Directory.EnumerateFiles(StreamTableViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")),
-                    SettingsViewModel.GetInstance().ParallelSettingsFast,
-                    (filePath) =>
-                {
-                    streamIcons.Add(new StreamIcon(filePath));
-                });
-
-                return streamIcons;
-            }
+            });
         }
     }
     //// End class

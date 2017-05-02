@@ -8,6 +8,7 @@
     using LiveCharts;
     using LiveCharts.Wpf;
     using Main;
+    using Microsoft.Win32;
     using Mvvm.Command;
     using Output;
     using Project;
@@ -15,6 +16,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.IO;
     using System.Linq;
     using System.Threading;
     using System.Windows;
@@ -545,21 +547,37 @@
 
         private void SaveStreamTable()
         {
-            StreamTable streamTable = new StreamTable();
-            StreamTableViewModel streamTableViewModel = streamTable.DataContext as StreamTableViewModel;
-            streamTable.Show();
-
-            Int32 pageNumber = 0;
-            foreach (IEnumerable<StreamTableItem> page in streamTableViewModel.StreamTable.Batch(12))
+            try
             {
-                streamTableViewModel.StreamTableSubView = page;
-                streamTable.InvalidateVisual();
-                streamTable.UpdateLayout();
-                ImageUtils.SnapShotPng(streamTable.StreamTableListView, "test" + pageNumber.ToString() + ".png", 1);
-                pageNumber++;
-            }
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.FileName = "Select a Folder to Output the Stream Command Tables";
+                saveFileDialog.Title = "Save Stream Command Tables";
 
-            streamTable.Close();
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    String folderPath = Path.GetDirectoryName(saveFileDialog.FileName);
+
+                    StreamTable streamTable = new StreamTable();
+                    StreamTableViewModel streamTableViewModel = streamTable.DataContext as StreamTableViewModel;
+                    streamTable.Show();
+
+                    Int32 pageNumber = 1;
+                    foreach (IEnumerable<StreamTableItem> page in streamTableViewModel.StreamTable.Batch(12))
+                    {
+                        streamTableViewModel.StreamTableSubView = page;
+                        streamTable.InvalidateVisual();
+                        streamTable.UpdateLayout();
+                        ImageUtils.SnapShotPng(streamTable.StreamTableListView, Path.Combine(folderPath, "Commands" + pageNumber.ToString() + ".png"), 1);
+                        pageNumber++;
+                    }
+
+                    streamTable.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save stream command tables - " + ex?.ToString());
+            }
         }
 
         /// <summary>

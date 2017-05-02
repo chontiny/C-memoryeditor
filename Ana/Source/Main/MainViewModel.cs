@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Main
 {
+    using Ana.Source.StreamWeaver;
     using Analytics;
     using Docking;
     using Engine.AddressResolver;
@@ -162,6 +163,7 @@
             DotNetObjectCollector.GetInstance().Begin();
             AddressResolver.GetInstance().Begin();
             AnalyticsService.GetInstance().Start();
+            StreamTableViewModel.GetInstance().RebuildStreamIconList();
 
             AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start", "1");
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background Services Started");
