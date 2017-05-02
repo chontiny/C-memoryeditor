@@ -8,9 +8,10 @@
     {
         public StreamTableItem(ProjectItem projectItem, StreamIcon streamIcon)
         {
-            this.StreamCommand = projectItem.StreamCommand;
+            this.StreamCommand = "!" + projectItem.StreamCommand;
             this.Description = projectItem.Description;
             this.ExtendedDescription = projectItem.ExtendedDescription;
+            this.Category = projectItem.Category;
             this.Icon = streamIcon.Icon;
         }
 
@@ -28,6 +29,11 @@
         /// 
         /// </summary>
         public String ExtendedDescription { get; private set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public ProjectItem.ProjectItemCategory Category { get; private set; }
 
         /// <summary>
         /// Gets the icon associated with this process.

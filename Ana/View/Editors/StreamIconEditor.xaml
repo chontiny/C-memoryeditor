@@ -54,7 +54,7 @@
                 Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                 BorderThickness="0"
                 SelectionChanged="ListViewSelectionChanged"
-                ItemsSource="{Binding StreamIconList}">
+                ItemsSource="{Binding StreamTableViewModel.StreamIconList, Source={StaticResource ViewModelLocator}}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>

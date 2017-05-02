@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Utils
 {
+    using Ana.Source.Output;
     using Ana.Source.Utils.Extensions;
     using DataStructures;
     using Svg;
@@ -8,6 +9,8 @@
     using System.Drawing.Imaging;
     using System.IO;
     using System.Linq;
+    using System.Windows;
+    using System.Windows.Media;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -37,22 +40,60 @@
             return bitmapImage;
         }
 
+        public static void SnapShotPng(UIElement source, String destination, Int32 zoom)
+        {
+            try
+            {
+                Double actualHeight = source.RenderSize.Height;
+                Double actualWidth = source.RenderSize.Width;
+
+                Double renderHeight = actualHeight * zoom;
+                Double renderWidth = actualWidth * zoom;
+
+                RenderTargetBitmap renderTarget = new RenderTargetBitmap((Int32)renderWidth, (Int32)renderHeight, 96, 96, PixelFormats.Pbgra32);
+                VisualBrush sourceBrush = new VisualBrush(source);
+
+                DrawingVisual drawingVisual = new DrawingVisual();
+                DrawingContext drawingContext = drawingVisual.RenderOpen();
+
+                using (drawingContext)
+                {
+                    drawingContext.PushTransform(new ScaleTransform(zoom, zoom));
+                    drawingContext.DrawRectangle(sourceBrush, null, new Rect(new System.Windows.Point(0, 0), new System.Windows.Point(actualWidth, actualHeight)));
+                }
+
+                renderTarget.Render(drawingVisual);
+
+                PngBitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(renderTarget));
+
+                using (FileStream stream = new FileStream(destination, FileMode.Create, FileAccess.Write))
+                {
+                    encoder.Save(stream);
+                }
+            }
+            catch (Exception e)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, e.ToString());
+            }
+        }
+
         /// <summary>
         /// Loads an svg image from the given path.
         /// </summary>
         /// <param name="uri">The path specifying from where to load the svg image.</param>
         /// <returns>The bitmap image loaded from the given path.</returns>
-        public static Bitmap LoadSvg(String relativePath, Int32 width, Int32 height, Color color)
+        public static Bitmap LoadSvg(String relativePath, Int32 width, Int32 height, System.Drawing.Color color)
         {
             SvgDocument svgDoc = SvgDocument.Open(relativePath);
 
             svgDoc.Children.Select(child => child)
-                .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == Color.White)
+                .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == System.Drawing.Color.White)
                 .ForEach(child => child.Fill = new SvgColourServer(color));
 
             svgDoc.Children.Select(child => child)
-                .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == Color.Black)
-                .ForEach(child => child.Fill = new SvgColourServer(Color.Transparent));
+                .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == System.Drawing.Color.Black)
+                .ForEach(child => child.Fill = new SvgColourServer(System.Drawing.Color.Transparent));
 
             svgDoc.Width = width;
             svgDoc.Height = height;

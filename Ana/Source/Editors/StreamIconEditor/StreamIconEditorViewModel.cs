@@ -1,11 +1,9 @@
 ﻿namespace Ana.Source.Editors.StreamIconEditor
 {
-    using Ana.Source.StreamWeaver;
     using Docking;
     using Main;
     using Mvvm.Command;
     using System;
-    using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -68,17 +66,6 @@
         /// Gets the selected stream icon.
         /// </summary>
         public StreamIcon SelectedStreamIcon { get; private set; }
-
-        /// <summary>
-        /// Gets the processes running on the machine.
-        /// </summary>
-        public ObservableCollection<StreamIcon> StreamIconList
-        {
-            get
-            {
-                return StreamTableViewModel.GetInstance().StreamIconList;
-            }
-        }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="StreamIconEditorViewModel" /> class.

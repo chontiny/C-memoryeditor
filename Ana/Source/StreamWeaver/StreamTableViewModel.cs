@@ -41,6 +41,8 @@
         /// </summary>
         private ObservableCollection<StreamIcon> streamIconList;
 
+        private IEnumerable<StreamTableItem> streamTableSubView;
+
         /// <summary>
         /// Prevents a default instance of the <see cref="StreamIconEditorViewModel" /> class.
         /// </summary>
@@ -48,21 +50,10 @@
         {
             this.ContentId = StreamTableViewModel.ToolContentId;
             this.StreamIconListLock = new Object();
-            this.StreamIconItemLock = new Object();
 
-            Task.Run(() => this.RebuildStreamIconList());
+            Task.Run(() => this.BuildStreamIconListAsync());
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
-
-        /// <summary>
-        /// Gets or sets the icon list access lock.
-        /// </summary>
-        private Object StreamIconListLock { get; set; }
-
-        /// <summary>
-        /// Gets or sets the icon item access lock.
-        /// </summary>
-        private Object StreamIconItemLock { get; set; }
 
         /// <summary>
         /// Gets or sets the list of stream icons.
@@ -73,12 +64,6 @@
             {
                 return this.streamIconList;
             }
-
-            set
-            {
-                this.streamIconList = value;
-                this.RaisePropertyChanged(nameof(this.StreamIconList));
-            }
         }
 
         /// <summary>
@@ -88,14 +73,38 @@
         {
             get
             {
+                this.streamIconList = new ObservableCollection<StreamIcon>(BuildStreamIconList());
+                this.RaisePropertyChanged(nameof(this.StreamIconList));
+
                 return this.StreamIconList.Join(
                     ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
-                    .Where(projectItem => !String.IsNullOrWhiteSpace(projectItem.StreamCommand)),
-                    streamIcon => streamIcon.IconName,
-                        projectItem => projectItem.StreamIconPath?.RemoveSuffixes(true, ".svg"),
-                        (streamIcon, projectItem) => new StreamTableItem(projectItem, streamIcon));
+                        .Where(projectItem => !String.IsNullOrWhiteSpace(projectItem.StreamCommand)),
+                        streamIcon => streamIcon.IconName,
+                            projectItem => projectItem.StreamIconPath?.RemoveSuffixes(true, ".svg"),
+                            (streamIcon, projectItem) => new StreamTableItem(projectItem, streamIcon))
+                        .OrderBy(streamTableItem => streamTableItem.StreamCommand)
+                        .OrderBy(streamTableItem => streamTableItem.Category);
             }
         }
+
+        /// <summary>
+        /// Gets or sets the view of the stream table being currently viewed for rendering.
+        /// </summary>
+        public IEnumerable<StreamTableItem> StreamTableSubView
+        {
+            get
+            {
+                return this.streamTableSubView;
+            }
+
+            set
+            {
+                this.streamTableSubView = value;
+                this.RaisePropertyChanged(nameof(this.StreamTableSubView));
+            }
+        }
+
+        private Object StreamIconListLock { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="StreamTableViewModel" /> class.
@@ -109,28 +118,54 @@
         /// <summary>
         /// Lodas all stream icons from disk.
         /// </summary>
-        public void RebuildStreamIconList()
+        public void BuildStreamIconListAsync()
         {
             lock (this.StreamIconListLock)
             {
-                this.StreamIconList = new ObservableCollection<StreamIcon>();
+                if (this.StreamIconList != null)
+                {
+                    return;
+                }
+
+                this.streamIconList = new ObservableCollection<StreamIcon>();
+
+                Parallel.ForEach(
+                    Directory.EnumerateFiles(StreamTableViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")),
+                    SettingsViewModel.GetInstance().ParallelSettingsFast,
+                    (filePath) =>
+                    {
+                        App.Current.Dispatcher.Invoke(delegate
+                        {
+                            streamIconList.Add(new StreamIcon(filePath));
+                            this.RaisePropertyChanged(nameof(this.StreamIconList));
+                        });
+                    });
+            }
+        }
+
+        /// <summary>
+        /// Lodas all stream icons from disk, without calling any property changed notification events.
+        /// </summary>
+        public IEnumerable<StreamIcon> BuildStreamIconList()
+        {
+            lock (this.StreamIconListLock)
+            {
+                if (this.StreamIconList != null)
+                {
+                    return this.StreamIconList;
+                }
+
+                List<StreamIcon> streamIcons = new List<StreamIcon>();
 
                 Parallel.ForEach(
                     Directory.EnumerateFiles(StreamTableViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")),
                     SettingsViewModel.GetInstance().ParallelSettingsFast,
                     (filePath) =>
                 {
-                    StreamIcon streamIcon = new StreamIcon(filePath);
-
-                    lock (this.StreamIconItemLock)
-                    {
-                        App.Current.Dispatcher.Invoke(delegate
-                        {
-                            this.StreamIconList.Add(streamIcon);
-                            this.RaisePropertyChanged(nameof(this.StreamIconList));
-                        });
-                    }
+                    streamIcons.Add(new StreamIcon(filePath));
                 });
+
+                return streamIcons;
             }
         }
     }

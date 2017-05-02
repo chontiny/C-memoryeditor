@@ -31,6 +31,10 @@
     </shell:WindowChrome.WindowChrome>
 
     <shell:Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <Grid.Resources>
+            <converters:CategoryToColorConverter x:Key="CategoryToColorConverter" />
+        </Grid.Resources>
+
         <shell:Grid.RowDefinitions>
             <shell:RowDefinition Height="Auto" />
             <shell:RowDefinition />
@@ -47,40 +51,40 @@
             </shell:WrapPanel>
         </shell:Grid>
 
-        <Grid Grid.Row="1" ShowGridLines="True" Height="Auto" Name="StreamTableListView">
+        <Grid Grid.Row="1" ShowGridLines="True" Background="{StaticResource AvalonDock_Expression_BaseColor4}" Height="Auto" Name="StreamTableListView">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Margin="0 4 0 4">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="64"/>
-                    <ColumnDefinition Width="72"/>
-                    <ColumnDefinition Width="128"/>
-                    <ColumnDefinition Width="184"/>
+                    <ColumnDefinition Width="48"/>
+                    <ColumnDefinition Width="78"/>
+                    <ColumnDefinition Width="134"/>
+                    <ColumnDefinition Width="204"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock
                     Grid.Column="0"
-                    Margin="4 0 0 0"
+                    FontSize="14"
                     HorizontalAlignment="Center"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                    Text="Image" />
+                    Text="Icon" />
                 <TextBlock
                     Grid.Column="1"
-                    Margin="4 0 0 0"
+                    FontSize="14"
                     Text="Command" 
                     HorizontalAlignment="Center"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}" />
                 <TextBlock
                     TextWrapping="Wrap"
-                    Margin="4 0 0 0"
+                    FontSize="14"
                     Grid.Column="2"
                     Text="Name" 
                     HorizontalAlignment="Center"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}" />
                 <TextBlock
                     TextWrapping="Wrap"
-                    Margin="4 0 0 0"
+                    FontSize="14"
                     Grid.Column="3"
                     Text="Description"
                     HorizontalAlignment="Center" 
@@ -90,37 +94,40 @@
                       BorderThickness="0"
                       Grid.Row="1"
                       Height="Auto"
-                      ItemsSource="{Binding StreamTable}">
+                      ItemsSource="{Binding StreamTableSubView}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid ShowGridLines="True" Background="Teal">
+                        <Grid ShowGridLines="True" Margin="-1,-1,-1,-1" Background="{Binding Path=Category, Converter={StaticResource CategoryToColorConverter}}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="64"/>
-                                <ColumnDefinition Width="72"/>
-                                <ColumnDefinition Width="128"/>
-                                <ColumnDefinition Width="184"/>
+                                <ColumnDefinition Width="48"/>
+                                <ColumnDefinition Width="78"/>
+                                <ColumnDefinition Width="134"/>
+                                <ColumnDefinition Width="204"/>
                             </Grid.ColumnDefinitions>
                             <Image
                                 Grid.Column="0"
-                                Width="64"
-                                Height="64"
+                                Width="24"
+                                Height="24"
                                 Source="{Binding Path=Icon}" />
                             <TextBlock
                                 Grid.Column="1"
-                                Margin="4 0 0 0"
+                                FontSize="16"
+                                Margin="2 0 0 0"
                                 TextWrapping="Wrap"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                 Text="{Binding Path=StreamCommand}" />
                             <TextBlock
                                 Grid.Column="2"
-                                Margin="4 0 0 0"
+                                FontSize="14"
+                                Margin="2 0 0 0"
                                 TextWrapping="Wrap"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                 Text="{Binding Path=Description}" />
                             <TextBlock
-                                TextWrapping="Wrap"
-                                Margin="4 0 0 0"
                                 Grid.Column="3"
+                                TextWrapping="Wrap"
+                                FontSize="14"
+                                Margin="2 0 0 0"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                 Text="{Binding Path=ExtendedDescription}" />
                         </Grid>

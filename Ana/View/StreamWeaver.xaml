@@ -59,7 +59,7 @@
                             Width="16"
                             Height="16"
                             Source="pack://application:,,,/Ana;component/Content/Icons/Save.png"
-                            ToolTip="Copy Twitch Markdown" />
+                            ToolTip="Save Stream Table Images" />
                     </MenuItem.Header>
                 </MenuItem>
                 <Separator Style="{DynamicResource VerticalSeparator}" />

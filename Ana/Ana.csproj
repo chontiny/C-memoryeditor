@@ -184,6 +184,7 @@
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\Mvvm\Converters\CategoryToColorConverter.cs" />
     <Compile Include="Source\StreamWeaver\StreamTableItem.cs" />
     <Compile Include="Source\StreamWeaver\StreamIcon.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
@@ -248,6 +249,7 @@
     <Compile Include="Source\Engine\Input\Keyboard\KeyState.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyboardCapture.cs" />
     <Compile Include="Source\Utils\DataStructures\TTLCache.cs" />
+    <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\EnumExtensions.cs" />
     <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
     <Compile Include="Source\Utils\Observables\WeakObserver.cs" />

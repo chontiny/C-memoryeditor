@@ -21,6 +21,38 @@
             return enumeration == null || !enumeration.Any();
         }
 
+        public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> source, Int32 size)
+        {
+            T[] bucket = null;
+            Int32 count = 0;
+
+            foreach (T item in source)
+            {
+                if (bucket == null)
+                {
+                    bucket = new T[size];
+                }
+
+                bucket[count++] = item;
+
+                if (count != size)
+                {
+                    continue;
+                }
+
+                yield return bucket.Select(x => x);
+
+                bucket = null;
+                count = 0;
+            }
+
+            // Return the last bucket with all remaining elements
+            if (bucket != null && count > 0)
+            {
+                yield return bucket.Take(count);
+            }
+        }
+
         public static UInt64 Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, UInt64> summation)
         {
             UInt64 total = 0;
