@@ -323,7 +323,7 @@
                     }
 
                     // Read current page data for chunk
-                    Byte[] pageData = EngineCore.GetInstance().OperatingSystemAdapter?.ReadBytes(chunk.BaseAddress, chunk.RegionSize.ToInt32(), out success);
+                    Byte[] pageData = EngineCore.GetInstance().OperatingSystem?.ReadBytes(chunk.BaseAddress, chunk.RegionSize.ToInt32(), out success);
 
                     // Read failed; Deallocated page
                     if (!success)

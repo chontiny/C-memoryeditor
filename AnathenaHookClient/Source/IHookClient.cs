@@ -1,31 +1,29 @@
-﻿namespace Ana.Source.Engine.Hook.Client
+﻿namespace AnathenaHookClient.Source
 {
-    using Graphics;
-    using SpeedHack;
-    using System.Diagnostics;
+    using System;
 
     /// <summary>
     /// Interface defining a hook client to control the hook injected into an external process
     /// </summary>
-    internal interface IHookClient
+    public interface IHookClient
     {
         /// <summary>
         /// Injects the hook into the specified process
         /// </summary>
         /// <param name="process">The process to inject into</param>
-        void Inject(Process process);
+        void Inject(Int32 processId);
 
         /// <summary>
         /// Gets the graphics interface hook object
         /// </summary>
         /// <returns>The graphics interface hook object</returns>
-        IGraphicsInterface GetGraphicsInterface();
+        Object GetGraphicsInterface();
 
         /// <summary>
         /// Gets the speed hack hook object
         /// </summary>
         /// <returns>The speed hack hook object</returns>
-        ISpeedHackInterface GetSpeedHackInterface();
+        Object GetSpeedHackInterface();
 
         /// <summary>
         /// Allows the server to ping the client to ensure that it is still alive

@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal interface IGraphicsInterface
+    public interface IGraphicsInterface
     {
         Guid CreateText(String text, Int32 locationX, Int32 locationY);
 

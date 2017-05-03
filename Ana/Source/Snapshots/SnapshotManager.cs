@@ -142,10 +142,10 @@
             MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image | MemoryTypeEnum.Mapped;
 
             IntPtr startAddress = IntPtr.Zero;
-            IntPtr endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress;
+            IntPtr endAddress = EngineCore.GetInstance().OperatingSystem.GetUserModeRegion().EndAddress;
 
             List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystemAdapter.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystem.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -175,7 +175,7 @@
             if (SettingsViewModel.GetInstance().IsUserMode)
             {
                 startAddress = IntPtr.Zero;
-                endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress;
+                endAddress = EngineCore.GetInstance().OperatingSystem.GetUserModeRegion().EndAddress;
             }
             else
             {
@@ -184,7 +184,7 @@
             }
 
             List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystemAdapter.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystem.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,

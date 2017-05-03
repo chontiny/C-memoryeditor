@@ -145,7 +145,7 @@
                 List<SnapshotRegion> regions = new List<SnapshotRegion>();
 
                 // Add static bases
-                foreach (NormalizedModule normalizedModule in EngineCore.GetInstance().OperatingSystemAdapter.GetModules())
+                foreach (NormalizedModule normalizedModule in EngineCore.GetInstance().OperatingSystem.GetModules())
                 {
                     regions.Add(new SnapshotRegion(normalizedModule.BaseAddress, normalizedModule.RegionSize));
                 }

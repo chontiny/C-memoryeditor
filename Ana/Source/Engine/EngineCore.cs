@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Engine
 {
+    using Ana.Source.Engine.Networks;
     using Architecture;
     using Graphics;
     using Input;
@@ -11,67 +12,73 @@
     using Unrandomizer;
 
     /// <summary>
-    /// Abstraction of the system, providing the ability to easily manipulate system internals regardless of the platform
+    /// Abstraction of the system, providing the ability to easily manipulate system internals regardless of the platform.
     /// </summary>
     internal class EngineCore
     {
         /// <summary>
-        /// Singleton instance of the <see cref="EngineCore" /> class
+        /// Singleton instance of the <see cref="EngineCore" /> class.
         /// </summary>
         private static Lazy<EngineCore> engineCoreInstance = new Lazy<EngineCore>(
                 () => { return new EngineCore(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="EngineCore" /> class from being created
+        /// Prevents a default instance of the <see cref="EngineCore" /> class from being created.
         /// </summary>
         private EngineCore()
         {
             this.Processes = new ProcessAdapter();
-            this.OperatingSystemAdapter = OperatingSystemAdapterFactory.GetOperatingSystemAdapter();
+            this.OperatingSystem = OperatingSystemAdapterFactory.GetOperatingSystemAdapter();
+            this.Network = new Network();
             this.Architecture = ArchitectureFactory.GetArchitecture();
             this.Input = new InputManager();
         }
 
         /// <summary>
-        /// Gets an object that provides access to target process manipulations
+        /// Gets an object that provides access to target process manipulations.
         /// </summary>
         public IProcesses Processes { get; private set; }
 
         /// <summary>
-        /// Gets an object that provides access to target memory manipulations
+        /// Gets an object that provides access to target memory manipulations.
         /// </summary>
-        public IOperatingSystemAdapter OperatingSystemAdapter { get; private set; }
+        public IOperatingSystemAdapter OperatingSystem { get; private set; }
 
         /// <summary>
-        /// Gets an object that provides access to an assembler and disassembler
+        /// Gets an object that provides access to the network access for a process.
+        /// </summary>
+        public INetwork Network { get; private set; }
+
+        /// <summary>
+        /// Gets an object that provides access to an assembler and disassembler.
         /// </summary>
         public IArchitecture Architecture { get; private set; }
 
         /// <summary>
-        /// Gets an object that provides access to target execution speed manipulations
+        /// Gets an object that provides access to target execution speed manipulations.
         /// </summary>
         public ISpeedManipulator SpeedManipulator { get; private set; }
 
         /// <summary>
-        /// Gets an object that provides access to target random library manipulations
+        /// Gets an object that provides access to target random library manipulations.
         /// </summary>
         public IUnrandomizer Unrandomizer { get; private set; }
 
         /// <summary>
-        /// Gets an object that provides access to target graphics library manipulations
+        /// Gets an object that provides access to target graphics library manipulations.
         /// </summary>
         public IGraphics Graphics { get; private set; }
 
         /// <summary>
-        /// Gets an object that provides access to system input for mouse, keyboard, and controllers
+        /// Gets an object that provides access to system input for mouse, keyboard, and controllers.
         /// </summary>
         public IInputManager Input { get; private set; }
 
         /// <summary>
-        /// Gets an instance of the engine
+        /// Gets an instance of the engine.
         /// </summary>
-        /// <returns>An instance of the engine</returns>
+        /// <returns>An instance of the engine.</returns>
         public static EngineCore GetInstance()
         {
             return engineCoreInstance.Value;

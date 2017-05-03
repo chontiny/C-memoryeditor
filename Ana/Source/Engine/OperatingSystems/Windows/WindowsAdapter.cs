@@ -599,7 +599,7 @@
             Boolean isWow64;
 
             // First do the simple check if seeing if the OS is 32 bit, in which case the process wont be 64 bit
-            if (EngineCore.GetInstance().OperatingSystemAdapter.IsOperatingSystem32Bit())
+            if (EngineCore.GetInstance().OperatingSystem.IsOperatingSystem32Bit())
             {
                 return true;
             }

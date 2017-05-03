@@ -309,7 +309,7 @@
             {
                 // Otherwise we read as normal (bypass value setter and set value directly to avoid a write-back to memory)
                 Boolean readSuccess;
-                this.addressValue = EngineCore.GetInstance()?.OperatingSystemAdapter?.Read(this.ElementType, this.EffectiveAddress, out readSuccess);
+                this.addressValue = EngineCore.GetInstance()?.OperatingSystem?.Read(this.ElementType, this.EffectiveAddress, out readSuccess);
             }
         }
 
@@ -369,11 +369,11 @@
             {
                 if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
                 {
-                    pointer = EngineCore.GetInstance().OperatingSystemAdapter.Read<Int32>(pointer, out successReading).ToIntPtr();
+                    pointer = EngineCore.GetInstance().OperatingSystem.Read<Int32>(pointer, out successReading).ToIntPtr();
                 }
                 else
                 {
-                    pointer = EngineCore.GetInstance().OperatingSystemAdapter.Read<Int64>(pointer, out successReading).ToIntPtr();
+                    pointer = EngineCore.GetInstance().OperatingSystem.Read<Int64>(pointer, out successReading).ToIntPtr();
                 }
 
                 pointer = pointer.Add(offset);
@@ -399,7 +399,7 @@
                 return;
             }
 
-            EngineCore.GetInstance()?.OperatingSystemAdapter?.Write(this.ElementType, this.EffectiveAddress, newValue);
+            EngineCore.GetInstance()?.OperatingSystem?.Write(this.ElementType, this.EffectiveAddress, newValue);
         }
     }
     //// End class

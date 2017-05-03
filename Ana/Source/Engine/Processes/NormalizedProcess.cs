@@ -6,7 +6,7 @@
     /// <summary>
     /// A platform independent object to store process information.
     /// </summary>
-    internal class NormalizedProcess : IEquatable<NormalizedProcess>
+    public class NormalizedProcess : IEquatable<NormalizedProcess>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NormalizedProcess" /> class.

@@ -1,6 +1,6 @@
-﻿namespace AnathenaHook.Server
+﻿namespace AnathenaHookServer.Source
 {
-    using Client;
+    using AnathenaHookClient.Source;
     using EasyHook;
     using System;
     using System.Collections;
@@ -14,7 +14,7 @@
     /// <summary>
     /// Entry point for a hook in the target process. Automatically loads when RemoteHooking.Inject() is called.
     /// </summary>
-    internal class HookServer : IEntryPoint
+    public class HookServer : IEntryPoint
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HookServer" /> class
@@ -25,9 +25,10 @@
         public HookServer(RemoteHooking.IContext context, String channelName, String projectDirectory)
         {
             this.IpcServerChannel = null;
+            //// this.DirectXHook = null;
 
             // Get reference to IPC to host application
-            this.HookClient = RemoteHooking.IpcConnectClient<HookClient>(channelName);
+            this.HookClient = RemoteHooking.IpcConnectClient<HookClientBase>(channelName);
 
             // We try to ping immediately, if it fails then injection fails
             this.HookClient.Ping();
@@ -43,6 +44,12 @@
             IpcServerChannel clientServerChannel = new IpcServerChannel(properties, binaryServerFormatterSinkProvider);
             ChannelServices.RegisterChannel(clientServerChannel, false);
         }
+
+        /// <summary>
+        /// Gets or sets the hook to DirectX.
+        /// TODO: Move this out, hide it under graphics interface or something
+        /// </summary>
+       // private BaseDXHook DirectXHook { get; set; }
 
         /// <summary>
         /// Gets or sets the channel for inter-process communication
@@ -88,6 +95,12 @@
 
             try
             {
+                // Initialize the Hook
+                if (!this.InitializeDirectXHook())
+                {
+                    return;
+                }
+
                 // We start a thread here to periodically check if the host is still running
                 // If the host process stops then we will automatically uninstall the hooks
                 this.MaintainConnection();
@@ -137,6 +150,78 @@
 
             // Cancel task to ensure it ends
             this.CancelRequest?.Cancel();
+        }
+
+
+        /// <summary>
+        /// Initializes the directX hook in the process
+        /// </summary>
+        /// <returns>True if the initialization was successful.</returns>
+        private Boolean InitializeDirectXHook()
+        {
+            return true;
+
+            /*
+            DirextXGraphicsInterface dirextXGraphicsInterface = (DirextXGraphicsInterface)this.HookClient.GetGraphicsInterface();
+            DirectXFlags.Direct3DVersionEnum version = DirectXFlags.Direct3DVersionEnum.Unknown;
+
+            Dictionary<DirectXFlags.Direct3DVersionEnum, String> directXModules = new Dictionary<DirectXFlags.Direct3DVersionEnum, String>
+            {
+                { DirectXFlags.Direct3DVersionEnum.Direct3D9, "d3d9.dll" },
+                { DirectXFlags.Direct3DVersionEnum.Direct3D10, "d3d10.dll" },
+                { DirectXFlags.Direct3DVersionEnum.Direct3D10_1, "d3d10_1.dll" },
+                { DirectXFlags.Direct3DVersionEnum.Direct3D11, "d3d11.dll" },
+                { DirectXFlags.Direct3DVersionEnum.Direct3D11_1, "d3d11_1.dll" },
+            };
+
+            try
+            {
+                IntPtr handle = IntPtr.Zero;
+
+                foreach (KeyValuePair<DirectXFlags.Direct3DVersionEnum, String> module in directXModules)
+                {
+                    handle = GetModuleHandle(module.Value);
+
+                    if (handle != IntPtr.Zero)
+                    {
+                        version = module.Key;
+                        break;
+                    }
+                }
+
+                if (handle == IntPtr.Zero)
+                {
+                    return false;
+                }
+
+                switch (version)
+                {
+                    case DirectXFlags.Direct3DVersionEnum.Direct3D9:
+                        this.DirectXHook = new DXHookD3D9(dirextXGraphicsInterface);
+                        break;
+                    case DirectXFlags.Direct3DVersionEnum.Direct3D10:
+                        //// this.DirectXHook = new DXHookD3D10(DirextXGraphicsInterface);
+                        break;
+                    case DirectXFlags.Direct3DVersionEnum.Direct3D10_1:
+                        //// this.DirectXHook = new DXHookD3D10_1(DirextXGraphicsInterface);
+                        break;
+                    case DirectXFlags.Direct3DVersionEnum.Direct3D11:
+                        this.DirectXHook = new DXHookD3D11(dirextXGraphicsInterface);
+                        break;
+                    //// case Direct3DVersion.Direct3D11_1:
+                    ////    this.DirectXHook = new DXHookD3D11_1(this.ClientConnection);
+                    ////    return;
+                    default:
+                        return false;
+                }
+
+                this.DirectXHook.Hook();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }*/
         }
     }
     //// End class

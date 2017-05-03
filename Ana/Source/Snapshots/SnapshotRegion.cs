@@ -196,7 +196,7 @@
             this.TimeSinceLastRead = DateTime.Now;
 
             readSuccess = false;
-            Byte[] newCurrentValues = EngineCore.GetInstance().OperatingSystemAdapter.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
+            Byte[] newCurrentValues = EngineCore.GetInstance().OperatingSystem.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
 
             if (!readSuccess)
             {

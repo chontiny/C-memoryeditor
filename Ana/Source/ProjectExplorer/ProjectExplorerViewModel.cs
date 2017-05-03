@@ -329,7 +329,7 @@
         public void AddSpecificAddressItem(IntPtr baseAddress, Type elementType)
         {
             // Check if the address is within a module, adding it as module format if so
-            foreach (NormalizedModule module in EngineCore.GetInstance().OperatingSystemAdapter.GetModules())
+            foreach (NormalizedModule module in EngineCore.GetInstance().OperatingSystem.GetModules())
             {
                 if (module.ContainsAddress(baseAddress))
                 {
