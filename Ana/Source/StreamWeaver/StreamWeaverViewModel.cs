@@ -273,11 +273,6 @@
         private ConcurrentDictionary<String, Int64> CommandVotes { get; set; }
 
         /// <summary>
-        /// Gets or sets the last vote total.
-        /// </summary>
-        private Int64 LastVoteTotal { get; set; }
-
-        /// <summary>
         /// Gets a singleton instance of the <see cref="StreamWeaverViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -291,6 +286,11 @@
         /// </summary>
         private void OnUpdate()
         {
+            if (!this.IsConnected)
+            {
+                return;
+            }
+
             // Collect project items
             IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
                 .Select(item => item)
@@ -307,13 +307,6 @@
                 .OrderBy(x => x.item.Category);
 
             Int64 totalVotes = itemVotes.Sum(tally => tally.command.Value);
-
-            if (totalVotes == this.LastVoteTotal)
-            {
-                return;
-            }
-
-            this.LastVoteTotal = totalVotes;
 
             // Activate top votes
             foreach (ProjectItem.ProjectItemCategory category in Enum.GetValues(typeof(ProjectItem.ProjectItemCategory)))
@@ -493,6 +486,8 @@
             {
             }
 
+            ProjectExplorerViewModel.GetInstance().DisableAllStreamProjectItems();
+
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Disconnected from Twitch.");
         }
 
@@ -595,7 +590,14 @@
         /// <param name="command">The command given by the user.</param>
         private void ProcessCommand(Int64 userId, String command)
         {
-            // command = this.DebugMap(command);
+            command = this.DebugMap(command);
+
+            if (String.IsNullOrWhiteSpace(command) || !command.StartsWith("!"))
+            {
+                return;
+            }
+
+            command = this.SanitizeCommand(command);
 
             this.CommandVotes.AddOrUpdate(command, 1, (key, count) => count + 1);
 
@@ -609,21 +611,28 @@
         /// <param name="e">The message event.</param>
         private void OnMessageReceived(Object sender, OnMessageReceivedArgs e)
         {
-            if (String.IsNullOrWhiteSpace(e.ChatMessage?.Message) || !e.ChatMessage.Message.StartsWith("!"))
-            {
-                return;
-            }
-
             Int64 userId;
 
             if (Int64.TryParse(e.ChatMessage?.UserId, out userId))
             {
-                this.ProcessCommand(userId, e.ChatMessage?.Message.TrimStart('!'));
+                this.ProcessCommand(userId, e.ChatMessage?.Message);
             }
+        }
+
+        private String SanitizeCommand(String command)
+        {
+            command = command.TrimStart('!').Trim().ToLower();
+
+            return command.Substring(0, Math.Min(command.Length, ProjectItem.StreamCommandCharacterLimit));
         }
 
         private Random random = new Random();
 
+        /// <summary>
+        /// Debugging function, to take any text and map it to a real command.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <returns></returns>
         private String DebugMap(String command)
         {
             IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
@@ -635,7 +644,7 @@
 
             command = candidateProjectItems.ElementAt(index).StreamCommand;
 
-            return command;
+            return "!" + command;
         }
     }
     //// End class

@@ -264,11 +264,19 @@
         }
 
         /// <summary>
-        /// Disables all active cheats.
+        /// Disables all active project items.
         /// </summary>
-        public void DisableAll()
+        public void DisableAllProjectItems()
         {
             this.ProjectRoot.Flatten().ForEach(item => item.IsActivated = false);
+        }
+
+        /// <summary>
+        /// Disables all active project items with stream commands.
+        /// </summary>
+        public void DisableAllStreamProjectItems()
+        {
+            this.ProjectRoot.Flatten().Select(item => item).Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand)).ForEach(item => item.IsActivated = false);
         }
 
         /// <summary>

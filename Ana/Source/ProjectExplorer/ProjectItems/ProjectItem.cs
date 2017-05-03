@@ -24,6 +24,11 @@
     internal abstract class ProjectItem : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
+        /// The character limit for stream commands
+        /// </summary>
+        public const Int32 StreamCommandCharacterLimit = 6;
+
+        /// <summary>
         /// The parent of this project item.
         /// </summary>
         [Browsable(false)]
@@ -317,7 +322,7 @@
         /// <summary>
         /// Gets or sets the stream command for this project item.
         /// </summary>
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Command"), Description("The stream command for this item")]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Command"), Description("The stream command for this item. Limit of 6 characters.")]
         public String StreamCommand
         {
             get
@@ -332,7 +337,7 @@
                     return;
                 }
 
-                this.streamCommand = value;
+                this.streamCommand = value?.Substring(0, Math.Min(value.Length, ProjectItem.StreamCommandCharacterLimit)).ToLower();
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.StreamCommand));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
@@ -360,7 +365,7 @@
                     }
 
                     // If this project item is in a unique group, disable all siblings
-                    if (value == true && this.Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup)
+                    if (value == true && this.Parent != null && this.Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup)
                     {
                         foreach (ProjectItem projectItem in this.Parent.Children)
                         {

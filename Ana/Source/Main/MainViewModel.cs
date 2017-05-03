@@ -181,7 +181,7 @@
             }
 
             SettingsViewModel.GetInstance().Save();
-            ProjectExplorerViewModel.GetInstance().DisableAll();
+            ProjectExplorerViewModel.GetInstance().DisableAllProjectItems();
 
             window.Close();
         }
