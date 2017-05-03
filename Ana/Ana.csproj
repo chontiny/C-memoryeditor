@@ -185,6 +185,7 @@
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\CategoryToColorConverter.cs" />
+    <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\StreamWeaver\StreamTableItem.cs" />
     <Compile Include="Source\StreamWeaver\StreamIcon.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
@@ -2895,6 +2896,10 @@
       <Project>{A82126CA-23AA-41F1-8586-A5938D44D0A7}</Project>
       <Name>Microsoft.Diagnostics.Runtime</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Packet.Net\PacketDotNet.csproj">
+      <Project>{55abba4c-aaf9-4726-a592-0c92436cec92}</Project>
+      <Name>PacketDotNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharpDX\SharpCli\SharpCli.csproj">
       <Project>{4e2d9a17-2195-4a51-aae3-924517440293}</Project>
       <Name>SharpCli</Name>
@@ -2974,6 +2979,10 @@
     <ProjectReference Include="..\SharpDX\SharpDX\SharpDX.csproj">
       <Project>{6a41eaf1-67d4-43f0-b6b8-1a1395b07235}</Project>
       <Name>SharpDX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpPcap\SharpPcap.csproj">
+      <Project>{24262E52-1304-4A25-8F73-A3B06E40592E}</Project>
+      <Name>SharpPcap</Name>
     </ProjectReference>
     <ProjectReference Include="..\Svg\Svg.csproj">
       <Project>{886a98c5-37c0-4e8b-885e-30c1d2f98b47}</Project>
