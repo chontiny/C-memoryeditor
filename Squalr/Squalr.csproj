@@ -1,0 +1,3119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BCC372DD-2823-459D-9594-C16E777AD292}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Squalr</RootNamespace>
+    <AssemblyName>Squalr</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <TargetFrameworkProfile />
+    <PublishUrl>F:\Users\Zachary\Documents\Visual Studio 2017\Projects\SqualrSite\public\Release\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Web</InstallFrom>
+    <UpdateEnabled>true</UpdateEnabled>
+    <UpdateMode>Background</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>true</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>https://www.squalr.com/Release/</InstallUrl>
+    <UpdateUrl>https://www.squalr.com/Release/</UpdateUrl>
+    <SupportUrl>https://www.squalr.com/</SupportUrl>
+    <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
+    <ProductName>Squalr</ProductName>
+    <PublisherName>Squalr</PublisherName>
+    <MinimumRequiredVersion>1.0.0.0</MinimumRequiredVersion>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>publish.htm</WebPage>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>
+    </ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>C1A711EAE328CAEA08DA8ACE57DFE7AA5D129D11</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Squalr.App</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EasyHook">
+      <HintPath>..\SqualrHook\EasyHook.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Content\ChangeLog.cs">
+      <DependentUpon>ChangeLog.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Content\Templates\ScriptTemplate.cs">
+      <DependentUpon>ScriptTemplate.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Content\Templates\GraphicsInjectionTemplate.cs">
+      <DependentUpon>GraphicsInjectionTemplate.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Content\Templates\CodeInjectionTemplate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
+    <Compile Include="Source\Analytics\AnalyticsService.cs" />
+    <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\Engine\Networks\Network.cs" />
+    <Compile Include="Source\Engine\Networks\INetwork.cs" />
+    <Compile Include="Source\Mvvm\Converters\CategoryToColorConverter.cs" />
+    <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
+    <Compile Include="Source\StreamWeaver\StreamTableItem.cs" />
+    <Compile Include="Source\StreamWeaver\StreamIcon.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorViewModel.cs" />
+    <Compile Include="Source\StreamWeaver\OverlayItem.cs" />
+    <Compile Include="Source\StreamWeaver\OverlayService.cs" />
+    <Compile Include="Source\StreamWeaver\StreamTableViewModel.cs" />
+    <Compile Include="Source\StreamWeaver\StreamWeaverTask.cs" />
+    <Compile Include="Source\StreamWeaver\StreamWeaverViewModel.cs" />
+    <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
+    <Compile Include="Content\Images.cs" />
+    <Compile Include="Source\Controls\SortedCategory.cs" />
+    <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
+    <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
+    <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
+    <Compile Include="Source\Engine\Hook\Client\HookClient.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\DirextXGraphicsInterface.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\BaseDXHook.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DirectXFlags.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX10\DXHookD3D10.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX10\DXHookD3D10_1.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DeviceManager.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXFont.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXHookD3D11.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXImage.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXOverlayEngine.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\DXSprite.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\RendererBase.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX11\ScreenAlignedQuadRenderer.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX9\DXHookD3D9.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DX9\DXOverlayEngine.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\DXGI.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\Elements\Element.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\Elements\ImageElement.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\Elements\TextElement.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\Hook.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\DirectX\Interface\SafeHGlobal.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\GraphicsFactory.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\IGraphicsInterface.cs" />
+    <Compile Include="Source\Engine\Hook\Graphics\OpenGL\ConnectorOpenGL.cs" />
+    <Compile Include="Source\Engine\Hook\SpeedHack\ISpeedHackInterface.cs" />
+    <Compile Include="Source\Engine\Hook\SpeedHack\SpeedHackInterface.cs" />
+    <Compile Include="Source\Engine\Hook\Unrandomizer\IUnrandomizerInterface.cs" />
+    <Compile Include="Source\Engine\Input\Controller\ControllerCapture.cs" />
+    <Compile Include="Source\Engine\Input\Controller\IControllerObserver.cs" />
+    <Compile Include="Source\Engine\Input\Controller\IControllerSubject.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\ControllerHotkey.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\HotkeyBuilder.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\Hotkey.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Input\Hotkeys\KeyboardHotkeyBuilder.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\KeyboardHotkey.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\MouseHotkey.cs" />
+    <Compile Include="Source\Engine\Input\IInputCapture.cs" />
+    <Compile Include="Source\Engine\Input\IInputManager.cs" />
+    <Compile Include="Source\Engine\Input\InputManager.cs" />
+    <Compile Include="Source\Engine\Input\Keyboard\KeyState.cs" />
+    <Compile Include="Source\Engine\Input\Keyboard\KeyboardCapture.cs" />
+    <Compile Include="Source\Utils\DataStructures\TTLCache.cs" />
+    <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\EnumExtensions.cs" />
+    <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
+    <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
+    <Compile Include="Source\Engine\Input\Mouse\IMouseObserver.cs" />
+    <Compile Include="Source\Engine\Input\Mouse\IMouseSubject.cs" />
+    <Compile Include="Source\Engine\Input\Mouse\MouseCapture.cs" />
+    <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
+    <Compile Include="Source\Mvvm\Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\DataGridIndexConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\ListViewIndexConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
+    <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
+    <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
+    <Compile Include="Source\Output\OutputViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\IProjectExplorerObserver.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectRoot.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemHotkey.cs" />
+    <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
+    <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
+    <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
+    <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
+    <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
+    <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
+    <Compile Include="Source\ScriptEngine\ScriptEngine.cs" />
+    <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
+    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
+    <Compile Include="Source\Snapshots\Snapshot.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
+    <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
+    <Compile Include="Source\Utils\Compression.cs" />
+    <Compile Include="Source\Utils\DataStructures\BiDictionary.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Utils\DataStructures\CircularLinkedList.cs" />
+    <Compile Include="Source\Utils\Extensions\IDisposableExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\SingleExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\DoubleExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\StringExtensions.cs" />
+    <Compile Include="Source\Utils\Hashing.cs" />
+    <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />
+    <Compile Include="Source\Utils\StaticRandom.cs" />
+    <Compile Include="Source\Utils\TypeConverters\EnumDescriptionConverter.cs" />
+    <Compile Include="Source\Utils\TypeConverters\TextConverter.cs" />
+    <Compile Include="Source\Editors\HotkeyEditor\HotkeyEditorViewModel.cs" />
+    <Compile Include="Source\Editors\HotkeyEditor\HotkeyEditorModel.cs" />
+    <Compile Include="Source\Editors\OffsetEditor\OffsetEditorViewModel.cs" />
+    <Compile Include="Source\Editors\TextEditor\TextEditorModel.cs" />
+    <Compile Include="Source\Editors\TextEditor\TextEditorViewModel.cs" />
+    <Compile Include="Source\Editors\ValueEditor\ValueEditorModel.cs" />
+    <Compile Include="Source\Editors\ValueEditor\ValueEditorViewModel.cs" />
+    <Compile Include="Source\Editors\ScriptEditor\ScriptEditorModel.cs" />
+    <Compile Include="Source\Editors\ScriptEditor\ScriptEditorViewModel.cs" />
+    <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
+    <Compile Include="Source\Utils\TypeConverters\DynamicConverter.cs" />
+    <Compile Include="Source\Utils\TypeConverters\HotkeyConverter.cs" />
+    <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
+    <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
+    <Compile Include="Source\Editors\OffsetEditor\OffsetEditorModel.cs" />
+    <Compile Include="Source\Utils\TypeConverters\ValueTypeConverter.cs" />
+    <Compile Include="Source\DotNetExplorer\DotNetExplorerViewModel.cs" />
+    <Compile Include="Source\Engine\AddressResolver\AddressResolver.cs" />
+    <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObject.cs" />
+    <Compile Include="Source\Engine\Architecture\ArchitectureFactory.cs" />
+    <Compile Include="Source\Engine\Architecture\ArchitectureTypes.cs" />
+    <Compile Include="Source\Engine\Architecture\Assembler\AssemblerFactory.cs" />
+    <Compile Include="Source\Engine\Architecture\Assembler\Fasm32Assembler.cs" />
+    <Compile Include="Source\Engine\Architecture\Assembler\IAssembler.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\DisassemblerFactory.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\IDisassembler.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\ArchitectureMode.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\AutoPinner.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Disassembler.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Instruction.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Operand.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\ATTTranslator.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\IntelTranslator.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\SymbolResolverDelegate.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\Translator.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\BitOps.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Decode.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\OpTable.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\RegClass.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Syn.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\SynIntel.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Ud.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Udis86.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdItabEntry.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdItabEntryOperand.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdLookupTableListEntry.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdLval.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdOperand.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdOperandCode.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdOperandSize.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\UdType.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Vendor.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisassembler.cs" />
+    <Compile Include="Source\Engine\Architecture\IArchitecture.cs" />
+    <Compile Include="Source\Engine\Architecture\Architecture86_64.cs" />
+    <Compile Include="Source\Engine\EngineCore.cs" />
+    <Compile Include="Source\Engine\Graphics\IGraphics.cs" />
+    <Compile Include="Source\Engine\ManagedObjectResolver\IManagedObjectResolver.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\IOperatingSystemAdapter.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\NormalizedFlags.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\NormalizedModule.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\NormalizedRegion.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\OperatingSystemAdapterFactory.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Memory.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Native\Enumerations.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Native\NativeMethods.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\Native\Structures.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\WindowsAdapter.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Processes\IProcessObserver.cs" />
+    <Compile Include="Source\Engine\Processes\IProcesses.cs" />
+    <Compile Include="Source\Engine\Processes\NormalizedProcess.cs" />
+    <Compile Include="Source\Engine\Processes\ProcessAdapter.cs" />
+    <Compile Include="Source\Engine\SpeedManipulator\ISpeedManipulator.cs" />
+    <Compile Include="Source\Engine\Unrandomizer\IUnrandomizer.cs" />
+    <Compile Include="Source\ScriptEngine\Graphics\GraphicsCore.cs" />
+    <Compile Include="Source\ScriptEngine\Graphics\IGraphicsCore.cs" />
+    <Compile Include="Source\ScriptEngine\Hook\IHookCore.cs" />
+    <Compile Include="Source\ScriptEngine\Hook\HookCore.cs" />
+    <Compile Include="Source\ScriptEngine\Input\IInputCore.cs" />
+    <Compile Include="Source\ScriptEngine\Input\InputCore.cs" />
+    <Compile Include="Source\ScriptEngine\ScriptManager.cs" />
+    <Compile Include="Source\ScriptEngine\Memory\IMemoryCore.cs" />
+    <Compile Include="Source\ScriptEngine\Memory\MemoryCore.cs" />
+    <Compile Include="Source\Mvvm\Converters\IntPtrToAddressConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\AddressItem.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\FolderItem.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItem.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\ScriptItem.cs" />
+    <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
+    <Compile Include="Source\Results\ScanResults\IScanResultsObserver.cs" />
+    <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
+    <Compile Include="Source\Results\ScanResults\ScanResultsViewModel.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterModel.cs" />
+    <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterViewModel.cs" />
+    <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorViewModel.cs" />
+    <Compile Include="Source\Scanners\ScannerBase.cs" />
+    <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderViewModel.cs" />
+    <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderModel.cs" />
+    <Compile Include="Source\Scanners\ManualScanner\ManualScannerViewModel.cs" />
+    <Compile Include="Source\Scanners\ManualScanner\ManualScannerModel.cs" />
+    <Compile Include="Source\Scanners\PointerScanner\PointerScannerModel.cs" />
+    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraint.cs" />
+    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintManager.cs" />
+    <Compile Include="Source\Scanners\ValueCollector\ValueCollectorViewModel.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
+    <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ISnapshotPrefilter.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ShallowPointerPrefilter.cs" />
+    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\SnapshotPrefilterFactory.cs" />
+    <Compile Include="Source\Snapshots\SnapshotManager.cs" />
+    <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
+    <Compile Include="Source\UserSettings\SettingsViewModel.cs" />
+    <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Utils\Extensions\ArrayExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\IntegerExtensions.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Utils\Extensions\IntPtrExtensions.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Utils\Extensions\ObjectExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\PrimitiveExtensions.cs" />
+    <Compile Include="Source\Utils\ImageUtils.cs" />
+    <Compile Include="Source\Utils\PrimitiveTypes.cs" />
+    <Compile Include="Source\ActionScheduler\ScheduledTask.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Utils\CheckSyntax.cs" />
+    <Compile Include="Source\Utils\Conversions.cs" />
+    <Compile Include="Source\Controls\CenteredDialogBox.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
+    <Compile Include="Source\Controls\TreeView\ProjectNode.cs" />
+    <Compile Include="View\ChangeLog.xaml.cs">
+      <DependentUpon>ChangeLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StreamTable.xaml.cs">
+      <DependentUpon>StreamTable.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Editors\StreamIconEditor.xaml.cs">
+      <DependentUpon>StreamIconEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StreamWeaver.xaml.cs">
+      <DependentUpon>StreamWeaver.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Editors\TextEditor.xaml.cs">
+      <DependentUpon>TextEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Editors\ValueEditor.xaml.cs">
+      <DependentUpon>ValueEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Output.xaml.cs">
+      <DependentUpon>Output.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
+      <DependentUpon>HotkeyEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PointerScanner.xaml.cs">
+      <DependentUpon>PointerScanner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Editors\OffsetEditor.xaml.cs">
+      <DependentUpon>OffsetEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PointerScanResults.xaml.cs">
+      <DependentUpon>PointerScanResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Editors\ScriptEditor.xaml.cs">
+      <DependentUpon>ScriptEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Source\Controls\DarkBrushes.cs" />
+    <Compile Include="Source\Controls\HexDecTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Source\Controls\WinformsHostingHelper.cs" />
+    <Compile Include="View\InputCorrelator.xaml.cs">
+      <DependentUpon>InputCorrelator.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ScanResults.xaml.cs">
+      <DependentUpon>ScanResults.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Settings.xaml.cs">
+      <DependentUpon>Settings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProjectExplorer.xaml.cs">
+      <DependentUpon>ProjectExplorer.xaml</DependentUpon>
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="View\PropertyViewer.xaml.cs">
+      <DependentUpon>PropertyViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DotNetExplorer.xaml.cs">
+      <DependentUpon>DotNetExplorer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CheatBrowser.xaml.cs">
+      <DependentUpon>CheatBrowser.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SnapshotManager.xaml.cs">
+      <DependentUpon>SnapshotManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ManualScanner.xaml.cs">
+      <DependentUpon>ManualScanner.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\LabelThresholder.xaml.cs">
+      <DependentUpon>LabelThresholder.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ChangeCounter.xaml.cs">
+      <DependentUpon>ChangeCounter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProcessSelector.xaml.cs">
+      <DependentUpon>ProcessSelector.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Source\ProcessSelector\ProcessSelectorTask.cs" />
+    <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Docking\PanesStyleSelector.cs" />
+    <Compile Include="View\ViewTemplateSelector.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Docking\PaneViewModel.cs" />
+    <Compile Include="Source\Mvvm\Command\EventToCommand.cs" />
+    <Compile Include="Source\Mvvm\Command\IEventArgsConverter.cs" />
+    <Compile Include="Source\Mvvm\Command\RelayCommand.cs" />
+    <Compile Include="Source\Mvvm\Command\RelayCommandGeneric.cs" />
+    <Compile Include="Source\Mvvm\Helpers\Empty.cs" />
+    <Compile Include="Source\Mvvm\Helpers\IExecuteWithObject.cs" />
+    <Compile Include="Source\Mvvm\Helpers\IExecuteWithObjectAndResult.cs" />
+    <Compile Include="Source\Mvvm\Helpers\WeakAction.cs" />
+    <Compile Include="Source\Mvvm\Helpers\WeakActionGeneric.cs" />
+    <Compile Include="Source\Mvvm\Helpers\WeakFunc.cs" />
+    <Compile Include="Source\Mvvm\Helpers\WeakFuncGeneric.cs" />
+    <Compile Include="Source\Mvvm\ICleanup.cs" />
+    <Compile Include="Source\Mvvm\Messaging\DialogMessage.cs" />
+    <Compile Include="Source\Mvvm\Messaging\GenericMessage.cs" />
+    <Compile Include="Source\Mvvm\Messaging\IMessenger.cs" />
+    <Compile Include="Source\Mvvm\Messaging\MessageBase.cs" />
+    <Compile Include="Source\Mvvm\Messaging\Messenger.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessage.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessageAction.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessageActionGeneric.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessageGeneric.cs" />
+    <Compile Include="Source\Mvvm\Messaging\NotificationMessageWithCallback.cs" />
+    <Compile Include="Source\Mvvm\Messaging\PropertyChangedMessage.cs" />
+    <Compile Include="Source\Mvvm\Messaging\PropertyChangedMessageBase.cs" />
+    <Compile Include="Source\Mvvm\ObservableObject.cs" />
+    <Compile Include="Source\Mvvm\Threading\DispatcherHelper.cs" />
+    <Compile Include="Source\Mvvm\ViewModelBase.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="View\ViewModelLocator.cs" />
+    <Compile Include="Source\Mvvm\Views\IDialogService.cs" />
+    <Compile Include="Source\Mvvm\Views\INavigationService.cs" />
+    <Compile Include="Source\Docking\ToolViewModel.cs" />
+    <Compile Include="Source\Main\MainViewModel.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Page Include="View\ChangeLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\StreamTable.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Editors\StreamIconEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\StreamWeaver.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Editors\TextEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Editors\ValueEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Output.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Editors\HotkeyEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PointerScanner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Editors\OffsetEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PointerScanResults.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Editors\ScriptEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\InputCorrelator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\CheckBoxes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\DropDownContextMenu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\ScrollViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\DropDown.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\FlatComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Style\DarkBrushes.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ScanResults.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Settings.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProjectExplorer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PropertyViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DotNetExplorer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CheatBrowser.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SnapshotManager.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ManualScanner.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\LabelThresholder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ChangeCounter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProcessSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Style\DropDownAutoClose.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Style\VerticalSeparator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Content Include="Content\Overlay\Images\Buffs\3d-meeple.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\3d-stairs.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ace.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\achilles-heel.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\aerosol.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\afterburn.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ak47.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\algae.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\alien-bug.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\alien-stare.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\all-for-one.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\all-seeing-eye.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\amputation.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\anatomy.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ancient-ruins.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\android-mask.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\andromeda-chain.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\angel-wings.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\anvil.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\architect-mask.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\arrow-dunk.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\arrow-flights.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\arrowed.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\asteroid.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\astronaut-helmet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\atlas.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\aura.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\auto-repair.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\awareness.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\baby-face.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\back-pain.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\backpack.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\backup.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\backward-time.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bad-breath.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bad-gnome.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\balloons.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\banana.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bandage-roll.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\barbed-spear.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\barbed-wire.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\barrel.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bat-wing.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\batteries.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\battery-0.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\battery-100.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\battery-25.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\battery-50.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\battery-75.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\battery-minus.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\battery-plus.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\battle-gear.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\beard.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\beast-eye.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bed.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\beer-stein.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\beet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\behold.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\belt-armor.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bestial-fangs.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\biceps.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\big-diamond-ring.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\big-wave.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\binoculars.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\biohazard.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bird-twitter.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\black-hole-bolas.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\blackball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bleeding-eye.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bleeding-heart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\blindfold.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\blood.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bloody-stash.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bloody-sword.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\body-balance.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\body-height.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\boiling-bubbles.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bolt-saw.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bolt-spell-cast.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bombing-run.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\book-cover.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\boot-stomp.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bordered-shield.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\boss-key.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bottle-vapors.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bowie-knife.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bowling-propulsion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bowman.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\boxing-glove-surprise.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\brain-freeze.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\brain.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\brandy-bottle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\brass-knuckles.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\breastplate.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bright-explosion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\broadhead-arrow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\broadsword.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\broken-bone.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\broken-bottle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\broken-heart-zone.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\broken-heart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\broken-pottery.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\broken-shield.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\broken-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bubbles.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bubbling-beam.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bubbling-bowl.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bubbling-flask.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bullets.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\bullseye.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\burning-blobs.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\burning-book.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\burning-dot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\burning-embers.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\burning-eye.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\burning-meteor.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\burning-passion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\burning-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\burst-blob.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\c96.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\caged-ball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cake-slice.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\campfire.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\candle-flame.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\candle-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cape.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\card-burn.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\card-discard.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\card-draw.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\card-pick.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\card-random.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\carrion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\carrot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cash.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cauldron.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cctv-camera.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ceiling-barnacle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ceiling-light.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\celebration-fire.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chained-heart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chainsaw.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chalice-drops.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\charm.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cheese-wedge.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chef-toque.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chemical-drop.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chemical-tank.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chewed-heart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chicken-leg.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chicken.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\chopped-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\circuitry.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cloak-dagger.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\clockwork.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\clover.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cobweb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\coffee-mug.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cog.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cogsplosion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\coiling-curl.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\coins.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\colt-m1911.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\comet-spark.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\compass.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\corked-tube.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\corner-explosion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cracked-ball-dunk.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cracked-helm.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cross-mark.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crossbow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crossed-bones.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crossed-chains.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crossed-swords.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crosshair.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crowbar.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crown-coin.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crown-of-thorns.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crown.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crowned-explosion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crumbling-ball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crystal-ball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crystal-growth.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crystal-shine.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crystal-shrine.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\crystal-wand.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cube.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cultist.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cupcake.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\curled-tentacle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\curling-vines.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\curly-wing.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cut-diamond.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cut-palm.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cycle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\cz-skorpion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\daemon-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\daggers.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\daisy.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dead-eye.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dead-wood.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\deadly-strike.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\death-zone.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\deathcab.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\decapitation.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\demolish.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\desert-eagle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\desert-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\desk-lamp.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\despair.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\diamond-hilt.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dice-eight-faces-eight.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dice-twenty-faces-twenty.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dig-dug.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dig-hole.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\disintegrate.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\divert.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dna.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\double-ringed-orb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\double-shot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dragon-breath.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dragon-head.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dragon-head2.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\drill.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\drink-me.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dripping-knife.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dripping-tube.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\drop-weapon.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\drop.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\droplet-splash.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\droplets.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\drowning.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\duality.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dungeon-light.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\dynamite.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\earth-crack.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\echo-ripples.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\eclipse-flare.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ember-shot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\embrassed-energy.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\embryo.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\emerald.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\empty-hourglass.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\energise.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\energy-breath.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\enlightenment.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\enrage.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ent-mouth.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\erlenmeyer.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\eruption.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\eskimo.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\evil-comet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\evil-hand.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\evil-tree.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\explosion-rays.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\extra-lucid.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\eyeball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\eyestalk.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fairy-wand.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fairy.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\falling-blob.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\falling-eye.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\falling-leaf.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\famas.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fanged-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fangs.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fast-arrow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fat.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\feather.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\feline.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\female.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\film-projector.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-bomb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-bottle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-bowl.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-breath.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-dash.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-ray.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-ring.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-silhouette.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-tail.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-wave.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fire-zone.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fireball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\firework-rocket.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fishing-hook.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fishing-pole.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fission.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fist.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fizzing-flask.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\flail.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\flame-spin.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\flame-tunnel.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\flame.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\flaming-claw.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\flanged-mace.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\floor-hatch.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fluffy-trefoil.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fn-fal.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\foam.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\focused-lightning.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\foot-trip.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\footsteps.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\forearm.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fragmented-meteor.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\fragrance.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\frankenstein-creature.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\frog.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\frostfire.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\frozen-arrow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\frozen-orb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\garlic.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gas-mask.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gauntlet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gavel.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gears.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gem-pendant.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ghost-ally.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ghost.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\glass-heart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\glass-shot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\glock.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gloop.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gloves.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gluttony.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\goblin-head.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\goo-spurt.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gooey-daemon.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gooey-impact.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gooey-molecule.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\gooey-sword.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\grab.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\grain.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\grease-trap.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\grenade.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\grouped-drops.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\halberd.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\half-body-crawling.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\half-heart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\hammer-drop.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\hand-of-god.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\handcuffs.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\hanging-spider.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\haunting.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\headshot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heart-beats.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heart-bottle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heart-drop.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heart-minus.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heart-organ.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heart-plus.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heart-tower.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heartburn.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\hearts.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heavy-fall.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\heavy-thorny-triskelion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\helmet-head-shot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\high-five.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\high-shot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\hole-ladder.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\holy-oak.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\holy-symbol.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\holy-water.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\hood.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\hypersonic-bolt.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\hypodermic-test.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ice-bolt.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ice-bomb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ice-cube.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ice-golem.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ice-spear.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ice-spell-cast.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\icicles-fence.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ifrit.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\implosion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\imprisoned.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\incense.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\infested-mass.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ink-swirl.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\inner-self.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\interlaced-tentacles.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\internal-injury.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\internal-organ.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\invisible.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ion-cannon-blast.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\jetpack.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\jigsaw-piece.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\journey.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\jump-across.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\key.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\knife-fork.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\knockout.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lantern-flame.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\laserburn.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\leaky-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lee-enfield.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\leeching-worm.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\leg-armor.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lever.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\life-support.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\life-tap.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\light-bulb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lightning-bow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lightning-branches.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lightning-dissipation.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lightning-electron.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lightning-helix.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lightning-saber.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lightning-shout.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lightning-storm.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\lightning-tree.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\locked-chest.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\love-injection.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\luger.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\m3-grease-gun.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\mac-10.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\machete.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\machine-gun.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\maggot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\magic-lamp.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\magic-portal.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\magnet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\magnifying-glass.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\male.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\mantrap.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\marrow-drain.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\martini.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\meat-hook.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\meat.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\meditation.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\medusa-head.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\mesh-ball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\metal-bar.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\metal-disc.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\middle-arrow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\mighty-boosh.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\minerals.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\mining.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\molotov.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\moon-claws.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\mouth-watering.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\mp-40.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\mp5k.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\muscle-up.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\mushroom-cloud.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\nailed-foot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\nested-hearts.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ninja-mask.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\open-treasure-chest.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\orbital-rays.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ore.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\p90.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\padlock.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\parachute.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\paw-heart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pawprint.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\peaks.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pentagram-rose.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perfume-bottle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-five.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-four.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-one.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-six-faces-five.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-six-faces-four.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-six-faces-one.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-six-faces-random.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-six-faces-six.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-six-faces-three.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-six-faces-two.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-six.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-three.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\perspective-dice-two.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pestle-mortar.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pie-slice.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pierced-heart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pig.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pill.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pine-tree.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pirate-grave.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\plasma-bolt.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\plate-claw.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pocket-bow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pointy-hat.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pointy-sword.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\poison-bottle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pool-dive.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\potion-ball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\present.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\puppet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\push.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\pyromaniac.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\quake-stomp.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\quick-slash.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\quicksand.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\quill-ink.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\quiver.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\radar-sweep.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\radioactive.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\raining.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\raise-zombie.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\return-arrow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\revolver.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ringed-beam.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\roast-chicken.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\robe.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\robot-golem.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\rock.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\rocket.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\rogue.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\rolling-bomb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\rolling-dices.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\round-bottom-flask.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\rune-sword.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\rupee.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\saber-slash.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sacrificial-dagger.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sad-crab.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\salamander.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sawed-off-shotgun.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\scales.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\scorpion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\screaming.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\scroll-unfurled.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\shadow-follower.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\shaking-hands.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\shambling-zombie.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\shard-sword.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\shattered-sword.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\shield-reflect.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\shiny-apple.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\shuriken.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sinking-trap.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sinusoidal-beam.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\siren.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\skeleton-key.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\skeleton.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\skull-bolt.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\skull-crack.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\skull-crossed-bones.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\skull-shield.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\skull-staff.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\slap.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\slashed-shield.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\slavery-whip.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sliced-bread.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\slime.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\small-fire.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\smitten.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\smoking-finger.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\smoking-orb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\snail.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\snatch.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\snow-bottle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\snowflake-2.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\snowing.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\snowman.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\solar-system.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sonic-shout.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spanner.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sparkling-sabre.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spectre-m4.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spectre.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spider-web.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spiked-armor.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spiked-tentacle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spiky-field.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spill.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spinning-sword.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spiral-arrow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spiral-thrust.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\splashy-stream.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sprint.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sprout.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\spyglass.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\square-bottle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\squid-head.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\standing-potion.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\star-formation.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\static-waves.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\static.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\steel-claws2.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\steel-door.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\steyr-aug.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\stick-grenade.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sticking-plaster.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\stomach.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\stone-axe.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\stone-crafting.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\stone-pile.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\stoned-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\stopwatch2.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\strawberry.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\striking-arrows.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\striking-balls.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\stun-grenade.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sun.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sunbeams.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\super-mushroom.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\supersonic-arrow.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\supersonic-bullet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\surprised-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\swirl-ring.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\switch-weapon.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sword-array.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sword-break.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\sword-slice.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\swords-emblem.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\take-my-money.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\talk.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tear-tracks.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tearing.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tec-9.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\teleport.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tentacle-strike.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tentacles-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\terror.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\thompson-m1928.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\thor-fist.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\thor-hammer.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\thorny-vine.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\thunder-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\thunder-struck.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\thunderball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tied-scroll.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\time-bomb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\time-trap.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tinker.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\torch.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tornado-discs.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tortoise.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\transportation-rings.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\trash-can.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\treasure-map.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tree-beehive.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tree-branch.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tree-face.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\trench-spade.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\triorb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\triple-beak.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\triple-skulls.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tripwire.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\troll.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\tumor.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\turd.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\twister.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\two-shadows.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\ufo.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\unfriendly-fire.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\unicorn.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\unlocking.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\unstable-orb.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\uzi.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\vile-fluid.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\vine-whip.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\visored-helm.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\volcano.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\vomiting.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\voodoo-doll.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\vortex.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\walking-boot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\walther-ppk.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wasp-sting.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\water-splash.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\watermelon.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\web-spit.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\weight.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\whirlwind.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\william-tell-skull.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\winchester-rifle.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wind-hole.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wind-slap.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wingfoot.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wizard-staff.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wolf-head.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wolf-trap.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wolverine-claws.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wood-axe.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wood-club.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wood-pile.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wooden-door.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wooden-pegleg.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wool.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wrapped-heart.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wrapped-sweet.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wrecking-ball.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\wyvern.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\zeus-sword.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Images\Buffs\zigzag-tune.svg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Index.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Content\Icons\BlueBlocks1.png" />
+    <Resource Include="Content\Icons\BlueBlocks2.png" />
+    <Resource Include="Content\Icons\BlueBlocks4.png" />
+    <Resource Include="Content\Icons\MainAppIcon.ico" />
+    <EmbeddedResource Include="Content\StandardLayout.xml" />
+    <Content Include="Content\ChangeLog.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ChangeLog.cs</LastGenOutput>
+    </Content>
+    <Resource Include="Content\Icons\Connected.png" />
+    <Resource Include="Content\Icons\Disconnected.png" />
+    <Resource Include="Content\Icons\Connect.png" />
+    <Resource Include="Content\Icons\Curse.png" />
+    <Resource Include="Content\Icons\Heart.png" />
+    <Resource Include="Content\Icons\Cog.png" />
+    <Resource Include="Content\Icons\Glitch.png" />
+    <Content Include="Content\Icons\MainIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Resource Include="Content\Icons\MainIconSmall.ico" />
+    <Resource Include="Content\Icons\OrangeBlocks1.png" />
+    <Resource Include="Content\Icons\OrangeBlocks2.png" />
+    <Resource Include="Content\Icons\OrangeBlocks4.png" />
+    <Resource Include="Content\Icons\BlueBlocks8.png" />
+    <Resource Include="Content\Icons\OrangeBlocks8.png" />
+    <Resource Include="Content\Icons\PurpleBlocks1.png" />
+    <Resource Include="Content\Icons\PurpleBlocks2.png" />
+    <Resource Include="Content\Icons\PurpleBlocks4.png" />
+    <Resource Include="Content\Icons\PurpleBlocks8.png" />
+    <Resource Include="Content\Icons\Redo.png" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Content\CSharp.xshd" />
+    <Content Include="Content\Overlay\StyleSheets\Main.css">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Overlay\Source\Site.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Templates\ScriptTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
+    </Content>
+    <Content Include="Content\Templates\GraphicsInjectionTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>GraphicsInjectionTemplate.cs</LastGenOutput>
+    </Content>
+    <Content Include="Content\Templates\CodeInjectionTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>
+    </Content>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="Settings.StyleCop" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SqualrHookClient\SqualrHookClient.csproj">
+      <Project>{e9576568-5640-4883-aa5d-0bb2f6853e18}</Project>
+      <Name>SqualrHookClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqualrHook\SqualrHookServer.csproj">
+      <Project>{78C9C399-D9AD-426A-8164-F872745AAE3C}</Project>
+      <Name>SqualrHookServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqualrProxy32\SqualrProxy32.csproj">
+      <Project>{51ac9959-afee-4f91-8a19-03cf0528ab62}</Project>
+      <Name>SqualrProxy32</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqualrProxy64\SqualrProxy64.csproj">
+      <Project>{65eec6df-ccc8-46ab-b9fb-00d5a624fe94}</Project>
+      <Name>SqualrProxy64</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SqualrProxy\SqualrProxy.csproj">
+      <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
+      <Name>SqualrProxy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AvalonEdit\AvalonEdit.csproj">
+      <Project>{6c55b776-26d4-4db3-a6ab-87e783b2f3d1}</Project>
+      <Name>AvalonEdit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\CsScriptLibrary\CSScriptLibrary.csproj">
+      <Project>{F33DDB9A-918F-43D9-A1CF-CECD269AD958}</Project>
+      <Name>CSScriptLibrary</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Deploy\Deploy.csproj">
+      <Project>{8b2579c2-faa1-4cc7-a48e-2b6d4901c503}</Project>
+      <Name>Deploy</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Garlic\Garlic\Garlic.csproj">
+      <Project>{cc6dca91-9d5a-4603-b8ca-c9597a9d3107}</Project>
+      <Name>Garlic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LiveCharts\Core\LiveCharts.csproj">
+      <Project>{d447642c-a85f-4ab0-96d9-c66cff91aada}</Project>
+      <Name>LiveCharts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LiveCharts\WpfView\WpfCharts.csproj">
+      <Project>{4D253423-AE05-47F6-A59D-9162EC0BB1F2}</Project>
+      <Name>WpfCharts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Microsoft.Diagnostics.Runtime\Microsoft.Diagnostics.Runtime.csproj">
+      <Project>{A82126CA-23AA-41F1-8586-A5938D44D0A7}</Project>
+      <Name>Microsoft.Diagnostics.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Packet.Net\PacketDotNet.csproj">
+      <Project>{55abba4c-aaf9-4726-a592-0c92436cec92}</Project>
+      <Name>PacketDotNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpCli\SharpCli.csproj">
+      <Project>{4e2d9a17-2195-4a51-aae3-924517440293}</Project>
+      <Name>SharpCli</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Animation\SharpDX.Animation.csproj">
+      <Project>{1b2e7ac4-b206-4268-a782-53b3e3025a43}</Project>
+      <Name>SharpDX.Animation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.D3DCompiler\SharpDX.D3DCompiler.csproj">
+      <Project>{0ff760b5-436b-44e5-8660-696bfa62a77b}</Project>
+      <Name>SharpDX.D3DCompiler</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Desktop\SharpDX.Desktop.csproj">
+      <Project>{a83e25b7-d5d9-49c0-8fd6-d58213ad1e41}</Project>
+      <Name>SharpDX.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct2D1\SharpDX.Direct2D1.csproj">
+      <Project>{0d4673aa-44f0-4b27-b5ce-9ad5e8c9a730}</Project>
+      <Name>SharpDX.Direct2D1</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct3D11.Effects\SharpDX.Direct3D11.Effects.csproj">
+      <Project>{eff5c0d7-e17a-4eff-bff4-029267b91071}</Project>
+      <Name>SharpDX.Direct3D11.Effects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct3D11\SharpDX.Direct3D11.csproj">
+      <Project>{de53b631-199e-49b8-8b4d-fe9f3d5b28cd}</Project>
+      <Name>SharpDX.Direct3D11</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct3D12\SharpDX.Direct3D12.csproj">
+      <Project>{99391458-fe91-4e52-8e38-486f13a02829}</Project>
+      <Name>SharpDX.Direct3D12</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Direct3D9\SharpDX.Direct3D9.csproj">
+      <Project>{9d67f045-eb5d-4759-8be4-06d99a20a668}</Project>
+      <Name>SharpDX.Direct3D9</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DirectComposition\SharpDX.DirectComposition.csproj">
+      <Project>{587db362-8ae3-4697-86ac-cad2f1d4f2ef}</Project>
+      <Name>SharpDX.DirectComposition</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DirectInput\SharpDX.DirectInput.csproj">
+      <Project>{de89f393-94d0-4a2d-a394-f0933461447b}</Project>
+      <Name>SharpDX.DirectInput</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DirectManipulation\SharpDX.DirectManipulation.csproj">
+      <Project>{24ad5cd6-7091-4be6-85b6-e352eda5fe33}</Project>
+      <Name>SharpDX.DirectManipulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DirectSound\SharpDX.DirectSound.csproj">
+      <Project>{7d3dabe0-4d95-4cdf-b9de-b798660b6ca3}</Project>
+      <Name>SharpDX.DirectSound</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.DXGI\SharpDX.DXGI.csproj">
+      <Project>{34134161-c8d8-4cda-9822-ad9d954140b2}</Project>
+      <Name>SharpDX.DXGI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.Mathematics\SharpDX.Mathematics.csproj">
+      <Project>{dadc8bf0-b87d-4d2f-b9a8-c243abddfceb}</Project>
+      <Name>SharpDX.Mathematics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.MediaFoundation\SharpDX.MediaFoundation.csproj">
+      <Project>{faa17d46-b46f-45ba-978b-c299855c3b06}</Project>
+      <Name>SharpDX.MediaFoundation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.RawInput\SharpDX.RawInput.csproj">
+      <Project>{149dad81-9c63-42f8-8b0c-500645bad9e3}</Project>
+      <Name>SharpDX.RawInput</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.XAudio2\SharpDX.XAudio2.csproj">
+      <Project>{032c2158-2b94-485c-a32e-b880e63f7f29}</Project>
+      <Name>SharpDX.XAudio2</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX.XInput\SharpDX.XInput.csproj">
+      <Project>{7dda3633-fb33-4187-8209-093616e50b08}</Project>
+      <Name>SharpDX.XInput</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpDX\SharpDX\SharpDX.csproj">
+      <Project>{6a41eaf1-67d4-43f0-b6b8-1a1395b07235}</Project>
+      <Name>SharpDX</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpPcap\SharpPcap.csproj">
+      <Project>{24262E52-1304-4A25-8F73-A3B06E40592E}</Project>
+      <Name>SharpPcap</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Svg\Svg.csproj">
+      <Project>{886a98c5-37c0-4e8b-885e-30c1d2f98b47}</Project>
+      <Name>Svg</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TreeViewAdv\TreeViewAdv.csproj">
+      <Project>{e73bb233-d88b-44a7-a98f-d71ee158381d}</Project>
+      <Name>TreeViewAdv</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TwitchLib\TwitchLib\TwitchLib.csproj">
+      <Project>{5D5746FD-63B3-4DB0-9389-7FEDA1A05A09}</Project>
+      <Name>TwitchLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebSocketSharp\websocket-sharp\WebSocketSharp.csproj">
+      <Project>{B357BAC7-529E-4D81-A0D2-71041B19C8DE}</Project>
+      <Name>WebSocketSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
+      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
+      <Name>WpfToolkit</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
+      <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>
+      <Name>Xceed.Wpf.AvalonDock</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Source\Engine\AddressResolver\Java\" />
+    <Folder Include="Source\Engine\AddressResolver\Python\" />
+    <Folder Include="Source\Mvvm\Behavior\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\Icons\SelectProcess.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\Icons\Cancel.png" />
+    <Resource Include="Content\Icons\Changed.png" />
+    <Resource Include="Content\Icons\CollectValues.png" />
+    <Resource Include="Content\Icons\Decreased.png" />
+    <Resource Include="Content\Icons\DownArrows.png" />
+    <Resource Include="Content\Icons\ENotation.png" />
+    <Resource Include="Content\Icons\Equal.png" />
+    <Resource Include="Content\Icons\GreaterThan.png" />
+    <Resource Include="Content\Icons\GreaterThanOrEqual.png" />
+    <Resource Include="Content\Icons\Home.png" />
+    <Resource Include="Content\Icons\Increased.png" />
+    <Resource Include="Content\Icons\Intersection.png" />
+    <Resource Include="Content\Icons\Invert.png" />
+    <Resource Include="Content\Icons\LeftArrow.png" />
+    <Resource Include="Content\Icons\LessThan.png" />
+    <Resource Include="Content\Icons\LessThanOrEqual.png" />
+    <Resource Include="Content\Icons\LogicalAnd.png" />
+    <Resource Include="Content\Icons\LogicalOr.png" />
+    <Resource Include="Content\Icons\Merge.png" />
+    <Resource Include="Content\Icons\MinusX.png" />
+    <Resource Include="Content\Icons\MoveDown.png" />
+    <Resource Include="Content\Icons\MoveLeft.png" />
+    <Resource Include="Content\Icons\MoveRight.png" />
+    <Resource Include="Content\Icons\MoveUp.png" />
+    <Resource Include="Content\Icons\Negation.png" />
+    <Resource Include="Content\Icons\New.png" />
+    <Resource Include="Content\Icons\NextScan.png" />
+    <Resource Include="Content\Icons\NotEqual.png" />
+    <Resource Include="Content\Icons\Open.png" />
+    <Resource Include="Content\Icons\PlusX.png" />
+    <Resource Include="Content\Icons\RightArrow.png" />
+    <Resource Include="Content\Icons\Save.png" />
+    <Resource Include="Content\Icons\Stop.png" />
+    <Resource Include="Content\Icons\Unchanged.png" />
+    <Resource Include="Content\Icons\Undo.png" />
+    <Resource Include="Content\Icons\Union.png" />
+    <Resource Include="Content\Icons\UnknownValue.png" />
+    <Resource Include="Content\Icons\X.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <FileAssociation Include=".Hax">
+      <Visible>False</Visible>
+      <Description>Ana Cheat File</Description>
+      <Progid>420</Progid>
+      <DefaultIcon>Content\Icons\MainIcon.ico</DefaultIcon>
+    </FileAssociation>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\Icons\Maximize.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\Icons\LeftArrows.png" />
+    <Resource Include="Content\Icons\RightArrows.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Content\DeveloperLayout.xml" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>START /WAIT cmd /c "$(TargetDir)SharpCli.exe"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

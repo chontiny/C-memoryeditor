@@ -1,6 +1,6 @@
 #pragma once
 
-namespace Anathena
+namespace Squalr
 {
 	namespace Assemblers
 	{
@@ -68,9 +68,9 @@ namespace Anathena
 				UserError = -140,
 				AssertionFailed = -141
 			};
-
-		} // End namespace
-
-	} // End namespace
-
-} // End namespace
+		}
+		//// End namespace
+	}
+	//// End namespace
+}
+//// End namespace

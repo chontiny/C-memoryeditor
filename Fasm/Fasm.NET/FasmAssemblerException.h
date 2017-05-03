@@ -4,7 +4,7 @@
 
 using namespace System;
 
-namespace Anathena
+namespace Squalr
 {
 	namespace Assemblers
 	{
@@ -70,9 +70,9 @@ namespace Anathena
 				/// <param name="mnemonics">The assembled mnemonics when the error occurred.</param>
 				FasmAssemblerException(FasmErrors errorCode, int errorLine, int errorOffset, String^ mnemonics);
 			};
-
-		} // End namespace
-
-	} // End namespace
-
-} // End namespace
+		}
+		//// End namespace
+	}
+	//// End namespace
+}
+//// End namespace
