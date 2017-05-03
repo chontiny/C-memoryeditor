@@ -89,6 +89,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IProxyClr.cs" />
+    <Compile Include="IProxyAssembler.cs" />
     <Compile Include="IProxyService.cs" />
     <Compile Include="AnathenaProxy.cs" />
     <Compile Include="ProxyService.cs" />
