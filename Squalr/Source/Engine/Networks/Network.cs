@@ -26,6 +26,11 @@
 
         public void DisableNetwork()
         {
+            if (this.TargetProcess == null)
+            {
+                return;
+            }
+
             this.EnableNetwork();
 
             this.hookClient?.Inject(this.TargetProcess.ProcessId);

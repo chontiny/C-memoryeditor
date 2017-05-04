@@ -7,8 +7,8 @@
     <ProjectGuid>{78C9C399-D9AD-426A-8164-F872745AAE3C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SqualrHook</RootNamespace>
-    <AssemblyName>SqualrHook</AssemblyName>
+    <RootNamespace>SqualrHookServer</RootNamespace>
+    <AssemblyName>SqualrHookServer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -47,8 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Source\Graphics\GraphicsHook.cs" />
     <Compile Include="Source\HookServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Source\Network\NetworkHook.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="EasyHook.dll">

@@ -186,6 +186,7 @@
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Source\Engine\Networks\Network.cs" />
     <Compile Include="Source\Engine\Networks\INetwork.cs" />
     <Compile Include="Source\Mvvm\Converters\CategoryToColorConverter.cs" />
@@ -199,7 +200,6 @@
     <Compile Include="Source\StreamWeaver\StreamTableViewModel.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverTask.cs" />
     <Compile Include="Source\StreamWeaver\StreamWeaverViewModel.cs" />
-    <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Content\Images.cs" />
     <Compile Include="Source\Controls\SortedCategory.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />

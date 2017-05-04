@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Engine.Hook.Client
 {
-    using Squalr.Source.Output;
-    using SqualrHookServer.Source;
     using EasyHook;
     using ProjectExplorer;
+    using Squalr.Source.Output;
+    using SqualrHookServer.Source;
     using System;
     using System.IO;
     using System.Runtime.Remoting;
@@ -54,8 +54,7 @@
                     InjectionOptions.Default,
                     typeof(HookServer).Assembly.Location,
                     typeof(HookServer).Assembly.Location,
-                    channelName,
-                    projectDirectory);
+                    channelName);
             }
             catch (Exception ex)
             {
@@ -64,33 +63,38 @@
         }
 
         /// <summary>
-        /// Gets the graphics interface hook object
+        /// Gets the graphics interface hook object.
         /// </summary>
-        /// <returns>The graphics interface hook object</returns>
+        /// <returns>The graphics interface hook object.</returns>
         public Object GetGraphicsInterface()
         {
             return null; // this.GraphicsInterface;
         }
 
         /// <summary>
-        /// Gets the speed hack hook object
+        /// Gets the speed hack hook object.
         /// </summary>
-        /// <returns>The speed hack hook object</returns>
+        /// <returns>The speed hack hook object.</returns>
         public Object GetSpeedHackInterface()
         {
             return null; //this.SpeedHackInterface;
         }
 
         /// <summary>
-        /// Allows the server to ping the client to ensure that it is still alive
+        /// Allows the server to ping the client to ensure that it is still alive.
         /// </summary>
         public override void Ping()
         {
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Debug, "Hook pinged client");
         }
 
+        public override void Log(String message)
+        {
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Hook: " + message);
+        }
+
         /// <summary>
-        /// Uninjects the hook from the external process
+        /// Uninjects the hook from the external process.
         /// </summary>
         public void Uninject()
         {
