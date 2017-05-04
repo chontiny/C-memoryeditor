@@ -6,51 +6,43 @@
     /// Provides capability to access the hook in the target process.
     /// </summary>
     [Serializable]
-    public abstract class HookClientBase : MarshalByRefObject, IHookClient
+    public abstract class HookClientBase : MarshalByRefObject
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="HookClientBase" /> class
+        /// Initializes a new instance of the <see cref="HookClientBase" /> class.
         /// </summary>
         public HookClientBase()
         {
         }
 
-        /// <summary>
-        /// Gets or sets the graphics interface shared between client and hook
-        /// </summary>
-        // private IGraphicsInterface GraphicsInterface { get; set; }
+        [Serializable]
+        public delegate void DisconnectedEvent();
 
         /// <summary>
-        /// Gets or sets the speedhack interface shared between client and hook
+        /// Client event used to notify the hook to exit.
         /// </summary>
-        //  private ISpeedHackInterface SpeedHackInterface { get; set; }
+        public event DisconnectedEvent Disconnected;
 
         /// <summary>
-        /// Injects the hook into the specified process
+        /// Injects the hook into the specified process.
         /// </summary>
-        /// <param name="process">The process to inject into</param>
+        /// <param name="process">The process to inject into.</param>
         public abstract void Inject(Int32 processId);
 
         /// <summary>
-        /// Gets the graphics interface hook object
+        /// Gets the graphics interface hook object.
         /// </summary>
-        /// <returns>The graphics interface hook object</returns>
-        public Object GetGraphicsInterface()
-        {
-            return null; // this.GraphicsInterface;
-        }
+        /// <returns>The graphics interface hook object.</returns>
+        public abstract Object GetGraphicsInterface();
 
         /// <summary>
-        /// Gets the speed hack hook object
+        /// Gets the speed hack hook object.
         /// </summary>
-        /// <returns>The speed hack hook object</returns>
-        public Object GetSpeedHackInterface()
-        {
-            return null; //this.SpeedHackInterface;
-        }
+        /// <returns>The speed hack hook object.</returns>
+        public abstract Object GetSpeedHackInterface();
 
         /// <summary>
-        /// Allows the server to ping the client to ensure that it is still alive
+        /// Allows the server to ping the client to ensure that it is still alive.
         /// </summary>
         public abstract void Ping();
 
@@ -58,12 +50,11 @@
         public abstract void Log(String message);
 
         /// <summary>
-        /// Uninjects the hook from the external process
+        /// Uninjects the hook from the external process.
         /// </summary>
-        public void Uninject()
+        public virtual void Uninject()
         {
-            // this.GraphicsInterface = null;
-            // this.SpeedHackInterface = null;
+            this.Disconnected?.Invoke();
         }
     }
     //// End class

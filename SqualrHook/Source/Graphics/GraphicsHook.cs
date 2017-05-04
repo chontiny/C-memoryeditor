@@ -4,14 +4,15 @@
     using System;
     using System.Runtime.InteropServices;
 
+    [Serializable]
     internal class GraphicsHook
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="GraphicsHook" /> class.
         /// </summary>
-        public GraphicsHook(IHookClient hookClient)
+        public GraphicsHook(HookClientBase hookClient)
         {
-
+            this.HookClient = hookClient;
         }
 
         /// <summary>
@@ -20,7 +21,7 @@
         /// </summary>
         // private BaseDXHook DirectXHook { get; set; }
 
-        private IHookClient HookClient { get; set; }
+        private HookClientBase HookClient { get; set; }
 
         [DllImport("kernel32.dll")]
         public static extern IntPtr GetModuleHandle(String moduleName);

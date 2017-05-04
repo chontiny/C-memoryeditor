@@ -7,12 +7,13 @@
     using System.Runtime.InteropServices;
     using System.Threading;
 
+    [Serializable]
     internal unsafe class NetworkHook
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NetworkHook" /> class.
         /// </summary>
-        public NetworkHook(IHookClient hookClient)
+        public NetworkHook(HookClientBase hookClient)
         {
             this.HookClient = hookClient;
 
@@ -42,7 +43,7 @@
             }
         }
 
-        private IHookClient HookClient { get; set; }
+        private HookClientBase HookClient { get; set; }
 
         private LocalHook RecvHook { get; set; }
 

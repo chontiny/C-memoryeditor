@@ -64,7 +64,7 @@
         /// Gets the graphics interface hook object.
         /// </summary>
         /// <returns>The graphics interface hook object.</returns>
-        public Object GetGraphicsInterface()
+        public override Object GetGraphicsInterface()
         {
             return null; // this.GraphicsInterface;
         }
@@ -73,7 +73,7 @@
         /// Gets the speed hack hook object.
         /// </summary>
         /// <returns>The speed hack hook object.</returns>
-        public Object GetSpeedHackInterface()
+        public override Object GetSpeedHackInterface()
         {
             return null; //this.SpeedHackInterface;
         }
@@ -94,8 +94,9 @@
         /// <summary>
         /// Uninjects the hook from the external process.
         /// </summary>
-        public void Uninject()
+        public override void Uninject()
         {
+            base.Uninject();
             // this.GraphicsInterface = null;
             // this.SpeedHackInterface = null;
         }

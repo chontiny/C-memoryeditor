@@ -125,7 +125,7 @@
         {
             if (logLevel == LogLevel.Debug)
             {
-                return;
+                //    return;
             }
 
             lock (this.AccessLock)

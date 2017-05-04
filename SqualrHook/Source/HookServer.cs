@@ -5,14 +5,21 @@
     using SqualrHookServer.Source.Graphics;
     using SqualrHookServer.Source.Network;
     using System;
+    using System.Runtime.Remoting.Channels;
+    using System.Runtime.Remoting.Channels.Ipc;
+    using System.Runtime.Serialization.Formatters;
     using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
     /// Entry point for a hook in the target process. Automatically loads when RemoteHooking.Inject() is called.
     /// </summary>
+    [Serializable]
     public class HookServer : IEntryPoint
     {
+        [NonSerialized]
+        private CancellationTokenSource cancelRequest;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="HookServer" /> class.
         /// </summary>
@@ -24,8 +31,19 @@
             // Get reference to IPC to host application
             this.HookClient = RemoteHooking.IpcConnectClient<HookClientBase>(channelName);
 
-            // We try to call the client immediately -- if this fails then the injection fails
+            // Call the client immediately to test a successful connection
             this.HookClient.Log("Hook successfully connected");
+
+            // Attempt to create a IpcServerChannel so that any event handlers on the client will function correctly
+            System.Collections.IDictionary properties = new System.Collections.Hashtable();
+            properties["name"] = channelName;
+            properties["portName"] = channelName + Guid.NewGuid().ToString("N");
+
+            BinaryServerFormatterSinkProvider binaryProv = new BinaryServerFormatterSinkProvider();
+            binaryProv.TypeFilterLevel = TypeFilterLevel.Full;
+
+            IpcServerChannel clientServerChannel = new IpcServerChannel(properties, binaryProv);
+            ChannelServices.RegisterChannel(clientServerChannel, false);
         }
 
         /// <summary>
@@ -41,12 +59,23 @@
         /// <summary>
         /// Gets or sets the hook client to control the hook.
         /// </summary>
-        private IHookClient HookClient { get; set; }
+        private HookClientBase HookClient { get; set; }
 
         /// <summary>
         /// Gets or sets the cancellation token for the client pinging task.
         /// </summary>
-        private CancellationTokenSource CancelRequest { get; set; }
+        private CancellationTokenSource CancelRequest
+        {
+            get
+            {
+                return this.cancelRequest;
+            }
+
+            set
+            {
+                this.cancelRequest = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the task to detect if the client is still running.
@@ -61,19 +90,22 @@
         /// <param name="projectDirectory">The project directory to use when loading content.</param>
         public void Run(RemoteHooking.IContext context, String channelName)
         {
-            // When not using GAC there can be issues with remoting assemblies resolving correctly
-            // this is a workaround that ensures that the current assembly is correctly associated
-            AppDomain currentDomain = AppDomain.CurrentDomain;
-            currentDomain.AssemblyResolve += (sender, args) =>
-            {
-                return this.GetType().Assembly.FullName == args.Name ? this.GetType().Assembly : null;
-            };
-
-            this.TaskRunning = new ManualResetEvent(false);
-            this.TaskRunning.Reset();
-
             try
             {
+                // When not using GAC there can be issues with remoting assemblies resolving correctly
+                // this is a workaround that ensures that the current assembly is correctly associated
+                AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
+                {
+                    return this.GetType().Assembly.FullName == args.Name ? this.GetType().Assembly : null;
+                };
+
+                this.TaskRunning = new ManualResetEvent(false);
+                this.TaskRunning.Reset();
+
+                this.HookClient.Disconnected += () =>
+                {
+                    this.TaskRunning.Set();
+                };
 
                 this.NetworkHook = new NetworkHook(this.HookClient);
 
@@ -81,8 +113,9 @@
                 // If the host process stops then we will automatically uninstall the hooks
                 this.MaintainConnection();
             }
-            catch
+            catch (Exception ex)
             {
+                this.HookClient.Log("Error initializing hook - " + ex.ToString());
             }
             finally
             {
@@ -100,6 +133,7 @@
         {
             this.CancelRequest = new CancellationTokenSource();
 
+            // Ping repeatedly on another thread
             Task.Run(
             async () =>
             {
@@ -120,10 +154,10 @@
             },
             this.CancelRequest.Token);
 
-            // Wait until task is no longer running
+            // Block until task is no longer running
             this.TaskRunning.WaitOne();
 
-            // Cancel task to ensure it ends
+            // Task was Set(), so we can now cancel our ping thread
             this.CancelRequest?.Cancel();
         }
     }
