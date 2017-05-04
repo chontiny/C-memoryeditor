@@ -86,6 +86,8 @@
             }
             finally
             {
+                this.HookClient.Log("Detaching hooks");
+
                 // Always sleep long enough for any remaining messages to complete sending
                 Thread.Sleep(100);
             }

@@ -123,6 +123,11 @@
         /// <param name="message">The log message.</param>
         public void Log(LogLevel logLevel, String message)
         {
+            if (logLevel == LogLevel.Debug)
+            {
+                return;
+            }
+
             lock (this.AccessLock)
             {
                 // Over capacity, remove some of the first lines based on the minimum clear size

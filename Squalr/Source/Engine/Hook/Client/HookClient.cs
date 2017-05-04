@@ -1,12 +1,11 @@
 ﻿namespace Squalr.Source.Engine.Hook.Client
 {
     using EasyHook;
-    using ProjectExplorer;
     using Squalr.Source.Output;
     using SqualrHookServer.Source;
     using System;
-    using System.IO;
     using System.Runtime.Remoting;
+    using System.Runtime.Remoting.Channels.Ipc;
 
     /// <summary>
     /// Provides capability to access the hook in the target process.
@@ -37,14 +36,13 @@
         /// <param name="process">The process to inject into</param>
         public override void Inject(Int32 processId)
         {
-            String projectDirectory = Path.GetDirectoryName(ProjectExplorerViewModel.GetInstance().ProjectFilePath);
             String channelName = null;
 
             // this.GraphicsInterface = GraphicsFactory.GetGraphicsInterface(projectDirectory);
             // this.SpeedHackInterface = new SpeedHackInterface();
 
             // Initialize the IPC server, giving the server access to the interfaces defined here
-            RemoteHooking.IpcCreateServer<HookClient>(ref channelName, WellKnownObjectMode.Singleton, this);
+            IpcServerChannel server = RemoteHooking.IpcCreateServer<HookClient>(ref channelName, WellKnownObjectMode.Singleton, this);
 
             try
             {
