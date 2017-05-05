@@ -7,6 +7,7 @@
     using Squalr.Source.UserSettings;
     using Squalr.Source.Utils.Extensions;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.IO;
@@ -128,7 +129,7 @@
                         return;
                     }
 
-                    List<StreamIcon> streamIconList = new List<StreamIcon>();
+                    ConcurrentBag<StreamIcon> streamIconList = new ConcurrentBag<StreamIcon>();
 
                     Parallel.ForEach(
                         Directory.EnumerateFiles(StreamTableViewModel.StreamIconsPath).Where(file => file.ToLower().EndsWith(".svg")),

@@ -1,17 +1,17 @@
 ﻿namespace Squalr.Source.Engine.Hook.Client
 {
-    using EasyHook;
     using Squalr.Source.Output;
+    using SqualrHookClient.Source;
     using SqualrHookServer.Source;
     using System;
     using System.Runtime.Remoting;
-    using System.Runtime.Remoting.Channels.Ipc;
+    using System.Runtime.Remoting.Channels;
 
     /// <summary>
     /// Provides capability to access the hook in the target process.
     /// </summary>
     [Serializable]
-    public class HookClient : SqualrHookClient.Source.HookClientBase
+    public class HookClient : HookClientBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HookClient" /> class
@@ -38,18 +38,15 @@
         {
             String channelName = null;
 
-            // this.GraphicsInterface = GraphicsFactory.GetGraphicsInterface(projectDirectory);
-            // this.SpeedHackInterface = new SpeedHackInterface();
-
             // Initialize the IPC server, giving the server access to the interfaces defined here
-            IpcServerChannel server = RemoteHooking.IpcCreateServer<HookClient>(ref channelName, WellKnownObjectMode.Singleton, this);
+            IChannel server = EasyHook.RemoteHooking.IpcCreateServer<HookClient>(ref channelName, WellKnownObjectMode.Singleton, this);
 
             try
             {
                 // Inject DLL into target process
-                RemoteHooking.Inject(
+                EasyHook.RemoteHooking.Inject(
                     processId,
-                    InjectionOptions.Default,
+                    EasyHook.InjectionOptions.Default,
                     typeof(HookServer).Assembly.Location,
                     typeof(HookServer).Assembly.Location,
                     channelName);
@@ -58,6 +55,9 @@
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to Hook Process. Some features may not be available - " + ex.ToString());
             }
+
+            // this.GraphicsInterface = GraphicsFactory.GetGraphicsInterface(projectDirectory);
+            // this.SpeedHackInterface = new SpeedHackInterface();
         }
 
         /// <summary>
@@ -97,6 +97,7 @@
         public override void Uninject()
         {
             base.Uninject();
+
             // this.GraphicsInterface = null;
             // this.SpeedHackInterface = null;
         }

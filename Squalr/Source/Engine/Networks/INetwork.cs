@@ -2,9 +2,9 @@
 {
     internal interface INetwork
     {
-        void DisableNetwork();
+        void InstallHook();
 
-        void EnableNetwork();
+        void UninstallHook();
     }
     //// End interface
 }

@@ -35,15 +35,22 @@
             this.HookClient.Log("Hook successfully connected");
 
             // Attempt to create a IpcServerChannel so that any event handlers on the client will function correctly
-            System.Collections.IDictionary properties = new System.Collections.Hashtable();
-            properties["name"] = channelName;
-            properties["portName"] = channelName + Guid.NewGuid().ToString("N");
+            try
+            {
+                System.Collections.IDictionary properties = new System.Collections.Hashtable();
+                properties["name"] = channelName;
+                properties["portName"] = channelName + Guid.NewGuid().ToString("N");
 
-            BinaryServerFormatterSinkProvider binaryProv = new BinaryServerFormatterSinkProvider();
-            binaryProv.TypeFilterLevel = TypeFilterLevel.Full;
+                BinaryServerFormatterSinkProvider binaryProv = new BinaryServerFormatterSinkProvider();
+                binaryProv.TypeFilterLevel = TypeFilterLevel.Full;
 
-            IpcServerChannel clientServerChannel = new IpcServerChannel(properties, binaryProv);
-            ChannelServices.RegisterChannel(clientServerChannel, false);
+                IpcServerChannel clientServerChannel = new IpcServerChannel(properties, binaryProv);
+                ChannelServices.RegisterChannel(clientServerChannel, false);
+            }
+            catch (Exception ex)
+            {
+                this.HookClient.Log("Failed to set up bidirectional hook - " + ex.ToString());
+            }
         }
 
         /// <summary>
@@ -104,7 +111,14 @@
 
                 this.HookClient.Disconnected += () =>
                 {
-                    this.TaskRunning.Set();
+                    try
+                    {
+                        this.TaskRunning.Set();
+                    }
+                    catch
+                    {
+                        // Target process died
+                    }
                 };
 
                 this.NetworkHook = new NetworkHook(this.HookClient);
@@ -119,7 +133,13 @@
             }
             finally
             {
-                this.HookClient.Log("Detaching hooks");
+                try
+                {
+                    this.HookClient.Log("Detaching hooks");
+                }
+                catch
+                {
+                }
 
                 // Always sleep long enough for any remaining messages to complete sending
                 Thread.Sleep(100);
@@ -131,34 +151,40 @@
         /// </summary>
         private void MaintainConnection()
         {
-            this.CancelRequest = new CancellationTokenSource();
-
-            // Ping repeatedly on another thread
-            Task.Run(
-            async () =>
+            try
             {
-                while (true)
+                this.CancelRequest = new CancellationTokenSource();
+
+                // Ping repeatedly on another thread
+                Task.Run(
+                async () =>
                 {
-                    try
+                    while (true)
                     {
-                        this.HookClient.Ping();
+                        try
+                        {
+                            this.HookClient.Ping();
+                        }
+                        catch
+                        {
+                            this.TaskRunning.Set();
+                        }
+
+                        // Await with cancellation
+                        await Task.Delay(1000, this.CancelRequest.Token);
                     }
-                    catch
-                    {
-                        this.TaskRunning.Set();
-                    }
+                },
+                this.CancelRequest.Token);
 
-                    // Await with cancellation
-                    await Task.Delay(1000, this.CancelRequest.Token);
-                }
-            },
-            this.CancelRequest.Token);
+                // Block until task is no longer running
+                this.TaskRunning.WaitOne();
 
-            // Block until task is no longer running
-            this.TaskRunning.WaitOne();
-
-            // Task was Set(), so we can now cancel our ping thread
-            this.CancelRequest?.Cancel();
+                // Task was Set(), so we can now cancel our ping thread
+                this.CancelRequest?.Cancel();
+            }
+            catch
+            {
+            }
         }
     }
     //// End class

@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Source.Engine.Hook.SpeedHack
 {
-    using EasyHook;
     using System;
     using System.Runtime.InteropServices;
 
@@ -24,7 +23,7 @@
         public SpeedHackInterface()
         {
             SpeedHackInterface.QueryPerformanceCounter(out queryPerformanceBase);
-            this.Hook = LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "QueryPerformanceCounter"), new QueryPerformanceCounter2(QueryPerformanceCounter3), this);
+            // this.Hook = LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "QueryPerformanceCounter"), new QueryPerformanceCounter2(QueryPerformanceCounter3), this);
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
@@ -33,7 +32,7 @@
         /// <summary>
         /// Gets or sets the hook to environment methods in the external process.
         /// </summary>
-        private LocalHook Hook { get; set; }
+       // private LocalHook Hook { get; set; }
 
         /// <summary>
         /// Sets the speed in the external process.

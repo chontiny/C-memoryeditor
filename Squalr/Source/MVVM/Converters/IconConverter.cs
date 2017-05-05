@@ -30,8 +30,9 @@
 
             if (value is Icon)
             {
-                Bitmap bitmap = (value as Icon).ToBitmap();
-                IntPtr bitmaphandle = bitmap.GetHbitmap();
+                Bitmap bitmap = (value as Icon)?.ToBitmap();
+                IntPtr bitmaphandle = bitmap?.GetHbitmap() ?? IntPtr.Zero;
+
                 return Imaging.CreateBitmapSourceFromHBitmap(bitmaphandle, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             }
 

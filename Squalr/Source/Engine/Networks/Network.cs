@@ -2,18 +2,17 @@
 {
     using Squalr.Source.Engine.Hook.Client;
     using Squalr.Source.Engine.Processes;
+    using System;
     using System.Threading.Tasks;
 
     internal class Network : INetwork, IProcessObserver
     {
         public Network()
         {
-            this.hookClient = new HookClient();
-
             Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });
         }
 
-        private HookClient hookClient { get; set; }
+        private HookClient HookClient { get; set; }
 
         private NormalizedProcess TargetProcess { get; set; }
 
@@ -21,24 +20,27 @@
         {
             this.TargetProcess = process;
 
-            this.DisableNetwork();
+            this.UninstallHook();
+            this.InstallHook();
         }
 
-        public void DisableNetwork()
+        public void InstallHook()
         {
             if (this.TargetProcess == null)
             {
                 return;
             }
 
-            this.EnableNetwork();
-
-            this.hookClient?.Inject(this.TargetProcess.ProcessId);
+            this.HookClient = new HookClient();
+            this.HookClient?.Inject(this.TargetProcess.ProcessId);
         }
 
-        public void EnableNetwork()
+        private AppDomain ad;
+
+        public void UninstallHook()
         {
-            this.hookClient?.Uninject();
+            this.HookClient?.Uninject();
+            this.HookClient = null;
         }
     }
     //// End class
