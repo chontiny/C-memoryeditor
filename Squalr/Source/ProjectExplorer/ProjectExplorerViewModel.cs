@@ -538,7 +538,9 @@
             }
             catch (Exception ex)
             {
+                this.ProjectFilePath = String.Empty;
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to open project", ex.ToString());
+                return;
             }
 
             // Open the hotkey file
@@ -560,6 +562,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex.ToString());
+                return;
             }
         }
 
@@ -614,6 +617,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to import project", ex.ToString());
+                return;
             }
 
             // Import the hotkey file
@@ -636,6 +640,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex.ToString());
+                return;
             }
 
             // Randomize the guid for imported project items, preventing possible conflicts

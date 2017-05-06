@@ -19,6 +19,14 @@
     DataContext="{Binding OutputViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <ScrollViewer Name="outputScrollViewer"
+                      ScrollChanged="OutputScrollViewerScrollChanged">
+            <RichTextBox Name="outputTextBox"
+                         controls:RichTextBoxHelper.DocumentRTF="{Binding LogText, Mode=OneWay}" 
+                         IsDocumentEnabled="True"
+                         Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                         IsReadOnly="True"/>
+        </ScrollViewer>
         <Popup Width="480"
                MinHeight="64"
                MaxHeight="512"
@@ -37,13 +45,5 @@
                 </ScrollViewer>
             </Border>
         </Popup>
-        <ScrollViewer Name="outputScrollViewer"
-                      ScrollChanged="OutputScrollViewerScrollChanged">
-            <RichTextBox Name="outputTextBox"
-                         controls:RichTextBoxHelper.DocumentRTF="{Binding LogText, Mode=OneWay}" 
-                         IsDocumentEnabled="True"
-                         Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                         IsReadOnly="True"/>
-        </ScrollViewer>
     </Grid>
 </UserControl>

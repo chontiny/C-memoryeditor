@@ -5,6 +5,8 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Squalr" #>
+- Greatly improved error reporting
+- Disabled developer tools (for the short term)
 - Added Twitch streaming overlay integration
   - Twitch integration with API key
   - Local overlay web service
