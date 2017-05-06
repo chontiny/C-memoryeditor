@@ -109,27 +109,6 @@
                 <WrapPanel
                     Grid.Row="0"
                     Grid.Column="1"
-                    ToolTip="Number of Curses to Activate">
-                    <Image
-                        Width="16"
-                        Height="16"
-                        HorizontalAlignment="Left"
-                        Source="pack://application:,,,/Squalr;component/Content/Icons/Curse.png" />
-                    <TextBox
-                        Name="curseCount"
-                        Width="64"
-                        Height="18"
-                        Margin="4,2,0,0"
-                        HorizontalAlignment="Left"
-                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                        BorderBrush="White"
-                        BorderThickness="1"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                        Text="{Binding NumberOfCurses, Mode=TwoWay}" />
-                </WrapPanel>
-                <WrapPanel
-                    Grid.Row="0"
-                    Grid.Column="2"
                     ToolTip="Number of Buffs to Activate">
                     <Image
                         Width="16"
@@ -150,7 +129,7 @@
                 </WrapPanel>
                 <WrapPanel
                     Grid.Row="0"
-                    Grid.Column="3"
+                    Grid.Column="2"
                     ToolTip="Number of Utilities to Activate">
                     <Image
                         Width="16"
@@ -168,6 +147,27 @@
                         BorderThickness="1"
                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
                         Text="{Binding NumberOfUtilities, Mode=TwoWay}" />
+                </WrapPanel>
+                <WrapPanel
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    ToolTip="Number of Curses to Activate">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        Source="pack://application:,,,/Squalr;component/Content/Icons/Curse.png" />
+                    <TextBox
+                        Name="curseCount"
+                        Width="64"
+                        Height="18"
+                        Margin="4,2,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="{Binding NumberOfCurses, Mode=TwoWay}" />
                 </WrapPanel>
             </Grid>
         </Border>

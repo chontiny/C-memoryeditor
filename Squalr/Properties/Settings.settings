@@ -66,19 +66,19 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="NumberOfGlitches" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="NumberOfCurses" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="NumberOfBuffs" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
     </Setting>
     <Setting Name="NumberOfUtilities" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4</Value>
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="TwitchChannel" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">ScriptKittiez</Value>
     </Setting>
     <Setting Name="OverlayPort" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">6969</Value>

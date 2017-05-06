@@ -111,7 +111,8 @@
 
         private void BuildOverlayHeaders(HttpListenerContext context)
         {
-            String headerContent = String.Empty;
+            String buffMetaHeader = String.Empty;
+            String buffsHeader = String.Empty;
 
             IEnumerable<OverlayItem> activeBuffs = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
                     .Select(item => item)
@@ -124,10 +125,26 @@
             using (MemoryStream memoryStream = new MemoryStream())
             {
                 serializer.WriteObject(memoryStream, activeBuffs.ToArray());
-                headerContent = Encoding.Default.GetString(memoryStream.ToArray());
+                buffsHeader = Encoding.Default.GetString(memoryStream.ToArray());
             }
 
-            context.Response.Headers.Add("Buffs", headerContent);
+            OverlayMeta overlayMeta = new OverlayMeta(
+                SettingsViewModel.GetInstance().NumberOfBuffs,
+                SettingsViewModel.GetInstance().NumberOfUtilities,
+                SettingsViewModel.GetInstance().NumberOfGlitches,
+                SettingsViewModel.GetInstance().NumberOfCurses
+                );
+
+            serializer = new DataContractJsonSerializer(typeof(OverlayMeta));
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                serializer.WriteObject(memoryStream, overlayMeta);
+                buffMetaHeader = Encoding.Default.GetString(memoryStream.ToArray());
+            }
+
+            context.Response.Headers.Add("BuffMeta", buffMetaHeader);
+            context.Response.Headers.Add("Buffs", buffsHeader);
         }
 
         private void Return404(HttpListenerContext context)
