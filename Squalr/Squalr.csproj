@@ -187,6 +187,7 @@
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
+    <Compile Include="Source\Controls\RichTextBoxHelper.cs" />
     <Compile Include="Source\Engine\Networks\Network.cs" />
     <Compile Include="Source\Engine\Networks\INetwork.cs" />
     <Compile Include="Source\Mvvm\Converters\CategoryToColorConverter.cs" />

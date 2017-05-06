@@ -1,7 +1,10 @@
 ﻿namespace Squalr.View
 {
     using System;
+    using System.Diagnostics;
     using System.Windows.Controls;
+    using System.Windows.Documents;
+    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for Output.xaml.
@@ -22,6 +25,12 @@
         /// Gets or sets a value indicating whether or not to automatically scroll to bottom.
         /// </summary>
         private Boolean AutoScroll { get; set; }
+
+        private void HyperlinkClick(Object sender, MouseEventArgs e)
+        {
+            Hyperlink hyperlink = sender as Hyperlink;
+            Process.Start(hyperlink.NavigateUri.ToString());
+        }
 
         /// <summary>
         /// Event that is triggered when the scroll viewer size changes. Will automatically scroll to bottom if already at the bottom.

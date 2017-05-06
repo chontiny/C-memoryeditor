@@ -60,7 +60,7 @@
         /// </summary>
         private MainViewModel()
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr Started");
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr Started", "nice");
 
             this.tools = new HashSet<ToolViewModel>();
 

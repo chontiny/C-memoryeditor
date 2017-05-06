@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:Squalr"
+    xmlns:controls="clr-namespace:Squalr.Source.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
@@ -22,13 +23,18 @@
             Name="OutputScrollViewer"
             Grid.Row="1"
             ScrollChanged="OutputScrollViewerScrollChanged">
-            <TextBox
-                Margin="0"
+            <RichTextBox controls:RichTextBoxHelper.DocumentRTF="{Binding LogText, Mode=OneWay}" 
+                IsDocumentEnabled="True"
                 Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                 Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                IsReadOnly="True"
-                Text="{Binding LogText, Mode=OneWay}"
-                TextWrapping="Wrap" />
+                IsReadOnly="True" >
+                <RichTextBox.Resources>
+                    <Style TargetType="Hyperlink">
+                        <Setter Property="Cursor" Value="Hand" />
+                        <EventSetter Event="MouseLeftButtonDown" Handler="HyperlinkClick" />
+                    </Style>
+                </RichTextBox.Resources>
+            </RichTextBox>
         </ScrollViewer>
     </Grid>
 </UserControl>
