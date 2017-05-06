@@ -590,7 +590,7 @@
         /// <param name="command">The command given by the user.</param>
         private void ProcessCommand(Int64 userId, String command)
         {
-            command = this.DebugMap(command);
+            // command = this.DebugMap(command);
 
             if (String.IsNullOrWhiteSpace(command) || !command.StartsWith("!"))
             {
