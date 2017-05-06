@@ -1,11 +1,14 @@
 ﻿namespace Squalr.Source.Controls
 {
+    using Squalr.Source.Output;
     using System;
     using System.IO;
+    using System.Linq;
     using System.Text;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Documents;
+    using System.Windows.Media;
 
     public class RichTextBoxHelper : DependencyObject
     {
@@ -39,6 +42,31 @@
 
                     // Set the document
                     richTextBox.Document = doc;
+
+                    // Bind the hyperlink click events to the output view model handler
+                    // Note: This violates the decoupling of this class from other classes, but it will be permitted for now
+                    foreach (Block block in richTextBox.Document.Blocks.ToArray())
+                    {
+                        if (!(block is Paragraph))
+                        {
+                            continue;
+                        }
+
+                        foreach (Inline inline in (block as Paragraph).Inlines.ToArray())
+                        {
+                            if (!(inline is Hyperlink))
+                            {
+                                continue;
+                            }
+
+                            Hyperlink link = inline as Hyperlink;
+                            link.RequestNavigate += OutputViewModel.GetInstance().LinkRequestNavigate;
+
+                            // Apply link coloring. Again, this violates decoupling
+                            TextRange textRange = new TextRange(block.ContentStart, block.ContentEnd);
+                            textRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.DeepSkyBlue);
+                        }
+                    }
 
                     // When the document changes update the source
                     range.Changed += (obj2, e2) =>

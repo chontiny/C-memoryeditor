@@ -41,6 +41,16 @@
             return str.Substring(0, str.Length - suffix.Length);
         }
 
+        public static String TrimStartString(this String target, String trimChars)
+        {
+            return target.TrimStart(trimChars.ToCharArray());
+        }
+
+        public static String TrimEndString(this String target, String trimChars)
+        {
+            return target.TrimEnd(trimChars.ToCharArray());
+        }
+
         /// <summary>
         /// Replaces any substring within a string with a new value. Allows for string comparison types.
         /// </summary>

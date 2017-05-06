@@ -53,7 +53,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to Hook Process. Some features may not be available - " + ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to Hook Process, some features may not be available", ex.ToString());
             }
 
             // this.GraphicsInterface = GraphicsFactory.GetGraphicsInterface(projectDirectory);

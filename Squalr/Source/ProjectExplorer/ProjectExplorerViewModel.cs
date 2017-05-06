@@ -525,7 +525,7 @@
             {
                 if (!File.Exists(this.ProjectFilePath))
                 {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to locate project.");
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to locate project.");
                     return;
                 }
 
@@ -538,7 +538,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open project - " + ex?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to open project", ex.ToString());
             }
 
             // Open the hotkey file
@@ -559,7 +559,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile - " + ex?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex.ToString());
             }
         }
 
@@ -593,7 +593,7 @@
             {
                 if (!File.Exists(filename))
                 {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to locate project.");
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to locate project.");
                     return;
                 }
 
@@ -613,7 +613,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to import project - " + ex?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to import project", ex.ToString());
             }
 
             // Import the hotkey file
@@ -635,7 +635,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile - " + ex?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex.ToString());
             }
 
             // Randomize the guid for imported project items, preventing possible conflicts
@@ -672,7 +672,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project - " + ex?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project", ex.ToString());
                 return;
             }
 
@@ -690,7 +690,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to save hotkey profile - " + ex?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save hotkey profile", ex.ToString());
                 return;
             }
         }
@@ -731,7 +731,7 @@
                             }
                             catch (Exception ex)
                             {
-                                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to compile a project item - " + targetProjectItem?.Description + " - " + ex?.ToString());
+                                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to compile a project item - " + targetProjectItem?.Description, ex.ToString());
                                 return;
                             }
                         }
@@ -751,7 +751,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to complete export project - " + ex?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to complete export project", ex.ToString());
                 return;
             }
 

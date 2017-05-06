@@ -178,7 +178,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to acquire keyboard device: " + ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to acquire keyboard device", ex.ToString());
             }
         }
     }

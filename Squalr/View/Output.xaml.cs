@@ -1,10 +1,7 @@
 ﻿namespace Squalr.View
 {
     using System;
-    using System.Diagnostics;
     using System.Windows.Controls;
-    using System.Windows.Documents;
-    using System.Windows.Input;
 
     /// <summary>
     /// Interaction logic for Output.xaml.
@@ -18,19 +15,13 @@
         {
             this.InitializeComponent();
 
-            this.OutputScrollViewer.ScrollToBottom();
+            this.outputScrollViewer.ScrollToBottom();
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether or not to automatically scroll to bottom.
         /// </summary>
         private Boolean AutoScroll { get; set; }
-
-        private void HyperlinkClick(Object sender, MouseEventArgs e)
-        {
-            Hyperlink hyperlink = sender as Hyperlink;
-            Process.Start(hyperlink.NavigateUri.ToString());
-        }
 
         /// <summary>
         /// Event that is triggered when the scroll viewer size changes. Will automatically scroll to bottom if already at the bottom.
@@ -43,7 +34,7 @@
             if (e.ExtentHeightChange <= 0)
             {
                 // Content unchanged: user scroll event
-                if (this.OutputScrollViewer.VerticalOffset == this.OutputScrollViewer.ScrollableHeight)
+                if (this.outputScrollViewer.VerticalOffset == this.outputScrollViewer.ScrollableHeight)
                 {
                     // Scroll bar is in bottom Set autoscroll mode
                     this.AutoScroll = true;
@@ -59,7 +50,7 @@
             if (this.AutoScroll && e.ExtentHeightChange != 0)
             {
                 // Content changed and autoscroll mode set Autoscroll
-                this.OutputScrollViewer.ScrollToVerticalOffset(this.OutputScrollViewer.ExtentHeight);
+                this.outputScrollViewer.ScrollToVerticalOffset(this.outputScrollViewer.ExtentHeight);
             }
         }
     }

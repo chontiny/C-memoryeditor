@@ -81,7 +81,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error compiling script: " + ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error compiling script", ex.ToString());
                 throw ex;
             }
 
@@ -118,12 +118,12 @@
             }
             catch (SecurityException ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Invalid operation in sandbox environment: " + ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Invalid operation in sandbox environment", ex.ToString());
                 return false;
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Script activation error: " + ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to activate script", ex.ToString());
                 return false;
             }
 
@@ -166,7 +166,7 @@
                             }
                             else
                             {
-                                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error running update function: " + ex.ToString());
+                                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error running update function: ", ex.ToString());
                             }
 
                             return;
@@ -212,7 +212,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error when deactivating script: " + ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error when deactivating script", ex.ToString());
             }
 
             return;

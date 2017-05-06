@@ -124,7 +124,7 @@
             }
             else
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Detached from target process");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Detached from target process");
             }
 
             if (this.processListeners != null)

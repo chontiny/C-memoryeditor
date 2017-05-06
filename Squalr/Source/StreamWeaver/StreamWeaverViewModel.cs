@@ -1,8 +1,5 @@
 ﻿namespace Squalr.Source.StreamWeaver
 {
-    using Squalr.Source.Editors.StreamIconEditor;
-    using Squalr.Source.Utils;
-    using Squalr.View;
     using Content;
     using Docking;
     using LiveCharts;
@@ -13,6 +10,9 @@
     using Output;
     using ProjectExplorer;
     using ProjectExplorer.ProjectItems;
+    using Squalr.Source.Editors.StreamIconEditor;
+    using Squalr.Source.Utils;
+    using Squalr.View;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -571,7 +571,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save stream command tables - " + ex?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save stream command tables", ex.ToString());
             }
         }
 

@@ -3,13 +3,14 @@
     using Docking;
     using Main;
     using Mvvm.Command;
+    using Squalr.Source.Utils.Extensions;
     using System;
-    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Web;
     using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Documents;
@@ -38,6 +39,11 @@
         private const Int32 MinimumClearSize = 4096;
 
         /// <summary>
+        /// The uri prefix for output inner message 'hyperlinks'.
+        /// </summary>
+        private const String UriPrefix = @"http://www.squalr.com/";
+
+        /// <summary>
         /// Singleton instance of the <see cref="OutputViewModel" /> class.
         /// </summary>
         private static Lazy<OutputViewModel> outputViewModelInstance = new Lazy<OutputViewModel>(
@@ -48,6 +54,16 @@
         /// The log text builder.
         /// </summary>
         private StringBuilder logText;
+
+        /// <summary>
+        /// A value indicating whether the current inner message is visible.
+        /// </summary>
+        private Boolean innerMessageVisible;
+
+        /// <summary>
+        /// The current inner message text.
+        /// </summary>
+        public String innerMessageText;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="OutputViewModel" /> class from being created.
@@ -112,6 +128,43 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the inner message is visible.
+        /// </summary>
+        public Boolean InnerMessageVisible
+        {
+            get
+            {
+                return this.innerMessageVisible;
+            }
+
+            set
+            {
+                this.innerMessageVisible = value;
+                this.RaisePropertyChanged(nameof(this.InnerMessageVisible));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the current inner message text.
+        /// </summary>
+        public String InnerMessageText
+        {
+            get
+            {
+                return this.innerMessageText;
+            }
+
+            set
+            {
+                this.innerMessageText = value;
+                this.RaisePropertyChanged(nameof(this.InnerMessageText));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a lock for access to the output log.
+        /// </summary>
         private Object AccessLock { get; set; }
 
         /// <summary>
@@ -121,6 +174,22 @@
         public static OutputViewModel GetInstance()
         {
             return OutputViewModel.outputViewModelInstance.Value;
+        }
+
+        /// <summary>
+        /// Event fired when the user clicks on log text with an inner message.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void LinkRequestNavigate(Object sender, RequestNavigateEventArgs e)
+        {
+            Hyperlink hyperlink = sender as Hyperlink;
+
+            if (hyperlink != null)
+            {
+                this.InnerMessageText = HttpUtility.UrlDecode(hyperlink.NavigateUri?.AbsoluteUri.TrimStartString(OutputViewModel.UriPrefix));
+                this.InnerMessageVisible = true;
+            }
         }
 
         /// <summary>
@@ -166,16 +235,18 @@
                 textBox.IsDocumentEnabled = true;
                 textBox.IsReadOnly = true;
 
-                if (String.IsNullOrWhiteSpace(innerMessage))
+                Boolean hasInnerMessage = !String.IsNullOrWhiteSpace(innerMessage);
+
+                if (hasInnerMessage)
                 {
-                    textBox.AppendText(message);
-                }
-                else
-                {
-                    Paragraph para = AddHyperlinkText(message, innerMessage);
+                    Paragraph para = AddToolTip(message, innerMessage);
                     textBox.Document.Blocks.Add(para);
                     textBox.Document.Blocks.Remove(textBox.Document.Blocks.FirstBlock);
                     textBox.Document.Blocks.Add(para);
+                }
+                else
+                {
+                    textBox.AppendText(message);
                 }
 
                 TextRange textRange = new TextRange(textBox.Document.ContentStart, textBox.Document.ContentEnd);
@@ -193,25 +264,18 @@
             return result;
         }
 
-        private Paragraph AddHyperlinkText(String linkName, String linkURL)
+        private Paragraph AddToolTip(String message, String innerMessage)
         {
             Hyperlink link = new Hyperlink();
             link.IsEnabled = true;
-            link.Inlines.Add(linkName);
-            link.NavigateUri = new Uri("http://www.google.com");
-            //  link.RequestNavigate += this.LinkRequestNavigate;
-            link.RequestNavigate += (sender, args) => Process.Start(args.Uri.ToString());
+            link.Inlines.Add(message);
+            link.NavigateUri = new Uri(OutputViewModel.UriPrefix + HttpUtility.UrlEncode(innerMessage));
 
             Paragraph para = new Paragraph();
             para.Margin = new Thickness(0);
             para.Inlines.Add(link);
 
             return para;
-        }
-
-        private void LinkRequestNavigate(Object sender, RequestNavigateEventArgs e)
-        {
-            int i = 0;
         }
 
         /// <summary>

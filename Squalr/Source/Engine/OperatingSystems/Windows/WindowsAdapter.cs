@@ -515,7 +515,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error fetching modules from selected process: " + ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to fetch modules from selected process", ex.ToString());
             }
 
             return normalizedModules;

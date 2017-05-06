@@ -123,9 +123,9 @@
 
                 return proxyService;
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Failed to start proxy service: " + executableName + ". This may impact Scripts and .NET explorer");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Failed to start proxy service: " + executableName + ". This may impact Scripts and .NET explorer", ex.ToString());
                 return null;
             }
         }

@@ -19,22 +19,31 @@
     DataContext="{Binding OutputViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-        <ScrollViewer
-            Name="OutputScrollViewer"
-            Grid.Row="1"
-            ScrollChanged="OutputScrollViewerScrollChanged">
-            <RichTextBox controls:RichTextBoxHelper.DocumentRTF="{Binding LogText, Mode=OneWay}" 
-                IsDocumentEnabled="True"
-                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                IsReadOnly="True" >
-                <RichTextBox.Resources>
-                    <Style TargetType="Hyperlink">
-                        <Setter Property="Cursor" Value="Hand" />
-                        <EventSetter Event="MouseLeftButtonDown" Handler="HyperlinkClick" />
-                    </Style>
-                </RichTextBox.Resources>
-            </RichTextBox>
+        <Popup Width="480"
+               MinHeight="64"
+               MaxHeight="512"
+               HorizontalOffset="240"
+               IsOpen="{Binding InnerMessageVisible}"
+               StaysOpen="False"
+               Placement="Mouse">
+            <Border BorderThickness="1"
+                    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}">
+                <ScrollViewer>
+                    <TextBox Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                             Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                             Text="{Binding InnerMessageText}"
+                             IsReadOnly="True"
+                             TextWrapping="Wrap"/>
+                </ScrollViewer>
+            </Border>
+        </Popup>
+        <ScrollViewer Name="outputScrollViewer"
+                      ScrollChanged="OutputScrollViewerScrollChanged">
+            <RichTextBox Name="outputTextBox"
+                         controls:RichTextBoxHelper.DocumentRTF="{Binding LogText, Mode=OneWay}" 
+                         IsDocumentEnabled="True"
+                         Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                         IsReadOnly="True"/>
         </ScrollViewer>
     </Grid>
 </UserControl>
