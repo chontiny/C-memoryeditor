@@ -49,7 +49,7 @@
             }
             catch (Exception ex)
             {
-                this.HookClient.Log("Failed to set up bidirectional hook - " + ex.ToString());
+                this.HookClient.Log("Failed to set up bidirectional hook", ex.ToString());
             }
         }
 
@@ -129,7 +129,7 @@
             }
             catch (Exception ex)
             {
-                this.HookClient.Log("Error initializing hook - " + ex.ToString());
+                this.HookClient.Log("Error initializing hook", ex.ToString());
             }
             finally
             {

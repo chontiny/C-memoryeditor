@@ -22,13 +22,14 @@
         {
         }
 
-        public Byte[] Assemble(Boolean isProcess32Bit, String assembly, UInt64 baseAddress, out String logs)
+        public Byte[] Assemble(Boolean isProcess32Bit, String assembly, UInt64 baseAddress, out String message, out String innerMessage)
         {
-            logs = "Starting instruction assembly" + Environment.NewLine;
+            message = "Starting instruction assembly" + Environment.NewLine;
+            innerMessage = String.Empty;
 
             if (assembly == null)
             {
-                logs += "No assembly code given" + Environment.NewLine;
+                message += "No assembly code given" + Environment.NewLine;
                 return null;
             }
 
@@ -42,7 +43,7 @@
                 assembly = String.Format("use64\n" + "org 0x{0:X16}\n", baseAddress) + assembly;
             }
 
-            logs += assembly + Environment.NewLine;
+            message += assembly + Environment.NewLine;
 
             Byte[] result;
             try
@@ -50,18 +51,18 @@
                 // Call C++ FASM wrapper which will call the 32-bit FASM library which can assemble all x86/x64 instructions
                 result = FasmNet.Assemble(assembly);
 
-                logs += "Assembled byte results:" + Environment.NewLine;
+                message += "Assembled byte results:" + Environment.NewLine;
 
                 foreach (Byte next in result)
                 {
-                    logs += next.ToString("X") + " ";
+                    message += next.ToString("X") + " ";
                 }
 
-                logs += Environment.NewLine;
+                message += Environment.NewLine;
             }
             catch (Exception ex)
             {
-                logs += "Error:" + ex.ToString() + Environment.NewLine;
+                innerMessage = "Error:" + ex.ToString() + Environment.NewLine;
                 result = null;
             }
 

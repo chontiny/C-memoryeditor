@@ -112,10 +112,11 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
-            String logs;
-            Byte[] result = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out logs);
+            String message;
+            String innerMessage;
+            Byte[] result = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out message, out innerMessage);
 
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, logs);
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, message, innerMessage);
 
             return result;
         }

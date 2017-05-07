@@ -47,7 +47,7 @@
         public abstract void Ping();
 
 
-        public abstract void Log(String message);
+        public abstract void Log(String message, String innerMessage = null);
 
         /// <summary>
         /// Uninjects the hook from the external process.

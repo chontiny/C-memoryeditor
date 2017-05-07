@@ -20,26 +20,26 @@
             try
             {
                 this.RecvHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "recv"), new DRecv(MyRecv), this);
-                this.RecvFromHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "recvfrom"), new DRecvFrom(MyRecvFrom), this);
                 this.SendHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "send"), new DSend(MySend), this);
-                this.SendToHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "sendto"), new DSendTo(MySendTo), this);
-                this.WSARecvHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "WSARecv"), new DWSARecv(MyWsaRecv), this);
-                this.WSASendHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "WSASend"), new DWSASend(MyWsaSend), this);
+                // this.RecvFromHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "recvfrom"), new DRecvFrom(MyRecvFrom), this);
+                // this.SendToHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "sendto"), new DSendTo(MySendTo), this);
+                // this.WSARecvHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "WSARecv"), new DWSARecv(MyWsaRecv), this);
+                // this.WSASendHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "WSASend"), new DWSASend(MyWsaSend), this);
 
                 RecvHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                RecvFromHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
                 SendHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                SendToHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                WSARecvHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                WSASendHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+                // RecvFromHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+                // SendToHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+                // WSARecvHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+                // WSASendHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
 
                 RemoteHooking.WakeUpProcess();
 
-                this.HookClient.Log("Network Hooks Activated");
+                this.HookClient.Log("Networking Disabled in Process");
             }
             catch (Exception ex)
             {
-                this.HookClient.Log("Error activating network hooks - " + ex.ToString());
+                this.HookClient.Log("Error activating network hooks", ex.ToString());
             }
         }
 

@@ -661,7 +661,7 @@
             // Save the project file
             try
             {
-                if (!Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
+                if (String.IsNullOrEmpty(this.ProjectFilePath) || !Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
                 {
                     this.SaveAsProject();
                     return;
@@ -712,47 +712,46 @@
                 saveFileDialog.FileName = "Select a Folder to Export Project Items";
                 saveFileDialog.Title = "Export Project";
 
-                if (saveFileDialog.ShowDialog() == true)
+                if (saveFileDialog.ShowDialog() != true)
                 {
-                    String folderPath = Path.GetDirectoryName(saveFileDialog.FileName);
-
-                    Parallel.ForEach(
-                        this.ProjectRoot.Flatten().Where(x => !(x is FolderItem)),
-                        SettingsViewModel.GetInstance().ParallelSettingsFast,
-                        (projectItem) =>
-                    {
-                        ProjectItem targetProjectItem = projectItem;
-
-                        if (projectItem is ScriptItem)
-                        {
-                            ScriptItem scriptItem = projectItem as ScriptItem;
-
-                            try
-                            {
-                                if (!scriptItem.IsCompiled)
-                                {
-                                    targetProjectItem = scriptItem?.Compile();
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to compile a project item - " + targetProjectItem?.Description, ex.ToString());
-                                return;
-                            }
-                        }
-
-                        String filePath = Path.Combine(folderPath, targetProjectItem.Description + ProjectExplorerViewModel.ProjectFileExtension);
-
-                        using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                        {
-                            ProjectRoot newProjectRoot = new ProjectRoot();
-                            newProjectRoot.AddChild(targetProjectItem);
-
-                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                            serializer.WriteObject(fileStream, newProjectRoot);
-                        }
-                    });
+                    return;
                 }
+
+                String folderPath = Path.GetDirectoryName(saveFileDialog.FileName);
+
+                Parallel.ForEach(
+                    this.ProjectRoot.Flatten().Where(x => !(x is FolderItem)),
+                    SettingsViewModel.GetInstance().ParallelSettingsFast,
+                    (projectItem) =>
+                {
+                    ProjectItem targetProjectItem = projectItem;
+
+                    if (projectItem is ScriptItem)
+                    {
+                        ScriptItem scriptItem = projectItem as ScriptItem;
+
+                        if (!scriptItem.IsCompiled)
+                        {
+                            targetProjectItem = scriptItem?.Compile();
+                        }
+                    }
+
+                    if (targetProjectItem == null)
+                    {
+                        return;
+                    }
+
+                    String filePath = Path.Combine(folderPath, targetProjectItem.Description + ProjectExplorerViewModel.ProjectFileExtension);
+
+                    using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    {
+                        ProjectRoot newProjectRoot = new ProjectRoot();
+                        newProjectRoot.AddChild(targetProjectItem);
+
+                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                        serializer.WriteObject(fileStream, newProjectRoot);
+                    }
+                });
             }
             catch (Exception ex)
             {

@@ -77,7 +77,7 @@
                 Byte[] compressedScript = Compression.Compress(File.ReadAllBytes(compiledScriptFile));
                 result = Convert.ToBase64String(compressedScript);
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Script compiled");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script compiled");
             }
             catch (Exception ex)
             {

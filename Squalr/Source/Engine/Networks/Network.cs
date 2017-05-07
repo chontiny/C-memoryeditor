@@ -2,7 +2,6 @@
 {
     using Squalr.Source.Engine.Hook.Client;
     using Squalr.Source.Engine.Processes;
-    using System;
     using System.Threading.Tasks;
 
     internal class Network : INetwork, IProcessObserver
@@ -34,8 +33,6 @@
             this.HookClient = new HookClient();
             this.HookClient?.Inject(this.TargetProcess.ProcessId);
         }
-
-        private AppDomain ad;
 
         public void UninstallHook()
         {

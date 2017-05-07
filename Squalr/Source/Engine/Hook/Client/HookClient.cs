@@ -86,9 +86,9 @@
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Debug, "Hook pinged client");
         }
 
-        public override void Log(String message)
+        public override void Log(String message, String innerMessage = null)
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Hook: " + message);
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Hook: " + message, innerMessage);
         }
 
         /// <summary>
