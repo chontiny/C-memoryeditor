@@ -1,7 +1,12 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Controls;
+    using Editors.HotkeyEditor;
     using Editors.TextEditor;
+    using Engine.Input.HotKeys;
+    using SharpDX.DirectInput;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Runtime.Serialization;
@@ -15,7 +20,7 @@
     [KnownType(typeof(ScriptItem))]
     [KnownType(typeof(AddressItem))]
     [DataContract]
-    internal abstract class ProjectItem : INotifyPropertyChanged
+    internal abstract class ProjectItem : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// The parent of this project item.
@@ -40,6 +45,12 @@
         /// </summary>
         [Browsable(false)]
         private Guid guid;
+
+        /// <summary>
+        /// The hotkey associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        private Hotkey hotkey;
 
         /// <summary>
         /// A value indicating whether this project item has been activated.
@@ -94,7 +105,7 @@
         /// Gets or sets the description for this object.
         /// </summary>
         [DataMember]
-        [Category("Properties"), DisplayName("Description"), Description("Description to be shown for the Project Items")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Description"), Description("Description to be shown for the Project Items")]
         public String Description
         {
             get
@@ -104,6 +115,11 @@
 
             set
             {
+                if (this.description == value)
+                {
+                    return;
+                }
+
                 this.description = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Description));
@@ -117,7 +133,7 @@
         [DataMember]
         [TypeConverter(typeof(TextConverter))]
         [Editor(typeof(TextEditorModel), typeof(UITypeEditor))]
-        [Category("Properties"), DisplayName("Extended Description"), Description("Extended description for additional information about this item")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Extended Description"), Description("Extended description for additional information about this item")]
         public String ExtendedDescription
         {
             get
@@ -127,6 +143,11 @@
 
             set
             {
+                if (this.extendedDescription == value)
+                {
+                    return;
+                }
+
                 this.extendedDescription = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.ExtendedDescription));
@@ -148,9 +169,42 @@
 
             set
             {
+                if (this.guid == value)
+                {
+                    return;
+                }
+
                 this.guid = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Guid));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the hotkey for this project item.
+        /// </summary>
+        [TypeConverter(typeof(HotkeyConverter))]
+        [Editor(typeof(HotkeyEditorModel), typeof(UITypeEditor))]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Hotkey"), Description("The hotkey for this item")]
+        public Hotkey HotKey
+        {
+            get
+            {
+                return this.hotkey;
+            }
+
+            set
+            {
+                if (this.hotkey == value)
+                {
+                    return;
+                }
+
+                this.hotkey = value;
+                this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.HotKey));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -168,13 +222,22 @@
 
             set
             {
-                if (!this.CanActivate)
+                if (this.isActivated == value || !this.CanActivate)
                 {
                     return;
                 }
 
+                Boolean previousValue = this.isActivated;
+
                 this.isActivated = value;
                 this.OnActivationChanged();
+
+                // Activation failed
+                if (this.isActivated == previousValue)
+                {
+                    return;
+                }
+
                 this.NotifyPropertyChanged(nameof(this.IsActivated));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
@@ -193,15 +256,9 @@
         }
 
         /// <summary>
-        /// Gets or sets the time since this item was last activated.
-        /// </summary>
-        [Browsable(false)]
-        private DateTime LastActivated { get; set; }
-
-        /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
-        /// <param name="streamingContext">Streaming context</param>
+        /// <param name="streamingContext">Streaming context.</param>
         [OnDeserialized]
         public void OnDeserialized(StreamingContext streamingContext)
         {
@@ -231,6 +288,66 @@
         /// </summary>
         /// <returns>The clone of the project item.</returns>
         public abstract ProjectItem Clone();
+
+        /// <summary>
+        /// Updates the hotkey, bypassing setters to avoid triggering view updates.
+        /// </summary>
+        /// <param name="hotkey">The hotkey for this project item.</param>
+        public void LoadHotkey(Hotkey hotkey)
+        {
+            this.hotkey = hotkey;
+
+            this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
+        }
+
+        public void Dispose()
+        {
+            this.HotKey?.Dispose();
+        }
+
+        /// <summary>
+        /// Randomizes the guid of this project item.
+        /// </summary>
+        public void ResetGuid()
+        {
+            this.Guid = Guid.NewGuid();
+        }
+
+        /// <summary>
+        /// Event received when a key is released.
+        /// </summary>
+        /// <param name="key">The key that was released.</param>
+        public void OnKeyPress(Key key)
+        {
+        }
+
+        /// <summary>
+        /// Event received when a key is down.
+        /// </summary>
+        /// <param name="key">The key that is down.</param>
+        public void OnKeyRelease(Key key)
+        {
+        }
+
+        /// <summary>
+        /// Event received when a key is down.
+        /// </summary>
+        /// <param name="key">The key that is down.</param>
+        public void OnKeyDown(Key key)
+        {
+        }
+
+        /// <summary>
+        /// Event received when a set of keys are down.
+        /// </summary>
+        /// <param name="pressedKeys">The down keys.</param>
+        public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
+        {
+            if (this.HotKey is KeyboardHotkey)
+            {
+                KeyboardHotkey keyboardHotkey = this.HotKey as KeyboardHotkey;
+            }
+        }
 
         /// <summary>
         /// Indicates that a given property in this project item has changed.

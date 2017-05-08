@@ -28,13 +28,28 @@
         /// <summary>
         /// Settings that control the degree of parallelism for multithreaded tasks.
         /// </summary>
-        private static Lazy<ParallelOptions> parallelSettings = new Lazy<ParallelOptions>(
+        private static Lazy<ParallelOptions> parallelSettingsFast = new Lazy<ParallelOptions>(
                 () =>
                 {
                     ParallelOptions parallelOptions = new ParallelOptions()
                     {
                         // Only use 75% of available processing power, as not to interfere with other programs
                         MaxDegreeOfParallelism = (Environment.ProcessorCount * 3) / 4
+                    };
+                    return parallelOptions;
+                },
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
+        /// Settings that control the degree of parallelism for multithreaded tasks.
+        /// </summary>
+        private static Lazy<ParallelOptions> parallelSettingsMedium = new Lazy<ParallelOptions>(
+                () =>
+                {
+                    ParallelOptions parallelOptions = new ParallelOptions()
+                    {
+                        // Only use 25% of available processing power
+                        MaxDegreeOfParallelism = (Environment.ProcessorCount * 1) / 4
                     };
                     return parallelOptions;
                 },
@@ -48,17 +63,28 @@
             this.ContentId = SettingsViewModel.ToolContentId;
 
             // Subscribe async to avoid a deadlock situation
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
         /// Gets the parallelism settings.
         /// </summary>
-        public ParallelOptions ParallelSettings
+        public ParallelOptions ParallelSettingsFast
         {
             get
             {
-                return parallelSettings.Value;
+                return parallelSettingsFast.Value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the parallelism settings.
+        /// </summary>
+        public ParallelOptions ParallelSettingsMedium
+        {
+            get
+            {
+                return parallelSettingsMedium.Value;
             }
         }
 

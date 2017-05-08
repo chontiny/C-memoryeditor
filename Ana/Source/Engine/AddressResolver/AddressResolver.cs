@@ -108,7 +108,7 @@
         public IntPtr ResolveGlobalKeyword(String identifier)
         {
             ScriptEngine.ScriptEngine scriptEngine = new ScriptEngine.ScriptEngine();
-            return scriptEngine.MemoryCore.GetGlobalKeyword(identifier)?.ToIntPtr();
+            return ((dynamic)scriptEngine.MemoryCore.GetGlobalKeyword(identifier))?.ToIntPtr();
         }
 
         /// <summary>

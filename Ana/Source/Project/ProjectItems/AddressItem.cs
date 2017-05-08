@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Controls;
     using Editors.OffsetEditor;
     using Engine;
     using Engine.AddressResolver;
@@ -54,7 +55,7 @@
         /// The value at this address.
         /// </summary>
         [Browsable(false)]
-        private dynamic addressValue;
+        private Object addressValue;
 
         /// <summary>
         /// A value indicating whether the value at this address should be displayed as hex.
@@ -107,7 +108,7 @@
 
             if (!this.isValueHex && CheckSyntax.CanParseValue(elementType, value))
             {
-                this.addressValue = Conversions.ParsePrimitiveStringAsDynamic(elementType, value);
+                this.addressValue = Conversions.ParsePrimitiveStringAsPrimitive(elementType, value);
             }
             else if (this.isValueHex && CheckSyntax.CanParseHex(elementType, value))
             {
@@ -120,7 +121,7 @@
         /// </summary>
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
-        [Category("Properties"), DisplayName("Resolve Type"), Description("Method to use for resolving the address base. If there is an identifier to resolve, the address is treated as an offset.")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Resolve Type"), Description("Method to use for resolving the address base. If there is an identifier to resolve, the address is treated as an offset.")]
         public AddressResolver.ResolveTypeEnum ResolveType
         {
             get
@@ -141,7 +142,7 @@
         /// </summary>
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
-        [Category("Properties"), DisplayName("Resolve Id"), Description("Text identifier to use when resolving the base address, such as a module or .NET Object name")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Resolve Id"), Description("Text identifier to use when resolving the base address, such as a module or .NET Object name")]
         public String BaseIdentifier
         {
             get
@@ -163,7 +164,7 @@
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(AddressConverter))]
-        [Category("Properties"), DisplayName("Address Base"), Description("Base address")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Address Base"), Description("Base address")]
         public IntPtr BaseAddress
         {
             get
@@ -187,7 +188,7 @@
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(OffsetConverter))]
         [Editor(typeof(OffsetEditorModel), typeof(UITypeEditor))]
-        [Category("Properties"), DisplayName("Address Offsets"), Description("Address offsets")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Address Offsets"), Description("Address offsets")]
         public IEnumerable<Int32> Offsets
         {
             get
@@ -208,7 +209,7 @@
         /// </summary>
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(ValueTypeConverter))]
-        [Category("Properties"), DisplayName("Value Type"), Description("Data type of the address")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value Type"), Description("Data type of the address")]
         public Type ElementType
         {
             get
@@ -230,8 +231,8 @@
         /// Gets or sets the value at this address.
         /// </summary>
         [TypeConverter(typeof(DynamicConverter))]
-        [Category("Properties"), DisplayName("Value"), Description("Value at the address")]
-        public dynamic Value
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value"), Description("Value at the address")]
+        public Object Value
         {
             get
             {
@@ -251,7 +252,7 @@
         /// </summary>
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
-        [Category("Properties"), DisplayName("Value as Hex"), Description("Whether or not to display value as hexedecimal")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether or not to display value as hexedecimal")]
         public Boolean IsValueHex
         {
             get
@@ -272,7 +273,7 @@
         /// </summary>
         [ReadOnly(true)]
         [TypeConverter(typeof(AddressConverter))]
-        [Category("Properties"), DisplayName("Address"), Description("Effective address")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Address"), Description("Effective address")]
         public IntPtr EffectiveAddress
         {
             get
@@ -297,7 +298,7 @@
             if (this.IsActivated)
             {
                 // Freeze current value if this entry is activated
-                dynamic value = this.Value;
+                Object value = this.Value;
                 if (value != null && value.GetType() == this.ElementType)
                 {
                     this.WriteValue(value);
@@ -387,7 +388,7 @@
         /// Writes a value to the computed address of this item.
         /// </summary>
         /// <param name="newValue">The value to write.</param>
-        private void WriteValue(dynamic newValue)
+        private void WriteValue(Object newValue)
         {
             if (newValue == null)
             {

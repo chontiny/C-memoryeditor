@@ -29,9 +29,10 @@ namespace Ana.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Added hotkey manager for binding project items to hotkeys\r\n- Added automatic co" +
-                    "nstraint conflict resolution in manual scanner\r\n- Improved interaction with webs" +
-                    "ite from Ana");
+            this.Write(@"- Added project exporting, allowing for quick saving of compiled project items as their own separate files from a large project.
+- Fixed display bug for empty hotkeys
+- Fixed a potential deadlock bug in the project explorer
+- Fixed a bug where a copy pasted script would not transfer over the extended description");
             return this.GenerationEnvironment.ToString();
         }
     }

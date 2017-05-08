@@ -1,6 +1,6 @@
 ﻿namespace Ana.View
 {
-    using Source.CustomControls;
+    using Source.Controls;
     using Source.UserSettings;
     using System;
     using System.Windows.Controls;
@@ -120,14 +120,14 @@
         /// <param name="e">Event args.</param>
         private void AlignmentUpdated(Object sender, EventArgs e)
         {
-            dynamic value = this.AlignmentHexDecBox.GetValue();
+            Object value = this.AlignmentHexDecBox.GetValue();
 
             if (value == null)
             {
                 return;
             }
 
-            this.SettingsViewModel.Alignment = value;
+            this.SettingsViewModel.Alignment = (Int32)value;
         }
 
         /// <summary>
@@ -137,14 +137,14 @@
         /// <param name="e">Event args.</param>
         private void StartRangeUpdated(Object sender, EventArgs e)
         {
-            dynamic value = this.ScanRangeStartHexDecBox.GetValue();
+            Object value = this.ScanRangeStartHexDecBox.GetValue();
 
             if (value == null)
             {
                 return;
             }
 
-            this.SettingsViewModel.StartAddress = value;
+            this.SettingsViewModel.StartAddress = (UInt64)value;
         }
 
         /// <summary>
@@ -154,14 +154,14 @@
         /// <param name="e">Event args.</param>
         private void EndRangeUpdated(Object sender, EventArgs e)
         {
-            dynamic value = this.ScanRangeEndHexDecBox.GetValue();
+            Object value = this.ScanRangeEndHexDecBox.GetValue();
 
             if (value == null)
             {
                 return;
             }
 
-            this.SettingsViewModel.EndAddress = value;
+            this.SettingsViewModel.EndAddress = (UInt64)value;
         }
 
         /// <summary>
@@ -171,14 +171,14 @@
         /// <param name="e">Event args.</param>
         private void FreezeIntervalUpdated(Object sender, EventArgs e)
         {
-            dynamic value = this.FreezeIntervalHexDecBox.GetValue();
+            Object value = this.FreezeIntervalHexDecBox.GetValue();
 
             if (value == null)
             {
                 return;
             }
 
-            this.SettingsViewModel.FreezeInterval = value;
+            this.SettingsViewModel.FreezeInterval = (Int32)value;
         }
 
         /// <summary>
@@ -188,14 +188,14 @@
         /// <param name="e">Event args.</param>
         private void RescanIntervalUpdated(Object sender, EventArgs e)
         {
-            dynamic value = this.RescanIntervalHexDecBox.GetValue();
+            Object value = this.RescanIntervalHexDecBox.GetValue();
 
             if (value == null)
             {
                 return;
             }
 
-            this.SettingsViewModel.RescanInterval = value;
+            this.SettingsViewModel.RescanInterval = (Int32)value;
         }
 
         /// <summary>
@@ -205,14 +205,14 @@
         /// <param name="e">Event args.</param>
         private void TableReadIntervalUpdated(Object sender, EventArgs e)
         {
-            dynamic value = this.TableReadIntervalHexDecBox.GetValue();
+            Object value = this.TableReadIntervalHexDecBox.GetValue();
 
             if (value == null)
             {
                 return;
             }
 
-            this.SettingsViewModel.TableReadInterval = value;
+            this.SettingsViewModel.TableReadInterval = (Int32)value;
         }
 
         /// <summary>
@@ -222,14 +222,14 @@
         /// <param name="e">Event args.</param>
         private void ResultReadIntervalUpdated(Object sender, EventArgs e)
         {
-            dynamic value = this.ResultReadIntervalHexDecBox.GetValue();
+            Object value = this.ResultReadIntervalHexDecBox.GetValue();
 
             if (value == null)
             {
                 return;
             }
 
-            this.SettingsViewModel.ResultReadInterval = value;
+            this.SettingsViewModel.ResultReadInterval = (Int32)value;
         }
 
         /// <summary>
@@ -239,14 +239,14 @@
         /// <param name="e">Event args.</param>
         private void InputCorrelatorTimeoutUpdated(Object sender, EventArgs e)
         {
-            dynamic value = this.InputCorrelatorTimeoutHexDecBox.GetValue();
+            Object value = this.InputCorrelatorTimeoutHexDecBox.GetValue();
 
             if (value == null)
             {
                 return;
             }
 
-            this.SettingsViewModel.InputCorrelatorTimeOutInterval = value;
+            this.SettingsViewModel.InputCorrelatorTimeOutInterval = (Int32)value;
         }
     }
     //// End class

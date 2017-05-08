@@ -27,16 +27,16 @@
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://www.anathena.com/Release/</InstallUrl>
-    <UpdateUrl>https://www.anathena.com/Content/Release/</UpdateUrl>
+    <UpdateUrl>https://www.anathena.com/Release/</UpdateUrl>
     <SupportUrl>https://www.anathena.com/</SupportUrl>
     <ErrorReportUrl>https://www.anathena.com/</ErrorReportUrl>
     <ProductName>Anathena</ProductName>
     <PublisherName>Anathena</PublisherName>
-    <MinimumRequiredVersion>3.4.8.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>3.5.3.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.4.8.0</ApplicationVersion>
+    <ApplicationVersion>3.5.3.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -113,6 +113,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
+    <ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>None</ResolveAssemblyWarnOrErrorOnTargetArchitectureMismatch>
+  </PropertyGroup>
+  <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
@@ -182,7 +185,8 @@
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Content\Images.cs" />
-    <Compile Include="Source\CustomControls\TreeViewItemViewModel.cs" />
+    <Compile Include="Source\Controls\SortedCategory.cs" />
+    <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Engine\Hook\Client\HookClient.cs" />
@@ -220,198 +224,27 @@
     <Compile Include="Source\Engine\Input\Controller\ControllerCapture.cs" />
     <Compile Include="Source\Engine\Input\Controller\IControllerObserver.cs" />
     <Compile Include="Source\Engine\Input\Controller\IControllerSubject.cs" />
-    <Compile Include="Source\Engine\Input\HotKeys\ControllerHotkey.cs" />
-    <Compile Include="Source\Engine\Input\HotKeys\IHotkey.cs" />
-    <Compile Include="Source\Engine\Input\HotKeys\KeyboardHotkey.cs" />
-    <Compile Include="Source\Engine\Input\HotKeys\MouseHotkey.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\ControllerHotkey.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\HotkeyBuilder.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\Hotkey.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
+    <Compile Include="Source\Engine\Input\Hotkeys\KeyboardHotkeyBuilder.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\KeyboardHotkey.cs" />
+    <Compile Include="Source\Engine\Input\Hotkeys\MouseHotkey.cs" />
     <Compile Include="Source\Engine\Input\IInputCapture.cs" />
     <Compile Include="Source\Engine\Input\IInputManager.cs" />
     <Compile Include="Source\Engine\Input\InputManager.cs" />
-    <Compile Include="Source\Engine\Input\Keyboard\IKeyboardObserver.cs" />
-    <Compile Include="Source\Engine\Input\Keyboard\IKeyboardSubject.cs" />
+    <Compile Include="Source\Engine\Input\Keyboard\KeyState.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyboardCapture.cs" />
+    <Compile Include="Source\Utils\DataStructures\TTLCache.cs" />
+    <Compile Include="Source\Utils\Extensions\EnumExtensions.cs" />
+    <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
+    <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
     <Compile Include="Source\Engine\Input\Mouse\IMouseObserver.cs" />
     <Compile Include="Source\Engine\Input\Mouse\IMouseSubject.cs" />
     <Compile Include="Source\Engine\Input\Mouse\MouseCapture.cs" />
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Constants.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\CrlUrlList.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\DataDirectories.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\ExportFunction.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\ImpHash\ImportHash.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\ImpHash\OrdinalSymbolMapping.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\ImportFunction.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\NativeMethods.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ExportedFunctionsParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageBaseRelocationsParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageBoundImportDescriptorParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageDebugDirectoryParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageDelayImportDescriptorParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageDosHeaderParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageExportDirectoriesParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageImportDescriptorsParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageLoadConfigDirectoryParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageNtHeadersParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageResourceDirectoryParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageSectionHeadersParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImageTlsDirectoryParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\ImportedFunctionsParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\PKCS7Parser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\RuntimeFunctionsParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\SafeParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Parser\WinCertificateParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\PatternMatching\AhoCorasick.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\PeFile.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\StructureParser.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\AbstractStructure.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\Copyright.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_BASE_RELOCATION.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_BOUND_IMPORT_DESCRIPTOR.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_DATA_DIRECTORY.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_DEBUG_DIRECTORY.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_DELAY_IMPORT_DESCRIPTOR.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_DOS_HEADER.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_EXPORT_DIRECTORY.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_FILE_HEADER.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_IMPORT_BY_NAME.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_IMPORT_DESCRIPTOR.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_LOAD_CONFIG_DIRECTORY.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_NT_HEADERS.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_OPTIONAL_HEADER.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_RESOURCE_DATA_ENTRY.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_RESOURCE_DIRECTORY.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_RESOURCE_DIRECTORY_ENTRY.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_RESOURCE_DIR_STRING_U.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_SECTION_HEADER.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_THUNK_DATA.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_TLS_CALLBACK.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\IMAGE_TLS_DIRECTORY.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\RUNTIME_FUNCTION.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\StructureFacade.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\StructureFactory.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\UNWIND_CODE.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\UNWIND_INFO.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Structures\WIN_CERTIFICATE.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Engine\OperatingSystems\Windows\Pe\Utility.cs">
-      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
-    </Compile>
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
-    <Compile Include="Source\HotkeyManager\HotkeyManagerViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\DataGridIndexConverter.cs" />
@@ -431,18 +264,20 @@
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
     <Compile Include="Source\ScriptEngine\ScriptEngine.cs" />
-    <Compile Include="Source\SignatureCollector\SignatureCollectorViewModel.cs" />
-    <Compile Include="Source\SignatureCollector\SignatureModel.cs" />
+    <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
-    <Compile Include="Source\Snapshots\SnapshotElementRef.cs" />
+    <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
     <Compile Include="Source\Utils\Compression.cs" />
     <Compile Include="Source\Utils\DataStructures\BiDictionary.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Utils\DataStructures\CircularLinkedList.cs" />
+    <Compile Include="Source\Utils\Extensions\IDisposableExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\SingleExtensions.cs" />
+    <Compile Include="Source\Utils\Extensions\DoubleExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\StringExtensions.cs" />
     <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />
@@ -596,11 +431,11 @@
     </Compile>
     <Compile Include="Source\Utils\CheckSyntax.cs" />
     <Compile Include="Source\Utils\Conversions.cs" />
-    <Compile Include="Source\CustomControls\CenteredDialogBox.cs">
+    <Compile Include="Source\Controls\CenteredDialogBox.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Source\CustomControls\ControlThreadingHelper.cs" />
-    <Compile Include="Source\CustomControls\TreeView\ProjectNode.cs" />
+    <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
+    <Compile Include="Source\Controls\TreeView\ProjectNode.cs" />
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
@@ -610,14 +445,8 @@
     <Compile Include="View\Editors\ValueEditor.xaml.cs">
       <DependentUpon>ValueEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\HotkeyManager.xaml.cs">
-      <DependentUpon>HotkeyManager.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\SignatureCollector.xaml.cs">
-      <DependentUpon>SignatureCollector.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
@@ -634,11 +463,11 @@
     <Compile Include="View\Editors\ScriptEditor.xaml.cs">
       <DependentUpon>ScriptEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Source\CustomControls\DarkBrushes.cs" />
-    <Compile Include="Source\CustomControls\HexDecTextBox.cs">
+    <Compile Include="Source\Controls\DarkBrushes.cs" />
+    <Compile Include="Source\Controls\HexDecTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Source\CustomControls\WinformsHostingHelper.cs" />
+    <Compile Include="Source\Controls\WinformsHostingHelper.cs" />
     <Compile Include="View\InputCorrelator.xaml.cs">
       <DependentUpon>InputCorrelator.xaml</DependentUpon>
     </Compile>
@@ -733,15 +562,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\HotkeyManager.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\Output.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\SignatureCollector.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -1126,27 +947,27 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\DeveloperLayout.xml" />
-    <Content Include="Libraries\EasyHook\EasyHook.dll">
+    <None Include="Libraries\EasyHook\EasyHook.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook32.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook32Svc.exe">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook32Svc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook64.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyHook64Svc.exe">
+    </None>
+    <None Include="Libraries\EasyHook\EasyHook64Svc.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyLoad32.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyLoad32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Libraries\EasyHook\EasyLoad64.dll">
+    </None>
+    <None Include="Libraries\EasyHook\EasyLoad64.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

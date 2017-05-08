@@ -63,7 +63,7 @@
             this.ApplyThresholdCommand = new RelayCommand(() => Task.Run(() => this.ApplyThreshold()), () => true);
             this.InvertSelectionCommand = new RelayCommand(() => Task.Run(() => this.InvertSelection()), () => true);
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
@@ -222,9 +222,9 @@
         /// </summary>
         private void OnUpdateHistogram()
         {
-            SortedList<dynamic, Int64> histogram = LabelThresholderModel.Histogram;
-            SortedList<dynamic, Int64> histogramKept = LabelThresholderModel.HistogramKept;
-            SortedList<dynamic, Int64> histogramFiltered = LabelThresholderModel.HistogramFiltered;
+            SortedList<Object, Int64> histogram = LabelThresholderModel.Histogram;
+            SortedList<Object, Int64> histogramKept = LabelThresholderModel.HistogramKept;
+            SortedList<Object, Int64> histogramFiltered = LabelThresholderModel.HistogramFiltered;
 
             this.labels = histogram.Keys.Select(x => (String)x.ToString()).ToList();
             this.KeptValues = new ChartValues<Int64>(histogramKept.Values.Select(x => (Int64)Math.Log(x)));

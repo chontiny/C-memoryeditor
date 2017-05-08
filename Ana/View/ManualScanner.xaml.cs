@@ -18,9 +18,9 @@
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
-            this.ValueHexDecBox = new Source.CustomControls.HexDecTextBox();
+            this.ValueHexDecBox = new Source.Controls.HexDecTextBox();
             this.ValueHexDecBox.TextChanged += this.ValueUpdated;
-            this.valueHexDecBox.Children.Add(Source.CustomControls.WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
+            this.valueHexDecBox.Children.Add(Source.Controls.WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
         }
@@ -28,7 +28,7 @@
         /// <summary>
         /// Gets or sets the value hex dec box used to display the current value being edited.
         /// </summary>
-        private Source.CustomControls.HexDecTextBox ValueHexDecBox { get; set; }
+        private Source.Controls.HexDecTextBox ValueHexDecBox { get; set; }
 
         /// <summary>
         /// Updates the active type.

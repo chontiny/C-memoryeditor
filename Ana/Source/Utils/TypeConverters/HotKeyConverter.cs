@@ -27,7 +27,7 @@
                 return "(None)";
             }
 
-            if (value.GetType().GetInterfaces().Any(x => x.IsAssignableFrom(typeof(IEnumerable<IHotkey>))))
+            if (value.GetType().GetInterfaces().Any(x => x.IsAssignableFrom(typeof(IEnumerable<Hotkey>))))
             {
                 return "(Hotkeys)";
             }

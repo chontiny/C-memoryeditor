@@ -4,6 +4,7 @@
     using Main;
     using Mvvm.Command;
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
 
@@ -18,15 +19,22 @@
         public const String ToolContentId = nameof(TextEditorViewModel);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TextEditorViewModel" /> class.
+        /// Singleton instance of the <see cref="TextEditorViewModel" /> class.
         /// </summary>
-        public TextEditorViewModel() : base("Text Editor")
+        private static Lazy<TextEditorViewModel> textEditorViewModelInstance = new Lazy<TextEditorViewModel>(
+                () => { return new TextEditorViewModel(); },
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="TextEditorViewModel" /> class.
+        /// </summary>
+        private TextEditorViewModel() : base("Text Editor")
         {
             this.ContentId = TextEditorViewModel.ToolContentId;
             this.UpdateTextCommand = new RelayCommand<String>((text) => this.UpdateText(text), (text) => true);
             this.SaveTextCommand = new RelayCommand<String>((text) => this.SaveText(text), (text) => true);
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
@@ -43,6 +51,15 @@
         /// Gets the active text.
         /// </summary>
         public String Text { get; private set; }
+
+        /// <summary>
+        /// Gets a singleton instance of the <see cref="TextEditorViewModel" /> class.
+        /// </summary>
+        /// <returns>A singleton instance of the class.</returns>
+        public static TextEditorViewModel GetInstance()
+        {
+            return TextEditorViewModel.textEditorViewModelInstance.Value;
+        }
 
         /// <summary>
         /// Updates the active text.

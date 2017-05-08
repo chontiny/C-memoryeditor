@@ -39,7 +39,7 @@
             this.UndoSnapshotCommand = new RelayCommand(() => this.UndoSnapshot(), () => true);
             this.RedoSnapshotCommand = new RelayCommand(() => this.RedoSnapshot(), () => true);
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
             Task.Run(() => SnapshotManager.GetInstance().Subscribe(this));
         }
 

@@ -46,8 +46,8 @@
         protected override void OnBegin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone();
-            this.Snapshot.LabelType = typeof(UInt16);
+            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
+            this.Snapshot.SetLabelType(typeof(UInt16));
 
             if (this.Snapshot == null)
             {
@@ -60,7 +60,7 @@
             base.OnBegin();
         }
 
-        protected override void OnUpdate()
+        protected unsafe override void OnUpdate()
         {
             Int32 processedPages = 0;
 
@@ -68,29 +68,24 @@
             this.Snapshot.ReadAllMemory();
 
             Parallel.ForEach(
-                this.Snapshot.Cast<Object>(),
-                SettingsViewModel.GetInstance().ParallelSettings,
-                (Object regionObject) =>
+                this.Snapshot.Cast<SnapshotRegion>(),
+                SettingsViewModel.GetInstance().ParallelSettingsFast,
+                (region) =>
             {
-                SnapshotRegion region = regionObject as SnapshotRegion;
-
                 if (!region.CanCompare())
                 {
                     return;
                 }
 
-                foreach (SnapshotElementRef element in region)
+                foreach (SnapshotElementIterator element in region)
                 {
-                    if (element.Changed())
-                    {
-                        ((dynamic)element).ElementLabel++;
-                    }
+                    element.ElementLabel = (UInt16)element.ElementLabel + 1;
                 }
 
                 lock (this.ProgressLock)
                 {
                     processedPages++;
-                    this.UpdateProgress(processedPages, this.Snapshot.GetRegionCount());
+                    this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
                 }
             });
 

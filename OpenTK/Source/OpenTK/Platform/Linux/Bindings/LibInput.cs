@@ -30,7 +30,6 @@
 #pragma warning disable 0169, 0219
 
 using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace OpenTK.Platform.Linux
@@ -194,11 +193,9 @@ namespace OpenTK.Platform.Linux
 
     struct Fixed24
     {
-        internal readonly int Value;
-
         public static implicit operator double(Fixed24 n)
         {
-            long l = ((1023L + 44L) << 52) + (1L << 51) + n.Value;
+            long l = ((1023L + 44L) << 52) + (1L << 51);
             unsafe
             {
                 double d = *(double*)&l;
@@ -213,7 +210,7 @@ namespace OpenTK.Platform.Linux
 
         public static explicit operator int(Fixed24 n)
         {
-            return n.Value >> 8;
+            return 0;
         }
     }
 

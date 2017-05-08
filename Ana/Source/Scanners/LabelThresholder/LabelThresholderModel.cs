@@ -54,11 +54,11 @@
             }
         }
 
-        public SortedList<dynamic, Int64> Histogram { get; set; }
+        public SortedList<Object, Int64> Histogram { get; set; }
 
-        public SortedList<dynamic, Int64> HistogramFiltered { get; set; }
+        public SortedList<Object, Int64> HistogramFiltered { get; set; }
 
-        public SortedList<dynamic, Int64> HistogramKept { get; set; }
+        public SortedList<Object, Int64> HistogramKept { get; set; }
 
         private Int32 LowerIndex { get; set; }
 
@@ -111,8 +111,8 @@
                 }
             }
 
-            dynamic lowerValue = this.Histogram.Keys[this.LowerIndex];
-            dynamic upperValue = this.Histogram.Keys[this.UpperIndex];
+            Object lowerValue = this.Histogram.Keys[this.LowerIndex];
+            Object upperValue = this.Histogram.Keys[this.UpperIndex];
 
             lock (this.SnapshotLock)
             {
@@ -122,9 +122,13 @@
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        foreach (SnapshotElementRef element in region)
+                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                         {
-                            if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
+                            SnapshotElementIterator element = enumerator.Current;
+
+                            dynamic label = element.GetElementLabel();
+
+                            if (label >= lowerValue && label <= upperValue)
                             {
                                 element.SetValid(true);
                             }
@@ -137,9 +141,13 @@
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        foreach (SnapshotElementRef element in region)
+                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                         {
-                            if (((dynamic)element).GetElementLabel() >= lowerValue && ((dynamic)element).GetElementLabel() <= upperValue)
+                            SnapshotElementIterator element = enumerator.Current;
+
+                            dynamic label = element.GetElementLabel();
+
+                            if (label >= lowerValue && label <= upperValue)
                             {
                                 element.SetValid(false);
                             }
@@ -161,7 +169,7 @@
 
         protected override void OnUpdate()
         {
-            ConcurrentDictionary<dynamic, Int64> histogram = new ConcurrentDictionary<dynamic, Int64>();
+            ConcurrentDictionary<Object, Int64> histogram = new ConcurrentDictionary<Object, Int64>();
             Int32 processedPages = 0;
 
             lock (this.SnapshotLock)
@@ -173,28 +181,30 @@
                 }
 
                 Parallel.ForEach(
-                    this.Snapshot.Cast<Object>(),
-                    SettingsViewModel.GetInstance().ParallelSettings,
-                    (regionObject) =>
+                    this.Snapshot.Cast<SnapshotRegion>(),
+                    SettingsViewModel.GetInstance().ParallelSettingsFast,
+                    (region) =>
                 {
-                    SnapshotRegion region = regionObject as SnapshotRegion;
-
-                    if (((dynamic)region).GetElementLabels() == null || region.GetElementCount() <= 0)
+                    if (region.ElementLabels == null || region.ElementCount <= 0)
                     {
                         return;
                     }
 
-                    foreach (SnapshotElementRef element in region)
+                    for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                     {
+                        SnapshotElementIterator element = enumerator.Current;
+
                         lock (this.ItemLock)
                         {
-                            if (histogram.ContainsKey(((dynamic)element).GetElementLabel()))
+                            Object label = element.GetElementLabel();
+
+                            if (histogram.ContainsKey(label))
                             {
-                                histogram[((dynamic)element).GetElementLabel()]++;
+                                histogram[label]++;
                             }
                             else
                             {
-                                histogram.TryAdd(((dynamic)element).GetElementLabel(), 1);
+                                histogram.TryAdd(label, 1);
                             }
                         }
                     }
@@ -202,14 +212,14 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.GetRegionCount());
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
                     }
                     //// End foreach element
                 });
                 //// End foreach region
             }
 
-            this.Histogram = new SortedList<dynamic, Int64>(histogram);
+            this.Histogram = new SortedList<Object, Int64>(histogram);
             this.UpdateHistogram();
             this.Cancel();
 
@@ -240,10 +250,10 @@
             this.LowerIndex = lowerIndex;
             this.UpperIndex = upperIndex;
 
-            SortedList<dynamic, Int64> histogramKept = new SortedList<dynamic, Int64>();
-            SortedList<dynamic, Int64> histogramFiltered = new SortedList<dynamic, Int64>();
+            SortedList<Object, Int64> histogramKept = new SortedList<Object, Int64>();
+            SortedList<Object, Int64> histogramFiltered = new SortedList<Object, Int64>();
 
-            foreach (KeyValuePair<dynamic, Int64> bar in this.Histogram)
+            foreach (KeyValuePair<Object, Int64> bar in this.Histogram)
             {
                 Int32 index = this.Histogram.IndexOfKey(bar.Key);
 

@@ -5,7 +5,6 @@
     using Source.Editors.HotkeyEditor;
     using Source.Editors.ScriptEditor;
     using Source.Editors.TextEditor;
-    using Source.HotkeyManager;
     using Source.Output;
     using Source.ProcessSelector;
     using Source.Project;
@@ -17,7 +16,6 @@
     using Source.Scanners.LabelThresholder;
     using Source.Scanners.ManualScanner;
     using Source.Scanners.PointerScanner;
-    using Source.SignatureCollector;
     using Source.Snapshots;
     using Source.UserSettings;
     using System;
@@ -205,10 +203,6 @@
             {
                 return this.ProjectExplorerViewTemplate;
             }
-            else if (item is SignatureCollectorViewModel)
-            {
-                return this.SignatureCollectorViewTemplate;
-            }
             else if (item is OutputViewModel)
             {
                 return this.OutputViewTemplate;
@@ -224,10 +218,6 @@
             else if (item is HotkeyEditorViewModel)
             {
                 return this.HotkeyEditorViewTemplate;
-            }
-            else if (item is HotkeyManagerViewModel)
-            {
-                return this.HotkeyManagerViewTemplate;
             }
 
             return base.SelectTemplate(item, container);

@@ -6,7 +6,7 @@
     /// <summary>
     /// Extension methods for converting and operating on <see cref="IntPtr"/> types.
     /// </summary>
-    public static class IntPtrExtensions
+    internal static class IntPtrExtensions
     {
         /// <summary>
         /// Converts the given pointer to a <see cref="IntPtr"/>.

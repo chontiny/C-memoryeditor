@@ -30,8 +30,8 @@
         /// <summary>
         /// Gets or sets the keywords associated with all running scripts.
         /// </summary>
-        private static Lazy<ConcurrentDictionary<String, dynamic>> globalKeywords = new Lazy<ConcurrentDictionary<String, dynamic>>(
-            () => { return new ConcurrentDictionary<String, dynamic>(); },
+        private static Lazy<ConcurrentDictionary<String, Object>> globalKeywords = new Lazy<ConcurrentDictionary<String, Object>>(
+            () => { return new ConcurrentDictionary<String, Object>(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
@@ -40,14 +40,14 @@
         public MemoryCore()
         {
             this.RemoteAllocations = new List<UInt64>();
-            this.Keywords = new ConcurrentDictionary<String, dynamic>();
+            this.Keywords = new ConcurrentDictionary<String, Object>();
             this.CodeCaves = new List<CodeCave>();
         }
 
         /// <summary>
         /// Gets or sets the keywords associated with the calling script.
         /// </summary>
-        private ConcurrentDictionary<String, dynamic> Keywords { get; set; }
+        private ConcurrentDictionary<String, Object> Keywords { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of allocations created in the external process;
@@ -423,7 +423,7 @@
         /// </summary>
         /// <param name="keyword">The local keyword to bind.</param>
         /// <param name="value">The value to which the keyword is bound.</param>
-        public void SetKeyword(String keyword, dynamic value)
+        public void SetKeyword(String keyword, Object value)
         {
             this.PrintDebugTag(keyword?.ToLower(), value?.ToString() as String);
 
@@ -435,7 +435,7 @@
         /// </summary>
         /// <param name="globalKeyword">The global keyword to bind.</param>
         /// <param name="value">The address to which the keyword is bound.</param>
-        public void SetGlobalKeyword(String globalKeyword, dynamic value)
+        public void SetGlobalKeyword(String globalKeyword, Object value)
         {
             this.PrintDebugTag(globalKeyword?.ToLower(), value.ToString() as String);
 
@@ -447,9 +447,9 @@
         /// </summary>
         /// <param name="keyword">The keyword.</param>
         /// <returns>The value of the keyword. If not found, returns 0.</returns>
-        public dynamic GetKeyword(String keyword)
+        public Object GetKeyword(String keyword)
         {
-            dynamic result;
+            Object result;
             this.Keywords.TryGetValue(keyword?.ToLower(), out result);
 
             return result;
@@ -460,9 +460,9 @@
         /// </summary>
         /// <param name="globalKeyword">The global keyword.</param>
         /// <returns>The value of the global keyword. If not found, returns 0.</returns>
-        public dynamic GetGlobalKeyword(String globalKeyword)
+        public Object GetGlobalKeyword(String globalKeyword)
         {
-            dynamic result;
+            Object result;
             MemoryCore.globalKeywords.Value.TryGetValue(globalKeyword?.ToLower(), out result);
 
             return result;
@@ -476,7 +476,7 @@
         {
             this.PrintDebugTag(keyword);
 
-            dynamic result;
+            Object result;
             if (this.Keywords.ContainsKey(keyword))
             {
                 this.Keywords.TryRemove(keyword, out result);
@@ -493,7 +493,7 @@
 
             if (MemoryCore.globalKeywords.Value.ContainsKey(globalKeyword))
             {
-                dynamic valueRemoved;
+                Object valueRemoved;
                 MemoryCore.globalKeywords.Value.TryRemove(globalKeyword, out valueRemoved);
             }
         }
@@ -626,12 +626,12 @@
             assembly = assembly.Replace("\t", String.Empty);
 
             // Resolve keywords
-            foreach (KeyValuePair<String, dynamic> keyword in this.Keywords)
+            foreach (KeyValuePair<String, Object> keyword in this.Keywords)
             {
                 assembly = assembly.Replace("<" + keyword.Key + ">", Conversions.ToHex(keyword.Value, formatAsAddress: false, includePrefix: true) as String, StringComparison.OrdinalIgnoreCase);
             }
 
-            foreach (KeyValuePair<String, dynamic> globalKeyword in MemoryCore.globalKeywords.Value.ToArray())
+            foreach (KeyValuePair<String, Object> globalKeyword in MemoryCore.globalKeywords.Value.ToArray())
             {
                 assembly = assembly.Replace("<" + globalKeyword.Key + ">", Conversions.ToHex(globalKeyword.Value, formatAsAddress: false, includePrefix: true) as String, StringComparison.OrdinalIgnoreCase);
             }

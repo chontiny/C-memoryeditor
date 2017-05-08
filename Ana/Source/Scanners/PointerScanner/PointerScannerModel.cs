@@ -139,16 +139,17 @@
                 this.IndexValueMap.TryGetValue(index, out pointerValue);
 
                 AddressItem newPointer = new AddressItem(
-                    this.AcceptedPointers[index].Item1,
-                    this.ElementType,
-                    "New Pointer",
-                    AddressResolver.ResolveTypeEnum.Module,
-                    String.Empty,
-                    this.AcceptedPointers[index].Item2,
-                    false,
-                    pointerValue);
+                    baseAddress: this.AcceptedPointers[index].Item1,
+                    elementType: this.ElementType,
+                    description: "New Pointer",
+                    resolveType: AddressResolver.ResolveTypeEnum.Module,
+                    baseIdentifier: String.Empty,
+                    offsets: this.AcceptedPointers[index].Item2,
+                    isValueHex: false,
+                    value: pointerValue
+                );
 
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, newPointer);
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: newPointer);
 
                 if (++count >= PointerScannerModel.MaxAdd)
                 {
@@ -630,11 +631,11 @@
             {
                 Parallel.ForEach(
                     this.ConnectedPointers[currentMaximum],
-                    SettingsViewModel.GetInstance().ParallelSettings,
+                    SettingsViewModel.GetInstance().ParallelSettingsFast,
                     (baseAddress) =>
                 {
                     // Enforce static base constraint. Maxlevel pointers were already prefitlered, but not other levels.
-                    if (!this.AcceptedBases.ContainsAddress(baseAddress.Key))
+                    if (!this.AcceptedBases.ContainsAddress(baseAddress.Key.ToUInt64()))
                     {
                         return;
                     }
@@ -657,7 +658,7 @@
 
             Parallel.ForEach(
                 this.ConnectedPointers[level - 1],
-                SettingsViewModel.GetInstance().ParallelSettings,
+                SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (target) =>
             {
                 if (pointerDestination.ToUInt64() < target.Key.Subtract(this.MaxPointerOffset).ToUInt64())

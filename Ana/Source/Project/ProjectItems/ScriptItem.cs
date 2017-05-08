@@ -1,5 +1,6 @@
 ﻿namespace Ana.Source.Project.ProjectItems
 {
+    using Controls;
     using Editors.ScriptEditor;
     using Output;
     using ScriptEngine;
@@ -55,7 +56,7 @@
         [ReadOnly(false)]
         [TypeConverter(typeof(ScriptConverter))]
         [Editor(typeof(ScriptEditorModel), typeof(UITypeEditor))]
-        [Category("Properties"), DisplayName("Script"), Description("C# script to interface with engine")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Script"), Description("C# script to interface with engine")]
         public String Script
         {
             get
@@ -76,7 +77,7 @@
         [DataMember]
         [ReadOnly(true)]
         [RefreshProperties(RefreshProperties.All)]
-        [Category("Properties"), DisplayName("Compiled"), Description("Whether or not this script has been compiled.")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Compiled"), Description("Whether or not this script has been compiled.")]
         public Boolean IsCompiled
         {
             get
@@ -105,6 +106,7 @@
         {
             ScriptItem clone = new ScriptItem();
             clone.Description = this.Description;
+            clone.ExtendedDescription = this.ExtendedDescription;
             clone.Parent = this.Parent;
             clone.script = this.Script;
             clone.isCompiled = this.IsCompiled;
@@ -132,14 +134,13 @@
             try
             {
                 ScriptItem clone = this.Clone() as ScriptItem;
-                clone.Description += " - [Compiled]";
                 clone.isCompiled = true;
                 clone.script = this.ScriptManager.CompileScript(clone.script);
                 return clone;
             }
             catch
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to complete compile request.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Unable to complete compile request.");
                 return null;
             }
         }

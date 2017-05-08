@@ -1,5 +1,7 @@
 # Anathena
 
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
+
 Official web site: [anathena.com](https://www.anathena.com)
 
 **Anathena** is Memory Editing software that allows users to create and share cheats in their windows desktop games. This includes memory scanning, pointers, x86/x64 assembly injection, and so on.
@@ -16,7 +18,6 @@ Library | Description
 --- | ---
 [SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper
 [OpenTK](https://github.com/opentk/opentk) | OpenGL Wrapper (Not actually used yet)
-[PeNet](https://github.com/secana/PeNet) | PE Format Parser
 [CLRMD](https://github.com/Microsoft/clrmd) | .NET Application Inspection Library
 [AvalonDock](https://avalondock.codeplex.com/) | Docking Library
 [AvalonEdit](https://github.com/icsharpcode/AvalonEdit) | Code Editing Library
@@ -28,7 +29,3 @@ Library | Description
 [FASM](https://flatassembler.net/) | Flat Assembler (C# Invocation done via MemorySharp)
 [TreeViewAdv](https://sourceforge.net/projects/treeviewadv/) | Advanced Tree View Control
 [WPFToolKit](http://wpftoolkit.codeplex.com/) | Toolkit for WPF Applications
-
-## Licensing
- 
-GPLv3

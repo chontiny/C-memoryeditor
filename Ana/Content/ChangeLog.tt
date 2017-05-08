@@ -5,6 +5,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Ana" #>
-- Added hotkey manager for binding project items to hotkeys
-- Added automatic constraint conflict resolution in manual scanner
-- Improved interaction with website from Ana
+- Added project exporting, allowing for quick saving of compiled project items as their own separate files from a large project.
+- Fixed display bug for empty hotkeys
+- Fixed a potential deadlock bug in the project explorer
+- Fixed a bug where a copy pasted script would not transfer over the extended description

@@ -137,8 +137,7 @@
 
             // Create snapshot from valid regions, do standard expand/mask operations to catch lost bytes for larger data types
             Snapshot prefilteredSnapshot = new Snapshot(regions);
-            prefilteredSnapshot.ExpandAllRegions(PrimitiveTypes.GetLargestPrimitiveSize() - 1);
-            prefilteredSnapshot.MaskRegions(prefilteredSnapshot);
+            prefilteredSnapshot.ExpandAllRegions((PrimitiveTypes.GetLargestPrimitiveSize() - 1).ToUInt64());
 
             return prefilteredSnapshot;
         }
@@ -209,7 +208,7 @@
             List<RegionProperties> newRegions = new List<RegionProperties>();
 
             // Gather current regions from the target process
-            IEnumerable<NormalizedRegion> queriedVirtualRegions = SnapshotManager.GetInstance().CollectSnapshotRegions();
+            IEnumerable<NormalizedRegion> queriedVirtualRegions = SnapshotManager.GetInstance().CreateSnapshotFromSettings().GetSnapshotRegions();
             List<NormalizedRegion> queriedChunkedRegions = new List<NormalizedRegion>();
 
             // Chunk all virtual regions into a standardized size
@@ -297,7 +296,7 @@
                 Parallel.For(
                     0,
                     Math.Min(this.ChunkList.Count, chunkLimit),
-                    SettingsViewModel.GetInstance().ParallelSettings,
+                    SettingsViewModel.GetInstance().ParallelSettingsFast,
                     index =>
                 {
                     RegionProperties chunk;
@@ -324,7 +323,7 @@
                     }
 
                     // Read current page data for chunk
-                    Byte[] pageData = EngineCore.GetInstance().OperatingSystemAdapter?.ReadBytes(chunk.BaseAddress, chunk.RegionSize, out success);
+                    Byte[] pageData = EngineCore.GetInstance().OperatingSystemAdapter?.ReadBytes(chunk.BaseAddress, chunk.RegionSize.ToInt32(), out success);
 
                     // Read failed; Deallocated page
                     if (!success)
@@ -362,7 +361,7 @@
             /// </summary>
             /// <param name="baseAddress">The start address of this chunk.</param>
             /// <param name="regionSize">The size of this chunk.</param>
-            public RegionProperties(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
+            public RegionProperties(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
             {
                 this.Checksum = null;
                 this.HasChanged = false;

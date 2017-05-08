@@ -21,6 +21,18 @@
             return enumeration == null || !enumeration.Any();
         }
 
+        public static UInt64 Sum<TSource>(this IEnumerable<TSource> source, Func<TSource, UInt64> summation)
+        {
+            UInt64 total = 0;
+
+            foreach (TSource item in source)
+            {
+                total += summation(item);
+            }
+
+            return total;
+        }
+
         /// <summary>
         /// A foreach extension method to perform an action on all elements in an enumeration.
         /// </summary>
@@ -89,6 +101,40 @@
             }
 
             return ConcatIterator(head, tail, true);
+        }
+
+        /// <summary>
+        /// Adds a single element to the end of an IEnumerable, if it is not null.
+        /// </summary>
+        /// <typeparam name="T">Type of enumerable to return.</typeparam>
+        /// <param name="source">The source enumerable.</param>
+        /// <param name="element">The element to append.</param>
+        /// <returns>IEnumerable containing all the input elements, followed by the specified additional element.</returns>
+        public static IEnumerable<T> AppendIfNotNull<T>(this IEnumerable<T> source, T element)
+        {
+            if (element == null)
+            {
+                return source;
+            }
+
+            return Append<T>(source, element);
+        }
+
+        /// <summary>
+        /// Adds a single element to the start of an IEnumerable, if it is not null.
+        /// </summary>
+        /// <typeparam name="T">Type of enumerable to return.</typeparam>
+        /// <param name="tail">The source enumerable.</param>
+        /// <param name="head">The element to prepend.</param>
+        /// <returns>IEnumerable containing the specified additional element, followed by all the input elements.</returns>
+        public static IEnumerable<T> PrependIfNotNull<T>(this IEnumerable<T> tail, T head)
+        {
+            if (head == null)
+            {
+                return tail;
+            }
+
+            return Prepend<T>(tail, head);
         }
 
         /// <summary>

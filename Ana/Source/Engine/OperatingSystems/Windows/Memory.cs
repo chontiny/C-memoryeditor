@@ -55,17 +55,28 @@
         /// <returns>The number of bytes written.</returns>
         public static Int32 WriteBytes(IntPtr processHandle, IntPtr address, Byte[] byteArray)
         {
-            // Create the variable storing the number of bytes written
+            MemoryProtectionFlags oldProtection;
             Int32 bytesWritten;
 
-            // Write the data to the target process
-            if (NativeMethods.WriteProcessMemory(processHandle, address, byteArray, byteArray.Length, out bytesWritten))
+            try
             {
-                // Check whether the length of the data written is equal to the inital array
-                if (bytesWritten == byteArray.Length)
+                NativeMethods.VirtualProtectEx(processHandle, (IntPtr)address, byteArray.Length, MemoryProtectionFlags.ExecuteReadWrite, out oldProtection);
+
+                // Write the data to the target process
+                if (NativeMethods.WriteProcessMemory(processHandle, address, byteArray, byteArray.Length, out bytesWritten))
                 {
-                    return bytesWritten;
+                    // Check whether all bytes were written
+                    if (bytesWritten == byteArray.Length)
+                    {
+                        return bytesWritten;
+                    }
                 }
+
+                NativeMethods.VirtualProtectEx(processHandle, (IntPtr)address, byteArray.Length, oldProtection, out oldProtection);
+            }
+            catch
+            {
+
             }
 
             return 0;
@@ -106,14 +117,14 @@
                     allocAddress.Add(Int32.MaxValue >> 1, wrapAround: false));
 
                 // Convert to normalized regions
-                IEnumerable<NormalizedRegion> regions = freeMemory.Select(x => new NormalizedRegion(x.BaseAddress, unchecked((Int32)x.RegionSize)));
+                IEnumerable<NormalizedRegion> regions = freeMemory.Select(x => new NormalizedRegion(x.BaseAddress, x.RegionSize.ToUInt64()));
 
                 // Chunk the large regions into smaller regions based on the allocation size (minimum size is the alloc alignment to prevent creating too many chunks)
                 List<NormalizedRegion> subRegions = new List<NormalizedRegion>();
                 foreach (NormalizedRegion region in regions)
                 {
                     region.BaseAddress = region.BaseAddress.Subtract(region.BaseAddress.Mod(Memory.AllocAlignment), wrapAround: false);
-                    subRegions.AddRange(region.ChunkNormalizedRegion(Math.Max(size, Memory.AllocAlignment)).Select(x => x).Where(x => x.RegionSize >= size));
+                    subRegions.AddRange(region.ChunkNormalizedRegion((UInt64)Math.Max(size, Memory.AllocAlignment)).Select(x => x).Where(x => x.RegionSize >= (UInt64)size));
                 }
 
                 do

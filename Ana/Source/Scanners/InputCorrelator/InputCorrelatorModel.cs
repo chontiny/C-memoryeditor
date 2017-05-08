@@ -3,22 +3,20 @@
     using ActionScheduler;
     using BackgroundScans.Prefilters;
     using Engine;
-    using Engine.Input.Controller;
     using Engine.Input.HotKeys;
     using Engine.Input.Keyboard;
-    using Engine.Input.Mouse;
     using LabelThresholder;
-    using SharpDX.DirectInput;
     using Snapshots;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using UserSettings;
+    using Utils.Extensions;
 
-    internal class InputCorrelatorModel : ScannerBase, IKeyboardObserver, IControllerObserver, IMouseObserver
+    internal class InputCorrelatorModel : ScannerBase, IObserver<KeyState>
     {
-        private List<IHotkey> hotKeys;
+        private List<Hotkey> hotKeys;
 
         public InputCorrelatorModel(Action updateScanCount) : base(
             scannerName: "Input Correlator",
@@ -27,10 +25,10 @@
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();
-            this.HotKeys = new List<IHotkey>();
+            this.HotKeys = new List<Hotkey>();
         }
 
-        public List<IHotkey> HotKeys
+        public List<Hotkey> HotKeys
         {
             get
             {
@@ -56,41 +54,26 @@
 
         private Object ProgressLock { get; set; }
 
-        /// <summary>
-        /// Event received when a key is pressed.
-        /// </summary>
-        /// <param name="key">The key that was pressed.</param>
-        public void OnKeyPress(Key key)
+        public void OnNext(KeyState value)
         {
-        }
+            if (value.PressedKeys.IsNullOrEmpty())
+            {
+                return;
+            }
 
-        /// <summary>
-        /// Event received when a key is down.
-        /// </summary>
-        /// <param name="key">The key that is down.</param>
-        public void OnKeyDown(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a key is released.
-        /// </summary>
-        /// <param name="key">The key that was released.</param>
-        public void OnKeyRelease(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a set of keys are down.
-        /// </summary>
-        /// <param name="pressedKeys">The down keys.</param>
-        public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
-        {
             // If any of our keyboard hotkeys include the current set of pressed keys, trigger activation/deactivation
-            if (this.HotKeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.ActivationKeys.All(y => pressedKeys.Contains(y))))
+            if (this.HotKeys.Where(x => x.GetType().IsAssignableFrom(typeof(KeyboardHotkey))).Cast<KeyboardHotkey>().Any(x => x.GetActivationKeys().All(y => value.PressedKeys.Contains(y))))
             {
                 this.LastActivated = DateTime.Now;
             }
+        }
+
+        public void OnError(Exception error)
+        {
+        }
+
+        public void OnCompleted()
+        {
         }
 
         protected override void OnBegin()
@@ -99,7 +82,7 @@
 
             // Initialize labeled snapshot
             this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
-            this.Snapshot.LabelType = typeof(Int16);
+            this.Snapshot.SetLabelType(typeof(Int16));
 
             if (this.Snapshot == null)
             {
@@ -126,18 +109,16 @@
             if (conditionValid)
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<Object>(),
-                SettingsViewModel.GetInstance().ParallelSettings,
-                (regionObject) =>
+                this.Snapshot.Cast<SnapshotRegion>(),
+                SettingsViewModel.GetInstance().ParallelSettingsFast,
+                (region) =>
                 {
-                    SnapshotRegion region = regionObject as SnapshotRegion;
-
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (SnapshotElementRef element in region)
+                    foreach (SnapshotElementIterator element in region)
                     {
                         if (element.Changed())
                         {
@@ -148,25 +129,23 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.GetRegionCount());
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
                     }
                 });
             }
             else
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<Object>(),
-                SettingsViewModel.GetInstance().ParallelSettings,
-                (regionObject) =>
+                this.Snapshot.Cast<SnapshotRegion>(),
+                SettingsViewModel.GetInstance().ParallelSettingsFast,
+                (region) =>
                 {
-                    SnapshotRegion region = regionObject as SnapshotRegion;
-
                     if (!region.CanCompare())
                     {
                         return;
                     }
 
-                    foreach (SnapshotElementRef element in region)
+                    foreach (SnapshotElementIterator element in region)
                     {
                         if (element.Changed())
                         {
@@ -177,7 +156,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.GetRegionCount());
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
                     }
                 });
             }
@@ -194,10 +173,13 @@
         {
             // Prefilter items with negative penalties (ie constantly changing variables)
             this.Snapshot.SetAllValidBits(false);
+
             foreach (SnapshotRegion region in this.Snapshot)
             {
-                foreach (SnapshotElementRef element in region)
+                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                 {
+                    SnapshotElementIterator element = enumerator.Current;
+
                     if ((Int16)element.ElementLabel > 0)
                     {
                         element.SetValid(true);
@@ -218,14 +200,12 @@
         private void InitializeObjects()
         {
             this.LastActivated = DateTime.MinValue;
-            this.InitializeListeners();
+            this.InitializeObservers();
         }
 
-        private void InitializeListeners()
+        private void InitializeObservers()
         {
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
-            EngineCore.GetInstance().Input?.GetControllerCapture().Subscribe(this);
-            EngineCore.GetInstance().Input?.GetMouseCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
 
         private Boolean IsInputConditionValid(DateTime updateTime)
@@ -243,8 +223,6 @@
             this.Snapshot = null;
 
             EngineCore.GetInstance().Input?.GetKeyboardCapture().Unsubscribe(this);
-            EngineCore.GetInstance().Input?.GetControllerCapture().Unsubscribe(this);
-            EngineCore.GetInstance().Input?.GetMouseCapture().Unsubscribe(this);
         }
     }
     //// End class

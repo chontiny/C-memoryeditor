@@ -173,8 +173,6 @@ namespace SharpDX.Animation
             }
         }
 
-        private PriorityComparisonShadow concludePriorityComparisonShadow;
-
         /// <summary>
         /// Sets the conclude priority comparison.
         /// </summary>
@@ -218,7 +216,7 @@ namespace SharpDX.Animation
             try
             {
                 return GetVariableFromTag(GCHandle.ToIntPtr(tagObjectHandle), id);
-            } 
+            }
             finally
             {
                 tagObjectHandle.Free();

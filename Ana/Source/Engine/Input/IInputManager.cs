@@ -13,7 +13,7 @@
         /// Gets the keyboard capture interface
         /// </summary>
         /// <returns>The keyboard capture interface</returns>
-        IKeyboardSubject GetKeyboardCapture();
+        KeyboardCapture GetKeyboardCapture();
 
         /// <summary>
         /// Gets the mouse capture interface

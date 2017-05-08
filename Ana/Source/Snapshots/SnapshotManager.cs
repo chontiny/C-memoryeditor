@@ -109,11 +109,11 @@
             lock (this.AccessLock)
             {
                 // Take a snapshot if there are none, or the current one is empty
-                if (this.Snapshots.Count == 0 || this.Snapshots.Peek() == null || this.Snapshots.Peek().GetElementCount() == 0)
+                if (this.Snapshots.Count == 0 || this.Snapshots.Peek() == null || this.Snapshots.Peek().ElementCount == 0)
                 {
                     if (createIfNone)
                     {
-                        return this.CollectSnapshot();
+                        return this.CreateSnapshotFromPrefilter();
                     }
                     else
                     {
@@ -127,99 +127,77 @@
         }
 
         /// <summary>
-        /// Collects all snapshot regions in the target process. Will not read the values of the snapshots.
+        /// Creates a new snapshot of memory in the target process. Will not read any memory.
         /// </summary>
-        /// <param name="useSettings">Whether or not to apply user settings to the query.</param>
-        /// <returns>Regions of memory in the target process.</returns>
-        public IEnumerable<NormalizedRegion> CollectSnapshotRegions(Boolean useSettings = true)
+        /// <returns>The snapshot of memory taken in the target process.</returns>
+        public Snapshot CreateSnapshotFromPrefilter()
         {
-            IntPtr startAddress;
-            IntPtr endAddress;
-
-            MemoryProtectionEnum requiredPageFlags;
-            MemoryProtectionEnum excludedPageFlags;
-            MemoryTypeEnum allowedTypeFlags;
-
-            if (useSettings)
-            {
-                // Use settings parameters
-                requiredPageFlags = SettingsViewModel.GetInstance().GetRequiredProtectionSettings();
-                excludedPageFlags = SettingsViewModel.GetInstance().GetExcludedProtectionSettings();
-                allowedTypeFlags = SettingsViewModel.GetInstance().GetAllowedTypeSettings();
-
-                if (SettingsViewModel.GetInstance().IsUserMode)
-                {
-                    startAddress = IntPtr.Zero;
-                    endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetMaximumUserModeAddress();
-                }
-                else
-                {
-                    startAddress = SettingsViewModel.GetInstance().StartAddress.ToIntPtr();
-                    endAddress = SettingsViewModel.GetInstance().EndAddress.ToIntPtr();
-                }
-            }
-            else
-            {
-                // Standard pointer scan parameters
-                startAddress = IntPtr.Zero;
-                endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetMaximumUserModeAddress();
-                requiredPageFlags = 0;
-                excludedPageFlags = 0;
-                allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image | MemoryTypeEnum.Mapped;
-            }
-
-            // Collect virtual pages
-            List<NormalizedRegion> virtualPages = new List<NormalizedRegion>();
-            foreach (NormalizedRegion page in EngineCore.GetInstance().OperatingSystemAdapter.GetVirtualPages(
-                    requiredPageFlags,
-                    excludedPageFlags,
-                    allowedTypeFlags,
-                    startAddress,
-                    endAddress))
-            {
-                virtualPages.Add(page);
-            }
-
-            return virtualPages;
+            return SnapshotPrefilterFactory.GetPrefilteredSnapshot();
         }
 
-        /// <summary>
-        /// Collects a new snapshot of memory in the target process.
-        /// </summary>
-        /// <param name="useSettings">Whether or not to apply user settings to the query.</param>
-        /// <param name="usePrefilter">Whether or not to apply the active prefilter to the query.</param>
-        /// <returns>The snapshot of memory taken in the target process.</returns>
-        public Snapshot CollectSnapshot(Boolean useSettings = true, Boolean usePrefilter = true)
+        public Snapshot CreateSnapshotFromUsermodeMemory()
         {
-            if (usePrefilter)
-            {
-                return SnapshotPrefilterFactory.GetSnapshotPrefilter(typeof(ChunkLinkedListPrefilter)).GetPrefilteredSnapshot();
-            }
+            MemoryProtectionEnum requiredPageFlags = 0;
+            MemoryProtectionEnum excludedPageFlags = 0;
+            MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image | MemoryTypeEnum.Mapped;
 
-            IEnumerable<NormalizedRegion> virtualPages = this.CollectSnapshotRegions(useSettings);
+            IntPtr startAddress = IntPtr.Zero;
+            IntPtr endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress;
 
-            // Convert each virtual page to a snapshot region (a more condensed representation of the information)
             List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
-            virtualPages.ForEach(x => memoryRegions.Add(new SnapshotRegion(x.BaseAddress, x.RegionSize)));
+            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystemAdapter.GetVirtualPages(
+                requiredPageFlags,
+                excludedPageFlags,
+                allowedTypeFlags,
+                startAddress,
+                endAddress);
+
+            foreach (NormalizedRegion virtualPage in virtualPages)
+            {
+                memoryRegions.Add(new SnapshotRegion(virtualPage.BaseAddress, virtualPage.RegionSize));
+            }
 
             return new Snapshot(memoryRegions);
         }
 
         /// <summary>
-        /// Creates a new empty snapshot, which becomes the new active snapshot.
+        /// Creates a new snapshot of memory in the target process. Will not read any memory.
         /// </summary>
-        public void CreateNewSnapshot()
+        /// <returns>The snapshot of memory taken in the target process.</returns>
+        public Snapshot CreateSnapshotFromSettings()
         {
-            lock (this.AccessLock)
+            MemoryProtectionEnum requiredPageFlags = SettingsViewModel.GetInstance().GetRequiredProtectionSettings();
+            MemoryProtectionEnum excludedPageFlags = SettingsViewModel.GetInstance().GetExcludedProtectionSettings();
+            MemoryTypeEnum allowedTypeFlags = SettingsViewModel.GetInstance().GetAllowedTypeSettings();
+
+            IntPtr startAddress, endAddress;
+
+            if (SettingsViewModel.GetInstance().IsUserMode)
             {
-                if (this.Snapshots.Count != 0 && this.Snapshots.Peek() == null)
-                {
-                    return;
-                }
+                startAddress = IntPtr.Zero;
+                endAddress = EngineCore.GetInstance().OperatingSystemAdapter.GetUserModeRegion().EndAddress;
+            }
+            else
+            {
+                startAddress = SettingsViewModel.GetInstance().StartAddress.ToIntPtr();
+                endAddress = SettingsViewModel.GetInstance().EndAddress.ToIntPtr();
             }
 
-            this.ClearSnapshots();
-            this.SaveSnapshot(null);
+            List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
+            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystemAdapter.GetVirtualPages(
+                requiredPageFlags,
+                excludedPageFlags,
+                allowedTypeFlags,
+                startAddress,
+                endAddress);
+
+            // Convert each virtual page to a snapshot region (a more condensed representation of the information)
+            foreach (NormalizedRegion virtualPage in virtualPages)
+            {
+                memoryRegions.Add(new SnapshotRegion(virtualPage.BaseAddress, virtualPage.RegionSize));
+            }
+
+            return new Snapshot(memoryRegions);
         }
 
         /// <summary>
@@ -281,12 +259,7 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(Type activeType)
         {
-            Snapshot activeSnapshot = this.GetActiveSnapshot(createIfNone: false);
-
-            if (activeSnapshot != null)
-            {
-                this.GetActiveSnapshot(createIfNone: false).ElementType = activeType;
-            }
+            this.GetActiveSnapshot(createIfNone: false)?.PropagateSettings();
         }
 
         /// <summary>

@@ -78,7 +78,7 @@
                 {
                     if (elementType != typeof(Single) && elementType != typeof(Double))
                     {
-                        this.ValueConstraints.Remove(scanConstraint);
+                        this.ValueConstraints = new ObservableCollection<ScanConstraint>(this.ValueConstraints.Where(x => x != scanConstraint));
                         continue;
                     }
                 }
@@ -102,7 +102,7 @@
         }
 
         /// <summary>
-        /// Determines if there is any constraint being managed which uses a relative value constraint.
+        /// Determines if there is any constraint being managed which uses a relative value constraint, requiring previous values.
         /// </summary>
         /// <returns>True if any constraint has a relative value constraint.</returns>
         public Boolean HasRelativeConstraint()

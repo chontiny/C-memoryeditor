@@ -1,8 +1,10 @@
 ﻿namespace Ana.Source.Project
 {
-    using CustomControls;
+    using Controls;
     using Docking;
-    using HotkeyManager;
+    using Engine;
+    using Engine.AddressResolver;
+    using Engine.OperatingSystems;
     using Main;
     using Microsoft.Win32;
     using Mvvm.Command;
@@ -38,6 +40,16 @@
         public const String ProjectExtensionFilter = "Cheat File (*.Hax)|*.hax|All files (*.*)|*.*";
 
         /// <summary>
+        /// The file extension for project items.
+        /// </summary>
+        private const String ProjectFileExtension = ".hax";
+
+        /// <summary>
+        /// The file extension for hotkeys.
+        /// </summary>
+        private const String HotkeyFileExtension = ".hotkeys";
+
+        /// <summary>
         /// Singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
         /// </summary>
         private static Lazy<ProjectExplorerViewModel> projectExplorerViewModelInstance = new Lazy<ProjectExplorerViewModel>(
@@ -71,11 +83,12 @@
         {
             this.ContentId = ProjectExplorerViewModel.ToolContentId;
             this.ObserverLock = new Object();
-            this.ProjectExplorerObservers = new List<IProjectExplorerObserver>();
+            this.ProjectExplorerObservers = new HashSet<IProjectExplorerObserver>();
 
             // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
             this.ImportProjectCommand = new RelayCommand(() => this.ImportProject(), () => true);
+            this.ExportProjectCommand = new RelayCommand(() => this.ExportProject(), () => true);
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
             this.SaveAsProjectCommand = new RelayCommand(() => this.SaveAsProject(), () => true);
@@ -87,7 +100,7 @@
             this.ProjectRoot = new ProjectRoot();
             this.Update();
 
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
@@ -96,9 +109,14 @@
         public ICommand OpenProjectCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to open a project from disk.
+        /// Gets the command to import another project from disk.
         /// </summary>
         public ICommand ImportProjectCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to export a project to separate files.
+        /// </summary>
+        public ICommand ExportProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to open a specific project from disk, used for loading downloaded web projects.
@@ -191,17 +209,21 @@
 
             private set
             {
+                this.projectRoot?.RemoveAllNodes();
                 this.projectRoot = value;
                 this.NotifyObserversStructureChange();
                 this.RaisePropertyChanged(nameof(this.ProjectRoot));
             }
         }
 
+        /// <summary>
+        /// Gets project items that can be bound to a hotkey.
+        /// </summary>
         public ObservableCollection<ProjectItem> BindableProjectItems
         {
             get
             {
-                return new ObservableCollection<ProjectItem>(projectRoot.Children);
+                return new ObservableCollection<ProjectItem>(this.projectRoot.Children);
             }
         }
 
@@ -230,7 +252,7 @@
         /// <summary>
         /// Gets or sets objects observing changes in the selected objects.
         /// </summary>
-        private List<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
+        private HashSet<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
@@ -285,7 +307,28 @@
         /// <param name="elementType">The value type.</param>
         public void AddSpecificAddressItem(IntPtr baseAddress, Type elementType)
         {
-            this.AddNewProjectItems(true, new AddressItem(baseAddress, elementType));
+            // Check if the address is within a module, adding it as module format if so
+            foreach (NormalizedModule module in EngineCore.GetInstance().OperatingSystemAdapter.GetModules())
+            {
+                if (module.ContainsAddress(baseAddress))
+                {
+                    this.AddNewProjectItems(
+                        addToSelected: true,
+                        projectItems: new AddressItem(
+                            baseAddress: baseAddress.Subtract(module.BaseAddress),
+                            elementType: elementType,
+                            resolveType: AddressResolver.ResolveTypeEnum.Module,
+                            baseIdentifier: module.Name));
+
+                    return;
+                }
+            }
+
+            this.AddNewProjectItems(
+                addToSelected: true,
+                projectItems: new AddressItem(
+                    baseAddress: baseAddress,
+                    elementType: elementType));
         }
 
         /// <summary>
@@ -335,7 +378,7 @@
         /// </summary>
         public void OnPropertyUpdate()
         {
-            this.NotifyObserversStructureChange();
+            this.NotifyObserversValueChange();
         }
 
         /// <summary>
@@ -456,6 +499,7 @@
 
             this.ProjectFilePath = openFileDialog.FileName;
 
+            // Open the project file
             try
             {
                 if (!File.Exists(this.ProjectFilePath))
@@ -470,13 +514,31 @@
                     this.ProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
                     this.HasUnsavedChanges = false;
                 }
-
-                HotkeyManagerViewModel.GetInstance().Open(this.ProjectFilePath);
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open project.");
-                return;
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open project - " + ex?.ToString());
+            }
+
+            // Open the hotkey file
+            try
+            {
+                String hotkeyFilePath = this.GetHotkeyFilePathFromProjectFilePath(this.projectFilePath);
+
+                if (File.Exists(hotkeyFilePath))
+                {
+                    using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Open, FileAccess.Read))
+                    {
+                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
+                        ProjectItemHotkey[] projectItemHotkeys = serializer.ReadObject(fileStream) as ProjectItemHotkey[];
+
+                        this.BindHotkeys(this.ProjectRoot.Flatten(), projectItemHotkeys);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile - " + ex?.ToString());
             }
         }
 
@@ -504,6 +566,8 @@
                 this.ProjectFilePath = null;
             }
 
+            // Import the project file
+            ProjectRoot importedProjectRoot = null;
             try
             {
                 if (!File.Exists(filename))
@@ -515,8 +579,9 @@
                 using (FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    ProjectRoot importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
+                    importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
 
+                    // Add each high level child in the project root to this project
                     foreach (ProjectItem child in importedProjectRoot.Children)
                     {
                         this.AddNewProjectItems(false, child);
@@ -524,13 +589,41 @@
 
                     this.HasUnsavedChanges = true;
                 }
-
-                HotkeyManagerViewModel.GetInstance().Import(filename);
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to import project.");
-                return;
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to import project - " + ex?.ToString());
+            }
+
+            // Import the hotkey file
+            try
+            {
+                String hotkeyFilePath = this.GetHotkeyFilePathFromProjectFilePath(filename);
+
+                if (File.Exists(hotkeyFilePath))
+                {
+                    using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Open, FileAccess.Read))
+                    {
+                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
+                        ProjectItemHotkey[] projectItemHotkeys = serializer.ReadObject(fileStream) as ProjectItemHotkey[];
+
+                        // Bind the hotkey to this project item
+                        this.BindHotkeys(importedProjectRoot?.Flatten(), projectItemHotkeys);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile - " + ex?.ToString());
+            }
+
+            // Randomize the guid for imported project items, preventing possible conflicts
+            if (importedProjectRoot != null)
+            {
+                foreach (ProjectItem child in importedProjectRoot.Flatten())
+                {
+                    child.ResetGuid();
+                }
             }
         }
 
@@ -539,9 +632,10 @@
         /// </summary>
         private void SaveProject()
         {
+            // Save the project file
             try
             {
-                if (!File.Exists(this.ProjectFilePath))
+                if (!Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
                 {
                     this.SaveAsProject();
                     return;
@@ -553,15 +647,95 @@
                     serializer.WriteObject(fileStream, this.ProjectRoot);
                 }
 
-                HotkeyManagerViewModel.GetInstance().Save(this.ProjectFilePath);
-
                 this.HasUnsavedChanges = false;
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project - " + ex?.ToString());
                 return;
             }
+
+            // Save the hotkey profile
+            try
+            {
+                String hotkeyFilePath = this.GetHotkeyFilePathFromProjectFilePath(this.projectFilePath);
+
+                using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Create, FileAccess.Write))
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
+                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Where(x => x.HotKey != null).Select(x => new ProjectItemHotkey(x.HotKey, x.Guid)).ToArray();
+                    serializer.WriteObject(fileStream, hotkeys);
+                }
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to save hotkey profile - " + ex?.ToString());
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Export a project to separate files.
+        /// </summary>
+        private void ExportProject()
+        {
+            // Export the project items to thier own individual files
+            try
+            {
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.FileName = "Select a Folder to Export Project Items";
+                saveFileDialog.Title = "Export Project";
+
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    String folderPath = Path.GetDirectoryName(saveFileDialog.FileName);
+
+                    Parallel.ForEach(
+                        this.ProjectRoot.Flatten().Where(x => !(x is FolderItem)),
+                        SettingsViewModel.GetInstance().ParallelSettingsFast,
+                        (projectItem) =>
+                    {
+                        ProjectItem targetProjectItem = projectItem;
+
+                        if (projectItem is ScriptItem)
+                        {
+                            ScriptItem scriptItem = projectItem as ScriptItem;
+
+                            try
+                            {
+                                if (!scriptItem.IsCompiled)
+                                {
+                                    targetProjectItem = scriptItem?.Compile();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to compile a project item - " + targetProjectItem?.Description + " - " + ex?.ToString());
+                                return;
+                            }
+                        }
+
+                        String filePath = Path.Combine(folderPath, targetProjectItem.Description + ProjectExplorerViewModel.ProjectFileExtension);
+
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                        {
+                            ProjectRoot newProjectRoot = new ProjectRoot();
+                            newProjectRoot.AddChild(targetProjectItem);
+
+                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                            serializer.WriteObject(fileStream, newProjectRoot);
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to complete export project - " + ex?.ToString());
+                return;
+            }
+
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Project export complete.");
+
         }
 
         /// <summary>
@@ -577,6 +751,30 @@
             {
                 this.ProjectFilePath = saveFileDialog.FileName;
                 this.SaveProject();
+            }
+        }
+
+        /// <summary>
+        /// Binds deserailized project item hotkeys to the corresponding project items.
+        /// </summary>
+        /// <param name="projectItems">The candidate project items to which we are binding the hotkeys.</param>
+        /// <param name="projectItemHotkeys">The deserialized project item hotkeys.</param>
+        private void BindHotkeys(IEnumerable<ProjectItem> projectItems, IEnumerable<ProjectItemHotkey> projectItemHotkeys)
+        {
+            if (projectItemHotkeys.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            IEnumerable<KeyValuePair<ProjectItemHotkey, ProjectItem>> bindings = projectItemHotkeys.Join(
+                projectItems,
+                hotkey => hotkey.ProjectItemGuid,
+                item => item.Guid,
+                (hotkey, item) => new KeyValuePair<ProjectItemHotkey, ProjectItem>(hotkey, item));
+
+            foreach (KeyValuePair<ProjectItemHotkey, ProjectItem> binding in bindings)
+            {
+                binding.Value.LoadHotkey(binding.Key.Hotkey);
             }
         }
 
@@ -608,6 +806,16 @@
                     observer.Update(this.ProjectRoot);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the hotkey file path that corresponds to this project file path.
+        /// </summary>
+        /// <param name="projectFilePath">The path to the project file.</param>
+        /// <returns>The file path to the hotkey file.</returns>
+        private String GetHotkeyFilePathFromProjectFilePath(String projectFilePath)
+        {
+            return Path.Combine(Path.GetDirectoryName(projectFilePath), Path.GetFileNameWithoutExtension(projectFilePath)) + ProjectExplorerViewModel.HotkeyFileExtension;
         }
     }
     //// End class

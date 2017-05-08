@@ -5,18 +5,20 @@
     using SharpDX.DirectInput;
     using System;
     using System.Collections.Generic;
-
+    using System.Linq;
+    using Utils.Observables;
     /// <summary>
     /// Class to capture keyboard input.
     /// </summary>
-    internal class KeyboardCapture : IKeyboardSubject
+    internal class KeyboardCapture : IObservable<KeyState>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="KeyboardCapture" /> class.
         /// </summary>
         public KeyboardCapture()
         {
-            this.Subjects = new List<IKeyboardObserver>();
+            this.Observers = new HashSet<IObserver<KeyState>>();
+            this.ObserverLock = new Object();
             this.FindKeyboard();
         }
 
@@ -41,36 +43,48 @@
         private KeyboardState PreviousKeyboardState { get; set; }
 
         /// <summary>
-        /// Gets or sets the subjects that are observing keyboard events.
+        /// Gets or sets the observers that are observing keyboard events.
         /// </summary>
-        private List<IKeyboardObserver> Subjects { get; set; }
+        private HashSet<IObserver<KeyState>> Observers { get; set; }
+
+        /// <summary>
+        /// Gets or sets a lock for the observer list.
+        /// </summary>
+        private Object ObserverLock { get; set; }
 
         /// <summary>
         /// Subscribes to keyboard capture events.
         /// </summary>
-        /// <param name="subject">The observer to subscribe.</param>
-        public void Subscribe(IKeyboardObserver subject)
+        /// <param name="observer">The observer to subscribe.</param>
+        public IDisposable Subscribe(IObserver<KeyState> observer)
         {
-            if (this.Subjects.Contains(subject))
+            lock (this.ObserverLock)
             {
-                return;
-            }
+                this.Observers.Add(observer);
 
-            this.Subjects.Add(subject);
+                return new Unsubscriber<KeyState>(this.Observers, observer);
+            }
         }
 
         /// <summary>
         /// Unsubscribes from keyboard capture events.
         /// </summary>
         /// <param name="subject">The observer to unsubscribe.</param>
-        public void Unsubscribe(IKeyboardObserver subject)
+        public void Unsubscribe(IObserver<KeyState> subject)
         {
-            if (!this.Subjects.Contains(subject))
+            lock (this.ObserverLock)
             {
-                return;
+                this.Observers.Remove(subject);
             }
+        }
 
-            this.Subjects.Remove(subject);
+        /// <summary>
+        /// Unsubscribes from keyboard capture events.
+        /// </summary>
+        /// <param name="subject">The weak observer to unsubscribe.</param>
+        public void Unsubscribe(IDisposable subject)
+        {
+            subject?.Dispose();
         }
 
         /// <summary>
@@ -93,28 +107,17 @@
                     return;
                 }
 
-                HashSet<Key> pressedKeys = new HashSet<Key>(this.CurrentKeyboardState.PressedKeys);
+                HashSet<Key> heldKeys = new HashSet<Key>(this.CurrentKeyboardState.PressedKeys);
                 HashSet<Key> releasedKeys = new HashSet<Key>(this.PreviousKeyboardState.PressedKeys);
+                HashSet<Key> pressedKeys = new HashSet<Key>(heldKeys);
+                HashSet<Key> downKeys = new HashSet<Key>(this.CurrentKeyboardState.PressedKeys);
 
-                this.NotifyAllDownKeys(pressedKeys);
-
-                pressedKeys.ExceptWith(this.PreviousKeyboardState.PressedKeys);
+                heldKeys.ExceptWith(this.PreviousKeyboardState.PressedKeys);
                 releasedKeys.ExceptWith(this.CurrentKeyboardState.PressedKeys);
 
-                foreach (Key key in pressedKeys)
-                {
-                    this.NotifyKeyPress(key);
-                }
+                KeyState keyState = new KeyState(heldKeys, releasedKeys, downKeys, heldKeys);
 
-                foreach (Key key in releasedKeys)
-                {
-                    this.NotifyKeyRelease(key);
-                }
-
-                foreach (Key key in this.CurrentKeyboardState.PressedKeys)
-                {
-                    this.NotifyKeyDown(key);
-                }
+                this.NotifyKeyState(keyState);
 
                 this.PreviousKeyboardState = this.CurrentKeyboardState;
             }
@@ -131,52 +134,34 @@
         }
 
         /// <summary>
-        /// Notifies observers of a key press event.
+        /// Notifies observers of the current keyboard state.
         /// </summary>
-        /// <param name="key">The key that was pressed.</param>
-        public void NotifyKeyPress(Key key)
+        /// <param name="keyState">The keyboard state.</param>
+        public void NotifyKeyState(KeyState keyState)
         {
-            foreach (IKeyboardObserver keySubject in this.Subjects)
+            lock (this.ObserverLock)
             {
-                keySubject.OnKeyPress(key);
+                IObserver<KeyState>[] observers = this.Observers.ToArray();
+
+                foreach (IObserver<KeyState> observer in observers)
+                {
+                    if (keyState == null)
+                    {
+                        observer.OnError(new ArgumentNullException());
+                    }
+                    else
+                    {
+                        observer.OnNext(keyState);
+                    }
+                }
+
+                foreach (IObserver<KeyState> observer in observers)
+                {
+                    observer.OnCompleted();
+                }
             }
         }
 
-        /// <summary>
-        /// Notifies observers of a key release event.
-        /// </summary>
-        /// <param name="key">The key that was released.</param>
-        public void NotifyKeyRelease(Key key)
-        {
-            foreach (IKeyboardObserver keySubject in this.Subjects)
-            {
-                keySubject.OnKeyRelease(key);
-            }
-        }
-
-        /// <summary>
-        /// Notifies observers of a key down event.
-        /// </summary>
-        /// <param name="key">The key that is down.</param>
-        public void NotifyKeyDown(Key key)
-        {
-            foreach (IKeyboardObserver keySubject in this.Subjects)
-            {
-                keySubject.OnKeyDown(key);
-            }
-        }
-
-        /// <summary>
-        /// Notifies observers of a set of key down events.
-        /// </summary>
-        /// <param name="downKeys">The keys that are down.</param>
-        public void NotifyAllDownKeys(HashSet<Key> downKeys)
-        {
-            foreach (IKeyboardObserver keySubject in this.Subjects)
-            {
-                keySubject.OnUpdateAllDownKeys(downKeys);
-            }
-        }
 
         /// <summary>
         /// Finds any connected keyboard devices.

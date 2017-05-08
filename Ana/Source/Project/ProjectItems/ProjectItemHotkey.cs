@@ -8,32 +8,27 @@
     /// <summary>
     /// Defines a hotkey for a project item.
     /// </summary>
-    [KnownType(typeof(IHotkey))]
+    [KnownType(typeof(Hotkey))]
     [DataContract]
     internal class ProjectItemHotkey : INotifyPropertyChanged
     {
         /// <summary>
-        /// The delay in miliseconds between hotkey activations
-        /// </summary>
-        private const Int32 ActivationDelayMs = 400;
-
-        /// <summary>
         /// The target guid, from which the target project is derived.
         /// </summary>
-        private Guid targetGuid;
+        private Guid projectItemGuid;
 
         /// <summary>
         /// The hotkey bound to the project item.
         /// </summary>
-        private IHotkey hotkey;
+        private Hotkey hotkey;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectItemHotkey" /> class.
         /// </summary>
         /// <param name="hotkey">The initial hotkey bound to the project item.</param>
-        public ProjectItemHotkey(IHotkey hotkey)
+        public ProjectItemHotkey(Hotkey hotkey, Guid projectItemGuid)
         {
-            this.TimeSinceLastActivation = DateTime.MinValue;
+            this.ProjectItemGuid = projectItemGuid;
             this.Hotkey = hotkey;
         }
 
@@ -43,21 +38,20 @@
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Gets or sets the target guid, from which the target project is derived.
+        /// Gets or sets the target project item guid.
         /// </summary>
         [DataMember]
-        public Guid TargetGuid
+        public Guid ProjectItemGuid
         {
             get
             {
-                return this.targetGuid;
+                return this.projectItemGuid;
             }
 
             set
             {
-                this.targetGuid = value;
-                this.TargetProjectItem = ProjectExplorerViewModel.GetInstance().ProjectRoot.FindProjectItemByGuid(this.targetGuid);
-                this.NotifyPropertyChanged(nameof(this.TargetGuid));
+                this.projectItemGuid = value;
+                this.NotifyPropertyChanged(nameof(this.ProjectItemGuid));
             }
         }
 
@@ -65,7 +59,7 @@
         /// Gets or sets the hotkey bound to the project item.
         /// </summary>
         [DataMember]
-        public IHotkey Hotkey
+        public Hotkey Hotkey
         {
             get
             {
@@ -76,43 +70,6 @@
             {
                 this.hotkey = value;
                 this.NotifyPropertyChanged(nameof(this.Hotkey));
-            }
-        }
-
-        /// <summary>
-        /// Gets the name of the hotkey keys as a string.
-        /// </summary>
-        public String HotkeyName
-        {
-            get
-            {
-                return this.Hotkey?.ToString();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the project item bound to the hotkey.
-        /// </summary>
-        private ProjectItem TargetProjectItem { get; set; }
-
-        /// <summary>
-        /// Gets or sets the time since the hotkey was last triggered.
-        /// </summary>
-        private DateTime TimeSinceLastActivation { get; set; }
-
-        /// <summary>
-        /// Activates this hotkey, toggling the corresponding project item.
-        /// </summary>
-        public void Activate()
-        {
-            if (DateTime.Now - this.TimeSinceLastActivation > TimeSpan.FromMilliseconds(ProjectItemHotkey.ActivationDelayMs))
-            {
-                if (this.TargetProjectItem != null)
-                {
-                    this.TargetProjectItem.IsActivated = !this.TargetProjectItem.IsActivated;
-                }
-
-                this.TimeSinceLastActivation = DateTime.Now;
             }
         }
 

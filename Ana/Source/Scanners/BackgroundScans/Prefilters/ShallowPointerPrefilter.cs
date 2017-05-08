@@ -24,11 +24,6 @@
         private const Int32 PointerRadius = 2048;
 
         /// <summary>
-        /// The maximum number of regions to process in a given update cycle.
-        /// </summary>
-        private const Int32 RegionLimit = 8192;
-
-        /// <summary>
         /// The time between each update cycle.
         /// </summary>
         private const Int32 RescanTime = 4096;
@@ -48,11 +43,13 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="ShallowPointerPrefilter" /> class from being created.
         /// </summary>
-        private ShallowPointerPrefilter() : base("Prefilter", isRepeated: true, trackProgress: true)
+        private ShallowPointerPrefilter() : base("Prefilter", isRepeated: true, trackProgress: false)
         {
             this.PrefilteredSnapshot = new Snapshot();
             this.RegionLock = new Object();
             this.processedCount = 0;
+
+            PointerCollector.GetInstance().Begin();
         }
 
         /// <summary>
@@ -141,31 +138,26 @@
         /// </summary>
         private void ProcessPages()
         {
-            Boolean isOpenedProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
-            dynamic invalidPointerMin = isOpenedProcess32Bit ? (UInt32)UInt16.MaxValue : (UInt64)UInt16.MaxValue;
-            dynamic invalidPointerMax = isOpenedProcess32Bit ? Int32.MaxValue : Int64.MaxValue;
             ConcurrentHashSet<IntPtr> foundPointers = new ConcurrentHashSet<IntPtr>();
-
-            // Add static bases
-            List<SnapshotRegion> baseRegions = new List<SnapshotRegion>();
-            foreach (NormalizedModule normalizedModule in EngineCore.GetInstance().OperatingSystemAdapter.GetModules())
-            {
-                baseRegions.Add(new SnapshotRegion(normalizedModule.BaseAddress, normalizedModule.RegionSize));
-            }
-
-            ((dynamic)this.PrefilteredSnapshot).AddSnapshotRegions(baseRegions);
 
             lock (this.RegionLock)
             {
-                List<SnapshotRegion> pointerRegions = new List<SnapshotRegion>();
+                List<SnapshotRegion> regions = new List<SnapshotRegion>();
 
-                foreach (IntPtr pointer in PointerCollector.GetInstance().GetFoundPointers())
+                // Add static bases
+                foreach (NormalizedModule normalizedModule in EngineCore.GetInstance().OperatingSystemAdapter.GetModules())
                 {
-                    pointerRegions.Add(new SnapshotRegion(pointer.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
+                    regions.Add(new SnapshotRegion(normalizedModule.BaseAddress, normalizedModule.RegionSize));
                 }
 
-               ((dynamic)this.PrefilteredSnapshot).AddSnapshotRegions(pointerRegions);
-                this.processedCount = Math.Max(this.processedCount, this.PrefilteredSnapshot.GetRegionCount());
+                // Add pointer destinations
+                foreach (IntPtr pointerDestination in PointerCollector.GetInstance().GetFoundPointerDestinations())
+                {
+                    regions.Add(new SnapshotRegion(pointerDestination.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
+                }
+
+                this.PrefilteredSnapshot.AddSnapshotRegions(regions);
+                this.processedCount = Math.Max(this.processedCount, this.PrefilteredSnapshot.RegionCount);
             }
         }
 
@@ -180,7 +172,7 @@
             {
                 if (this.PrefilteredSnapshot != null)
                 {
-                    regionCount = Math.Max(regionCount, this.PrefilteredSnapshot.GetRegionCount());
+                    regionCount = Math.Max(regionCount, this.PrefilteredSnapshot.RegionCount);
                 }
             }
         }

@@ -8,44 +8,6 @@
 
     internal class ScreenAlignedQuadRenderer : RendererBase
     {
-        private String shaderCodeVertexIn = @"Texture2D<float4> Texture0 : register(t0);
-SamplerState Sampler : register(s0);
-
-struct VertexIn
-{
-    float4 Position : SV_Position;// Position - xyzw
-};
-
-struct PixelIn
-{
-    float4 Position : SV_Position;
-    float2 UV : TEXCOORD0;
-};
-
-// Screen-Aligned Quad: vertex shader main function
-PixelIn VSMain(VertexIn vertex)
-{
-    PixelIn result = (PixelIn)0;
-    
-    // The input quad is expected in device coordinates 
-    // (i.e. 0,0 is center of screen, -1,1 top left, 1,-1 bottom right)
-    // Therefore no transformation!
-    result.Position = vertex.Position;
-    result.Position.w = 1.0f;
-
-    // The UV coordinates are top-left 0,0 bottom-right 1,1
-    result.UV.x = result.Position.x * 0.5 + 0.5;
-    result.UV.y = result.Position.y * -0.5 + 0.5;
-
-    return result;
-}
-
-float4 PSMain(PixelIn input) : SV_Target
-{
-    return Texture0.Sample(Sampler, input.UV);
-}
-";
-
         private String shaderCode = @"Texture2D<float4> Texture0 : register(t0);
 SamplerState Sampler : register(s0);
 

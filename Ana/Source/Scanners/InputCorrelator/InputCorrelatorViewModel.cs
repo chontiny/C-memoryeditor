@@ -36,12 +36,12 @@
         {
             this.ContentId = InputCorrelatorViewModel.ToolContentId;
             this.NewHotkeyCommand = new RelayCommand(() => this.NewHotkey(), () => true);
-            this.RemoveHotkeyCommand = new RelayCommand<IHotkey>((hotkey) => this.RemoveHotkey(hotkey), (hotkey) => true);
+            this.RemoveHotkeyCommand = new RelayCommand<Hotkey>((hotkey) => this.RemoveHotkey(hotkey), (hotkey) => true);
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
             this.InputCorrelatorModel = new InputCorrelatorModel(this.ScanCountUpdated);
 
-            MainViewModel.GetInstance().Subscribe(this);
+            MainViewModel.GetInstance().RegisterTool(this);
         }
 
         public ICommand StartScanCommand { get; private set; }
@@ -52,11 +52,11 @@
 
         public ICommand RemoveHotkeyCommand { get; private set; }
 
-        public ObservableCollection<IHotkey> Hotkeys
+        public ObservableCollection<Hotkey> Hotkeys
         {
             get
             {
-                return new ObservableCollection<IHotkey>(this.InputCorrelatorModel.HotKeys == null ? new List<IHotkey>() : this.InputCorrelatorModel.HotKeys);
+                return new ObservableCollection<Hotkey>(this.InputCorrelatorModel.HotKeys == null ? new List<Hotkey>() : this.InputCorrelatorModel.HotKeys);
             }
         }
 
@@ -82,7 +82,7 @@
         private void NewHotkey()
         {
             HotkeyEditorModel hotkeyEditor = new HotkeyEditorModel();
-            IHotkey newHotkey = hotkeyEditor.EditValue(context: null, provider: null, value: null) as IHotkey;
+            Hotkey newHotkey = hotkeyEditor.EditValue(context: null, provider: null, value: null) as Hotkey;
 
             if (newHotkey != null)
             {
@@ -91,7 +91,7 @@
             }
         }
 
-        private void RemoveHotkey(IHotkey hotkey)
+        private void RemoveHotkey(Hotkey hotkey)
         {
             this.InputCorrelatorModel.HotKeys.Remove(hotkey);
             this.RaisePropertyChanged(nameof(this.Hotkeys));

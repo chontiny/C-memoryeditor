@@ -3,6 +3,7 @@
     using Mvvm;
     using System;
     using System.Reflection;
+    using System.Threading;
 
     /// <summary>
     /// View model for the Change Log.
@@ -15,9 +16,16 @@
         private String changeLog;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChangeLogViewModel" /> class.
+        /// Singleton instance of the <see cref="ChangeLogViewModel"/> class.
         /// </summary>
-        public ChangeLogViewModel()
+        private static Lazy<ChangeLogViewModel> changeLogViewModelInstance = new Lazy<ChangeLogViewModel>(
+                () => { return new ChangeLogViewModel(); },
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="ChangeLogViewModel" /> class.
+        /// </summary>
+        private ChangeLogViewModel()
         {
             this.changeLog = new Ana.Content.ChangeLog().TransformText();
         }
@@ -42,6 +50,15 @@
             {
                 return "Change Log - " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             }
+        }
+
+        /// <summary>
+        /// Gets a singleton instance of the <see cref="ChangeLogViewModel"/> class.
+        /// </summary>
+        /// <returns>A singleton instance of the class.</returns>
+        public static ChangeLogViewModel GetInstance()
+        {
+            return ChangeLogViewModel.changeLogViewModelInstance.Value;
         }
     }
     //// End class

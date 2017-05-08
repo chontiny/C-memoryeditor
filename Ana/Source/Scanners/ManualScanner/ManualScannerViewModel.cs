@@ -48,7 +48,7 @@
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
 
             // Note: Not async to avoid updates slower than the perception threshold
-            this.UpdateActiveValueCommand = new RelayCommand<dynamic>((newValue) => this.UpdateActiveValue(newValue), (newValue) => true);
+            this.UpdateActiveValueCommand = new RelayCommand<Object>((newValue) => this.UpdateActiveValue(newValue), (newValue) => true);
             this.SelectChangedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.Changed), () => true);
             this.SelectDecreasedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.Decreased), () => true);
             this.SelectDecreasedByXCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.DecreasedByX), () => true);
@@ -74,7 +74,7 @@
             this.ScanConstraintManager.SetElementType(typeof(Int32));
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
-            Task.Run(() => MainViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
 
         /// <summary>
@@ -270,6 +270,11 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(Type activeType)
         {
+            // Create a temporary manager to update our current constraint
+            ScanConstraintManager manager = new ScanConstraintManager();
+            manager.AddConstraint(this.CurrentScanConstraint);
+            manager.SetElementType(activeType);
+
             this.ScanConstraintManager.SetElementType(activeType);
             this.UpdateAllProperties();
         }
@@ -301,7 +306,7 @@
         /// Updates the value of the current scan constraint.
         /// </summary>
         /// <param name="newValue">The new value of the scan constraint.</param>
-        private void UpdateActiveValue(dynamic newValue)
+        private void UpdateActiveValue(Object newValue)
         {
             this.CurrentScanConstraint.ConstraintValue = newValue;
             this.UpdateAllProperties();

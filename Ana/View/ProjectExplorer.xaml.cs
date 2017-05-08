@@ -4,8 +4,8 @@
     using Aga.Controls.Tree.NodeControls;
     using Content;
     using SharpDX.DirectInput;
-    using Source.CustomControls;
-    using Source.CustomControls.TreeView;
+    using Source.Controls;
+    using Source.Controls.TreeView;
     using Source.Editors.ScriptEditor;
     using Source.Editors.ValueEditor;
     using Source.Engine;
@@ -25,7 +25,7 @@
     /// <summary>
     /// Interaction logic for ProjectExplorer.xaml.
     /// </summary>
-    internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IProjectExplorerObserver, IKeyboardObserver
+    internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IProjectExplorerObserver, IObserver<KeyState>
     {
         /// <summary>
         /// The project explorer tree view.
@@ -121,11 +121,12 @@
 
             this.nodeCache = new BiDictionary<ProjectItem, ProjectNode>();
             this.projectTree = new TreeModel();
+            this.AccessLock = new Object();
 
             this.InitializeDesigner();
             this.projectExplorerTreeViewContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.projectExplorerTreeView));
 
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().Subscribe(this);
+            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
             ProjectExplorerViewModel.GetInstance().Subscribe(this);
         }
 
@@ -140,6 +141,68 @@
             }
         }
 
+        private Object AccessLock { get; set; }
+
+        public void OnNext(KeyState value)
+        {
+            if (value.PressedKeys.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            foreach (Key key in value.PressedKeys)
+            {
+                ControlThreadingHelper.InvokeControlAction(
+                    this.projectExplorerTreeView,
+                    () =>
+                {
+                    if (!this.projectExplorerTreeView.Focused)
+                    {
+                        return;
+                    }
+
+                    switch (key)
+                    {
+                        case Key.Space:
+                            this.ActivateSelectedItems();
+                            break;
+                        case Key.Delete:
+                            this.DeleteSelectedItems();
+                            break;
+                        case Key.C:
+                            if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                            {
+                                this.CopySelection();
+                            }
+
+                            break;
+                        case Key.X:
+                            if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                            {
+                                this.CutSelection();
+                            }
+
+                            break;
+                        case Key.V:
+                            if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                            {
+                                this.PasteSelection();
+                            }
+
+                            break;
+                    }
+                });
+            }
+        }
+
+        public void OnError(Exception error)
+        {
+        }
+
+        public void OnCompleted()
+        {
+        }
+
         /// <summary>
         /// Recieves an update of the project items in the project explorer upon structure changes.
         /// </summary>
@@ -149,7 +212,12 @@
             projectRoot?.BuildParents();
 
             this.projectExplorerTreeView.BeginUpdate();
-            this.projectTree.Nodes.Clear();
+
+            lock (this.AccessLock)
+            {
+                this.projectTree.Nodes.Clear();
+            }
+
             this.nodeCache.Clear();
 
             if (projectRoot != null)
@@ -180,78 +248,6 @@
 
                 this.projectExplorerTreeView.EndUpdate();
             }
-        }
-
-        /// <summary>
-        /// Event received when a key is pressed.
-        /// </summary>
-        /// <param name="key">The key that was pressed.</param>
-        public void OnKeyPress(Key key)
-        {
-            ControlThreadingHelper.InvokeControlAction(
-                this.projectExplorerTreeView,
-                () =>
-            {
-                if (!this.projectExplorerTreeView.Focused)
-                {
-                    return;
-                }
-
-                switch (key)
-                {
-                    case Key.Space:
-                        this.ActivateSelectedItems();
-                        break;
-                    case Key.Delete:
-                        this.DeleteSelectedItems();
-                        break;
-                    case Key.C:
-                        if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                        {
-                            this.CopySelection();
-                        }
-
-                        break;
-                    case Key.X:
-                        if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                        {
-                            this.CutSelection();
-                        }
-
-                        break;
-                    case Key.V:
-                        if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
-                        {
-                            this.PasteSelection();
-                        }
-
-                        break;
-                }
-            });
-        }
-
-        /// <summary>
-        /// Event received when a key is released.
-        /// </summary>
-        /// <param name="key">The key that was released.</param>
-        public void OnKeyRelease(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a key is down.
-        /// </summary>
-        /// <param name="key">The key that is down.</param>
-        public void OnKeyDown(Key key)
-        {
-        }
-
-        /// <summary>
-        /// Event received when a set of keys are down.
-        /// </summary>
-        /// <param name="pressedKeys">The down keys.</param>
-        public void OnUpdateAllDownKeys(HashSet<Key> pressedKeys)
-        {
         }
 
         /// <summary>
@@ -320,7 +316,24 @@
             // Create new node to insert
             ProjectNode projectNode = new ProjectNode(projectItem.Description);
             projectNode.ProjectItem = projectItem;
-            projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
+            String hotkeyString = projectItem.HotKey?.ToString();
+            projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
+
+            if (projectItem is AddressItem)
+            {
+                projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+            }
+
+            if (projectItem is FolderItem)
+            {
+                projectNode.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
+            }
+
+            if (projectItem is ScriptItem && (projectItem as ScriptItem).IsCompiled)
+            {
+                projectNode.EntryValuePreview = "[Compiled]";
+            }
+
             projectNode.EntryIcon = image;
             projectNode.IsChecked = projectItem.IsActivated;
 
@@ -334,7 +347,10 @@
             }
             else
             {
-                this.projectTree.Nodes.Add(projectNode);
+                lock (this.AccessLock)
+                {
+                    this.projectTree.Nodes.Add(projectNode);
+                }
             }
 
             this.nodeCache.Add(projectItem, projectNode);
@@ -356,16 +372,36 @@
         /// <param name="projectItem">The project item for which to update the corresponding node.</param>
         private void UpdateNodes(ProjectItem projectItem)
         {
-            ProjectNode node;
+            ProjectNode projectNode;
 
-            if (!this.nodeCache.TryGetValue(projectItem, out node))
+            if (!this.nodeCache.TryGetValue(projectItem, out projectNode))
             {
                 return;
             }
 
-            if (projectItem is AddressItem && node != null)
+            if (projectNode != null)
             {
-                node.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+                projectNode.IsChecked = projectItem.IsActivated;
+                String hotkeyString = projectItem.HotKey?.ToString();
+                projectNode.EntryDescription = projectItem.Description;
+                projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
+                projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
+                projectNode.IsChecked = projectItem.IsActivated;
+
+                if (projectItem is AddressItem)
+                {
+                    projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+                }
+
+                if (projectItem is FolderItem)
+                {
+                    projectNode.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
+                }
+
+                if (projectItem is ScriptItem && (projectItem as ScriptItem).IsCompiled)
+                {
+                    projectNode.EntryValuePreview = "[Compiled]";
+                }
             }
 
             if (projectItem is FolderItem)
@@ -386,14 +422,17 @@
         /// <returns>The project node if it exists, otherwise null.</returns>
         private ProjectNode GetProjectNodeFromTreeNodeAdv(TreeNodeAdv treeNodeAdv)
         {
-            Node node = this.projectTree.FindNode(this.projectExplorerTreeView.GetPath(treeNodeAdv));
-
-            if (node == null || !typeof(ProjectNode).IsAssignableFrom(node.GetType()))
+            lock (this.AccessLock)
             {
-                return null;
-            }
+                Node node = this.projectTree.FindNode(this.projectExplorerTreeView.GetPath(treeNodeAdv));
 
-            return node as ProjectNode;
+                if (node == null || !typeof(ProjectNode).IsAssignableFrom(node.GetType()))
+                {
+                    return null;
+                }
+
+                return node as ProjectNode;
+            }
         }
 
         /// <summary>
@@ -737,6 +776,13 @@
             entryDescription.ParentColumn = null;
             entryDescription.DrawText += this.EntryDescriptionDrawText;
 
+            NodeTextBox entryHotkey = new NodeTextBox();
+            entryHotkey.DataPropertyName = "EntryHotkey";
+            entryHotkey.IncrementalSearchEnabled = true;
+            entryHotkey.LeftMargin = 3;
+            entryHotkey.ParentColumn = null;
+            entryHotkey.DrawText += this.EntryHotkeyDrawText;
+
             NodeTextBox entryValuePreview = new NodeTextBox();
             entryValuePreview.DataPropertyName = "EntryValuePreview";
             entryValuePreview.IncrementalSearchEnabled = true;
@@ -792,6 +838,7 @@
             this.projectExplorerTreeView.NodeControls.Add(entryCheckBox);
             this.projectExplorerTreeView.NodeControls.Add(entryIcon);
             this.projectExplorerTreeView.NodeControls.Add(entryDescription);
+            this.projectExplorerTreeView.NodeControls.Add(entryHotkey);
             this.projectExplorerTreeView.NodeControls.Add(entryValuePreview);
             this.projectExplorerTreeView.SelectionMode = TreeSelectionMode.Multi;
             this.projectExplorerTreeView.BorderStyle = BorderStyle.None;
@@ -800,6 +847,7 @@
             this.projectExplorerTreeView.FullRowSelect = true;
             this.projectExplorerTreeView.ContextMenuStrip = this.contextMenuStrip;
 
+            this.projectExplorerTreeView.RowDraw += ProjectExplorerTreeViewRowDraw;
             this.projectExplorerTreeView.ItemDrag += this.ProjectExplorerTreeViewItemDrag;
             this.projectExplorerTreeView.NodeMouseDoubleClick += this.ProjectExplorerTreeViewNodeMouseDoubleClick;
             this.projectExplorerTreeView.SelectionChanged += this.ProjectExplorerTreeViewSelectionChanged;
@@ -812,6 +860,16 @@
             this.projectExplorerTreeView.ForeColor = DarkBrushes.BaseColor2;
             this.projectExplorerTreeView.DragDropMarkColor = DarkBrushes.BaseColor11;
             this.projectExplorerTreeView.LineColor = DarkBrushes.BaseColor11;
+        }
+
+        private void ProjectExplorerTreeViewRowDraw(Object sender, TreeViewRowDrawEventArgs e)
+        {
+            ProjectItem projectItem = this.GetProjectNodeFromTreeNodeAdv(e.Node)?.ProjectItem;
+
+            if (projectItem != null && projectItem.IsActivated)
+            {
+                e.Graphics.FillRectangle(new SolidBrush(DarkBrushes.BaseColor15), 0, e.RowRect.Top, ((Control)sender).Width, e.RowRect.Height);
+            }
         }
 
         /// <summary>
@@ -889,6 +947,16 @@
         private void EntryDescriptionDrawText(Object sender, DrawEventArgs e)
         {
             e.TextColor = DarkBrushes.BaseColor2;
+        }
+
+        /// <summary>
+        /// Event when drawing the value preview text. Sets the draw color.
+        /// </summary>
+        /// <param name="sender">Sending object.</param>
+        /// <param name="e">Event args.</param>
+        private void EntryHotkeyDrawText(Object sender, DrawEventArgs e)
+        {
+            e.TextColor = DarkBrushes.BaseColor11;
         }
 
         /// <summary>

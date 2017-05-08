@@ -34,7 +34,7 @@
                 return base.ConvertTo(context, culture, value, destinationType);
             }
 
-            return isHex ? Conversions.ParseDynamicAsHexString(valueType, valueString) : valueString;
+            return isHex ? Conversions.ParsePrimitiveAsHexString(valueType, valueString) : valueString;
         }
 
         /// <summary>
@@ -69,7 +69,7 @@
                 return base.ConvertFrom(context, culture, value);
             }
 
-            return isHex ? Conversions.ParseHexStringAsDynamic(valueType, value as String) : Conversions.ParsePrimitiveStringAsDynamic(valueType, value as String);
+            return isHex ? Conversions.ParseHexStringAsPrimitive(valueType, value as String) : Conversions.ParsePrimitiveStringAsPrimitive(valueType, value as String);
         }
 
         /// <summary>
