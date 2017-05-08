@@ -308,6 +308,8 @@
 
             Int64 totalVotes = itemVotes.Sum(tally => tally.command.Value);
 
+            List<ProjectItem> activatedUniqueGroupings = new List<ProjectItem>();
+
             // Activate top votes
             foreach (ProjectItem.ProjectItemCategory category in Enum.GetValues(typeof(ProjectItem.ProjectItemCategory)))
             {
@@ -329,21 +331,29 @@
                         break;
                 }
 
+                // Sort by popularity for this category
                 IEnumerable<ProjectItem> candidateItems = itemVotes
                     .Select(tally => tally)
                     .OrderByDescending(tally => tally.command.Value)
                     .Where(tally => tally.item.Category == category)
                     .Select(tally => tally.item);
 
+                // Determine which items need activating (considering folder grouping methods)
+                IEnumerable<ProjectItem> itemsToActivate = candidateItems
+                    .GroupBy(item => item.Parent)
+                    .Select(group => (group.First().Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup) ? group.Take(1) : group.Select(item => item))
+                    .SelectMany(item => item)
+                    .Take(numberToActivate);
+
+                // Determine which items need deactivating (the remaining items)
+                IEnumerable<ProjectItem> itemsToDeactivate = candidateItems
+                    .Except(itemsToActivate);
+
                 // Handle deactivations
-                candidateItems
-                    .Skip(numberToActivate)
-                    .ForEach(item => item.IsActivated = false);
+                itemsToDeactivate.ForEach(item => item.IsActivated = false);
 
                 // Handle activations
-                candidateItems
-                    .Take(numberToActivate)
-                    .ForEach(item => item.IsActivated = true);
+                itemsToActivate.ForEach(item => item.IsActivated = true);
             }
 
             // Collect labels

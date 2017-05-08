@@ -178,13 +178,12 @@
             if (chunkSize <= 0)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Invalid chunk size specified for region");
+                yield break;
             }
 
             chunkSize = Math.Min(chunkSize, this.RegionSize);
 
             UInt64 chunkCount = (this.RegionSize / chunkSize) + (this.RegionSize % chunkSize == 0UL ? 0UL : 1UL);
-
-            NormalizedRegion[] chunks = new NormalizedRegion[chunkCount];
 
             for (UInt64 index = 0; index < chunkCount; index++)
             {
@@ -196,10 +195,8 @@
                     size = this.RegionSize % chunkSize;
                 }
 
-                chunks[index] = new NormalizedRegion(this.BaseAddress.Add(chunkSize * index), size);
+                yield return new NormalizedRegion(this.BaseAddress.Add(chunkSize * index), size);
             }
-
-            return chunks;
         }
     }
     //// End interface

@@ -124,7 +124,8 @@
                 foreach (NormalizedRegion region in regions)
                 {
                     region.BaseAddress = region.BaseAddress.Subtract(region.BaseAddress.Mod(Memory.AllocAlignment), wrapAround: false);
-                    subRegions.AddRange(region.ChunkNormalizedRegion((UInt64)Math.Max(size, Memory.AllocAlignment)).Select(x => x).Where(x => x.RegionSize >= (UInt64)size));
+                    IEnumerable<NormalizedRegion> chunkedRegions = region.ChunkNormalizedRegion((UInt64)Math.Max(size, Memory.AllocAlignment)).Take(128).Where(x => x.RegionSize >= (UInt64)size);
+                    subRegions.AddRange(chunkedRegions);
                 }
 
                 do
