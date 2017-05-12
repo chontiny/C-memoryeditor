@@ -320,11 +320,11 @@
         public override ProjectItem Clone()
         {
             AddressItem clone = new AddressItem();
-            clone.Category = this.Category;
-            clone.Description = this.Description;
-            clone.Parent = this.Parent;
-            clone.ExtendedDescription = this.ExtendedDescription;
-            clone.StreamIconPath = this.StreamIconPath;
+            clone.category = this.Category;
+            clone.description = this.Description;
+            clone.parent = this.Parent;
+            clone.extendedDescription = this.ExtendedDescription;
+            clone.streamIconPath = this.StreamIconPath;
             clone.resolveType = this.resolveType;
             clone.baseIdentifier = this.baseIdentifier;
             clone.baseAddress = this.baseAddress;
@@ -333,6 +333,7 @@
             clone.addressValue = this.addressValue;
             clone.isValueHex = this.isValueHex;
             clone.effectiveAddress = this.effectiveAddress;
+
             return clone;
         }
 

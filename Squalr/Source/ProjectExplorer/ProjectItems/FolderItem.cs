@@ -26,6 +26,12 @@
         private FolderTypeEnum folderType;
 
         /// <summary>
+        /// A value indicating if this folder is exported as a single group.
+        /// </summary>
+        [Browsable(false)]
+        private Boolean exportStop;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="FolderItem" /> class.
         /// </summary>
         public FolderItem() : this("New Folder")
@@ -76,6 +82,32 @@
                 this.folderType = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.FolderType));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating if this folder is exported as a single group.
+        /// </summary>
+        [DataMember]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Export Stop"), Description("Indicates if this folder is exported as a group")]
+        public Boolean ExportStop
+        {
+            get
+            {
+                return this.exportStop;
+            }
+
+            set
+            {
+                if (this.exportStop == value)
+                {
+                    return;
+                }
+
+                this.exportStop = value;
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.ExportStop));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -131,11 +163,13 @@
         public override ProjectItem Clone()
         {
             FolderItem clone = new FolderItem();
-            clone.Category = this.Category;
-            clone.Description = this.Description;
-            clone.ExtendedDescription = this.ExtendedDescription;
-            clone.StreamIconPath = this.StreamIconPath;
-            clone.Parent = this.Parent;
+            clone.category = this.Category;
+            clone.description = this.Description;
+            clone.extendedDescription = this.ExtendedDescription;
+            clone.streamIconPath = this.StreamIconPath;
+            clone.folderType = this.FolderType;
+            clone.exportStop = this.exportStop;
+            clone.parent = this.Parent;
             clone.children = new List<ProjectItem>();
 
             lock (this.ChildrenLock)
@@ -156,10 +190,12 @@
         /// Returns all items under this folder flattened as a single list.
         /// </summary>
         /// <returns>All items under this folder.</returns>
-        public List<ProjectItem> Flatten()
+        public List<ProjectItem> Flatten(Func<ProjectItem, Boolean> recursionPredicate = null)
         {
             List<ProjectItem> flattenedItems = new List<ProjectItem>();
-            this.FlattenHelper(flattenedItems);
+            recursionPredicate = recursionPredicate ?? ((projectItem) => projectItem is FolderItem);
+
+            this.FlattenHelper(flattenedItems, recursionPredicate);
 
             return flattenedItems;
         }
@@ -229,7 +265,7 @@
                 this.Children.Add(newChild);
             }
 
-            if (ProjectExplorerViewModel.GetInstance().ProjectRoot.HasNode(newChild))
+            if (ProjectExplorerViewModel.GetInstance().ProjectRoot.HasNode(this) && ProjectExplorerViewModel.GetInstance().ProjectRoot.HasNode(newChild))
             {
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
             }
@@ -274,7 +310,7 @@
         {
             lock (this.ChildrenLock)
             {
-                if (this.Children.Contains(projectItem))
+                if (this == projectItem || this.Children.Contains(projectItem))
                 {
                     return true;
                 }
@@ -396,20 +432,20 @@
         /// Helper function for flattening all project items under this folder.
         /// </summary>
         /// <param name="flattenedList">The current list of flattened items.</param>
-        private void FlattenHelper(List<ProjectItem> flattenedList)
+        private void FlattenHelper(List<ProjectItem> flattenedList, Func<ProjectItem, Boolean> recursionPredicate)
         {
             flattenedList.Add(this);
 
             foreach (ProjectItem projectItem in this.Children)
             {
-                if (!(projectItem is FolderItem))
+                if (recursionPredicate(projectItem))
                 {
-                    flattenedList.Add(projectItem);
+                    FolderItem folderItem = projectItem as FolderItem;
+                    folderItem.FlattenHelper(flattenedList, recursionPredicate);
                 }
                 else
                 {
-                    FolderItem folderItem = projectItem as FolderItem;
-                    folderItem.FlattenHelper(flattenedList);
+                    flattenedList.Add(projectItem);
                 }
             }
         }

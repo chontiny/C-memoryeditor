@@ -717,7 +717,7 @@
                     Directory.CreateDirectory(folderPath);
 
                     Parallel.ForEach(
-                        this.ProjectRoot.Flatten().Where(x => !(x is FolderItem)),
+                        this.ProjectRoot.Flatten(x => (x is FolderItem) && !(x as FolderItem).ExportStop),
                         SettingsViewModel.GetInstance().ParallelSettingsFast,
                         (projectItem) =>
                     {
