@@ -229,7 +229,10 @@
                 this.Children.Add(newChild);
             }
 
-            ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+            if (ProjectExplorerViewModel.GetInstance().ProjectRoot.HasNode(newChild))
+            {
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+            }
         }
 
         /// <summary>

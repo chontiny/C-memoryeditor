@@ -2,8 +2,8 @@
 {
     using Controls;
     using Editors.ScriptEditor;
-    using Output;
     using ScriptEngine;
+    using Squalr.Source.Output;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
@@ -105,11 +105,11 @@
         public override ProjectItem Clone()
         {
             ScriptItem clone = new ScriptItem();
-            clone.Category = this.Category;
-            clone.Description = this.Description;
-            clone.ExtendedDescription = this.ExtendedDescription;
-            clone.StreamIconPath = this.StreamIconPath;
-            clone.Parent = this.Parent;
+            clone.category = this.Category;
+            clone.description = this.Description;
+            clone.extendedDescription = this.ExtendedDescription;
+            clone.streamIconPath = this.StreamIconPath;
+            clone.parent = this.Parent;
             clone.script = this.Script;
             clone.isCompiled = this.IsCompiled;
 
@@ -140,9 +140,9 @@
                 clone.script = this.ScriptManager.CompileScript(clone.script);
                 return clone;
             }
-            catch
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to complete compile request.");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to complete compile request", ex);
                 return null;
             }
         }

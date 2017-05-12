@@ -1,11 +1,11 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
-    using Squalr.Source.Editors.StreamIconEditor;
     using Controls;
     using Editors.HotkeyEditor;
     using Editors.TextEditor;
     using Engine.Input.HotKeys;
     using SharpDX.DirectInput;
+    using Squalr.Source.Editors.StreamIconEditor;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -32,55 +32,55 @@
         /// The parent of this project item.
         /// </summary>
         [Browsable(false)]
-        private FolderItem parent;
+        protected FolderItem parent;
 
         /// <summary>
         /// The description of this project item.
         /// </summary>
         [Browsable(false)]
-        private String description;
+        protected String description;
 
         /// <summary>
         /// The category of this project item.
         /// </summary>
         [Browsable(false)]
-        private ProjectItemCategory category;
+        protected ProjectItemCategory category;
 
         /// <summary>
         /// The extended description of this project item.
         /// </summary>
         [Browsable(false)]
-        private String extendedDescription;
+        protected String extendedDescription;
 
         /// <summary>
         /// The unique identifier of this project item.
         /// </summary>
         [Browsable(false)]
-        private Guid guid;
+        protected Guid guid;
 
         /// <summary>
         /// The hotkey associated with this project item.
         /// </summary>
         [Browsable(false)]
-        private Hotkey hotkey;
+        protected Hotkey hotkey;
 
         /// <summary>
         /// The stream icon path associated with this project item.
         /// </summary>
         [Browsable(false)]
-        private String streamIconPath;
+        protected String streamIconPath;
 
         /// <summary>
         /// The stream command associated with this project item.
         /// </summary>
         [Browsable(false)]
-        private String streamCommand;
+        protected String streamCommand;
 
         /// <summary>
         /// A value indicating whether this project item has been activated.
         /// </summary>
         [Browsable(false)]
-        private Boolean isActivated;
+        protected Boolean isActivated;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectItem" /> class.

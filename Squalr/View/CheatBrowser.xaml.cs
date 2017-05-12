@@ -94,7 +94,7 @@
                     }
                     catch (Exception ex)
                     {
-                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Error downloading project file", ex.ToString());
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Error downloading project file", ex);
                     }
 
                     return;
@@ -108,7 +108,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error handling web request", ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error handling web request", ex);
             }
         }
 

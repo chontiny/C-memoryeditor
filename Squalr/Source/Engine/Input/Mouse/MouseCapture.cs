@@ -185,7 +185,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "No (optional) mouse found", ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "No (optional) mouse found", ex);
             }
         }
     }

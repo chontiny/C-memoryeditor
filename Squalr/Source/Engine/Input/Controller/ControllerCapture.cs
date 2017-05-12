@@ -142,7 +142,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "No (optional) game controller found", ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "No (optional) game controller found", ex);
             }
         }
     }

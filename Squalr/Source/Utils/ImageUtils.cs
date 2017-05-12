@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Utils
 {
+    using DataStructures;
     using Squalr.Source.Output;
     using Squalr.Source.Utils.Extensions;
-    using DataStructures;
     using Svg;
     using System;
     using System.Drawing;
@@ -72,9 +72,9 @@
                     encoder.Save(stream);
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, e.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to export image", ex);
             }
         }
 

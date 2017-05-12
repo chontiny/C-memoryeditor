@@ -197,6 +197,16 @@
         /// </summary>
         /// <param name="logLevel">The log level.</param>
         /// <param name="message">The log message.</param>
+        public void Log(LogLevel logLevel, String message, Exception exception)
+        {
+            this.Log(logLevel, message, exception?.ToString());
+        }
+
+        /// <summary>
+        /// Logs a message to output.
+        /// </summary>
+        /// <param name="logLevel">The log level.</param>
+        /// <param name="message">The log message.</param>
         public void Log(LogLevel logLevel, String message, String innerMessage = null)
         {
             if (logLevel == LogLevel.Debug)

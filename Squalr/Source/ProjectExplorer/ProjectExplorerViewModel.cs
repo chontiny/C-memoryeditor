@@ -561,7 +561,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex);
                 return;
             }
         }
@@ -616,7 +616,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to import project", ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to import project", ex);
                 return;
             }
 
@@ -639,7 +639,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex);
                 return;
             }
 
@@ -677,7 +677,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project", ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project", ex);
                 return;
             }
 
@@ -695,7 +695,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save hotkey profile", ex.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save hotkey profile", ex);
                 return;
             }
         }
@@ -705,62 +705,64 @@
         /// </summary>
         private void ExportProject()
         {
-            // Export the project items to thier own individual files
-            try
+            Task.Run(() =>
             {
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.FileName = "Select a Folder to Export Project Items";
-                saveFileDialog.Title = "Export Project";
-
-                if (saveFileDialog.ShowDialog() != true)
+                // Export the project items to thier own individual files
+                try
                 {
-                    return;
-                }
-
-                String folderPath = Path.GetDirectoryName(saveFileDialog.FileName);
-
-                Parallel.ForEach(
-                    this.ProjectRoot.Flatten().Where(x => !(x is FolderItem)),
-                    SettingsViewModel.GetInstance().ParallelSettingsFast,
-                    (projectItem) =>
-                {
-                    ProjectItem targetProjectItem = projectItem;
-
-                    if (projectItem is ScriptItem)
+                    if (String.IsNullOrEmpty(this.ProjectFilePath) || !Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
                     {
-                        ScriptItem scriptItem = projectItem as ScriptItem;
-
-                        if (!scriptItem.IsCompiled)
-                        {
-                            targetProjectItem = scriptItem?.Compile();
-                        }
-                    }
-
-                    if (targetProjectItem == null)
-                    {
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Please save the project before exporting");
                         return;
                     }
 
-                    String filePath = Path.Combine(folderPath, targetProjectItem.Description + ProjectExplorerViewModel.ProjectFileExtension);
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Project export starting");
 
-                    using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                    String folderPath = Path.Combine(Path.GetDirectoryName(this.ProjectFilePath), "Export");
+                    Directory.CreateDirectory(folderPath);
+
+                    Parallel.ForEach(
+                        this.ProjectRoot.Flatten().Where(x => !(x is FolderItem)),
+                        SettingsViewModel.GetInstance().ParallelSettingsFast,
+                        (projectItem) =>
                     {
-                        ProjectRoot newProjectRoot = new ProjectRoot();
-                        newProjectRoot.AddChild(targetProjectItem);
+                        ProjectItem targetProjectItem = projectItem;
 
-                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                        serializer.WriteObject(fileStream, newProjectRoot);
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to complete export project", ex.ToString());
-                return;
-            }
+                        if (projectItem is ScriptItem)
+                        {
+                            ScriptItem scriptItem = projectItem as ScriptItem;
 
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Project export complete.");
+                            if (!scriptItem.IsCompiled)
+                            {
+                                targetProjectItem = scriptItem?.Compile();
+                            }
+                        }
 
+                        if (targetProjectItem == null)
+                        {
+                            return;
+                        }
+
+                        String filePath = Path.Combine(folderPath, targetProjectItem.Description + ProjectExplorerViewModel.ProjectFileExtension);
+
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                        {
+                            ProjectRoot newProjectRoot = new ProjectRoot();
+                            newProjectRoot.AddChild(targetProjectItem);
+
+                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                            serializer.WriteObject(fileStream, newProjectRoot);
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to complete export project", ex);
+                    return;
+                }
+
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Project export complete");
+            });
         }
 
         /// <summary>
