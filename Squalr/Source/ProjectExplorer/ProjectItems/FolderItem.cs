@@ -330,8 +330,9 @@
         /// Removes the specified item from this item's children recursively.
         /// </summary>
         /// <param name="projectItem">The item to remove.</param>
+        /// <param name="dispose">A value indicating whether the resources of the project item should be disposed.</param>
         /// <returns>Returns true if the removal succeeded.</returns>
-        public Boolean RemoveNode(ProjectItem projectItem)
+        public Boolean RemoveNode(ProjectItem projectItem, Boolean dispose = true)
         {
             Boolean removeSuccess = false;
 
@@ -346,9 +347,13 @@
                 {
                     projectItem.Parent = null;
                     this.Children.Remove(projectItem);
-                    projectItem.Dispose();
                     removeSuccess = true;
-                    (projectItem as FolderItem)?.RemoveAllNodes();
+
+                    if (dispose)
+                    {
+                        projectItem.Dispose();
+                        (projectItem as FolderItem)?.RemoveAllNodes();
+                    }
                 }
                 else
                 {
@@ -356,7 +361,7 @@
                     {
                         if (child is FolderItem)
                         {
-                            if ((child as FolderItem).RemoveNode(projectItem))
+                            if ((child as FolderItem).RemoveNode(projectItem, dispose))
                             {
                                 removeSuccess = true;
                             }

@@ -91,7 +91,6 @@
             this.ExportProjectCommand = new RelayCommand(() => this.ExportProject(), () => true);
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
-            this.SaveAsProjectCommand = new RelayCommand(() => this.SaveAsProject(), () => true);
             this.AddNewFolderItemCommand = new RelayCommand(() => this.AddNewFolderItem(), () => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewAddressItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
@@ -127,11 +126,6 @@
         /// Gets the command to open a project from disk.
         /// </summary>
         public ICommand SaveProjectCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to open a project from disk.
-        /// </summary>
-        public ICommand SaveAsProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to add a new folder.
@@ -314,11 +308,6 @@
             }
 
             return true;
-        }
-
-        public void ActivateStreamCommands(IEnumerable<String> streamCommands)
-        {
-
         }
 
         /// <summary>
@@ -518,6 +507,7 @@
                 return;
             }
 
+            this.ProjectRoot = new ProjectRoot();
             this.ProjectFilePath = openFileDialog.FileName;
 
             // Open the project file
@@ -661,19 +651,24 @@
             // Save the project file
             try
             {
-                if (String.IsNullOrEmpty(this.ProjectFilePath) || !Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
-                {
-                    this.SaveAsProject();
-                    return;
-                }
 
-                using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Create, FileAccess.Write))
-                {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    serializer.WriteObject(fileStream, this.ProjectRoot);
-                }
+                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                saveFileDialog.Filter = ProjectExplorerViewModel.ProjectExtensionFilter;
+                saveFileDialog.Title = "Save Project";
+                saveFileDialog.FileName = String.IsNullOrWhiteSpace(this.ProjectFilePath) ? String.Empty : Path.GetFileName(this.ProjectFilePath);
 
-                this.HasUnsavedChanges = false;
+                if (saveFileDialog.ShowDialog() == true)
+                {
+                    this.ProjectFilePath = saveFileDialog.FileName;
+
+                    using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Create, FileAccess.Write))
+                    {
+                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                        serializer.WriteObject(fileStream, this.ProjectRoot);
+                    }
+
+                    this.HasUnsavedChanges = false;
+                }
             }
             catch (Exception ex)
             {
@@ -763,22 +758,6 @@
 
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Project export complete");
             });
-        }
-
-        /// <summary>
-        /// Save a project to disk under a new specified project name.
-        /// </summary>
-        private void SaveAsProject()
-        {
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = ProjectExplorerViewModel.ProjectExtensionFilter;
-            saveFileDialog.Title = "Save Project";
-
-            if (saveFileDialog.ShowDialog() == true)
-            {
-                this.ProjectFilePath = saveFileDialog.FileName;
-                this.SaveProject();
-            }
         }
 
         /// <summary>

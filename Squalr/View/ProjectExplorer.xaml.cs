@@ -749,19 +749,19 @@
                     switch (this.projectExplorerTreeView.DropPosition.Position)
                     {
                         case NodePosition.Before:
-                            projectRoot.RemoveNode(draggedItem);
+                            projectRoot.RemoveNode(draggedItem, dispose: false);
                             targetItem.Parent?.AddSibling(targetItem, draggedItem, after: false);
                             break;
                         case NodePosition.Inside:
                             if (targetItem is FolderItem)
                             {
-                                projectRoot.RemoveNode(draggedItem);
+                                projectRoot.RemoveNode(draggedItem, dispose: false);
                                 (targetItem as FolderItem).AddChild(draggedItem);
                             }
 
                             break;
                         case NodePosition.After:
-                            projectRoot.RemoveNode(draggedItem);
+                            projectRoot.RemoveNode(draggedItem, dispose: false);
                             targetItem.Parent?.AddSibling(targetItem, draggedItem, after: true);
                             break;
                     }
