@@ -32,6 +32,11 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
+        /// A dummy process that detaches from the target process when selected.
+        /// </summary>
+        private NormalizedProcess detachProcess;
+
+        /// <summary>
         /// The list of running processes.
         /// </summary>
         private IEnumerable<NormalizedProcess> processList;
@@ -46,6 +51,7 @@
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<NormalizedProcess>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
 
+            this.detachProcess = new NormalizedProcess(0, "-- Detach from Process --", DateTime.Now, isSystemProcess: false, hasWindow: false, icon: null);
             ProcessSelectorTask processSelectorTask = new ProcessSelectorTask(this.RefreshProcessList);
 
             // Subscribe async to avoid a deadlock situation
@@ -91,7 +97,10 @@
         {
             get
             {
-                return this.ProcessList?.Where(x => x.HasWindow).Select(x => x).PrependIfNotNull(this.SelectedProcess).Distinct();
+                return this.ProcessList?.Where(x => x.HasWindow).Select(x => x)
+                    .PrependIfNotNull(this.SelectedProcess != null ? this.DetachProcess : null)
+                    .PrependIfNotNull(this.SelectedProcess)
+                    .Distinct();
             }
         }
 
@@ -107,8 +116,39 @@
 
             set
             {
+                Boolean detached = false;
+
+                // Set process to null if selecting the detach option
+                if (value == this.DetachProcess)
+                {
+                    value = null;
+                    detached = true;
+                }
+
                 EngineCore.GetInstance().Processes.OpenProcess(value);
                 this.RaisePropertyChanged(nameof(this.SelectedProcess));
+
+                if (detached)
+                {
+                    this.RaisePropertyChanged(nameof(this.WindowedProcessList));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a dummy process that detaches from the target process when selected.
+        /// </summary>
+        public NormalizedProcess DetachProcess
+        {
+            get
+            {
+                return this.detachProcess;
+            }
+
+            set
+            {
+                this.detachProcess = value;
+                this.RaisePropertyChanged(nameof(this.DetachProcess));
             }
         }
 
@@ -168,13 +208,7 @@
         /// <param name="process">The process being selected.</param>
         private void SelectProcess(NormalizedProcess process)
         {
-            if (process == null)
-            {
-                return;
-            }
-
             this.SelectedProcess = process;
-            this.RefreshProcessList();
             this.IsVisible = false;
         }
     }
