@@ -386,10 +386,9 @@
                     case ProjectItem.ProjectItemCategory.Buff:
                         image = ImageUtils.BitmapImageToBitmap(Images.Heart);
                         break;
-                    case ProjectItem.ProjectItemCategory.Utility:
+                    case ProjectItem.ProjectItemCategory.Miscellaneous:
                         image = ImageUtils.BitmapImageToBitmap(Images.Cog);
                         break;
-                    case ProjectItem.ProjectItemCategory.None:
                     default:
                         image = ImageUtils.BitmapImageToBitmap(Images.CollectValues);
                         break;

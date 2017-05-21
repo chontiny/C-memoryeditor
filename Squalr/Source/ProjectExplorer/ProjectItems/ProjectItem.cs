@@ -117,7 +117,7 @@
             /// <summary>
             /// No specific category.
             /// </summary>
-            None,
+            Miscellaneous,
 
             /// <summary>
             /// A cheat that causes glitches.
@@ -133,11 +133,6 @@
             /// A useful cheat for standard gameplay.
             /// </summary>
             Buff,
-
-            /// <summary>
-            /// A useful cheat for misc things.
-            /// </summary>
-            Utility,
         }
 
         /// <summary>

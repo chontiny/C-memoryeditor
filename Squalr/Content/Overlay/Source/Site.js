@@ -1,7 +1,7 @@
 ﻿const glitch = 1;
 const curse = 2;
 const buff = 3;
-const utility = 4;
+const miscellaneous = 4;
 
 $(document).ready(function () {
     $(function () {
@@ -31,12 +31,12 @@ function onBuffsLoaded(buffs, buffMeta) {
     $('#glitches').empty();
     $('#buffs').empty();
     $('#curses').empty();
-    $('#utilities').empty();
+    $('#miscellaneous').empty();
 
     var glitchCount = 0;
     var buffCount = 0;
     var curseCount = 0;
-    var utilityCount = 0;
+    var miscellaneousCount = 0;
     var i = 0;
 
     for (i = 0, len = buffs.length; i < len; i++) {
@@ -53,9 +53,9 @@ function onBuffsLoaded(buffs, buffMeta) {
                 curseCount++;
                 $('#curses').prepend($('<img>', { src: 'Images/Buffs/' + buffs[i].StreamIconPath, class: 'buff img-fluid img-rounded pull-right' }));
                 break;
-            case utility:
-                utilityCount++;
-                $('#utilities').prepend($('<img>', { src: 'Images/Buffs/' + buffs[i].StreamIconPath, class: 'buff img-fluid img-rounded pull-right' }));
+            case miscellaneous:
+                miscellaneousCount++;
+                $('#miscellaneous').prepend($('<img>', { src: 'Images/Buffs/' + buffs[i].StreamIconPath, class: 'buff img-fluid img-rounded pull-right' }));
                 break;
         }
     }
@@ -72,7 +72,7 @@ function onBuffsLoaded(buffs, buffMeta) {
         $('#curses').append($('<img>', { src: 'Images/EmptyBuff.svg', class: 'buff img-fluid img-rounded pull-right' }));
     }
 
-    for (i = utilityCount, len = buffMeta['NumberOfUtilities']; i < len; i++) {
-        $('#utilities').append($('<img>', { src: 'Images/EmptyBuff.svg', class: 'buff img-fluid img-rounded pull-right' }));
+    for (i = miscellaneousCount, len = buffMeta['NumberOfMiscellaneous']; i < len; i++) {
+        $('#miscellaneous').append($('<img>', { src: 'Images/EmptyBuff.svg', class: 'buff img-fluid img-rounded pull-right' }));
     }
 }

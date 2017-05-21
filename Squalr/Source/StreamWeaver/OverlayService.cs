@@ -130,7 +130,7 @@
 
             OverlayMeta overlayMeta = new OverlayMeta(
                 SettingsViewModel.GetInstance().NumberOfBuffs,
-                SettingsViewModel.GetInstance().NumberOfUtilities,
+                SettingsViewModel.GetInstance().NumberOfMiscellaneous,
                 SettingsViewModel.GetInstance().NumberOfGlitches,
                 SettingsViewModel.GetInstance().NumberOfCurses
                 );

@@ -41,11 +41,10 @@
                         return CategoryToColorConverter.BuffBrush;
                     case ProjectItem.ProjectItemCategory.Glitch:
                         return CategoryToColorConverter.GlitchBrush;
-                    case ProjectItem.ProjectItemCategory.Utility:
+                    case ProjectItem.ProjectItemCategory.Miscellaneous:
                         return CategoryToColorConverter.UtilityBrush;
                     case ProjectItem.ProjectItemCategory.Curse:
                         return CategoryToColorConverter.CurseBrush;
-                    case ProjectItem.ProjectItemCategory.None:
                     default:
                         return CategoryToColorConverter.DefaultBrush;
                 }

@@ -154,17 +154,17 @@
         /// <summary>
         /// Gets or sets the number of utilities to allow to be activated at once via stream commands.
         /// </summary>
-        public Int32 NumberOfUtilities
+        public Int32 NumberOfMiscellaneous
         {
             get
             {
-                return SettingsViewModel.GetInstance().NumberOfUtilities;
+                return SettingsViewModel.GetInstance().NumberOfMiscellaneous;
             }
 
             set
             {
-                SettingsViewModel.GetInstance().NumberOfUtilities = value;
-                this.RaisePropertyChanged(nameof(this.NumberOfUtilities));
+                SettingsViewModel.GetInstance().NumberOfMiscellaneous = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfMiscellaneous));
             }
         }
 
@@ -294,7 +294,7 @@
             // Collect project items
             IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
                 .Select(item => item)
-                .Where(item => item.Category != ProjectItem.ProjectItemCategory.None)
+                .Where(item => item.Category != ProjectItem.ProjectItemCategory.Miscellaneous)
                 .Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand));
 
             // Tally up votes for each project item
@@ -326,8 +326,8 @@
                     case ProjectItem.ProjectItemCategory.Buff:
                         numberToActivate = this.NumberOfBuffs;
                         break;
-                    case ProjectItem.ProjectItemCategory.Utility:
-                        numberToActivate = this.NumberOfUtilities;
+                    case ProjectItem.ProjectItemCategory.Miscellaneous:
+                        numberToActivate = this.NumberOfMiscellaneous;
                         break;
                 }
 
@@ -363,7 +363,7 @@
             IChartValues chartGlitchValues = new ChartValues<Int64>(itemVotes.Select(tally => tally.item.Category == ProjectItem.ProjectItemCategory.Glitch ? tally.command.Value : 0));
             IChartValues chartCurseValues = new ChartValues<Int64>(itemVotes.Select(tally => tally.item.Category == ProjectItem.ProjectItemCategory.Curse ? tally.command.Value : 0));
             IChartValues chartBuffValues = new ChartValues<Int64>(itemVotes.Select(tally => tally.item.Category == ProjectItem.ProjectItemCategory.Buff ? tally.command.Value : 0));
-            IChartValues chartUtilityValues = new ChartValues<Int64>(itemVotes.Select(tally => tally.item.Category == ProjectItem.ProjectItemCategory.Utility ? tally.command.Value : 0));
+            IChartValues chartMiscellaneousValues = new ChartValues<Int64>(itemVotes.Select(tally => tally.item.Category == ProjectItem.ProjectItemCategory.Miscellaneous ? tally.command.Value : 0));
 
             Application.Current.Dispatcher.Invoke((Action)delegate
             {
@@ -399,7 +399,7 @@
                         // Utilities
                         new ColumnSeries
                         {
-                            Values = chartUtilityValues,
+                            Values = chartMiscellaneousValues,
                             Fill = Brushes.Yellow,
                             DataLabels = true
                         }
@@ -410,7 +410,7 @@
                     this.SeriesCollection[0].Values = chartGlitchValues;
                     this.SeriesCollection[1].Values = chartCurseValues;
                     this.SeriesCollection[2].Values = chartBuffValues;
-                    this.SeriesCollection[3].Values = chartUtilityValues;
+                    this.SeriesCollection[3].Values = chartMiscellaneousValues;
                 }
             });
         }
@@ -647,7 +647,7 @@
         {
             IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten()
                 .Select(item => item)
-                .Where(item => item.Category != ProjectItem.ProjectItemCategory.None)
+                .Where(item => item.Category != ProjectItem.ProjectItemCategory.Miscellaneous)
                 .Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand));
 
             Int32 index = random.Next(0, candidateProjectItems.Count());

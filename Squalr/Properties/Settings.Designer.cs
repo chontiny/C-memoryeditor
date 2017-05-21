@@ -314,12 +314,12 @@ namespace Squalr.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("2")]
-        public int NumberOfUtilities {
+        public int NumberOfMiscellaneous {
             get {
-                return ((int)(this["NumberOfUtilities"]));
+                return ((int)(this["NumberOfMiscellaneous"]));
             }
             set {
-                this["NumberOfUtilities"] = value;
+                this["NumberOfMiscellaneous"] = value;
             }
         }
         

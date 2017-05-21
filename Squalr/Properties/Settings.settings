@@ -74,7 +74,7 @@
     <Setting Name="NumberOfBuffs" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">4</Value>
     </Setting>
-    <Setting Name="NumberOfUtilities" Type="System.Int32" Scope="User">
+    <Setting Name="NumberOfMiscellaneous" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="TwitchChannel" Type="System.String" Scope="User">

@@ -11,7 +11,7 @@
         {
             this.StreamCommand = projectItem?.StreamCommand;
             this.StreamIconPath = projectItem?.StreamIconPath;
-            this.Category = projectItem?.Category ?? ProjectItem.ProjectItemCategory.None;
+            this.Category = projectItem?.Category ?? ProjectItem.ProjectItemCategory.Miscellaneous;
         }
 
         [DataMember]

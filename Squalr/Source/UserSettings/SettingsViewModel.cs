@@ -348,17 +348,17 @@
         /// <summary>
         /// Gets or sets the number of utilities to allow to be activated at once via stream commands.
         /// </summary>
-        public Int32 NumberOfUtilities
+        public Int32 NumberOfMiscellaneous
         {
             get
             {
-                return Settings.Default.NumberOfUtilities;
+                return Settings.Default.NumberOfMiscellaneous;
             }
 
             set
             {
-                Settings.Default.NumberOfUtilities = value;
-                this.RaisePropertyChanged(nameof(this.NumberOfUtilities));
+                Settings.Default.NumberOfMiscellaneous = value;
+                this.RaisePropertyChanged(nameof(this.NumberOfMiscellaneous));
             }
         }
 
