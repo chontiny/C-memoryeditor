@@ -79,6 +79,11 @@
 
             set
             {
+                if (this.folderType == value)
+                {
+                    return;
+                }
+
                 this.folderType = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.FolderType));

@@ -132,6 +132,11 @@
 
             set
             {
+                if (this.resolveType == value)
+                {
+                    return;
+                }
+
                 this.resolveType = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.ResolveType));
@@ -153,6 +158,11 @@
 
             set
             {
+                if (this.baseIdentifier == value)
+                {
+                    return;
+                }
+
                 this.baseIdentifier = value == null ? String.Empty : value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.BaseIdentifier));
@@ -175,6 +185,11 @@
 
             set
             {
+                if (this.baseAddress == value)
+                {
+                    return;
+                }
+
                 this.EffectiveAddress = value;
                 this.baseAddress = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
@@ -199,6 +214,11 @@
 
             set
             {
+                if (this.offsets != null && this.offsets.SequenceEqual(value))
+                {
+                    return;
+                }
+
                 this.offsets = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Offsets));
@@ -220,6 +240,11 @@
 
             set
             {
+                if (this.typeName == (value == null ? String.Empty : value.FullName))
+                {
+                    return;
+                }
+
                 String oldTypeName = this.typeName;
                 this.typeName = value == null ? String.Empty : value.FullName;
                 this.addressValue = (oldTypeName != this.typeName) ? null : this.addressValue;

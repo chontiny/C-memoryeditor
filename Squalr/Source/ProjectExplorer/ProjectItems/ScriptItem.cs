@@ -66,6 +66,11 @@
 
             set
             {
+                if (this.script == value)
+                {
+                    return;
+                }
+
                 this.script = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
             }
@@ -87,6 +92,11 @@
 
             set
             {
+                if (this.isCompiled == value)
+                {
+                    return;
+                }
+
                 this.isCompiled = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
             }

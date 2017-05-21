@@ -148,6 +148,11 @@
 
             set
             {
+                if (this.parent == value)
+                {
+                    return;
+                }
+
                 this.parent = value;
                 this.NotifyPropertyChanged(nameof(this.Parent));
             }
