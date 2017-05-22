@@ -32,6 +32,7 @@
     <shell:Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <shell:Grid.RowDefinitions>
             <shell:RowDefinition Height="Auto" />
+            <shell:RowDefinition Height="Auto" />
             <shell:RowDefinition />
             <shell:RowDefinition Height="Auto" />
         </shell:Grid.RowDefinitions>
@@ -45,7 +46,29 @@
                 <shell:TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="Icon Editor" />
             </shell:WrapPanel>
         </shell:Grid>
-        <shell:Grid Grid.Row="1">
+
+        <shell:Grid
+            Grid.Row="1"
+            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            <WrapPanel Margin="4 0 0 0">
+                <TextBlock
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    VerticalAlignment="Center"
+                    Text="Search:"/>
+                <TextBox
+                    Width="148"
+                    Height="18"
+                    Margin="4 4 0 4"
+                    HorizontalAlignment="Left"
+                    Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                    BorderBrush="White"
+                    BorderThickness="1"
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    Text="{Binding SearchTerm, Mode=TwoWay}"/>
+            </WrapPanel>
+        </shell:Grid>
+
+        <shell:Grid Grid.Row="2">
             <shell:Grid.RowDefinitions>
                 <shell:RowDefinition />
             </shell:Grid.RowDefinitions>
@@ -53,7 +76,7 @@
                 Grid.Row="0"
                 Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                 BorderThickness="0"
-                ItemsSource="{Binding StreamTableViewModel.StreamIconList, Source={StaticResource ViewModelLocator}}"
+                ItemsSource="{Binding FilteredStreamIconList}"
                 SelectionChanged="ListViewSelectionChanged">
                 <shell:ListView.ItemTemplate>
                     <shell:DataTemplate>
@@ -85,7 +108,7 @@
             </shell:ListView>
         </shell:Grid>
 
-        <shell:Grid Grid.Row="2" Margin="8">
+        <shell:Grid Grid.Row="3" Margin="8">
             <shell:Button
                 Width="96"
                 Height="20"

@@ -1,6 +1,5 @@
 ﻿namespace Squalr.View
 {
-    using Squalr.Source.Editors.StreamIconEditor;
     using Source.ActionScheduler;
     using Source.ChangeLog;
     using Source.CheatBrowser;
@@ -25,6 +24,8 @@
     using Source.Snapshots;
     using Source.StreamWeaver;
     using Source.UserSettings;
+    using Squalr.Source.Editors.StreamIconEditor;
+    using Squalr.Source.StreamWeaver.Table;
 
     /// <summary>
     /// This class contains static references to all the view models in the

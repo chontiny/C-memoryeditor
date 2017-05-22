@@ -3,22 +3,22 @@
     using System;
     using System.Collections.Concurrent;
 
-    internal class TTLCache<V>
+    internal class TtlCache<V>
     {
         private ConcurrentDictionary<V, DateTime> cache;
 
-        public TTLCache()
+        public TtlCache()
         {
             this.cache = new ConcurrentDictionary<V, DateTime>();
             this.DefaultTimeToLive = TimeSpan.MaxValue;
         }
 
-        public TTLCache(TimeSpan defaultTimeToLive) : this()
+        public TtlCache(TimeSpan defaultTimeToLive) : this()
         {
             this.DefaultTimeToLive = defaultTimeToLive;
         }
 
-        public TTLCache(TimeSpan defaultTimeToLive, TimeSpan randomTimeToLiveOffset) : this(defaultTimeToLive)
+        public TtlCache(TimeSpan defaultTimeToLive, TimeSpan randomTimeToLiveOffset) : this(defaultTimeToLive)
         {
             this.RandomTimeToLiveOffset = randomTimeToLiveOffset;
         }
@@ -34,7 +34,7 @@
             if (this.RandomTimeToLiveOffset != null)
             {
                 Int32 maximumOffset = (Int32)this.RandomTimeToLiveOffset.TotalMilliseconds;
-                TimeSpan offset = TimeSpan.FromMilliseconds(TTLCache<V>.Random.Next(-maximumOffset, maximumOffset));
+                TimeSpan offset = TimeSpan.FromMilliseconds(TtlCache<V>.Random.Next(-maximumOffset, maximumOffset));
                 TimeSpan timeToLive = this.DefaultTimeToLive + offset;
 
                 this.Add(value, timeToLive);
@@ -75,7 +75,7 @@
         }
     }
 
-    internal class TTLCache<K, V> : TTLCache<K> where V : class
+    internal class TTLCache<K, V> : TtlCache<K> where V : class
     {
         private ConcurrentDictionary<K, Tuple<V, DateTime>> cache;
 

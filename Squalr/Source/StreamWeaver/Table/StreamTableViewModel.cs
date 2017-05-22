@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.StreamWeaver
+﻿namespace Squalr.Source.StreamWeaver.Table
 {
     using Docking;
     using Main;

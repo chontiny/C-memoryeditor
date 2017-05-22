@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Editors.StreamIconEditor
+﻿namespace Squalr.Source.StreamWeaver.Table
 {
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;

@@ -10,7 +10,8 @@
     using Output;
     using ProjectExplorer;
     using ProjectExplorer.ProjectItems;
-    using Squalr.Source.Editors.StreamIconEditor;
+    using Squalr.Source.StreamWeaver.Overlay;
+    using Squalr.Source.StreamWeaver.Table;
     using Squalr.Source.Utils;
     using Squalr.View;
     using System;

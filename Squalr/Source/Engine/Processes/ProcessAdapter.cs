@@ -24,12 +24,12 @@
         /// <summary>
         /// Collection of process ids that have caused access issues.
         /// </summary>
-        private TTLCache<Int32> systemProcessCache;
+        private TtlCache<Int32> systemProcessCache;
 
         /// <summary>
         /// Collection of process ids for which an icon could not be fetched.
         /// </summary>
-        private TTLCache<Int32> noIconProcessCache;
+        private TtlCache<Int32> noIconProcessCache;
 
         /// <summary>
         /// Collection of icons fetched from processes.
@@ -39,12 +39,12 @@
         /// <summary>
         /// Collection of processes with a window.
         /// </summary>
-        private TTLCache<Int32> windowedProcessCache;
+        private TtlCache<Int32> windowedProcessCache;
 
         /// <summary>
         /// Collection of processes without a window.
         /// </summary>
-        private TTLCache<Int32> noWindowProcessCache;
+        private TtlCache<Int32> noWindowProcessCache;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessAdapter" /> class.
@@ -52,10 +52,10 @@
         public ProcessAdapter()
         {
             this.processListeners = new ConcurrentHashSet<IProcessObserver>();
-            this.systemProcessCache = new TTLCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
-            this.noIconProcessCache = new TTLCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
-            this.windowedProcessCache = new TTLCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
-            this.noWindowProcessCache = new TTLCache<Int32>(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(5));
+            this.systemProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
+            this.noIconProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
+            this.windowedProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
+            this.noWindowProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(5));
 
             // TODO: For now we will not expire the TTL icons. This may cause cosmetic bugs. Icons are currently not disposed,
             // so putting a TTL on this would cause a memory leak.

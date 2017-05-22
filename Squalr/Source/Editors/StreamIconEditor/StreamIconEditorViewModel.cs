@@ -3,7 +3,11 @@
     using Docking;
     using Main;
     using Mvvm.Command;
+    using Squalr.Source.StreamWeaver;
+    using Squalr.Source.StreamWeaver.Table;
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -30,6 +34,8 @@
                 () => { return new StreamIconEditorViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
+        private String searchTerm;
+
         /// <summary>
         /// Prevents a default instance of the <see cref="StreamIconEditorViewModel" /> class.
         /// </summary>
@@ -51,6 +57,44 @@
         /// Gets the command to select a stream icon.
         /// </summary>
         public ICommand SelectIconCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the current search term.
+        /// </summary>
+        public String SearchTerm
+        {
+            get
+            {
+                return this.searchTerm;
+            }
+
+            set
+            {
+                this.searchTerm = value;
+                this.RaisePropertyChanged(nameof(this.SearchTerm));
+                this.RaisePropertyChanged(nameof(this.FilteredStreamIconList));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the list of stream icons.
+        /// </summary>
+        public IEnumerable<StreamIcon> FilteredStreamIconList
+        {
+            get
+            {
+                if (String.IsNullOrWhiteSpace(this.SearchTerm))
+                {
+                    return StreamTableViewModel.GetInstance().StreamIconList;
+                }
+
+                return StreamTableViewModel.GetInstance().StreamIconList
+                    .Select(item => item)
+                    .Where(item => item.IconName.Contains(this.SearchTerm)
+                        || item.IconMeta.DisplayName.Contains(this.SearchTerm)
+                        || item.IconMeta.Keywords.Any(keyword => keyword.Contains(this.SearchTerm)));
+            }
+        }
 
         /// <summary>
         /// Gets the stream icon name.

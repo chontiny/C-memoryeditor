@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.StreamWeaver
+﻿namespace Squalr.Source.StreamWeaver.Overlay
 {
     using ActionScheduler;
     using ProjectExplorer;

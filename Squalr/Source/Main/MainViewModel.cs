@@ -8,7 +8,7 @@
     using Mvvm.Command;
     using Output;
     using ProjectExplorer;
-    using Squalr.Source.StreamWeaver;
+    using Squalr.Source.StreamWeaver.Table;
     using System;
     using System.Collections.Generic;
     using System.Deployment.Application;

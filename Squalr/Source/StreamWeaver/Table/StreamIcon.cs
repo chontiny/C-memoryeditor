@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Editors.StreamIconEditor
+﻿namespace Squalr.Source.StreamWeaver
 {
     using Squalr.Source.Utils;
     using Squalr.Source.Utils.Extensions;
@@ -9,10 +9,11 @@
 
     internal class StreamIcon
     {
-        public StreamIcon(String filePath)
+        public StreamIcon(String streamIconPath)
         {
-            this.IconName = Path.GetFileName(filePath)?.RemoveSuffixes(true, ".svg");
-            this.Icon = ImageUtils.BitmapToBitmapImage(ImageUtils.LoadSvg(filePath, 64, 64, Color.White));
+            this.IconName = Path.GetFileName(streamIconPath)?.RemoveSuffixes(ignoreCase: true, suffixes: ".svg");
+            this.Icon = ImageUtils.BitmapToBitmapImage(ImageUtils.LoadSvg(streamIconPath, 64, 64, Color.White));
+            this.IconMeta = new StreamIconMeta(streamIconPath);
         }
 
         /// <summary>
@@ -24,6 +25,11 @@
         /// Gets the icon associated with this process.
         /// </summary>
         public BitmapImage Icon { get; private set; }
+
+        /// <summary>
+        /// Gets the metadata of this icon.
+        /// </summary>
+        public StreamIconMeta IconMeta { get; private set; }
     }
     //// End class
 }

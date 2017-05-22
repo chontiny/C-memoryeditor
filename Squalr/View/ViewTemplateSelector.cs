@@ -1,6 +1,5 @@
 ﻿namespace Squalr.View
 {
-    using Squalr.Source.Editors.StreamIconEditor;
     using Source.CheatBrowser;
     using Source.DotNetExplorer;
     using Source.Editors.HotkeyEditor;
@@ -20,6 +19,8 @@
     using Source.Snapshots;
     using Source.StreamWeaver;
     using Source.UserSettings;
+    using Squalr.Source.Editors.StreamIconEditor;
+    using Squalr.Source.StreamWeaver.Table;
     using System;
     using System.Windows;
     using System.Windows.Controls;
