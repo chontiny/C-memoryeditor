@@ -2863,6 +2863,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Ninject\Ninject.csproj">
+      <Project>{37aad36a-2252-43d6-8bc4-f63bfefdfecb}</Project>
+      <Name>Ninject</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SqualrHookClient\SqualrHookClient.csproj">
       <Project>{e9576568-5640-4883-aa5d-0bb2f6853e18}</Project>
       <Name>SqualrHookClient</Name>

@@ -288,6 +288,11 @@
 
             set
             {
+                if (this.isValueHex == value)
+                {
+                    return;
+                }
+
                 this.isValueHex = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.IsValueHex));
@@ -309,6 +314,11 @@
 
             private set
             {
+                if (this.effectiveAddress == value)
+                {
+                    return;
+                }
+
                 this.effectiveAddress = value;
                 this.NotifyPropertyChanged(nameof(this.EffectiveAddress));
             }

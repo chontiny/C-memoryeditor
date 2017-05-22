@@ -1,18 +1,18 @@
-# Anathena
+# Squalr
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-Official web site: [anathena.com](https://www.anathena.com)
+Official web site: [anathena.com](https://www.squalr.com)
 
-**Anathena** is Memory Editing software that allows users to create and share cheats in their windows desktop games. This includes memory scanning, pointers, x86/x64 assembly injection, and so on.
+**Squalr** is Memory Editing software that allows users to create and share cheats in their windows desktop games. This includes memory scanning, pointers, x86/x64 assembly injection, and so on.
 
 ## Wiki Documentation
 
-You can find more documentation on the [Wiki](https://github.com/Anathena/Anathena/wiki)
+You can find more documentation on the [Wiki](https://github.com/Squalr/Squalr/wiki)
 
 ## Build
 
-In order to compile Anathena, you should only need **Visual Studio 2015 Update 3**. External libraries are mostly compiled from source (with the exception of most C++ applications). This is because almost every library I use has had issues where I've needed access to the source code (to be fair, I am using most of these in unexpected ways). Currently this consists of:
+In order to compile Squalr, you should only need **Visual Studio 2017**. External libraries are mostly compiled from source (with the exception of most C++ applications). This is because almost every library I use has had issues where I've needed access to the source code (to be fair, I am using most of these in unexpected ways). Currently this consists of:
 
 Library | Description
 --- | ---
