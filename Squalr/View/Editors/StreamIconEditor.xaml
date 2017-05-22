@@ -64,7 +64,7 @@
                     BorderBrush="White"
                     BorderThickness="1"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                    Text="{Binding SearchTerm, Mode=TwoWay}"/>
+                    Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </WrapPanel>
         </shell:Grid>
 
