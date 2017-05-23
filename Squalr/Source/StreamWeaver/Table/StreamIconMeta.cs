@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.StreamWeaver
 {
+    using Squalr.Source.Output;
     using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -10,18 +11,20 @@
     [DataContract]
     internal class StreamIconMeta
     {
+        private const String MetaExtension = ".meta";
+
         private String displayName;
 
         private IEnumerable<String> keywords;
 
         public StreamIconMeta(String streamIconPath)
         {
-            String metaFile = Path.GetFileName(streamIconPath)?.RemoveSuffixes(ignoreCase: true, suffixes: ".svg") + ".meta";
+            this.MetaFile = streamIconPath?.RemoveSuffixes(ignoreCase: true, suffixes: ".svg") + StreamIconMeta.MetaExtension;
 
             // Import existing icon meta
-            if (File.Exists(metaFile))
+            if (File.Exists(this.MetaFile))
             {
-                using (FileStream fileStream = new FileStream(metaFile, FileMode.Open, FileAccess.Read))
+                using (FileStream fileStream = new FileStream(this.MetaFile, FileMode.Open, FileAccess.Read))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(StreamIconMeta));
                     StreamIconMeta iconMeta = serializer.ReadObject(fileStream) as StreamIconMeta;
@@ -67,6 +70,27 @@
             private set
             {
                 this.keywords = value;
+            }
+        }
+
+        private String MetaFile { get; set; }
+
+        /// <summary>
+        /// Saves this icon metadata. Currently unused. Instead, edit the .meta files with a json editor.
+        /// </summary>
+        public void Save()
+        {
+            try
+            {
+                using (FileStream fileStream = new FileStream(this.MetaFile, FileMode.Create, FileAccess.Write))
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(StreamIconMeta));
+                    serializer.WriteObject(fileStream, this);
+                }
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save icon metadata", ex);
             }
         }
     }

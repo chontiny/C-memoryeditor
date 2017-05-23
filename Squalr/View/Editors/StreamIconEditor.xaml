@@ -95,6 +95,7 @@
                                 Grid.Column="0"
                                 Width="64"
                                 Height="64"
+                                Margin="4,0,0,0"
                                 Source="{Binding Path=Icon}" />
                             <shell:TextBlock
                                 Grid.Column="1"
