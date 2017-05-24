@@ -13,8 +13,6 @@
     {
         private const String MetaExtension = ".meta";
 
-        private String displayName;
-
         private IEnumerable<String> keywords;
 
         public StreamIconMeta(String streamIconPath)
@@ -29,7 +27,6 @@
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(StreamIconMeta));
                     StreamIconMeta iconMeta = serializer.ReadObject(fileStream) as StreamIconMeta;
 
-                    this.DisplayName = iconMeta.DisplayName;
                     this.Keywords = iconMeta.Keywords;
                 }
             }
@@ -37,25 +34,6 @@
             if (this.Keywords == null)
             {
                 this.Keywords = new List<String>();
-            }
-
-            if (this.DisplayName == null)
-            {
-                this.DisplayName = String.Empty;
-            }
-        }
-
-        [DataMember()]
-        public String DisplayName
-        {
-            get
-            {
-                return this.displayName;
-            }
-
-            private set
-            {
-                this.displayName = value;
             }
         }
 

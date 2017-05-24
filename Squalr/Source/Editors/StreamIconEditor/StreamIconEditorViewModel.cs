@@ -91,7 +91,6 @@
                 return StreamTableViewModel.GetInstance().StreamIconList
                     .Select(item => item)
                     .Where(item => item.IconName.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0
-                        || item.IconMeta.DisplayName.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0
                         || item.IconMeta.Keywords.Any(keyword => keyword.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0));
             }
         }
