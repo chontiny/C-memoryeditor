@@ -773,7 +773,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Android Mask.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Andromeda Chain.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Chain.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Angel Wings.svg">
@@ -920,7 +920,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Biohazard.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Bird Twitter.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Bird.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Black Hole Bolas.svg">
@@ -2899,7 +2899,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Android Mask.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Andromeda Chain.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Chain.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Angel Wings.meta">
@@ -3046,7 +3046,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Biohazard.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Bird Twitter.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Bird.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Black Hole Bolas.meta">
