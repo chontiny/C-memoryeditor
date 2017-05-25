@@ -3,6 +3,8 @@
     "backpacks",
     "bags",
     "inventories",
-    "items"
+    "items",
+    "storage",
+    "loot"
   ]
 }
