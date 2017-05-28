@@ -3,6 +3,7 @@
     using Controls;
     using Editors.ScriptEditor;
     using ScriptEngine;
+    using Squalr.Source.Analytics;
     using Squalr.Source.Output;
     using System;
     using System.ComponentModel;
@@ -153,6 +154,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to complete compile request", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return null;
             }
         }

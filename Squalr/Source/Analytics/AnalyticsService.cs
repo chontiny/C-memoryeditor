@@ -29,6 +29,9 @@
         {
             [Description("General")]
             General,
+
+            [Description("Cheat Browser")]
+            CheatBrowser,
         }
 
         /// <summary>
@@ -58,6 +61,26 @@
         public void Start()
         {
             this.Session = new AnalyticsSession(AnalyticsService.AnalyticsUrl, AnalyticsService.GoogleAnalyticsCode);
+        }
+
+        /// <summary>
+        /// Sends an analytics event with an empty value.
+        /// </summary>
+        /// <param name="action">The analytics action.</param>
+        /// <param name="label">>The analytics label.</param>
+        public void SendEvent(AnalyticsAction action, Exception ex)
+        {
+            this.SendEvent(action, "Error", ex?.ToString());
+        }
+
+        /// <summary>
+        /// Sends an analytics event with an empty value.
+        /// </summary>
+        /// <param name="action">The analytics action.</param>
+        /// <param name="label">>The analytics label.</param>
+        public void SendEvent(AnalyticsAction action, String label)
+        {
+            this.SendEvent(action, label, "empty");
         }
 
         /// <summary>

@@ -3,6 +3,7 @@
     using Source.CheatBrowser;
     using Source.Output;
     using Source.ProjectExplorer;
+    using Squalr.Source.Analytics;
     using System;
     using System.Collections.Specialized;
     using System.Diagnostics;
@@ -91,10 +92,13 @@
                         String file = Path.GetTempFileName();
                         URLDownloadToFile(null, e.Uri.AbsoluteUri, file, 0, IntPtr.Zero);
                         ProjectExplorerViewModel.GetInstance().ImportSpecificProjectCommand.Execute(file);
+
+                        AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.CheatBrowser, "Import", e.Uri.AbsoluteUri);
                     }
                     catch (Exception ex)
                     {
                         OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Error downloading project file", ex);
+                        AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.CheatBrowser, ex);
                     }
 
                     return;
@@ -103,12 +107,16 @@
                 // Handle request to open the native browser
                 if (native != null)
                 {
-                    Process.Start(new Uri(new Uri(CheatBrowserViewModel.HomeUrl), native).AbsoluteUri);
+                    String uri = new Uri(new Uri(CheatBrowserViewModel.HomeUrl), native).AbsoluteUri;
+                    Process.Start(uri);
+
+                    AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.CheatBrowser, "NativeBrowser", uri);
                 }
             }
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error handling web request", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.CheatBrowser, ex);
             }
         }
 

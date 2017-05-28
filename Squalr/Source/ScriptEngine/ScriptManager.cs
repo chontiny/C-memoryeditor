@@ -4,6 +4,7 @@
     using CSScriptLibrary;
     using Output;
     using ProjectExplorer.ProjectItems;
+    using Squalr.Source.Analytics;
     using System;
     using System.IO;
     using System.Reflection;
@@ -82,6 +83,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error compiling script", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 throw ex;
             }
 
@@ -119,11 +121,13 @@
             catch (SecurityException ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Invalid operation in sandbox environment", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return false;
             }
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to activate script", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return false;
             }
 

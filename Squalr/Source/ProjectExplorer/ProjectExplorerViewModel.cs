@@ -11,6 +11,7 @@
     using Output;
     using ProjectItems;
     using PropertyViewer;
+    using Squalr.Source.Analytics;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -552,6 +553,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
         }
@@ -607,6 +609,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to import project", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
 
@@ -630,6 +633,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
 
@@ -675,6 +679,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
 
@@ -693,6 +698,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save hotkey profile", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
         }
@@ -757,6 +763,7 @@
                 catch (Exception ex)
                 {
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to complete export project", ex);
+                    AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                     return;
                 }
 

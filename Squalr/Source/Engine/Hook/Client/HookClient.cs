@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.Engine.Hook.Client
 {
+    using Squalr.Source.Analytics;
     using Squalr.Source.Output;
     using SqualrHookClient.Source;
     using SqualrHookServer.Source;
@@ -54,6 +55,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to Hook Process, some features may not be available", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
 
             // this.GraphicsInterface = GraphicsFactory.GetGraphicsInterface(projectDirectory);

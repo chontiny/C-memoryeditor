@@ -2,6 +2,7 @@
 {
     using ActionScheduler;
     using ProjectExplorer;
+    using Squalr.Source.Analytics;
     using Squalr.Source.Output;
     using System;
     using System.Collections.Generic;
@@ -43,6 +44,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to start overlay service", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
         }
 
@@ -56,6 +58,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to stop overlay service", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
         }
 

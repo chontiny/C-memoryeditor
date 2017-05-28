@@ -10,6 +10,7 @@
     using Output;
     using ProjectExplorer;
     using ProjectExplorer.ProjectItems;
+    using Squalr.Source.Analytics;
     using Squalr.Source.StreamWeaver.Overlay;
     using Squalr.Source.StreamWeaver.Table;
     using Squalr.Source.Utils;
@@ -583,6 +584,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save stream command tables", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
         }
 

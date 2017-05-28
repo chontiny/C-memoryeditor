@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Engine.Proxy
 {
     using Output;
+    using Squalr.Source.Analytics;
     using SqualrProxy;
     using System;
     using System.Diagnostics;
@@ -126,6 +127,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Failed to start proxy service: " + executableName + ". This may impact Scripts and .NET explorer", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return null;
             }
         }

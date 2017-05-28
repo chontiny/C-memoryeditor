@@ -167,7 +167,7 @@
             AnalyticsService.GetInstance().Start();
             StreamTableViewModel.GetInstance().RebuildStreamIconList();
 
-            AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start", "1");
+            AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background Services Started");
         }
 

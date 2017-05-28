@@ -3,6 +3,7 @@
     using Native;
     using Output;
     using Processes;
+    using Squalr.Source.Analytics;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -516,6 +517,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to fetch modules from selected process", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
 
             return normalizedModules;

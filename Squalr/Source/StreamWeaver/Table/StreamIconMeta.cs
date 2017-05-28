@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.StreamWeaver
 {
+    using Squalr.Source.Analytics;
     using Squalr.Source.Output;
     using Squalr.Source.Utils.Extensions;
     using System;
@@ -69,6 +70,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save icon metadata", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
         }
     }

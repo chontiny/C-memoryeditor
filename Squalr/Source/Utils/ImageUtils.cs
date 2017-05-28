@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Utils
 {
     using DataStructures;
+    using Squalr.Source.Analytics;
     using Squalr.Source.Output;
     using Squalr.Source.Utils.Extensions;
     using Svg;
@@ -75,6 +76,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to export image", ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
         }
 
