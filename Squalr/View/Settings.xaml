@@ -1,0 +1,374 @@
+﻿<UserControl
+    x:Class="Squalr.View.Settings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:Squalr.Source.Controls"
+    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:local="clr-namespace:Squalr"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
+    x:Name="SqualrSettings"
+    d:DesignHeight="256"
+    d:DesignWidth="416"
+    x:ClassModifier="internal"
+    DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <TabControl Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <TabControl.Resources>
+            <Style TargetType="{x:Type TabItem}">
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="HeaderTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <Border Background="{StaticResource AvalonDock_Expression_BaseColor4}" BorderThickness="0">
+                                <ContentPresenter>
+                                    <ContentPresenter.Content>
+                                        <TextBlock
+                                            Margin="4,2,4,2"
+                                            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                            Text="{TemplateBinding Content}" />
+                                    </ContentPresenter.Content>
+                                </ContentPresenter>
+                            </Border>
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </TabControl.Resources>
+        <TabItem Background="Transparent" Header="General">
+            <Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <GroupBox
+                        Grid.Column="0"
+                        Padding="4"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Header="Twitch">
+                        <StackPanel Grid.Column="0">
+                            <TextBlock>Username:</TextBlock>
+                            <TextBox
+                                Name="twitchUsername"
+                                Width="148"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                BorderBrush="White"
+                                BorderThickness="1"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                            <TextBlock>Channel:</TextBlock>
+                            <TextBox
+                                Name="twitchChannel"
+                                Width="148"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                BorderBrush="White"
+                                BorderThickness="1"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                            <TextBlock>Access Token:</TextBlock>
+                            <PasswordBox
+                                Name="twitchAccessToken"
+                                Width="148"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                BorderBrush="White"
+                                BorderThickness="1"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                            <TextBlock FontSize="12">
+                                <Hyperlink NavigateUri="https://twitchapps.com/tmi/" RequestNavigate="HyperlinkRequestNavigate">
+                                    Obtain Access Token Here
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+                    </GroupBox>
+                    <GroupBox
+                        Grid.Column="1"
+                        Padding="4"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Header="Open Broadcaster Software">
+                        <StackPanel Grid.Column="1">
+                            <TextBlock>Overlay Port:</TextBlock>
+                            <TextBox
+                                Name="overlayPort"
+                                Width="148"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                BorderBrush="White"
+                                BorderThickness="1"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                            <TextBlock>Overlay Url:</TextBlock>
+                            <TextBox
+                                Name="overlayUrl"
+                                Width="148"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                BorderBrush="White"
+                                BorderThickness="1"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                IsReadOnly="True"
+                                Text="{Binding OverlayUrl, Mode=OneWay}" />
+                            <TextBlock
+                                FontSize="11"
+                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                TextWrapping="Wrap">
+                                Note: CLR plugin needed to use this overlay OBS
+                            </TextBlock>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Background="Transparent" Header="Memory">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Margin="2">
+                    <GroupBox
+                        Padding="4"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Header="Required Protection Flags">
+                        <StackPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding RequiredProtectionWrite, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="Write" />
+                            </WrapPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding RequiredProtectionExecute, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="Execute" />
+                            </WrapPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding RequiredProtectionCopyOnWrite, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="Copy on Write" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+                <Grid
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Margin="2">
+                    <GroupBox
+                        Padding="4"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Header="Excluded Protection Flags">
+                        <StackPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding ExcludedProtectionWrite, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="Write" />
+                            </WrapPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding ExcludedProtectionExecute, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="Execute" />
+                            </WrapPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding ExcludedProtectionCopyOnWrite, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="Copy on Write" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+                <Grid
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="2">
+                    <GroupBox
+                        Padding="4"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Header="Memory Type">
+                        <StackPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding MemoryTypeNone, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="None" />
+                            </WrapPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding MemoryTypePrivate, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="Image" />
+                            </WrapPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding MemoryTypeMapped, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="Private" />
+                            </WrapPanel>
+                            <WrapPanel>
+                                <CheckBox Padding="0,0,4,0" IsChecked="{Binding MemoryTypeImage, Mode=TwoWay}" />
+                                <TextBlock VerticalAlignment="Center" Text="Mapped" />
+                            </WrapPanel>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+                <Grid
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Margin="2">
+                    <GroupBox
+                        Padding="4"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Header="General">
+                        <StackPanel>
+                            <WrapPanel>
+                                <TextBlock
+                                    Padding="0,0,4,0"
+                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Text="Alignment:" />
+                                <Border
+                                    Margin="0,0,8,0"
+                                    BorderBrush="White"
+                                    BorderThickness="1">
+                                    <Grid
+                                        x:Name="alignment"
+                                        Width="64"
+                                        Height="18" />
+                                </Border>
+                            </WrapPanel>
+                            <WrapPanel>
+                                <RadioButton IsChecked="{Binding IsUserMode, Mode=TwoWay}" />
+                                <TextBlock
+                                    Padding="4,0,0,0"
+                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Text="Scan Usermode Memory" />
+                            </WrapPanel>
+                            <WrapPanel>
+                                <RadioButton IsChecked="{Binding IsNotUserMode, Mode=TwoWay}" />
+                                <TextBlock
+                                    Padding="4,0,0,0"
+                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Text="Scan Custom Range" />
+                            </WrapPanel>
+                            <Border
+                                Width="196"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                BorderBrush="White"
+                                BorderThickness="1">
+                                <Grid x:Name="scanRangeStart" />
+                            </Border>
+                            <Border
+                                Width="196"
+                                Height="18"
+                                Margin="0,4,8,0"
+                                HorizontalAlignment="Left"
+                                BorderBrush="White"
+                                BorderThickness="1">
+                                <Grid x:Name="scanRangeEnd" />
+                            </Border>
+                        </StackPanel>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+        </TabItem>
+
+        <TabItem Background="Transparent" Header="Intervals">
+            <StackPanel Margin="4">
+                <WrapPanel Margin="0,4,0,4">
+                    <Border
+                        Width="64"
+                        Height="18"
+                        Margin="0,4,8,0"
+                        HorizontalAlignment="Left"
+                        BorderBrush="White"
+                        BorderThickness="1">
+                        <Grid x:Name="freezeInterval" />
+                    </Border>
+                    <TextBlock
+                        Padding="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Freeze Interval" />
+                </WrapPanel>
+                <WrapPanel Margin="0,4,0,4">
+                    <Border
+                        Width="64"
+                        Height="18"
+                        Margin="0,4,8,0"
+                        HorizontalAlignment="Left"
+                        BorderBrush="White"
+                        BorderThickness="1">
+                        <Grid x:Name="rescanInterval" />
+                    </Border>
+                    <TextBlock
+                        Padding="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Rescan Interval" />
+                </WrapPanel>
+                <WrapPanel Margin="0,4,0,4">
+                    <Border
+                        Width="64"
+                        Height="18"
+                        Margin="0,4,8,0"
+                        HorizontalAlignment="Left"
+                        BorderBrush="White"
+                        BorderThickness="1">
+                        <Grid x:Name="tableReadInterval" />
+                    </Border>
+                    <TextBlock
+                        Padding="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Table Read Interval" />
+                </WrapPanel>
+                <WrapPanel Margin="0,4,0,4">
+                    <Border
+                        Width="64"
+                        Height="18"
+                        Margin="0,4,8,0"
+                        HorizontalAlignment="Left"
+                        BorderBrush="White"
+                        BorderThickness="1">
+                        <Grid x:Name="resultReadInterval" />
+                    </Border>
+                    <TextBlock
+                        Padding="8,0,0,0"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Result Read Interval" />
+                </WrapPanel>
+                <WrapPanel Margin="0,4,0,4">
+                    <Border
+                        Width="64"
+                        Height="18"
+                        Margin="0,4,8,0"
+                        HorizontalAlignment="Left"
+                        BorderBrush="White"
+                        BorderThickness="1">
+                        <Grid x:Name="inputCorrelatorTimeout" />
+                    </Border>
+                    <TextBlock
+                        Padding="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="Input Correlator Timeout" />
+                </WrapPanel>
+            </StackPanel>
+        </TabItem>
+    </TabControl>
+</UserControl>

@@ -1,14 +1,14 @@
 #include "stdafx.h"
 #include "Fasm.NET.h"
 
-namespace Anathena
+namespace Squalr
 {
 	namespace Assemblers
 	{
 		namespace Fasm
 		{
-			#pragma region Static Methods
-			#pragma region FasmNet::GetVersion
+#pragma region Static Methods
+#pragma region FasmNet::GetVersion
 			/// <summary>
 			/// Gets the version of FASM compiler.
 			/// </summary>
@@ -19,8 +19,8 @@ namespace Anathena
 				// Create and return a managed version object
 				return gcnew Version(nativeVersion & 0xff, (nativeVersion >> 16) & 0xff);
 			}
-			#pragma endregion
-			#pragma region FasmNet::Assemble
+#pragma endregion
+#pragma region FasmNet::Assemble
 			/// <summary>
 			/// Assembles the given mnemonics.
 			/// </summary>
@@ -30,18 +30,18 @@ namespace Anathena
 			array<byte>^ FasmNet::Assemble(String^ source, int memorySize, int passLimit)
 			{
 				// If the string is null or empty
-				if(String::IsNullOrEmpty(source))
+				if (String::IsNullOrEmpty(source))
 				{
 					// Return an empty array
 					return gcnew array<byte>{};
 				}
 
 				// Check if the memory size was given
-				if(memorySize < 1)
+				if (memorySize < 1)
 					memorySize = DEFAULT_MEMORY_SIZE;
 
 				// Check if the number of maximum pass was given
-				if(passLimit < 1)
+				if (passLimit < 1)
 					passLimit = DEFAULT_PASS_LIMIT;
 
 				//Create some useful vars
@@ -60,7 +60,7 @@ namespace Anathena
 					NativeFasmState* state = static_cast<NativeFasmState*>(nativeBuffer.ToPointer());
 
 					// If all was right
-					if(ret == FasmResults::Ok)
+					if (ret == FasmResults::Ok)
 					{
 						// Get the assembly code
 						array<byte>^ assembly = gcnew array<byte>(state->OutputLength);
@@ -75,10 +75,10 @@ namespace Anathena
 				finally
 				{
 					// Free the resources
-					if(nativeSource != IntPtr::Zero)
+					if (nativeSource != IntPtr::Zero)
 						Marshal::FreeHGlobal(nativeSource);
 
-					if(nativeBuffer != IntPtr::Zero)
+					if (nativeBuffer != IntPtr::Zero)
 						Marshal::FreeHGlobal(nativeBuffer);
 				}
 			}
@@ -113,8 +113,8 @@ namespace Anathena
 			{
 				return Assemble(String::Join(Environment::NewLine, source), DEFAULT_MEMORY_SIZE, DEFAULT_PASS_LIMIT);
 			}
-			#pragma endregion
-			#pragma region FasmNet::AssembleFile
+#pragma endregion
+#pragma region FasmNet::AssembleFile
 			/// <summary>
 			/// Assembles the specified file.
 			/// </summary>
@@ -137,8 +137,8 @@ namespace Anathena
 			{
 				return AssembleFile(path, DEFAULT_MEMORY_SIZE, DEFAULT_PASS_LIMIT);
 			}
-			#pragma endregion
-			#pragma region FasmNet::AssembleFiles
+#pragma endregion
+#pragma region FasmNet::AssembleFiles
 			/// <summary>
 			/// Assembles the specified files by appending them.
 			/// </summary>
@@ -171,10 +171,10 @@ namespace Anathena
 			{
 				return AssembleFiles(paths, DEFAULT_MEMORY_SIZE, DEFAULT_PASS_LIMIT);
 			}
-			#pragma endregion
-			#pragma endregion
+#pragma endregion
+#pragma endregion
 
-			#pragma region Constructors
+#pragma region Constructors
 			/// <summary>
 			/// Initializes a new instance of the <see cref="Fasm"/> class.
 			/// </summary>
@@ -197,10 +197,10 @@ namespace Anathena
 				// Create a StringBuilder instance
 				_mnemonics = gcnew StringBuilder();
 			}
-			#pragma endregion
+#pragma endregion
 
-			#pragma region Methods
-			#pragma region FasmNet::AddLine
+#pragma region Methods
+#pragma region FasmNet::AddLine
 			/// <summary>
 			/// Adds the text representation of the specified array of objects, followed by the current line terminator.
 			/// </summary>
@@ -226,14 +226,14 @@ namespace Anathena
 			array<byte>^ FasmNet::Assemble(IntPtr^ origin)
 			{
 				// If an origin was submitted
-				if(origin != IntPtr::Zero)
+				if (origin != IntPtr::Zero)
 					InsertLine(0, "org {0}", origin);
 
 				// Assemble and return the assembly code
 				return FasmNet::Assemble(Mnemonics, _memorySize, _passLimit);
 			}
-			#pragma endregion
-			#pragma region FasmNet::Clear
+#pragma endregion
+#pragma region FasmNet::Clear
 			/// <summary>
 			/// Removes all characters from the current <see cref="Fasm" /> instance.
 			/// </summary>
@@ -241,8 +241,8 @@ namespace Anathena
 			{
 				_mnemonics->Clear();
 			}
-			#pragma endregion
-			#pragma region FasmNet::InsertLine
+#pragma endregion
+#pragma region FasmNet::InsertLine
 			/// <summary>
 			/// Inserts the text representation of the specified array of objects, followed by the current line terminator at the specified character position.
 			/// </summary>
@@ -253,11 +253,12 @@ namespace Anathena
 			{
 				_mnemonics->Insert(index, String::Format(format, args) + Environment::NewLine);
 			}
-			#pragma endregion
-			#pragma endregion
+#pragma endregion
+#pragma endregion
 
-		} // End namespace
-
-	} // End namespace
-
-} // End namespace
+		}
+		//// End namespace
+	}
+	//// End namespace
+}
+//// End namespace

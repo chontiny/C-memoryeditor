@@ -3,7 +3,7 @@
 
 using namespace System;
 
-namespace Anathena
+namespace Squalr
 {
 	namespace Assemblers
 	{
@@ -26,9 +26,9 @@ namespace Anathena
 				_errorOffset = errorOffset;
 				_mnemonics = mnemonics;
 			}
-
-		} // End namespace
-
-	} // End namespace
-
-} // End namespace
+		}
+		//// End namespace
+	}
+	//// End namespace
+}
+//// End namespace

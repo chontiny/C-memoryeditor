@@ -4,7 +4,7 @@
 
 using namespace System::Runtime::InteropServices;
 
-namespace Anathena
+namespace Squalr
 {
 	namespace Assemblers
 	{
@@ -68,9 +68,9 @@ namespace Anathena
 					NativeLineHeader* ErrorLine;
 				};
 			};
-
-		} // End namespace
-
-	} // End namespace
-
-} // End namespace
+		}
+		//// End namespace
+	}
+	//// End namespace
+}
+//// End namespace
