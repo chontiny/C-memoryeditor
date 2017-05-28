@@ -2,6 +2,7 @@
 {
     using ActionScheduler;
     using ProjectExplorer;
+    using Squalr.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -32,16 +33,30 @@
 
         public void Start()
         {
-            this.HttpListener.Prefixes.Add(SettingsViewModel.GetInstance().OverlayUrl);
-            this.HttpListener.Start();
-            this.HttpListener.BeginGetContext(this.RequestWait, null);
-            base.Begin();
+            try
+            {
+                this.HttpListener.Prefixes.Add(SettingsViewModel.GetInstance().OverlayUrl);
+                this.HttpListener.Start();
+                this.HttpListener.BeginGetContext(this.RequestWait, null);
+                base.Begin();
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to start overlay service", ex);
+            }
         }
 
         public void Stop()
         {
-            this.HttpListener.Stop();
-            base.Cancel();
+            try
+            {
+                this.HttpListener.Stop();
+                base.Cancel();
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to stop overlay service", ex);
+            }
         }
 
         protected override void OnUpdate()

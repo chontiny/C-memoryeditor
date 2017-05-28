@@ -1,7 +1,7 @@
 ﻿const glitch = 1;
 const curse = 2;
 const buff = 3;
-const miscellaneous = 4;
+const miscellaneous = 0;
 
 $(document).ready(function () {
     $(function () {

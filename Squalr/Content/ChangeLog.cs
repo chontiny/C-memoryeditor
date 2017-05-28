@@ -29,18 +29,9 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write(@"- Greatly improved error reporting
-- Disabled developer tools (for the short term)
-- Added Twitch streaming overlay integration
-  - Twitch integration with API key
-  - Local overlay web service
-  - ""Twitch Plays Pokemon"" style voting system
-  - Cheat categories
-  - Stream commands
-  - Stream icons
-  - Exporting the current set of stream activated cheats to a Markup table or table image
-- Added anonymous user analytics
-- Added folder types -- unique sets and group activated");
+            this.Write("- Added search capabilities to stream icon editor\r\n- Improvements and fixes to Tw" +
+                    "itch Integration\r\n- Correctly setting default project save file location\r\n- Anon" +
+                    "ymous user analytics updates\r\n- Fixes to project folder groupings");
             return this.GenerationEnvironment.ToString();
         }
     }

@@ -6,25 +6,25 @@
     [DataContract]
     internal class OverlayMeta
     {
-        public OverlayMeta(Int32 numberOfBuffs, Int32 numberOfUtilities, Int32 numberOfGlitches, Int32 numberOfCurses)
+        public OverlayMeta(Int32 numberOfBuffs, Int32 numberOfMiscellaneous, Int32 numberOfGlitches, Int32 numberOfCurses)
         {
-            this.NumberOfBuffs = numberOfBuffs;
-            this.NumberOfUtilities = numberOfUtilities;
             this.NumberOfGlitches = numberOfGlitches;
+            this.NumberOfBuffs = numberOfBuffs;
             this.NumberOfCurses = numberOfCurses;
+            this.NumberOfMiscellaneous = numberOfMiscellaneous;
         }
 
         [DataMember]
-        Int32 NumberOfBuffs { get; set; }
+        private Int32 NumberOfGlitches { get; set; }
 
         [DataMember]
-        Int32 NumberOfUtilities { get; set; }
+        private Int32 NumberOfBuffs { get; set; }
 
         [DataMember]
-        Int32 NumberOfGlitches { get; set; }
+        private Int32 NumberOfCurses { get; set; }
 
         [DataMember]
-        Int32 NumberOfCurses { get; set; }
+        private Int32 NumberOfMiscellaneous { get; set; }
     }
     //// End class
 }
