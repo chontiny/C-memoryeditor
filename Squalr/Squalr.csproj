@@ -1334,7 +1334,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Death Zone.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Deathcab.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Deathcap.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Decapitation.svg">
@@ -3478,7 +3478,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Death Zone.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Deathcab.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Deathcap.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Decapitation.meta">
