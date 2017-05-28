@@ -592,6 +592,8 @@
         private void ClearVotes()
         {
             this.CommandVotes.Clear();
+
+            this.OnUpdate();
         }
 
         /// <summary>
