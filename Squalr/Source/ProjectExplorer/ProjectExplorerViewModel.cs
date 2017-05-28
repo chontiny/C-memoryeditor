@@ -656,6 +656,8 @@
                 saveFileDialog.Filter = ProjectExplorerViewModel.ProjectExtensionFilter;
                 saveFileDialog.Title = "Save Project";
                 saveFileDialog.FileName = String.IsNullOrWhiteSpace(this.ProjectFilePath) ? String.Empty : Path.GetFileName(this.ProjectFilePath);
+                saveFileDialog.RestoreDirectory = true;
+                saveFileDialog.InitialDirectory = String.IsNullOrWhiteSpace(this.ProjectFilePath) ? String.Empty : Path.GetDirectoryName(this.ProjectFilePath);
 
                 if (saveFileDialog.ShowDialog() == true)
                 {
