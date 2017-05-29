@@ -1442,7 +1442,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Ember Shot.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Embrassed Energy.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Embraced Energy.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Embryo.svg">
@@ -1730,9 +1730,6 @@
     <Content Include="Content\Overlay\Images\Buffs\Grenade.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Grouped Drops.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Overlay\Images\Buffs\Halberd.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1794,9 +1791,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Helmet Head Shot.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\High Five.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\High Shot.svg">
@@ -3586,7 +3580,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Ember Shot.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Embrassed Energy.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Embraced Energy.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Embryo.meta">
@@ -3874,9 +3868,6 @@
     <Content Include="Content\Overlay\Images\Buffs\Grenade.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Grouped Drops.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Overlay\Images\Buffs\Halberd.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3938,9 +3929,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Helmet Head Shot.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\High Five.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\High Shot.meta">

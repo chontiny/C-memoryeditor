@@ -4,6 +4,8 @@
     "waters",
     "liquids",
     "poisons",
-    "toxic"
+    "toxic",
+    "blood",
+    "bleeding"
   ]
 }
