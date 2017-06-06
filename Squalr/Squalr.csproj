@@ -2462,7 +2462,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Static.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Steel Claws2.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Steel Claws.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Steel Door.svg">
@@ -2492,7 +2492,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Stoned Skull.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Stopwatch2.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Stopwatch.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Strawberry.svg">
@@ -2597,9 +2597,6 @@
     <Content Include="Content\Overlay\Images\Buffs\Time Bomb.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Time Trap.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Overlay\Images\Buffs\Tinker.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2610,9 +2607,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Tortoise.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Transportation Rings.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Trash Can.svg">
@@ -2640,9 +2634,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Triple Skulls.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Tripwire.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Troll.svg">
@@ -4597,7 +4588,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Static.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Steel Claws2.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Steel Claws.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Steel Door.meta">
@@ -4627,7 +4618,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Stoned Skull.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Stopwatch2.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Stopwatch.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Strawberry.meta">
@@ -4732,9 +4723,6 @@
     <Content Include="Content\Overlay\Images\Buffs\Time Bomb.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Time Trap.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Overlay\Images\Buffs\Tinker.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -4745,9 +4733,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Tortoise.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Transportation Rings.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Trash Can.meta">
@@ -4775,9 +4760,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Triple Skulls.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Tripwire.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Troll.meta">
