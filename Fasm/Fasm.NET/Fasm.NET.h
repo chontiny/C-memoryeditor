@@ -14,7 +14,7 @@ using namespace System::IO;
 using namespace System::Runtime::InteropServices;
 using namespace System::Text;
 
-namespace Anathena
+namespace Squalr
 {
 	namespace Assemblers
 	{
@@ -140,9 +140,9 @@ namespace Anathena
 					String^ get() { return _mnemonics->ToString(); }
 				}
 			};
-
-		} // End namespace
-
-	} // End namespace
-
-} // End namespace
+		}
+		//// End namespace
+	}
+	//// End namespace
+}
+//// End namespace

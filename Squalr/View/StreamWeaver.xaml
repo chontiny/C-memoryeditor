@@ -1,0 +1,194 @@
+﻿<UserControl
+    x:Class="Squalr.View.StreamWeaver"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:charts="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:local="clr-namespace:Squalr"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
+    x:Name="SqualrStreamWeaver"
+    d:DesignHeight="256"
+    d:DesignWidth="480"
+    x:ClassModifier="internal"
+    DataContext="{Binding StreamWeaverViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Border
+            Grid.Row="0"
+            Padding="8,4,8,4"
+            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            <Menu Background="Transparent">
+                <MenuItem Command="{Binding ToggleConnectionCommand}">
+                    <MenuItem.Header>
+                        <WrapPanel>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="pack://application:,,,/Squalr;component/Content/Icons/Connect.png"
+                                ToolTip="Disconnect from Twitch" />
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="{Binding ConnectionImage}"
+                                ToolTip="Connect/Disconnect from Twitch" />
+                            <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ConnectionOption}" />
+                        </WrapPanel>
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Command="{Binding CopyMarkdownCommand}">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/Squalr;component/Content/Icons/New.png"
+                            ToolTip="Copy Twitch Markdown" />
+                    </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Command="{Binding SaveStreamTableCommand}">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/Squalr;component/Content/Icons/Save.png"
+                            ToolTip="Save Stream Table Images" />
+                    </MenuItem.Header>
+                </MenuItem>
+                <Separator Style="{DynamicResource VerticalSeparator}" />
+                <MenuItem Command="{Binding ClearVotesCommand}">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/Squalr;component/Content/Icons/Cancel.png"
+                            ToolTip="Clear Votes" />
+                    </MenuItem.Header>
+                </MenuItem>
+            </Menu>
+        </Border>
+        <Border Grid.Row="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="96" />
+                    <ColumnDefinition Width="96" />
+                    <ColumnDefinition Width="96" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <WrapPanel
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    ToolTip="Number of Glitches to Activate">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        Source="pack://application:,,,/Squalr;component/Content/Icons/Glitch.png" />
+                    <TextBox
+                        Name="glitchCount"
+                        Width="64"
+                        Height="18"
+                        Margin="4,2,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="{Binding NumberOfGlitches, Mode=TwoWay}" />
+                </WrapPanel>
+                <WrapPanel
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    ToolTip="Number of Buffs to Activate">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        Source="pack://application:,,,/Squalr;component/Content/Icons/Heart.png" />
+                    <TextBox
+                        Name="heartIcon"
+                        Width="64"
+                        Height="18"
+                        Margin="4,2,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="{Binding NumberOfBuffs, Mode=TwoWay}" />
+                </WrapPanel>
+                <WrapPanel
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    ToolTip="Number of Curses to Activate">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        Source="pack://application:,,,/Squalr;component/Content/Icons/Curse.png" />
+                    <TextBox
+                        Name="curseCount"
+                        Width="64"
+                        Height="18"
+                        Margin="4,2,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="{Binding NumberOfCurses, Mode=TwoWay}" />
+                </WrapPanel>
+                <WrapPanel
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    ToolTip="Number of Miscellaneous to Activate">
+                    <Image
+                        Width="16"
+                        Height="16"
+                        HorizontalAlignment="Left"
+                        Source="pack://application:,,,/Squalr;component/Content/Icons/Cog.png" />
+                    <TextBox
+                        Name="miscellaneousCount"
+                        Width="64"
+                        Height="18"
+                        Margin="4,2,0,0"
+                        HorizontalAlignment="Left"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                        BorderBrush="White"
+                        BorderThickness="1"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Text="{Binding NumberOfMiscellaneous, Mode=TwoWay}" />
+                </WrapPanel>
+            </Grid>
+        </Border>
+        <charts:CartesianChart
+            Grid.Row="2"
+            Grid.Column="0"
+            DisableAnimations="True"
+            Series="{Binding SeriesCollection}">
+            <charts:CartesianChart.AxisX>
+                <charts:Axis
+                    Labels="{Binding ChartLabels}"
+                    LabelsRotation="-15"
+                    ShowLabels="True">
+                    <charts:Axis.Separator>
+                        <charts:Separator IsEnabled="False" Step="1" />
+                    </charts:Axis.Separator>
+                </charts:Axis>
+            </charts:CartesianChart.AxisX>
+            <charts:CartesianChart.AxisY>
+                <charts:Axis MinValue="0" />
+            </charts:CartesianChart.AxisY>
+        </charts:CartesianChart>
+    </Grid>
+</UserControl>

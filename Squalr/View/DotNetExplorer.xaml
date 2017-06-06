@@ -1,0 +1,99 @@
+﻿<UserControl
+    x:Class="Squalr.View.DotNetExplorer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dotNet="clr-namespace:Squalr.Source.Engine.AddressResolver.DotNet"
+    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:local="clr-namespace:Squalr"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
+    x:Name="SqualrDotNetExplorer"
+    d:DesignHeight="256"
+    d:DesignWidth="256"
+    x:ClassModifier="internal"
+    DataContext="{Binding DotNetExplorerViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <intr:Interaction.Triggers>
+        <intr:EventTrigger EventName="Loaded">
+            <intr:InvokeCommandAction Command="{Binding RefreshObjectsCommand}" />
+        </intr:EventTrigger>
+    </intr:Interaction.Triggers>
+
+    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Border
+            Grid.Row="0"
+            Padding="8,4,8,4"
+            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            <WrapPanel>
+                <Menu Background="Transparent">
+                    <MenuItem Command="{Binding RefreshObjectsCommand}">
+                        <MenuItem.Header>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="pack://application:,,,/Squalr;component/Content/Icons/Undo.png"
+                                ToolTip="Refresh Object Trees" />
+                        </MenuItem.Header>
+                    </MenuItem>
+                </Menu>
+            </WrapPanel>
+        </Border>
+        <TreeView
+            Name="dotNetExplorerTreeView"
+            Grid.Row="1"
+            AllowDrop="True"
+            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+            BorderThickness="0"
+            ItemsSource="{Binding DotNetObjects, Mode=OneWay}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Style.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="Transparent" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent" />
+                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent" />
+                    </Style.Resources>
+                    <Setter Property="BorderBrush" Value="Transparent" />
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="BorderThickness" Value="2" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderThickness" Value="2" />
+                            <Setter Property="BorderBrush" Value="{StaticResource AvalonDock_Expression_BaseColor15}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
+
+            <TreeView.Resources>
+                <HierarchicalDataTemplate DataType="{x:Type dotNet:DotNetObjectViewModel}" ItemsSource="{Binding Children}">
+                    <Grid>
+                        <Grid.InputBindings>
+                            <MouseBinding
+                                Command="{Binding DataContext.AddDotNetObjectCommand, ElementName=SqualrDotNetExplorer}"
+                                CommandParameter="{Binding .}"
+                                Gesture="LeftDoubleClick" />
+                        </Grid.InputBindings>
+
+                        <WrapPanel Orientation="Horizontal">
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Margin="3,0"
+                                Source="{Binding Icon}" />
+                            <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding DotNetObject.Name}" />
+                        </WrapPanel>
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.Resources>
+        </TreeView>
+    </Grid>
+</UserControl>

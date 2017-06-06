@@ -20,12 +20,12 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-using System;
-using System.Linq;
 using LiveCharts.Defaults;
 using LiveCharts.Definitions.Points;
 using LiveCharts.Definitions.Series;
 using LiveCharts.Dtos;
+using System;
+using System.Linq;
 
 namespace LiveCharts.SeriesAlgorithms
 {
@@ -39,14 +39,14 @@ namespace LiveCharts.SeriesAlgorithms
 
         public override void Update()
         {
-            var columnSeries = (IColumnSeriesView) View;
+            var columnSeries = (IColumnSeriesView)View;
 
             var padding = columnSeries.ColumnPadding;
 
             var totalSpace = ChartFunctions.GetUnitWidth(AxisOrientation.X, Chart, View.ScalesXAt) - padding;
             var typeSeries = Chart.View.ActualSeries.OfType<IColumnSeriesView>().ToList();
 
-            var singleColWidth = totalSpace/typeSeries.Count;
+            var singleColWidth = totalSpace / typeSeries.Count;
 
             double exceed = 0;
 
@@ -54,11 +54,11 @@ namespace LiveCharts.SeriesAlgorithms
 
             if (singleColWidth > columnSeries.MaxColumnWidth)
             {
-                exceed = (singleColWidth - columnSeries.MaxColumnWidth)*typeSeries.Count/2;
+                exceed = (singleColWidth - columnSeries.MaxColumnWidth) * 0; // ZAC: Disabled: * typeSeries.Count / 2;
                 singleColWidth = columnSeries.MaxColumnWidth;
             }
 
-            var relativeLeft = padding + exceed + singleColWidth*(seriesPosition);
+            var relativeLeft = 0; // ZAC: Disabled: padding + exceed + singleColWidth * (seriesPosition);
 
             var startAt = CurrentYAxis.BotLimit >= 0 && CurrentYAxis.TopLimit > 0   //both positive
                 ? CurrentYAxis.BotLimit                                             //then use axisYMin
@@ -80,7 +80,7 @@ namespace LiveCharts.SeriesAlgorithms
 
                 chartPoint.SeriesView = View;
 
-                var rectangleView = (IRectanglePointView) chartPoint.View;
+                var rectangleView = (IRectanglePointView)chartPoint.View;
 
                 var h = Math.Abs(reference.Y - zero);
                 var t = reference.Y < zero
@@ -91,11 +91,13 @@ namespace LiveCharts.SeriesAlgorithms
                 rectangleView.Data.Top = t;
 
                 rectangleView.Data.Left = reference.X + relativeLeft;
-                rectangleView.Data.Width = singleColWidth - padding;
+
+                // ZAC: Disabled: rectangleView.Data.Width = singleColWidth - padding;
+                rectangleView.Data.Width = singleColWidth * typeSeries.Count() - padding;
 
                 rectangleView.ZeroReference = zero;
 
-                chartPoint.ChartLocation = new CorePoint(rectangleView.Data.Left + singleColWidth/2 - padding/2,
+                chartPoint.ChartLocation = new CorePoint(rectangleView.Data.Left + singleColWidth / 2 - padding / 2,
                     t);
 
                 chartPoint.View.DrawOrMove(null, chartPoint, 0, Chart);
