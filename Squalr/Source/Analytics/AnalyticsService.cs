@@ -13,7 +13,7 @@
         /// <summary>
         /// The url for the Google Analytics associated site.
         /// </summary>
-        private const String AnalyticsUrl = "https://www.anathena.com";
+        private const String AnalyticsUrl = "https://www.squalr.com";
 
         /// <summary>
         /// The Google Analytics code associated with the site.

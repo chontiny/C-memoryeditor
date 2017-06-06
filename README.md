@@ -2,7 +2,7 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-Official web site: [anathena.com](https://www.squalr.com)
+Official web site: [squalr.com](https://www.squalr.com)
 
 **Squalr** is Memory Editing software that allows users to create and share cheats in their windows desktop games. This includes memory scanning, pointers, x86/x64 assembly injection, and so on.
 
@@ -32,6 +32,7 @@ Library | Description
 [TwitchLib](https://github.com/swiftyspiffy/TwitchLib) | Twitch API Wrapper
 [WebSocketSharp](https://github.com/sta/websocket-sharp) | WebSocket Protocol Implementation
 [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) | JSON Framework
+[Ninject](https://github.com/ninject/Ninject) | Dependency Injection Framework
 
 Buff icons made by:
 - Carl Olsen, https://twitter.com/unstoppableCarl

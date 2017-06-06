@@ -5,8 +5,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Squalr" #>
-- Added search capabilities to stream icon editor
-- Improvements and fixes to Twitch Integration
-- Correctly setting default project save file location
-- Anonymous user analytics updates
-- Fixes to project folder groupings
+- Improved search keywords for stream icons
+- Reinstating dev tools

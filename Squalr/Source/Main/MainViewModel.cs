@@ -8,6 +8,7 @@
     using Mvvm.Command;
     using Output;
     using ProjectExplorer;
+    using Squalr.Source.Scanners.BackgroundScans.Prefilters;
     using Squalr.Source.StreamWeaver.Table;
     using System;
     using System.Collections.Generic;
@@ -161,7 +162,7 @@
         /// </summary>
         private void StartBackgroundServices()
         {
-            // SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
+            SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
             DotNetObjectCollector.GetInstance().Begin();
             AddressResolver.GetInstance().Begin();
             AnalyticsService.GetInstance().Start();

@@ -32,11 +32,11 @@
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr</ProductName>
     <PublisherName>Squalr</PublisherName>
-    <MinimumRequiredVersion>1.0.1.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>1.0.2.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.1.0</ApplicationVersion>
+    <ApplicationVersion>1.0.2.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -1334,7 +1334,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Death Zone.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Deathcab.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Deathcap.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Decapitation.svg">
@@ -1442,7 +1442,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Ember Shot.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Embrassed Energy.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Embraced Energy.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Embryo.svg">
@@ -1730,9 +1730,6 @@
     <Content Include="Content\Overlay\Images\Buffs\Grenade.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Grouped Drops.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Overlay\Images\Buffs\Halberd.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1794,9 +1791,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Helmet Head Shot.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\High Five.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\High Shot.svg">
@@ -2468,7 +2462,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Static.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Steel Claws2.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Steel Claws.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Steel Door.svg">
@@ -2498,7 +2492,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Stoned Skull.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Stopwatch2.svg">
+    <Content Include="Content\Overlay\Images\Buffs\Stopwatch.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Strawberry.svg">
@@ -2603,9 +2597,6 @@
     <Content Include="Content\Overlay\Images\Buffs\Time Bomb.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Time Trap.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Overlay\Images\Buffs\Tinker.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -2616,9 +2607,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Tortoise.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Transportation Rings.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Trash Can.svg">
@@ -2646,9 +2634,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Triple Skulls.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Tripwire.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Troll.svg">
@@ -2748,9 +2733,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Wolf Head.svg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Wolf Trap.svg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Wolverine Claws.svg">
@@ -3478,7 +3460,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Death Zone.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Deathcab.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Deathcap.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Decapitation.meta">
@@ -3586,7 +3568,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Ember Shot.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Embrassed Energy.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Embraced Energy.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Embryo.meta">
@@ -3874,9 +3856,6 @@
     <Content Include="Content\Overlay\Images\Buffs\Grenade.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Grouped Drops.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Overlay\Images\Buffs\Halberd.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -3938,9 +3917,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Helmet Head Shot.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\High Five.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\High Shot.meta">
@@ -4612,7 +4588,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Static.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Steel Claws2.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Steel Claws.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Steel Door.meta">
@@ -4642,7 +4618,7 @@
     <Content Include="Content\Overlay\Images\Buffs\Stoned Skull.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Stopwatch2.meta">
+    <Content Include="Content\Overlay\Images\Buffs\Stopwatch.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Strawberry.meta">
@@ -4747,9 +4723,6 @@
     <Content Include="Content\Overlay\Images\Buffs\Time Bomb.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Time Trap.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Overlay\Images\Buffs\Tinker.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -4760,9 +4733,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Tortoise.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Transportation Rings.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Trash Can.meta">
@@ -4790,9 +4760,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Triple Skulls.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Tripwire.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Troll.meta">
@@ -4892,9 +4859,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Wolf Head.meta">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\Overlay\Images\Buffs\Wolf Trap.meta">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\Overlay\Images\Buffs\Wolverine Claws.meta">
