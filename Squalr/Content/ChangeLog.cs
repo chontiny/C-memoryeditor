@@ -29,9 +29,7 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Added search capabilities to stream icon editor\r\n- Improvements and fixes to Tw" +
-                    "itch Integration\r\n- Correctly setting default project save file location\r\n- Anon" +
-                    "ymous user analytics updates\r\n- Fixes to project folder groupings");
+            this.Write("- Improved search keywords for stream icons\r\n- Reinstating dev tools");
             return this.GenerationEnvironment.ToString();
         }
     }
