@@ -4,11 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
-    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:Squalr.Source.Docking"
     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
     xmlns:view="clr-namespace:Squalr.View"
     x:Name="SqualrWindow"
     Title="Squalr"
@@ -17,7 +14,7 @@
     x:ClassModifier="internal"
     AllowsTransparency="False"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
-    WindowStyle="None">
+    WindowStyle="None" ContentRendered="SqualrWindowContentRendered" Loaded="SqualrWindowLoaded" Unloaded="SqualrWindowUnloaded">
     <shell:Window.Resources>
         <converters:IconConverter x:Key="IconConverter" />
         <avalonDock:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
@@ -25,17 +22,6 @@
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
     </shell:WindowChrome.WindowChrome>
-    <intr:Interaction.Triggers>
-        <intr:EventTrigger EventName="Loaded">
-            <intr:InvokeCommandAction Command="{Binding LoadLayoutCommand}" CommandParameter="{Binding ., ElementName=dockManager}" />
-        </intr:EventTrigger>
-        <intr:EventTrigger EventName="ContentRendered">
-            <intr:InvokeCommandAction Command="{Binding DisplayChangeLogCommand}" />
-        </intr:EventTrigger>
-        <intr:EventTrigger EventName="Unloaded">
-            <intr:InvokeCommandAction Command="{Binding SaveLayoutCommand}" CommandParameter="{Binding ., ElementName=dockManager}" />
-        </intr:EventTrigger>
-    </intr:Interaction.Triggers>
     <shell:Grid>
         <shell:Grid.RowDefinitions>
             <!--  Title Bar Row  -->

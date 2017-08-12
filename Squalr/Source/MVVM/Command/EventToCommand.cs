@@ -3,7 +3,6 @@
     using System;
     using System.Windows;
     using System.Windows.Input;
-    using System.Windows.Interactivity;
 
     /// <summary>
     /// This <see cref="T:System.Windows.Interactivity.TriggerAction`1" /> can be used to bind any event on any FrameworkElement to an <see cref="ICommand" />.
@@ -13,7 +12,7 @@
     /// To access the EventArgs of the fired event, use a RelayCommand&lt;EventArgs&gt; and leave the CommandParameter and CommandParameterValue empty!
     /// </para>
     /// </summary>
-    internal class EventToCommand : TriggerAction<DependencyObject>
+    internal class EventToCommand : Trigger
     {
         /// <summary>
         /// The <see cref="EventArgsConverterParameter" /> dependency property's name.
@@ -101,6 +100,12 @@
             typeof(object),
             typeof(EventToCommand),
             new PropertyMetadata(null));
+
+        private Object AssociatedObject;
+
+        public EventToCommand() : base()
+        {
+        }
 
         /// <summary>
         /// Refer to <see cref="CommandParameterValue" /> property.
@@ -254,9 +259,8 @@
         /// <summary>
         /// Called when this trigger is attached to a FrameworkElement.
         /// </summary>
-        protected override void OnAttached()
+        protected void OnAttached()
         {
-            base.OnAttached();
             this.EnableDisableElement();
         }
 
@@ -265,7 +269,7 @@
         /// <para>To access the EventArgs of the fired event, use a RelayCommand&lt;EventArgs&gt; and leave the CommandParameter and CommandParameterValue empty!</para>
         /// </summary>
         /// <param name="parameter">The EventArgs of the fired event.</param>
-        protected override void Invoke(Object parameter)
+        protected void Invoke(Object parameter)
         {
             if (this.AssociatedElementIsDisabled() && !this.AlwaysInvokeCommand)
             {

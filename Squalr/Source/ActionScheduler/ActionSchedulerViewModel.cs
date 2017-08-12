@@ -2,13 +2,13 @@
 {
     using Docking;
     using Output;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Utils.DataStructures;
 
     /// <summary>
     /// Class to schedule tasks that are executed.

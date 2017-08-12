@@ -12,7 +12,6 @@
     using Squalr.Source.StreamWeaver.Table;
     using System;
     using System.Collections.Generic;
-    using System.Deployment.Application;
     using System.IO;
     using System.Reflection;
     using System.Threading;
@@ -224,6 +223,7 @@
         /// </summary>
         private void DisplayChangeLog()
         {
+            /*
             try
             {
                 if (!ApplicationDeployment.IsNetworkDeployed || !ApplicationDeployment.CurrentDeployment.IsFirstRun)
@@ -234,7 +234,7 @@
             catch
             {
                 return;
-            }
+            }*/
 
             View.ChangeLog changeLog = new View.ChangeLog();
             changeLog.Owner = Application.Current.MainWindow;
