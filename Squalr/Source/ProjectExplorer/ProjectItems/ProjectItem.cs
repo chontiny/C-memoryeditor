@@ -5,7 +5,6 @@
     using Editors.TextEditor;
     using Engine.Input.HotKeys;
     using SharpDX.DirectInput;
-    using Squalr.Source.Editors.StreamIconEditor;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -288,58 +287,6 @@
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.HotKey));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the stream icon path for this project item.
-        /// </summary>
-        [DataMember]
-        [Editor(typeof(StreamIconEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Icon"), Description("The stream icon for this item")]
-        public String StreamIconPath
-        {
-            get
-            {
-                return this.streamIconPath;
-            }
-
-            set
-            {
-                if (this.streamIconPath == value)
-                {
-                    return;
-                }
-
-                this.streamIconPath = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.StreamIconPath));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the stream command for this project item.
-        /// </summary>
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Command"), Description("The stream command for this item. Limit of 6 characters.")]
-        public String StreamCommand
-        {
-            get
-            {
-                return this.streamCommand;
-            }
-
-            set
-            {
-                if (this.streamCommand == value)
-                {
-                    return;
-                }
-
-                this.streamCommand = value?.Substring(0, Math.Min(value.Length, ProjectItem.StreamCommandCharacterLimit)).ToLower();
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.StreamCommand));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }

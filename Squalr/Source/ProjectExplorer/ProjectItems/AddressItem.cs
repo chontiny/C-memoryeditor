@@ -359,7 +359,6 @@
             clone.description = this.Description;
             clone.parent = this.Parent;
             clone.extendedDescription = this.ExtendedDescription;
-            clone.streamIconPath = this.StreamIconPath;
             clone.resolveType = this.resolveType;
             clone.baseIdentifier = this.baseIdentifier;
             clone.baseAddress = this.baseAddress;

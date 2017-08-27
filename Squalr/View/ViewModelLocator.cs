@@ -24,8 +24,6 @@
     using Source.Snapshots;
     using Source.StreamWeaver;
     using Source.UserSettings;
-    using Squalr.Source.Editors.StreamIconEditor;
-    using Squalr.Source.StreamWeaver.Table;
 
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -184,17 +182,6 @@
         }
 
         /// <summary>
-        /// Gets the Stream Table view model.
-        /// </summary>
-        public StreamTableViewModel StreamTableViewModel
-        {
-            get
-            {
-                return StreamTableViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
         /// Gets the .Net Explorer view model.
         /// </summary>
         public DotNetExplorerViewModel DotNetExplorerViewModel
@@ -279,17 +266,6 @@
             get
             {
                 return TextEditorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Stream Icon Editor view model.
-        /// </summary>
-        public StreamIconEditorViewModel StreamIconEditorViewModel
-        {
-            get
-            {
-                return StreamIconEditorViewModel.GetInstance();
             }
         }
 

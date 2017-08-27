@@ -17,7 +17,6 @@
         public ProjectNode() : base(String.Empty)
         {
             this.EntryDescription = String.Empty;
-            this.EntryStreamCommand = String.Empty;
             this.EntryHotkey = String.Empty;
             this.EntryValuePreview = String.Empty;
             this.EntryIcon = null;
@@ -27,11 +26,6 @@
         /// Gets or sets the description of the project node.
         /// </summary>
         public String EntryDescription { get; set; }
-
-        /// <summary>
-        /// Gets or sets the stream command preview of the project node.
-        /// </summary>
-        public String EntryStreamCommand { get; set; }
 
         /// <summary>
         /// Gets or sets the hotkey preview of the project node.

@@ -267,14 +267,6 @@
         }
 
         /// <summary>
-        /// Disables all active project items with stream commands.
-        /// </summary>
-        public void DisableAllStreamProjectItems()
-        {
-            this.ProjectRoot.Flatten().Select(item => item).Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand)).ForEach(item => item.IsActivated = false);
-        }
-
-        /// <summary>
         /// Prompts the user to save the project if there are unsaved changes.
         /// </summary>
         /// <returns>Returns false if canceled, otherwise true.</returns>
@@ -691,7 +683,7 @@
                 using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Create, FileAccess.Write))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
-                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Select(x => new ProjectItemHotkey(x.HotKey, x.StreamCommand, x.Guid)).ToArray();
+                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Select(x => new ProjectItemHotkey(x.HotKey, x.Guid)).ToArray();
                     serializer.WriteObject(fileStream, hotkeys);
                 }
             }

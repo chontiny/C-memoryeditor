@@ -19,8 +19,6 @@
     using Source.Snapshots;
     using Source.StreamWeaver;
     using Source.UserSettings;
-    using Squalr.Source.Editors.StreamIconEditor;
-    using Squalr.Source.StreamWeaver.Table;
     using System;
     using System.Windows;
     using System.Windows.Controls;
@@ -208,14 +206,6 @@
             else if (item is StreamWeaverViewModel)
             {
                 return this.StreamWeaverViewTemplate;
-            }
-            else if (item is StreamTableViewModel)
-            {
-                return this.StreamTableViewTemplate;
-            }
-            else if (item is StreamIconEditorViewModel)
-            {
-                return this.StreamIconEditorViewTemplate;
             }
             else if (item is DotNetExplorerViewModel)
             {

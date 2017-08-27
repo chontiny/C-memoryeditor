@@ -366,7 +366,6 @@
             projectNode.IsChecked = projectItem.IsActivated;
             String hotkeyString = projectItem.HotKey?.ToString();
             projectNode.EntryDescription = projectItem.Description;
-            projectNode.EntryStreamCommand = String.IsNullOrEmpty(projectItem.StreamCommand) ? String.Empty : "[" + projectItem.StreamCommand + "]";
             projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
             projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
             projectNode.IsChecked = projectItem.IsActivated;
@@ -797,14 +796,6 @@
             entryDescription.DrawText += this.EntryDescriptionDrawText;
             entryDescription.IsVisibleValueNeeded += EntryDescriptionIsVisibleValueNeeded;
 
-            NodeTextBox entryStreamCommand = new NodeTextBox();
-            entryStreamCommand.DataPropertyName = "EntryStreamCommand";
-            entryStreamCommand.IncrementalSearchEnabled = true;
-            entryStreamCommand.LeftMargin = 0;
-            entryStreamCommand.ParentColumn = null;
-            entryStreamCommand.DrawText += this.EntryStreamCommandDrawText;
-            entryStreamCommand.IsVisibleValueNeeded += this.EntryStreamCommandIsVisibleValueNeeded;
-
             NodeTextBox entryHotkey = new NodeTextBox();
             entryHotkey.DataPropertyName = "EntryHotkey";
             entryHotkey.IncrementalSearchEnabled = true;
@@ -869,7 +860,6 @@
             this.projectExplorerTreeView.NodeControls.Add(entryCheckBox);
             this.projectExplorerTreeView.NodeControls.Add(entryIcon);
             this.projectExplorerTreeView.NodeControls.Add(entryDescription);
-            this.projectExplorerTreeView.NodeControls.Add(entryStreamCommand);
             this.projectExplorerTreeView.NodeControls.Add(entryHotkey);
             this.projectExplorerTreeView.NodeControls.Add(entryValuePreview);
             this.projectExplorerTreeView.SelectionMode = TreeSelectionMode.Multi;
@@ -942,25 +932,6 @@
             }
 
             if (String.IsNullOrWhiteSpace(projectItem.HotKey?.ToString()))
-            {
-                e.Value = false;
-            }
-            else
-            {
-                e.Value = true;
-            }
-        }
-
-        private void EntryStreamCommandIsVisibleValueNeeded(Object sender, NodeControlValueEventArgs e)
-        {
-            ProjectItem projectItem = GetProjectItemFromNode(e.Node);
-
-            if (projectItem == null)
-            {
-                return;
-            }
-
-            if (String.IsNullOrWhiteSpace(projectItem.StreamCommand))
             {
                 e.Value = false;
             }

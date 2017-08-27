@@ -9,7 +9,6 @@
     using Output;
     using ProjectExplorer;
     using Squalr.Source.Scanners.BackgroundScans.Prefilters;
-    using Squalr.Source.StreamWeaver.Table;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -165,7 +164,6 @@
             DotNetObjectCollector.GetInstance().Begin();
             AddressResolver.GetInstance().Begin();
             AnalyticsService.GetInstance().Start();
-            StreamTableViewModel.GetInstance().RebuildStreamIconList();
 
             AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background Services Started");

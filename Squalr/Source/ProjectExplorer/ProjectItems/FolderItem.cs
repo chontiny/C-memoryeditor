@@ -171,7 +171,6 @@
             clone.category = this.Category;
             clone.description = this.Description;
             clone.extendedDescription = this.ExtendedDescription;
-            clone.streamIconPath = this.StreamIconPath;
             clone.folderType = this.FolderType;
             clone.exportStop = this.exportStop;
             clone.parent = this.Parent;
