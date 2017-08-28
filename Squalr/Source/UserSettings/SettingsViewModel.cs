@@ -295,74 +295,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the number of glitches to allow to be activated at once via stream commands.
-        /// </summary>
-        public Int32 NumberOfGlitches
-        {
-            get
-            {
-                return Settings.Default.NumberOfGlitches;
-            }
-
-            set
-            {
-                Settings.Default.NumberOfGlitches = value;
-                this.RaisePropertyChanged(nameof(this.NumberOfGlitches));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the number of curses to allow to be activated at once via stream commands.
-        /// </summary>
-        public Int32 NumberOfCurses
-        {
-            get
-            {
-                return Settings.Default.NumberOfCurses;
-            }
-
-            set
-            {
-                Settings.Default.NumberOfCurses = value;
-                this.RaisePropertyChanged(nameof(this.NumberOfCurses));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the number of buffs to allow to be activated at once via stream commands.
-        /// </summary>
-        public Int32 NumberOfBuffs
-        {
-            get
-            {
-                return Settings.Default.NumberOfBuffs;
-            }
-
-            set
-            {
-                Settings.Default.NumberOfBuffs = value;
-                this.RaisePropertyChanged(nameof(this.NumberOfBuffs));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the number of utilities to allow to be activated at once via stream commands.
-        /// </summary>
-        public Int32 NumberOfMiscellaneous
-        {
-            get
-            {
-                return Settings.Default.NumberOfMiscellaneous;
-            }
-
-            set
-            {
-                Settings.Default.NumberOfMiscellaneous = value;
-                this.RaisePropertyChanged(nameof(this.NumberOfMiscellaneous));
-            }
-        }
-
-        /// <summary>
         /// Gets or sets a the interval of reupdating frozen values.
         /// </summary>
         public Int32 FreezeInterval
@@ -499,23 +431,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the Twitch API Username.
-        /// </summary>
-        public String TwitchUsername
-        {
-            get
-            {
-                return Settings.Default.TwitchUsername;
-            }
-
-            set
-            {
-                Settings.Default.TwitchUsername = value;
-                this.RaisePropertyChanged(nameof(this.TwitchUsername));
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the Twitch API channel.
         /// </summary>
         public String TwitchChannel
@@ -529,49 +444,6 @@
             {
                 Settings.Default.TwitchChannel = value;
                 this.RaisePropertyChanged(nameof(this.TwitchChannel));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Twitch API Access Token.
-        /// </summary>
-        public String TwitchAccessToken
-        {
-            get
-            {
-                return Settings.Default.TwitchAccessToken;
-            }
-
-            set
-            {
-                Settings.Default.TwitchAccessToken = value.Replace("oauth:", String.Empty);
-                this.RaisePropertyChanged(nameof(this.TwitchAccessToken));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the port for the overlay service.
-        /// </summary>
-        public Int32 OverlayPort
-        {
-            get
-            {
-                return Settings.Default.OverlayPort;
-            }
-
-            set
-            {
-                Settings.Default.OverlayPort = value;
-                this.RaisePropertyChanged(nameof(this.OverlayPort));
-                this.RaisePropertyChanged(nameof(this.OverlayUrl));
-            }
-        }
-
-        public String OverlayUrl
-        {
-            get
-            {
-                return "http://localhost:" + this.OverlayPort.ToString() + "/";
             }
         }
 

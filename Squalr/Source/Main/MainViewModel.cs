@@ -11,6 +11,7 @@
     using Squalr.Source.Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
+    using System.Deployment.Application;
     using System.IO;
     using System.Reflection;
     using System.Threading;
@@ -221,7 +222,6 @@
         /// </summary>
         private void DisplayChangeLog()
         {
-            /*
             try
             {
                 if (!ApplicationDeployment.IsNetworkDeployed || !ApplicationDeployment.CurrentDeployment.IsFirstRun)
@@ -229,10 +229,11 @@
                     return;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Error displaying change log", ex);
                 return;
-            }*/
+            }
 
             View.ChangeLog changeLog = new View.ChangeLog();
             changeLog.Owner = Application.Current.MainWindow;

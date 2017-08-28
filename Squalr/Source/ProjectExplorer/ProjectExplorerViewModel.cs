@@ -90,7 +90,7 @@
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
             this.ImportProjectCommand = new RelayCommand(() => this.ImportProject(), () => true);
             this.ExportProjectCommand = new RelayCommand(() => this.ExportProject(), () => true);
-            this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(filename), (filename) => true);
+            this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(false, filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
             this.AddNewFolderItemCommand = new RelayCommand(() => this.AddNewFolderItem(), () => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewAddressItem(), () => true);
@@ -554,7 +554,7 @@
         /// Imports a project from disk, adding the project items to the current project.
         /// </summary>
         /// <param name="filename">The file path of the project to import.</param>
-        private void ImportProject(String filename = null)
+        private void ImportProject(Boolean resetGuids = true, String filename = null)
         {
             // Ask for a specific file if one was not explicitly provided
             if (filename == null || filename == String.Empty)
@@ -630,7 +630,7 @@
             }
 
             // Randomize the guid for imported project items, preventing possible conflicts
-            if (importedProjectRoot != null)
+            if (resetGuids && importedProjectRoot != null)
             {
                 foreach (ProjectItem child in importedProjectRoot.Flatten())
                 {
