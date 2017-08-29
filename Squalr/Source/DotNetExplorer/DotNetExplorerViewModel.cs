@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Source.DotNetExplorer
 {
     using Docking;
-    using Engine.AddressResolver;
     using Engine.AddressResolver.DotNet;
     using Main;
     using Mvvm.Command;
@@ -107,14 +106,13 @@
         private void AddDotNetObject(DotNetObjectViewModel dotNetObjectViewModel)
         {
             DotNetObject dotNetObject = dotNetObjectViewModel.DotNetObject;
-            AddressItem addressItem = new AddressItem();
+            DotNetItem dotnetItem = new DotNetItem(
+                dotNetObject.Name,
+                dotNetObject.ElementType == typeof(Boolean) ? typeof(Byte) : dotNetObject.ElementType,
+                dotNetObject.GetFullName()
+                );
 
-            addressItem.Description = dotNetObject.Name;
-            addressItem.ElementType = dotNetObject.ElementType == typeof(Boolean) ? typeof(Byte) : dotNetObject.ElementType;
-            addressItem.BaseIdentifier = dotNetObject.GetFullName();
-            addressItem.ResolveType = AddressResolver.ResolveTypeEnum.DotNet;
-
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, addressItem);
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, dotnetItem);
         }
     }
     //// End class

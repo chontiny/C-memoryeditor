@@ -69,7 +69,7 @@
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(EnumDescriptionConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Folder Type"), Description("Defines the behavior for activating this folder and the items contained by this folder.")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Folder Type"), Description("Defines the behavior for activating this folder and the items contained by this folder")]
         public FolderTypeEnum FolderType
         {
             get
@@ -168,7 +168,6 @@
         public override ProjectItem Clone()
         {
             FolderItem clone = new FolderItem();
-            clone.category = this.Category;
             clone.description = this.Description;
             clone.extendedDescription = this.ExtendedDescription;
             clone.folderType = this.FolderType;

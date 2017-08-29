@@ -116,7 +116,6 @@
         public override ProjectItem Clone()
         {
             ScriptItem clone = new ScriptItem();
-            clone.category = this.Category;
             clone.description = this.Description;
             clone.extendedDescription = this.ExtendedDescription;
             clone.parent = this.Parent;

@@ -3,7 +3,6 @@
     using Controls;
     using Docking;
     using Engine;
-    using Engine.AddressResolver;
     using Engine.OperatingSystems;
     using Main;
     using Microsoft.Win32;
@@ -93,7 +92,7 @@
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(false, filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
             this.AddNewFolderItemCommand = new RelayCommand(() => this.AddNewFolderItem(), () => true);
-            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewAddressItem(), () => true);
+            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
             this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
@@ -317,11 +316,10 @@
                 {
                     this.AddNewProjectItems(
                         addToSelected: true,
-                        projectItems: new AddressItem(
+                        projectItems: new PointerItem(
                             baseAddress: baseAddress.Subtract(module.BaseAddress),
                             elementType: elementType,
-                            resolveType: AddressResolver.ResolveTypeEnum.Module,
-                            baseIdentifier: module.Name));
+                            moduleName: module.Name));
 
                     return;
                 }
@@ -329,7 +327,7 @@
 
             this.AddNewProjectItems(
                 addToSelected: true,
-                projectItems: new AddressItem(
+                projectItems: new PointerItem(
                     baseAddress: baseAddress,
                     elementType: elementType));
         }
@@ -427,9 +425,9 @@
         /// <summary>
         /// Adds a new address to the project items.
         /// </summary>
-        private void AddNewAddressItem()
+        private void AddNewPointerItem()
         {
-            this.AddNewProjectItems(true, new AddressItem());
+            this.AddNewProjectItems(true, new PointerItem());
         }
 
         /// <summary>
@@ -781,8 +779,7 @@
                     binding => binding.ProjectItemGuid,
                     item => item.Guid,
                     (binding, item) => new { binding = binding, item = item })
-                .ForEach(x => x.item.LoadHotkey(x.binding.Hotkey))
-                .ForEach(x => x.item.LoadStreamCommand(x.binding.StreamCommand));
+                .ForEach(x => x.item.LoadHotkey(x.binding.Hotkey));
         }
 
         /// <summary>

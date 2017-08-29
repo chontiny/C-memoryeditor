@@ -367,32 +367,10 @@
             String hotkeyString = projectItem.HotKey?.ToString();
             projectNode.EntryDescription = projectItem.Description;
             projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
-            projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
+            projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).AddressValue?.ToString() : String.Empty;
             projectNode.IsChecked = projectItem.IsActivated;
 
-            Bitmap image = null;
-
-            if (projectItem is AddressItem || projectItem is ScriptItem)
-            {
-                switch (projectItem.Category)
-                {
-                    case ProjectItem.ProjectItemCategory.Glitch:
-                        image = ImageUtils.BitmapImageToBitmap(Images.Glitch);
-                        break;
-                    case ProjectItem.ProjectItemCategory.Curse:
-                        image = ImageUtils.BitmapImageToBitmap(Images.Curse);
-                        break;
-                    case ProjectItem.ProjectItemCategory.Buff:
-                        image = ImageUtils.BitmapImageToBitmap(Images.Heart);
-                        break;
-                    case ProjectItem.ProjectItemCategory.Miscellaneous:
-                        image = ImageUtils.BitmapImageToBitmap(Images.Cog);
-                        break;
-                    default:
-                        image = ImageUtils.BitmapImageToBitmap(Images.CollectValues);
-                        break;
-                }
-            }
+            Bitmap image = ImageUtils.BitmapImageToBitmap(Images.CollectValues);
 
             if (projectItem is FolderItem)
             {
@@ -403,7 +381,7 @@
 
             if (projectItem is AddressItem)
             {
-                projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+                projectNode.EntryValuePreview = (projectItem as AddressItem).AddressValue?.ToString() ?? String.Empty;
             }
 
             if (projectItem is FolderItem)
@@ -649,9 +627,9 @@
                 AddressItem addressItem = projectItem as AddressItem;
                 dynamic result = valueEditor.EditValue(null, null, addressItem);
 
-                if (CheckSyntax.CanParseValue(addressItem.ElementType, result?.ToString()))
+                if (CheckSyntax.CanParseValue(addressItem.DataType, result?.ToString()))
                 {
-                    addressItem.Value = result;
+                    addressItem.AddressValue = result;
                 }
             }
             else if (projectItem is ScriptItem)
@@ -897,7 +875,7 @@
 
             if (projectItem is AddressItem)
             {
-                if (String.IsNullOrWhiteSpace((projectItem as AddressItem).Value?.ToString()))
+                if (String.IsNullOrWhiteSpace((projectItem as AddressItem).AddressValue?.ToString()))
                 {
                     e.Value = false;
                     return;

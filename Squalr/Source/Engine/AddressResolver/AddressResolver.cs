@@ -41,36 +41,6 @@
         }
 
         /// <summary>
-        /// The managed language, module, keyword, or other identifier to be used when resolving the provided object.
-        /// </summary>
-        public enum ResolveTypeEnum
-        {
-            /// <summary>
-            /// A standard module in a native program.
-            /// </summary>
-            [Description("Module")]
-            Module,
-
-            /// <summary>
-            /// A global keyword created by a script.
-            /// </summary>
-            [Description("Global Keyword")]
-            GlobalKeyword,
-
-            /// <summary>
-            /// A .Net object.
-            /// </summary>
-            [Description(".NET Object")]
-            DotNet,
-
-            /// <summary>
-            /// A Java object.
-            /// </summary>
-            //// [Description("Java Object")]
-            //// Java
-        }
-
-        /// <summary>
         /// Gets or sets the mapping of object identifiers to their object.
         /// </summary>
         private Dictionary<String, DotNetObject> DotNetNameMap { get; set; }

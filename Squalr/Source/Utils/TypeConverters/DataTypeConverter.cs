@@ -7,9 +7,9 @@
     using Utils;
 
     /// <summary>
-    /// Value type converter for use in the property viewer.
+    /// Data type converter for use in the property viewer.
     /// </summary>
-    internal class ValueTypeConverter : StringConverter
+    internal class DataTypeConverter : StringConverter
     {
         /// <summary>
         /// Gets the standard collection of values to display in a drop down.
@@ -40,9 +40,9 @@
         /// <returns>The converted value.</returns>
         public override Object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)
         {
-            foreach (Type type in PrimitiveTypes.GetScannablePrimitiveTypes())
+            foreach (DataType type in PrimitiveTypes.GetScannablePrimitiveTypes())
             {
-                if (type == null || !(value is String))
+                if ((Object)type == null || !(value is String))
                 {
                     break;
                 }

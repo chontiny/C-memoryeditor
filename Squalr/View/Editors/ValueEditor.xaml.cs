@@ -19,10 +19,10 @@
         {
             this.InitializeComponent();
 
-            this.ValueHexDecBox = new HexDecTextBox(addressItem.ElementType);
+            this.ValueHexDecBox = new HexDecTextBox(addressItem.DataType);
             this.ValueHexDecBox.TextChanged += this.ValueHexDecBoxTextChanged;
             this.ValueHexDecBox.IsHex = addressItem.IsValueHex;
-            this.ValueHexDecBox.SetValue(addressItem.Value);
+            this.ValueHexDecBox.SetValue(addressItem.AddressValue);
             this.ValueEditorTextEditorContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
         }
 
