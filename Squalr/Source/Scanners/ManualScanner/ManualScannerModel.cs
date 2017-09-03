@@ -4,11 +4,11 @@
     using BackgroundScans.Prefilters;
     using ScanConstraints;
     using Snapshots;
+    using Squalr.Properties;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using UserSettings;
 
     /// <summary>
     /// A memory scanning class for classic manual memory scanning techniques.

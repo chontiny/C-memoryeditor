@@ -23,7 +23,7 @@
     using Source.Scanners.ValueCollector;
     using Source.Snapshots;
     using Source.StreamWeaver;
-    using Source.UserSettings;
+    using Squalr.Properties;
 
     /// <summary>
     /// This class contains static references to all the view models in the

@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class TwitchTokens
+    internal class TwitchAccessTokens
     {
         [DataMember]
         private String accessToken;
@@ -12,7 +12,7 @@
         [DataMember]
         private String refreshToken;
 
-        public TwitchTokens()
+        public TwitchAccessTokens()
         {
             this.accessToken = String.Empty;
             this.refreshToken = String.Empty;

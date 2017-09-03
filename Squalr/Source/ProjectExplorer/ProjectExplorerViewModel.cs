@@ -10,6 +10,7 @@
     using Output;
     using ProjectItems;
     using PropertyViewer;
+    using Squalr.Properties;
     using Squalr.Source.Analytics;
     using System;
     using System.Collections.Generic;
@@ -21,7 +22,6 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
-    using UserSettings;
     using Utils.Extensions;
 
     /// <summary>

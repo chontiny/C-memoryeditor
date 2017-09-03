@@ -8,6 +8,7 @@
     using Mvvm.Command;
     using Output;
     using ProjectExplorer;
+    using Squalr.Properties;
     using Squalr.Source.Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
@@ -18,7 +19,6 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
-    using UserSettings;
     using Xceed.Wpf.AvalonDock;
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 

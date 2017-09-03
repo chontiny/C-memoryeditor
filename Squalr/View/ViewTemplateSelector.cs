@@ -18,7 +18,7 @@
     using Source.Scanners.PointerScanner;
     using Source.Snapshots;
     using Source.StreamWeaver;
-    using Source.UserSettings;
+    using Squalr.Properties;
     using System;
     using System.Windows;
     using System.Windows.Controls;

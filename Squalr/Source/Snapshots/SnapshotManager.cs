@@ -4,10 +4,10 @@
     using Engine.OperatingSystems;
     using Results.ScanResults;
     using Scanners.BackgroundScans.Prefilters;
+    using Squalr.Properties;
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using UserSettings;
     using Utils.Extensions;
 
     /// <summary>

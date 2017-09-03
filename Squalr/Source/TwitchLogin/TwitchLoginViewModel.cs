@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.CheatBrowser
 {
+    using Squalr.Properties;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
     using Squalr.Source.Docking;
@@ -85,7 +86,9 @@
         /// <param name="code">The one time use exchange code to receive the access tokens.</param>
         private void GetTwitchAccessTokens(String code)
         {
-            TwitchTokens tokens = SqualrApi.GetTwitchTokens(code);
+            TwitchAccessTokens twitchAccessTokens = SqualrApi.GetTwitchTokens(code);
+
+            SettingsViewModel.GetInstance().TwitchAccessTokens = twitchAccessTokens;
         }
     }
     //// End class

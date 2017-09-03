@@ -187,7 +187,8 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
-    <Compile Include="Source\Api\Models\TwitchTokens.cs" />
+    <Compile Include="Source\Api\Models\TwitchUser.cs" />
+    <Compile Include="Source\Api\Models\TwitchAccessTokens.cs" />
     <Compile Include="Source\Api\SqualrApi.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\TwitchLogin\TwitchLoginViewModel.cs" />
@@ -429,7 +430,7 @@
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\SnapshotPrefilterFactory.cs" />
     <Compile Include="Source\Snapshots\SnapshotManager.cs" />
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
-    <Compile Include="Source\UserSettings\SettingsViewModel.cs" />
+    <Compile Include="Properties\SettingsViewModel.cs" />
     <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>

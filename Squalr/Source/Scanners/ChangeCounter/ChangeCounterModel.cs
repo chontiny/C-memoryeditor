@@ -4,10 +4,10 @@
     using BackgroundScans.Prefilters;
     using LabelThresholder;
     using Snapshots;
+    using Squalr.Properties;
     using System;
     using System.Linq;
     using System.Threading.Tasks;
-    using UserSettings;
 
     internal class ChangeCounterModel : ScannerBase
     {

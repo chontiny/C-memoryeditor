@@ -4,17 +4,16 @@
     using Docking;
     using Main;
     using Mvvm.Command;
+    using Squalr.Properties;
+    using Squalr.Source.Api;
+    using Squalr.Source.Api.Models;
     using Squalr.Source.Output;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectExplorer.ProjectItems;
-    using Squalr.Source.UserSettings;
     using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
-    using System.Net;
-    using System.Runtime.Serialization.Json;
     using System.Threading;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
@@ -28,11 +27,6 @@
         /// The content id for the docking library associated with this view model.
         /// </summary>
         public const String ToolContentId = nameof(StreamWeaverViewModel);
-
-        /// <summary>
-        /// The endpoint for querying active and unactive cheat ids.
-        /// </summary>
-        private const String ActiveCheatIdEndpoint = "https://www.squalr.com/api/Stream/ActiveCheatIds/";
 
         /// <summary>
         /// Singleton instance of the <see cref="StreamWeaverViewModel" /> class.
@@ -155,42 +149,33 @@
                 return;
             }
 
-            String endpoint = StreamWeaverViewModel.ActiveCheatIdEndpoint + SettingsViewModel.GetInstance().TwitchChannel;
 
             try
             {
-                using (WebClient webclient = new WebClient())
-                {
-                    using (MemoryStream memoryStream = new MemoryStream(webclient.DownloadData(endpoint)))
-                    {
-                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(StreamActivationIds));
-                        StreamActivationIds streamActivationIds = serializer.ReadObject(memoryStream) as StreamActivationIds;
+                StreamActivationIds streamActivationIds = SqualrApi.GetStreamActivationIds(SettingsViewModel.GetInstance().TwitchChannel);
+                IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten();
 
-                        IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten();
+                // Use the given ids to determine which project items to activate
+                var itemsToActivate = streamActivationIds.ActivatedIds
+                     .Join(
+                         candidateProjectItems,
+                         activatedId => activatedId,
+                         projectItem => projectItem.Guid,
+                         (guid, projectItem) => new { projectItem = projectItem, guid = guid });
 
-                        // Use the given ids to determine which project items to activate
-                        var itemsToActivate = streamActivationIds.ActivatedIds
-                             .Join(
-                                 candidateProjectItems,
-                                 activatedId => activatedId,
-                                 projectItem => projectItem.Guid,
-                                 (guid, projectItem) => new { projectItem = projectItem, guid = guid });
+                // Use the given ids to determine which project items to deactivate
+                var itemsToDeactivate = streamActivationIds.DeactivatedIds
+                     .Join(
+                         candidateProjectItems,
+                         activatedId => activatedId,
+                         projectItem => projectItem.Guid,
+                         (guid, projectItem) => new { projectItem = projectItem, guid = guid });
 
-                        // Use the given ids to determine which project items to deactivate
-                        var itemsToDeactivate = streamActivationIds.DeactivatedIds
-                             .Join(
-                                 candidateProjectItems,
-                                 activatedId => activatedId,
-                                 projectItem => projectItem.Guid,
-                                 (guid, projectItem) => new { projectItem = projectItem, guid = guid });
+                // Handle deactivations
+                itemsToDeactivate.ForEach(item => item.projectItem.IsActivated = false);
 
-                        // Handle deactivations
-                        itemsToDeactivate.ForEach(item => item.projectItem.IsActivated = false);
-
-                        // Handle activations
-                        itemsToActivate.ForEach(item => item.projectItem.IsActivated = true);
-                    }
-                }
+                // Handle activations
+                itemsToActivate.ForEach(item => item.projectItem.IsActivated = true);
             }
             catch (Exception ex)
             {

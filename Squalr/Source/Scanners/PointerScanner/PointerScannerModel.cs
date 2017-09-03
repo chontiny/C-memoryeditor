@@ -7,12 +7,12 @@
     using ProjectExplorer.ProjectItems;
     using ScanConstraints;
     using Snapshots;
+    using Squalr.Properties;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using UserSettings;
     using Utils;
     using Utils.Extensions;
 

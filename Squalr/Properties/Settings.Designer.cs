@@ -262,5 +262,17 @@ namespace Squalr.Properties {
                 this["TwitchChannel"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("{}")]
+        public string TwitchAccessTokens {
+            get {
+                return ((string)(this["TwitchAccessTokens"]));
+            }
+            set {
+                this["TwitchAccessTokens"] = value;
+            }
+        }
     }
 }

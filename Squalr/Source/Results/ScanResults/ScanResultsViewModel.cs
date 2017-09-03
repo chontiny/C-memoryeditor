@@ -7,6 +7,7 @@
     using Mvvm.Command;
     using ProjectExplorer;
     using Snapshots;
+    using Squalr.Properties;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -14,7 +15,6 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
-    using UserSettings;
     using Utils.Extensions;
 
     /// <summary>
