@@ -171,6 +171,17 @@
         }
 
         /// <summary>
+        /// Gets the Cheat Browser view model.
+        /// </summary>
+        public TwitchLoginViewModel TwitchLoginViewModel
+        {
+            get
+            {
+                return TwitchLoginViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
         /// Gets the Stream Weaver view model.
         /// </summary>
         public StreamWeaverViewModel StreamWeaverViewModel

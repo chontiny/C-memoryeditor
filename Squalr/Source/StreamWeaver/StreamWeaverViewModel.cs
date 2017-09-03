@@ -166,7 +166,6 @@
                         DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(StreamActivationIds));
                         StreamActivationIds streamActivationIds = serializer.ReadObject(memoryStream) as StreamActivationIds;
 
-
                         IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten();
 
                         // Use the given ids to determine which project items to activate

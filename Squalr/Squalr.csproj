@@ -134,6 +134,9 @@
     <Reference Include="EasyHook">
       <HintPath>..\SqualrHook\EasyHook.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Deployment" />
@@ -184,7 +187,10 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
+    <Compile Include="Source\Api\Models\TwitchTokens.cs" />
+    <Compile Include="Source\Api\SqualrApi.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\TwitchLogin\TwitchLoginViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Source\Controls\RichTextBoxHelper.cs" />
     <Compile Include="Source\Engine\Networks\Network.cs" />
@@ -449,8 +455,12 @@
     </Compile>
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
     <Compile Include="Source\Controls\TreeView\ProjectNode.cs" />
+    <Compile Include="Source\Utils\WebBrowserHelper.cs" />
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TwitchLogin.xaml.cs">
+      <DependentUpon>TwitchLogin.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -570,6 +580,10 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Page Include="View\ChangeLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TwitchLogin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -773,6 +787,7 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>
     </Content>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -925,10 +940,6 @@
     <ProjectReference Include="..\SharpPcap\SharpPcap.csproj">
       <Project>{24262E52-1304-4A25-8F73-A3B06E40592E}</Project>
       <Name>SharpPcap</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Svg\Svg.csproj">
-      <Project>{886a98c5-37c0-4e8b-885e-30c1d2f98b47}</Project>
-      <Name>Svg</Name>
     </ProjectReference>
     <ProjectReference Include="..\TreeViewAdv\TreeViewAdv.csproj">
       <Project>{e73bb233-d88b-44a7-a98f-d71ee158381d}</Project>

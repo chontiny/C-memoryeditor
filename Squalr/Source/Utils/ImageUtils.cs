@@ -3,13 +3,10 @@
     using DataStructures;
     using Squalr.Source.Analytics;
     using Squalr.Source.Output;
-    using Squalr.Source.Utils.Extensions;
-    using Svg;
     using System;
     using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
-    using System.Linq;
     using System.Windows;
     using System.Windows.Media;
     using System.Windows.Media.Imaging;
@@ -78,29 +75,6 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to export image", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
-        }
-
-        /// <summary>
-        /// Loads an svg image from the given path.
-        /// </summary>
-        /// <param name="uri">The path specifying from where to load the svg image.</param>
-        /// <returns>The bitmap image loaded from the given path.</returns>
-        public static Bitmap LoadSvg(String relativePath, Int32 width, Int32 height, System.Drawing.Color color)
-        {
-            SvgDocument svgDoc = SvgDocument.Open(relativePath);
-
-            svgDoc.Children.Select(child => child)
-                .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == System.Drawing.Color.White)
-                .ForEach(child => child.Fill = new SvgColourServer(color));
-
-            svgDoc.Children.Select(child => child)
-                .Where(child => child.Fill as SvgColourServer != null && (child.Fill as SvgColourServer).Colour == System.Drawing.Color.Black)
-                .ForEach(child => child.Fill = new SvgColourServer(System.Drawing.Color.Transparent));
-
-            svgDoc.Width = width;
-            svgDoc.Height = height;
-
-            return new Bitmap(svgDoc.Draw());
         }
 
         /// <summary>

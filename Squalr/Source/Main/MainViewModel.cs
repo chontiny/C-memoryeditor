@@ -72,6 +72,7 @@
             this.ResetLayoutDeveloperCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutDeveloper(dockingManager), (dockingManager) => true);
             this.LoadLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.LoadLayout(dockingManager), (dockingManager) => true);
             this.DisplayChangeLogCommand = new RelayCommand(() => this.DisplayChangeLog(), () => true);
+            this.DisplayTwitchLoginCommand = new RelayCommand(() => this.DisplayTwitchLogin(), () => true);
             this.SaveLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.SaveLayout(dockingManager), (dockingManager) => true);
 
             Task.Run(() => this.StartBackgroundServices());
@@ -106,6 +107,11 @@
         /// Gets the command to open the change log.
         /// </summary>
         public ICommand DisplayChangeLogCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to open the twitch login screen.
+        /// </summary>
+        public ICommand DisplayTwitchLoginCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to open the current docking layout.
@@ -218,7 +224,7 @@
         }
 
         /// <summary>
-        /// Displays the change log to the user if there has been a recent update
+        /// Displays the change log to the user if there has been a recent update.
         /// </summary>
         private void DisplayChangeLog()
         {
@@ -238,6 +244,16 @@
             View.ChangeLog changeLog = new View.ChangeLog();
             changeLog.Owner = Application.Current.MainWindow;
             changeLog.ShowDialog();
+        }
+
+        /// <summary>
+        /// Displays the twitch login screen.
+        /// </summary>
+        private void DisplayTwitchLogin()
+        {
+            View.TwitchLogin twitchLogin = new View.TwitchLogin();
+            twitchLogin.Owner = Application.Current.MainWindow;
+            twitchLogin.ShowDialog();
         }
 
         /// <summary>

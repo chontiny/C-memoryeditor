@@ -32,6 +32,9 @@
 
             [Description("Cheat Browser")]
             CheatBrowser,
+
+            [Description("Twitch Login")]
+            TwitchLogin,
         }
 
         /// <summary>

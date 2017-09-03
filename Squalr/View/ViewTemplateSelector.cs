@@ -86,6 +86,11 @@
         public DataTemplate CheatBrowserViewTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the template for the Twitch Login.
+        /// </summary>
+        public DataTemplate TwitchLoginViewTemplate { get; set; }
+
+        /// <summary>
         /// Gets or sets the template for the Stream Weaver.
         /// </summary>
         public DataTemplate StreamWeaverViewTemplate { get; set; }
@@ -202,6 +207,10 @@
             else if (item is CheatBrowserViewModel)
             {
                 return this.CheatBrowserViewTemplate;
+            }
+            else if (item is TwitchLoginViewModel)
+            {
+                return this.TwitchLoginViewTemplate;
             }
             else if (item is StreamWeaverViewModel)
             {
