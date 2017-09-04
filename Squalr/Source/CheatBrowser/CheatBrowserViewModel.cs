@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.CheatBrowser
 {
+    using GalaSoft.MvvmLight.Command;
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
-    using Squalr.Source.Mvvm.Command;
     using System;
     using System.Threading;
     using System.Windows.Controls;

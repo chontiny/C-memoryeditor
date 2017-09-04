@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.ValueCollector
 {
-    using Mvvm;
-    using Mvvm.Command;
+    using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight.Command;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

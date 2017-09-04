@@ -3,8 +3,8 @@
     using Docking;
     using Engine;
     using Engine.Processes;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Mvvm.Command;
     using System;
     using System.Collections.Generic;
     using System.Linq;

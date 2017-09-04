@@ -3,8 +3,8 @@
     using Content;
     using Docking;
     using Engine;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Mvvm.Command;
     using ProjectExplorer;
     using Snapshots;
     using Squalr.Properties;

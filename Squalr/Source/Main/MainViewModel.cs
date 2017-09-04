@@ -4,8 +4,8 @@
     using Docking;
     using Engine.AddressResolver;
     using Engine.AddressResolver.DotNet;
-    using Mvvm;
-    using Mvvm.Command;
+    using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight.Command;
     using Output;
     using ProjectExplorer;
     using Squalr.Properties;
@@ -23,7 +23,7 @@
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
     /// <summary>
-    /// Main view model
+    /// Main view model.
     /// Note: There are several MVVM responsability violations in this class, but these are isolated and acceptable.
     /// </summary>
     internal class MainViewModel : ViewModelBase

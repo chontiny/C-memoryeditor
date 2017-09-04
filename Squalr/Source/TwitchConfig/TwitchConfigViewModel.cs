@@ -2,8 +2,8 @@
 {
     using Content;
     using Docking;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Mvvm.Command;
     using Squalr.Properties;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;

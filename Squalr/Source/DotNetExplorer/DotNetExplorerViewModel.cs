@@ -2,8 +2,8 @@
 {
     using Docking;
     using Engine.AddressResolver.DotNet;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Mvvm.Command;
     using ProjectExplorer;
     using ProjectExplorer.ProjectItems;
     using System;

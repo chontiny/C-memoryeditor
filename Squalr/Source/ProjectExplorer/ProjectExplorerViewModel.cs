@@ -4,9 +4,9 @@
     using Docking;
     using Engine;
     using Engine.OperatingSystems;
+    using GalaSoft.MvvmLight.Command;
     using Main;
     using Microsoft.Win32;
-    using Mvvm.Command;
     using Output;
     using ProjectItems;
     using PropertyViewer;

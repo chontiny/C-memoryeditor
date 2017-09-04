@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.ChangeLog
 {
-    using Mvvm;
+    using GalaSoft.MvvmLight;
     using System;
     using System.Reflection;
     using System.Threading;

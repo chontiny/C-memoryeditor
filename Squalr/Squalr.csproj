@@ -134,9 +134,21 @@
     <Reference Include="EasyHook">
       <HintPath>..\SqualrHook\EasyHook.dll</HintPath>
     </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.3.0.19032, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.3.0.19032, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
@@ -150,8 +162,8 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />
@@ -200,6 +212,7 @@
     <Compile Include="Source\Api\SqualrApi.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\TwitchLogin\TwitchLoginViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Source\Controls\RichTextBoxHelper.cs" />
@@ -279,7 +292,6 @@
     <Compile Include="Source\Mvvm\Converters\ListViewIndexConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
-    <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\Output\OutputViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\IProjectExplorerObserver.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectRoot.cs" />
@@ -510,9 +522,6 @@
     <Compile Include="View\PropertyViewer.xaml.cs">
       <DependentUpon>PropertyViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\DotNetExplorer.xaml.cs">
-      <DependentUpon>DotNetExplorer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\CheatBrowser.xaml.cs">
       <DependentUpon>CheatBrowser.xaml</DependentUpon>
     </Compile>
@@ -528,38 +537,7 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Docking\PaneViewModel.cs" />
-    <Compile Include="Source\Mvvm\Command\EventToCommand.cs" />
-    <Compile Include="Source\Mvvm\Command\IEventArgsConverter.cs" />
-    <Compile Include="Source\Mvvm\Command\RelayCommand.cs" />
-    <Compile Include="Source\Mvvm\Command\RelayCommandGeneric.cs" />
-    <Compile Include="Source\Mvvm\Helpers\Empty.cs" />
-    <Compile Include="Source\Mvvm\Helpers\IExecuteWithObject.cs" />
-    <Compile Include="Source\Mvvm\Helpers\IExecuteWithObjectAndResult.cs" />
-    <Compile Include="Source\Mvvm\Helpers\WeakAction.cs" />
-    <Compile Include="Source\Mvvm\Helpers\WeakActionGeneric.cs" />
-    <Compile Include="Source\Mvvm\Helpers\WeakFunc.cs" />
-    <Compile Include="Source\Mvvm\Helpers\WeakFuncGeneric.cs" />
-    <Compile Include="Source\Mvvm\ICleanup.cs" />
-    <Compile Include="Source\Mvvm\Messaging\DialogMessage.cs" />
-    <Compile Include="Source\Mvvm\Messaging\GenericMessage.cs" />
-    <Compile Include="Source\Mvvm\Messaging\IMessenger.cs" />
-    <Compile Include="Source\Mvvm\Messaging\MessageBase.cs" />
-    <Compile Include="Source\Mvvm\Messaging\Messenger.cs" />
-    <Compile Include="Source\Mvvm\Messaging\NotificationMessage.cs" />
-    <Compile Include="Source\Mvvm\Messaging\NotificationMessageAction.cs" />
-    <Compile Include="Source\Mvvm\Messaging\NotificationMessageActionGeneric.cs" />
-    <Compile Include="Source\Mvvm\Messaging\NotificationMessageGeneric.cs" />
-    <Compile Include="Source\Mvvm\Messaging\NotificationMessageWithCallback.cs" />
-    <Compile Include="Source\Mvvm\Messaging\PropertyChangedMessage.cs" />
-    <Compile Include="Source\Mvvm\Messaging\PropertyChangedMessageBase.cs" />
-    <Compile Include="Source\Mvvm\ObservableObject.cs" />
-    <Compile Include="Source\Mvvm\Threading\DispatcherHelper.cs" />
-    <Compile Include="Source\Mvvm\ViewModelBase.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
     <Compile Include="View\ViewModelLocator.cs" />
-    <Compile Include="Source\Mvvm\Views\IDialogService.cs" />
-    <Compile Include="Source\Mvvm\Views\INavigationService.cs" />
     <Compile Include="Source\Docking\ToolViewModel.cs" />
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
@@ -946,7 +924,6 @@
   <ItemGroup>
     <Folder Include="Source\Engine\AddressResolver\Java\" />
     <Folder Include="Source\Engine\AddressResolver\Python\" />
-    <Folder Include="Source\Mvvm\Behavior\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Content\Icons\SelectProcess.png" />
