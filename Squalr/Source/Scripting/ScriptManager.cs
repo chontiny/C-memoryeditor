@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ScriptEngine
+﻿namespace Squalr.Source.Scripting
 {
     using Content.Templates;
     using CSScriptLibrary;

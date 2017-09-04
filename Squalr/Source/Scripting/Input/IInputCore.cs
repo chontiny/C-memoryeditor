@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ScriptEngine.Input
+﻿namespace Squalr.Source.Scripting.Input
 {
     /// <summary>
     /// Interface to provide access to user input.

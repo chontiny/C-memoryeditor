@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ScriptEngine.Graphics
+﻿namespace Squalr.Source.Scripting.Graphics
 {
     using System;
 

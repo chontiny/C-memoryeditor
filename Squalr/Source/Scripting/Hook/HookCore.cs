@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ScriptEngine.Hook
+﻿namespace Squalr.Source.Scripting.Hook
 {
     using Source.Engine.SpeedManipulator;
     using System;

@@ -82,7 +82,7 @@
         /// <returns>The base address as defined by the keyword.</returns>
         public IntPtr ResolveGlobalKeyword(String identifier)
         {
-            ScriptEngine.ScriptEngine scriptEngine = new ScriptEngine.ScriptEngine();
+            Scripting.ScriptEngine scriptEngine = new Scripting.ScriptEngine();
             return ((dynamic)scriptEngine.MemoryCore.GetGlobalKeyword(identifier))?.ToIntPtr() ?? IntPtr.Zero;
         }
 
