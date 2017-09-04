@@ -5,14 +5,14 @@
     using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for StreamWeaver.xaml.
+    /// Interaction logic for TwitchConfig.xaml.
     /// </summary>
-    internal partial class StreamWeaver : UserControl
+    internal partial class TwitchConfig : UserControl
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="StreamWeaver" /> class.
+        /// Initializes a new instance of the <see cref="TwitchConfig" /> class.
         /// </summary>
-        public StreamWeaver()
+        public TwitchConfig()
         {
             this.InitializeComponent();
 

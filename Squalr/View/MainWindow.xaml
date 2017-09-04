@@ -199,6 +199,11 @@
                         IsChecked="{Binding CheatBrowserViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
+                        Header="Browse"
+                        IsCheckable="True"
+                        IsChecked="{Binding BrowseViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
                         Header="Process Selector"
                         IsCheckable="True"
                         IsChecked="{Binding ProcessSelectorViewModel.IsVisible, Mode=TwoWay}"
@@ -214,9 +219,9 @@
                         IsChecked="{Binding PropertyViewerViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
-                        Header="Stream Weaver"
+                        Header="Twitch Config"
                         IsCheckable="True"
-                        IsChecked="{Binding StreamWeaverViewModel.IsVisible, Mode=TwoWay}"
+                        IsChecked="{Binding TwitchConfigViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
                         Header="Output"
@@ -446,18 +451,24 @@
                             <view:PointerScanResults />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.PointerScanResultsViewTemplate>
+                    <!--  Browse  -->
+                    <view:ViewTemplateSelector.BrowseViewTemplate>
+                        <shell:DataTemplate>
+                            <view:Browse />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.BrowseViewTemplate>
                     <!--  Cheat Browser  -->
                     <view:ViewTemplateSelector.CheatBrowserViewTemplate>
                         <shell:DataTemplate>
                             <view:CheatBrowser />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.CheatBrowserViewTemplate>
-                    <!--  Stream Weaver  -->
-                    <view:ViewTemplateSelector.StreamWeaverViewTemplate>
+                    <!--  Twitch Config  -->
+                    <view:ViewTemplateSelector.TwitchConfigViewTemplate>
                         <shell:DataTemplate>
-                            <view:StreamWeaver />
+                            <view:TwitchConfig />
                         </shell:DataTemplate>
-                    </view:ViewTemplateSelector.StreamWeaverViewTemplate>
+                    </view:ViewTemplateSelector.TwitchConfigViewTemplate>
                     <!--  .Net Explorer  -->
                     <view:ViewTemplateSelector.DotNetExplorerViewTemplate>
                         <shell:DataTemplate>

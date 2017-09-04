@@ -1,12 +1,12 @@
-﻿namespace Squalr.Source.StreamWeaver
+﻿namespace Squalr.Source.TwitchConfig
 {
     using ActionScheduler;
     using System;
 
     /// <summary>
-    /// Task to update the Stream Weaver.
+    /// Task to poll for the current cheat votes.
     /// </summary>
-    internal class StreamWeaverTask : ScheduledTask
+    internal class TwitchVotePollTask : ScheduledTask
     {
         /// <summary>
         /// The interval between refreshes.
@@ -14,12 +14,12 @@
         private const Int32 RefreshInterval = 3000;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StreamWeaverTask" /> class.
+        /// Initializes a new instance of the <see cref="TwitchVotePollTask" /> class.
         /// </summary>
-        public StreamWeaverTask(Action updateAction) : base(taskName: "Stream Weaver", isRepeated: true, trackProgress: false)
+        public TwitchVotePollTask(Action updateAction) : base(taskName: "Twitch Vote Poll", isRepeated: true, trackProgress: false)
         {
             this.UpdateAction = updateAction;
-            this.UpdateInterval = StreamWeaverTask.RefreshInterval;
+            this.UpdateInterval = TwitchVotePollTask.RefreshInterval;
 
             this.Begin();
         }

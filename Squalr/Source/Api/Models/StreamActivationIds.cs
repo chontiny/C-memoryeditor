@@ -1,9 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.Serialization;
-
-namespace Squalr.Source.StreamWeaver
+﻿namespace Squalr.Source.Api.Models
 {
+    using System;
+    using System.ComponentModel;
+    using System.Runtime.Serialization;
+
     [DataContract]
     internal class StreamActivationIds : INotifyPropertyChanged
     {

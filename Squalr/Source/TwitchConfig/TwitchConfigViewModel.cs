@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.StreamWeaver
+﻿namespace Squalr.Source.TwitchConfig
 {
     using Content;
     using Docking;
@@ -19,20 +19,20 @@
     using System.Windows.Media.Imaging;
 
     /// <summary>
-    /// View model for the Stream Weaver.
+    /// View model for the Twitch Config.
     /// </summary>
-    internal class StreamWeaverViewModel : ToolViewModel
+    internal class TwitchConfigViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
         /// </summary>
-        public const String ToolContentId = nameof(StreamWeaverViewModel);
+        public const String ToolContentId = nameof(TwitchConfigViewModel);
 
         /// <summary>
-        /// Singleton instance of the <see cref="StreamWeaverViewModel" /> class.
+        /// Singleton instance of the <see cref="TwitchConfigViewModel" /> class.
         /// </summary>
-        private static Lazy<StreamWeaverViewModel> cheatBrowserViewModelInstance = new Lazy<StreamWeaverViewModel>(
-                () => { return new StreamWeaverViewModel(); },
+        private static Lazy<TwitchConfigViewModel> twitchConfigViewModelInstance = new Lazy<TwitchConfigViewModel>(
+                () => { return new TwitchConfigViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
@@ -41,13 +41,13 @@
         private Boolean isConnected;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="StreamWeaverViewModel" /> class from being created.
+        /// Prevents a default instance of the <see cref="TwitchConfigViewModel" /> class from being created.
         /// </summary>
-        private StreamWeaverViewModel() : base("Stream Weaver")
+        private TwitchConfigViewModel() : base("Twitch Config")
         {
-            this.ContentId = StreamWeaverViewModel.ToolContentId;
+            this.ContentId = TwitchConfigViewModel.ToolContentId;
 
-            StreamWeaverTask streamWeaverTask = new StreamWeaverTask(this.OnUpdate);
+            TwitchVotePollTask twitchVotePollTask = new TwitchVotePollTask(this.OnUpdate);
 
             this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
 
@@ -115,12 +115,12 @@
         }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="StreamWeaverViewModel"/> class.
+        /// Gets a singleton instance of the <see cref="TwitchConfigViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
-        public static StreamWeaverViewModel GetInstance()
+        public static TwitchConfigViewModel GetInstance()
         {
-            return StreamWeaverViewModel.cheatBrowserViewModelInstance.Value;
+            return TwitchConfigViewModel.twitchConfigViewModelInstance.Value;
         }
 
 

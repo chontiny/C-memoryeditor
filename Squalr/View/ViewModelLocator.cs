@@ -22,8 +22,9 @@
     using Source.Scanners.PointerScanner;
     using Source.Scanners.ValueCollector;
     using Source.Snapshots;
-    using Source.StreamWeaver;
+    using Source.TwitchConfig;
     using Squalr.Properties;
+    using Squalr.Source.Browse;
 
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -160,6 +161,17 @@
         }
 
         /// <summary>
+        /// Gets the Browser view model.
+        /// </summary>
+        public BrowseViewModel BrowseViewModel
+        {
+            get
+            {
+                return BrowseViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
         /// Gets the Cheat Browser view model.
         /// </summary>
         public CheatBrowserViewModel CheatBrowserViewModel
@@ -182,13 +194,13 @@
         }
 
         /// <summary>
-        /// Gets the Stream Weaver view model.
+        /// Gets the Twitch Config view model.
         /// </summary>
-        public StreamWeaverViewModel StreamWeaverViewModel
+        public TwitchConfigViewModel TwitchConfigViewModel
         {
             get
             {
-                return StreamWeaverViewModel.GetInstance();
+                return TwitchConfigViewModel.GetInstance();
             }
         }
 

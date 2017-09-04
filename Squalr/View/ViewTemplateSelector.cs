@@ -17,8 +17,9 @@
     using Source.Scanners.ManualScanner;
     using Source.Scanners.PointerScanner;
     using Source.Snapshots;
-    using Source.StreamWeaver;
     using Squalr.Properties;
+    using Squalr.Source.Browse;
+    using Squalr.Source.TwitchConfig;
     using System;
     using System.Windows;
     using System.Windows.Controls;
@@ -81,6 +82,11 @@
         public DataTemplate PointerScanResultsViewTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the template for the Browser.
+        /// </summary>
+        public DataTemplate BrowseViewTemplate { get; set; }
+
+        /// <summary>
         /// Gets or sets the template for the Cheat Browser.
         /// </summary>
         public DataTemplate CheatBrowserViewTemplate { get; set; }
@@ -93,7 +99,7 @@
         /// <summary>
         /// Gets or sets the template for the Stream Weaver.
         /// </summary>
-        public DataTemplate StreamWeaverViewTemplate { get; set; }
+        public DataTemplate TwitchConfigViewTemplate { get; set; }
 
         /// <summary>
         /// Gets or sets the template for the Stream Table.
@@ -204,6 +210,10 @@
             {
                 return this.PointerScanResultsViewTemplate;
             }
+            else if (item is BrowseViewModel)
+            {
+                return this.BrowseViewTemplate;
+            }
             else if (item is CheatBrowserViewModel)
             {
                 return this.CheatBrowserViewTemplate;
@@ -212,9 +222,9 @@
             {
                 return this.TwitchLoginViewTemplate;
             }
-            else if (item is StreamWeaverViewModel)
+            else if (item is TwitchConfigViewModel)
             {
-                return this.StreamWeaverViewTemplate;
+                return this.TwitchConfigViewTemplate;
             }
             else if (item is DotNetExplorerViewModel)
             {

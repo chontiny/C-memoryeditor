@@ -190,6 +190,7 @@
     <Compile Include="Source\Api\Models\TwitchUser.cs" />
     <Compile Include="Source\Api\Models\TwitchAccessTokens.cs" />
     <Compile Include="Source\Api\SqualrApi.cs" />
+    <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\TwitchLogin\TwitchLoginViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
@@ -200,9 +201,9 @@
     <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\JavaItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItem.cs" />
-    <Compile Include="Source\StreamWeaver\StreamActivationIds.cs" />
-    <Compile Include="Source\StreamWeaver\StreamWeaverTask.cs" />
-    <Compile Include="Source\StreamWeaver\StreamWeaverViewModel.cs" />
+    <Compile Include="Source\Api\Models\StreamActivationIds.cs" />
+    <Compile Include="Source\TwitchConfig\TwitchVotePollTask.cs" />
+    <Compile Include="Source\TwitchConfig\TwitchConfigViewModel.cs" />
     <Compile Include="Content\Images.cs" />
     <Compile Include="Source\Controls\SortedCategory.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
@@ -366,7 +367,6 @@
     <Compile Include="Source\Engine\Architecture\Architecture86_64.cs" />
     <Compile Include="Source\Engine\EngineCore.cs" />
     <Compile Include="Source\Engine\Graphics\IGraphics.cs" />
-    <Compile Include="Source\Engine\ManagedObjectResolver\IManagedObjectResolver.cs" />
     <Compile Include="Source\Engine\OperatingSystems\IOperatingSystemAdapter.cs" />
     <Compile Include="Source\Engine\OperatingSystems\NormalizedFlags.cs" />
     <Compile Include="Source\Engine\OperatingSystems\NormalizedModule.cs" />
@@ -460,14 +460,17 @@
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Browse.xaml.cs">
+      <DependentUpon>Browse.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TwitchLogin.xaml.cs">
       <DependentUpon>TwitchLogin.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\StreamWeaver.xaml.cs">
-      <DependentUpon>StreamWeaver.xaml</DependentUpon>
+    <Compile Include="View\TwitchConfig.xaml.cs">
+      <DependentUpon>TwitchConfig.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\TextEditor.xaml.cs">
       <DependentUpon>TextEditor.xaml</DependentUpon>
@@ -584,11 +587,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\Browse.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\TwitchLogin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\StreamWeaver.xaml">
+    <Page Include="View\TwitchConfig.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

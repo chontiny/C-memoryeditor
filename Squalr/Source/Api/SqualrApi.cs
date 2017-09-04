@@ -14,17 +14,22 @@
         /// <summary>
         /// The API url to get the twitch auth tokens.
         /// </summary>
-        public const String TwitchTokenApi = "https://www.squalr.com/api/Client/TwitchTokens";
+        public const String TwitchTokenApi = "https://www.squalr.com/api/TwitchTokens";
 
         /// <summary>
         /// The API url to get the twitch user.
         /// </summary>
-        public const String TwitchUserApi = "https://www.squalr.com/api/Client/TwitchUser";
+        public const String TwitchUserApi = "https://www.squalr.com/api/TwitchUser";
 
         /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
         /// </summary>
-        private const String ActiveCheatIdsEndpoint = "https://www.squalr.com/api/Stream/ActiveCheatIds/";
+        private const String ActiveCheatIdsEndpoint = "https://www.squalr.com/api/ActiveCheatIds/";
+
+        /// <summary>
+        /// The endpoint for querying the game lists.
+        /// </summary>
+        private const String GameListEndpoint = "https://www.squalr.com/api/Games/List";
 
         public static TwitchAccessTokens GetTwitchTokens(String code)
         {
@@ -69,7 +74,6 @@
 
                     return streamActivationIds;
                 }
-
             }
         }
 
