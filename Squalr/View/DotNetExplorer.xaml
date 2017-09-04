@@ -11,6 +11,9 @@
     x:ClassModifier="internal"
     DataContext="{Binding DotNetExplorerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public DotNetExplorer() { InitializeComponent(); }]]>
+    </x:Code>
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

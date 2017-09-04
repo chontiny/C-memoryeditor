@@ -10,6 +10,9 @@
     x:ClassModifier="internal"
     DataContext="{Binding ChangeCounterViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public ChangeCounter() { InitializeComponent(); }]]>
+    </x:Code>
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid>
             <Grid.RowDefinitions>

@@ -11,6 +11,9 @@
     x:ClassModifier="internal"
     DataContext="{Binding ProcessSelectorViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public ProcessSelector() { InitializeComponent(); }]]>
+    </x:Code>
     <Grid>
         <Grid.Resources>
             <converters:IconConverter x:Key="IconConverter" />

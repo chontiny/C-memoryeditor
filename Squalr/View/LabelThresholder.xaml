@@ -12,6 +12,9 @@
     x:ClassModifier="internal"
     DataContext="{Binding LabelThresholderViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public LabelThresholder() { InitializeComponent(); }]]>
+    </x:Code>
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />

@@ -134,6 +134,10 @@
     <Reference Include="EasyHook">
       <HintPath>..\SqualrHook\EasyHook.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
     </Reference>
@@ -146,6 +150,10 @@
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -466,9 +474,6 @@
     <Compile Include="View\TwitchLogin.xaml.cs">
       <DependentUpon>TwitchLogin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\TwitchConfig.xaml.cs">
       <DependentUpon>TwitchConfig.xaml</DependentUpon>
     </Compile>
@@ -484,14 +489,8 @@
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PointerScanner.xaml.cs">
-      <DependentUpon>PointerScanner.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Editors\OffsetEditor.xaml.cs">
       <DependentUpon>OffsetEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PointerScanResults.xaml.cs">
-      <DependentUpon>PointerScanResults.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\ScriptEditor.xaml.cs">
       <DependentUpon>ScriptEditor.xaml</DependentUpon>
@@ -501,12 +500,6 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Source\Controls\WinformsHostingHelper.cs" />
-    <Compile Include="View\InputCorrelator.xaml.cs">
-      <DependentUpon>InputCorrelator.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ScanResults.xaml.cs">
-      <DependentUpon>ScanResults.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -523,20 +516,8 @@
     <Compile Include="View\CheatBrowser.xaml.cs">
       <DependentUpon>CheatBrowser.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\SnapshotManager.xaml.cs">
-      <DependentUpon>SnapshotManager.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ManualScanner.xaml.cs">
       <DependentUpon>ManualScanner.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\LabelThresholder.xaml.cs">
-      <DependentUpon>LabelThresholder.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ChangeCounter.xaml.cs">
-      <DependentUpon>ChangeCounter.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ProcessSelector.xaml.cs">
-      <DependentUpon>ProcessSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="Source\ProcessSelector\ProcessSelectorTask.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs">

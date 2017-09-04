@@ -10,6 +10,9 @@
     x:ClassModifier="internal"
     DataContext="{Binding PointerScannerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public PointerScanner() { InitializeComponent(); }]]>
+    </x:Code>
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid>
             <Grid.RowDefinitions>
