@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.CheatBrowser
+﻿namespace Squalr.Source.Browse.TwitchLogin
 {
     using GalaSoft.MvvmLight.Command;
     using Squalr.Properties;

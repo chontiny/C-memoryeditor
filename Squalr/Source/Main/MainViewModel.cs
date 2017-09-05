@@ -60,7 +60,7 @@
         /// </summary>
         private MainViewModel()
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr Started");
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr started");
 
             this.tools = new HashSet<ToolViewModel>();
 
@@ -173,7 +173,7 @@
             AnalyticsService.GetInstance().Start();
 
             AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background Services Started");
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background services started");
         }
 
         /// <summary>

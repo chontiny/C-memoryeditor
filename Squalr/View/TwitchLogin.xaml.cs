@@ -1,8 +1,8 @@
 ﻿namespace Squalr.View
 {
-    using Source.CheatBrowser;
     using Source.Output;
     using Squalr.Source.Analytics;
+    using Squalr.Source.Browse.TwitchLogin;
     using Squalr.Source.Utils;
     using System;
     using System.Collections.Specialized;

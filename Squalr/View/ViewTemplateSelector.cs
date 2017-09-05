@@ -19,7 +19,8 @@
     using Source.Snapshots;
     using Squalr.Properties;
     using Squalr.Source.Browse;
-    using Squalr.Source.TwitchConfig;
+    using Squalr.Source.Browse.StreamConfig;
+    using Squalr.Source.Browse.TwitchLogin;
     using System;
     using System.Windows;
     using System.Windows.Controls;
@@ -222,7 +223,7 @@
             {
                 return this.TwitchLoginViewTemplate;
             }
-            else if (item is TwitchConfigViewModel)
+            else if (item is StreamConfigViewModel)
             {
                 return this.TwitchConfigViewTemplate;
             }

@@ -1,14 +1,14 @@
 ﻿<UserControl
-    x:Class="Squalr.View.TwitchConfig"
+    x:Class="Squalr.View.StreamConfig"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Name="SqualrTwitchConfig"
+    x:Name="SqualrStreamConfig"
     d:DesignHeight="256"
     d:DesignWidth="480"
     x:ClassModifier="internal"
-    DataContext="{Binding TwitchConfigViewModel, Source={StaticResource ViewModelLocator}}"
+    DataContext="{Binding StreamConfigViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid.RowDefinitions>
@@ -27,12 +27,12 @@
                                 Width="16"
                                 Height="16"
                                 Source="pack://application:,,,/Squalr;component/Content/Icons/Connect.png"
-                                ToolTip="Disconnect from Twitch" />
+                                ToolTip="Disconnect from Stream Service" />
                             <Image
                                 Width="16"
                                 Height="16"
                                 Source="{Binding ConnectionImage}"
-                                ToolTip="Connect/Disconnect from Twitch" />
+                                ToolTip="Connect/Disconnect from Stream Service" />
                             <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ConnectionOption}" />
                         </WrapPanel>
                     </MenuItem.Header>

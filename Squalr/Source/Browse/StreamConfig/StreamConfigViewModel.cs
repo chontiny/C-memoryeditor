@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.TwitchConfig
+﻿namespace Squalr.Source.Browse.StreamConfig
 {
     using Content;
     using Docking;
@@ -19,35 +19,35 @@
     using System.Windows.Media.Imaging;
 
     /// <summary>
-    /// View model for the Twitch Config.
+    /// View model for the Stream Config.
     /// </summary>
-    internal class TwitchConfigViewModel : ToolViewModel
+    internal class StreamConfigViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
         /// </summary>
-        public const String ToolContentId = nameof(TwitchConfigViewModel);
+        public const String ToolContentId = nameof(StreamConfigViewModel);
 
         /// <summary>
-        /// Singleton instance of the <see cref="TwitchConfigViewModel" /> class.
+        /// Singleton instance of the <see cref="StreamConfigViewModel" /> class.
         /// </summary>
-        private static Lazy<TwitchConfigViewModel> twitchConfigViewModelInstance = new Lazy<TwitchConfigViewModel>(
-                () => { return new TwitchConfigViewModel(); },
+        private static Lazy<StreamConfigViewModel> streamConfigViewModelInstance = new Lazy<StreamConfigViewModel>(
+                () => { return new StreamConfigViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Indicates whether a Twitch connection is open.
+        /// Indicates whether a Stream connection is open.
         /// </summary>
         private Boolean isConnected;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="TwitchConfigViewModel" /> class from being created.
+        /// Prevents a default instance of the <see cref="StreamConfigViewModel" /> class from being created.
         /// </summary>
-        private TwitchConfigViewModel() : base("Twitch Config")
+        private StreamConfigViewModel() : base("Stream Config")
         {
-            this.ContentId = TwitchConfigViewModel.ToolContentId;
+            this.ContentId = StreamConfigViewModel.ToolContentId;
 
-            TwitchVotePollTask twitchVotePollTask = new TwitchVotePollTask(this.OnUpdate);
+            StreamVotePollTask streamVotePollTask = new StreamVotePollTask(this.OnUpdate);
 
             this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
 
@@ -55,7 +55,7 @@
         }
 
         /// <summary>
-        /// Gets the command to connect to Twitch.
+        /// Gets the command to connect to the stream.
         /// </summary>
         public ICommand ToggleConnectionCommand { get; private set; }
 
@@ -96,7 +96,7 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether or not there is an active Twitch connection.
+        /// Gets or sets a value indicating whether or not there is an active Stream connection.
         /// </summary>
         public Boolean IsConnected
         {
@@ -115,17 +115,17 @@
         }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="TwitchConfigViewModel"/> class.
+        /// Gets a singleton instance of the <see cref="StreamConfigViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
-        public static TwitchConfigViewModel GetInstance()
+        public static StreamConfigViewModel GetInstance()
         {
-            return TwitchConfigViewModel.twitchConfigViewModelInstance.Value;
+            return StreamConfigViewModel.streamConfigViewModelInstance.Value;
         }
 
 
         /// <summary>
-        /// Toggles the current Twitch connection.
+        /// Toggles the current Stream connection.
         /// </summary>
         private void ToggleConnection()
         {
@@ -184,7 +184,7 @@
         }
 
         /// <summary>
-        /// Connects to the Twitch client.
+        /// Connects to the stream service.
         /// </summary>
         private void Connect()
         {
@@ -192,7 +192,7 @@
         }
 
         /// <summary>
-        /// Disconnects from the Twitch client.
+        /// Disconnects from the stream service.
         /// </summary>
         private void Disconnect()
         {

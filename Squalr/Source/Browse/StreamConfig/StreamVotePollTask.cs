@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.TwitchConfig
+﻿namespace Squalr.Source.Browse.StreamConfig
 {
     using ActionScheduler;
     using System;
@@ -6,7 +6,7 @@
     /// <summary>
     /// Task to poll for the current cheat votes.
     /// </summary>
-    internal class TwitchVotePollTask : ScheduledTask
+    internal class StreamVotePollTask : ScheduledTask
     {
         /// <summary>
         /// The interval between refreshes.
@@ -14,12 +14,12 @@
         private const Int32 RefreshInterval = 3000;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TwitchVotePollTask" /> class.
+        /// Initializes a new instance of the <see cref="StreamVotePollTask" /> class.
         /// </summary>
-        public TwitchVotePollTask(Action updateAction) : base(taskName: "Twitch Vote Poll", isRepeated: true, trackProgress: false)
+        public StreamVotePollTask(Action updateAction) : base(taskName: "Twitch Vote Poll", isRepeated: true, trackProgress: false)
         {
             this.UpdateAction = updateAction;
-            this.UpdateInterval = TwitchVotePollTask.RefreshInterval;
+            this.UpdateInterval = StreamVotePollTask.RefreshInterval;
 
             this.Begin();
         }

@@ -234,11 +234,6 @@
                         IsChecked="{Binding PropertyViewerViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
-                        Header="Twitch Config"
-                        IsCheckable="True"
-                        IsChecked="{Binding TwitchConfigViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
                         Header="Output"
                         IsCheckable="True"
                         IsChecked="{Binding OutputViewModel.IsVisible, Mode=TwoWay}"
@@ -478,12 +473,6 @@
                             <view:CheatBrowser />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.CheatBrowserViewTemplate>
-                    <!--  Twitch Config  -->
-                    <view:ViewTemplateSelector.TwitchConfigViewTemplate>
-                        <shell:DataTemplate>
-                            <view:TwitchConfig />
-                        </shell:DataTemplate>
-                    </view:ViewTemplateSelector.TwitchConfigViewTemplate>
                     <!--  .Net Explorer  -->
                     <view:ViewTemplateSelector.DotNetExplorerViewTemplate>
                         <shell:DataTemplate>

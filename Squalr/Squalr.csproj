@@ -210,10 +210,12 @@
     <Compile Include="Source\Api\Models\TwitchUser.cs" />
     <Compile Include="Source\Api\Models\TwitchAccessTokens.cs" />
     <Compile Include="Source\Api\SqualrApi.cs" />
+    <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />
+    <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
-    <Compile Include="Source\TwitchLogin\TwitchLoginViewModel.cs" />
+    <Compile Include="Source\Browse\TwitchLogin\TwitchLoginViewModel.cs" />
     <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Source\Controls\RichTextBoxHelper.cs" />
     <Compile Include="Source\Engine\Networks\Network.cs" />
@@ -223,8 +225,8 @@
     <Compile Include="Source\ProjectExplorer\ProjectItems\JavaItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItem.cs" />
     <Compile Include="Source\Api\Models\StreamActivationIds.cs" />
-    <Compile Include="Source\TwitchConfig\TwitchVotePollTask.cs" />
-    <Compile Include="Source\TwitchConfig\TwitchConfigViewModel.cs" />
+    <Compile Include="Source\Browse\StreamConfig\StreamVotePollTask.cs" />
+    <Compile Include="Source\Browse\StreamConfig\StreamConfigViewModel.cs" />
     <Compile Include="Content\Images.cs" />
     <Compile Include="Source\Controls\SortedCategory.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
@@ -303,7 +305,7 @@
     <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
-    <Compile Include="Source\ScriptEngine\ScriptEngine.cs" />
+    <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
@@ -407,15 +409,15 @@
     <Compile Include="Source\Engine\Processes\ProcessAdapter.cs" />
     <Compile Include="Source\Engine\SpeedManipulator\ISpeedManipulator.cs" />
     <Compile Include="Source\Engine\Unrandomizer\IUnrandomizer.cs" />
-    <Compile Include="Source\ScriptEngine\Graphics\GraphicsCore.cs" />
-    <Compile Include="Source\ScriptEngine\Graphics\IGraphicsCore.cs" />
-    <Compile Include="Source\ScriptEngine\Hook\IHookCore.cs" />
-    <Compile Include="Source\ScriptEngine\Hook\HookCore.cs" />
-    <Compile Include="Source\ScriptEngine\Input\IInputCore.cs" />
-    <Compile Include="Source\ScriptEngine\Input\InputCore.cs" />
-    <Compile Include="Source\ScriptEngine\ScriptManager.cs" />
-    <Compile Include="Source\ScriptEngine\Memory\IMemoryCore.cs" />
-    <Compile Include="Source\ScriptEngine\Memory\MemoryCore.cs" />
+    <Compile Include="Source\Scripting\Graphics\GraphicsCore.cs" />
+    <Compile Include="Source\Scripting\Graphics\IGraphicsCore.cs" />
+    <Compile Include="Source\Scripting\Hook\IHookCore.cs" />
+    <Compile Include="Source\Scripting\Hook\HookCore.cs" />
+    <Compile Include="Source\Scripting\Input\IInputCore.cs" />
+    <Compile Include="Source\Scripting\Input\InputCore.cs" />
+    <Compile Include="Source\Scripting\ScriptManager.cs" />
+    <Compile Include="Source\Scripting\Memory\IMemoryCore.cs" />
+    <Compile Include="Source\Scripting\Memory\MemoryCore.cs" />
     <Compile Include="Source\Mvvm\Converters\IntPtrToAddressConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
@@ -480,14 +482,11 @@
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Browse.xaml.cs">
-      <DependentUpon>Browse.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\TwitchLogin.xaml.cs">
       <DependentUpon>TwitchLogin.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\TwitchConfig.xaml.cs">
-      <DependentUpon>TwitchConfig.xaml</DependentUpon>
+    <Compile Include="View\Browse\StreamConfig.xaml.cs">
+      <DependentUpon>StreamConfig.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\TextEditor.xaml.cs">
       <DependentUpon>TextEditor.xaml</DependentUpon>
@@ -542,11 +541,19 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
+    <Page Include="View\Browse\Library.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\Store.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\ChangeLog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse.xaml">
+    <Page Include="View\Browse\Browse.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -554,7 +561,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\TwitchConfig.xaml">
+    <Page Include="View\Browse\StreamConfig.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
