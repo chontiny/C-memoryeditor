@@ -1,10 +1,14 @@
 ﻿namespace Squalr.Source.Browse
 {
     using GalaSoft.MvvmLight.Command;
+    using Squalr.Properties;
+    using Squalr.Source.Api;
+    using Squalr.Source.Api.Models;
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows.Input;
 
     /// <summary>
@@ -25,19 +29,14 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// A value indicating whether the store is visible.
+        /// A value indicating whether the user is logged into the site.
         /// </summary>
-        private Boolean isStoreVisible;
+        private Boolean isLoggedIn;
 
         /// <summary>
-        /// A value indicating whether the library is visible.
+        /// The current browse view.
         /// </summary>
-        private Boolean isLibraryVisible;
-
-        /// <summary>
-        /// A value indicating whether the stream is visible.
-        /// </summary>
-        private Boolean isStreamVisible;
+        private BrowseView currentView;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="BrowseViewModel" /> class from being created.
@@ -46,12 +45,12 @@
         {
             this.ContentId = BrowseViewModel.ToolContentId;
 
-            this.OpenStoreCommand = new RelayCommand(() => this.IsStoreVisible = true, () => true);
-            this.OpenLibraryCommand = new RelayCommand(() => this.IsLibraryVisible = true, () => true);
-            this.OpenStreamCommand = new RelayCommand(() => this.IsStreamVisible = true, () => true);
+            this.OpenLoginScreenCommand = new RelayCommand(() => this.CurrentView = BrowseView.Login, () => true);
+            this.OpenStoreCommand = new RelayCommand(() => this.CurrentView = BrowseView.Store, () => true);
+            this.OpenLibraryCommand = new RelayCommand(() => this.CurrentView = BrowseView.Library, () => true);
+            this.OpenStreamCommand = new RelayCommand(() => this.CurrentView = BrowseView.Stream, () => true);
 
-            // Open the store as the default option
-            this.OpenStoreCommand.Execute(null);
+            Task.Run(() => this.SetDefaultViewOptions());
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
@@ -64,6 +63,11 @@
         {
             return browseViewModelInstance.Value;
         }
+
+        /// <summary>
+        /// Gets a command to open the login screen.
+        /// </summary>
+        public ICommand OpenLoginScreenCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to open the store.
@@ -81,89 +85,71 @@
         public ICommand OpenStreamCommand { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the store is visible.
+        /// Gets or sets the current browse view.
         /// </summary>
-        public Boolean IsStoreVisible
+        public BrowseView CurrentView
         {
             get
             {
-                return this.isStoreVisible;
+                return this.currentView;
             }
 
             set
             {
-                if (value == true)
-                {
-                    this.HideAllSections();
-                }
-
-                this.isStoreVisible = value;
-                this.RaisePropertyChanged(nameof(this.IsStoreVisible));
+                this.currentView = value;
+                this.RaisePropertyChanged(nameof(this.CurrentView));
             }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the library is visible.
+        /// Gets or sets a value indicating whether the user is logged into the site.
         /// </summary>
-        public Boolean IsLibraryVisible
+        public Boolean IsLoggedIn
         {
             get
             {
-                return this.isLibraryVisible;
+                return this.isLoggedIn;
             }
 
             set
             {
-                if (value == true)
-                {
-                    this.HideAllSections();
-                }
-
-                this.isLibraryVisible = value;
-                this.RaisePropertyChanged(nameof(this.IsLibraryVisible));
+                this.isLoggedIn = value;
+                this.RaisePropertyChanged(nameof(this.IsLoggedIn));
             }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the stream is visible.
+        /// Sets the default view to show, ie login screen or store.
         /// </summary>
-        public Boolean IsStreamVisible
+        private void SetDefaultViewOptions()
         {
-            get
+            if (!this.IsLoggedIn)
             {
-                return this.isStreamVisible;
+                this.UpdateLoginStatus();
+                this.CurrentView = BrowseView.Login;
             }
-
-            set
+            else
             {
-                if (value == true)
-                {
-                    this.HideAllSections();
-                }
-
-                this.isStreamVisible = value;
-                this.RaisePropertyChanged(nameof(this.IsStreamVisible));
+                this.CurrentView = BrowseView.Store;
             }
         }
 
         /// <summary>
-        /// Hides all visible sections.
+        /// Determine if the user is logged in to Twitch.
         /// </summary>
-        private void HideAllSections()
+        private void UpdateLoginStatus()
         {
-            if (this.IsStoreVisible)
-            {
-                this.IsStoreVisible = false;
-            }
+            TwitchAccessTokens twitchAccessTokens = SettingsViewModel.GetInstance().TwitchAccessTokens;
 
-            if (this.IsLibraryVisible)
+            try
             {
-                this.IsLibraryVisible = false;
+                TwitchUser twitchUser = SqualrApi.GetTwitchUser(twitchAccessTokens.AccessToken);
+                this.IsLoggedIn = true;
+                this.CurrentView = BrowseView.Store;
             }
-
-            if (this.IsStreamVisible)
+            catch
             {
-                this.IsStreamVisible = false;
+                this.IsLoggedIn = false;
             }
         }
     }

@@ -62,7 +62,7 @@
                     e.Cancel = true;
 
                     // Pass the code from the query string to the view model command to fetch the oauth codes
-                    this.TwitchLoginViewModel.GetTwitchAccessTokensCommand.Execute(code);
+                    this.TwitchLoginViewModel.PerformLoginCommand.Execute(code);
 
                     this.DialogResult = true;
                     this.Close();

@@ -6,8 +6,10 @@
     using Squalr.Source.Api.Models;
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
+    using Squalr.Source.Output;
     using System;
     using System.Threading;
+    using System.Windows;
     using System.Windows.Controls;
     using System.Windows.Input;
 
@@ -46,8 +48,9 @@
             this.ContentId = TwitchLoginViewModel.ToolContentId;
 
             // Note: Cannot be async, navigation must take place on the same thread as GUI
+            this.DisplayTwitchLoginCommand = new RelayCommand(() => this.DisplayTwitchLogin(), () => true);
             this.NavigateHomeCommand = new RelayCommand<WebBrowser>((browser) => this.NavigateHome(browser), (browser) => true);
-            this.GetTwitchAccessTokensCommand = new RelayCommand<String>((code) => this.GetTwitchAccessTokens(code), (code) => true);
+            this.PerformLoginCommand = new RelayCommand<String>((code) => this.PerformLogin(code), (code) => true);
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
@@ -60,7 +63,12 @@
         /// <summary>
         /// Gets the command to navigate home.
         /// </summary>
-        public ICommand GetTwitchAccessTokensCommand { get; private set; }
+        public ICommand PerformLoginCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to open the twitch login screen.
+        /// </summary>
+        public ICommand DisplayTwitchLoginCommand { get; private set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="TwitchLoginViewModel"/> class.
@@ -84,11 +92,28 @@
         /// Gets the twitch oauth access tokens using the provided code.
         /// </summary>
         /// <param name="code">The one time use exchange code to receive the access tokens.</param>
-        private void GetTwitchAccessTokens(String code)
+        private void PerformLogin(String code)
         {
-            TwitchAccessTokens twitchAccessTokens = SqualrApi.GetTwitchTokens(code);
+            try
+            {
+                TwitchAccessTokens twitchAccessTokens = SqualrApi.GetTwitchTokens(code);
+                SettingsViewModel.GetInstance().TwitchAccessTokens = twitchAccessTokens;
+                BrowseViewModel.GetInstance().IsLoggedIn = true;
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Error authorizing Twitch", ex);
+            }
+        }
 
-            SettingsViewModel.GetInstance().TwitchAccessTokens = twitchAccessTokens;
+        /// <summary>
+        /// Displays the twitch login screen.
+        /// </summary>
+        private void DisplayTwitchLogin()
+        {
+            View.TwitchLogin twitchLogin = new View.TwitchLogin();
+            twitchLogin.Owner = Application.Current.MainWindow;
+            twitchLogin.ShowDialog();
         }
     }
     //// End class

@@ -4,6 +4,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:viewModel="clr-namespace:Squalr.Source.Browse"
     xmlns:local="clr-namespace:Squalr.View"
     x:Class="Squalr.View.Browse"
     x:Name="SqualrBrowse"
@@ -18,6 +19,7 @@
     <Grid>
         <Grid.Resources>
             <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:BrowseViewToVisibilityConverter x:Key="BrowseViewToVisibilityConverter" />
         </Grid.Resources>
         <Grid.Background>
             <StaticResource ResourceKey="AvalonDock_Expression_BaseColor3"/>
@@ -26,7 +28,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Border
+        <Border 
+            Visibility="{Binding CurrentView, 
+                Converter={StaticResource BrowseViewToVisibilityConverter}}"
             Grid.Row="0"
             Padding="8,4,8,4"
             Background="{StaticResource AvalonDock_Expression_BaseColor4}">
@@ -55,13 +59,24 @@
             </Menu>
         </Border>
         <Grid Grid.Row="1">
-            <Grid Visibility="{Binding IsStoreVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid Visibility="{Binding CurrentView, 
+                Converter={StaticResource BrowseViewToVisibilityConverter},
+                ConverterParameter={x:Static viewModel:BrowseView.Login}}">
+                <local:LoginScreen/>
+            </Grid>
+            <Grid Visibility="{Binding CurrentView, 
+                Converter={StaticResource BrowseViewToVisibilityConverter},
+                ConverterParameter={x:Static viewModel:BrowseView.Store}}">
                 <local:Store/>
             </Grid>
-            <Grid Visibility="{Binding IsLibraryVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid Visibility="{Binding CurrentView, 
+                Converter={StaticResource BrowseViewToVisibilityConverter},
+                ConverterParameter={x:Static viewModel:BrowseView.Library}}">
                 <local:Library/>
             </Grid>
-            <Grid Visibility="{Binding IsStreamVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Grid Visibility="{Binding CurrentView, 
+                Converter={StaticResource BrowseViewToVisibilityConverter},
+                ConverterParameter={x:Static viewModel:BrowseView.Stream}}">
                 <local:StreamConfig/>
             </Grid>
         </Grid>

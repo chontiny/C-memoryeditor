@@ -27,7 +27,7 @@
         /// </summary>
         private ChangeLogViewModel()
         {
-            this.changeLog = new Squalr.Content.ChangeLog().TransformText();
+            this.changeLog = new Content.ChangeLog().TransformText();
         }
 
         /// <summary>

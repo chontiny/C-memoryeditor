@@ -361,16 +361,6 @@
                             Source="pack://application:,,,/Squalr;component/Content/Icons/CollectValues.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
-                <shell:MenuItem Command="{Binding MainViewModel.DisplayTwitchLoginCommand}"
-                                ToolTip="Twitch Login"
-                                Background="MediumPurple">
-                    <shell:MenuItem.Header>
-                        <shell:TextBlock Foreground="White"
-                                             Background="MediumPurple">
-                            LOGIN
-                        </shell:TextBlock>
-                    </shell:MenuItem.Header>
-                </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
             </shell:Menu>
             <!--  -Text="{Binding ProcessSelectorViewModel.ProcessName}"  -->

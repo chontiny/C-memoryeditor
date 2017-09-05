@@ -10,6 +10,9 @@
     x:ClassModifier="internal"
     DataContext="{Binding StreamConfigViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public StreamConfig() { InitializeComponent(); }]]>
+    </x:Code>
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -56,7 +59,8 @@
                         Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                         BorderBrush="White"
                         BorderThickness="1"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" 
+                        Text="{Binding TwitchChannel, UpdateSourceTrigger=PropertyChanged}"/>
                 </StackPanel>
             </Grid>
         </Grid>
