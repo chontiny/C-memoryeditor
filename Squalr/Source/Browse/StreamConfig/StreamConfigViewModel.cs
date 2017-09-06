@@ -62,7 +62,7 @@
         /// <summary>
         /// Gets the image indicating the current connection status.
         /// </summary>
-        public BitmapImage ConnectionImage
+        public BitmapSource ConnectionImage
         {
             get
             {

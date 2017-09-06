@@ -36,7 +36,8 @@
                                 Height="16"
                                 Source="{Binding ConnectionImage}"
                                 ToolTip="Connect/Disconnect from Stream Service" />
-                            <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ConnectionOption}" />
+                            <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" 
+                                       Text="{Binding ConnectionOption}" />
                         </WrapPanel>
                     </MenuItem.Header>
                 </MenuItem>

@@ -17,22 +17,22 @@
         /// <summary>
         /// The minimum progress.
         /// </summary>
-        private const Single MinimumProgress = 0f;
+        private const Double MinimumProgress = 0.0;
 
         /// <summary>
         /// The maximum progress.
         /// </summary>
-        private const Single MaximumProgress = 100f;
+        private const Double MaximumProgress = 100.0;
 
         /// <summary>
         /// The default progress completion threshold.
         /// </summary>
-        private const Single DefaultProgressCompletionThreshold = 100f;
+        private const Double DefaultProgressCompletionThreshold = 100.0;
 
         /// <summary>
         /// The progress of this task.
         /// </summary>
-        private Single progress;
+        private Double progress;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScheduledTask" /> class.
@@ -57,6 +57,8 @@
             this.IsRepeated = isRepeated;
             this.IsTaskComplete = !trackProgress;
             this.DependencyBehavior = dependencyBehavior == null ? new DependencyBehavior() : dependencyBehavior;
+
+            this.progress = 0.0;
 
             this.ProgressCompletionThreshold = ScheduledTask.DefaultProgressCompletionThreshold;
         }
@@ -105,7 +107,7 @@
         /// <summary>
         /// Gets the progress of this task.
         /// </summary>
-        public Single Progress
+        public Double Progress
         {
             get
             {
@@ -122,7 +124,7 @@
         /// <summary>
         /// Gets or sets the progress completion threshold. Progress higher this threshold will be considered complete.
         /// </summary>
-        protected Single ProgressCompletionThreshold { get; set; }
+        protected Double ProgressCompletionThreshold { get; set; }
 
         /// <summary>
         /// Starts the repeated task.
@@ -144,7 +146,7 @@
         /// Updates the progress of this task.
         /// </summary>
         /// <param name="progress">The new progress.</param>
-        public void UpdateProgress(Single progress)
+        public void UpdateProgress(Double progress)
         {
             this.Progress = progress.Clamp(ScheduledTask.MinimumProgress, ScheduledTask.MaximumProgress);
         }
@@ -156,7 +158,7 @@
         /// <param name="total">The progress goal total.</param>
         public void UpdateProgress(Int32 subtotal, Int32 total)
         {
-            this.UpdateProgress(total <= 0 ? 0f : (((Single)subtotal / (Single)total) * ScheduledTask.MaximumProgress) + ScheduledTask.MinimumProgress);
+            this.UpdateProgress(total <= 0 ? 0.0 : (((Double)subtotal / (Double)total) * ScheduledTask.MaximumProgress) + ScheduledTask.MinimumProgress);
         }
 
         /// <summary>

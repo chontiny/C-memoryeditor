@@ -11,25 +11,27 @@
 
     internal static class SqualrApi
     {
+        public const String ApiBase = "https://www.squalr.com/api";
+
         /// <summary>
         /// The API url to get the twitch auth tokens.
         /// </summary>
-        public const String TwitchTokenApi = "https://www.squalr.com/api/TwitchTokens";
+        public const String TwitchTokenApi = SqualrApi.ApiBase + "/TwitchTokens";
 
         /// <summary>
         /// The API url to get the twitch user.
         /// </summary>
-        public const String TwitchUserApi = "https://www.squalr.com/api/TwitchUser";
+        public const String TwitchUserApi = SqualrApi.ApiBase + "/TwitchUser";
 
         /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
         /// </summary>
-        private const String ActiveCheatIdsEndpoint = "https://www.squalr.com/api/ActiveCheatIds/";
+        private const String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "/ActiveCheatIds/";
 
         /// <summary>
         /// The endpoint for querying the game lists.
         /// </summary>
-        private const String GameListEndpoint = "https://www.squalr.com/api/Games/List";
+        private const String GameListEndpoint = SqualrApi.ApiBase + "/Games/List";
 
         public static TwitchAccessTokens GetTwitchTokens(String code)
         {
@@ -88,6 +90,19 @@
             }
 
             IRestResponse response = client.Execute(request);
+
+            if (response.ResponseStatus != ResponseStatus.Completed)
+            {
+                throw new ResponseStatusException(response);
+            }
+
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    break;
+                default:
+                    throw new StatusException(response.ResponseUri, response.StatusCode);
+            }
 
             return response?.Content;
         }

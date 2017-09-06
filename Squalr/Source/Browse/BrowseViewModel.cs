@@ -6,6 +6,8 @@
     using Squalr.Source.Api.Models;
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
+    using Squalr.Source.Output;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -50,7 +52,11 @@
             this.OpenLibraryCommand = new RelayCommand(() => this.CurrentView = BrowseView.Library, () => true);
             this.OpenStreamCommand = new RelayCommand(() => this.CurrentView = BrowseView.Stream, () => true);
 
-            Task.Run(() => this.SetDefaultViewOptions());
+            Task.Run(() =>
+            {
+                this.UpdateLoginStatus();
+                this.SetDefaultViewOptions();
+            });
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
@@ -114,6 +120,7 @@
             set
             {
                 this.isLoggedIn = value;
+                this.SetDefaultViewOptions();
                 this.RaisePropertyChanged(nameof(this.IsLoggedIn));
             }
         }
@@ -125,7 +132,6 @@
         {
             if (!this.IsLoggedIn)
             {
-                this.UpdateLoginStatus();
                 this.CurrentView = BrowseView.Login;
             }
             else
@@ -141,14 +147,21 @@
         {
             TwitchAccessTokens twitchAccessTokens = SettingsViewModel.GetInstance().TwitchAccessTokens;
 
+            if (twitchAccessTokens == null || twitchAccessTokens.AccessToken.IsNullOrEmpty())
+            {
+                this.IsLoggedIn = false;
+                return;
+            }
+
             try
             {
                 TwitchUser twitchUser = SqualrApi.GetTwitchUser(twitchAccessTokens.AccessToken);
                 this.IsLoggedIn = true;
                 this.CurrentView = BrowseView.Store;
             }
-            catch
+            catch (Exception ex)
             {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to log in using stored credentials", ex);
                 this.IsLoggedIn = false;
             }
         }
