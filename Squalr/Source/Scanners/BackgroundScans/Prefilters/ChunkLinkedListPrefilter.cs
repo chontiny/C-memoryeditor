@@ -110,7 +110,7 @@
         /// </summary>
         public void BeginPrefilter()
         {
-            this.Begin();
+            this.Schedule();
         }
 
         /// <summary>

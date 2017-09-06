@@ -52,7 +52,7 @@
         /// </summary>
         private void CollectValues()
         {
-            this.ValueCollectorModel.Begin();
+            this.ValueCollectorModel.Schedule();
         }
     }
     //// End class

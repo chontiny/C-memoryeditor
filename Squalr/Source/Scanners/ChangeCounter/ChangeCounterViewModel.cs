@@ -67,7 +67,7 @@
 
         private void StartScan()
         {
-            this.ChangeCounterModel.Begin();
+            this.ChangeCounterModel.Schedule();
         }
 
         private void StopScan()

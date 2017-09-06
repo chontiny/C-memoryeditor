@@ -289,7 +289,7 @@
             allScanConstraints.AddConstraint(this.CurrentScanConstraint);
 
             ManualScannerModel.SetScanConstraintManager(allScanConstraints);
-            ManualScannerModel.Begin();
+            ManualScannerModel.Schedule();
         }
 
         /// <summary>

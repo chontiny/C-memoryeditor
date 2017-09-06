@@ -162,8 +162,8 @@
         private void StartBackgroundServices()
         {
             SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
-            DotNetObjectCollector.GetInstance().Begin();
-            AddressResolver.GetInstance().Begin();
+            DotNetObjectCollector.GetInstance().Schedule();
+            AddressResolver.GetInstance().Schedule();
             AnalyticsService.GetInstance().Start();
 
             AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");

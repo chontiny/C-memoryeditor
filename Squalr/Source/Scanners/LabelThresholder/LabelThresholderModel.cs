@@ -98,7 +98,7 @@
                 }
             }
 
-            this.Begin();
+            this.Schedule();
         }
 
         public void ApplyThreshold()

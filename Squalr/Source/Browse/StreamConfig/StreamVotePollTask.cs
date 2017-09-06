@@ -21,7 +21,7 @@
             this.UpdateAction = updateAction;
             this.UpdateInterval = StreamVotePollTask.RefreshInterval;
 
-            this.Begin();
+            this.Schedule();
         }
 
         /// <summary>

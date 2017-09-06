@@ -104,7 +104,7 @@
 
         private void StartScan()
         {
-            this.InputCorrelatorModel.Begin();
+            this.InputCorrelatorModel.Schedule();
         }
 
         private void StopScan()
