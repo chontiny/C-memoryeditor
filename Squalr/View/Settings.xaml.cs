@@ -1,12 +1,10 @@
 ﻿namespace Squalr.View
 {
     using Source.Controls;
-    using Source.UserSettings;
+    using Squalr.Properties;
     using System;
-    using System.Diagnostics;
-    using System.Windows;
     using System.Windows.Controls;
-    using System.Windows.Navigation;
+
     /// <summary>
     /// Interaction logic for Settings.xaml.
     /// </summary>
@@ -18,18 +16,6 @@
         public Settings()
         {
             this.InitializeComponent();
-
-            this.twitchUsername.Text = this.SettingsViewModel.TwitchUsername;
-            this.twitchUsername.TextChanged += TwitchUserNameTextChanged;
-
-            this.twitchChannel.Text = this.SettingsViewModel.TwitchChannel;
-            this.twitchChannel.TextChanged += TwitchChannelTextChanged;
-
-            this.twitchAccessToken.Password = this.SettingsViewModel.TwitchAccessToken;
-            this.twitchAccessToken.PasswordChanged += TwitchAccessTokenPasswordChanged;
-
-            this.overlayPort.Text = this.SettingsViewModel.OverlayPort.ToString();
-            this.overlayPort.TextChanged += this.OverlayPortTextChanged;
 
             // Windows Forms hosting -- TODO: Phase this out
             this.AlignmentHexDecBox = new HexDecTextBox(typeof(Int32));
@@ -261,36 +247,6 @@
             }
 
             this.SettingsViewModel.InputCorrelatorTimeOutInterval = (Int32)value;
-        }
-
-        private void TwitchUserNameTextChanged(Object sender, TextChangedEventArgs e)
-        {
-            this.SettingsViewModel.TwitchUsername = this.twitchUsername.Text;
-        }
-
-        private void TwitchChannelTextChanged(Object sender, TextChangedEventArgs e)
-        {
-            this.SettingsViewModel.TwitchChannel = this.twitchChannel.Text;
-        }
-
-        private void TwitchAccessTokenPasswordChanged(Object sender, RoutedEventArgs e)
-        {
-            this.SettingsViewModel.TwitchAccessToken = this.twitchAccessToken.Password;
-        }
-
-        private void OverlayPortTextChanged(Object sender, TextChangedEventArgs e)
-        {
-            Int32 value;
-
-            if (Int32.TryParse(this.overlayPort.Text, out value))
-            {
-                this.SettingsViewModel.OverlayPort = value;
-            }
-        }
-
-        private void HyperlinkRequestNavigate(Object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start(e.Uri.AbsoluteUri);
         }
     }
     //// End class

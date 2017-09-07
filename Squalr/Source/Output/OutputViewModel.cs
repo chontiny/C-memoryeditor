@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Output
 {
     using Docking;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Mvvm.Command;
     using Squalr.Source.Utils.Extensions;
     using System;
     using System.IO;

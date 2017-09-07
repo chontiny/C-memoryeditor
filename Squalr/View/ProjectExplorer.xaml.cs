@@ -366,34 +366,11 @@
             projectNode.IsChecked = projectItem.IsActivated;
             String hotkeyString = projectItem.HotKey?.ToString();
             projectNode.EntryDescription = projectItem.Description;
-            projectNode.EntryStreamCommand = String.IsNullOrEmpty(projectItem.StreamCommand) ? String.Empty : "[" + projectItem.StreamCommand + "]";
             projectNode.EntryHotkey = String.IsNullOrEmpty(hotkeyString) ? String.Empty : "[" + hotkeyString + "]";
-            projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).Value?.ToString() : String.Empty;
+            projectNode.EntryValuePreview = (projectItem is AddressItem) ? (projectItem as AddressItem).AddressValue?.ToString() : String.Empty;
             projectNode.IsChecked = projectItem.IsActivated;
 
-            Bitmap image = null;
-
-            if (projectItem is AddressItem || projectItem is ScriptItem)
-            {
-                switch (projectItem.Category)
-                {
-                    case ProjectItem.ProjectItemCategory.Glitch:
-                        image = ImageUtils.BitmapImageToBitmap(Images.Glitch);
-                        break;
-                    case ProjectItem.ProjectItemCategory.Curse:
-                        image = ImageUtils.BitmapImageToBitmap(Images.Curse);
-                        break;
-                    case ProjectItem.ProjectItemCategory.Buff:
-                        image = ImageUtils.BitmapImageToBitmap(Images.Heart);
-                        break;
-                    case ProjectItem.ProjectItemCategory.Miscellaneous:
-                        image = ImageUtils.BitmapImageToBitmap(Images.Cog);
-                        break;
-                    default:
-                        image = ImageUtils.BitmapImageToBitmap(Images.CollectValues);
-                        break;
-                }
-            }
+            Bitmap image = ImageUtils.BitmapImageToBitmap(Images.CollectValues);
 
             if (projectItem is FolderItem)
             {
@@ -404,7 +381,7 @@
 
             if (projectItem is AddressItem)
             {
-                projectNode.EntryValuePreview = (projectItem as AddressItem).Value?.ToString() ?? String.Empty;
+                projectNode.EntryValuePreview = (projectItem as AddressItem).AddressValue?.ToString() ?? String.Empty;
             }
 
             if (projectItem is FolderItem)
@@ -650,9 +627,9 @@
                 AddressItem addressItem = projectItem as AddressItem;
                 dynamic result = valueEditor.EditValue(null, null, addressItem);
 
-                if (CheckSyntax.CanParseValue(addressItem.ElementType, result?.ToString()))
+                if (CheckSyntax.CanParseValue(addressItem.DataType, result?.ToString()))
                 {
-                    addressItem.Value = result;
+                    addressItem.AddressValue = result;
                 }
             }
             else if (projectItem is ScriptItem)
@@ -797,14 +774,6 @@
             entryDescription.DrawText += this.EntryDescriptionDrawText;
             entryDescription.IsVisibleValueNeeded += EntryDescriptionIsVisibleValueNeeded;
 
-            NodeTextBox entryStreamCommand = new NodeTextBox();
-            entryStreamCommand.DataPropertyName = "EntryStreamCommand";
-            entryStreamCommand.IncrementalSearchEnabled = true;
-            entryStreamCommand.LeftMargin = 0;
-            entryStreamCommand.ParentColumn = null;
-            entryStreamCommand.DrawText += this.EntryStreamCommandDrawText;
-            entryStreamCommand.IsVisibleValueNeeded += this.EntryStreamCommandIsVisibleValueNeeded;
-
             NodeTextBox entryHotkey = new NodeTextBox();
             entryHotkey.DataPropertyName = "EntryHotkey";
             entryHotkey.IncrementalSearchEnabled = true;
@@ -869,7 +838,6 @@
             this.projectExplorerTreeView.NodeControls.Add(entryCheckBox);
             this.projectExplorerTreeView.NodeControls.Add(entryIcon);
             this.projectExplorerTreeView.NodeControls.Add(entryDescription);
-            this.projectExplorerTreeView.NodeControls.Add(entryStreamCommand);
             this.projectExplorerTreeView.NodeControls.Add(entryHotkey);
             this.projectExplorerTreeView.NodeControls.Add(entryValuePreview);
             this.projectExplorerTreeView.SelectionMode = TreeSelectionMode.Multi;
@@ -907,7 +875,7 @@
 
             if (projectItem is AddressItem)
             {
-                if (String.IsNullOrWhiteSpace((projectItem as AddressItem).Value?.ToString()))
+                if (String.IsNullOrWhiteSpace((projectItem as AddressItem).AddressValue?.ToString()))
                 {
                     e.Value = false;
                     return;
@@ -942,25 +910,6 @@
             }
 
             if (String.IsNullOrWhiteSpace(projectItem.HotKey?.ToString()))
-            {
-                e.Value = false;
-            }
-            else
-            {
-                e.Value = true;
-            }
-        }
-
-        private void EntryStreamCommandIsVisibleValueNeeded(Object sender, NodeControlValueEventArgs e)
-        {
-            ProjectItem projectItem = GetProjectItemFromNode(e.Node);
-
-            if (projectItem == null)
-            {
-                return;
-            }
-
-            if (String.IsNullOrWhiteSpace(projectItem.StreamCommand))
             {
                 e.Value = false;
             }

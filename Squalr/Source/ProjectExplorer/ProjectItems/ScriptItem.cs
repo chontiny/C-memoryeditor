@@ -2,7 +2,7 @@
 {
     using Controls;
     using Editors.ScriptEditor;
-    using ScriptEngine;
+    using Scripting;
     using Squalr.Source.Analytics;
     using Squalr.Source.Output;
     using System;
@@ -116,10 +116,8 @@
         public override ProjectItem Clone()
         {
             ScriptItem clone = new ScriptItem();
-            clone.category = this.Category;
             clone.description = this.Description;
             clone.extendedDescription = this.ExtendedDescription;
-            clone.streamIconPath = this.StreamIconPath;
             clone.parent = this.Parent;
             clone.script = this.Script;
             clone.isCompiled = this.IsCompiled;

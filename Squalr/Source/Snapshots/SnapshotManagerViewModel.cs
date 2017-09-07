@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Docking;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Mvvm.Command;
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;

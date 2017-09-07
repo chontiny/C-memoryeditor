@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Docking
 {
-    using Mvvm;
+    using GalaSoft.MvvmLight;
     using System;
     using System.Windows.Media;
 

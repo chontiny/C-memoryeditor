@@ -4,12 +4,12 @@
     using Docking;
     using Engine.AddressResolver;
     using Engine.AddressResolver.DotNet;
-    using Mvvm;
-    using Mvvm.Command;
+    using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight.Command;
     using Output;
     using ProjectExplorer;
+    using Squalr.Properties;
     using Squalr.Source.Scanners.BackgroundScans.Prefilters;
-    using Squalr.Source.StreamWeaver.Table;
     using System;
     using System.Collections.Generic;
     using System.Deployment.Application;
@@ -19,12 +19,11 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
-    using UserSettings;
     using Xceed.Wpf.AvalonDock;
     using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
     /// <summary>
-    /// Main view model
+    /// Main view model.
     /// Note: There are several MVVM responsability violations in this class, but these are isolated and acceptable.
     /// </summary>
     internal class MainViewModel : ViewModelBase
@@ -61,7 +60,7 @@
         /// </summary>
         private MainViewModel()
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr Started");
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr started");
 
             this.tools = new HashSet<ToolViewModel>();
 
@@ -163,13 +162,12 @@
         private void StartBackgroundServices()
         {
             SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
-            DotNetObjectCollector.GetInstance().Begin();
-            AddressResolver.GetInstance().Begin();
+            DotNetObjectCollector.GetInstance().Schedule();
+            AddressResolver.GetInstance().Schedule();
             AnalyticsService.GetInstance().Start();
-            StreamTableViewModel.GetInstance().RebuildStreamIconList();
 
             AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background Services Started");
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background services started");
         }
 
         /// <summary>
@@ -220,7 +218,7 @@
         }
 
         /// <summary>
-        /// Displays the change log to the user if there has been a recent update
+        /// Displays the change log to the user if there has been a recent update.
         /// </summary>
         private void DisplayChangeLog()
         {
@@ -231,8 +229,9 @@
                     return;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Error displaying change log", ex);
                 return;
             }
 

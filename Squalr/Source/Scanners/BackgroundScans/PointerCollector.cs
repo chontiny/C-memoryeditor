@@ -3,12 +3,12 @@
     using ActionScheduler;
     using Engine;
     using Snapshots;
+    using Squalr.Properties;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using UserSettings;
     using Utils.DataStructures;
     using Utils.Extensions;
 

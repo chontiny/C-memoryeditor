@@ -5,7 +5,6 @@
     using Editors.TextEditor;
     using Engine.Input.HotKeys;
     using SharpDX.DirectInput;
-    using Squalr.Source.Editors.StreamIconEditor;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -20,14 +19,12 @@
     [KnownType(typeof(FolderItem))]
     [KnownType(typeof(ScriptItem))]
     [KnownType(typeof(AddressItem))]
+    [KnownType(typeof(PointerItem))]
+    [KnownType(typeof(DotNetItem))]
+    [KnownType(typeof(JavaItem))]
     [DataContract]
     internal abstract class ProjectItem : INotifyPropertyChanged, IDisposable
     {
-        /// <summary>
-        /// The character limit for stream commands
-        /// </summary>
-        public const Int32 StreamCommandCharacterLimit = 6;
-
         /// <summary>
         /// The parent of this project item.
         /// </summary>
@@ -39,12 +36,6 @@
         /// </summary>
         [Browsable(false)]
         protected String description;
-
-        /// <summary>
-        /// The category of this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected ProjectItemCategory category;
 
         /// <summary>
         /// The extended description of this project item.
@@ -63,18 +54,6 @@
         /// </summary>
         [Browsable(false)]
         protected Hotkey hotkey;
-
-        /// <summary>
-        /// The stream icon path associated with this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected String streamIconPath;
-
-        /// <summary>
-        /// The stream command associated with this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected String streamCommand;
 
         /// <summary>
         /// A value indicating whether this project item has been activated.
@@ -107,33 +86,6 @@
         /// Occurs after a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-
-
-        /// <summary>
-        /// Defines the category for a project item.
-        /// </summary>
-        public enum ProjectItemCategory
-        {
-            /// <summary>
-            /// No specific category.
-            /// </summary>
-            Miscellaneous,
-
-            /// <summary>
-            /// A cheat that causes glitches.
-            /// </summary>
-            Glitch,
-
-            /// <summary>
-            /// A detrimental cheat.
-            /// </summary>
-            Curse,
-
-            /// <summary>
-            /// A useful cheat for standard gameplay.
-            /// </summary>
-            Buff,
-        }
 
         /// <summary>
         /// Gets or sets the parent of this project item.
@@ -180,32 +132,6 @@
                 this.description = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Description));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the category of this project item.
-        /// </summary>
-        [DataMember]
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Category"), Description("The category for this project item")]
-        public ProjectItemCategory Category
-        {
-            get
-            {
-                return this.category;
-            }
-
-            set
-            {
-                if (this.category == value)
-                {
-                    return;
-                }
-
-                this.category = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Category));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -288,58 +214,6 @@
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.HotKey));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the stream icon path for this project item.
-        /// </summary>
-        [DataMember]
-        [Editor(typeof(StreamIconEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Icon"), Description("The stream icon for this item")]
-        public String StreamIconPath
-        {
-            get
-            {
-                return this.streamIconPath;
-            }
-
-            set
-            {
-                if (this.streamIconPath == value)
-                {
-                    return;
-                }
-
-                this.streamIconPath = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.StreamIconPath));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the stream command for this project item.
-        /// </summary>
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Command"), Description("The stream command for this item. Limit of 6 characters.")]
-        public String StreamCommand
-        {
-            get
-            {
-                return this.streamCommand;
-            }
-
-            set
-            {
-                if (this.streamCommand == value)
-                {
-                    return;
-                }
-
-                this.streamCommand = value?.Substring(0, Math.Min(value.Length, ProjectItem.StreamCommandCharacterLimit)).ToLower();
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.StreamCommand));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -452,15 +326,6 @@
             this.hotkey = hotkey;
 
             this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
-        }
-
-        /// <summary>
-        /// Updates the stream command, bypassing setters to avoid triggering view updates.
-        /// </summary>
-        /// <param name="streamCommand">The stream command for this project item.</param>
-        public void LoadStreamCommand(String streamCommand)
-        {
-            this.streamCommand = streamCommand;
         }
 
         public void Dispose()

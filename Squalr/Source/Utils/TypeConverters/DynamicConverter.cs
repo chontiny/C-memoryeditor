@@ -51,7 +51,7 @@
 
             if (context.Instance.GetType().IsAssignableFrom(typeof(AddressItem)))
             {
-                valueType = (context.Instance as AddressItem)?.ElementType;
+                valueType = (context.Instance as AddressItem)?.DataType;
             }
 
             if (context.Instance.GetType().IsAssignableFrom(typeof(AddressItem)))

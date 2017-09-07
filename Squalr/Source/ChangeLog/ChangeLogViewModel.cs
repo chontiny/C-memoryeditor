@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.ChangeLog
 {
-    using Mvvm;
+    using GalaSoft.MvvmLight;
     using System;
     using System.Reflection;
     using System.Threading;
@@ -27,7 +27,7 @@
         /// </summary>
         private ChangeLogViewModel()
         {
-            this.changeLog = new Squalr.Content.ChangeLog().TransformText();
+            this.changeLog = new Content.ChangeLog().TransformText();
         }
 
         /// <summary>

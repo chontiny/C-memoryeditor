@@ -59,29 +59,11 @@
     <Setting Name="IsUserMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="TwitchUsername" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="TwitchAccessToken" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="NumberOfGlitches" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2</Value>
-    </Setting>
-    <Setting Name="NumberOfCurses" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2</Value>
-    </Setting>
-    <Setting Name="NumberOfBuffs" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">4</Value>
-    </Setting>
-    <Setting Name="NumberOfMiscellaneous" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">2</Value>
-    </Setting>
     <Setting Name="TwitchChannel" Type="System.String" Scope="User">
       <Value Profile="(Default)">ScriptKittiez</Value>
     </Setting>
-    <Setting Name="OverlayPort" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">6969</Value>
+    <Setting Name="TwitchAccessTokens" Type="System.String" Scope="User">
+      <Value Profile="(Default)">{}</Value>
     </Setting>
   </Settings>
 </SettingsFile>

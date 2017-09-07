@@ -8,14 +8,11 @@
     {
         public enum CategoryType
         {
-            [Description("Stream")]
-            Stream = 0,
-
             [Description("Common")]
-            Common = 1,
+            Common = 0,
 
             [Description("Advanced")]
-            Advanced = 2,
+            Advanced = 1,
         }
 
         private const Char NonPrintableChar = '\t';

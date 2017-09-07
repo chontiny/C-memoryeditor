@@ -31,11 +31,10 @@
         /// Initializes a new instance of the <see cref="ProjectItemHotkey" /> class.
         /// </summary>
         /// <param name="hotkey">The initial hotkey bound to the project item.</param>
-        public ProjectItemHotkey(Hotkey hotkey, String streamCommand, Guid projectItemGuid)
+        public ProjectItemHotkey(Hotkey hotkey, Guid projectItemGuid)
         {
             this.ProjectItemGuid = projectItemGuid;
             this.Hotkey = hotkey;
-            this.StreamCommand = streamCommand;
         }
 
         /// <summary>

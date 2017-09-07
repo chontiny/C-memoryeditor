@@ -3,14 +3,14 @@
     using Controls;
     using Docking;
     using Engine;
-    using Engine.AddressResolver;
     using Engine.OperatingSystems;
+    using GalaSoft.MvvmLight.Command;
     using Main;
     using Microsoft.Win32;
-    using Mvvm.Command;
     using Output;
     using ProjectItems;
     using PropertyViewer;
+    using Squalr.Properties;
     using Squalr.Source.Analytics;
     using System;
     using System.Collections.Generic;
@@ -22,7 +22,6 @@
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
-    using UserSettings;
     using Utils.Extensions;
 
     /// <summary>
@@ -90,10 +89,10 @@
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
             this.ImportProjectCommand = new RelayCommand(() => this.ImportProject(), () => true);
             this.ExportProjectCommand = new RelayCommand(() => this.ExportProject(), () => true);
-            this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(filename), (filename) => true);
+            this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(false, filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
             this.AddNewFolderItemCommand = new RelayCommand(() => this.AddNewFolderItem(), () => true);
-            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewAddressItem(), () => true);
+            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
             this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
@@ -267,14 +266,6 @@
         }
 
         /// <summary>
-        /// Disables all active project items with stream commands.
-        /// </summary>
-        public void DisableAllStreamProjectItems()
-        {
-            this.ProjectRoot.Flatten().Select(item => item).Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand)).ForEach(item => item.IsActivated = false);
-        }
-
-        /// <summary>
         /// Prompts the user to save the project if there are unsaved changes.
         /// </summary>
         /// <returns>Returns false if canceled, otherwise true.</returns>
@@ -325,11 +316,10 @@
                 {
                     this.AddNewProjectItems(
                         addToSelected: true,
-                        projectItems: new AddressItem(
+                        projectItems: new PointerItem(
                             baseAddress: baseAddress.Subtract(module.BaseAddress),
                             elementType: elementType,
-                            resolveType: AddressResolver.ResolveTypeEnum.Module,
-                            baseIdentifier: module.Name));
+                            moduleName: module.Name));
 
                     return;
                 }
@@ -337,7 +327,7 @@
 
             this.AddNewProjectItems(
                 addToSelected: true,
-                projectItems: new AddressItem(
+                projectItems: new PointerItem(
                     baseAddress: baseAddress,
                     elementType: elementType));
         }
@@ -435,9 +425,9 @@
         /// <summary>
         /// Adds a new address to the project items.
         /// </summary>
-        private void AddNewAddressItem()
+        private void AddNewPointerItem()
         {
-            this.AddNewProjectItems(true, new AddressItem());
+            this.AddNewProjectItems(true, new PointerItem());
         }
 
         /// <summary>
@@ -562,7 +552,7 @@
         /// Imports a project from disk, adding the project items to the current project.
         /// </summary>
         /// <param name="filename">The file path of the project to import.</param>
-        private void ImportProject(String filename = null)
+        private void ImportProject(Boolean resetGuids = true, String filename = null)
         {
             // Ask for a specific file if one was not explicitly provided
             if (filename == null || filename == String.Empty)
@@ -638,7 +628,7 @@
             }
 
             // Randomize the guid for imported project items, preventing possible conflicts
-            if (importedProjectRoot != null)
+            if (resetGuids && importedProjectRoot != null)
             {
                 foreach (ProjectItem child in importedProjectRoot.Flatten())
                 {
@@ -691,7 +681,7 @@
                 using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Create, FileAccess.Write))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
-                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Select(x => new ProjectItemHotkey(x.HotKey, x.StreamCommand, x.Guid)).ToArray();
+                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Select(x => new ProjectItemHotkey(x.HotKey, x.Guid)).ToArray();
                     serializer.WriteObject(fileStream, hotkeys);
                 }
             }
@@ -789,8 +779,7 @@
                     binding => binding.ProjectItemGuid,
                     item => item.Guid,
                     (binding, item) => new { binding = binding, item = item })
-                .ForEach(x => x.item.LoadHotkey(x.binding.Hotkey))
-                .ForEach(x => x.item.LoadStreamCommand(x.binding.StreamCommand));
+                .ForEach(x => x.item.LoadHotkey(x.binding.Hotkey));
         }
 
         /// <summary>
