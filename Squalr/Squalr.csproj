@@ -301,9 +301,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Include="Scripting.evaluator.cs" />
-    <Compile Include="Scripting.Extensions.cs" />
-    <Compile Include="Scripting.native.cs" />
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\Api\Models\TwitchUser.cs" />
