@@ -41,6 +41,7 @@
             }
 
             // Start SharpCli MSIL patching
+            /*
             ProcessStartInfo processInfoSharpCli = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), SharpCliExecutable));
             processInfoSharpCli.UseShellExecute = false;
             processInfoSharpCli.RedirectStandardOutput = true;
@@ -52,6 +53,7 @@
             sharpCli.BeginOutputReadLine();
             sharpCli.BeginErrorReadLine();
             sharpCli.WaitForExit();
+            */
 
             // Sign all binaries
             ProcessStartInfo processInfoCommandPrompt = new ProcessStartInfo(CommandPrompt);

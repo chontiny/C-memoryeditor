@@ -18,19 +18,19 @@
         /// <param name="falseValue">The value when the converter is false.</param>
         public BooleanConverter(T trueValue, T falseValue)
         {
-            this.TrueConversionValue = trueValue;
-            this.FalseConversionValue = falseValue;
+            this.True = trueValue;
+            this.False = falseValue;
         }
 
         /// <summary>
         /// Gets or sets the conversion value for a true value.
         /// </summary>
-        public T TrueConversionValue { get; set; }
+        public T True { get; set; }
 
         /// <summary>
         /// Gets or sets the conversion value for a false value.
         /// </summary>
-        public T FalseConversionValue { get; set; }
+        public T False { get; set; }
 
         /// <summary> 
         /// Converts a value. 
@@ -44,7 +44,7 @@
         /// </returns> 
         public virtual Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
-            return value is Boolean && ((Boolean)value) ? this.TrueConversionValue : this.FalseConversionValue;
+            return value is Boolean && ((Boolean)value) ? this.True : this.False;
         }
 
         /// <summary> 
@@ -59,7 +59,7 @@
         /// </returns> 
         public virtual Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
-            return value is T && EqualityComparer<T>.Default.Equals((T)value, this.TrueConversionValue);
+            return value is T && EqualityComparer<T>.Default.Equals((T)value, this.True);
         }
     }
     //// End class
