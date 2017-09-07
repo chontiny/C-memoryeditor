@@ -22,7 +22,7 @@
     <Window.Resources>
         <converters:IconConverter x:Key="IconConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToHiddenConverter" True="Collapsed" False="Hidden" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToHiddenConverter" True="Visible" False="Hidden"/>
     </Window.Resources>
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />

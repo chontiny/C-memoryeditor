@@ -306,11 +306,12 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
+    <Compile Include="Source\Api\Models\Game.cs" />
     <Compile Include="Source\Api\Models\TwitchUser.cs" />
     <Compile Include="Source\Api\Models\TwitchAccessTokens.cs" />
-    <Compile Include="Source\Api\NotFoundException.cs" />
-    <Compile Include="Source\Api\StatusException.cs" />
-    <Compile Include="Source\Api\ResponseStatusException.cs" />
+    <Compile Include="Source\Api\Exceptions\NotFoundException.cs" />
+    <Compile Include="Source\Api\Exceptions\StatusException.cs" />
+    <Compile Include="Source\Api\Exceptions\ResponseStatusException.cs" />
     <Compile Include="Source\Api\SqualrApi.cs" />
     <Compile Include="Source\Browse\BrowseView.cs" />
     <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />

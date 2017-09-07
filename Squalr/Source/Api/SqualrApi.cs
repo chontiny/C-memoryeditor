@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Api
 {
     using RestSharp;
+    using Squalr.Source.Api.Exceptions;
     using Squalr.Source.Api.Models;
     using System;
     using System.Collections.Generic;
@@ -75,6 +76,22 @@
                     StreamActivationIds streamActivationIds = serializer.ReadObject(memoryStream) as StreamActivationIds;
 
                     return streamActivationIds;
+                }
+            }
+        }
+
+        public static Game[] GetGameList()
+        {
+            String endpoint = SqualrApi.GameListEndpoint;
+
+            using (WebClient webclient = new WebClient())
+            {
+                using (MemoryStream memoryStream = new MemoryStream(webclient.DownloadData(endpoint)))
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Game[]));
+                    Game[] games = serializer.ReadObject(memoryStream) as Game[];
+
+                    return games;
                 }
             }
         }

@@ -6,60 +6,21 @@
     [DataContract]
     internal class TwitchUser
     {
-        [DataMember]
-        private String name;
-
-        [DataMember]
-        private String displayName;
-
-        [DataMember]
-        private String email;
-
         public TwitchUser()
         {
-            this.name = String.Empty;
-            this.displayName = String.Empty;
-            this.email = String.Empty;
+            this.Name = String.Empty;
+            this.DisplayName = String.Empty;
+            this.Email = String.Empty;
         }
 
-        public String Name
-        {
-            get
-            {
-                return this.name;
-            }
+        [DataMember(Name = "name")]
+        public String Name { get; set; }
 
-            private set
-            {
-                this.name = value;
-            }
-        }
+        [DataMember(Name = "displayName")]
+        public String DisplayName { get; set; }
 
-        public String DisplayName
-        {
-            get
-            {
-                return this.displayName;
-            }
-
-            private set
-            {
-                this.displayName = value;
-            }
-        }
-
-        public String Email
-        {
-            get
-            {
-                return this.email;
-            }
-
-            private set
-            {
-                this.email = value;
-            }
-        }
+        [DataMember(Name = "email")]
+        public String Email { get; set; }
     }
     //// End class
 }

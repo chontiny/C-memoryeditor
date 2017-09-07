@@ -1,5 +1,7 @@
 ﻿namespace Squalr.Source.Browse.Store
 {
+    using Squalr.Source.Api;
+    using Squalr.Source.Api.Models;
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
     using System;
@@ -28,6 +30,8 @@
         private StoreViewModel() : base("Store")
         {
             this.ContentId = StoreViewModel.ToolContentId;
+
+            Game[] GameList = SqualrApi.GetGameList();
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
