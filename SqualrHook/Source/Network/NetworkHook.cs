@@ -15,6 +15,9 @@
         /// </summary>
         public NetworkHook(HookClientBase hookClient)
         {
+            // Do not disable networking for now
+            return;
+
             this.HookClient = hookClient;
 
             try
