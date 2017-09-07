@@ -1,11 +1,11 @@
 ﻿<Window
     x:Class="Squalr.View.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:local="clr-namespace:Squalr.Source.Docking"
-    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:view="clr-namespace:Squalr.View"
     x:Name="SqualrWindow"
@@ -21,7 +21,8 @@
     </x:Code>
     <Window.Resources>
         <converters:IconConverter x:Key="IconConverter" />
-        <avalonDock:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToHiddenConverter" True="Collapsed" False="Hidden" />
     </Window.Resources>
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
@@ -85,7 +86,7 @@
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
                     Text="* "
-                    Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <TextBlock
                     Grid.Column="2"
                     VerticalAlignment="Center"
@@ -504,7 +505,7 @@
                         <Style TargetType="{x:Type avalonDock:LayoutAnchorableItem}">
                             <Setter Property="Title" Value="{Binding Model.Title}" />
                             <Setter Property="IconSource" Value="{Binding Model.IconSource}" />
-                            <Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
+                            <Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToHiddenConverter}}" />
                             <Setter Property="ContentId" Value="{Binding Model.ContentId}" />
                             <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}" />
                             <Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}" />

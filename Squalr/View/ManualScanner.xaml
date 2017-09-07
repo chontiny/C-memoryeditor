@@ -14,7 +14,7 @@
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid.Resources>
             <converters:IconConverter x:Key="IconConverter" />
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </Grid.Resources>
         <Grid>
             <Grid.RowDefinitions>
@@ -378,7 +378,7 @@
             <ScrollViewer
                 Grid.Row="3"
                 VerticalScrollBarVisibility="Auto"
-                Visibility="{Binding HasNoConstraints, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{Binding HasNoConstraints, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
                     <ListView.Resources>
                         <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />

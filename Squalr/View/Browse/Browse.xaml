@@ -18,7 +18,7 @@
     </x:Code>
     <Grid>
         <Grid.Resources>
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:BrowseViewToVisibilityConverter x:Key="BrowseViewToVisibilityConverter" />
         </Grid.Resources>
         <Grid.Background>
