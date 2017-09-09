@@ -34,6 +34,21 @@
         /// </summary>
         private const String GameListEndpoint = SqualrApi.ApiBase + "/Games/List";
 
+        /// <summary>
+        /// The endpoint for searching games.
+        /// </summary>
+        private const String GameSearchEndpoint = SqualrApi.ApiBase + "/Games/Search";
+
+        /// <summary>
+        /// The endpoint for querying the library lists.
+        /// </summary>
+        private const String LibraryListEndpoint = SqualrApi.ApiBase + "/Library";
+
+        /// <summary>
+        /// The endpoint for querying the available and unavailable cheats cheats.
+        /// </summary>
+        private const String AvailableCheatsEndpoint = SqualrApi.ApiBase + "/Cheats";
+
         public static TwitchAccessTokens GetTwitchTokens(String code)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
@@ -92,6 +107,60 @@
                     Game[] games = serializer.ReadObject(memoryStream) as Game[];
 
                     return games;
+                }
+            }
+        }
+
+        public static Game[] SearchGameList(String searchTerm)
+        {
+            String endpoint = SqualrApi.GameSearchEndpoint;
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("search_term", searchTerm);
+
+            using (WebClient webclient = new WebClient())
+            {
+                using (MemoryStream memoryStream = new MemoryStream(webclient.DownloadData(endpoint)))
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Game[]));
+                    Game[] games = serializer.ReadObject(memoryStream) as Game[];
+
+                    return games;
+                }
+            }
+        }
+
+        public static Library[] GetLibraryList(Int32 gameId)
+        {
+            String endpoint = SqualrApi.LibraryListEndpoint;
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("game_id", gameId.ToString());
+
+            using (WebClient webclient = new WebClient())
+            {
+                using (MemoryStream memoryStream = new MemoryStream(webclient.DownloadData(endpoint)))
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Library[]));
+                    Library[] libraries = serializer.ReadObject(memoryStream) as Library[];
+
+                    return libraries;
+                }
+            }
+        }
+
+        public static Library[] GetCheatList(Int32 libraryId)
+        {
+            String endpoint = SqualrApi.LibraryListEndpoint;
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("library_id", libraryId.ToString());
+
+            using (WebClient webclient = new WebClient())
+            {
+                using (MemoryStream memoryStream = new MemoryStream(webclient.DownloadData(endpoint)))
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(Library[]));
+                    Library[] libraries = serializer.ReadObject(memoryStream) as Library[];
+
+                    return libraries;
                 }
             }
         }

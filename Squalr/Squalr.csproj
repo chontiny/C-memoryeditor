@@ -306,6 +306,7 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
+    <Compile Include="Source\Api\Models\Library.cs" />
     <Compile Include="Source\Api\Models\Game.cs" />
     <Compile Include="Source\Api\Models\TwitchUser.cs" />
     <Compile Include="Source\Api\Models\TwitchAccessTokens.cs" />
@@ -620,6 +621,10 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
+    <Page Include="View\Browse\_GameList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Browse\LoginScreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -759,6 +764,10 @@
     <Page Include="View\Style\DropDownAutoClose.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Style\TextBoxPlaceHolder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Style\VerticalSeparator.xaml">
       <SubType>Designer</SubType>

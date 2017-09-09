@@ -66,7 +66,7 @@
         /// <returns>The size of the largest primitive type.</returns>
         public static Int32 GetLargestPrimitiveSize()
         {
-            return PrimitiveTypes.GetScannablePrimitiveTypes().Select(x => Marshal.SizeOf(x)).Max();
+            return PrimitiveTypes.GetScannablePrimitiveTypes().Select(x => Marshal.SizeOf(x.Type)).Max();
         }
     }
     //// End class

@@ -19,6 +19,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/DropDownContextMenu.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/FlatComboBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/ScrollViewer.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/TextBoxPlaceHolder.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/VerticalSeparator.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

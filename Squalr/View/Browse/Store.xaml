@@ -5,24 +5,48 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:local="clr-namespace:Squalr.View"
     x:Name="SqualrStore"
-    d:DesignHeight="256"
-    d:DesignWidth="256"
+    d:DesignHeight="480"
+    d:DesignWidth="312"
     x:ClassModifier="internal"
     DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <x:Code>
         <![CDATA[ public Store() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-        <Grid.Resources>
-            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        </Grid.Resources>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-        </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
-            <TextBlock Foreground="White">STORE</TextBlock>
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <Border>
+        <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <TextBox Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                         Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                         Style="{StaticResource PlaceHolder}"
+                         Tag="Search Games"
+                         Margin="0 0 0 4"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                            BorderThickness="1">
+                            <local:GameList/>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Grid>
         </Grid>
-    </Grid>
+    </Border>
+
 </UserControl>

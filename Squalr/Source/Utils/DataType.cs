@@ -28,7 +28,7 @@
             this.Type = t;
         }
 
-        private Type Type { get; set; }
+        public Type Type { get; set; }
 
         static public implicit operator Type(DataType dataType)
         {
