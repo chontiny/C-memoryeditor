@@ -4,9 +4,9 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class TwitchAccessTokens
+    internal class AccessTokens
     {
-        public TwitchAccessTokens()
+        public AccessTokens()
         {
             this.AccessToken = String.Empty;
             this.RefreshToken = String.Empty;

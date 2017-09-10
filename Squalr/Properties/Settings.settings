@@ -62,7 +62,7 @@
     <Setting Name="TwitchChannel" Type="System.String" Scope="User">
       <Value Profile="(Default)">ScriptKittiez</Value>
     </Setting>
-    <Setting Name="TwitchAccessTokens" Type="System.String" Scope="User">
+    <Setting Name="AccessTokens" Type="System.String" Scope="User">
       <Value Profile="(Default)">{}</Value>
     </Setting>
   </Settings>

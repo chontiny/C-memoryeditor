@@ -36,6 +36,11 @@
         private Boolean isLoggedIn;
 
         /// <summary>
+        /// The active user.
+        /// </summary>
+        private User activeUser;
+
+        /// <summary>
         /// The current browse view.
         /// </summary>
         private BrowseView currentView;
@@ -108,6 +113,23 @@
         }
 
         /// <summary>
+        /// Gets or sets the active user.
+        /// </summary>
+        public User ActiveUser
+        {
+            get
+            {
+                return this.activeUser;
+            }
+
+            set
+            {
+                this.activeUser = value;
+                this.RaisePropertyChanged(nameof(this.ActiveUser));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the user is logged into the site.
         /// </summary>
         public Boolean IsLoggedIn
@@ -145,9 +167,9 @@
         /// </summary>
         private void UpdateLoginStatus()
         {
-            TwitchAccessTokens twitchAccessTokens = SettingsViewModel.GetInstance().TwitchAccessTokens;
+            AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
 
-            if (twitchAccessTokens == null || twitchAccessTokens.AccessToken.IsNullOrEmpty())
+            if (accessTokens == null || accessTokens.AccessToken.IsNullOrEmpty())
             {
                 this.IsLoggedIn = false;
                 return;
@@ -155,7 +177,9 @@
 
             try
             {
-                TwitchUser twitchUser = SqualrApi.GetTwitchUser(twitchAccessTokens.AccessToken);
+                User user = SqualrApi.GetTwitchUser(accessTokens.AccessToken);
+                this.ActiveUser = user;
+
                 this.IsLoggedIn = true;
                 this.CurrentView = BrowseView.Store;
             }

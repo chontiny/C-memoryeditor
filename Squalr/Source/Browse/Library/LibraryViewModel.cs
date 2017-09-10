@@ -5,6 +5,7 @@
     using Squalr.Source.Api.Models;
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
+    using Squalr.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -41,8 +42,16 @@
 
             Task.Run(() =>
             {
-                TwitchAccessTokens twitchAccessTokens = SettingsViewModel.GetInstance().TwitchAccessTokens;
-                this.GameList = SqualrApi.GetOwnedGameList(twitchAccessTokens?.AccessToken);
+                AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+
+                try
+                {
+                    this.GameList = SqualrApi.GetOwnedGameList(accessTokens?.AccessToken);
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error fetching game list", ex);
+                }
             });
 
             MainViewModel.GetInstance().RegisterTool(this);

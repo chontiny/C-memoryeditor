@@ -4,14 +4,18 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class TwitchUser
+    internal class User
     {
-        public TwitchUser()
+        public User()
         {
+            this.Coins = 0;
             this.Name = String.Empty;
             this.DisplayName = String.Empty;
             this.Email = String.Empty;
         }
+
+        [DataMember(Name = "coins")]
+        public Int32 Coins { get; set; }
 
         [DataMember(Name = "name")]
         public String Name { get; set; }

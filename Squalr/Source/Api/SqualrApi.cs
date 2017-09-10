@@ -10,7 +10,6 @@
     using System.Deployment.Application;
     using System.IO;
     using System.Net;
-    using System.Net.NetworkInformation;
     using System.Runtime.Serialization.Json;
     using System.Text;
 
@@ -27,14 +26,14 @@
         public const String LocalApiBase = "http://localhost/api";
 
         /// <summary>
-        /// The API url to get the twitch auth tokens.
+        /// The API url to get the access tokens.
         /// </summary>
-        public static String TwitchTokenApi = SqualrApi.ApiBase + "/TwitchTokens";
+        public static String AccessTokensApi = SqualrApi.ApiBase + "/User/Tokens";
 
         /// <summary>
-        /// The API url to get the twitch user.
+        /// The API url to get the user.
         /// </summary>
-        public static String TwitchUserApi = SqualrApi.ApiBase + "/TwitchUser";
+        public static String UserApi = SqualrApi.ApiBase + "/User";
 
         /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
@@ -76,18 +75,18 @@
         /// </summary>
         private static String apiBase;
 
-        public static TwitchAccessTokens GetTwitchTokens(String code)
+        public static AccessTokens GetAccessTokens(String code)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("code", code);
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.TwitchTokenApi, parameters);
+            String result = ExecuteRequest(Method.GET, SqualrApi.AccessTokensApi, parameters);
 
             using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
             {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(TwitchAccessTokens));
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AccessTokens));
 
-                return deserializer.ReadObject(memoryStream) as TwitchAccessTokens;
+                return deserializer.ReadObject(memoryStream) as AccessTokens;
             }
         }
 
@@ -112,18 +111,18 @@
             }
         }
 
-        public static TwitchUser GetTwitchUser(String accessToken)
+        public static User GetTwitchUser(String accessToken)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.TwitchUserApi, parameters);
+            String result = ExecuteRequest(Method.GET, SqualrApi.UserApi, parameters);
 
             using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
             {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(TwitchUser));
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(User));
 
-                return deserializer.ReadObject(memoryStream) as TwitchUser;
+                return deserializer.ReadObject(memoryStream) as User;
             }
         }
 
@@ -244,17 +243,20 @@
             {
                 if (!ApplicationDeployment.IsNetworkDeployed)
                 {
-                    Ping ping = new Ping();
-                    Uri uri = new Uri(SqualrApi.LocalApiBase);
-                    PingReply result = ping.Send(uri.Host);
+                    using (PingClient client = new PingClient())
+                    {
+                        Uri uri = new Uri(SqualrApi.LocalApiBase);
 
-                    if (result.Status == IPStatus.Success)
-                    {
-                        return SqualrApi.LocalApiBase;
-                    }
-                    else
-                    {
-                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "No local Squalr site found. Using production for API queries.");
+                        try
+                        {
+                            client.Ping(uri.GetLeftPart(UriPartial.Authority));
+
+                            return SqualrApi.LocalApiBase;
+                        }
+                        catch (Exception ex)
+                        {
+                            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "No local Squalr site found. Using production for API queries", ex);
+                        }
                     }
                 }
             }

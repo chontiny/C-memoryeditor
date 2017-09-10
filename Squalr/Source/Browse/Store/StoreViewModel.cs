@@ -162,8 +162,8 @@
             {
                 try
                 {
-                    TwitchAccessTokens twitchAccessTokens = SettingsViewModel.GetInstance().TwitchAccessTokens;
-                    StoreCheats storeCheats = SqualrApi.GetCheatList(twitchAccessTokens.AccessToken, game.GameId);
+                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                    StoreCheats storeCheats = SqualrApi.GetCheatList(accessTokens.AccessToken, game.GameId);
                     this.LockedCheatList = storeCheats.LockedCheats;
                     this.UnlockedCheatList = storeCheats.UnlockedCheats;
                     this.CurrentView = StoreView.CheatStore;

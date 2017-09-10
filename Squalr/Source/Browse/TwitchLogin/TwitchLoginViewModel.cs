@@ -96,8 +96,8 @@
         {
             try
             {
-                TwitchAccessTokens twitchAccessTokens = SqualrApi.GetTwitchTokens(code);
-                SettingsViewModel.GetInstance().TwitchAccessTokens = twitchAccessTokens;
+                AccessTokens accessTokens = SqualrApi.GetAccessTokens(code);
+                SettingsViewModel.GetInstance().AccessTokens = accessTokens;
                 BrowseViewModel.GetInstance().IsLoggedIn = true;
             }
             catch (Exception ex)

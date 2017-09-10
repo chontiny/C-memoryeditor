@@ -28,13 +28,17 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Border 
+        <Grid 
             Visibility="{Binding CurrentView, 
                 Converter={StaticResource BrowseViewToVisibilityConverter}}"
             Grid.Row="0"
-            Padding="8,4,8,4"
             Background="{StaticResource AvalonDock_Expression_BaseColor4}">
-            <Menu Background="Transparent">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition  />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Menu Background="Transparent"
+                  Grid.Column="0">
                 <MenuItem Padding="4"
                           Command="{Binding OpenStoreCommand}"
                           ToolTip="Open Store">
@@ -48,7 +52,7 @@
                                                 KernelType="Gaussian"/>
                                 </TextBlock.Effect>
                             </TextBlock>
-                            <TextBlock Foreground="LightSkyBlue"
+                            <TextBlock Foreground="LightCyan"
                                        Text="STORE">
                             </TextBlock>
                         </Grid>
@@ -67,7 +71,7 @@
                                                 KernelType="Gaussian"/>
                                 </TextBlock.Effect>
                             </TextBlock>
-                            <TextBlock Foreground="LightSkyBlue"
+                            <TextBlock Foreground="LightCyan"
                                        Text="LIBRARY">
                             </TextBlock>
                         </Grid>
@@ -86,14 +90,36 @@
                                                 KernelType="Gaussian"/>
                                 </TextBlock.Effect>
                             </TextBlock>
-                            <TextBlock Foreground="LightSkyBlue"
+                            <TextBlock Foreground="LightCyan"
                                        Text="STREAM">
                             </TextBlock>
                         </Grid>
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>
-        </Border>
+            <Menu Background="Transparent"
+                  Grid.Column="1">
+                <MenuItem Padding="4"
+                          Command="{Binding OpenCoinStore}"
+                          ToolTip="Open Coin Store">
+                    <MenuItem.Header>
+                        <Grid>
+                            <TextBlock Foreground="White"
+                                       Opacity="0.5"
+                                       Text="{Binding ActiveUser.Coins}">
+                                <TextBlock.Effect>
+                                    <BlurEffect Radius="8.0"
+                                                KernelType="Gaussian"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Foreground="LightCyan"
+                                       Text="{Binding ActiveUser.Coins}">
+                            </TextBlock>
+                        </Grid>
+                    </MenuItem.Header>
+                </MenuItem>
+            </Menu>
+        </Grid>
         <Grid Grid.Row="1">
             <Grid Visibility="{Binding CurrentView, 
                 Converter={StaticResource BrowseViewToVisibilityConverter},

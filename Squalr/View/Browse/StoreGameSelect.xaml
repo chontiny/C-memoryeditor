@@ -35,7 +35,6 @@
                 <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
-                        <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="0">
                         <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -48,7 +47,7 @@
                                     <DataTemplate>
                                         <Grid>
                                             <Grid.InputBindings>
-                                                <MouseBinding Command="{Binding SelectGameCommand, Source={StaticResource ViewModelLocator}}"
+                                                <MouseBinding Command="{Binding StoreViewModel.SelectGameCommand, Source={StaticResource ViewModelLocator}}"
                                                               CommandParameter="{Binding .}"
                                                               Gesture="LeftDoubleClick" />
                                             </Grid.InputBindings>

@@ -94,15 +94,15 @@
         /// <summary>
         /// Gets or sets the saved twitch access tokens.
         /// </summary>
-        public TwitchAccessTokens TwitchAccessTokens
+        public AccessTokens AccessTokens
         {
             get
             {
-                using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(Settings.Default.TwitchAccessTokens)))
+                using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(Settings.Default.AccessTokens)))
                 {
-                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(TwitchAccessTokens));
+                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AccessTokens));
 
-                    return deserializer.ReadObject(memoryStream) as TwitchAccessTokens;
+                    return deserializer.ReadObject(memoryStream) as AccessTokens;
                 }
             }
 
@@ -110,11 +110,11 @@
             {
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(TwitchAccessTokens));
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(AccessTokens));
                     serializer.WriteObject(memoryStream, value);
 
-                    Settings.Default.TwitchAccessTokens = Encoding.ASCII.GetString(memoryStream.ToArray());
-                    this.RaisePropertyChanged(nameof(this.TwitchAccessTokens));
+                    Settings.Default.AccessTokens = Encoding.ASCII.GetString(memoryStream.ToArray());
+                    this.RaisePropertyChanged(nameof(this.AccessTokens));
                 }
             }
         }
