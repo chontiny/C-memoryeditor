@@ -210,11 +210,6 @@
                     Header="View"
                     Style="{StaticResource DropDown}">
                     <MenuItem
-                        Header="Cheat Browser"
-                        IsCheckable="True"
-                        IsChecked="{Binding CheatBrowserViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <MenuItem
                         Header="Browse"
                         IsCheckable="True"
                         IsChecked="{Binding BrowseViewModel.IsVisible, Mode=TwoWay}"
@@ -239,11 +234,17 @@
                         IsCheckable="True"
                         IsChecked="{Binding OutputViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
-                    <Separator />
+                </MenuItem>
+
+                <!--  Layout Header  -->
+                <MenuItem
+                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                    Header="Layout"
+                    Style="{StaticResource DropDown}">
                     <MenuItem
                         Command="{Binding MainViewModel.ResetLayoutStandardCommand}"
                         CommandParameter="{Binding ., ElementName=dockManager}"
-                        Header="Simple Layout"
+                        Header="Streamer Layout"
                         Style="{StaticResource menuItemStyle}" />
                     <MenuItem
                         Command="{Binding MainViewModel.ResetLayoutDeveloperCommand}"
@@ -458,12 +459,6 @@
                             <view:Browse />
                         </DataTemplate>
                     </view:ViewTemplateSelector.BrowseViewTemplate>
-                    <!--  Cheat Browser  -->
-                    <view:ViewTemplateSelector.CheatBrowserViewTemplate>
-                        <DataTemplate>
-                            <view:CheatBrowser />
-                        </DataTemplate>
-                    </view:ViewTemplateSelector.CheatBrowserViewTemplate>
                     <!--  .Net Explorer  -->
                     <view:ViewTemplateSelector.DotNetExplorerViewTemplate>
                         <DataTemplate>

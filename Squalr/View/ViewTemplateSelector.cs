@@ -1,6 +1,5 @@
 ﻿namespace Squalr.View
 {
-    using Source.CheatBrowser;
     using Source.DotNetExplorer;
     using Source.Editors.HotkeyEditor;
     using Source.Editors.ScriptEditor;
@@ -214,10 +213,6 @@
             else if (item is BrowseViewModel)
             {
                 return this.BrowseViewTemplate;
-            }
-            else if (item is CheatBrowserViewModel)
-            {
-                return this.CheatBrowserViewTemplate;
             }
             else if (item is TwitchLoginViewModel)
             {

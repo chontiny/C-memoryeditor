@@ -2,7 +2,6 @@
 {
     using Source.ActionScheduler;
     using Source.ChangeLog;
-    using Source.CheatBrowser;
     using Source.DotNetExplorer;
     using Source.Editors.HotkeyEditor;
     using Source.Editors.ScriptEditor;
@@ -193,17 +192,6 @@
             get
             {
                 return LibraryViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Cheat Browser view model.
-        /// </summary>
-        public CheatBrowserViewModel CheatBrowserViewModel
-        {
-            get
-            {
-                return CheatBrowserViewModel.GetInstance();
             }
         }
 

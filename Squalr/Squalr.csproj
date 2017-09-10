@@ -327,7 +327,6 @@
     <Compile Include="Source\Mvvm\Converters\BrowseViewToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\Browse\TwitchLogin\TwitchLoginViewModel.cs" />
-    <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Source\Controls\RichTextBoxHelper.cs" />
     <Compile Include="Source\Engine\Networks\Network.cs" />
     <Compile Include="Source\Engine\Networks\INetwork.cs" />
@@ -605,9 +604,6 @@
     <Compile Include="View\PropertyViewer.xaml.cs">
       <DependentUpon>PropertyViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CheatBrowser.xaml.cs">
-      <DependentUpon>CheatBrowser.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ManualScanner.xaml.cs">
       <DependentUpon>ManualScanner.xaml</DependentUpon>
     </Compile>
@@ -738,10 +734,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\DotNetExplorer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\CheatBrowser.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
