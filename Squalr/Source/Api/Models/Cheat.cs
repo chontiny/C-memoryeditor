@@ -13,7 +13,7 @@
             this.GameId = 0;
             this.GameDistributorId = 0;
             this.CheatName = String.Empty;
-            this.CheeatDescription = String.Empty;
+            this.CheatDescription = String.Empty;
             this.CheatPayload = String.Empty;
             this.Cost = 0;
             this.InReview = true;
@@ -36,7 +36,7 @@
         public String CheatName { get; set; }
 
         [DataMember(Name = "cheat_description")]
-        public String CheeatDescription { get; set; }
+        public String CheatDescription { get; set; }
 
         [DataMember(Name = "cheat_payload")]
         public String CheatPayload { get; set; }

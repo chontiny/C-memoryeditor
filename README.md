@@ -10,6 +10,12 @@ Official web site: [squalr.com](https://www.squalr.com)
 
 You can find more documentation on the [Wiki](https://github.com/Squalr/Squalr/wiki)
 
+## Coding Conventions
+Reference | Description 
+--- | ---
+[XAML Formatter](https://marketplace.visualstudio.com/items?itemName=TeamXavalon.XAMLStyler) | XAML should be run through this formatter
+[StyleCop](https://github.com/StyleCop/StyleCop) | StyleCop to enforce code conventions. Included as NuGet. Note that we deviate on some standard conventions. We use the full type name for variables (ex Int32 rather than int). The reasoning is that this is a memory editor, so we prefer to use the type name that is most explicit to avoid coding mistakes.
+
 ## Build
 
 In order to compile Squalr, you should only need **Visual Studio 2017**. External libraries are mostly compiled from source (with the exception of most C++ applications). This is because almost every library I use has had issues where I've needed access to the source code (to be fair, I am using most of these in unexpected ways). Currently this consists of:

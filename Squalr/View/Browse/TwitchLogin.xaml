@@ -9,8 +9,8 @@
     Title="Twitch Login"
     Width="480"
     Height="544"
-    d:DesignWidth="480"
     d:DesignHeight="544"
+    d:DesignWidth="480"
     x:ClassModifier="internal"
     BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
     BorderThickness="2"
@@ -18,13 +18,13 @@
     WindowStartupLocation="CenterOwner"
     WindowStyle="None"
     mc:Ignorable="d">
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <shell:Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <shell:Grid.RowDefinitions>
+            <shell:RowDefinition />
+            <shell:RowDefinition Height="Auto" />
+        </shell:Grid.RowDefinitions>
 
-        <WebBrowser Name="browser" Grid.Row="0" />
+        <shell:WebBrowser Name="browser" Grid.Row="0" />
 
         <shell:Grid Grid.Row="1" Margin="8">
             <shell:Button
@@ -37,5 +37,5 @@
                 <shell:TextBlock Text="Cancel" />
             </shell:Button>
         </shell:Grid>
-    </Grid>
+    </shell:Grid>
 </shell:Window>

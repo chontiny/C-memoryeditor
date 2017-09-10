@@ -2,10 +2,10 @@
     x:Class="Squalr.View.Store"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Squalr.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="clr-namespace:Squalr.Source.Browse.Store"
     x:Name="SqualrStore"
     d:DesignHeight="480"
@@ -22,20 +22,14 @@
     </UserControl.Resources>
     <Border>
         <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-            <Grid Visibility="{Binding CurrentView, 
-                Converter={StaticResource StoreViewToVisibilityConverter},
-                ConverterParameter={x:Static viewModel:StoreView.GameSelect}}">
-                <local:StoreGameSelect/>
+            <Grid Visibility="{Binding CurrentView, Converter={StaticResource StoreViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:StoreView.GameSelect}}">
+                <local:StoreGameSelect />
             </Grid>
-            <Grid Visibility="{Binding CurrentView, 
-                Converter={StaticResource StoreViewToVisibilityConverter},
-                ConverterParameter={x:Static viewModel:StoreView.CheatStore}}">
-                <local:StoreCheats/>
+            <Grid Visibility="{Binding CurrentView, Converter={StaticResource StoreViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:StoreView.CheatStore}}">
+                <local:StoreCheats />
             </Grid>
-            <Grid Visibility="{Binding CurrentView, 
-                Converter={StaticResource StoreViewToVisibilityConverter},
-                ConverterParameter={x:Static viewModel:StoreView.Loading}}">
-                <local:StoreLoading/>
+            <Grid Visibility="{Binding CurrentView, Converter={StaticResource StoreViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:StoreView.Loading}}">
+                <local:StoreLoading />
             </Grid>
         </Grid>
     </Border>

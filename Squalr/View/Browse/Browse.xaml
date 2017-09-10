@@ -1,12 +1,12 @@
 ﻿<UserControl
+    x:Class="Squalr.View.Browse"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
-    xmlns:viewModel="clr-namespace:Squalr.Source.Browse"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Squalr.View"
-    x:Class="Squalr.View.Browse"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModel="clr-namespace:Squalr.Source.Browse"
     x:Name="SqualrBrowse"
     d:DesignHeight="256"
     d:DesignWidth="256"
@@ -22,104 +22,98 @@
             <converters:BrowseViewToVisibilityConverter x:Key="BrowseViewToVisibilityConverter" />
         </Grid.Resources>
         <Grid.Background>
-            <StaticResource ResourceKey="AvalonDock_Expression_BaseColor3"/>
+            <StaticResource ResourceKey="AvalonDock_Expression_BaseColor3" />
         </Grid.Background>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid 
-            Visibility="{Binding CurrentView, 
-                Converter={StaticResource BrowseViewToVisibilityConverter}}"
+        <Grid
             Grid.Row="0"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+            Visibility="{Binding CurrentView, Converter={StaticResource BrowseViewToVisibilityConverter}}">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition  />
+                <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Menu Background="Transparent"
-                  Grid.Column="0">
-                <MenuItem Padding="4"
-                          Command="{Binding OpenStoreCommand}"
-                          ToolTip="Open Store">
+            <Menu Grid.Column="0" Background="Transparent">
+                <MenuItem
+                    Padding="4"
+                    Command="{Binding OpenStoreCommand}"
+                    ToolTip="Open Store">
                     <MenuItem.Header>
                         <Grid>
-                            <TextBlock Foreground="White"
-                                       Opacity="0.5"
-                                       Text="STORE">
+                            <TextBlock
+                                Foreground="White"
+                                Opacity="0.5"
+                                Text="STORE">
                                 <TextBlock.Effect>
-                                    <BlurEffect Radius="8.0"
-                                                KernelType="Gaussian"/>
+                                    <BlurEffect KernelType="Gaussian" Radius="8.0" />
                                 </TextBlock.Effect>
                             </TextBlock>
-                            <TextBlock Foreground="LightCyan"
-                                       Text="STORE">
-                            </TextBlock>
+                            <TextBlock Foreground="LightCyan" Text="STORE" />
                         </Grid>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Padding="4"
-                          Command="{Binding OpenLibraryCommand}"
-                          ToolTip="Open Library">
+                <MenuItem
+                    Padding="4"
+                    Command="{Binding OpenLibraryCommand}"
+                    ToolTip="Open Library">
                     <MenuItem.Header>
                         <Grid>
-                            <TextBlock Foreground="White"
-                                       Opacity="0.5"
-                                       Text="LIBRARY">
+                            <TextBlock
+                                Foreground="White"
+                                Opacity="0.5"
+                                Text="LIBRARY">
                                 <TextBlock.Effect>
-                                    <BlurEffect Radius="8.0"
-                                                KernelType="Gaussian"/>
+                                    <BlurEffect KernelType="Gaussian" Radius="8.0" />
                                 </TextBlock.Effect>
                             </TextBlock>
-                            <TextBlock Foreground="LightCyan"
-                                       Text="LIBRARY">
-                            </TextBlock>
+                            <TextBlock Foreground="LightCyan" Text="LIBRARY" />
                         </Grid>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem Padding="4"
-                          Command="{Binding OpenStreamCommand}"
-                          ToolTip="Open Stream Config">
+                <MenuItem
+                    Padding="4"
+                    Command="{Binding OpenStreamCommand}"
+                    ToolTip="Open Stream Config">
                     <MenuItem.Header>
                         <Grid>
-                            <TextBlock Foreground="White"
-                                       Opacity="0.5"
-                                       Text="STREAM">
+                            <TextBlock
+                                Foreground="White"
+                                Opacity="0.5"
+                                Text="STREAM">
                                 <TextBlock.Effect>
-                                    <BlurEffect Radius="8.0"
-                                                KernelType="Gaussian"/>
+                                    <BlurEffect KernelType="Gaussian" Radius="8.0" />
                                 </TextBlock.Effect>
                             </TextBlock>
-                            <TextBlock Foreground="LightCyan"
-                                       Text="STREAM">
-                            </TextBlock>
+                            <TextBlock Foreground="LightCyan" Text="STREAM" />
                         </Grid>
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>
-            <Menu Background="Transparent"
-                  Grid.Column="1">
-                <MenuItem Padding="4"
-                          Command="{Binding OpenCoinStoreCommand}"
-                          ToolTip="Open Coin Store">
+            <Menu Grid.Column="1" Background="Transparent">
+                <MenuItem
+                    Padding="4"
+                    Command="{Binding OpenCoinStoreCommand}"
+                    ToolTip="Open Coin Store">
                     <MenuItem.Header>
                         <WrapPanel>
-                            <Image Width="16"
-                                   Height="16"
-                                   Margin="0 0 4 0"
-                                   Source="pack://application:,,,/Squalr;component/Content/Icons/Coin.png"/>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,4,0"
+                                Source="pack://application:,,,/Squalr;component/Content/Icons/Coin.png" />
                             <Grid>
-                                <TextBlock Foreground="White"
-                                           Opacity="0.5"
-                                           Text="{Binding ActiveUser.Coins}">
+                                <TextBlock
+                                    Foreground="White"
+                                    Opacity="0.5"
+                                    Text="{Binding ActiveUser.Coins}">
                                     <TextBlock.Effect>
-                                        <BlurEffect Radius="8.0"
-                                                    KernelType="Gaussian"/>
+                                        <BlurEffect KernelType="Gaussian" Radius="8.0" />
                                     </TextBlock.Effect>
                                 </TextBlock>
-                                <TextBlock Foreground="LightCyan"
-                                           Text="{Binding ActiveUser.Coins}">
-                                </TextBlock>
+                                <TextBlock Foreground="LightCyan" Text="{Binding ActiveUser.Coins}" />
                             </Grid>
                         </WrapPanel>
                     </MenuItem.Header>
@@ -127,25 +121,17 @@
             </Menu>
         </Grid>
         <Grid Grid.Row="1">
-            <Grid Visibility="{Binding CurrentView, 
-                Converter={StaticResource BrowseViewToVisibilityConverter},
-                ConverterParameter={x:Static viewModel:BrowseView.Login}}">
-                <local:LoginScreen/>
+            <Grid Visibility="{Binding CurrentView, Converter={StaticResource BrowseViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:BrowseView.Login}}">
+                <local:LoginScreen />
             </Grid>
-            <Grid Visibility="{Binding CurrentView, 
-                Converter={StaticResource BrowseViewToVisibilityConverter},
-                ConverterParameter={x:Static viewModel:BrowseView.Store}}">
-                <local:Store/>
+            <Grid Visibility="{Binding CurrentView, Converter={StaticResource BrowseViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:BrowseView.Store}}">
+                <local:Store />
             </Grid>
-            <Grid Visibility="{Binding CurrentView, 
-                Converter={StaticResource BrowseViewToVisibilityConverter},
-                ConverterParameter={x:Static viewModel:BrowseView.Library}}">
-                <local:Library/>
+            <Grid Visibility="{Binding CurrentView, Converter={StaticResource BrowseViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:BrowseView.Library}}">
+                <local:Library />
             </Grid>
-            <Grid Visibility="{Binding CurrentView, 
-                Converter={StaticResource BrowseViewToVisibilityConverter},
-                ConverterParameter={x:Static viewModel:BrowseView.Stream}}">
-                <local:StreamConfig/>
+            <Grid Visibility="{Binding CurrentView, Converter={StaticResource BrowseViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:BrowseView.Stream}}">
+                <local:StreamConfig />
             </Grid>
         </Grid>
     </Grid>
