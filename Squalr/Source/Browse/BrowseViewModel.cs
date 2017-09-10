@@ -9,7 +9,6 @@
     using Squalr.Source.Output;
     using Squalr.Source.Utils.Extensions;
     using System;
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -42,11 +41,6 @@
         private BrowseView currentView;
 
         /// <summary>
-        /// The list of games.
-        /// </summary>
-        private IEnumerable<Game> gameList;
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="BrowseViewModel" /> class from being created.
         /// </summary>
         private BrowseViewModel() : base("Browse")
@@ -62,11 +56,6 @@
             {
                 this.UpdateLoginStatus();
                 this.SetDefaultViewOptions();
-            });
-
-            Task.Run(() =>
-            {
-                this.GameList = SqualrApi.GetGameList();
             });
 
             MainViewModel.GetInstance().RegisterTool(this);
@@ -100,23 +89,6 @@
         /// Gets a command to open the stream config.
         /// </summary>
         public ICommand OpenStreamCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the list of games.
-        /// </summary>
-        public IEnumerable<Game> GameList
-        {
-            get
-            {
-                return this.gameList;
-            }
-
-            private set
-            {
-                this.gameList = value;
-                this.RaisePropertyChanged(nameof(this.GameList));
-            }
-        }
 
         /// <summary>
         /// Gets or sets the current browse view.

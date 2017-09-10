@@ -47,6 +47,11 @@
         private static String GameListEndpoint = SqualrApi.ApiBase + "/Games/List";
 
         /// <summary>
+        /// The endpoint for querying the games for which a user has unlocked or uploaded at least one cheat.
+        /// </summary>
+        private static String OwnedGamesEndpoint = SqualrApi.ApiBase + "/Games/Owned";
+
+        /// <summary>
         /// The endpoint for searching games.
         /// </summary>
         private static String GameSearchEndpoint = SqualrApi.ApiBase + "/Games/Search";
@@ -141,6 +146,35 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
 
             String result = ExecuteRequest(Method.GET, SqualrApi.GameListEndpoint, parameters);
+
+            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
+            {
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Game[]));
+
+                return deserializer.ReadObject(memoryStream) as Game[];
+            }
+        }
+
+        public static Game[] GetOwnedGames()
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+
+            String result = ExecuteRequest(Method.GET, SqualrApi.OwnedGamesEndpoint, parameters);
+
+            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
+            {
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Game[]));
+
+                return deserializer.ReadObject(memoryStream) as Game[];
+            }
+        }
+
+        public static Game[] GetOwnedGameList(String accessToken)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+
+            String result = ExecuteRequest(Method.GET, SqualrApi.OwnedGamesEndpoint, parameters);
 
             using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
             {

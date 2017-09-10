@@ -32,6 +32,11 @@
                 ConverterParameter={x:Static viewModel:StoreView.CheatStore}}">
                 <local:StoreCheats/>
             </Grid>
+            <Grid Visibility="{Binding CurrentView, 
+                Converter={StaticResource StoreViewToVisibilityConverter},
+                ConverterParameter={x:Static viewModel:StoreView.Loading}}">
+                <local:StoreLoading/>
+            </Grid>
         </Grid>
     </Border>
 

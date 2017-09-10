@@ -14,6 +14,11 @@
         /// The cheat store view.
         /// </summary>
         CheatStore,
+
+        /// <summary>
+        /// The loading view.
+        /// </summary>
+        Loading,
     }
     //// End enum
 }

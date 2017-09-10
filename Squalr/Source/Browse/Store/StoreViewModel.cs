@@ -6,6 +6,7 @@
     using Squalr.Source.Api.Models;
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
+    using Squalr.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -35,6 +36,11 @@
         private StoreView currentView;
 
         /// <summary>
+        /// The list of games.
+        /// </summary>
+        private IEnumerable<Game> gameList;
+
+        /// <summary>
         /// The list of cheats in the store for the selected game.
         /// </summary>
         private IEnumerable<Cheat> lockedCheatList;
@@ -53,6 +59,11 @@
             this.CurrentView = StoreView.GameSelect;
 
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
+
+            Task.Run(() =>
+            {
+                this.GameList = SqualrApi.GetGameList();
+            });
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
@@ -76,6 +87,23 @@
             {
                 this.currentView = value;
                 this.RaisePropertyChanged(nameof(this.CurrentView));
+            }
+        }
+
+        /// <summary>
+        /// Gets the list of games.
+        /// </summary>
+        public IEnumerable<Game> GameList
+        {
+            get
+            {
+                return this.gameList;
+            }
+
+            private set
+            {
+                this.gameList = value;
+                this.RaisePropertyChanged(nameof(this.GameList));
             }
         }
 
@@ -128,15 +156,23 @@
         /// <param name="game">The selected game.</param>
         private void SelectGame(Game game)
         {
-            this.CurrentView = StoreView.CheatStore;
-
-            TwitchAccessTokens twitchAccessTokens = SettingsViewModel.GetInstance().TwitchAccessTokens;
+            this.CurrentView = StoreView.Loading;
 
             Task.Run(() =>
             {
-                StoreCheats storeCheats = SqualrApi.GetCheatList(twitchAccessTokens.AccessToken, game.GameId);
-                this.LockedCheatList = storeCheats.LockedCheats;
-                this.UnlockedCheatList = storeCheats.UnlockedCheats;
+                try
+                {
+                    TwitchAccessTokens twitchAccessTokens = SettingsViewModel.GetInstance().TwitchAccessTokens;
+                    StoreCheats storeCheats = SqualrApi.GetCheatList(twitchAccessTokens.AccessToken, game.GameId);
+                    this.LockedCheatList = storeCheats.LockedCheats;
+                    this.UnlockedCheatList = storeCheats.UnlockedCheats;
+                    this.CurrentView = StoreView.CheatStore;
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading cheats", ex);
+                    this.CurrentView = StoreView.GameSelect;
+                }
             });
         }
     }

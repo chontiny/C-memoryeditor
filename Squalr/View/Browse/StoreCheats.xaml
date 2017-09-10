@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
-    xmlns:local="clr-namespace:Squalr.View"
     x:Name="SqualrStoreCheats"
     d:DesignHeight="480"
     d:DesignWidth="480"
@@ -31,75 +30,78 @@
                          Tag="Search Cheats"
                          Margin="0 0 0 4"/>
             </Grid>
-            <Grid Grid.Row="1">
-                <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0"
-                          DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}">
-                        <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                BorderThickness="1">
-                            <ListView Grid.Row="0"
-                                      Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                                      BorderThickness="0"
-                                      ItemsSource="{Binding LockedCheatList}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.InputBindings>
-                                                <MouseBinding Command="{Binding SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
-                                                              CommandParameter="{Binding .}"
-                                                              Gesture="LeftDoubleClick" />
-                                            </Grid.InputBindings>
+            <Grid Grid.Row="1" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0"
+                      DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}">
+                    <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                            BorderThickness="1">
+                        <ListView Grid.Row="0"
+                                  Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                  BorderThickness="0"
+                                  ItemsSource="{Binding LockedCheatList}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.InputBindings>
+                                            <MouseBinding Command="{Binding SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                          CommandParameter="{Binding .}"
+                                                          Gesture="LeftDoubleClick" />
+                                        </Grid.InputBindings>
+                                        <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="24"/>
                                                 <ColumnDefinition />
                                             </Grid.ColumnDefinitions>
+
                                             <TextBlock Grid.Column="0"
-                                                       Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                                                       Margin="4,0,0,0"
-                                                       Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                                       Text="{Binding Path=CheatName}" />
+                                                   Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                   Text="{Binding Path=Cost}" />
+                                            <TextBlock Grid.Column="1"
+                                                   Margin="4,0,0,0"
+                                                   Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                   Text="{Binding Path=CheatName}" />
                                         </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Border>
-                    </Grid>
-                    <Grid Grid.Column="1"
-                          DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}">
-                        <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                BorderThickness="1">
-                            <ListView Grid.Row="0"
-                                      Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                                      BorderThickness="0"
-                                      ItemsSource="{Binding UnlockedCheatList}">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.InputBindings>
-                                                <MouseBinding Command="{Binding SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
-                                                              CommandParameter="{Binding .}"
-                                                              Gesture="LeftDoubleClick" />
-                                            </Grid.InputBindings>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition />
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0"
-                                                       Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                                                       Margin="4,0,0,0"
-                                                       Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                                       Text="{Binding Path=CheatName}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                        </Border>
-                    </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
+                </Grid>
+                <Grid Grid.Column="1"
+                      DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}">
+                    <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                            BorderThickness="1">
+                        <ListView Grid.Row="0"
+                                  Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                  BorderThickness="0"
+                                  ItemsSource="{Binding UnlockedCheatList}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.InputBindings>
+                                            <MouseBinding Command="{Binding SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                          CommandParameter="{Binding .}"
+                                                          Gesture="LeftDoubleClick" />
+                                        </Grid.InputBindings>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
+                                                   Margin="4,0,0,0"
+                                                   Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                   Text="{Binding Path=CheatName}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </Border>
                 </Grid>
             </Grid>
         </Grid>
     </Border>
-
 </UserControl>

@@ -36,24 +36,60 @@
             Background="{StaticResource AvalonDock_Expression_BaseColor4}">
             <Menu Background="Transparent">
                 <MenuItem Padding="4"
-                    Command="{Binding OpenStoreCommand}"
-                    ToolTip="Open Store">
+                          Command="{Binding OpenStoreCommand}"
+                          ToolTip="Open Store">
                     <MenuItem.Header>
-                        <TextBlock Foreground="White"><Run Text="STORE"/></TextBlock>
+                        <Grid>
+                            <TextBlock Foreground="White"
+                                       Opacity="0.5"
+                                       Text="STORE">
+                                <TextBlock.Effect>
+                                    <BlurEffect Radius="8.0"
+                                                KernelType="Gaussian"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Foreground="LightSkyBlue"
+                                       Text="STORE">
+                            </TextBlock>
+                        </Grid>
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Padding="4"
-                    Command="{Binding OpenLibraryCommand}"
-                    ToolTip="Open Library">
+                          Command="{Binding OpenLibraryCommand}"
+                          ToolTip="Open Library">
                     <MenuItem.Header>
-                        <TextBlock Foreground="White"><Run Text="LIBRARY"/></TextBlock>
+                        <Grid>
+                            <TextBlock Foreground="White"
+                                       Opacity="0.5"
+                                       Text="LIBRARY">
+                                <TextBlock.Effect>
+                                    <BlurEffect Radius="8.0"
+                                                KernelType="Gaussian"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Foreground="LightSkyBlue"
+                                       Text="LIBRARY">
+                            </TextBlock>
+                        </Grid>
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Padding="4"
-                    Command="{Binding OpenStreamCommand}"
-                    ToolTip="Open Stream Config">
+                          Command="{Binding OpenStreamCommand}"
+                          ToolTip="Open Stream Config">
                     <MenuItem.Header>
-                        <TextBlock Foreground="White"><Run Text="STREAM"/></TextBlock>
+                        <Grid>
+                            <TextBlock Foreground="White"
+                                       Opacity="0.5"
+                                       Text="STREAM">
+                                <TextBlock.Effect>
+                                    <BlurEffect Radius="8.0"
+                                                KernelType="Gaussian"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Foreground="LightSkyBlue"
+                                       Text="STREAM">
+                            </TextBlock>
+                        </Grid>
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>
