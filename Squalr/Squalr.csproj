@@ -315,6 +315,7 @@
     <Compile Include="Source\Api\Exceptions\NotFoundException.cs" />
     <Compile Include="Source\Api\Exceptions\StatusException.cs" />
     <Compile Include="Source\Api\Exceptions\ResponseStatusException.cs" />
+    <Compile Include="Source\Api\NativeBrowser.cs" />
     <Compile Include="Source\Api\PingClient.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -795,6 +796,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Content\Icons\Coin.png" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

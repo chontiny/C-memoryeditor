@@ -18,57 +18,62 @@
         /// <summary>
         /// The base API url for Squalr.
         /// </summary>
-        public const String SqualrApiBase = "https://www.squalr.com/api";
+        public const String SqualrHostBase = "https://www.squalr.com/";
 
         /// <summary>
         /// The base API url for Squalr development environments.
         /// </summary>
-        public const String LocalApiBase = "http://localhost/api";
+        public const String LocalHostBase = "http://localhost/";
 
         /// <summary>
         /// The API url to get the access tokens.
         /// </summary>
-        public static String AccessTokensApi = SqualrApi.ApiBase + "/User/Tokens";
+        public static String VirtualCurrencyStoreEndpoint = SqualrApi.ApiBase + "Account/Manage/BuyCoins";
+
+        /// <summary>
+        /// The API url to get the access tokens.
+        /// </summary>
+        public static String AccessTokensApi = SqualrApi.ApiBase + "api/User/Tokens";
 
         /// <summary>
         /// The API url to get the user.
         /// </summary>
-        public static String UserApi = SqualrApi.ApiBase + "/User";
+        public static String UserApi = SqualrApi.ApiBase + "api/User";
 
         /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
         /// </summary>
-        private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "/ActiveCheatIds/";
+        private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/ActiveCheatIds/";
 
         /// <summary>
         /// The endpoint for querying the game lists.
         /// </summary>
-        private static String GameListEndpoint = SqualrApi.ApiBase + "/Games/List";
+        private static String GameListEndpoint = SqualrApi.ApiBase + "api/Games/List";
 
         /// <summary>
         /// The endpoint for querying the games for which a user has unlocked or uploaded at least one cheat.
         /// </summary>
-        private static String OwnedGamesEndpoint = SqualrApi.ApiBase + "/Games/Owned";
+        private static String OwnedGamesEndpoint = SqualrApi.ApiBase + "api/Games/Owned";
 
         /// <summary>
         /// The endpoint for searching games.
         /// </summary>
-        private static String GameSearchEndpoint = SqualrApi.ApiBase + "/Games/Search";
+        private static String GameSearchEndpoint = SqualrApi.ApiBase + "api/Games/Search";
 
         /// <summary>
         /// The endpoint for querying the library lists.
         /// </summary>
-        private static String LibraryListEndpoint = SqualrApi.ApiBase + "/Library";
+        private static String LibraryListEndpoint = SqualrApi.ApiBase + "api/Library";
 
         /// <summary>
         /// The endpoint for querying the available and unavailable cheats in a library.
         /// </summary>
-        private static String LibraryCheatsEndpoint = SqualrApi.ApiBase + "/Cheats";
+        private static String LibraryCheatsEndpoint = SqualrApi.ApiBase + "api/Cheats";
 
         /// <summary>
         /// The endpoint for querying the available and unavailable cheats in the store.
         /// </summary>
-        private static String StoreCheatsEndpoint = SqualrApi.ApiBase + "/Cheats/Store";
+        private static String StoreCheatsEndpoint = SqualrApi.ApiBase + "api/Cheats/Store";
 
         /// <summary>
         /// The active API base depending on the environment.
@@ -245,13 +250,13 @@
                 {
                     using (PingClient client = new PingClient())
                     {
-                        Uri uri = new Uri(SqualrApi.LocalApiBase);
+                        Uri uri = new Uri(SqualrApi.LocalHostBase);
 
                         try
                         {
                             client.Ping(uri.GetLeftPart(UriPartial.Authority));
 
-                            return SqualrApi.LocalApiBase;
+                            return SqualrApi.LocalHostBase;
                         }
                         catch (Exception ex)
                         {
@@ -266,7 +271,7 @@
             }
 
             // None found, use the actual API base
-            return SqualrApi.SqualrApiBase;
+            return SqualrApi.SqualrHostBase;
         }
 
         private static String ExecuteRequest(Method method, String endpoint, Dictionary<String, String> parameters)

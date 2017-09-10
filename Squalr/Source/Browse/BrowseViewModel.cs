@@ -53,6 +53,7 @@
             this.ContentId = BrowseViewModel.ToolContentId;
 
             this.OpenLoginScreenCommand = new RelayCommand(() => this.CurrentView = BrowseView.Login, () => true);
+            this.OpenCoinStoreCommand = new RelayCommand(() => this.OpenVirtualCurrencyStore(), () => true);
             this.OpenStoreCommand = new RelayCommand(() => this.CurrentView = BrowseView.Store, () => true);
             this.OpenLibraryCommand = new RelayCommand(() => this.CurrentView = BrowseView.Library, () => true);
             this.OpenStreamCommand = new RelayCommand(() => this.CurrentView = BrowseView.Stream, () => true);
@@ -79,6 +80,11 @@
         /// Gets a command to open the login screen.
         /// </summary>
         public ICommand OpenLoginScreenCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to open the coin store.
+        /// </summary>
+        public ICommand OpenCoinStoreCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to open the store.
@@ -145,6 +151,14 @@
                 this.SetDefaultViewOptions();
                 this.RaisePropertyChanged(nameof(this.IsLoggedIn));
             }
+        }
+
+        /// <summary>
+        /// Opens the virtual currency store in the native browser.
+        /// </summary>
+        private void OpenVirtualCurrencyStore()
+        {
+            NativeBrowser.Open(SqualrApi.VirtualCurrencyStoreEndpoint);
         }
 
         /// <summary>

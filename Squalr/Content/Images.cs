@@ -46,6 +46,11 @@
         public static readonly BitmapImage Cog = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Cog.png"));
 
         /// <summary>
+        /// Image for a coin.
+        /// </summary>
+        public static readonly BitmapImage Coin = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Coin.png"));
+
+        /// <summary>
         /// Image for a connection.
         /// </summary>
         public static readonly BitmapImage Connect = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Connect.png"));

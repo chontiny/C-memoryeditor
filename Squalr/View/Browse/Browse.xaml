@@ -100,22 +100,28 @@
             <Menu Background="Transparent"
                   Grid.Column="1">
                 <MenuItem Padding="4"
-                          Command="{Binding OpenCoinStore}"
+                          Command="{Binding OpenCoinStoreCommand}"
                           ToolTip="Open Coin Store">
                     <MenuItem.Header>
-                        <Grid>
-                            <TextBlock Foreground="White"
-                                       Opacity="0.5"
-                                       Text="{Binding ActiveUser.Coins}">
-                                <TextBlock.Effect>
-                                    <BlurEffect Radius="8.0"
-                                                KernelType="Gaussian"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                            <TextBlock Foreground="LightCyan"
-                                       Text="{Binding ActiveUser.Coins}">
-                            </TextBlock>
-                        </Grid>
+                        <WrapPanel>
+                            <Image Width="16"
+                                   Height="16"
+                                   Margin="0 0 4 0"
+                                   Source="pack://application:,,,/Squalr;component/Content/Icons/Coin.png"/>
+                            <Grid>
+                                <TextBlock Foreground="White"
+                                           Opacity="0.5"
+                                           Text="{Binding ActiveUser.Coins}">
+                                    <TextBlock.Effect>
+                                        <BlurEffect Radius="8.0"
+                                                    KernelType="Gaussian"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                                <TextBlock Foreground="LightCyan"
+                                           Text="{Binding ActiveUser.Coins}">
+                                </TextBlock>
+                            </Grid>
+                        </WrapPanel>
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>
