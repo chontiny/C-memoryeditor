@@ -31,11 +31,10 @@
                                 Height="16"
                                 Source="pack://application:,,,/Squalr;component/Content/Icons/Connect.png"
                                 ToolTip="Disconnect from Stream Service" />
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="{Binding ConnectionImage}"
-                                ToolTip="Connect/Disconnect from Stream Service" />
+                            <Image Width="16"
+                                   Height="16"
+                                   Source="{Binding ConnectionImage}" 
+                                   ToolTip="Connect/Disconnect from Stream Service" />
                             <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" 
                                        Text="{Binding ConnectionOption}" />
                         </WrapPanel>

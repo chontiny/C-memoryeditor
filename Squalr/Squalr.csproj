@@ -306,6 +306,8 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
+    <Compile Include="Source\Api\Models\StoreCheats.cs" />
+    <Compile Include="Source\Api\Models\Cheat.cs" />
     <Compile Include="Source\Api\Models\Library.cs" />
     <Compile Include="Source\Api\Models\Game.cs" />
     <Compile Include="Source\Api\Models\TwitchUser.cs" />
@@ -316,10 +318,12 @@
     <Compile Include="Source\Api\SqualrApi.cs" />
     <Compile Include="Source\Browse\BrowseView.cs" />
     <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />
+    <Compile Include="Source\Browse\Store\StoreView.cs" />
     <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\StoreViewToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\BrowseViewToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\Browse\TwitchLogin\TwitchLoginViewModel.cs" />
@@ -621,15 +625,19 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Page Include="View\Browse\_GameList.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\Browse\LoginScreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Browse\Library.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\StoreCheats.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\StoreGameSelect.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

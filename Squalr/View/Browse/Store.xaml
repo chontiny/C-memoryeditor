@@ -6,9 +6,10 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:local="clr-namespace:Squalr.View"
+    xmlns:viewModel="clr-namespace:Squalr.Source.Browse.Store"
     x:Name="SqualrStore"
     d:DesignHeight="480"
-    d:DesignWidth="312"
+    d:DesignWidth="480"
     x:ClassModifier="internal"
     DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
@@ -17,34 +18,19 @@
     </x:Code>
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:StoreViewToVisibilityConverter x:Key="StoreViewToVisibilityConverter" />
     </UserControl.Resources>
-
     <Border>
         <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition />
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <TextBox Background="{StaticResource AvalonDock_Expression_BaseColor4}"
-                         Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                         Style="{StaticResource PlaceHolder}"
-                         Tag="Search Games"
-                         Margin="0 0 0 4"/>
+            <Grid Visibility="{Binding CurrentView, 
+                Converter={StaticResource StoreViewToVisibilityConverter},
+                ConverterParameter={x:Static viewModel:StoreView.GameSelect}}">
+                <local:StoreGameSelect/>
             </Grid>
-            <Grid Grid.Row="1">
-                <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0">
-                        <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                            BorderThickness="1">
-                            <local:GameList/>
-                        </Border>
-                    </Grid>
-                </Grid>
+            <Grid Visibility="{Binding CurrentView, 
+                Converter={StaticResource StoreViewToVisibilityConverter},
+                ConverterParameter={x:Static viewModel:StoreView.CheatStore}}">
+                <local:StoreCheats/>
             </Grid>
         </Grid>
     </Border>

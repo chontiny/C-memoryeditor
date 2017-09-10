@@ -221,7 +221,7 @@
         /// <summary>
         /// Gets the Stream Config view model.
         /// </summary>
-        public StreamConfigViewModel TwitchConfigViewModel
+        public StreamConfigViewModel StreamConfigViewModel
         {
             get
             {
