@@ -323,17 +323,16 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Source\Api\SqualrApi.cs" />
-    <Compile Include="Source\Browse\BrowseView.cs" />
+    <Compile Include="Source\Browse\BrowseCategory.cs" />
+    <Compile Include="Source\Browse\BrowsePage.cs" />
+    <Compile Include="Source\Browse\INavigable.cs" />
     <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />
-    <Compile Include="Source\Browse\Library\LibraryView.cs" />
-    <Compile Include="Source\Browse\Store\StoreView.cs" />
     <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\LibraryViewToVisibilityConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\StoreViewToVisibilityConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\BrowseViewToVisibilityConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\BrowseCategoryToVisibilityConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\BrowsePageToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\Browse\TwitchLogin\TwitchLoginViewModel.cs" />
     <Compile Include="Source\Controls\RichTextBoxHelper.cs" />

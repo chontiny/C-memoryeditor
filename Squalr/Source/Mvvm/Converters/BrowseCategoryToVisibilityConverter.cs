@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
-    using Squalr.Source.Browse.Store;
+    using Squalr.Source.Browse;
     using System;
     using System.Windows;
     using System.Windows.Data;
@@ -8,8 +8,8 @@
     /// <summary>
     /// Converter class to convert a boolean to a <see cref="Visibility"/> value.
     /// </summary>
-    [ValueConversion(typeof(StoreView), typeof(Visibility))]
-    internal class StoreViewToVisibilityConverter : IValueConverter
+    [ValueConversion(typeof(BrowseCategory), typeof(Visibility))]
+    internal class BrowseCategoryToVisibilityConverter : IValueConverter
     {
         /// <summary> 
         /// Converts a value. 
@@ -23,10 +23,24 @@
         /// </returns> 
         public Object Convert(Object value, Type targetType, Object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is StoreView && targetType == typeof(Visibility))
+            if (value is BrowseCategory && targetType == typeof(Visibility))
             {
-                StoreView val = (StoreView)value;
-                StoreView targetVal = (StoreView)parameter;
+                BrowseCategory val = (BrowseCategory)value;
+
+                // If no parameter specified, we return Visible if not on a login screen
+                if (parameter == null)
+                {
+                    if (val == BrowseCategory.Login)
+                    {
+                        return Visibility.Collapsed;
+                    }
+                    else
+                    {
+                        return Visibility.Visible;
+                    }
+                }
+
+                BrowseCategory targetVal = (BrowseCategory)parameter;
 
                 if (val == targetVal)
                 {

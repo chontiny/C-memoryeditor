@@ -4,11 +4,16 @@
     using Squalr.Properties;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
+    using Squalr.Source.Browse.Library;
+    using Squalr.Source.Browse.Store;
+    using Squalr.Source.Browse.StreamConfig;
+    using Squalr.Source.Browse.TwitchLogin;
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
     using Squalr.Source.Output;
     using Squalr.Source.Utils.Extensions;
     using System;
+    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -41,9 +46,9 @@
         private User activeUser;
 
         /// <summary>
-        /// The current browse view.
+        /// The current browse page.
         /// </summary>
-        private BrowseView currentView;
+        private BrowsePage currentPage;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="BrowseViewModel" /> class from being created.
@@ -52,11 +57,13 @@
         {
             this.ContentId = BrowseViewModel.ToolContentId;
 
-            this.OpenLoginScreenCommand = new RelayCommand(() => this.CurrentView = BrowseView.Login, () => true);
+            this.OpenLoginScreenCommand = new RelayCommand(() => this.Navigate(BrowsePage.Login), () => true);
             this.OpenVirtualCurrencyStoreCommand = new RelayCommand(() => this.OpenVirtualCurrencyStore(), () => true);
-            this.OpenStoreCommand = new RelayCommand(() => this.CurrentView = BrowseView.Store, () => true);
-            this.OpenLibraryCommand = new RelayCommand(() => this.CurrentView = BrowseView.Library, () => true);
-            this.OpenStreamCommand = new RelayCommand(() => this.CurrentView = BrowseView.Stream, () => true);
+            this.OpenStoreCommand = new RelayCommand(() => this.Navigate(BrowsePage.StoreHome), () => true);
+            this.OpenLibraryCommand = new RelayCommand(() => this.Navigate(BrowsePage.LibraryHome), () => true);
+            this.OpenStreamCommand = new RelayCommand(() => this.Navigate(BrowsePage.StreamHome), () => true);
+
+            this.InitializeObservers();
 
             Task.Run(() =>
             {
@@ -102,19 +109,48 @@
         public ICommand OpenStreamCommand { get; private set; }
 
         /// <summary>
-        /// Gets or sets the current browse view.
+        /// Gets or sets the current browse section.
         /// </summary>
-        public BrowseView CurrentView
+        public BrowsePage CurrentPage
         {
             get
             {
-                return this.currentView;
+                return this.currentPage;
             }
 
             set
             {
-                this.currentView = value;
-                this.RaisePropertyChanged(nameof(this.CurrentView));
+                this.currentPage = value;
+                this.RaisePropertyChanged(nameof(this.CurrentPage));
+                this.RaisePropertyChanged(nameof(this.CurrentCategory));
+            }
+        }
+
+        /// <summary>
+        /// Gets the current browse category based on the current page.
+        /// </summary>
+        public BrowseCategory CurrentCategory
+        {
+            get
+            {
+                switch (this.CurrentPage)
+                {
+                    case BrowsePage.LibraryHome:
+                    case BrowsePage.LibrarySelect:
+                    case BrowsePage.LibraryGameSelect:
+                        return BrowseCategory.Library;
+                    case BrowsePage.StreamHome:
+                        return BrowseCategory.Stream;
+                    case BrowsePage.StoreHome:
+                    case BrowsePage.StoreGameSelect:
+                    case BrowsePage.CheatStore:
+                        return BrowseCategory.Store;
+                    case BrowsePage.Loading:
+                        return BrowseCategory.Loading;
+                    case BrowsePage.Login:
+                    default:
+                        return BrowseCategory.Login;
+                }
             }
         }
 
@@ -154,6 +190,37 @@
         }
 
         /// <summary>
+        /// Gets or sets the list of observers for navigation events.
+        /// </summary>
+        private IEnumerable<INavigable> Observers { get; set; }
+
+        /// <summary>
+        /// Navigates the Browse view to the specified page.
+        /// </summary>
+        /// <param name="newPage">The page to which to navigate.</param>
+        public void Navigate(BrowsePage newPage)
+        {
+            this.CurrentPage = newPage;
+            this.Observers.ForEach(observer => observer.OnNavigate(newPage));
+        }
+
+        /// <summary>
+        /// Navigates the Browse view backwards to a previosly visited page.
+        /// </summary>
+        public void NavigateBack()
+        {
+
+        }
+
+        /// <summary>
+        /// Navigates the Browse view forwards to a previously visited page.
+        /// </summary>
+        public void NavigateForward()
+        {
+
+        }
+
+        /// <summary>
         /// Opens the virtual currency store in the native browser.
         /// </summary>
         private void OpenVirtualCurrencyStore()
@@ -168,11 +235,11 @@
         {
             if (!this.IsLoggedIn)
             {
-                this.CurrentView = BrowseView.Login;
+                this.Navigate(BrowsePage.Login);
             }
             else
             {
-                this.CurrentView = BrowseView.Store;
+                this.Navigate(BrowsePage.StoreHome);
             }
         }
 
@@ -195,13 +262,28 @@
                 this.ActiveUser = user;
 
                 this.IsLoggedIn = true;
-                this.CurrentView = BrowseView.Store;
+                this.Navigate(BrowsePage.StoreHome);
             }
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to log in using stored credentials", ex);
                 this.IsLoggedIn = false;
             }
+        }
+
+        /// <summary>
+        /// Initializes observers that listen for navigation events.
+        /// </summary>
+        private void InitializeObservers()
+        {
+            List<INavigable> observers = new List<INavigable>();
+
+            observers.Add(LibraryViewModel.GetInstance());
+            observers.Add(StoreViewModel.GetInstance());
+            observers.Add(StreamConfigViewModel.GetInstance());
+            observers.Add(TwitchLoginViewModel.GetInstance());
+
+            this.Observers = observers;
         }
     }
     //// End class

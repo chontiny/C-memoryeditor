@@ -17,7 +17,7 @@
     /// <summary>
     /// View model for the Twitch Login.
     /// </summary>
-    internal class TwitchLoginViewModel : ToolViewModel
+    internal class TwitchLoginViewModel : ToolViewModel, INavigable
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -78,6 +78,21 @@
         public static TwitchLoginViewModel GetInstance()
         {
             return twitchLoginViewModelInstance.Value;
+        }
+
+        /// <summary>
+        /// Event fired when the browse view navigates to a new page.
+        /// </summary>
+        /// <param name="browsePage">The new browse page.</param>
+        public void OnNavigate(BrowsePage browsePage)
+        {
+            switch (browsePage)
+            {
+                case BrowsePage.Login:
+                    break;
+                default:
+                    return;
+            }
         }
 
         /// <summary>

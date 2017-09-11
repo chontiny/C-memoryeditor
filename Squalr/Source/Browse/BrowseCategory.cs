@@ -1,29 +1,34 @@
 ﻿namespace Squalr.Source.Browse
 {
     /// <summary>
-    /// An enum of the possible views for the Browse view.
+    /// An enum of the sections for the Browse view.
     /// </summary>
-    public enum BrowseView
+    public enum BrowseCategory
     {
         /// <summary>
-        /// The login view.
+        /// The login section.
         /// </summary>
         Login,
 
         /// <summary>
-        /// The store view.
+        /// The store section.
         /// </summary>
         Store,
 
         /// <summary>
-        /// The library view.
+        /// The library section.
         /// </summary>
         Library,
 
         /// <summary>
-        /// The stream view.
+        /// The stream section.
         /// </summary>
         Stream,
+
+        /// <summary>
+        /// The loading screen.
+        /// </summary>
+        Loading,
     }
     //// End enum
 }

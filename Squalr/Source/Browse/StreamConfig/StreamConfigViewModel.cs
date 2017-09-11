@@ -21,7 +21,7 @@
     /// <summary>
     /// View model for the Stream Config.
     /// </summary>
-    internal class StreamConfigViewModel : ToolViewModel
+    internal class StreamConfigViewModel : ToolViewModel, INavigable
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -123,6 +123,20 @@
             return StreamConfigViewModel.streamConfigViewModelInstance.Value;
         }
 
+        /// <summary>
+        /// Event fired when the browse view navigates to a new page.
+        /// </summary>
+        /// <param name="browsePage">The new browse page.</param>
+        public void OnNavigate(BrowsePage browsePage)
+        {
+            switch (browsePage)
+            {
+                case BrowsePage.StreamHome:
+                    break;
+                default:
+                    return;
+            }
+        }
 
         /// <summary>
         /// Toggles the current Stream connection.
@@ -148,7 +162,6 @@
             {
                 return;
             }
-
 
             try
             {

@@ -8,8 +8,8 @@
     /// <summary>
     /// Converter class to convert a boolean to a <see cref="Visibility"/> value.
     /// </summary>
-    [ValueConversion(typeof(BrowseView), typeof(Visibility))]
-    internal class BrowseViewToVisibilityConverter : IValueConverter
+    [ValueConversion(typeof(BrowsePage), typeof(Visibility))]
+    internal class BrowsePageToVisibilityConverter : IValueConverter
     {
         /// <summary> 
         /// Converts a value. 
@@ -23,14 +23,14 @@
         /// </returns> 
         public Object Convert(Object value, Type targetType, Object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value is BrowseView && targetType == typeof(Visibility))
+            if (value is BrowsePage && targetType == typeof(Visibility))
             {
-                BrowseView val = (BrowseView)value;
+                BrowsePage val = (BrowsePage)value;
 
                 // If no parameter specified, we return Visible if not on a login screen
                 if (parameter == null)
                 {
-                    if (val == BrowseView.Login)
+                    if (val == BrowsePage.Login)
                     {
                         return Visibility.Collapsed;
                     }
@@ -40,7 +40,7 @@
                     }
                 }
 
-                BrowseView targetVal = (BrowseView)parameter;
+                BrowsePage targetVal = (BrowsePage)parameter;
 
                 if (val == targetVal)
                 {

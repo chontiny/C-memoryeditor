@@ -17,7 +17,7 @@
     /// <summary>
     /// View model for the Store.
     /// </summary>
-    internal class StoreViewModel : ToolViewModel
+    internal class StoreViewModel : ToolViewModel, INavigable
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -30,11 +30,6 @@
         private static Lazy<StoreViewModel> storeViewModelInstance = new Lazy<StoreViewModel>(
                 () => { return new StoreViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
-        /// The current store view.
-        /// </summary>
-        private StoreView currentView;
 
         /// <summary>
         /// The list of games.
@@ -57,18 +52,12 @@
         private StoreViewModel() : base("Store")
         {
             this.ContentId = StoreViewModel.ToolContentId;
-            this.CurrentView = StoreView.GameSelect;
 
             this.LockedCheatList = new ObservableCollection<Cheat>();
             this.UnlockedCheatList = new ObservableCollection<Cheat>();
 
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
             this.UnlockCheatCommand = new RelayCommand<Cheat>((cheat) => this.UnlockCheat(cheat), (cheat) => true);
-
-            Task.Run(() =>
-            {
-                this.GameList = SqualrApi.GetGameList();
-            });
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
@@ -82,23 +71,6 @@
         /// Gets the command to unlock a cheat.
         /// </summary>
         public ICommand UnlockCheatCommand { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the current store view.
-        /// </summary>
-        public StoreView CurrentView
-        {
-            get
-            {
-                return this.currentView;
-            }
-
-            set
-            {
-                this.currentView = value;
-                this.RaisePropertyChanged(nameof(this.CurrentView));
-            }
-        }
 
         /// <summary>
         /// Gets the list of games.
@@ -161,12 +133,51 @@
         }
 
         /// <summary>
+        /// Event fired when the browse view navigates to a new page.
+        /// </summary>
+        /// <param name="browsePage">The new browse page.</param>
+        public void OnNavigate(BrowsePage browsePage)
+        {
+            switch (browsePage)
+            {
+                case BrowsePage.StoreHome:
+                    BrowseViewModel.GetInstance().Navigate(BrowsePage.StoreGameSelect);
+                    break;
+                case BrowsePage.StoreGameSelect:
+                    this.LoadGameList();
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        /// <summary>
+        /// Loads the list of games from the API.
+        /// </summary>
+        private void LoadGameList()
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    this.GameList = SqualrApi.GetGameList();
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error fetching game list", ex);
+
+                    BrowseViewModel.GetInstance().NavigateBack();
+                }
+            });
+        }
+
+        /// <summary>
         /// Selects a specific game for which to view the store.
         /// </summary>
         /// <param name="game">The selected game.</param>
         private void SelectGame(Game game)
         {
-            this.CurrentView = StoreView.Loading;
+            BrowseViewModel.GetInstance().Navigate(BrowsePage.Loading);
 
             Task.Run(() =>
             {
@@ -176,12 +187,13 @@
                     StoreCheats storeCheats = SqualrApi.GetCheatList(accessTokens.AccessToken, game.GameId);
                     this.LockedCheatList = new ObservableCollection<Cheat>(storeCheats.LockedCheats);
                     this.UnlockedCheatList = new ObservableCollection<Cheat>(storeCheats.UnlockedCheats);
-                    this.CurrentView = StoreView.CheatStore;
+                    BrowseViewModel.GetInstance().Navigate(BrowsePage.CheatStore);
                 }
                 catch (Exception ex)
                 {
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading cheats", ex);
-                    this.CurrentView = StoreView.GameSelect;
+
+                    BrowseViewModel.GetInstance().NavigateBack();
                 }
             });
         }
