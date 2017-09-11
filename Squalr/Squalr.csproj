@@ -575,7 +575,7 @@
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Browse\TwitchLogin.xaml.cs">
+    <Compile Include="View\Browse\Login\TwitchLogin.xaml.cs">
       <DependentUpon>TwitchLogin.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\TextEditor.xaml.cs">
@@ -628,27 +628,27 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Page Include="View\Browse\LoginScreen.xaml">
+    <Page Include="View\Browse\Login\LoginScreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Library.xaml">
+    <Page Include="View\Browse\Library\Library.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\StoreCheats.xaml">
+    <Page Include="View\Browse\Store\Cheats.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\StoreLoading.xaml">
+    <Page Include="View\Browse\Loading.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\StoreGameSelect.xaml">
+    <Page Include="View\Browse\Store\Games.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Store.xaml">
+    <Page Include="View\Browse\Store\Store.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -660,11 +660,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\TwitchLogin.xaml">
+    <Page Include="View\Browse\Login\TwitchLogin.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\StreamConfig.xaml">
+    <Page Include="View\Browse\Streaming\StreamConfig.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

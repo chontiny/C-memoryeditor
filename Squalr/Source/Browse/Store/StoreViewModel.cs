@@ -9,6 +9,7 @@
     using Squalr.Source.Output;
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -43,12 +44,12 @@
         /// <summary>
         /// The list of cheats in the store for the selected game.
         /// </summary>
-        private IEnumerable<Cheat> lockedCheatList;
+        private ObservableCollection<Cheat> lockedCheatList;
 
         /// <summary>
         /// The list of purchased or owned cheats for the selected game.
         /// </summary>
-        private IEnumerable<Cheat> unlockedCheatList;
+        private ObservableCollection<Cheat> unlockedCheatList;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="StoreViewModel" /> class from being created.
@@ -58,7 +59,11 @@
             this.ContentId = StoreViewModel.ToolContentId;
             this.CurrentView = StoreView.GameSelect;
 
+            this.LockedCheatList = new ObservableCollection<Cheat>();
+            this.UnlockedCheatList = new ObservableCollection<Cheat>();
+
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
+            this.UnlockCheatCommand = new RelayCommand<Cheat>((cheat) => this.UnlockCheat(cheat), (cheat) => true);
 
             Task.Run(() =>
             {
@@ -72,6 +77,11 @@
         /// Gets the command to connect to the stream.
         /// </summary>
         public ICommand SelectGameCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to unlock a cheat.
+        /// </summary>
+        public ICommand UnlockCheatCommand { get; private set; }
 
         /// <summary>
         /// Gets or sets the current store view.
@@ -110,7 +120,7 @@
         /// <summary>
         /// Gets or sets the list of cheats in the store for the selected game.
         /// </summary>
-        public IEnumerable<Cheat> LockedCheatList
+        public ObservableCollection<Cheat> LockedCheatList
         {
             get
             {
@@ -127,7 +137,7 @@
         /// <summary>
         /// Gets or sets the list of cheats in the store for the selected game.
         /// </summary>
-        public IEnumerable<Cheat> UnlockedCheatList
+        public ObservableCollection<Cheat> UnlockedCheatList
         {
             get
             {
@@ -164,8 +174,8 @@
                 {
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     StoreCheats storeCheats = SqualrApi.GetCheatList(accessTokens.AccessToken, game.GameId);
-                    this.LockedCheatList = storeCheats.LockedCheats;
-                    this.UnlockedCheatList = storeCheats.UnlockedCheats;
+                    this.LockedCheatList = new ObservableCollection<Cheat>(storeCheats.LockedCheats);
+                    this.UnlockedCheatList = new ObservableCollection<Cheat>(storeCheats.UnlockedCheats);
                     this.CurrentView = StoreView.CheatStore;
                 }
                 catch (Exception ex)
@@ -174,6 +184,33 @@
                     this.CurrentView = StoreView.GameSelect;
                 }
             });
+        }
+
+        /// <summary>
+        /// Attempts to unlock the provided cheat.
+        /// </summary>
+        /// <param name="cheat">The cheat to unlock</param>
+        private void UnlockCheat(Cheat cheat)
+        {
+            if (!this.LockedCheatList.Contains(cheat))
+            {
+                throw new Exception("Cheat must be a locked cheat");
+            }
+
+            AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+
+            // We need the unlocked cheat, since the locked one does not include the payload
+            try
+            {
+                Cheat unlockedCheat = SqualrApi.UnlockCheat(accessTokens.AccessToken, cheat.CheatId);
+
+                this.LockedCheatList.Remove(cheat);
+                this.UnlockedCheatList.Insert(0, unlockedCheat);
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error unlocking cheat", ex);
+            }
         }
     }
     //// End class

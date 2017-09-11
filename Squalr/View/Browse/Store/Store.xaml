@@ -23,13 +23,13 @@
     <Border>
         <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
             <Grid Visibility="{Binding CurrentView, Converter={StaticResource StoreViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:StoreView.GameSelect}}">
-                <local:StoreGameSelect />
+                <local:Games />
             </Grid>
             <Grid Visibility="{Binding CurrentView, Converter={StaticResource StoreViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:StoreView.CheatStore}}">
-                <local:StoreCheats />
+                <local:Cheats />
             </Grid>
             <Grid Visibility="{Binding CurrentView, Converter={StaticResource StoreViewToVisibilityConverter}, ConverterParameter={x:Static viewModel:StoreView.Loading}}">
-                <local:StoreLoading />
+                <local:Loading />
             </Grid>
         </Grid>
     </Border>

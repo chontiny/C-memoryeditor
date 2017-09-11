@@ -55,10 +55,7 @@
                         </Grid>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem
-                    Padding="4"
-                    Command="{Binding OpenLibraryCommand}"
-                    ToolTip="Open Library">
+                <MenuItem Padding="4" Command="{Binding OpenLibraryCommand}">
                     <MenuItem.Header>
                         <Grid>
                             <TextBlock
@@ -73,10 +70,7 @@
                         </Grid>
                     </MenuItem.Header>
                 </MenuItem>
-                <MenuItem
-                    Padding="4"
-                    Command="{Binding OpenStreamCommand}"
-                    ToolTip="Open Stream Config">
+                <MenuItem Padding="4" Command="{Binding OpenStreamCommand}">
                     <MenuItem.Header>
                         <Grid>
                             <TextBlock
@@ -93,10 +87,7 @@
                 </MenuItem>
             </Menu>
             <Menu Grid.Column="1" Background="Transparent">
-                <MenuItem
-                    Padding="4"
-                    Command="{Binding OpenCoinStoreCommand}"
-                    ToolTip="Open Coin Store">
+                <MenuItem Padding="4" Command="{Binding OpenVirtualCurrencyStoreCommand}">
                     <MenuItem.Header>
                         <WrapPanel>
                             <Image

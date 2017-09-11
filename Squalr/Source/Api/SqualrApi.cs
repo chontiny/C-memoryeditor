@@ -76,6 +76,11 @@
         private static String StoreCheatsEndpoint = SqualrApi.ApiBase + "api/Cheats/Store";
 
         /// <summary>
+        /// The endpoint for unlocking cheats.
+        /// </summary>
+        private static String UnlockCheatEndpoint = SqualrApi.ApiBase + "api/Cheats/Unlock";
+
+        /// <summary>
         /// The active API base depending on the environment.
         /// </summary>
         private static String apiBase;
@@ -231,9 +236,23 @@
             {
                 DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(StoreCheats));
 
-                var k = deserializer.ReadObject(memoryStream) as StoreCheats;
+                return deserializer.ReadObject(memoryStream) as StoreCheats;
+            }
+        }
 
-                return k;
+        public static Cheat UnlockCheat(String accessToken, Int32 cheatId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("cheat_id", cheatId.ToString());
+
+            String result = ExecuteRequest(Method.POST, SqualrApi.UnlockCheatEndpoint, parameters);
+
+            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
+            {
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Cheat));
+
+                return deserializer.ReadObject(memoryStream) as Cheat;
             }
         }
 

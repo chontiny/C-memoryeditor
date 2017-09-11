@@ -53,7 +53,7 @@
             this.ContentId = BrowseViewModel.ToolContentId;
 
             this.OpenLoginScreenCommand = new RelayCommand(() => this.CurrentView = BrowseView.Login, () => true);
-            this.OpenCoinStoreCommand = new RelayCommand(() => this.OpenVirtualCurrencyStore(), () => true);
+            this.OpenVirtualCurrencyStoreCommand = new RelayCommand(() => this.OpenVirtualCurrencyStore(), () => true);
             this.OpenStoreCommand = new RelayCommand(() => this.CurrentView = BrowseView.Store, () => true);
             this.OpenLibraryCommand = new RelayCommand(() => this.CurrentView = BrowseView.Library, () => true);
             this.OpenStreamCommand = new RelayCommand(() => this.CurrentView = BrowseView.Stream, () => true);
@@ -84,7 +84,7 @@
         /// <summary>
         /// Gets a command to open the coin store.
         /// </summary>
-        public ICommand OpenCoinStoreCommand { get; private set; }
+        public ICommand OpenVirtualCurrencyStoreCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to open the store.

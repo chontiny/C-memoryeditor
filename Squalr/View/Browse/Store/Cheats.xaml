@@ -1,18 +1,18 @@
 ﻿<UserControl
-    x:Class="Squalr.View.StoreCheats"
+    x:Class="Squalr.View.Cheats"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Name="SqualrStoreCheats"
+    x:Name="SqualrCheats"
     d:DesignHeight="480"
     d:DesignWidth="480"
     x:ClassModifier="internal"
     DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <x:Code>
-        <![CDATA[ public StoreCheats() { InitializeComponent(); }]]>
+        <![CDATA[ public Cheats() { InitializeComponent(); }]]>
     </x:Code>
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -20,6 +20,7 @@
     <Border>
         <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
@@ -31,12 +32,94 @@
                     Style="{StaticResource PlaceHolder}"
                     Tag="Search Cheats" />
             </Grid>
-            <Grid Grid.Row="1" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+
+            <!--  HEADERS  -->
+            <ListView Grid.Row="1" BorderThickness="0">
+                <ListView.Template>
+                    <ControlTemplate>
+                        <Grid HorizontalAlignment="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid
+                                Grid.Row="0"
+                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
+                                VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Margin" Value="5,0" />
+                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="Padding" Value="8,4,8,4" />
+                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Border Grid.Column="0">
+                                    <TextBlock Text="Available Cheats" />
+                                </Border>
+                                <Border Grid.Column="1">
+                                    <TextBlock Text="My Cheats" />
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </ListView.Template>
+            </ListView>
+
+            <!--  CONTENT  -->
+            <Grid Grid.Row="2" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0" DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}">
+                    <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
+                        <ListView.Template>
+                            <ControlTemplate>
+                                <Grid HorizontalAlignment="Left">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid
+                                        Grid.Row="0"
+                                        Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
+                                        VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Margin" Value="5,0" />
+                                                <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                            </Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderThickness" Value="0" />
+                                                <Setter Property="Padding" Value="8,4,8,4" />
+                                                <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Border Grid.Column="0">
+                                            <TextBlock Text="Active Constraints" />
+                                        </Border>
+                                        <Border Grid.Column="1">
+                                            <TextBlock Text="Value" />
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </ControlTemplate>
+                        </ListView.Template>
+                    </ListView>
                     <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}" BorderThickness="1">
                         <ListView
                             Grid.Row="0"
@@ -48,7 +131,7 @@
                                     <Grid>
                                         <Grid.InputBindings>
                                             <MouseBinding
-                                                Command="{Binding SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                Command="{Binding StoreViewModel.SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
                                                 CommandParameter="{Binding .}"
                                                 Gesture="LeftDoubleClick" />
                                         </Grid.InputBindings>
@@ -57,7 +140,11 @@
                                                 <ColumnDefinition Width="48" />
                                                 <ColumnDefinition />
                                             </Grid.ColumnDefinitions>
-                                            <Button Background="Transparent">
+                                            <Button
+                                                Background="Transparent"
+                                                Command="{Binding StoreViewModel.UnlockCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                CommandParameter="{Binding .}"
+                                                ToolTip="Purchase this cheat">
                                                 <WrapPanel Grid.Column="0">
                                                     <Image
                                                         Width="16"
