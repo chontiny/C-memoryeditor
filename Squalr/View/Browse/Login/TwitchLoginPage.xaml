@@ -1,11 +1,11 @@
 ﻿<shell:Window
-    x:Class="Squalr.View.TwitchLogin"
+    x:Class="Squalr.View.Browse.Login.TwitchLoginPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    x:Name="SqualrTwitchLogin"
+    x:Name="SqualrTwitchLoginPage"
     Title="Twitch Login"
     Width="480"
     Height="544"

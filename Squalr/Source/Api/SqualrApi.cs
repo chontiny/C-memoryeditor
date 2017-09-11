@@ -28,7 +28,7 @@
         /// <summary>
         /// The API url to get the access tokens.
         /// </summary>
-        public static String VirtualCurrencyStoreEndpoint = SqualrApi.ApiBase + "Account/Manage/BuyCoins";
+        public static String VirtualCurrencyStoreEndpoint = SqualrApi.ApiBase + "Store";
 
         /// <summary>
         /// The API url to get the access tokens.
@@ -63,7 +63,7 @@
         /// <summary>
         /// The endpoint for querying the library lists.
         /// </summary>
-        private static String LibraryListEndpoint = SqualrApi.ApiBase + "api/Library";
+        private static String LibraryListEndpoint = SqualrApi.ApiBase + "api/Libraries";
 
         /// <summary>
         /// The endpoint for querying the available and unavailable cheats in a library.
@@ -208,7 +208,7 @@
             }
         }
 
-        public static Library[] GetLibraryList(String accessToken, Int32 gameId)
+        public static Library[] GetLibraries(String accessToken, Int32 gameId)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
@@ -293,6 +293,13 @@
             return SqualrApi.SqualrHostBase;
         }
 
+        /// <summary>
+        /// Executes the given REST request.
+        /// </summary>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="endpoint">The REST endpoint.</param>
+        /// <param name="parameters">The request parameters.</param>
+        /// <returns>The response content.</returns>
         private static String ExecuteRequest(Method method, String endpoint, Dictionary<String, String> parameters)
         {
             RestClient client = new RestClient(endpoint);

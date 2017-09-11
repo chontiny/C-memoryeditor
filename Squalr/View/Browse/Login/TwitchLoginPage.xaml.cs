@@ -1,4 +1,4 @@
-﻿namespace Squalr.View
+﻿namespace Squalr.View.Browse.Login
 {
     using Source.Output;
     using Squalr.Source.Analytics;
@@ -11,14 +11,14 @@
     using System.Windows.Navigation;
 
     /// <summary>
-    /// Interaction logic for TwitchLogin.xaml.
+    /// Interaction logic for TwitchLoginPage.xaml.
     /// </summary>
-    internal partial class TwitchLogin : Window
+    internal partial class TwitchLoginPage : Window
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TwitchLogin" /> class.
+        /// Initializes a new instance of the <see cref="TwitchLoginPage" /> class.
         /// </summary>
-        public TwitchLogin()
+        public TwitchLoginPage()
         {
             this.InitializeComponent();
 

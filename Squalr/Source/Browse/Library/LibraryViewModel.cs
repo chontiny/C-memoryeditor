@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.Browse.Library
 {
+    using GalaSoft.MvvmLight.Command;
     using Squalr.Properties;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
@@ -8,8 +9,10 @@
     using Squalr.Source.Output;
     using System;
     using System.Collections.Generic;
+    using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows.Input;
 
     /// <summary>
     /// View model for the Library.
@@ -34,11 +37,23 @@
         private IEnumerable<Game> gameList;
 
         /// <summary>
+        /// The list of libraries.
+        /// </summary>
+        private ObservableCollection<Library> libraries;
+
+        /// <summary>
+        /// The current library view.
+        /// </summary>
+        private LibraryView currentView;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="LibraryViewModel" /> class from being created.
         /// </summary>
         private LibraryViewModel() : base("Library")
         {
             this.ContentId = LibraryViewModel.ToolContentId;
+
+            this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
 
             Task.Run(() =>
             {
@@ -67,6 +82,28 @@
         }
 
         /// <summary>
+        /// Gets the command to select a game.
+        /// </summary>
+        public ICommand SelectGameCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the current library view.
+        /// </summary>
+        public LibraryView CurrentView
+        {
+            get
+            {
+                return this.currentView;
+            }
+
+            set
+            {
+                this.currentView = value;
+                this.RaisePropertyChanged(nameof(this.CurrentView));
+            }
+        }
+
+        /// <summary>
         /// Gets the list of games.
         /// </summary>
         public IEnumerable<Game> GameList
@@ -81,6 +118,48 @@
                 this.gameList = value;
                 this.RaisePropertyChanged(nameof(this.GameList));
             }
+        }
+
+        /// <summary>
+        /// Gets the list of libraries.
+        /// </summary>
+        public ObservableCollection<Library> Libraries
+        {
+            get
+            {
+                return this.libraries;
+            }
+
+            private set
+            {
+                this.libraries = value;
+                this.RaisePropertyChanged(nameof(this.Libraries));
+            }
+        }
+
+        /// <summary>
+        /// Selects a specific game for which to view the store.
+        /// </summary>
+        /// <param name="game">The selected game.</param>
+        private void SelectGame(Game game)
+        {
+            this.CurrentView = LibraryView.Loading;
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                    Library[] libraries = SqualrApi.GetLibraries(accessTokens.AccessToken, game.GameId);
+                    this.Libraries = new ObservableCollection<Library>(libraries);
+                    this.CurrentView = LibraryView.LibrarySelect;
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading libraries", ex);
+                    this.CurrentView = LibraryView.GameSelect;
+                }
+            });
         }
     }
     //// End class

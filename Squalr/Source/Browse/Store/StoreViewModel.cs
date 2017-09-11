@@ -74,7 +74,7 @@
         }
 
         /// <summary>
-        /// Gets the command to connect to the stream.
+        /// Gets the command to select a game.
         /// </summary>
         public ICommand SelectGameCommand { get; private set; }
 

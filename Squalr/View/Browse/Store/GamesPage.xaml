@@ -1,19 +1,18 @@
 ﻿<UserControl
-    x:Class="Squalr.View.Games"
+    x:Class="Squalr.View.Browse.Store.GamesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Squalr.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Name="SqualrGames"
+    x:Name="SqualrGamesPage"
     d:DesignHeight="480"
     d:DesignWidth="480"
     x:ClassModifier="internal"
     DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <x:Code>
-        <![CDATA[ public Games() { InitializeComponent(); }]]>
+        <![CDATA[ public GamesPage() { InitializeComponent(); }]]>
     </x:Code>
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

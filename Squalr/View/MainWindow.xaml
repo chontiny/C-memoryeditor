@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+    xmlns:browseView="clr-namespace:Squalr.View.Browse"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:Squalr.Source.Docking"
@@ -459,7 +460,7 @@
                     <!--  Browse  -->
                     <view:ViewTemplateSelector.BrowseViewTemplate>
                         <shell:DataTemplate>
-                            <view:Browse />
+                            <browseView:BrowseHome />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.BrowseViewTemplate>
                     <!--  .Net Explorer  -->

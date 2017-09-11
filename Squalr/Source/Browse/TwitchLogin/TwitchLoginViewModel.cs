@@ -7,6 +7,7 @@
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
     using Squalr.Source.Output;
+    using Squalr.View.Browse.Login;
     using System;
     using System.Threading;
     using System.Windows;
@@ -111,9 +112,9 @@
         /// </summary>
         private void DisplayTwitchLogin()
         {
-            View.TwitchLogin twitchLogin = new View.TwitchLogin();
-            twitchLogin.Owner = Application.Current.MainWindow;
-            twitchLogin.ShowDialog();
+            TwitchLoginPage twitchLoginScreen = new TwitchLoginPage();
+            twitchLoginScreen.Owner = Application.Current.MainWindow;
+            twitchLoginScreen.ShowDialog();
         }
     }
     //// End class

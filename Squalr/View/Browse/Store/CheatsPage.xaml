@@ -1,18 +1,18 @@
 ﻿<UserControl
-    x:Class="Squalr.View.Cheats"
+    x:Class="Squalr.View.Browse.Store.CheatsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    x:Name="SqualrCheats"
+    x:Name="SqualrCheatsPage"
     d:DesignHeight="480"
     d:DesignWidth="480"
     x:ClassModifier="internal"
     DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <x:Code>
-        <![CDATA[ public Cheats() { InitializeComponent(); }]]>
+        <![CDATA[ public CheatsPage() { InitializeComponent(); }]]>
     </x:Code>
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -194,7 +194,8 @@
                                             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                                             Margin="4,0,0,0"
                                             Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                            Text="{Binding Path=CheatName}" />
+                                            Text="{Binding Path=CheatName}"
+                                            ToolTip="{Binding Path=CheatDescription}" />
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>

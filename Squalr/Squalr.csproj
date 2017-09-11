@@ -325,11 +325,13 @@
     <Compile Include="Source\Api\SqualrApi.cs" />
     <Compile Include="Source\Browse\BrowseView.cs" />
     <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />
+    <Compile Include="Source\Browse\Library\LibraryView.cs" />
     <Compile Include="Source\Browse\Store\StoreView.cs" />
     <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\LibraryViewToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\StoreViewToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\BrowseViewToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
@@ -575,8 +577,8 @@
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Browse\Login\TwitchLogin.xaml.cs">
-      <DependentUpon>TwitchLogin.xaml</DependentUpon>
+    <Compile Include="View\Browse\Login\TwitchLoginPage.xaml.cs">
+      <DependentUpon>TwitchLoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\TextEditor.xaml.cs">
       <DependentUpon>TextEditor.xaml</DependentUpon>
@@ -628,27 +630,35 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Page Include="View\Browse\Login\LoginScreen.xaml">
+    <Page Include="View\Browse\Library\LibrariesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Library\Library.xaml">
+    <Page Include="View\Browse\Library\GamesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Store\Cheats.xaml">
+    <Page Include="View\Browse\Login\LoginHome.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Loading.xaml">
+    <Page Include="View\Browse\Library\LibraryHome.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Store\Games.xaml">
+    <Page Include="View\Browse\Store\CheatsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Store\Store.xaml">
+    <Page Include="View\Browse\LoadingPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\Store\GamesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\Store\StoreHome.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -656,15 +666,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Browse.xaml">
+    <Page Include="View\Browse\BrowseHome.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Login\TwitchLogin.xaml">
+    <Page Include="View\Browse\Login\TwitchLoginPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Streaming\StreamConfig.xaml">
+    <Page Include="View\Browse\Streaming\StreamConfigurationHome.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
