@@ -66,6 +66,11 @@
         private static String LibraryListEndpoint = SqualrApi.ApiBase + "api/Libraries";
 
         /// <summary>
+        /// The endpoint for creating a library.
+        /// </summary>
+        private static String CreateLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Create";
+
+        /// <summary>
         /// The endpoint for querying the available and unavailable cheats in a library.
         /// </summary>
         private static String LibraryCheatsEndpoint = SqualrApi.ApiBase + "api/Cheats";
@@ -221,6 +226,22 @@
                 DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Library[]));
 
                 return deserializer.ReadObject(memoryStream) as Library[];
+            }
+        }
+
+        public static Library CreateLibrary(String accessToken, Int32 gameId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("game_id", gameId.ToString());
+
+            String result = ExecuteRequest(Method.POST, SqualrApi.CreateLibraryEndpoint, parameters);
+
+            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
+            {
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Library));
+
+                return deserializer.ReadObject(memoryStream) as Library;
             }
         }
 

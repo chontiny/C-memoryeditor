@@ -37,9 +37,14 @@
         private IEnumerable<Game> gameList;
 
         /// <summary>
+        /// The selected game.
+        /// </summary>
+        public Game selectedGame;
+
+        /// <summary>
         /// The list of libraries.
         /// </summary>
-        private ObservableCollection<Library> libraries;
+        private List<Library> libraries;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="LibraryViewModel" /> class from being created.
@@ -47,8 +52,10 @@
         private LibraryViewModel() : base("Library")
         {
             this.ContentId = LibraryViewModel.ToolContentId;
+            this.libraries = new List<Library>();
 
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
+            this.AddNewLibraryCommand = new RelayCommand(() => this.AddNewLibrary(), () => true);
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
@@ -68,6 +75,11 @@
         public ICommand SelectGameCommand { get; private set; }
 
         /// <summary>
+        /// Gets the command to create a new library.
+        /// </summary>
+        public ICommand AddNewLibraryCommand { get; private set; }
+
+        /// <summary>
         /// Gets the list of games.
         /// </summary>
         public IEnumerable<Game> GameList
@@ -85,19 +97,30 @@
         }
 
         /// <summary>
+        /// Gets or sets the selected game.
+        /// </summary>
+        public Game SelectedGame
+        {
+            get
+            {
+                return this.selectedGame;
+            }
+
+            set
+            {
+                this.selectedGame = value;
+                this.RaisePropertyChanged(nameof(this.SelectedGame));
+            }
+        }
+
+        /// <summary>
         /// Gets the list of libraries.
         /// </summary>
         public ObservableCollection<Library> Libraries
         {
             get
             {
-                return this.libraries;
-            }
-
-            private set
-            {
-                this.libraries = value;
-                this.RaisePropertyChanged(nameof(this.Libraries));
+                return new ObservableCollection<Library>(this.libraries);
             }
         }
 
@@ -156,13 +179,36 @@
                 {
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     Library[] libraries = SqualrApi.GetLibraries(accessTokens.AccessToken, game.GameId);
-                    this.Libraries = new ObservableCollection<Library>(libraries);
+                    this.libraries = new List<Library>(libraries);
+                    this.RaisePropertyChanged(nameof(this.Libraries));
+                    this.SelectedGame = game;
                     BrowseViewModel.GetInstance().Navigate(BrowsePage.LibrarySelect);
                 }
                 catch (Exception ex)
                 {
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading libraries", ex);
                     BrowseViewModel.GetInstance().Navigate(BrowsePage.StoreGameSelect);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Adds a new library to the current selected game.
+        /// </summary>
+        private void AddNewLibrary()
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                    Library newLibrary = SqualrApi.CreateLibrary(accessTokens?.AccessToken, this.SelectedGame.GameId);
+                    this.libraries.Add(newLibrary);
+                    this.RaisePropertyChanged(nameof(this.Libraries));
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error creating library", ex);
                 }
             });
         }
