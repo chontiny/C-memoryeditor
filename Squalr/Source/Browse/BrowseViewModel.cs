@@ -56,14 +56,20 @@
         private BrowseViewModel() : base("Browse")
         {
             this.ContentId = BrowseViewModel.ToolContentId;
+            this.PreviousPages = new Stack<BrowsePage>();
+            this.NextPages = new Stack<BrowsePage>();
+            this.AccessLock = new Object();
 
             this.OpenLoginScreenCommand = new RelayCommand(() => this.Navigate(BrowsePage.Login), () => true);
             this.OpenVirtualCurrencyStoreCommand = new RelayCommand(() => this.OpenVirtualCurrencyStore(), () => true);
             this.OpenStoreCommand = new RelayCommand(() => this.Navigate(BrowsePage.StoreHome), () => true);
             this.OpenLibraryCommand = new RelayCommand(() => this.Navigate(BrowsePage.LibraryHome), () => true);
             this.OpenStreamCommand = new RelayCommand(() => this.Navigate(BrowsePage.StreamHome), () => true);
+            this.NavigateForwardCommand = new RelayCommand(() => this.NavigateForward());
+            this.NavigateBackCommand = new RelayCommand(() => this.NavigateBack());
 
             this.InitializeObservers();
+            this.Navigate(BrowsePage.Loading);
 
             Task.Run(() =>
             {
@@ -109,6 +115,63 @@
         public ICommand OpenStreamCommand { get; private set; }
 
         /// <summary>
+        /// Gets a command to navigate the browse menu forward.
+        /// </summary>
+        public ICommand NavigateForwardCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to navigate the browse menu backwards.
+        /// </summary>
+        public ICommand NavigateBackCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether navigate forwards is available.
+        /// </summary>
+        public Boolean IsForwardAvailable
+        {
+            get
+            {
+                return this.NextPages.Count > 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether navigate backwards is available.
+        /// </summary>
+        public Boolean IsBackAvailable
+        {
+            get
+            {
+                return this.PreviousPages.Count > 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets the banner text.
+        /// </summary>
+        public String BannerText
+        {
+            get
+            {
+                switch (this.CurrentCategory)
+                {
+                    case BrowseCategory.Loading:
+                        return "Loading".ToUpper();
+                    case BrowseCategory.Library:
+                        return "Library".ToUpper();
+                    case BrowseCategory.Store:
+                        return "Store".ToUpper();
+                    case BrowseCategory.Stream:
+                        return "Stream".ToUpper();
+                    case BrowseCategory.Login:
+                    default:
+                        return "Login".ToUpper();
+
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the current browse section.
         /// </summary>
         public BrowsePage CurrentPage
@@ -123,6 +186,7 @@
                 this.currentPage = value;
                 this.RaisePropertyChanged(nameof(this.CurrentPage));
                 this.RaisePropertyChanged(nameof(this.CurrentCategory));
+                this.RaisePropertyChanged(nameof(this.BannerText));
             }
         }
 
@@ -195,13 +259,45 @@
         private IEnumerable<INavigable> Observers { get; set; }
 
         /// <summary>
+        /// Gets or sets the previous pages in the browse history.
+        /// </summary>
+        private Stack<BrowsePage> PreviousPages { get; set; }
+
+        /// <summary>
+        /// Gets or sets the next pages in the browse history.
+        /// </summary>
+        private Stack<BrowsePage> NextPages { get; set; }
+
+        /// <summary>
+        /// Gets or sets the access lock to page history.
+        /// </summary>
+        private Object AccessLock { get; set; }
+
+        /// <summary>
         /// Navigates the Browse view to the specified page.
         /// </summary>
         /// <param name="newPage">The page to which to navigate.</param>
-        public void Navigate(BrowsePage newPage)
+        public void Navigate(BrowsePage newPage, Boolean addCurrentPageToHistory = true)
         {
-            this.CurrentPage = newPage;
-            this.Observers.ForEach(observer => observer.OnNavigate(newPage));
+            if (this.CurrentPage == newPage)
+            {
+                return;
+            }
+
+            lock (this.AccessLock)
+            {
+                // Save current page in history (not including loading or login pages)
+                if (addCurrentPageToHistory && this.CurrentPage != BrowsePage.Loading && this.CurrentPage != BrowsePage.Login)
+                {
+                    this.NextPages.Clear();
+                    this.PreviousPages.Push(this.CurrentPage);
+                }
+
+                this.CurrentPage = newPage;
+                this.RaisePropertyChanged(nameof(this.IsBackAvailable));
+                this.RaisePropertyChanged(nameof(this.IsForwardAvailable));
+                Task.Run(() => this.Observers.ForEach(observer => observer.OnNavigate(newPage)));
+            }
         }
 
         /// <summary>
@@ -209,7 +305,20 @@
         /// </summary>
         public void NavigateBack()
         {
+            BrowsePage previousPage;
 
+            lock (this.AccessLock)
+            {
+                if (this.PreviousPages.Count == 0)
+                {
+                    return;
+                }
+
+                previousPage = this.PreviousPages.Pop();
+                this.NextPages.Push(this.CurrentPage);
+            }
+
+            this.Navigate(previousPage, addCurrentPageToHistory: false);
         }
 
         /// <summary>
@@ -217,7 +326,20 @@
         /// </summary>
         public void NavigateForward()
         {
+            BrowsePage nextPage;
 
+            lock (this.AccessLock)
+            {
+                if (this.NextPages.Count == 0)
+                {
+                    return;
+                }
+
+                nextPage = this.NextPages.Pop();
+                this.PreviousPages.Push(this.CurrentPage);
+            }
+
+            this.Navigate(nextPage, addCurrentPageToHistory: false);
         }
 
         /// <summary>

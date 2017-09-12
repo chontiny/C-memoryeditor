@@ -24,36 +24,9 @@
     <Border>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Rectangle>
-                    <Rectangle.Fill>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                            <GradientStop Offset="0.0" Color="Transparent" />
-                            <GradientStop Offset="0.5" Color="MediumPurple" />
-                            <GradientStop Offset="1.0" Color="Transparent" />
-                        </LinearGradientBrush>
-                    </Rectangle.Fill>
-                </Rectangle>
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    FontSize="32"
-                    Foreground="White"
-                    Opacity="0.5"
-                    Text="STORE">
-                    <TextBlock.Effect>
-                        <BlurEffect KernelType="Gaussian" Radius="8.0" />
-                    </TextBlock.Effect>
-                </TextBlock>
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    FontSize="32"
-                    Foreground="LightCyan"
-                    Text="STORE" />
-            </Grid>
-            <Grid Grid.Row="1" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+            <Grid Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
                 <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static browseViewModel:BrowsePage.StoreGameSelect}}">
                     <store:GamesPage />
                 </Grid>

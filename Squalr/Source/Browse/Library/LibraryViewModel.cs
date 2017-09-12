@@ -110,7 +110,7 @@
             switch (browsePage)
             {
                 case BrowsePage.LibraryHome:
-                    BrowseViewModel.GetInstance().Navigate(BrowsePage.LibraryGameSelect);
+                    BrowseViewModel.GetInstance().Navigate(BrowsePage.LibraryGameSelect, addCurrentPageToHistory: false);
                     break;
                 case BrowsePage.LibraryGameSelect:
                     this.LoadGameList();

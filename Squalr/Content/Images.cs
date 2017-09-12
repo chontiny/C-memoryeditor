@@ -166,6 +166,11 @@
         public static readonly BitmapImage LogicalOr = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "LogicalOr.png"));
 
         /// <summary>
+        /// Image for the previous arrow.
+        /// </summary>
+        public static readonly BitmapImage Previous = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Previous.png"));
+
+        /// <summary>
         /// Image represeting a window maximize operation.
         /// </summary>
         public static readonly BitmapImage Maximize = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Maximize.png"));
@@ -209,6 +214,11 @@
         /// Image for a new scan.
         /// </summary>
         public static readonly BitmapImage NewScan = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "New.png"));
+
+        /// <summary>
+        /// Image for the next arrow.
+        /// </summary>
+        public static readonly BitmapImage Next = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Next.png"));
 
         /// <summary>
         /// Image for a next scan.

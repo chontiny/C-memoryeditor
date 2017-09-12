@@ -809,6 +809,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Resource Include="Content\Icons\Coin.png" />
+    <Resource Include="Content\Icons\Next.png" />
+    <Resource Include="Content\Icons\Previous.png" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -14,15 +14,5 @@
     <x:Code>
         <![CDATA[ public LoadingPage() { InitializeComponent(); }]]>
     </x:Code>
-    <UserControl.Resources>
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-    </UserControl.Resources>
-    <Border>
-        <TextBlock
-            HorizontalAlignment="Center"
-            FontSize="18"
-            Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-            Text="LOADING..." />
-    </Border>
-
+    <Border BorderBrush="White" BorderThickness="1" />
 </UserControl>
