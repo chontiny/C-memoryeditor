@@ -71,6 +71,11 @@
         private static String CreateLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Create";
 
         /// <summary>
+        /// The endpoint for deleting a library.
+        /// </summary>
+        private static String DeleteLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Delete";
+
+        /// <summary>
         /// The endpoint for querying the available and unavailable cheats in a library.
         /// </summary>
         private static String CheatsEndpoint = SqualrApi.ApiBase + "api/Cheats";
@@ -269,6 +274,15 @@
 
                 return deserializer.ReadObject(memoryStream) as Library;
             }
+        }
+
+        public static void DeleteLibrary(String accessToken, Int32 libraryId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+
+            String result = ExecuteRequest(Method.POST, SqualrApi.DeleteLibraryEndpoint, parameters);
         }
 
         public static StoreCheats GetCheatList(String accessToken, Int32 gameId)

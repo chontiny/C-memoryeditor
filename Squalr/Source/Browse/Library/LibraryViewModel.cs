@@ -4,6 +4,7 @@
     using Squalr.Properties;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
+    using Squalr.Source.Controls;
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
     using Squalr.Source.Output;
@@ -12,6 +13,7 @@
     using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows;
     using System.Windows.Input;
 
     /// <summary>
@@ -76,6 +78,7 @@
             this.AddCheatToLibraryCommand = new RelayCommand<Cheat>((cheat) => this.AddCheatToLibrary(cheat), (cheat) => true);
             this.RemoveCheatFromLibraryCommand = new RelayCommand<Cheat>((cheat) => this.RemoveCheatFromLibrary(cheat), (cheat) => true);
             this.AddNewLibraryCommand = new RelayCommand(() => this.AddNewLibrary(), () => true);
+            this.DeleteLibraryCommand = new RelayCommand(() => this.DeleteLibrary(), () => true);
 
             MainViewModel.GetInstance().RegisterTool(this);
         }
@@ -103,6 +106,11 @@
         /// Gets the command to create a new library.
         /// </summary>
         public ICommand AddNewLibraryCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to delete the selected library.
+        /// </summary>
+        public ICommand DeleteLibraryCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to remove a cheat from the library.
@@ -313,6 +321,43 @@
         }
 
         /// <summary>
+        /// Deletes the selected library after prompting the user.
+        /// </summary>
+        private void DeleteLibrary()
+        {
+            if (this.SelectedLibrary == null)
+            {
+                return;
+            }
+
+            MessageBoxResult result = CenteredDialogBox.Show(
+                "Delete library '" + this.SelectedLibrary.LibraryName + "'?",
+                "Confirm Library Delete",
+                MessageBoxButton.YesNoCancel,
+                MessageBoxImage.Question);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                        SqualrApi.DeleteLibrary(accessTokens?.AccessToken, this.SelectedLibrary.LibraryId);
+                        this.libraries.Remove(this.SelectedLibrary);
+                        this.SelectedLibrary = null;
+                        this.RaisePropertyChanged(nameof(this.Libraries));
+                        this.RaisePropertyChanged(nameof(this.SelectedLibrary));
+                    }
+                    catch (Exception ex)
+                    {
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error deleting library", ex);
+                    }
+                });
+            }
+        }
+
+        /// <summary>
         /// Adds the cheat to the selected library.
         /// </summary>
         /// <param name="cheat"></param>
@@ -320,7 +365,8 @@
         {
             if (!this.CheatsAvailable.Contains(cheat))
             {
-                throw new Exception("Cheat must be in available list");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to add cheat to library");
+                return;
             }
 
             AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
@@ -348,7 +394,8 @@
         {
             if (!this.CheatsInLibrary.Contains(cheat))
             {
-                throw new Exception("Cheat must be in library");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to remove cheat from library");
+                return;
             }
 
             AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;

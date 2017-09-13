@@ -26,7 +26,6 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <TextBox
-                    Margin="0,0,0,4"
                     Background="{StaticResource AvalonDock_Expression_BaseColor4}"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                     Style="{StaticResource PlaceHolder}"

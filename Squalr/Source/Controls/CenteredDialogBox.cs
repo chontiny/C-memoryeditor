@@ -3,7 +3,6 @@
     using System;
     using System.Drawing;
     using System.Runtime.InteropServices;
-    using System.Threading;
     using System.Windows;
     using System.Windows.Interop;
 
@@ -30,6 +29,7 @@
         /// <returns>The result based on the button pressed.</returns>
         public static MessageBoxResult Show(String text, String caption, MessageBoxButton buttons, MessageBoxImage icon)
         {
+            ownerPtr = new WindowInteropHelper(Application.Current.MainWindow).Handle;
             CenteredDialogBox.Initialize();
             return MessageBox.Show(text, caption, buttons, icon);
         }
@@ -107,7 +107,8 @@
 
             if (ownerPtr != null)
             {
-                windowHook = CenteredDialogBox.SetWindowsHookEx(WH_CALLWNDPROCRET, hookProc, IntPtr.Zero, Thread.CurrentThread.ManagedThreadId);
+                // Note, while AppDomain.GetCurrentThreadId() is deprecated, the suggested replacement is not valid, thus we will continue to use this
+                windowHook = CenteredDialogBox.SetWindowsHookEx(WH_CALLWNDPROCRET, hookProc, IntPtr.Zero, AppDomain.GetCurrentThreadId());
             }
         }
 
