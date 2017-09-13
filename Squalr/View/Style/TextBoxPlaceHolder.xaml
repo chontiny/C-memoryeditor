@@ -15,6 +15,7 @@
                             x:Name="textSource"
                             Panel.ZIndex="2"
                             Background="Transparent"
+                            Foreground="{TemplateBinding Foreground}"
                             Text="{Binding Path=Text, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                         <TextBox
                             Panel.ZIndex="1"

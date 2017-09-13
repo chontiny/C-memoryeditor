@@ -157,6 +157,51 @@
         }
 
         /// <summary>
+        /// Gets or sets the selected library name.
+        /// </summary>
+        public String SelectedLibraryName
+        {
+            get
+            {
+                return this.SelectedLibrary?.LibraryName;
+            }
+
+            set
+            {
+                if (this.SelectedLibrary == null)
+                {
+                    return;
+                }
+
+                this.SelectedLibrary.LibraryName = value;
+
+                // Cancel the previous API call if it exists
+                this.CancellationTokenSource?.Cancel();
+                this.CancellationTokenSource = new CancellationTokenSource();
+
+                Task.Factory.StartNew((Object cancellationTokenSourceObject) =>
+                {
+                    // When updating the library name in the API, put a cancellable delay
+                    // This prevents the API from being called for every keystroke
+                    Thread.Sleep(600);
+
+                    CancellationTokenSource cancellationTokenSource = cancellationTokenSourceObject as CancellationTokenSource;
+
+                    // Only perform the API if this task was not canceled
+                    if (!cancellationTokenSource.IsCancellationRequested)
+                    {
+                        AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                        SqualrApi.RenameLibrary(accessTokens.AccessToken, this.SelectedLibrary.LibraryId, this.SelectedLibrary.LibraryName);
+                    }
+
+                }, this.CancellationTokenSource, this.CancellationTokenSource.Token);
+
+                this.RaisePropertyChanged(nameof(this.Libraries));
+                this.RaisePropertyChanged(nameof(this.SelectedLibraryName));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the selected library.
         /// </summary>
         public Library SelectedLibrary
@@ -170,6 +215,7 @@
             {
                 this.selectedLibrary = value;
                 this.RaisePropertyChanged(nameof(this.SelectedLibrary));
+                this.RaisePropertyChanged(nameof(this.SelectedLibraryName));
             }
         }
 
@@ -205,6 +251,8 @@
                 return new ObservableCollection<Cheat>(this.cheatsInLibrary);
             }
         }
+
+        private CancellationTokenSource CancellationTokenSource { get; set; }
 
         /// <summary>
         /// Event fired when the browse view navigates to a new page.
@@ -327,6 +375,7 @@
         {
             if (this.SelectedLibrary == null)
             {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "No library selected");
                 return;
             }
 

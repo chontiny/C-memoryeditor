@@ -68,6 +68,11 @@
         /// <summary>
         /// The endpoint for creating a library.
         /// </summary>
+        private static String RenameLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Rename";
+
+        /// <summary>
+        /// The endpoint for creating a library.
+        /// </summary>
         private static String CreateLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Create";
 
         /// <summary>
@@ -258,6 +263,16 @@
 
                 return deserializer.ReadObject(memoryStream) as LibraryCheats;
             }
+        }
+
+        public static void RenameLibrary(String accessToken, Int32 libraryId, String libraryName)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+            parameters.Add("library_name", libraryName);
+
+            String result = ExecuteRequest(Method.POST, SqualrApi.RenameLibraryEndpoint, parameters);
         }
 
         public static Library CreateLibrary(String accessToken, Int32 gameId)

@@ -127,10 +127,15 @@
                                             Margin="0"
                                             Padding="0"
                                             Text="Available Cheats - " />
-                                        <TextBlock
+                                        <TextBox
+                                            MinWidth="96"
                                             Margin="0"
                                             Padding="0"
-                                            Text="{Binding SelectedLibrary.LibraryName}" />
+                                            Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                                            Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                            Style="{StaticResource PlaceHolder}"
+                                            Tag="Library Name"
+                                            Text="{Binding SelectedLibraryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                     </WrapPanel>
                                 </Border>
                             </Grid>
