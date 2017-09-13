@@ -37,14 +37,29 @@
         private IEnumerable<Game> gameList;
 
         /// <summary>
+        /// The list of libraries.
+        /// </summary>
+        private List<Library> libraries;
+
+        /// <summary>
+        /// The list of cheats available to the library.
+        /// </summary>
+        private List<Cheat> cheatsAvailable;
+
+        /// <summary>
+        /// The list of cheats in the library.
+        /// </summary>
+        private List<Cheat> cheatsInLibrary;
+
+        /// <summary>
         /// The selected game.
         /// </summary>
         public Game selectedGame;
 
         /// <summary>
-        /// The list of libraries.
+        /// The selected library.
         /// </summary>
-        private List<Library> libraries;
+        public Library selectedLibrary;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="LibraryViewModel" /> class from being created.
@@ -53,8 +68,13 @@
         {
             this.ContentId = LibraryViewModel.ToolContentId;
             this.libraries = new List<Library>();
+            this.cheatsAvailable = new List<Cheat>();
+            this.cheatsInLibrary = new List<Cheat>();
 
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
+            this.SelectLibraryCommand = new RelayCommand<Library>((library) => this.SelectLibrary(library), (library) => true);
+            this.AddCheatToLibraryCommand = new RelayCommand<Cheat>((cheat) => this.AddCheatToLibrary(cheat), (cheat) => true);
+            this.RemoveCheatFromLibraryCommand = new RelayCommand<Cheat>((cheat) => this.RemoveCheatFromLibrary(cheat), (cheat) => true);
             this.AddNewLibraryCommand = new RelayCommand(() => this.AddNewLibrary(), () => true);
 
             MainViewModel.GetInstance().RegisterTool(this);
@@ -75,9 +95,24 @@
         public ICommand SelectGameCommand { get; private set; }
 
         /// <summary>
+        /// Gets the command to select a library.
+        /// </summary>
+        public ICommand SelectLibraryCommand { get; private set; }
+
+        /// <summary>
         /// Gets the command to create a new library.
         /// </summary>
         public ICommand AddNewLibraryCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to remove a cheat from the library.
+        /// </summary>
+        public ICommand AddCheatToLibraryCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add a cheat to the library.
+        /// </summary>
+        public ICommand RemoveCheatFromLibraryCommand { get; private set; }
 
         /// <summary>
         /// Gets the list of games.
@@ -114,6 +149,23 @@
         }
 
         /// <summary>
+        /// Gets or sets the selected library.
+        /// </summary>
+        public Library SelectedLibrary
+        {
+            get
+            {
+                return this.selectedLibrary;
+            }
+
+            set
+            {
+                this.selectedLibrary = value;
+                this.RaisePropertyChanged(nameof(this.SelectedLibrary));
+            }
+        }
+
+        /// <summary>
         /// Gets the list of libraries.
         /// </summary>
         public ObservableCollection<Library> Libraries
@@ -121,6 +173,28 @@
             get
             {
                 return new ObservableCollection<Library>(this.libraries);
+            }
+        }
+
+        /// <summary>
+        /// Gets the list of cheats available to the library.
+        /// </summary>
+        public ObservableCollection<Cheat> CheatsAvailable
+        {
+            get
+            {
+                return new ObservableCollection<Cheat>(this.cheatsAvailable);
+            }
+        }
+
+        /// <summary>
+        /// Gets the  list of cheats in the library.
+        /// </summary>
+        public ObservableCollection<Cheat> CheatsInLibrary
+        {
+            get
+            {
+                return new ObservableCollection<Cheat>(this.cheatsInLibrary);
             }
         }
 
@@ -193,6 +267,31 @@
         }
 
         /// <summary>
+        /// Selects a specific game for which to view the store.
+        /// </summary>
+        /// <param name="library">The selected library.</param>
+        private void SelectLibrary(Library library)
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                    LibraryCheats libraryCheats = SqualrApi.GetCheats(accessTokens.AccessToken, library.LibraryId);
+                    this.SelectedLibrary = library;
+                    this.cheatsAvailable = new List<Cheat>(libraryCheats.CheatsAvailable);
+                    this.cheatsInLibrary = new List<Cheat>(libraryCheats.CheatsInLibrary);
+                    this.RaisePropertyChanged(nameof(this.CheatsAvailable));
+                    this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading cheats", ex);
+                }
+            });
+        }
+
+        /// <summary>
         /// Adds a new library to the current selected game.
         /// </summary>
         private void AddNewLibrary()
@@ -211,6 +310,62 @@
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error creating library", ex);
                 }
             });
+        }
+
+        /// <summary>
+        /// Adds the cheat to the selected library.
+        /// </summary>
+        /// <param name="cheat"></param>
+        private void AddCheatToLibrary(Cheat cheat)
+        {
+            if (!this.CheatsAvailable.Contains(cheat))
+            {
+                throw new Exception("Cheat must be in available list");
+            }
+
+            AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+
+            try
+            {
+                SqualrApi.AddCheatToLibrary(accessTokens.AccessToken, this.SelectedLibrary.LibraryId, cheat.CheatId);
+
+                this.cheatsAvailable.Remove(cheat);
+                this.cheatsInLibrary.Insert(0, cheat);
+                this.RaisePropertyChanged(nameof(this.CheatsAvailable));
+                this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error unlocking cheat", ex);
+            }
+        }
+
+        /// <summary>
+        /// Removes the cheat from the selected library.
+        /// </summary>
+        /// <param name="cheat"></param>
+        private void RemoveCheatFromLibrary(Cheat cheat)
+        {
+            if (!this.CheatsInLibrary.Contains(cheat))
+            {
+                throw new Exception("Cheat must be in library");
+            }
+
+            AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+
+            try
+            {
+                SqualrApi.RemoveCheatFromLibrary(accessTokens.AccessToken, this.SelectedLibrary.LibraryId, cheat.CheatId);
+
+                this.cheatsInLibrary.Remove(cheat);
+                this.cheatsAvailable.Insert(0, cheat);
+                this.RaisePropertyChanged(nameof(this.CheatsAvailable));
+                this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error unlocking cheat", ex);
+            }
         }
     }
     //// End class
