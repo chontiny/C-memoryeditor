@@ -95,6 +95,23 @@
                 </MenuItem>
             </Menu>
             <Menu Grid.Column="1" Background="Transparent">
+                <MenuItem Padding="4" Command="{Binding LogoutCommand}">
+                    <MenuItem.Header>
+                        <WrapPanel>
+                            <Grid>
+                                <TextBlock
+                                    Foreground="White"
+                                    Opacity="0.5"
+                                    Text="Log Out">
+                                    <TextBlock.Effect>
+                                        <BlurEffect KernelType="Gaussian" Radius="8.0" />
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                                <TextBlock Foreground="LightBlue" Text="Log Out" />
+                            </Grid>
+                        </WrapPanel>
+                    </MenuItem.Header>
+                </MenuItem>
                 <MenuItem Padding="4" Command="{Binding OpenVirtualCurrencyStoreCommand}">
                     <MenuItem.Header>
                         <WrapPanel>

@@ -61,6 +61,7 @@
             this.AccessLock = new Object();
 
             this.OpenLoginScreenCommand = new RelayCommand(() => this.Navigate(BrowsePage.Login), () => true);
+            this.LogoutCommand = new RelayCommand(() => this.Logout(), () => true);
             this.OpenVirtualCurrencyStoreCommand = new RelayCommand(() => this.OpenVirtualCurrencyStore(), () => true);
             this.OpenStoreCommand = new RelayCommand(() => this.Navigate(BrowsePage.StoreHome), () => true);
             this.OpenLibraryCommand = new RelayCommand(() => this.Navigate(BrowsePage.LibraryHome), () => true);
@@ -93,6 +94,11 @@
         /// Gets a command to open the login screen.
         /// </summary>
         public ICommand OpenLoginScreenCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to log out.
+        /// </summary>
+        public ICommand LogoutCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to open the coin store.
@@ -391,6 +397,16 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to log in using stored credentials", ex);
                 this.IsLoggedIn = false;
             }
+        }
+
+        /// <summary>
+        /// Logs the user out.
+        /// </summary>
+        private void Logout()
+        {
+            SettingsViewModel.GetInstance().AccessTokens = null;
+            Settings.Default.Save();
+            this.Navigate(BrowsePage.Login);
         }
 
         /// <summary>
