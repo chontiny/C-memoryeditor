@@ -19,266 +19,227 @@
     </UserControl.Resources>
     <Border>
         <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-                <RowDefinition />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="148" />
+                <ColumnDefinition Width="224" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <!--  HEADERS  -->
-            <ListView
-                Grid.Row="0"
-                Grid.Column="0"
-                BorderThickness="0">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.Template>
-                    <ControlTemplate>
-                        <Grid HorizontalAlignment="Left">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid
-                                Grid.Row="0"
-                                Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
-                                VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                                    </Style>
-                                </Grid.Resources>
-                                <Border Grid.Column="0">
-                                    <WrapPanel>
-                                        <TextBlock
-                                            Margin="0"
-                                            Padding="0"
-                                            Text="Libraries - " />
-                                        <TextBlock
-                                            Margin="0"
-                                            Padding="0"
-                                            Text="{Binding SelectedGame.GameName}" />
-                                    </WrapPanel>
-                                </Border>
-                            </Grid>
-                        </Grid>
-                    </ControlTemplate>
-                </ListView.Template>
-            </ListView>
+            <Border BorderBrush="White" BorderThickness="1">
+                <Grid Name="LibraryListPanel">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
-            <ListView
-                Grid.Row="0"
-                Grid.Column="1"
-                BorderThickness="0"
-                Visibility="{Binding IsLibrarySelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.Template>
-                    <ControlTemplate>
-                        <Grid HorizontalAlignment="Left">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid
-                                Grid.Row="0"
-                                Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
-                                VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                                    </Style>
-                                </Grid.Resources>
-                                <Border Grid.Column="0">
-                                    <WrapPanel>
-                                        <TextBlock
-                                            Margin="0"
-                                            Padding="0"
-                                            Text="Available Cheats - " />
-                                        <TextBox
-                                            MinWidth="96"
-                                            Margin="0"
-                                            Padding="0"
-                                            Background="{StaticResource AvalonDock_Expression_BaseColor4}"
-                                            Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                            Style="{StaticResource PlaceHolder}"
-                                            Tag="Library Name"
-                                            Text="{Binding SelectedLibraryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                                    </WrapPanel>
-                                </Border>
-                            </Grid>
-                        </Grid>
-                    </ControlTemplate>
-                </ListView.Template>
-            </ListView>
-
-            <ListView
-                Grid.Row="2"
-                Grid.Column="1"
-                BorderThickness="0"
-                Visibility="{Binding IsLibrarySelected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.Template>
-                    <ControlTemplate>
-                        <Grid HorizontalAlignment="Left">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid
-                                Grid.Row="0"
-                                Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
-                                VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                                    </Style>
-                                </Grid.Resources>
-                                <Border Grid.Column="0">
-                                    <WrapPanel>
-                                        <TextBlock
-                                            Margin="0"
-                                            Padding="0"
-                                            Text="Library - " />
-                                        <TextBlock
-                                            Margin="0"
-                                            Padding="0"
-                                            Text="{Binding SelectedLibrary.LibraryName}" />
-                                    </WrapPanel>
-                                </Border>
-                            </Grid>
-                        </Grid>
-                    </ControlTemplate>
-                </ListView.Template>
-            </ListView>
-
-            <!--  CONTENT  -->
-            <Grid
-                Grid.Row="1"
-                Grid.Column="0"
-                Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
                     <ListView
                         Grid.Row="0"
-                        Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                        BorderThickness="0"
-                        ItemsSource="{Binding Libraries}">
+                        Grid.Column="0"
+                        BorderThickness="0">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem">
                                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             </Style>
                         </ListView.ItemContainerStyle>
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Grid.Column="0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                    Text="{Binding Path=LibraryName}">
-                                    <TextBlock.InputBindings>
-                                        <MouseBinding
-                                            Command="{Binding LibraryViewModel.SelectLibraryCommand, Source={StaticResource ViewModelLocator}}"
-                                            CommandParameter="{Binding .}"
-                                            Gesture="LeftClick" />
-                                    </TextBlock.InputBindings>
-                                </TextBlock>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
+                        <ListView.Template>
+                            <ControlTemplate>
+                                <Grid HorizontalAlignment="Left">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid
+                                        Grid.Row="0"
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Margin" Value="5,0" />
+                                                <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                            </Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderThickness" Value="0" />
+                                                <Setter Property="Padding" Value="8,4,8,4" />
+                                                <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Border Grid.Column="0">
+                                            <WrapPanel>
+                                                <TextBlock
+                                                    Margin="0"
+                                                    Padding="0"
+                                                    Text="Libraries - " />
+                                                <TextBlock
+                                                    Margin="0"
+                                                    Padding="0"
+                                                    Text="{Binding SelectedGame.GameName}" />
+                                            </WrapPanel>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </ControlTemplate>
+                        </ListView.Template>
                     </ListView>
-                </Grid>
-                <Grid
-                    Grid.Row="1"
-                    Margin="0,8,0,0"
-                    VerticalAlignment="Top">
-                    <MenuItem Command="{Binding AddNewLibraryCommand}" ToolTip="Add New Library">
-                        <MenuItem.Header>
-                            <WrapPanel HorizontalAlignment="Left">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/Increased.png">
-                                    <Image.Style>
-                                        <Style TargetType="Image">
-                                            <Style.Triggers>
-                                                <Trigger Property="IsEnabled" Value="False">
-                                                    <Setter Property="Opacity" Value="0.5" />
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>
-                                </Image>
-                                <TextBlock
-                                    Margin="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                    Text="Create New" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                </Grid>
-            </Grid>
 
-            <Grid
-                Grid.Row="1"
+                    <Grid
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <ListView
+                                Grid.Row="0"
+                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                BorderThickness="0"
+                                ItemsSource="{Binding Libraries}">
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="ListViewItem">
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                            Text="{Binding Path=LibraryName}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding
+                                                    Command="{Binding LibraryViewModel.SelectLibraryCommand, Source={StaticResource ViewModelLocator}}"
+                                                    CommandParameter="{Binding .}"
+                                                    Gesture="LeftClick" />
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </Grid>
+                        <Grid
+                            Grid.Row="1"
+                            Margin="0,8,0,0"
+                            VerticalAlignment="Top">
+                            <MenuItem Command="{Binding AddNewLibraryCommand}" ToolTip="Add New Library">
+                                <MenuItem.Header>
+                                    <WrapPanel HorizontalAlignment="Left">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="pack://application:,,,/Squalr;component/Content/Icons/Increased.png">
+                                            <Image.Style>
+                                                <Style TargetType="Image">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsEnabled" Value="False">
+                                                            <Setter Property="Opacity" Value="0.5" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+                                        <TextBlock
+                                            Margin="4,0,0,0"
+                                            Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                            Text="Create New" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <Border
+                Grid.Row="0"
                 Grid.Column="1"
-                Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}" BorderThickness="1">
-                        <StackPanel>
+                BorderBrush="White"
+                BorderThickness="1"
+                Visibility="{Binding IsLibrarySelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid Name="SelectedLibraryPanel">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <ListView
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BorderThickness="0"
+                        Visibility="{Binding IsLibrarySelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.Template>
+                            <ControlTemplate>
+                                <Grid HorizontalAlignment="Left">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid
+                                        Grid.Row="0"
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        VerticalAlignment="Center">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Margin" Value="5,0" />
+                                                <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                            </Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderThickness" Value="0" />
+                                                <Setter Property="Padding" Value="8,4,8,4" />
+                                                <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Border Grid.Column="0">
+                                            <WrapPanel>
+                                                <TextBlock
+                                                    Margin="0"
+                                                    Padding="0"
+                                                    Text="Available Cheats - " />
+                                                <TextBox
+                                                    MinWidth="96"
+                                                    Margin="0"
+                                                    Padding="0"
+                                                    Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                    Style="{StaticResource PlaceHolder}"
+                                                    Tag="Library Name"
+                                                    Text="{Binding SelectedLibraryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                            </WrapPanel>
+                                        </Border>
+                                    </Grid>
+                                </Grid>
+                            </ControlTemplate>
+                        </ListView.Template>
+                    </ListView>
+
+                    <Grid
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
                             <ListView
                                 Grid.Row="0"
                                 Background="{StaticResource AvalonDock_Expression_BaseColor3}"
@@ -324,94 +285,145 @@
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
                             </ListView>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-            </Grid>
+                        </Grid>
+                    </Grid>
 
-            <Grid
-                Grid.Row="3"
-                Grid.Column="1"
-                Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Grid Grid.Column="0">
-                    <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}" BorderThickness="1">
-                        <ListView
-                            Grid.Row="0"
-                            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                            BorderThickness="0"
-                            ItemsSource="{Binding CheatsInLibrary}">
-                            <ListView.ItemContainerStyle>
-                                <Style TargetType="ListViewItem">
-                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                </Style>
-                            </ListView.ItemContainerStyle>
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
+                    <ListView
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        BorderThickness="0">
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                        <ListView.Template>
+                            <ControlTemplate>
+                                <Grid HorizontalAlignment="Left">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition Height="Auto" />
+                                    </Grid.RowDefinitions>
+                                    <Grid
+                                        Grid.Row="0"
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                        VerticalAlignment="Center">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <Menu Grid.Column="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-                                            <MenuItem
-                                                Command="{Binding ElementName=SqualrLibrariesPage, Path=DataContext.RemoveCheatFromLibraryCommand}"
-                                                CommandParameter="{Binding .}"
-                                                ToolTip="Remove Cheat">
-                                                <MenuItem.Header>
-                                                    <Image
-                                                        Width="16"
-                                                        Height="16"
-                                                        Source="pack://application:,,,/Squalr;component/Content/Icons/X.png" />
-                                                </MenuItem.Header>
-                                            </MenuItem>
-                                        </Menu>
-                                        <TextBlock
-                                            Grid.Column="1"
-                                            Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                            Text="{Binding Path=CheatName}">
-                                            <TextBlock.InputBindings>
-                                                <MouseBinding
-                                                    Command="{Binding LibraryViewModel.SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
-                                                    CommandParameter="{Binding .}"
-                                                    Gesture="LeftDoubleClick" />
-                                            </TextBlock.InputBindings>
-                                        </TextBlock>
+                                        <Grid.Resources>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Margin" Value="5,0" />
+                                                <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                                <Setter Property="FontWeight" Value="Bold" />
+                                            </Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="BorderThickness" Value="0" />
+                                                <Setter Property="Padding" Value="8,4,8,4" />
+                                                <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                            </Style>
+                                        </Grid.Resources>
+                                        <Border Grid.Column="0">
+                                            <WrapPanel>
+                                                <TextBlock
+                                                    Margin="0"
+                                                    Padding="0"
+                                                    Text="Library - " />
+                                                <TextBlock
+                                                    Margin="0"
+                                                    Padding="0"
+                                                    Text="{Binding SelectedLibrary.LibraryName}" />
+                                            </WrapPanel>
+                                        </Border>
                                     </Grid>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-                    </Border>
+                                </Grid>
+                            </ControlTemplate>
+                        </ListView.Template>
+                    </ListView>
+
+                    <Grid
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}" BorderThickness="1">
+                                <ListView
+                                    Grid.Row="0"
+                                    Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                    BorderThickness="0"
+                                    ItemsSource="{Binding CheatsInLibrary}">
+                                    <ListView.ItemContainerStyle>
+                                        <Style TargetType="ListViewItem">
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                        </Style>
+                                    </ListView.ItemContainerStyle>
+                                    <ListView.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto" />
+                                                    <ColumnDefinition />
+                                                </Grid.ColumnDefinitions>
+                                                <Menu Grid.Column="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                                                    <MenuItem
+                                                        Command="{Binding ElementName=SqualrLibrariesPage, Path=DataContext.RemoveCheatFromLibraryCommand}"
+                                                        CommandParameter="{Binding .}"
+                                                        ToolTip="Remove Cheat">
+                                                        <MenuItem.Header>
+                                                            <Image
+                                                                Width="16"
+                                                                Height="16"
+                                                                Source="pack://application:,,,/Squalr;component/Content/Icons/X.png" />
+                                                        </MenuItem.Header>
+                                                    </MenuItem>
+                                                </Menu>
+                                                <TextBlock
+                                                    Grid.Column="1"
+                                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                    Text="{Binding Path=CheatName}">
+                                                    <TextBlock.InputBindings>
+                                                        <MouseBinding
+                                                            Command="{Binding LibraryViewModel.SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                            CommandParameter="{Binding .}"
+                                                            Gesture="LeftDoubleClick" />
+                                                    </TextBlock.InputBindings>
+                                                </TextBlock>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                            </Border>
+                        </Grid>
+                    </Grid>
+
+                    <Menu
+                        Grid.Row="4"
+                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                        <Menu.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <DockPanel HorizontalAlignment="Stretch" />
+                            </ItemsPanelTemplate>
+                        </Menu.ItemsPanel>
+                        <MenuItem
+                            HorizontalAlignment="Right"
+                            Command="{Binding LibraryViewModel.DeleteLibraryCommand}"
+                            ToolTip="Delete Library">
+                            <MenuItem.Header>
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Source="pack://application:,,,/Squalr;component/Content/Icons/Cancel.png" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </Menu>
                 </Grid>
-            </Grid>
-
-            <Menu
-                Grid.Row="4"
-                Grid.ColumnSpan="2"
-                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
-                <Menu.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <DockPanel HorizontalAlignment="Stretch" />
-                    </ItemsPanelTemplate>
-                </Menu.ItemsPanel>
-                <MenuItem
-                    HorizontalAlignment="Right"
-                    Command="{Binding LibraryViewModel.DeleteLibraryCommand}"
-                    ToolTip="Delete Library">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Cancel.png" />
-                    </MenuItem.Header>
-                </MenuItem>
-            </Menu>
+            </Border>
         </Grid>
-
     </Border>
 </UserControl>

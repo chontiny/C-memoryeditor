@@ -216,6 +216,18 @@
                 this.selectedLibrary = value;
                 this.RaisePropertyChanged(nameof(this.SelectedLibrary));
                 this.RaisePropertyChanged(nameof(this.SelectedLibraryName));
+                this.RaisePropertyChanged(nameof(this.IsLibrarySelected));
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating if there is a selected library.
+        /// </summary>
+        public Boolean IsLibrarySelected
+        {
+            get
+            {
+                return this.SelectedLibrary != null;
             }
         }
 
