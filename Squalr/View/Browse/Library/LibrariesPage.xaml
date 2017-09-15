@@ -288,58 +288,88 @@
                         </Grid>
                     </Grid>
 
-                    <ListView
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        BorderThickness="0">
-                        <ListView.ItemContainerStyle>
-                            <Style TargetType="ListViewItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            </Style>
-                        </ListView.ItemContainerStyle>
-                        <ListView.Template>
-                            <ControlTemplate>
-                                <Grid HorizontalAlignment="Left">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <Grid
-                                        Grid.Row="0"
-                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
-                                        VerticalAlignment="Center">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.Resources>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Margin" Value="5,0" />
-                                                <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                                                <Setter Property="FontWeight" Value="Bold" />
-                                            </Style>
-                                            <Style TargetType="Border">
-                                                <Setter Property="BorderThickness" Value="0" />
-                                                <Setter Property="Padding" Value="8,4,8,4" />
-                                                <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                                            </Style>
-                                        </Grid.Resources>
-                                        <Border Grid.Column="0">
-                                            <WrapPanel>
-                                                <TextBlock
-                                                    Margin="0"
-                                                    Padding="0"
-                                                    Text="Library - " />
-                                                <TextBlock
-                                                    Margin="0"
-                                                    Padding="0"
-                                                    Text="{Binding SelectedLibrary.LibraryName}" />
-                                            </WrapPanel>
-                                        </Border>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ListView
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            BorderThickness="0">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.Template>
+                                <ControlTemplate>
+                                    <Grid HorizontalAlignment="Left">
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <Grid
+                                            Grid.Row="0"
+                                            Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                            VerticalAlignment="Center">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.Resources>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Margin" Value="5,0" />
+                                                    <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                                    <Setter Property="FontWeight" Value="Bold" />
+                                                </Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="BorderThickness" Value="0" />
+                                                    <Setter Property="Padding" Value="8,4,8,4" />
+                                                    <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                                </Style>
+                                            </Grid.Resources>
+                                            <Border Grid.Column="0">
+                                                <WrapPanel>
+                                                    <TextBlock
+                                                        Margin="0"
+                                                        Padding="0"
+                                                        Text="Library - " />
+                                                    <TextBlock
+                                                        Margin="0"
+                                                        Padding="0"
+                                                        Text="{Binding SelectedLibrary.LibraryName}" />
+                                                </WrapPanel>
+                                            </Border>
+                                        </Grid>
                                     </Grid>
-                                </Grid>
-                            </ControlTemplate>
-                        </ListView.Template>
-                    </ListView>
+                                </ControlTemplate>
+                            </ListView.Template>
+                        </ListView>
+
+                        <Menu
+                            Grid.Column="1"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                            DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                            <Menu.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <DockPanel HorizontalAlignment="Stretch" />
+                                </ItemsPanelTemplate>
+                            </Menu.ItemsPanel>
+                            <MenuItem
+                                HorizontalAlignment="Right"
+                                Command="{Binding LibraryViewModel.ImportSelectedLibraryCommand}"
+                                ToolTip="Delete Library">
+                                <MenuItem.Header>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/Squalr;component/Content/Icons/DownArrows.png" />
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </Menu>
+                    </Grid>
 
                     <Grid
                         Grid.Row="3"

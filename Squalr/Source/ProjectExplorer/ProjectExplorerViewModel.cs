@@ -584,8 +584,8 @@
 
                 using (FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
+                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                    importedProjectRoot = deserializer.ReadObject(fileStream) as ProjectRoot;
 
                     // Add each high level child in the project root to this project
                     foreach (ProjectItem child in importedProjectRoot.Children)

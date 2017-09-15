@@ -32,7 +32,7 @@
 
         static public implicit operator Type(DataType dataType)
         {
-            return dataType.Type;
+            return dataType?.Type;
         }
 
         static public implicit operator DataType(Type t)

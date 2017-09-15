@@ -8,9 +8,14 @@
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
     using Squalr.Source.Output;
+    using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.IO;
+    using System.Runtime.Serialization.Json;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
@@ -74,6 +79,7 @@
             this.cheatsInLibrary = new List<Cheat>();
 
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
+            this.ImportSelectedLibraryCommand = new RelayCommand(() => this.ImportSelectedLibrary(), () => true);
             this.SelectLibraryCommand = new RelayCommand<Library>((library) => this.SelectLibrary(library), (library) => true);
             this.AddCheatToLibraryCommand = new RelayCommand<Cheat>((cheat) => this.AddCheatToLibrary(cheat), (cheat) => true);
             this.RemoveCheatFromLibraryCommand = new RelayCommand<Cheat>((cheat) => this.RemoveCheatFromLibrary(cheat), (cheat) => true);
@@ -101,6 +107,11 @@
         /// Gets the command to select a library.
         /// </summary>
         public ICommand SelectLibraryCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to import the selected library.
+        /// </summary>
+        public ICommand ImportSelectedLibraryCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to create a new library.
@@ -357,6 +368,38 @@
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading cheats", ex);
                 }
             });
+        }
+
+        /// <summary>
+        /// Imports the currently selected library.
+        /// </summary>
+        private void ImportSelectedLibrary()
+        {
+            if (this.SelectedLibrary == null)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "No library selected");
+            }
+
+            if (this.cheatsInLibrary == null)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error fetching cheats from selected library");
+            }
+
+            foreach (Cheat cheat in this.cheatsInLibrary)
+            {
+                using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(cheat.CheatPayload)))
+                {
+                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+
+                    ProjectRoot importedCheat = deserializer.ReadObject(memoryStream) as ProjectRoot;
+
+                    foreach (ProjectItem child in importedCheat.Children)
+                    {
+                        ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, child);
+                        ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                    }
+                }
+            }
         }
 
         /// <summary>
