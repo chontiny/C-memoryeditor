@@ -16,6 +16,9 @@
             this.CheatDescription = String.Empty;
             this.CheatPayload = String.Empty;
             this.Cost = 0;
+            this.CheatPayload = String.Empty;
+            this.StreamCommand = String.Empty;
+            this.StreamIcon = String.Empty;
             this.InReview = true;
             this.InMarket = true;
         }
@@ -43,6 +46,12 @@
 
         [DataMember(Name = "cost")]
         public Int32 Cost { get; set; }
+
+        [DataMember(Name = "stream_command")]
+        public String StreamCommand { get; set; }
+
+        [DataMember(Name = "stream_icon")]
+        public String StreamIcon { get; set; }
 
         [DataMember(Name = "in_review")]
         public Boolean InReview { get; set; }

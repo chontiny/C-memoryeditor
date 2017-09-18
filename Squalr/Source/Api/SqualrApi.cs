@@ -41,6 +41,26 @@
         public static String UserApi = SqualrApi.ApiBase + "api/User";
 
         /// <summary>
+        /// The endpoint for getting all available stream icons.
+        /// </summary>
+        private static String StreamIconsEndpoint = SqualrApi.ApiBase + "api/Stream/Icons";
+
+        /// <summary>
+        /// The endpoint for setting the stream integration configuration.
+        /// </summary>
+        private static String GetStreamConfigEndpoint = SqualrApi.ApiBase + "api/Stream/Config";
+
+        /// <summary>
+        /// The endpoint for setting the stream integration configuration.
+        /// </summary>
+        private static String SetStreamConfigEndpoint = SqualrApi.ApiBase + "api/Stream/SetConfig";
+
+        /// <summary>
+        /// The endpoint for setting the stream integration configuration.
+        /// </summary>
+        private static String SetCheatStreamMeta = SqualrApi.ApiBase + "api/Stream/SetCheatMeta";
+
+        /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
         /// </summary>
         private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/ActiveCheatIds/";
@@ -64,6 +84,11 @@
         /// The endpoint for querying the library lists.
         /// </summary>
         private static String LibrariesEndpoint = SqualrApi.ApiBase + "api/Libraries";
+
+        /// <summary>
+        /// The endpoint for setting the active library.
+        /// </summary>
+        private static String SetActiveLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Set";
 
         /// <summary>
         /// The endpoint for creating a library.
@@ -103,7 +128,7 @@
         /// <summary>
         /// The endpoint for removing cheats from the library.
         /// </summary>
-        private static String RemoveCheatToLibraryEndpoint = SqualrApi.ApiBase + "api/Cheats/Remove";
+        private static String RemoveCheatFromLibraryEndpoint = SqualrApi.ApiBase + "api/Cheats/Remove";
 
         /// <summary>
         /// The active API base depending on the environment.
@@ -115,14 +140,7 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("code", code);
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.AccessTokensApi, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AccessTokens));
-
-                return deserializer.ReadObject(memoryStream) as AccessTokens;
-            }
+            return ExecuteRequest<AccessTokens>(Method.GET, SqualrApi.AccessTokensApi, parameters);
         }
 
         /// <summary>
@@ -151,56 +169,22 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.UserApi, parameters);
+            return SqualrApi.ExecuteRequest<User>(Method.GET, SqualrApi.UserApi, parameters);
+        }
 
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(User));
-
-                return deserializer.ReadObject(memoryStream) as User;
-            }
+        public static StreamIcon[] GetStreamIcons()
+        {
+            return SqualrApi.ExecuteRequest<StreamIcon[]>(Method.GET, SqualrApi.StreamIconsEndpoint);
         }
 
         public static StreamActivationIds GetStreamActivationIds(String twitchChannel)
         {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-
-            String result = ExecuteRequest(Method.GET, SqualrApi.ActiveCheatIdsEndpoint + twitchChannel, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(StreamActivationIds));
-
-                return deserializer.ReadObject(memoryStream) as StreamActivationIds;
-            }
+            return SqualrApi.ExecuteRequest<StreamActivationIds>(Method.GET, SqualrApi.ActiveCheatIdsEndpoint + twitchChannel);
         }
 
         public static Game[] GetGameList()
         {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-
-            String result = ExecuteRequest(Method.GET, SqualrApi.GameListEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Game[]));
-
-                return deserializer.ReadObject(memoryStream) as Game[];
-            }
-        }
-
-        public static Game[] GetOwnedGames()
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-
-            String result = ExecuteRequest(Method.GET, SqualrApi.OwnedGamesEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Game[]));
-
-                return deserializer.ReadObject(memoryStream) as Game[];
-            }
+            return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.GameListEndpoint);
         }
 
         public static Game[] GetOwnedGameList(String accessToken)
@@ -208,14 +192,7 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.OwnedGamesEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Game[]));
-
-                return deserializer.ReadObject(memoryStream) as Game[];
-            }
+            return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.OwnedGamesEndpoint, parameters);
         }
 
         public static Game[] SearchGameList(String searchTerm)
@@ -223,14 +200,7 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("search_term", searchTerm);
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.GameSearchEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Game[]));
-
-                return deserializer.ReadObject(memoryStream) as Game[];
-            }
+            return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.GameSearchEndpoint, parameters);
         }
 
         public static Library[] GetLibraries(String accessToken, Int32 gameId)
@@ -239,14 +209,7 @@
             parameters.Add("access_token", accessToken);
             parameters.Add("game_id", gameId.ToString());
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.LibrariesEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Library[]));
-
-                return deserializer.ReadObject(memoryStream) as Library[];
-            }
+            return SqualrApi.ExecuteRequest<Library[]>(Method.GET, SqualrApi.LibrariesEndpoint, parameters);
         }
 
         public static LibraryCheats GetCheats(String accessToken, Int32 gameId)
@@ -255,14 +218,16 @@
             parameters.Add("access_token", accessToken);
             parameters.Add("library_id", gameId.ToString());
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.CheatsEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<LibraryCheats>(Method.GET, SqualrApi.CheatsEndpoint, parameters);
+        }
 
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(LibraryCheats));
+        public static void SetActiveLibrary(String accessToken, Int32 libraryId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
 
-                return deserializer.ReadObject(memoryStream) as LibraryCheats;
-            }
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.SetActiveLibraryEndpoint, parameters);
         }
 
         public static void RenameLibrary(String accessToken, Int32 libraryId, String libraryName)
@@ -272,7 +237,7 @@
             parameters.Add("library_id", libraryId.ToString());
             parameters.Add("library_name", libraryName);
 
-            String result = ExecuteRequest(Method.POST, SqualrApi.RenameLibraryEndpoint, parameters);
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.RenameLibraryEndpoint, parameters);
         }
 
         public static Library CreateLibrary(String accessToken, Int32 gameId)
@@ -281,14 +246,7 @@
             parameters.Add("access_token", accessToken);
             parameters.Add("game_id", gameId.ToString());
 
-            String result = ExecuteRequest(Method.POST, SqualrApi.CreateLibraryEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Library));
-
-                return deserializer.ReadObject(memoryStream) as Library;
-            }
+            return SqualrApi.ExecuteRequest<Library>(Method.POST, SqualrApi.CreateLibraryEndpoint, parameters);
         }
 
         public static void DeleteLibrary(String accessToken, Int32 libraryId)
@@ -297,7 +255,7 @@
             parameters.Add("access_token", accessToken);
             parameters.Add("library_id", libraryId.ToString());
 
-            String result = ExecuteRequest(Method.POST, SqualrApi.DeleteLibraryEndpoint, parameters);
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.DeleteLibraryEndpoint, parameters);
         }
 
         public static StoreCheats GetCheatList(String accessToken, Int32 gameId)
@@ -306,14 +264,7 @@
             parameters.Add("access_token", accessToken);
             parameters.Add("game_id", gameId.ToString());
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.StoreCheatsEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(StoreCheats));
-
-                return deserializer.ReadObject(memoryStream) as StoreCheats;
-            }
+            return SqualrApi.ExecuteRequest<StoreCheats>(Method.GET, SqualrApi.StoreCheatsEndpoint, parameters);
         }
 
         public static Cheat UnlockCheat(String accessToken, Int32 cheatId)
@@ -322,14 +273,7 @@
             parameters.Add("access_token", accessToken);
             parameters.Add("cheat_id", cheatId.ToString());
 
-            String result = ExecuteRequest(Method.POST, SqualrApi.UnlockCheatEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Cheat));
-
-                return deserializer.ReadObject(memoryStream) as Cheat;
-            }
+            return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.UnlockCheatEndpoint, parameters);
         }
 
         public static Cheat AddCheatToLibrary(String accessToken, Int32 libraryId, Int32 cheatId)
@@ -339,14 +283,7 @@
             parameters.Add("library_id", libraryId.ToString());
             parameters.Add("cheat_id", cheatId.ToString());
 
-            String result = ExecuteRequest(Method.POST, SqualrApi.AddCheatToLibraryEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Cheat));
-
-                return deserializer.ReadObject(memoryStream) as Cheat;
-            }
+            return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.AddCheatToLibraryEndpoint, parameters);
         }
 
         public static Cheat RemoveCheatFromLibrary(String accessToken, Int32 libraryId, Int32 cheatId)
@@ -356,14 +293,7 @@
             parameters.Add("library_id", libraryId.ToString());
             parameters.Add("cheat_id", cheatId.ToString());
 
-            String result = ExecuteRequest(Method.POST, SqualrApi.RemoveCheatToLibraryEndpoint, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(Cheat));
-
-                return deserializer.ReadObject(memoryStream) as Cheat;
-            }
+            return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.RemoveCheatFromLibraryEndpoint, parameters);
         }
 
         /// <summary>
@@ -410,14 +340,29 @@
         /// <param name="endpoint">The REST endpoint.</param>
         /// <param name="parameters">The request parameters.</param>
         /// <returns>The response content.</returns>
-        private static String ExecuteRequest(Method method, String endpoint, Dictionary<String, String> parameters)
+        private static void ExecuteRequest(Method method, String endpoint, Dictionary<String, String> parameters = null)
+        {
+            SqualrApi.ExecuteRequest<String>(method, endpoint, parameters);
+        }
+
+        /// <summary>
+        /// Executes the given REST request.
+        /// </summary>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="endpoint">The REST endpoint.</param>
+        /// <param name="parameters">The request parameters.</param>
+        /// <returns>The response content.</returns>
+        private static T ExecuteRequest<T>(Method method, String endpoint, Dictionary<String, String> parameters = null) where T : class
         {
             RestClient client = new RestClient(endpoint);
             RestRequest request = new RestRequest(method);
 
-            foreach (KeyValuePair<String, String> parameter in parameters)
+            if (!parameters.IsNullOrEmpty())
             {
-                request.AddParameter(parameter.Key, parameter.Value);
+                foreach (KeyValuePair<String, String> parameter in parameters)
+                {
+                    request.AddParameter(parameter.Key, parameter.Value);
+                }
             }
 
             IRestResponse response = client.Execute(request);
@@ -435,7 +380,12 @@
                     throw new StatusException(response.ResponseUri, response.StatusCode);
             }
 
-            return response?.Content;
+            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(response?.Content)))
+            {
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(T));
+
+                return deserializer.ReadObject(memoryStream) as T;
+            }
         }
     }
     //// End class

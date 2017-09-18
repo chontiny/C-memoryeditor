@@ -192,6 +192,9 @@
     <Reference Include="StyleCop, Version=5.0.0.0, Culture=neutral, PublicKeyToken=f904653c63bc2738, processorArchitecture=MSIL">
       <HintPath>..\packages\StyleCop.5.0.0\lib\net40\StyleCop.dll</HintPath>
     </Reference>
+    <Reference Include="Svg, Version=2.2.1.39233, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Svg.2.3.0\lib\net35\Svg.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
@@ -331,6 +334,8 @@
     <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\BrowseCategoryToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\BrowsePageToVisibilityConverter.cs" />
@@ -373,6 +378,7 @@
     <Compile Include="Source\Engine\Input\InputManager.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyState.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyboardCapture.cs" />
+    <Compile Include="Source\Api\Models\StreamIcon.cs" />
     <Compile Include="Source\Utils\DataStructures\TtlCache.cs" />
     <Compile Include="Source\Utils\DataType.cs" />
     <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
@@ -580,6 +586,9 @@
     <Compile Include="View\Browse\Login\TwitchLoginPage.xaml.cs">
       <DependentUpon>TwitchLoginPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Browse\StreamIconEditor.xaml.cs">
+      <DependentUpon>StreamIconEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Editors\TextEditor.xaml.cs">
       <DependentUpon>TextEditor.xaml</DependentUpon>
     </Compile>
@@ -675,6 +684,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Browse\Streaming\StreamConfigurationHome.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\StreamIconEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

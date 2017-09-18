@@ -360,7 +360,7 @@
                             <MenuItem
                                 HorizontalAlignment="Right"
                                 Command="{Binding LibraryViewModel.ImportSelectedLibraryCommand}"
-                                ToolTip="Delete Library">
+                                ToolTip="Set as Active Library">
                                 <MenuItem.Header>
                                     <Image
                                         Width="16"

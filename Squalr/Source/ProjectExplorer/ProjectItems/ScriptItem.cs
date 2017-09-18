@@ -4,6 +4,7 @@
     using Editors.ScriptEditor;
     using Scripting;
     using Squalr.Source.Analytics;
+    using Squalr.Source.Editors.StreamIconEditor;
     using Squalr.Source.Output;
     using System;
     using System.ComponentModel;
@@ -28,6 +29,18 @@
         /// </summary>
         [Browsable(false)]
         private Boolean isCompiled;
+
+        /// <summary>
+        /// The stream icon path associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        protected String streamIconPath;
+
+        /// <summary>
+        /// The stream command associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        protected String streamCommand;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptItem" /> class.
@@ -100,6 +113,56 @@
 
                 this.isCompiled = value;
                 ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the stream icon path for this project item.
+        /// </summary>
+        [DataMember]
+        [Editor(typeof(StreamIconEditorModel), typeof(UITypeEditor))]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Icon"), Description("The stream icon for this item")]
+        public String StreamIconPath
+        {
+            get
+            {
+                return this.streamIconPath;
+            }
+
+            set
+            {
+                if (this.streamIconPath == value)
+                {
+                    return;
+                }
+
+                this.streamIconPath = value;
+                this.NotifyPropertyChanged(nameof(this.StreamIconPath));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the stream command for this project item.
+        /// </summary>
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Command"), Description("The stream command for this item. Limit of 6 characters.")]
+        public String StreamCommand
+        {
+            get
+            {
+                return this.streamCommand;
+            }
+
+            set
+            {
+                if (this.streamCommand == value)
+                {
+                    return;
+                }
+
+                this.streamCommand = value?.ToLower();
+                this.NotifyPropertyChanged(nameof(this.StreamCommand));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 

@@ -385,19 +385,31 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error fetching cheats from selected library");
             }
 
+            // Set imported library as the active library
+            Task.Run(() =>
+            {
+                try
+                {
+                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                    SqualrApi.SetActiveLibrary(accessTokens?.AccessToken, this.SelectedLibrary.LibraryId);
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error setting active library", ex);
+                }
+            });
+
+            // Import the cheats
             foreach (Cheat cheat in this.cheatsInLibrary)
             {
                 using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(cheat.CheatPayload)))
                 {
-                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectItem));
 
-                    ProjectRoot importedCheat = deserializer.ReadObject(memoryStream) as ProjectRoot;
+                    ProjectItem importedCheat = deserializer.ReadObject(memoryStream) as ProjectItem;
 
-                    foreach (ProjectItem child in importedCheat.Children)
-                    {
-                        ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, child);
-                        ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                    }
+                    ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, importedCheat);
+                    ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
                 }
             }
         }
