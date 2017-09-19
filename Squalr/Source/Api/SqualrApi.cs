@@ -212,11 +212,11 @@
             return SqualrApi.ExecuteRequest<Library[]>(Method.GET, SqualrApi.LibrariesEndpoint, parameters);
         }
 
-        public static LibraryCheats GetCheats(String accessToken, Int32 gameId)
+        public static LibraryCheats GetCheats(String accessToken, Int32 libraryId)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
-            parameters.Add("library_id", gameId.ToString());
+            parameters.Add("library_id", libraryId.ToString());
 
             return SqualrApi.ExecuteRequest<LibraryCheats>(Method.GET, SqualrApi.CheatsEndpoint, parameters);
         }

@@ -5,6 +5,7 @@
     using Editors.TextEditor;
     using Engine.Input.HotKeys;
     using SharpDX.DirectInput;
+    using Squalr.Source.Api.Models;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -281,6 +282,11 @@
         /// Controls access to activating project items.
         /// </summary>
         private Object ActivationLock { get; set; }
+
+        /// <summary>
+        /// Gets or sets the library cheat associated with this project item.
+        /// </summary>
+        public Cheat AssociatedCheat { get; set; }
 
         /// <summary>
         /// Invoked when this object is deserialized.

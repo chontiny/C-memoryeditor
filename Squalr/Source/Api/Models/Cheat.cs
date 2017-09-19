@@ -16,6 +16,7 @@
             this.CheatId = 0;
             this.UserId = 0;
             this.GameId = 0;
+            this.LibraryId = 0;
             this.GameDistributorId = 0;
             this.CheatName = String.Empty;
             this.CheatDescription = String.Empty;
@@ -37,6 +38,9 @@
 
         [DataMember(Name = "game_id")]
         public Int32 GameId { get; set; }
+
+        [DataMember(Name = "library_id")]
+        public Int32 LibraryId { get; set; }
 
         [DataMember(Name = "game_distributor_id")]
         public Int32 GameDistributorId { get; set; }
@@ -83,6 +87,7 @@
                 DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectItem));
 
                 this.ProjectItem = deserializer.ReadObject(memoryStream) as ProjectItem;
+                this.ProjectItem.AssociatedCheat = this;
             }
         }
     }

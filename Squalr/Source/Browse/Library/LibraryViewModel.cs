@@ -57,12 +57,17 @@
         /// <summary>
         /// The selected game.
         /// </summary>
-        public Game selectedGame;
+        private Game selectedGame;
 
         /// <summary>
         /// The selected library.
         /// </summary>
-        public Library selectedLibrary;
+        private Library selectedLibrary;
+
+        /// <summary>
+        /// A value indicating if the cheats from the library are loading.
+        /// </summary>
+        private Boolean isLibraryLoading;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="LibraryViewModel" /> class from being created.
@@ -83,15 +88,6 @@
             this.DeleteLibraryCommand = new RelayCommand(() => this.DeleteLibrary(), () => true);
 
             MainViewModel.GetInstance().RegisterTool(this);
-        }
-
-        /// <summary>
-        /// Gets a singleton instance of the <see cref="LibraryViewModel"/> class.
-        /// </summary>
-        /// <returns>A singleton instance of the class.</returns>
-        public static LibraryViewModel GetInstance()
-        {
-            return libraryViewModelInstance.Value;
         }
 
         /// <summary>
@@ -186,22 +182,24 @@
                 this.CancellationTokenSource?.Cancel();
                 this.CancellationTokenSource = new CancellationTokenSource();
 
-                Task.Factory.StartNew((Object cancellationTokenSourceObject) =>
-                {
-                    // When updating the library name in the API, put a cancellable delay
-                    // This prevents the API from being called for every keystroke
-                    Thread.Sleep(600);
-
-                    CancellationTokenSource cancellationTokenSource = cancellationTokenSourceObject as CancellationTokenSource;
-
-                    // Only perform the API if this task was not canceled
-                    if (!cancellationTokenSource.IsCancellationRequested)
+                Task.Factory.StartNew(
+                    (Object cancellationTokenSourceObject) =>
                     {
-                        AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                        SqualrApi.RenameLibrary(accessTokens.AccessToken, this.SelectedLibrary.LibraryId, this.SelectedLibrary.LibraryName);
-                    }
+                        // When updating the library name in the API, put a cancellable delay
+                        // This prevents the API from being called for every keystroke
+                        Thread.Sleep(600);
 
-                }, this.CancellationTokenSource, this.CancellationTokenSource.Token);
+                        CancellationTokenSource cancellationTokenSource = cancellationTokenSourceObject as CancellationTokenSource;
+
+                        // Only perform the API if this task was not canceled
+                        if (!cancellationTokenSource.IsCancellationRequested)
+                        {
+                            AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                            SqualrApi.RenameLibrary(accessTokens.AccessToken, this.SelectedLibrary.LibraryId, this.SelectedLibrary.LibraryName);
+                        }
+                    },
+                    this.CancellationTokenSource,
+                    this.CancellationTokenSource.Token);
 
                 this.RaisePropertyChanged(nameof(this.Libraries));
                 this.RaisePropertyChanged(nameof(this.SelectedLibraryName));
@@ -228,7 +226,7 @@
         }
 
         /// <summary>
-        /// Gets a value indicating if there is a selected library.
+        /// Gets a value indicating whether there is a selected library.
         /// </summary>
         public Boolean IsLibrarySelected
         {
@@ -239,13 +237,30 @@
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the cheats from the library are loading.
+        /// </summary>
+        public Boolean IsLibraryLoading
+        {
+            get
+            {
+                return this.isLibraryLoading;
+            }
+
+            set
+            {
+                this.isLibraryLoading = value;
+                this.RaisePropertyChanged(nameof(this.IsLibraryLoading));
+            }
+        }
+
+        /// <summary>
         /// Gets the list of libraries.
         /// </summary>
         public ObservableCollection<Library> Libraries
         {
             get
             {
-                return new ObservableCollection<Library>(this.libraries);
+                return this.libraries == null ? null : new ObservableCollection<Library>(this.libraries);
             }
         }
 
@@ -256,7 +271,7 @@
         {
             get
             {
-                return new ObservableCollection<Cheat>(this.cheatsAvailable);
+                return this.cheatsAvailable == null ? null : new ObservableCollection<Cheat>(this.cheatsAvailable);
             }
         }
 
@@ -267,11 +282,23 @@
         {
             get
             {
-                return new ObservableCollection<Cheat>(this.cheatsInLibrary);
+                return this.cheatsInLibrary == null ? null : new ObservableCollection<Cheat>(this.cheatsInLibrary);
             }
         }
 
+        /// <summary>
+        /// Gets or sets the cancellation source for a running task.
+        /// </summary>
         private CancellationTokenSource CancellationTokenSource { get; set; }
+
+        /// <summary>
+        /// Gets a singleton instance of the <see cref="LibraryViewModel"/> class.
+        /// </summary>
+        /// <returns>A singleton instance of the class.</returns>
+        public static LibraryViewModel GetInstance()
+        {
+            return libraryViewModelInstance.Value;
+        }
 
         /// <summary>
         /// Event fired when the browse view navigates to a new page.
@@ -321,6 +348,7 @@
         private void SelectGame(Game game)
         {
             BrowseViewModel.GetInstance().Navigate(BrowsePage.Loading);
+            this.SelectedLibrary = null;
 
             Task.Run(() =>
             {
@@ -351,6 +379,16 @@
             {
                 try
                 {
+                    this.IsLibraryLoading = true;
+
+                    // Deselect current library
+                    this.SelectedLibrary = null;
+                    this.cheatsAvailable = null;
+                    this.cheatsInLibrary = null;
+                    this.RaisePropertyChanged(nameof(this.CheatsAvailable));
+                    this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
+
+                    // Select library
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     LibraryCheats libraryCheats = SqualrApi.GetCheats(accessTokens.AccessToken, library.LibraryId);
                     this.SelectedLibrary = library;
@@ -362,6 +400,10 @@
                 catch (Exception ex)
                 {
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading cheats", ex);
+                }
+                finally
+                {
+                    this.IsLibraryLoading = false;
                 }
             });
         }
@@ -465,7 +507,7 @@
         /// <summary>
         /// Adds the cheat to the selected library.
         /// </summary>
-        /// <param name="cheat"></param>
+        /// <param name="cheat">The cheat to add.</param>
         private void AddCheatToLibrary(Cheat cheat)
         {
             if (!this.CheatsAvailable.Contains(cheat))
@@ -494,7 +536,7 @@
         /// <summary>
         /// Removes the cheat from the selected library.
         /// </summary>
-        /// <param name="cheat"></param>
+        /// <param name="cheat">The cheat to remove.</param>
         private void RemoveCheatFromLibrary(Cheat cheat)
         {
             if (!this.CheatsInLibrary.Contains(cheat))
