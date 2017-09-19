@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:loaders="clr-namespace:Squalr.View.Loaders"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrCheatsPage"
     d:DesignHeight="480"
@@ -17,7 +18,7 @@
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
-    <Border>
+    <Grid>
         <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -204,5 +205,12 @@
                 </Grid>
             </Grid>
         </Grid>
-    </Border>
+
+        <Grid Visibility="{Binding IsCheatListLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <loaders:SpinnerCogs
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Grid>
+    </Grid>
 </UserControl>

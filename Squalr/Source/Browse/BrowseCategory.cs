@@ -24,11 +24,6 @@
         /// The stream section.
         /// </summary>
         Stream,
-
-        /// <summary>
-        /// The loading screen.
-        /// </summary>
-        Loading,
     }
     //// End enum
 }

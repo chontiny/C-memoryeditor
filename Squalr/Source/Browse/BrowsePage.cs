@@ -44,11 +44,6 @@
         /// The library select view.
         /// </summary>
         LibrarySelect,
-
-        /// <summary>
-        /// The loading view.
-        /// </summary>
-        Loading,
     }
     //// End enum
 }

@@ -47,6 +47,16 @@
         private ObservableCollection<Cheat> unlockedCheatList;
 
         /// <summary>
+        /// A value indicating whether the game list is loading.
+        /// </summary>
+        private Boolean isGameListLoading;
+
+        /// <summary>
+        /// A value indicating whether the cheat list is loading.
+        /// </summary>
+        private Boolean isCheatListLoading;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="StoreViewModel" /> class from being created.
         /// </summary>
         private StoreViewModel() : base("Store")
@@ -124,6 +134,40 @@
         }
 
         /// <summary>
+        /// Gets a value indicating whether the game list is loading.
+        /// </summary>
+        public Boolean IsGameListLoading
+        {
+            get
+            {
+                return this.isGameListLoading;
+            }
+
+            set
+            {
+                this.isGameListLoading = value;
+                this.RaisePropertyChanged(nameof(this.IsGameListLoading));
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the cheat list is loading.
+        /// </summary>
+        public Boolean IsCheatListLoading
+        {
+            get
+            {
+                return this.isCheatListLoading;
+            }
+
+            set
+            {
+                this.isCheatListLoading = value;
+                this.RaisePropertyChanged(nameof(this.IsCheatListLoading));
+            }
+        }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="StoreViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -156,6 +200,9 @@
         /// </summary>
         private void LoadGameList()
         {
+            this.IsGameListLoading = true;
+            this.GameList = null;
+
             Task.Run(() =>
             {
                 try
@@ -168,6 +215,10 @@
 
                     BrowseViewModel.GetInstance().NavigateBack();
                 }
+                finally
+                {
+                    this.IsGameListLoading = false;
+                }
             });
         }
 
@@ -177,23 +228,30 @@
         /// <param name="game">The selected game.</param>
         private void SelectGame(Game game)
         {
-            BrowseViewModel.GetInstance().Navigate(BrowsePage.Loading);
+            // Deselect current game
+            BrowseViewModel.GetInstance().Navigate(BrowsePage.CheatStore);
+            this.IsCheatListLoading = true;
+            this.LockedCheatList = null;
+            this.UnlockedCheatList = null;
 
             Task.Run(() =>
             {
                 try
                 {
+                    // Select new game
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     StoreCheats storeCheats = SqualrApi.GetCheatList(accessTokens.AccessToken, game.GameId);
                     this.LockedCheatList = new ObservableCollection<Cheat>(storeCheats.LockedCheats);
                     this.UnlockedCheatList = new ObservableCollection<Cheat>(storeCheats.UnlockedCheats);
-                    BrowseViewModel.GetInstance().Navigate(BrowsePage.CheatStore);
                 }
                 catch (Exception ex)
                 {
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading cheats", ex);
-
                     BrowseViewModel.GetInstance().NavigateBack();
+                }
+                finally
+                {
+                    this.IsCheatListLoading = false;
                 }
             });
         }

@@ -70,7 +70,6 @@
             this.NavigateBackCommand = new RelayCommand(() => this.NavigateBack());
 
             this.InitializeObservers();
-            this.Navigate(BrowsePage.Loading);
 
             Task.Run(() =>
             {
@@ -161,8 +160,6 @@
             {
                 switch (this.CurrentCategory)
                 {
-                    case BrowseCategory.Loading:
-                        return "Loading".ToUpper();
                     case BrowseCategory.Library:
                         return "Library".ToUpper();
                     case BrowseCategory.Store:
@@ -215,8 +212,6 @@
                     case BrowsePage.StoreGameSelect:
                     case BrowsePage.CheatStore:
                         return BrowseCategory.Store;
-                    case BrowsePage.Loading:
-                        return BrowseCategory.Loading;
                     case BrowsePage.Login:
                     default:
                         return BrowseCategory.Login;
@@ -292,8 +287,8 @@
 
             lock (this.AccessLock)
             {
-                // Save current page in history (not including loading or login pages)
-                if (addCurrentPageToHistory && this.CurrentPage != BrowsePage.Loading && this.CurrentPage != BrowsePage.Login)
+                // Save current page in history (not including login page)
+                if (addCurrentPageToHistory && this.CurrentPage != BrowsePage.Login)
                 {
                     this.NextPages.Clear();
                     this.PreviousPages.Push(this.CurrentPage);
@@ -390,7 +385,6 @@
                 this.ActiveUser = user;
 
                 this.IsLoggedIn = true;
-                this.Navigate(BrowsePage.StoreHome);
             }
             catch (Exception ex)
             {

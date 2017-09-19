@@ -25,7 +25,10 @@
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
-            <Border BorderBrush="White" BorderThickness="1">
+            <Border
+                Grid.Column="0"
+                BorderBrush="White"
+                BorderThickness="1">
                 <Grid Name="LibraryListPanel">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -157,6 +160,16 @@
                     </Grid>
                 </Grid>
             </Border>
+
+            <Grid
+                Grid.Row="0"
+                Grid.Column="0"
+                Visibility="{Binding IsLibraryListLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <loaders:SpinnerCogs
+                    Margin="10"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+            </Grid>
 
             <Border
                 Grid.Row="0"

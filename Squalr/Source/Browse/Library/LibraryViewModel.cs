@@ -65,9 +65,19 @@
         private Library selectedLibrary;
 
         /// <summary>
+        /// A value indicating whether the game list is loading.
+        /// </summary>
+        private Boolean isGameListLoading;
+
+        /// <summary>
         /// A value indicating if the cheats from the library are loading.
         /// </summary>
         private Boolean isLibraryLoading;
+
+        /// <summary>
+        /// A value indicating whether the library list is loading.
+        /// </summary>
+        private Boolean isLibraryListLoading;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="LibraryViewModel" /> class from being created.
@@ -237,6 +247,23 @@
         }
 
         /// <summary>
+        /// Gets a value indicating whether the game list is loading.
+        /// </summary>
+        public Boolean IsGameListLoading
+        {
+            get
+            {
+                return this.isGameListLoading;
+            }
+
+            set
+            {
+                this.isGameListLoading = value;
+                this.RaisePropertyChanged(nameof(this.IsGameListLoading));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether the cheats from the library are loading.
         /// </summary>
         public Boolean IsLibraryLoading
@@ -250,6 +277,23 @@
             {
                 this.isLibraryLoading = value;
                 this.RaisePropertyChanged(nameof(this.IsLibraryLoading));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the library list is loading.
+        /// </summary>
+        public Boolean IsLibraryListLoading
+        {
+            get
+            {
+                return this.isLibraryListLoading;
+            }
+
+            set
+            {
+                this.isLibraryListLoading = value;
+                this.RaisePropertyChanged(nameof(this.IsLibraryListLoading));
             }
         }
 
@@ -324,19 +368,24 @@
         /// </summary>
         private void LoadGameList()
         {
+            this.IsGameListLoading = true;
+            this.GameList = null;
+
             Task.Run(() =>
             {
-                AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-
                 try
                 {
-                    this.GameList = SqualrApi.GetOwnedGameList(accessTokens?.AccessToken);
+                    this.GameList = SqualrApi.GetGameList();
                 }
                 catch (Exception ex)
                 {
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error fetching game list", ex);
 
                     BrowseViewModel.GetInstance().NavigateBack();
+                }
+                finally
+                {
+                    this.IsGameListLoading = false;
                 }
             });
         }
@@ -347,24 +396,34 @@
         /// <param name="game">The selected game.</param>
         private void SelectGame(Game game)
         {
-            BrowseViewModel.GetInstance().Navigate(BrowsePage.Loading);
+            // Deselect current game
+            this.SelectedGame = null;
+            this.IsLibraryListLoading = true;
             this.SelectedLibrary = null;
+            this.libraries = null;
+            this.RaisePropertyChanged(nameof(this.Libraries));
+
+            BrowseViewModel.GetInstance().Navigate(BrowsePage.LibrarySelect);
 
             Task.Run(() =>
             {
                 try
                 {
+                    // Select new game
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     Library[] libraries = SqualrApi.GetLibraries(accessTokens.AccessToken, game.GameId);
                     this.libraries = new List<Library>(libraries);
                     this.RaisePropertyChanged(nameof(this.Libraries));
                     this.SelectedGame = game;
-                    BrowseViewModel.GetInstance().Navigate(BrowsePage.LibrarySelect);
                 }
                 catch (Exception ex)
                 {
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading libraries", ex);
                     BrowseViewModel.GetInstance().Navigate(BrowsePage.StoreGameSelect);
+                }
+                finally
+                {
+                    this.IsLibraryListLoading = false;
                 }
             });
         }

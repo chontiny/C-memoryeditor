@@ -241,9 +241,6 @@
             <Grid Visibility="{Binding CurrentCategory, Converter={StaticResource BrowseCategoryToVisibilityConverter}, ConverterParameter={x:Static browseViewModel:BrowseCategory.Stream}}">
                 <streaming:StreamConfigurationHome />
             </Grid>
-            <Grid Visibility="{Binding CurrentCategory, Converter={StaticResource BrowseCategoryToVisibilityConverter}, ConverterParameter={x:Static browseViewModel:BrowseCategory.Loading}}">
-                <browse:LoadingPage />
-            </Grid>
         </Grid>
     </Grid>
 </UserControl>

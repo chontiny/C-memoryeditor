@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:loaders="clr-namespace:Squalr.View.Loaders"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrGamesPage"
     d:DesignHeight="480"
@@ -107,6 +108,10 @@
                         </Border>
                     </Grid>
                 </Grid>
+            </Grid>
+
+            <Grid Grid.Row="2" Visibility="{Binding IsGameListLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <loaders:SpinnerCogs HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
         </Grid>
     </Border>
