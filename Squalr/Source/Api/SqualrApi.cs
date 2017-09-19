@@ -380,6 +380,11 @@
                     throw new StatusException(response.ResponseUri, response.StatusCode);
             }
 
+            if (typeof(T) == typeof(String))
+            {
+                return response?.Content as T;
+            }
+
             using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(response?.Content)))
             {
                 DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(T));

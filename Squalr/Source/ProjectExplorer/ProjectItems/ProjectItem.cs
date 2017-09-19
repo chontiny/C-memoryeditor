@@ -16,6 +16,7 @@
     /// A base class for all project items that can be added to the project explorer.
     /// </summary>
     [KnownType(typeof(ProjectItem))]
+    [KnownType(typeof(ProjectRoot))]
     [KnownType(typeof(FolderItem))]
     [KnownType(typeof(ScriptItem))]
     [KnownType(typeof(AddressItem))]

@@ -9,13 +9,9 @@
     using Squalr.Source.Main;
     using Squalr.Source.Output;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.IO;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
@@ -402,15 +398,8 @@
             // Import the cheats
             foreach (Cheat cheat in this.cheatsInLibrary)
             {
-                using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(cheat.CheatPayload)))
-                {
-                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectItem));
-
-                    ProjectItem importedCheat = deserializer.ReadObject(memoryStream) as ProjectItem;
-
-                    ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, importedCheat);
-                    ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                }
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, cheat.ProjectItem);
+                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
             }
         }
 

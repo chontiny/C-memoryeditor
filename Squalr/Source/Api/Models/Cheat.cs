@@ -1,7 +1,12 @@
 ﻿namespace Squalr.Source.Api.Models
 {
+    using Squalr.Source.ProjectExplorer.ProjectItems;
+    using Squalr.Source.Utils.Extensions;
     using System;
+    using System.IO;
     using System.Runtime.Serialization;
+    using System.Runtime.Serialization.Json;
+    using System.Text;
 
     [DataContract]
     internal class Cheat
@@ -14,14 +19,15 @@
             this.GameDistributorId = 0;
             this.CheatName = String.Empty;
             this.CheatDescription = String.Empty;
-            this.CheatPayload = String.Empty;
+            this.ProjectItem = null;
             this.Cost = 0;
-            this.CheatPayload = String.Empty;
             this.StreamCommand = String.Empty;
             this.StreamIcon = String.Empty;
             this.InReview = true;
             this.InMarket = true;
         }
+
+        public ProjectItem ProjectItem;
 
         [DataMember(Name = "id")]
         public Int32 CheatId { get; set; }
@@ -58,6 +64,27 @@
 
         [DataMember(Name = "in_market")]
         public Boolean InMarket { get; set; }
+
+        /// <summary>
+        /// Invoked when this object is deserialized.
+        /// </summary>
+        /// <param name="streamingContext">Streaming context.</param>
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext streamingContext)
+        {
+            if (this.CheatPayload.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            // Deserialize the payload of the inner project item
+            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(this.CheatPayload)))
+            {
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectItem));
+
+                this.ProjectItem = deserializer.ReadObject(memoryStream) as ProjectItem;
+            }
+        }
     }
     //// End class
 }
