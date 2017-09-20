@@ -296,6 +296,11 @@
         public static readonly BitmapImage Save = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Save.png"));
 
         /// <summary>
+        /// Image represeting a script.
+        /// </summary>
+        public static readonly BitmapImage Script = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Script.png"));
+
+        /// <summary>
         /// Image for process selection.
         /// </summary>
         public static readonly BitmapImage SelectProcess = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "SelectProcess.png"));

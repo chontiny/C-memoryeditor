@@ -396,7 +396,6 @@
     <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
     <Compile Include="Source\Output\OutputViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\IProjectExplorerObserver.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemHotkey.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
@@ -843,6 +842,7 @@
     <Resource Include="Content\Icons\Coin.png" />
     <Resource Include="Content\Icons\Next.png" />
     <Resource Include="Content\Icons\Previous.png" />
+    <Resource Include="Content\Icons\Script.png" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

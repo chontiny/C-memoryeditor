@@ -3,6 +3,7 @@
     using Controls;
     using Editors.ScriptEditor;
     using Scripting;
+    using Squalr.Content;
     using Squalr.Source.Analytics;
     using Squalr.Source.Editors.StreamIconEditor;
     using Squalr.Source.Output;
@@ -10,6 +11,7 @@
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Runtime.Serialization;
+    using System.Windows.Media.Imaging;
     using Utils.TypeConverters;
 
     /// <summary>
@@ -175,6 +177,17 @@
 
                 this.NotifyPropertyChanged(nameof(this.StreamCommand));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets the image associated with this project item.
+        /// </summary>
+        public override BitmapSource Icon
+        {
+            get
+            {
+                return Images.Script;
             }
         }
 

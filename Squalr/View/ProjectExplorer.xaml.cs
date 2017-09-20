@@ -25,7 +25,7 @@
     /// <summary>
     /// Interaction logic for ProjectExplorer.xaml.
     /// </summary>
-    internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IProjectExplorerObserver, IObserver<KeyState>
+    internal partial class ProjectExplorer : System.Windows.Controls.UserControl, IObserver<KeyState>
     {
         /// <summary>
         /// The project explorer tree view.
@@ -124,10 +124,9 @@
             this.AccessLock = new Object();
 
             this.InitializeDesigner();
-            this.projectExplorerTreeViewContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.projectExplorerTreeView));
+            // this.projectExplorerTreeViewContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.projectExplorerTreeView));
 
             EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
-            ProjectExplorerViewModel.GetInstance().Subscribe(this);
         }
 
         /// <summary>
@@ -449,7 +448,6 @@
                 }
             }
 
-            this.UpdateStructure(this.ProjectExplorerViewModel.ProjectRoot);
         }
 
         /// <summary>
@@ -553,7 +551,6 @@
             }
 
             this.CheckItem(projectItem, !projectItem.IsActivated);
-            this.UpdateStructure(this.ProjectExplorerViewModel.ProjectRoot);
         }
 
         /// <summary>

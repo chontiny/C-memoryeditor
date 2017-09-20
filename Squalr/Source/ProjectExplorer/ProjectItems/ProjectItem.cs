@@ -5,12 +5,14 @@
     using Editors.TextEditor;
     using Engine.Input.HotKeys;
     using SharpDX.DirectInput;
+    using Squalr.Content;
     using Squalr.Source.Api.Models;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Runtime.Serialization;
+    using System.Windows.Media.Imaging;
     using Utils.TypeConverters;
 
     /// <summary>
@@ -222,6 +224,17 @@
                     this.NotifyPropertyChanged(nameof(this.IsActivated));
                     ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Gets the image associated with this project item.
+        /// </summary>
+        public virtual BitmapSource Icon
+        {
+            get
+            {
+                return Images.CollectValues;
             }
         }
 

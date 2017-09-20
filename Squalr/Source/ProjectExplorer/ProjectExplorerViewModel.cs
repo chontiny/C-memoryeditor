@@ -59,7 +59,7 @@
         /// <summary>
         /// The project root which contains all project items.
         /// </summary>
-        private List<ProjectItem> projectRoot;
+        private ObservableCollection<ProjectItem> projectItems;
 
         /// <summary>
         /// The selected project item.
@@ -83,7 +83,6 @@
         {
             this.ContentId = ProjectExplorerViewModel.ToolContentId;
             this.ObserverLock = new Object();
-            this.ProjectExplorerObservers = new HashSet<IProjectExplorerObserver>();
 
             // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
@@ -91,11 +90,12 @@
             this.ExportProjectCommand = new RelayCommand(() => this.ExportProject(), () => true);
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(false, filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
+            this.SelectProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => PropertyViewerViewModel.GetInstance().SetTargetObjects(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
             this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
-            this.ProjectRoot = new List<ProjectItem>();
+            this.ProjectItems = new ObservableCollection<ProjectItem>();
             this.Update();
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
@@ -135,6 +135,11 @@
         /// Gets the command to add a new script.
         /// </summary>
         public ICommand AddNewScriptItemCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to select a project item.
+        /// </summary>
+        public ICommand SelectProjectItemCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to delete the selected project explorer items.
@@ -188,18 +193,17 @@
         /// <summary>
         /// Gets the root that contains all project items.
         /// </summary>
-        public List<ProjectItem> ProjectRoot
+        public ObservableCollection<ProjectItem> ProjectItems
         {
             get
             {
-                return this.projectRoot;
+                return this.projectItems;
             }
 
             private set
             {
-                this.projectRoot = value;
-                this.NotifyObserversStructureChange();
-                this.RaisePropertyChanged(nameof(this.ProjectRoot));
+                this.projectItems = value;
+                this.RaisePropertyChanged(nameof(this.ProjectItems));
             }
         }
 
@@ -210,7 +214,7 @@
         {
             get
             {
-                return new ObservableCollection<ProjectItem>(this.projectRoot);
+                return new ObservableCollection<ProjectItem>(this.projectItems);
             }
         }
 
@@ -237,11 +241,6 @@
         private Object ObserverLock { get; set; }
 
         /// <summary>
-        /// Gets or sets objects observing changes in the selected objects.
-        /// </summary>
-        private HashSet<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
-
-        /// <summary>
         /// Gets a singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -255,7 +254,7 @@
         /// </summary>
         public void DisableAllProjectItems()
         {
-            this.ProjectRoot?.ForEach(item => item.IsActivated = false);
+            this.ProjectItems?.ForEach(item => item.IsActivated = false);
         }
 
         /// <summary>
@@ -339,12 +338,10 @@
 
             foreach (ProjectItem projectItem in projectItems)
             {
-                this.ProjectRoot.Add(projectItem);
+                this.ProjectItems.Add(projectItem);
             }
 
-            this.RaisePropertyChanged(nameof(this.ProjectRoot));
-
-            this.NotifyObserversStructureChange();
+            this.RaisePropertyChanged(nameof(this.ProjectItems));
         }
 
         /// <summary>
@@ -352,39 +349,7 @@
         /// </summary>
         public void OnPropertyUpdate()
         {
-            this.NotifyObserversValueChange();
-        }
-
-        /// <summary>
-        /// Subscribes the given object to changes in the project structure.
-        /// </summary>
-        /// <param name="projectExplorerObserver">The object to observe project structure changes.</param>
-        public void Subscribe(IProjectExplorerObserver projectExplorerObserver)
-        {
-            lock (this.ObserverLock)
-            {
-                if (!this.ProjectExplorerObservers.Contains(projectExplorerObserver))
-                {
-                    this.ProjectExplorerObservers.Add(projectExplorerObserver);
-                    projectExplorerObserver.Update(this.ProjectRoot);
-                    projectExplorerObserver.UpdateStructure(this.ProjectRoot);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Unsubscribes the given object from changes in the project structure.
-        /// </summary>
-        /// <param name="projectExplorerObserver">The object to observe project structure changes.</param>
-        public void Unsubscribe(IProjectExplorerObserver projectExplorerObserver)
-        {
-            lock (this.ObserverLock)
-            {
-                if (this.ProjectExplorerObservers.Contains(projectExplorerObserver))
-                {
-                    this.ProjectExplorerObservers.Remove(projectExplorerObserver);
-                }
-            }
+            this.RaisePropertyChanged(nameof(this.ProjectItems));
         }
 
         /// <summary>
@@ -410,12 +375,10 @@
         {
             foreach (ProjectItem projectItem in this.SelectedProjectItems)
             {
-                this.ProjectRoot.Remove(projectItem);
+                this.ProjectItems.Remove(projectItem);
             }
 
             this.SelectedProjectItems = null;
-
-            this.NotifyObserversStructureChange();
         }
 
         /// <summary>
@@ -446,12 +409,11 @@
             {
                 while (true)
                 {
-                    foreach (ProjectItem projectItem in this.ProjectRoot)
+                    foreach (ProjectItem projectItem in this.ProjectItems)
                     {
                         projectItem.Update();
                     }
 
-                    this.NotifyObserversValueChange();
                     Thread.Sleep(SettingsViewModel.GetInstance().TableReadInterval);
                 }
             });
@@ -471,7 +433,7 @@
                 return;
             }
 
-            this.ProjectRoot = new List<ProjectItem>();
+            this.ProjectItems = new ObservableCollection<ProjectItem>();
             this.ProjectFilePath = openFileDialog.FileName;
 
             // Open the project file
@@ -486,7 +448,7 @@
                 using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
-                    this.ProjectRoot = new List<ProjectItem>(serializer.ReadObject(fileStream) as ProjectItem[]);
+                    this.ProjectItems = new ObservableCollection<ProjectItem>(serializer.ReadObject(fileStream) as ProjectItem[]);
                     this.HasUnsavedChanges = false;
                 }
             }
@@ -509,7 +471,7 @@
                         DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
                         ProjectItemHotkey[] projectItemHotkeys = serializer.ReadObject(fileStream) as ProjectItemHotkey[];
 
-                        this.BindHotkeys(this.ProjectRoot, projectItemHotkeys);
+                        this.BindHotkeys(this.ProjectItems, projectItemHotkeys);
                     }
                 }
             }
@@ -634,7 +596,7 @@
                     using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Create, FileAccess.Write))
                     {
                         DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
-                        serializer.WriteObject(fileStream, this.ProjectRoot);
+                        serializer.WriteObject(fileStream, this.ProjectItems);
                     }
 
                     this.HasUnsavedChanges = false;
@@ -655,7 +617,7 @@
                 using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Create, FileAccess.Write))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
-                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Select(x => new ProjectItemHotkey(x.HotKey, x.Guid)).ToArray();
+                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectItems?.Select(x => new ProjectItemHotkey(x.HotKey, x.Guid)).ToArray();
                     serializer.WriteObject(fileStream, hotkeys);
                 }
             }
@@ -689,7 +651,7 @@
                     Directory.CreateDirectory(folderPath);
 
                     Parallel.ForEach(
-                        this.ProjectRoot,
+                        this.ProjectItems,
                         SettingsViewModel.GetInstance().ParallelSettingsFast,
                         (projectItem) =>
                     {
@@ -752,36 +714,6 @@
                     item => item.Guid,
                     (binding, item) => new { binding = binding, item = item })
                 .ForEach(x => x.item.LoadHotkey(x.binding.Hotkey));
-        }
-
-        /// <summary>
-        /// Notify all observing objects of a change in the project structure.
-        /// </summary>
-        private void NotifyObserversStructureChange()
-        {
-            lock (this.ObserverLock)
-            {
-                foreach (IProjectExplorerObserver observer in this.ProjectExplorerObservers)
-                {
-                    observer.UpdateStructure(this.ProjectRoot);
-                }
-            }
-
-            this.RaisePropertyChanged(nameof(this.ProjectRoot));
-        }
-
-        /// <summary>
-        /// Notify all observing objects of a change in the project structure.
-        /// </summary>
-        private void NotifyObserversValueChange()
-        {
-            lock (this.ObserverLock)
-            {
-                foreach (IProjectExplorerObserver observer in this.ProjectExplorerObservers)
-                {
-                    observer.Update(this.ProjectRoot);
-                }
-            }
         }
 
         /// <summary>
