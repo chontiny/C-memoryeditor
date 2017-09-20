@@ -111,6 +111,16 @@
         private static String CheatsEndpoint = SqualrApi.ApiBase + "api/Cheats";
 
         /// <summary>
+        /// The endpoint for updating a cheat.
+        /// </summary>
+        private static String UpdateCheatEndpoint = SqualrApi.ApiBase + "api/Cheats/Update";
+
+        /// <summary>
+        /// The endpoint for updating a cheat.
+        /// </summary>
+        private static String UpdateCheatStreamMetaEndpoint = SqualrApi.ApiBase + "api/Stream/CheatMeta";
+
+        /// <summary>
         /// The endpoint for querying the available and unavailable cheats in the store.
         /// </summary>
         private static String StoreCheatsEndpoint = SqualrApi.ApiBase + "api/Cheats/Store";
@@ -294,6 +304,25 @@
             parameters.Add("cheat_id", cheatId.ToString());
 
             return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.RemoveCheatFromLibraryEndpoint, parameters);
+        }
+
+        public static void UpdateCheatStreamMeta(String accessToken, Cheat cheat)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("stream_icon", cheat?.StreamIcon?.ToString());
+            parameters.Add("stream_command", cheat?.StreamCommand?.ToString());
+
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.UpdateCheatStreamMetaEndpoint, parameters);
+        }
+
+        public static void UpdateCheat(String accessToken, Cheat cheat)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            // TODO: Serialize cheat
+
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.UpdateCheatEndpoint, parameters);
         }
 
         /// <summary>

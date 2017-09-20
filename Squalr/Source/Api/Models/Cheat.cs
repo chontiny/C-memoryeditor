@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.Api.Models
 {
+    using Squalr.Properties;
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using Squalr.Source.Utils.Extensions;
     using System;
@@ -7,10 +8,15 @@
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
     using System.Text;
+    using System.Threading.Tasks;
 
     [DataContract]
     internal class Cheat
     {
+        private String streamCommand;
+
+        private String streamIcon;
+
         public Cheat()
         {
             this.CheatId = 0;
@@ -58,10 +64,34 @@
         public Int32 Cost { get; set; }
 
         [DataMember(Name = "stream_command")]
-        public String StreamCommand { get; set; }
+        public String StreamCommand
+        {
+            get
+            {
+                return this.streamCommand;
+            }
+
+            set
+            {
+                this.streamCommand = value;
+                Task.Run(() => SqualrApi.UpdateCheatStreamMeta(SettingsViewModel.GetInstance().AccessTokens?.AccessToken, this));
+            }
+        }
 
         [DataMember(Name = "stream_icon")]
-        public String StreamIcon { get; set; }
+        public String StreamIcon
+        {
+            get
+            {
+                return this.streamIcon;
+            }
+
+            set
+            {
+                this.streamIcon = value;
+                Task.Run(() => SqualrApi.UpdateCheatStreamMeta(SettingsViewModel.GetInstance().AccessTokens?.AccessToken, this));
+            }
+        }
 
         [DataMember(Name = "in_review")]
         public Boolean InReview { get; set; }
@@ -87,7 +117,7 @@
                 DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectItem));
 
                 this.ProjectItem = deserializer.ReadObject(memoryStream) as ProjectItem;
-                this.ProjectItem.AssociatedCheat = this;
+                this.ProjectItem.AssociateCheat(this);
             }
         }
     }

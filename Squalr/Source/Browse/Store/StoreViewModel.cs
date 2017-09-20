@@ -134,7 +134,7 @@
         }
 
         /// <summary>
-        /// Gets a value indicating whether the game list is loading.
+        /// Gets or sets a value indicating whether the game list is loading.
         /// </summary>
         public Boolean IsGameListLoading
         {
@@ -151,7 +151,7 @@
         }
 
         /// <summary>
-        /// Gets a value indicating whether the cheat list is loading.
+        /// Gets or sets a value indicating whether the cheat list is loading.
         /// </summary>
         public Boolean IsCheatListLoading
         {

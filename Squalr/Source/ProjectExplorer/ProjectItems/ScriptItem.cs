@@ -137,6 +137,12 @@
                 }
 
                 this.streamIconPath = value;
+
+                if (this.AssociatedCheat != null)
+                {
+                    this.AssociatedCheat.StreamIcon = value;
+                }
+
                 this.NotifyPropertyChanged(nameof(this.StreamIconPath));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
@@ -161,6 +167,12 @@
                 }
 
                 this.streamCommand = value?.ToLower();
+
+                if (this.AssociatedCheat != null)
+                {
+                    this.AssociatedCheat.StreamCommand = value;
+                }
+
                 this.NotifyPropertyChanged(nameof(this.StreamCommand));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }

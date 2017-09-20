@@ -12,6 +12,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
@@ -247,7 +248,7 @@
         }
 
         /// <summary>
-        /// Gets a value indicating whether the game list is loading.
+        /// Gets or sets a value indicating whether the game list is loading.
         /// </summary>
         public Boolean IsGameListLoading
         {
@@ -497,11 +498,8 @@
             });
 
             // Import the cheats
-            foreach (Cheat cheat in this.cheatsInLibrary)
-            {
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, cheat.ProjectItem);
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-            }
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, this.cheatsInLibrary.Select(x => x.ProjectItem).ToArray());
+            ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
         }
 
         /// <summary>

@@ -286,6 +286,7 @@
         /// <summary>
         /// Gets or sets the library cheat associated with this project item.
         /// </summary>
+        [Browsable(false)]
         public Cheat AssociatedCheat { get; set; }
 
         /// <summary>
@@ -316,6 +317,15 @@
         public virtual void BuildParents(FolderItem parent = null)
         {
             this.Parent = parent;
+        }
+
+        /// <summary>
+        /// Associates a cheat with this project item.
+        /// </summary>
+        /// <param name="cheat">The associated cheat</param>
+        public virtual void AssociateCheat(Cheat cheat)
+        {
+            this.AssociatedCheat = cheat;
         }
 
         /// <summary>

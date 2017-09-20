@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
     using Controls;
+    using Squalr.Source.Api.Models;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -412,6 +413,23 @@
             ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
 
             return removeSuccess;
+        }
+
+        /// <summary>
+        /// Associates a cheat with this project item.
+        /// </summary>
+        /// <param name="cheat">The associated cheat</param>
+        public override void AssociateCheat(Cheat cheat)
+        {
+            base.AssociateCheat(cheat);
+
+            if (this.Children != null)
+            {
+                foreach (ProjectItem projectItem in this.Children)
+                {
+                    projectItem.AssociateCheat(cheat);
+                }
+            }
         }
 
         /// <summary>
