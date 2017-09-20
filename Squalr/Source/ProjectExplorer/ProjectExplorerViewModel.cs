@@ -59,7 +59,7 @@
         /// <summary>
         /// The project root which contains all project items.
         /// </summary>
-        private ProjectRoot projectRoot;
+        private List<ProjectItem> projectRoot;
 
         /// <summary>
         /// The selected project item.
@@ -91,12 +91,11 @@
             this.ExportProjectCommand = new RelayCommand(() => this.ExportProject(), () => true);
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(false, filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
-            this.AddNewFolderItemCommand = new RelayCommand(() => this.AddNewFolderItem(), () => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
             this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
-            this.ProjectRoot = new ProjectRoot();
+            this.ProjectRoot = new List<ProjectItem>();
             this.Update();
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
@@ -126,11 +125,6 @@
         /// Gets the command to open a project from disk.
         /// </summary>
         public ICommand SaveProjectCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to add a new folder.
-        /// </summary>
-        public ICommand AddNewFolderItemCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to add a new address.
@@ -194,7 +188,7 @@
         /// <summary>
         /// Gets the root that contains all project items.
         /// </summary>
-        public ProjectRoot ProjectRoot
+        public List<ProjectItem> ProjectRoot
         {
             get
             {
@@ -203,7 +197,6 @@
 
             private set
             {
-                this.projectRoot?.RemoveAllNodes();
                 this.projectRoot = value;
                 this.NotifyObserversStructureChange();
                 this.RaisePropertyChanged(nameof(this.ProjectRoot));
@@ -217,7 +210,7 @@
         {
             get
             {
-                return new ObservableCollection<ProjectItem>(this.projectRoot.Children);
+                return new ObservableCollection<ProjectItem>(this.projectRoot);
             }
         }
 
@@ -262,7 +255,7 @@
         /// </summary>
         public void DisableAllProjectItems()
         {
-            this.ProjectRoot.Flatten().ForEach(item => item.IsActivated = false);
+            this.ProjectRoot?.ForEach(item => item.IsActivated = false);
         }
 
         /// <summary>
@@ -346,30 +339,10 @@
 
             foreach (ProjectItem projectItem in projectItems)
             {
-                if (ProjectRoot.HasNode(projectItem))
-                {
-                    return;
-                }
-
-                ProjectItem target = this.SelectedProjectItems?.FirstOrDefault();
-
-                // Atempt to find the correct folder to place the new item into
-                while (target != null && !(target is FolderItem))
-                {
-                    target = target.Parent as ProjectItem;
-                }
-
-                FolderItem targetFolder = target as FolderItem;
-
-                if (target != null)
-                {
-                    targetFolder.AddChild(projectItem);
-                }
-                else
-                {
-                    this.ProjectRoot.AddChild(projectItem);
-                }
+                this.ProjectRoot.Add(projectItem);
             }
+
+            this.RaisePropertyChanged(nameof(this.ProjectRoot));
 
             this.NotifyObserversStructureChange();
         }
@@ -415,14 +388,6 @@
         }
 
         /// <summary>
-        /// Adds a new folder to the project items.
-        /// </summary>
-        private void AddNewFolderItem()
-        {
-            this.AddNewProjectItems(true, new FolderItem());
-        }
-
-        /// <summary>
         /// Adds a new address to the project items.
         /// </summary>
         private void AddNewPointerItem()
@@ -443,7 +408,11 @@
         /// </summary>
         private void DeleteSelection()
         {
-            this.ProjectRoot.RemoveNodes(this.SelectedProjectItems);
+            foreach (ProjectItem projectItem in this.SelectedProjectItems)
+            {
+                this.ProjectRoot.Remove(projectItem);
+            }
+
             this.SelectedProjectItems = null;
 
             this.NotifyObserversStructureChange();
@@ -477,7 +446,11 @@
             {
                 while (true)
                 {
-                    this.ProjectRoot.Update();
+                    foreach (ProjectItem projectItem in this.ProjectRoot)
+                    {
+                        projectItem.Update();
+                    }
+
                     this.NotifyObserversValueChange();
                     Thread.Sleep(SettingsViewModel.GetInstance().TableReadInterval);
                 }
@@ -498,7 +471,7 @@
                 return;
             }
 
-            this.ProjectRoot = new ProjectRoot();
+            this.ProjectRoot = new List<ProjectItem>();
             this.ProjectFilePath = openFileDialog.FileName;
 
             // Open the project file
@@ -512,8 +485,8 @@
 
                 using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    this.ProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
+                    this.ProjectRoot = new List<ProjectItem>(serializer.ReadObject(fileStream) as ProjectItem[]);
                     this.HasUnsavedChanges = false;
                 }
             }
@@ -536,7 +509,7 @@
                         DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
                         ProjectItemHotkey[] projectItemHotkeys = serializer.ReadObject(fileStream) as ProjectItemHotkey[];
 
-                        this.BindHotkeys(this.ProjectRoot.Flatten(), projectItemHotkeys);
+                        this.BindHotkeys(this.ProjectRoot, projectItemHotkeys);
                     }
                 }
             }
@@ -573,7 +546,8 @@
             }
 
             // Import the project file
-            ProjectRoot importedProjectRoot = null;
+            ProjectItem[] importedProjectRoot = null;
+
             try
             {
                 if (!File.Exists(filename))
@@ -584,11 +558,11 @@
 
                 using (FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
                 {
-                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    importedProjectRoot = deserializer.ReadObject(fileStream) as ProjectRoot;
+                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
+                    importedProjectRoot = deserializer.ReadObject(fileStream) as ProjectItem[];
 
                     // Add each high level child in the project root to this project
-                    foreach (ProjectItem child in importedProjectRoot.Children)
+                    foreach (ProjectItem child in importedProjectRoot)
                     {
                         this.AddNewProjectItems(false, child);
                     }
@@ -616,7 +590,7 @@
                         ProjectItemHotkey[] projectItemHotkeys = serializer.ReadObject(fileStream) as ProjectItemHotkey[];
 
                         // Bind the hotkey to this project item
-                        this.BindHotkeys(importedProjectRoot?.Flatten(), projectItemHotkeys);
+                        this.BindHotkeys(importedProjectRoot, projectItemHotkeys);
                     }
                 }
             }
@@ -630,7 +604,7 @@
             // Randomize the guid for imported project items, preventing possible conflicts
             if (resetGuids && importedProjectRoot != null)
             {
-                foreach (ProjectItem child in importedProjectRoot.Flatten())
+                foreach (ProjectItem child in importedProjectRoot)
                 {
                     child.ResetGuid();
                 }
@@ -659,7 +633,7 @@
 
                     using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Create, FileAccess.Write))
                     {
-                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
+                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
                         serializer.WriteObject(fileStream, this.ProjectRoot);
                     }
 
@@ -681,7 +655,7 @@
                 using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Create, FileAccess.Write))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
-                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Select(x => new ProjectItemHotkey(x.HotKey, x.Guid)).ToArray();
+                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Select(x => new ProjectItemHotkey(x.HotKey, x.Guid)).ToArray();
                     serializer.WriteObject(fileStream, hotkeys);
                 }
             }
@@ -715,9 +689,7 @@
                     Directory.CreateDirectory(folderPath);
 
                     Parallel.ForEach(
-                        this.ProjectRoot
-                            .Flatten(item => (item is FolderItem) && !(item as FolderItem).ExportStop)
-                            .Where(item => !(item is FolderItem) || (item as FolderItem).ExportStop),
+                        this.ProjectRoot,
                         SettingsViewModel.GetInstance().ParallelSettingsFast,
                         (projectItem) =>
                     {
@@ -742,11 +714,11 @@
 
                         using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                         {
-                            ProjectRoot newProjectRoot = new ProjectRoot();
-                            newProjectRoot.AddChild(targetProjectItem);
+                            List<ProjectItem> newProjectRoot = new List<ProjectItem>();
+                            newProjectRoot.Add(targetProjectItem);
 
-                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                            serializer.WriteObject(fileStream, newProjectRoot);
+                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
+                            serializer.WriteObject(fileStream, newProjectRoot.ToArray());
                         }
                     });
                 }

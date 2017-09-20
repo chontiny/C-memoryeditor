@@ -397,7 +397,6 @@
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
     <Compile Include="Source\Output\OutputViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\IProjectExplorerObserver.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectRoot.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemHotkey.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
@@ -523,7 +522,6 @@
     <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\AddressItem.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\FolderItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ScriptItem.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />

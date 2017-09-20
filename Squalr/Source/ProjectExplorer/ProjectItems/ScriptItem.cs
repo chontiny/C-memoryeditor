@@ -193,7 +193,6 @@
             ScriptItem clone = new ScriptItem();
             clone.description = this.Description;
             clone.extendedDescription = this.ExtendedDescription;
-            clone.parent = this.Parent;
             clone.script = this.Script;
             clone.isCompiled = this.IsCompiled;
 

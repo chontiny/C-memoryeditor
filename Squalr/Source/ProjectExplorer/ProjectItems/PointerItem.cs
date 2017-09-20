@@ -185,7 +185,6 @@
         {
             PointerItem clone = new PointerItem();
             clone.description = this.Description;
-            clone.parent = this.Parent;
             clone.extendedDescription = this.ExtendedDescription;
             clone.moduleName = this.moduleName;
             clone.moduleOffset = this.moduleOffset;

@@ -166,7 +166,7 @@
             try
             {
                 StreamActivationIds streamActivationIds = SqualrApi.GetStreamActivationIds(SettingsViewModel.GetInstance().TwitchChannel);
-                IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten();
+                IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot;
 
                 // Use the given ids to determine which project items to activate
                 var itemsToActivate = streamActivationIds.ActivatedIds

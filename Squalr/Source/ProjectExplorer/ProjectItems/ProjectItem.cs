@@ -17,8 +17,6 @@
     /// A base class for all project items that can be added to the project explorer.
     /// </summary>
     [KnownType(typeof(ProjectItem))]
-    [KnownType(typeof(ProjectRoot))]
-    [KnownType(typeof(FolderItem))]
     [KnownType(typeof(ScriptItem))]
     [KnownType(typeof(AddressItem))]
     [KnownType(typeof(PointerItem))]
@@ -27,12 +25,6 @@
     [DataContract]
     internal abstract class ProjectItem : INotifyPropertyChanged, IDisposable
     {
-        /// <summary>
-        /// The parent of this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected FolderItem parent;
-
         /// <summary>
         /// The description of this project item.
         /// </summary>
@@ -78,7 +70,6 @@
         {
             // Bypass setters/getters to avoid triggering any view updates in constructor
             this.description = description == null ? String.Empty : description;
-            this.parent = null;
             this.isActivated = false;
             this.guid = Guid.NewGuid();
             this.ActivationLock = new Object();
@@ -88,29 +79,6 @@
         /// Occurs after a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Gets or sets the parent of this project item.
-        /// </summary>
-        [Browsable(false)]
-        public FolderItem Parent
-        {
-            get
-            {
-                return this.parent;
-            }
-
-            set
-            {
-                if (this.parent == value)
-                {
-                    return;
-                }
-
-                this.parent = value;
-                this.NotifyPropertyChanged(nameof(this.Parent));
-            }
-        }
 
         /// <summary>
         /// Gets or sets the description for this object.
@@ -240,15 +208,6 @@
                         return;
                     }
 
-                    // If this project item is in a unique group, disable all siblings
-                    if (value == true && this.Parent != null && this.Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup)
-                    {
-                        foreach (ProjectItem projectItem in this.Parent.Children)
-                        {
-                            projectItem.IsActivated = false;
-                        }
-                    }
-
                     // Change activation state
                     Boolean previousValue = this.isActivated;
                     this.isActivated = value;
@@ -308,16 +267,6 @@
         /// Updates event for this project item.
         /// </summary>
         public abstract void Update();
-
-        /// <summary>
-        /// Reconstructs the parents for all nodes of this graph. Call this from the root.
-        /// Needed since we cannot serialize the parent to json or we will get cyclic dependencies.
-        /// </summary>
-        /// <param name="parent">The parent of this project item.</param>
-        public virtual void BuildParents(FolderItem parent = null)
-        {
-            this.Parent = parent;
-        }
 
         /// <summary>
         /// Associates a cheat with this project item.

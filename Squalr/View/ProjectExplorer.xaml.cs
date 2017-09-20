@@ -206,11 +206,9 @@
         /// <summary>
         /// Recieves an update of the project items in the project explorer upon structure changes.
         /// </summary>
-        /// <param name="projectRoot">The project root.</param>
-        public void UpdateStructure(ProjectRoot projectRoot)
+        /// <param name="projectItems">The project items.</param>
+        public void UpdateStructure(List<ProjectItem> projectItems)
         {
-            projectRoot?.BuildParents();
-
             this.projectExplorerTreeView.BeginUpdate();
 
             lock (this.AccessLock)
@@ -220,9 +218,9 @@
 
             this.nodeCache.Clear();
 
-            if (projectRoot != null)
+            if (projectItems != null)
             {
-                foreach (ProjectItem child in projectRoot.Children.ToArray())
+                foreach (ProjectItem child in projectItems.ToArray())
                 {
                     this.BuildNodes(child);
                 }
@@ -235,13 +233,13 @@
         /// <summary>
         /// Recieves an update of the project items in the project explorer upon value changes.
         /// </summary>
-        /// <param name="projectRoot">The project root.</param>
-        public void Update(ProjectRoot projectRoot)
+        /// <param name="projectItems">The project items.</param>
+        public void Update(List<ProjectItem> projectItems)
         {
-            if (projectRoot != null)
+            if (projectItems != null)
             {
                 this.projectExplorerTreeView.BeginUpdate();
-                foreach (ProjectItem child in projectRoot.Children.ToArray())
+                foreach (ProjectItem child in projectItems.ToArray())
                 {
                     this.UpdateNodes(child);
                 }
@@ -317,16 +315,6 @@
             }
 
             this.nodeCache.Add(projectItem, projectNode);
-
-            if (projectItem is FolderItem)
-            {
-                FolderItem folderItem = projectItem as FolderItem;
-
-                foreach (ProjectItem child in folderItem.Children.ToArray())
-                {
-                    this.BuildNodes(child, projectItem);
-                }
-            }
         }
 
         /// <summary>
@@ -343,16 +331,6 @@
             }
 
             this.UpdateProjectNode(projectNode, projectItem);
-
-            if (projectItem is FolderItem)
-            {
-                FolderItem folderItem = projectItem as FolderItem;
-
-                foreach (ProjectItem child in folderItem.Children.ToArray())
-                {
-                    this.UpdateNodes(child);
-                }
-            }
         }
 
         private void UpdateProjectNode(ProjectNode projectNode, ProjectItem projectItem)
@@ -372,21 +350,11 @@
 
             Bitmap image = ImageUtils.BitmapImageToBitmap(Images.CollectValues);
 
-            if (projectItem is FolderItem)
-            {
-                image = ImageUtils.BitmapImageToBitmap(Images.Open);
-            }
-
             projectNode.EntryIcon = image;
 
             if (projectItem is AddressItem)
             {
                 projectNode.EntryValuePreview = (projectItem as AddressItem).AddressValue?.ToString() ?? String.Empty;
-            }
-
-            if (projectItem is FolderItem)
-            {
-                projectNode.EntryValuePreview = "[" + ((projectItem as FolderItem).Children?.Count.ToString() ?? String.Empty) + "]";
             }
 
             if (projectItem is ScriptItem && (projectItem as ScriptItem).IsCompiled)
@@ -563,25 +531,6 @@
             {
                 node.IsChecked = projectItem.IsActivated;
             }
-
-            if (projectItem is FolderItem)
-            {
-                FolderItem folderitem = projectItem as FolderItem;
-
-                switch (folderitem.FolderType)
-                {
-                    case FolderItem.FolderTypeEnum.Group:
-                        foreach (ProjectItem child in folderitem.Children.ToArray())
-                        {
-                            this.CheckItem(child, activated);
-                        }
-                        break;
-                    case FolderItem.FolderTypeEnum.Normal:
-                    case FolderItem.FolderTypeEnum.UniqueGroup:
-                        break;
-                }
-
-            }
         }
 
         /// <summary>
@@ -696,55 +645,6 @@
         /// <param name="e">Drag event args.</param>
         private void ProjectExplorerTreeViewDragDrop(Object sender, DragEventArgs e)
         {
-            // Retrieve the client coordinates of the drop location.
-            Point targetPoint = this.projectExplorerTreeView.PointToClient(new Point(e.X, e.Y));
-
-            // Retrieve the node at the drop location.
-            TreeNodeAdv targetNodeAdv = this.projectExplorerTreeView.GetNodeAt(targetPoint);
-
-            // Retrieve the node that was dragged.
-            TreeNodeAdv[] draggedNodesAdv = e.Data.GetData(typeof(TreeNodeAdv[])) as TreeNodeAdv[];
-
-            if (draggedNodesAdv.Count() <= 0)
-            {
-                return;
-            }
-
-            TreeNodeAdv draggedNodeAdv = draggedNodesAdv[0];
-
-            if (draggedNodeAdv != null && targetNodeAdv != null && draggedNodeAdv != targetNodeAdv)
-            {
-                ProjectRoot projectRoot = this.ProjectExplorerViewModel.ProjectRoot;
-                ProjectItem draggedItem = this.GetProjectItemFromNode(draggedNodeAdv);
-                ProjectItem targetItem = this.GetProjectItemFromNode(targetNodeAdv);
-
-                projectRoot?.BuildParents();
-
-                if (!(draggedItem is FolderItem) || !(draggedItem as FolderItem).HasNode(targetItem))
-                {
-                    switch (this.projectExplorerTreeView.DropPosition.Position)
-                    {
-                        case NodePosition.Before:
-                            projectRoot.RemoveNode(draggedItem, dispose: false);
-                            targetItem.Parent?.AddSibling(targetItem, draggedItem, after: false);
-                            break;
-                        case NodePosition.Inside:
-                            if (targetItem is FolderItem)
-                            {
-                                projectRoot.RemoveNode(draggedItem, dispose: false);
-                                (targetItem as FolderItem).AddChild(draggedItem);
-                            }
-
-                            break;
-                        case NodePosition.After:
-                            projectRoot.RemoveNode(draggedItem, dispose: false);
-                            targetItem.Parent?.AddSibling(targetItem, draggedItem, after: true);
-                            break;
-                    }
-                }
-
-                this.UpdateStructure(this.ProjectExplorerViewModel.ProjectRoot);
-            }
         }
 
         /// <summary>
@@ -816,7 +716,6 @@
             this.copySelectionMenuItem.Click += this.CopySelectionMenuItemClick;
             this.cutSelectionMenuItem.Click += this.CutSelectionMenuItemClick;
             this.pasteSelectionMenuItem.Click += this.PasteSelectionMenuItemClick;
-            this.addNewFolderMenuItem.Click += this.AddNewFolderMenuItemClick;
             this.addNewAddressMenuItem.Click += this.AddNewAddressMenuItemClick;
             this.addNewScriptMenuItem.Click += this.AddNewScriptMenuItemClick;
             this.contextMenuStrip.Opening += this.ContextMenuStripOpening;
@@ -876,15 +775,6 @@
             if (projectItem is AddressItem)
             {
                 if (String.IsNullOrWhiteSpace((projectItem as AddressItem).AddressValue?.ToString()))
-                {
-                    e.Value = false;
-                    return;
-                }
-            }
-
-            if (projectItem is FolderItem)
-            {
-                if (String.IsNullOrWhiteSpace((projectItem as FolderItem).Children?.Count.ToString()))
                 {
                     e.Value = false;
                     return;
@@ -1115,16 +1005,6 @@
         private void AddNewAddressMenuItemClick(Object sender, EventArgs e)
         {
             ProjectExplorerViewModel.GetInstance().AddNewAddressItemCommand.Execute(null);
-        }
-
-        /// <summary>
-        /// Event for the Add New Folder menu item.
-        /// </summary>
-        /// <param name="sender">Sending object.</param>
-        /// <param name="e">Event args.</param>
-        private void AddNewFolderMenuItemClick(Object sender, EventArgs e)
-        {
-            ProjectExplorerViewModel.GetInstance().AddNewFolderItemCommand.Execute(null);
         }
 
         /// <summary>
