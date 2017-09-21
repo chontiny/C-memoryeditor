@@ -11,7 +11,9 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
+    using System.IO;
     using System.Runtime.Serialization;
+    using System.Runtime.Serialization.Json;
     using System.Windows.Media.Imaging;
     using Utils.TypeConverters;
 
@@ -198,14 +200,14 @@
         {
             get
             {
-                return this.CanActivate && this.isActivated;
+                return this.isActivated;
             }
 
             set
             {
                 lock (this.ActivationLock)
                 {
-                    if (this.isActivated == value || !this.CanActivate)
+                    if (this.isActivated == value)
                     {
                         return;
                     }
@@ -236,18 +238,6 @@
             get
             {
                 return Images.CollectValues;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether or not this item can be activated.
-        /// </summary>
-        [Browsable(false)]
-        public Boolean CanActivate
-        {
-            get
-            {
-                return this.IsActivatable();
             }
         }
 
@@ -295,7 +285,24 @@
         /// Clones the project item.
         /// </summary>
         /// <returns>The clone of the project item.</returns>
-        public abstract ProjectItem Clone();
+        public ProjectItem Clone()
+        {
+            Byte[] serializedProjectItem;
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem));
+
+            // Serialize this project item
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                serializer.WriteObject(memoryStream, this);
+                serializedProjectItem = memoryStream.ToArray();
+            }
+
+            // Deserialize this project item to clone it
+            using (MemoryStream memoryStream = new MemoryStream(serializedProjectItem))
+            {
+                return serializer.ReadObject(memoryStream) as ProjectItem;
+            }
+        }
 
         /// <summary>
         /// Updates the hotkey, bypassing setters to avoid triggering view updates.

@@ -27,11 +27,11 @@
             BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
             Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
             Style="{StaticResource DropDownContextMenu}">
-            <MenuItem Command="{Binding ToggleSelectionCommand}" Header="Toggle Selection" />
-            <MenuItem Command="{Binding DeleteSelectionCommand}" Header="Delete Selection" />
-            <MenuItem Command="{Binding CopySelectionCommand}" Header="Copy" />
-            <MenuItem Command="{Binding PasteSelectionCommand}" Header="Paste" />
-            <MenuItem Command="{Binding CutSelectionCommand}" Header="Cut" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.DeleteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Delete Selection" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.CopySelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Copy" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.PasteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Paste" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.CutSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Cut" />
         </ContextMenu>
     </UserControl.Resources>
     <Grid>
@@ -143,7 +143,8 @@
                             <CheckBox
                                 Grid.Column="0"
                                 Width="16"
-                                Height="16" />
+                                Height="16"
+                                IsChecked="{Binding Path=IsActivated}" />
                             <Image
                                 Grid.Column="1"
                                 Width="16"

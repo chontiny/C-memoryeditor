@@ -60,16 +60,6 @@
         private IEnumerable<ProjectItem> selectedProjectItems;
 
         /// <summary>
-        /// Whether or not there are unsaved project changes.
-        /// </summary>
-        private Boolean hasUnsavedChanges;
-
-        /// <summary>
-        /// The file path to the project file.
-        /// </summary>
-        private String projectFilePath;
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="ProjectExplorerViewModel" /> class from being created.
         /// </summary>
         private ProjectExplorerViewModel() : base("Project Explorer")
@@ -84,11 +74,14 @@
             this.ExportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ExportProject(), () => true);
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ProjectItemStorage.ImportProject(false, filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
-            this.SelectProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => PropertyViewerViewModel.GetInstance().SetTargetObjects(projectItem), (projectItem) => true);
+            this.SelectProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.SelectedProjectItems = new ProjectItem[] { projectItem }, (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
-            this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
+            this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
+            this.CopySelectionCommand = new RelayCommand(() => this.CopySelection(), () => true);
+            this.PasteSelectionCommand = new RelayCommand(() => this.PasteSelection(), () => true);
+            this.CutSelectionCommand = new RelayCommand(() => this.CutSelection(), () => true);
             this.ProjectItems = new ObservableCollection<ProjectItem>();
             this.Update();
 
@@ -136,19 +129,29 @@
         public ICommand SelectProjectItemCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to delete the selected project explorer items.
-        /// </summary>
-        public ICommand DeleteSelectionCommand { get; private set; }
-
-        /// <summary>
         /// Gets the command to toggle the activation the selected project explorer items.
         /// </summary>
         public ICommand ToggleSelectionActivationCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to clear the selected project item.
+        /// Gets the command to delete the selected project explorer items.
         /// </summary>
-        public ICommand ClearSelectionCommand { get; private set; }
+        public ICommand DeleteSelectionCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to copy the selection to the clipboard.
+        /// </summary>
+        public ICommand CopySelectionCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to paste the selection to the clipboard.
+        /// </summary>
+        public ICommand PasteSelectionCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to cut the selection to the clipboard.
+        /// </summary>
+        public ICommand CutSelectionCommand { get; private set; }
 
         /// <summary>
         /// Gets an object that allows accesses to saving and loading project items.
@@ -199,6 +202,11 @@
                 PropertyViewerViewModel.GetInstance().SetTargetObjects(this.SelectedProjectItems?.ToArray());
             }
         }
+
+        /// <summary>
+        /// The current project items copied to the clip board.
+        /// </summary>
+        private IEnumerable<ProjectItem> ClipBoard { get; set; }
 
         /// <summary>
         /// Gets or sets a lock that controls access to observing classes.
@@ -297,24 +305,11 @@
         }
 
         /// <summary>
-        /// Deletes the selected project explorer items.
-        /// </summary>
-        private void DeleteSelection()
-        {
-            foreach (ProjectItem projectItem in this.SelectedProjectItems)
-            {
-                this.ProjectItems.Remove(projectItem);
-            }
-
-            this.SelectedProjectItems = null;
-        }
-
-        /// <summary>
         /// Toggles the activation the selected project explorer items.
         /// </summary>
         private void ToggleSelectionActivation()
         {
-            if (this.SelectedProjectItems == null || this.SelectedProjectItems.Count() < 0)
+            if (this.SelectedProjectItems == null)
             {
                 return;
             }
@@ -326,6 +321,58 @@
                     projectItem.IsActivated = !projectItem.IsActivated;
                 }
             }
+        }
+
+        /// <summary>
+        /// Deletes the selected project explorer items.
+        /// </summary>
+        private void DeleteSelection()
+        {
+            if (this.SelectedProjectItems == null)
+            {
+                return;
+            }
+
+            foreach (ProjectItem projectItem in this.SelectedProjectItems)
+            {
+                this.ProjectItems.Remove(projectItem);
+            }
+
+            this.SelectedProjectItems = null;
+        }
+
+        /// <summary>
+        /// Copies the selected project explorer items.
+        /// </summary>
+        private void CopySelection()
+        {
+            this.ClipBoard = this.SelectedProjectItems?.SoftClone();
+        }
+
+        /// <summary>
+        /// Pastes the copied project explorer items.
+        /// </summary>
+        private void PasteSelection()
+        {
+            if (this.ClipBoard == null || this.ClipBoard.Count() <= 0)
+            {
+                return;
+            }
+
+            foreach (ProjectItem projectItem in this.ClipBoard)
+            {
+                // We must clone the item, such as to prevent duplicate references of the same exact object
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, projectItem.Clone());
+            }
+        }
+
+        /// <summary>
+        /// Cuts the selected project explorer items.
+        /// </summary>
+        private void CutSelection()
+        {
+            this.ClipBoard = this.SelectedProjectItems?.SoftClone();
+            this.DeleteSelection();
         }
 
         /// <summary>

@@ -78,6 +78,11 @@
             return total;
         }
 
+        public static IEnumerable<T> SoftClone<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable.Select(item => (T)item).ToArray();
+        }
+
         /// <summary>
         /// A foreach extension method to perform an action on all elements in an enumeration.
         /// </summary>

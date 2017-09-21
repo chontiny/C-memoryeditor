@@ -517,11 +517,6 @@
                 return;
             }
 
-            if (!projectItem.CanActivate)
-            {
-                return;
-            }
-
             projectItem.IsActivated = activated;
 
             ProjectNode node;
@@ -833,8 +828,6 @@
             {
                 return;
             }
-
-            e.Value = projectItem.CanActivate;
         }
 
         private void ProjectExplorerTreeViewRowDraw(Object sender, TreeViewRowDrawEventArgs e)

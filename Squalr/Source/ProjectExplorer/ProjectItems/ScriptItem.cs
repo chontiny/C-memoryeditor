@@ -172,6 +172,7 @@
                 this.category = value;
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Category));
+                this.NotifyPropertyChanged(nameof(this.Icon));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -246,7 +247,19 @@
         {
             get
             {
-                return Images.Script;
+                switch (this.Category)
+                {
+                    case ProjectItemCategory.Miscellaneous:
+                        return Images.Cog;
+                    case ProjectItemCategory.Buff:
+                        return Images.Heart;
+                    case ProjectItemCategory.Curse:
+                        return Images.Curse;
+                    case ProjectItemCategory.Glitch:
+                        return Images.Glitch;
+                    default:
+                        return Images.Script;
+                }
             }
         }
 
@@ -255,21 +268,6 @@
         /// </summary>
         [Browsable(false)]
         private ScriptManager ScriptManager { get; set; }
-
-        /// <summary>
-        /// Clones the project item.
-        /// </summary>
-        /// <returns>The clone of the project item.</returns>
-        public override ProjectItem Clone()
-        {
-            ScriptItem clone = new ScriptItem();
-            clone.description = this.Description;
-            clone.extendedDescription = this.ExtendedDescription;
-            clone.script = this.Script;
-            clone.isCompiled = this.IsCompiled;
-
-            return clone;
-        }
 
         /// <summary>
         /// Clones the script item and compiles it.
