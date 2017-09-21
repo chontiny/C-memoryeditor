@@ -20,6 +20,8 @@
             Style="{StaticResource DropDownContextMenu}">
             <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Add New Address" />
             <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
+            <Separator />
+            <MenuItem Command="{Binding PasteSelectionCommand}" Header="Paste" />
         </ContextMenu>
         <ContextMenu
             x:Key="ProjectItemRightClickMenu"
@@ -27,8 +29,10 @@
             BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
             Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
             Style="{StaticResource DropDownContextMenu}">
-            <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
+            <Separator />
             <MenuItem Command="{Binding ProjectExplorerViewModel.DeleteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Delete Selection" />
+            <Separator />
             <MenuItem Command="{Binding ProjectExplorerViewModel.CopySelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Copy" />
             <MenuItem Command="{Binding ProjectExplorerViewModel.PasteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Paste" />
             <MenuItem Command="{Binding ProjectExplorerViewModel.CutSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Cut" />
@@ -139,11 +143,13 @@
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition />
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <CheckBox
                                 Grid.Column="0"
                                 Width="16"
                                 Height="16"
+                                Margin="0,0,4,0"
                                 IsChecked="{Binding Path=IsActivated}" />
                             <Image
                                 Grid.Column="1"
@@ -155,6 +161,11 @@
                                 Margin="4,0,0,0"
                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                 Text="{Binding Path=Description}" />
+                            <TextBlock
+                                Grid.Column="3"
+                                Margin="4,0,0,0"
+                                Foreground="Yellow"
+                                Text="{Binding Path=StreamCommand, FallbackValue=''}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

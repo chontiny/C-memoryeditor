@@ -334,6 +334,7 @@
     <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
@@ -354,7 +355,6 @@
     <Compile Include="Source\Browse\StreamConfig\StreamConfigViewModel.cs" />
     <Compile Include="Content\Images.cs" />
     <Compile Include="Source\Controls\SortedCategory.cs" />
-    <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Engine\Hook\Client\HookClient.cs" />
@@ -576,7 +576,6 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
-    <Compile Include="Source\Controls\TreeView\ProjectNode.cs" />
     <Compile Include="Source\Utils\WebBrowserHelper.cs" />
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
@@ -958,10 +957,6 @@
     <ProjectReference Include="..\Microsoft.Diagnostics.Runtime\Microsoft.Diagnostics.Runtime.csproj">
       <Project>{A82126CA-23AA-41F1-8586-A5938D44D0A7}</Project>
       <Name>Microsoft.Diagnostics.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TreeViewAdv\TreeViewAdv.csproj">
-      <Project>{e73bb233-d88b-44a7-a98f-d71ee158381d}</Project>
-      <Name>TreeViewAdv</Name>
     </ProjectReference>
     <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
       <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>

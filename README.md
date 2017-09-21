@@ -18,7 +18,7 @@ Reference | Description
 
 ## Build
 
-In order to compile Squalr, you should only need **Visual Studio 2017**. External libraries are mostly compiled from source (with the exception of most C++ applications). This is because almost every library I use has had issues where I've needed access to the source code (to be fair, I am using most of these in unexpected ways). Currently this consists of:
+In order to compile Squalr, you should only need **Visual Studio 2017**. Here are the important 3rd party libraries that this project uses:
 
 Library | Description 
 --- | ---
@@ -32,10 +32,6 @@ Library | Description
 [SharpDisasm](https://github.com/spazzarama/SharpDisasm) | Udis86 Assembler Ported to C#
 [MemorySharp](https://github.com/ZenLulz/MemorySharp) | Memory Editing Library
 [FASM](https://flatassembler.net/) | Flat Assembler (C# Invocation done via MemorySharp)
-[TreeViewAdv](https://sourceforge.net/projects/treeviewadv/) | Advanced Tree View Control
-[WPFToolKit](http://wpftoolkit.codeplex.com/) | Toolkit for WPF Applications
-[WebSocketSharp](https://github.com/sta/websocket-sharp) | WebSocket Protocol Implementation
-[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) | JSON Library
 
 Intending to Use (Eventually):
 

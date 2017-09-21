@@ -8,6 +8,10 @@
     using ProjectItems;
     using PropertyViewer;
     using Squalr.Properties;
+    using Squalr.Source.Controls;
+    using Squalr.Source.Editors.ScriptEditor;
+    using Squalr.Source.Editors.ValueEditor;
+    using Squalr.Source.Utils;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -75,6 +79,7 @@
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ProjectItemStorage.ImportProject(false, filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
             this.SelectProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.SelectedProjectItems = new ProjectItem[] { projectItem }, (projectItem) => true);
+            this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
@@ -127,6 +132,11 @@
         /// Gets the command to select a project item.
         /// </summary>
         public ICommand SelectProjectItemCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to edit a project item.
+        /// </summary>
+        public ICommand EditProjectItemCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to toggle the activation the selected project explorer items.
@@ -305,6 +315,31 @@
         }
 
         /// <summary>
+        /// Edits a project item based on the project item type.
+        /// </summary>
+        /// <param name="projectItem">The project item to edit.</param>
+        private void EditProjectItem(ProjectItem projectItem)
+        {
+            if (projectItem is AddressItem)
+            {
+                ValueEditorModel valueEditor = new ValueEditorModel();
+                AddressItem addressItem = projectItem as AddressItem;
+                dynamic result = valueEditor.EditValue(null, null, addressItem);
+
+                if (CheckSyntax.CanParseValue(addressItem.DataType, result?.ToString()))
+                {
+                    addressItem.AddressValue = result;
+                }
+            }
+            else if (projectItem is ScriptItem)
+            {
+                ScriptEditorModel scriptEditor = new ScriptEditorModel();
+                ScriptItem scriptItem = projectItem as ScriptItem;
+                scriptItem.Script = scriptEditor.EditValue(null, null, scriptItem.Script) as String;
+            }
+        }
+
+        /// <summary>
         /// Toggles the activation the selected project explorer items.
         /// </summary>
         private void ToggleSelectionActivation()
@@ -328,17 +363,27 @@
         /// </summary>
         private void DeleteSelection()
         {
-            if (this.SelectedProjectItems == null)
+            if (this.SelectedProjectItems.IsNullOrEmpty())
             {
                 return;
             }
 
-            foreach (ProjectItem projectItem in this.SelectedProjectItems)
-            {
-                this.ProjectItems.Remove(projectItem);
-            }
+            System.Windows.MessageBoxResult result = CenteredDialogBox.Show(
+                System.Windows.Application.Current.MainWindow,
+                "Delete selected items?",
+                "Confirm",
+                System.Windows.MessageBoxButton.OKCancel,
+                System.Windows.MessageBoxImage.Warning);
 
-            this.SelectedProjectItems = null;
+            if (result == System.Windows.MessageBoxResult.OK)
+            {
+                foreach (ProjectItem projectItem in this.SelectedProjectItems)
+                {
+                    this.ProjectItems.Remove(projectItem);
+                }
+
+                this.SelectedProjectItems = null;
+            }
         }
 
         /// <summary>
