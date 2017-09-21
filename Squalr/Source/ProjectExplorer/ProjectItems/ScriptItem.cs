@@ -33,6 +33,12 @@
         private Boolean isCompiled;
 
         /// <summary>
+        /// The category of this project item.
+        /// </summary>
+        [Browsable(false)]
+        protected ProjectItemCategory category;
+
+        /// <summary>
         /// The stream icon path associated with this project item.
         /// </summary>
         [Browsable(false)]
@@ -66,6 +72,32 @@
         }
 
         /// <summary>
+        /// Defines the category for a project item.
+        /// </summary>
+        public enum ProjectItemCategory
+        {
+            /// <summary>
+            /// No specific category.
+            /// </summary>
+            Miscellaneous,
+
+            /// <summary>
+            /// A cheat that causes glitches.
+            /// </summary>
+            Glitch,
+
+            /// <summary>
+            /// A detrimental cheat.
+            /// </summary>
+            Curse,
+
+            /// <summary>
+            /// A useful cheat for standard gameplay.
+            /// </summary>
+            Buff,
+        }
+
+        /// <summary>
         /// Gets or sets the raw script text.
         /// </summary>
         [DataMember]
@@ -88,7 +120,7 @@
                 }
 
                 this.script = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
         }
 
@@ -114,7 +146,33 @@
                 }
 
                 this.isCompiled = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the category of this project item.
+        /// </summary>
+        [DataMember]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Category"), Description("The category for this project item")]
+        public ProjectItemCategory Category
+        {
+            get
+            {
+                return this.category;
+            }
+
+            set
+            {
+                if (this.category == value)
+                {
+                    return;
+                }
+
+                this.category = value;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.Category));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -183,6 +241,7 @@
         /// <summary>
         /// Gets the image associated with this project item.
         /// </summary>
+        [Browsable(false)]
         public override BitmapSource Icon
         {
             get

@@ -345,6 +345,7 @@
     <Compile Include="Source\Engine\Networks\Network.cs" />
     <Compile Include="Source\Engine\Networks\INetwork.cs" />
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\JavaItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItem.cs" />

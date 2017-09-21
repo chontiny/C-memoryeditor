@@ -92,7 +92,7 @@
                 }
 
                 this.moduleName = value == null ? String.Empty : value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.ModuleName));
             }
         }
@@ -120,7 +120,7 @@
 
                 this.CalculatedAddress = value;
                 this.moduleOffset = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.ModuleOffset));
             }
         }
@@ -148,7 +148,7 @@
                 }
 
                 this.pointerOffsets = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.PointerOffsets));
             }
         }

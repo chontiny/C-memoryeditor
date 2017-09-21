@@ -12,9 +12,26 @@
     DataContext="{Binding ProjectExplorerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <ContextMenu x:Key="RightClickMenu">
+        <ContextMenu
+            x:Key="RightClickMenu"
+            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+            Style="{StaticResource DropDownContextMenu}">
             <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Add New Address" />
             <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
+        </ContextMenu>
+        <ContextMenu
+            x:Key="ProjectItemRightClickMenu"
+            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+            Style="{StaticResource DropDownContextMenu}">
+            <MenuItem Command="{Binding ToggleSelectionCommand}" Header="Toggle Selection" />
+            <MenuItem Command="{Binding DeleteSelectionCommand}" Header="Delete Selection" />
+            <MenuItem Command="{Binding CopySelectionCommand}" Header="Copy" />
+            <MenuItem Command="{Binding PasteSelectionCommand}" Header="Paste" />
+            <MenuItem Command="{Binding CutSelectionCommand}" Header="Cut" />
         </ContextMenu>
     </UserControl.Resources>
     <Grid>
@@ -80,7 +97,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/CollectValues.png" />
+                                    Source="pack://application:,,,/Squalr;component/Content/Icons/Script.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -98,7 +115,8 @@
                 Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                 BorderThickness="0"
                 ContextMenu="{StaticResource RightClickMenu}"
-                ItemsSource="{Binding ProjectItems}">
+                ItemsSource="{Binding ProjectItems}"
+                SelectionMode="Extended">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -106,7 +124,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid ContextMenu="{StaticResource ProjectItemRightClickMenu}" Focusable="False">
                             <Grid.InputBindings>
                                 <MouseBinding
                                     Command="{Binding DataContext.EditProjectItemCommand, ElementName=SqualrProjectExplorer}"

@@ -499,7 +499,7 @@
 
             // Import the cheats
             ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, this.cheatsInLibrary.Select(x => x.ProjectItem).ToArray());
-            ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+            ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
         }
 
         /// <summary>

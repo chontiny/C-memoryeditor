@@ -102,7 +102,7 @@
                 }
 
                 this.description = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Description));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
@@ -130,7 +130,7 @@
                 }
 
                 this.extendedDescription = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.ExtendedDescription));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
@@ -156,7 +156,7 @@
                 }
 
                 this.guid = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Guid));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
@@ -184,7 +184,7 @@
 
                 this.hotkey = value;
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.HotKey));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
@@ -230,6 +230,7 @@
         /// <summary>
         /// Gets the image associated with this project item.
         /// </summary>
+        [Browsable(false)]
         public virtual BitmapSource Icon
         {
             get

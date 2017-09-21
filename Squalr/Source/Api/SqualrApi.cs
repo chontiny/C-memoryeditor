@@ -310,6 +310,7 @@
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
+            parameters.Add("cheat_id", cheat?.CheatId.ToString());
             parameters.Add("stream_icon", cheat?.StreamIcon?.ToString());
             parameters.Add("stream_command", cheat?.StreamCommand?.ToString());
 
