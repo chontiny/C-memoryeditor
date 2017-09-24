@@ -114,6 +114,11 @@
                 }
 
                 this.ScriptObject = assembly.CreateObject("*");
+
+                // Bind the deactivation function such that scripts can deactivate themselves
+                this.ScriptObject.Deactivate = new Action(() => scriptItem.IsActivated = false);
+
+
                 this.ScriptObject.OnActivate();
 
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script activated: " + scriptItem.Description?.ToString());

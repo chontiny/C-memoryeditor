@@ -33,6 +33,11 @@
         private Boolean isCompiled;
 
         /// <summary>
+        /// The cooldown in milliseconds of this project item.
+        /// </summary>
+        protected Int32 cooldown;
+
+        /// <summary>
         /// The category of this project item.
         /// </summary>
         [Browsable(false)]
@@ -77,9 +82,9 @@
         public enum ProjectItemCategory
         {
             /// <summary>
-            /// No specific category.
+            /// A cheat that is a one time skill.
             /// </summary>
-            Miscellaneous,
+            Skill,
 
             /// <summary>
             /// A cheat that causes glitches.
@@ -147,6 +152,32 @@
 
                 this.isCompiled = value;
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the coolodown in milliseconds of this project item.
+        /// </summary>
+        [DataMember]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Cooldown"), Description("The cooldown (in milliseconds) for stream activation for this project item.")]
+        public Int32 Cooldown
+        {
+            get
+            {
+                return this.cooldown;
+            }
+
+            set
+            {
+                if (this.cooldown == value)
+                {
+                    return;
+                }
+
+                this.cooldown = value;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.Cooldown));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -249,7 +280,7 @@
             {
                 switch (this.Category)
                 {
-                    case ProjectItemCategory.Miscellaneous:
+                    case ProjectItemCategory.Skill:
                         return Images.Cog;
                     case ProjectItemCategory.Buff:
                         return Images.Heart;
