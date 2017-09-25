@@ -38,22 +38,15 @@
         protected Int32 cooldown;
 
         /// <summary>
-        /// The category of this project item.
+        /// The duration in milliseconds of this project item.
         /// </summary>
-        [Browsable(false)]
-        protected ProjectItemCategory category;
+        protected Int32 duration;
 
         /// <summary>
         /// The stream icon path associated with this project item.
         /// </summary>
         [Browsable(false)]
         protected String streamIconPath;
-
-        /// <summary>
-        /// The stream command associated with this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected String streamCommand;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptItem" /> class.
@@ -74,32 +67,6 @@
             this.isCompiled = compiled;
 
             this.ScriptManager = null;
-        }
-
-        /// <summary>
-        /// Defines the category for a project item.
-        /// </summary>
-        public enum ProjectItemCategory
-        {
-            /// <summary>
-            /// A cheat that is a one time skill.
-            /// </summary>
-            Skill,
-
-            /// <summary>
-            /// A cheat that causes glitches.
-            /// </summary>
-            Glitch,
-
-            /// <summary>
-            /// A detrimental cheat.
-            /// </summary>
-            Curse,
-
-            /// <summary>
-            /// A useful cheat for standard gameplay.
-            /// </summary>
-            Buff,
         }
 
         /// <summary>
@@ -182,28 +149,27 @@
         }
 
         /// <summary>
-        /// Gets or sets the category of this project item.
+        /// Gets or sets the coolodown in milliseconds of this project item.
         /// </summary>
         [DataMember]
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Category"), Description("The category for this project item")]
-        public ProjectItemCategory Category
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Duration"), Description("The duration (in milliseconds) for stream activation for this project item.")]
+        public Int32 Duration
         {
             get
             {
-                return this.category;
+                return this.duration;
             }
 
             set
             {
-                if (this.category == value)
+                if (this.duration == value)
                 {
                     return;
                 }
 
-                this.category = value;
+                this.duration = value;
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Category));
-                this.NotifyPropertyChanged(nameof(this.Icon));
+                this.NotifyPropertyChanged(nameof(this.Duration));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -232,40 +198,10 @@
 
                 if (this.AssociatedCheat != null)
                 {
-                    this.AssociatedCheat.StreamIcon = value;
+                    this.AssociatedCheat.Icon = value;
                 }
 
                 this.NotifyPropertyChanged(nameof(this.StreamIconPath));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the stream command for this project item.
-        /// </summary>
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Command"), Description("The stream command for this item. Limit of 6 characters.")]
-        public String StreamCommand
-        {
-            get
-            {
-                return this.streamCommand;
-            }
-
-            set
-            {
-                if (this.streamCommand == value)
-                {
-                    return;
-                }
-
-                this.streamCommand = value?.ToLower();
-
-                if (this.AssociatedCheat != null)
-                {
-                    this.AssociatedCheat.StreamCommand = value;
-                }
-
-                this.NotifyPropertyChanged(nameof(this.StreamCommand));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -278,19 +214,7 @@
         {
             get
             {
-                switch (this.Category)
-                {
-                    case ProjectItemCategory.Skill:
-                        return Images.Cog;
-                    case ProjectItemCategory.Buff:
-                        return Images.Heart;
-                    case ProjectItemCategory.Curse:
-                        return Images.Curse;
-                    case ProjectItemCategory.Glitch:
-                        return Images.Glitch;
-                    default:
-                        return Images.Script;
-                }
+                return Images.Script;
             }
         }
 

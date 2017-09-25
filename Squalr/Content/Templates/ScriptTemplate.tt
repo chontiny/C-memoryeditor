@@ -18,7 +18,7 @@ using Squalr.Source.Scripting.Memory;
 /// <summary>
 /// A script template which includes all necessary engine components by default.
 /// </summary>
-public class Script
+public unsafe class Script
 {
 	/// <summary>
 	/// The engine to provide access to memory, graphics, input, etc

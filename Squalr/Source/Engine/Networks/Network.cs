@@ -19,8 +19,9 @@
         {
             this.TargetProcess = process;
 
-            this.UninstallHook();
-            this.InstallHook();
+            // Disabled for now
+            // this.UninstallHook();
+            // this.InstallHook();
         }
 
         public void InstallHook()

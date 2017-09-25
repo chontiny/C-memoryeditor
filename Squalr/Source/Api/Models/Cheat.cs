@@ -13,25 +13,17 @@
     [DataContract]
     internal class Cheat
     {
-        private String streamCommand;
+        [DataMember(Name = "cooldown")]
+        private Int32 cooldown;
 
-        private String streamIcon;
+        [DataMember(Name = "duration")]
+        private Int32 duration;
+
+        [DataMember(Name = "icon")]
+        private String icon;
 
         public Cheat()
         {
-            this.CheatId = 0;
-            this.UserId = 0;
-            this.GameId = 0;
-            this.LibraryId = 0;
-            this.GameDistributorId = 0;
-            this.CheatName = String.Empty;
-            this.CheatDescription = String.Empty;
-            this.ProjectItem = null;
-            this.Cost = 0;
-            this.StreamCommand = String.Empty;
-            this.StreamIcon = String.Empty;
-            this.InReview = true;
-            this.InMarket = true;
         }
 
         public ProjectItem ProjectItem;
@@ -63,32 +55,44 @@
         [DataMember(Name = "cost")]
         public Int32 Cost { get; set; }
 
-        [DataMember(Name = "stream_command")]
-        public String StreamCommand
+        public Int32 Cooldown
         {
             get
             {
-                return this.streamCommand;
+                return this.cooldown;
             }
 
             set
             {
-                this.streamCommand = value;
+                this.cooldown = value;
                 Task.Run(() => SqualrApi.UpdateCheatStreamMeta(SettingsViewModel.GetInstance().AccessTokens?.AccessToken, this));
             }
         }
 
-        [DataMember(Name = "stream_icon")]
-        public String StreamIcon
+        public Int32 Duration
         {
             get
             {
-                return this.streamIcon;
+                return this.duration;
             }
 
             set
             {
-                this.streamIcon = value;
+                this.duration = value;
+                Task.Run(() => SqualrApi.UpdateCheatStreamMeta(SettingsViewModel.GetInstance().AccessTokens?.AccessToken, this));
+            }
+        }
+
+        public String Icon
+        {
+            get
+            {
+                return this.icon;
+            }
+
+            set
+            {
+                this.icon = value;
                 Task.Run(() => SqualrApi.UpdateCheatStreamMeta(SettingsViewModel.GetInstance().AccessTokens?.AccessToken, this));
             }
         }

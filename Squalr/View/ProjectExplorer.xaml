@@ -114,62 +114,63 @@
         </WrapPanel>
 
         <Grid Grid.Row="1">
-            <ListView
-                Grid.Row="0"
-                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                BorderThickness="0"
-                ContextMenu="{StaticResource RightClickMenu}"
-                ItemsSource="{Binding ProjectItems}"
-                SelectionMode="Extended">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid ContextMenu="{StaticResource ProjectItemRightClickMenu}" Focusable="False">
-                            <Grid.InputBindings>
-                                <MouseBinding
-                                    Command="{Binding DataContext.EditProjectItemCommand, ElementName=SqualrProjectExplorer}"
-                                    CommandParameter="{Binding .}"
-                                    Gesture="LeftDoubleClick" />
-                                <MouseBinding
-                                    Command="{Binding DataContext.SelectProjectItemCommand, ElementName=SqualrProjectExplorer}"
-                                    CommandParameter="{Binding .}"
-                                    Gesture="LeftClick" />
-                            </Grid.InputBindings>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <CheckBox
-                                Grid.Column="0"
-                                Width="16"
-                                Height="16"
-                                Margin="0,0,4,0"
-                                IsChecked="{Binding Path=IsActivated}" />
-                            <Image
-                                Grid.Column="1"
-                                Width="16"
-                                Height="16"
-                                Source="{Binding Path=Icon}" />
-                            <TextBlock
-                                Grid.Column="2"
-                                Margin="4,0,0,0"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                Text="{Binding Path=Description}" />
-                            <TextBlock
-                                Grid.Column="3"
-                                Margin="4,0,0,0"
-                                Foreground="Yellow"
-                                Text="{Binding Path=StreamCommand, FallbackValue=''}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                <ListView
+                    Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                    BorderThickness="0"
+                    ContextMenu="{StaticResource RightClickMenu}"
+                    ItemsSource="{Binding ProjectItems}"
+                    SelectionMode="Extended">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ContextMenu="{StaticResource ProjectItemRightClickMenu}" Focusable="False">
+                                <Grid.InputBindings>
+                                    <MouseBinding
+                                        Command="{Binding DataContext.EditProjectItemCommand, ElementName=SqualrProjectExplorer}"
+                                        CommandParameter="{Binding .}"
+                                        Gesture="LeftDoubleClick" />
+                                    <MouseBinding
+                                        Command="{Binding DataContext.SelectProjectItemCommand, ElementName=SqualrProjectExplorer}"
+                                        CommandParameter="{Binding .}"
+                                        Gesture="LeftClick" />
+                                </Grid.InputBindings>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox
+                                    Grid.Column="0"
+                                    Width="16"
+                                    Height="16"
+                                    Margin="0,0,4,0"
+                                    IsChecked="{Binding Path=IsActivated}" />
+                                <Image
+                                    Grid.Column="1"
+                                    Width="16"
+                                    Height="16"
+                                    Source="{Binding Path=Icon}" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Margin="4,0,0,0"
+                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                    Text="{Binding Path=Description}" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    Margin="4,0,0,0"
+                                    Foreground="Yellow"
+                                    Text="{Binding Path=StreamCommand, FallbackValue=''}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
         </Grid>
     </Grid>
 </UserControl>

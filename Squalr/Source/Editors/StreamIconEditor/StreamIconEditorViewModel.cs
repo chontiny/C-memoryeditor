@@ -99,7 +99,7 @@
                     return this.streamIcons;
                 }
 
-                return this.streamIcons
+                return this.streamIcons?
                     .Select(item => item)
                     .Where(item => item.IconName.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0
                         || item.Keywords.Any(keyword => keyword.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0));

@@ -11,7 +11,7 @@
     xmlns:view="clr-namespace:Squalr.View"
     x:Name="SqualrWindow"
     Title="Squalr"
-    Width="840"
+    Width="1280"
     Height="840"
     x:ClassModifier="internal"
     AllowsTransparency="False"
