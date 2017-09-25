@@ -6,6 +6,11 @@
     public enum BrowsePage
     {
         /// <summary>
+        /// No page
+        /// </summary>
+        None,
+
+        /// <summary>
         /// The login view.
         /// </summary>
         Login,

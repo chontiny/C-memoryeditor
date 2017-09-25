@@ -2,6 +2,7 @@
 {
     using Squalr.Source.Browse;
     using System;
+    using System.Globalization;
     using System.Windows;
     using System.Windows.Data;
 
@@ -21,16 +22,16 @@
         /// <returns> 
         /// A converted value. If the method returns null, the valid null value is used. 
         /// </returns> 
-        public Object Convert(Object value, Type targetType, Object parameter, System.Globalization.CultureInfo culture)
+        public Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
             if (value is BrowseCategory && targetType == typeof(Visibility))
             {
                 BrowseCategory val = (BrowseCategory)value;
 
-                // If no parameter specified, we return Visible if not on a login screen
+                // If no parameter specified, we return Visible if not on an unspecified screen
                 if (parameter == null)
                 {
-                    if (val == BrowseCategory.Login)
+                    if (val == BrowseCategory.None)
                     {
                         return Visibility.Collapsed;
                     }
@@ -65,7 +66,7 @@
         /// <returns> 
         /// A converted value. If the method returns null, the valid null value is used. 
         /// </returns> 
-        public Object ConvertBack(Object value, Type targetType, Object parameter, System.Globalization.CultureInfo culture)
+        public Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
             if ((Visibility)value == Visibility.Visible)
             {

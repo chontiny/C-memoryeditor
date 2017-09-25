@@ -51,6 +51,11 @@
         private BrowsePage currentPage;
 
         /// <summary>
+        /// A value indicating whether the login status is loading.
+        /// </summary>
+        private Boolean isLoginStatusLoading;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="BrowseViewModel" /> class from being created.
         /// </summary>
         private BrowseViewModel() : base("Browse")
@@ -73,6 +78,7 @@
 
             Task.Run(() =>
             {
+                Thread.Sleep(6000);
                 this.UpdateLoginStatus();
                 this.SetDefaultViewOptions();
             });
@@ -213,8 +219,9 @@
                     case BrowsePage.CheatStore:
                         return BrowseCategory.Store;
                     case BrowsePage.Login:
-                    default:
                         return BrowseCategory.Login;
+                    default:
+                        return BrowseCategory.None;
                 }
             }
         }
@@ -255,6 +262,23 @@
         }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the login status is loading.
+        /// </summary>
+        public Boolean IsLoginStatusLoading
+        {
+            get
+            {
+                return this.isLoginStatusLoading;
+            }
+
+            set
+            {
+                this.isLoginStatusLoading = value;
+                this.RaisePropertyChanged(nameof(this.IsLoginStatusLoading));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the list of observers for navigation events.
         /// </summary>
         private IEnumerable<INavigable> Observers { get; set; }
@@ -278,7 +302,7 @@
         /// Navigates the Browse view to the specified page.
         /// </summary>
         /// <param name="newPage">The page to which to navigate.</param>
-        public void Navigate(BrowsePage newPage, Boolean addCurrentPageToHistory = true)
+        public void Navigate(BrowsePage newPage, Boolean addCurrentPageToHistory = true, Boolean clearHistory = false)
         {
             if (this.CurrentPage == newPage)
             {
@@ -287,8 +311,14 @@
 
             lock (this.AccessLock)
             {
-                // Save current page in history (not including login page)
-                if (addCurrentPageToHistory && this.CurrentPage != BrowsePage.Login)
+                if (clearHistory)
+                {
+                    this.NextPages.Clear();
+                    this.PreviousPages.Clear();
+                }
+
+                // Save current page in history (not including none or login page)
+                if (addCurrentPageToHistory && this.CurrentPage != BrowsePage.None && this.CurrentPage != BrowsePage.Login)
                 {
                     this.NextPages.Clear();
                     this.PreviousPages.Push(this.CurrentPage);
@@ -358,11 +388,11 @@
         {
             if (!this.IsLoggedIn)
             {
-                this.Navigate(BrowsePage.Login);
+                this.Navigate(BrowsePage.Login, addCurrentPageToHistory: true, clearHistory: true);
             }
             else
             {
-                this.Navigate(BrowsePage.StoreHome);
+                this.Navigate(BrowsePage.StoreHome, addCurrentPageToHistory: true, clearHistory: true);
             }
         }
 
@@ -371,6 +401,8 @@
         /// </summary>
         private void UpdateLoginStatus()
         {
+            this.IsLoginStatusLoading = true;
+
             AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
 
             if (accessTokens == null || accessTokens.AccessToken.IsNullOrEmpty())
@@ -391,6 +423,8 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to log in using stored credentials", ex);
                 this.IsLoggedIn = false;
             }
+
+            this.IsLoginStatusLoading = false;
         }
 
         /// <summary>

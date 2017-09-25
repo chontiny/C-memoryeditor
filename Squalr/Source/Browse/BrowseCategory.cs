@@ -6,6 +6,11 @@
     public enum BrowseCategory
     {
         /// <summary>
+        /// No specific section.
+        /// </summary>
+        None,
+
+        /// <summary>
         /// The login section.
         /// </summary>
         Login,

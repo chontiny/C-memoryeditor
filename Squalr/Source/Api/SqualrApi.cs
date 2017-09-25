@@ -312,7 +312,8 @@
             parameters.Add("access_token", accessToken);
             parameters.Add("cheat_id", cheat?.CheatId.ToString());
             parameters.Add("stream_icon", cheat?.Icon?.ToString());
-            parameters.Add("stream_command", cheat?.StreamCommand?.ToString());
+            parameters.Add("cooldown", cheat?.Cooldown.ToString());
+            parameters.Add("duration", cheat?.Duration.ToString());
 
             SqualrApi.ExecuteRequest(Method.POST, SqualrApi.UpdateCheatStreamMetaEndpoint, parameters);
         }
