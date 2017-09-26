@@ -115,6 +115,11 @@
         }
 
         /// <summary>
+        /// Gets or sets the previous cheat votes.
+        /// </summary>
+        private IEnumerable<CheatVotes> PreviousCheatVotes { get; set; }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="StreamConfigViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -165,30 +170,49 @@
 
             try
             {
-                StreamActivationIds streamActivationIds = SqualrApi.GetStreamActivationIds(SettingsViewModel.GetInstance().TwitchChannel);
+                IEnumerable<CheatVotes> cheatVotes = SqualrApi.GetStreamActivationIds(SettingsViewModel.GetInstance().TwitchChannel);
                 IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectItems;
 
-                // Use the given ids to determine which project items to activate
-                var itemsToActivate = streamActivationIds.ActivatedIds
-                     .Join(
-                         candidateProjectItems,
-                         activatedId => activatedId,
-                         projectItem => projectItem.Guid,
-                         (guid, projectItem) => new { projectItem = projectItem, guid = guid });
+                if (this.PreviousCheatVotes == null)
+                {
+                    this.PreviousCheatVotes = cheatVotes;
+                    return;
+                }
 
-                // Use the given ids to determine which project items to deactivate
-                var itemsToDeactivate = streamActivationIds.DeactivatedIds
-                     .Join(
-                         candidateProjectItems,
-                         activatedId => activatedId,
-                         projectItem => projectItem.Guid,
-                         (guid, projectItem) => new { projectItem = projectItem, guid = guid });
+                // Use the given ids to determine which project items to activate
+                IEnumerable<Int32> cheatIdsToActivate = cheatVotes
+                      .Join(
+                          this.PreviousCheatVotes,
+                          currentVote => currentVote.CheatId,
+                          previousVote => previousVote.CheatId,
+                          (currentVote, previousVote) => new { cheatId = currentVote.CheatId, currentCount = currentVote.VoteCount, previousCount = previousVote.VoteCount })
+                      .Where(combinedVote => combinedVote.currentCount != combinedVote.previousCount)
+                      .Select(combinedVote => combinedVote.cheatId);
+
+                IEnumerable<ProjectItem> projectItemsToActivate = cheatIdsToActivate
+                      .Join(
+                          candidateProjectItems,
+                          cheatId => cheatId,
+                          projectItem => projectItem.AssociatedCheat?.CheatId,
+                          (cheatId, projectItem) => projectItem);
+
+                IEnumerable<ProjectItem> projectItemsToDeactivate = cheatVotes
+                      .Join(
+                          candidateProjectItems,
+                          cheatVote => cheatVote.CheatId,
+                          projectItem => projectItem.AssociatedCheat?.CheatId,
+                          (cheatId, projectItem) => projectItem)
+                      .Except(projectItemsToActivate);
+
+                // TODO: For now we are just toggling if we detect a change in votes. This blind toggling is horrible and we need to move to a cooldown/duration system.
 
                 // Handle deactivations
-                itemsToDeactivate.ForEach(item => item.projectItem.IsActivated = false);
+                // projectItemsToDeactivate.ForEach(item => item.IsActivated = false);
 
                 // Handle activations
-                itemsToActivate.ForEach(item => item.projectItem.IsActivated = true);
+                projectItemsToActivate.ForEach(item => item.IsActivated = !item.IsActivated);
+
+                this.PreviousCheatVotes = cheatVotes;
             }
             catch (Exception ex)
             {
@@ -210,6 +234,7 @@
         private void Disconnect()
         {
             this.IsConnected = false;
+            this.PreviousCheatVotes = null;
         }
     }
     //// End class

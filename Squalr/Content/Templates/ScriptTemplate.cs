@@ -49,7 +49,7 @@ using Squalr.Source.Scripting.Memory;
 /// <summary>
 /// A script template which includes all necessary engine components by default.
 /// </summary>
-public unsafe class Script
+public class Script
 {
 	/// <summary>
 	/// The engine to provide access to memory, graphics, input, etc

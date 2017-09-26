@@ -322,6 +322,7 @@
     <Compile Include="Source\Api\Exceptions\NotFoundException.cs" />
     <Compile Include="Source\Api\Exceptions\StatusException.cs" />
     <Compile Include="Source\Api\Exceptions\ResponseStatusException.cs" />
+    <Compile Include="Source\Api\Models\Vote.cs" />
     <Compile Include="Source\Api\NativeBrowser.cs" />
     <Compile Include="Source\Api\PingClient.cs">
       <SubType>Component</SubType>
@@ -350,7 +351,7 @@
     <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\JavaItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItem.cs" />
-    <Compile Include="Source\Api\Models\StreamActivationIds.cs" />
+    <Compile Include="Source\Api\Models\CheatVotes.cs" />
     <Compile Include="Source\Browse\StreamConfig\StreamVotePollTask.cs" />
     <Compile Include="Source\Browse\StreamConfig\StreamConfigViewModel.cs" />
     <Compile Include="Content\Images.cs" />

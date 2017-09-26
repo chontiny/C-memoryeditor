@@ -78,7 +78,6 @@
 
             Task.Run(() =>
             {
-                Thread.Sleep(6000);
                 this.UpdateLoginStatus();
                 this.SetDefaultViewOptions();
             });

@@ -5,6 +5,7 @@
     using Scripting;
     using Squalr.Content;
     using Squalr.Source.Analytics;
+    using Squalr.Source.Api.Models;
     using Squalr.Source.Editors.StreamIconEditor;
     using Squalr.Source.Output;
     using System;
@@ -223,6 +224,19 @@
         /// </summary>
         [Browsable(false)]
         private ScriptManager ScriptManager { get; set; }
+
+        /// <summary>
+        /// Associates a cheat with this project item.
+        /// </summary>
+        /// <param name="cheat">The associated cheat</param>
+        public override void AssociateCheat(Cheat cheat)
+        {
+            base.AssociateCheat(cheat);
+
+            this.streamIconPath = cheat.Icon;
+            this.cooldown = cheat.Cooldown;
+            this.duration = cheat.Duration;
+        }
 
         /// <summary>
         /// Clones the script item and compiles it.

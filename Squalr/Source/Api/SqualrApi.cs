@@ -63,7 +63,7 @@
         /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
         /// </summary>
-        private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/ActiveCheatIds/";
+        private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/Stream/ActiveCheatIds/";
 
         /// <summary>
         /// The endpoint for querying the game lists.
@@ -187,9 +187,9 @@
             return SqualrApi.ExecuteRequest<StreamIcon[]>(Method.GET, SqualrApi.StreamIconsEndpoint);
         }
 
-        public static StreamActivationIds GetStreamActivationIds(String twitchChannel)
+        public static IEnumerable<CheatVotes> GetStreamActivationIds(String twitchChannel)
         {
-            return SqualrApi.ExecuteRequest<StreamActivationIds>(Method.GET, SqualrApi.ActiveCheatIdsEndpoint + twitchChannel);
+            return SqualrApi.ExecuteRequest<IEnumerable<CheatVotes>>(Method.GET, SqualrApi.ActiveCheatIdsEndpoint + twitchChannel);
         }
 
         public static Game[] GetGameList()
@@ -311,7 +311,7 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
             parameters.Add("cheat_id", cheat?.CheatId.ToString());
-            parameters.Add("stream_icon", cheat?.Icon?.ToString());
+            parameters.Add("icon", cheat?.Icon?.ToString());
             parameters.Add("cooldown", cheat?.Cooldown.ToString());
             parameters.Add("duration", cheat?.Duration.ToString());
 
