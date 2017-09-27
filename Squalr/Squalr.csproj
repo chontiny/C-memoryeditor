@@ -312,6 +312,7 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
+    <Compile Include="Source\Api\Models\ConnectionStatus.cs" />
     <Compile Include="Source\Api\Models\LibraryCheats.cs" />
     <Compile Include="Source\Api\Models\StoreCheats.cs" />
     <Compile Include="Source\Api\Models\Cheat.cs" />

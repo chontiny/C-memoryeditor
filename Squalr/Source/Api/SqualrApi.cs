@@ -141,6 +141,21 @@
         private static String RemoveCheatFromLibraryEndpoint = SqualrApi.ApiBase + "api/Cheats/Remove";
 
         /// <summary>
+        /// The endpoint for connecting to the Twitch service.
+        /// </summary>
+        private static String ConnectEndpoint = SqualrApi.ApiBase + "api/Stream/Connect";
+
+        /// <summary>
+        /// The endpoint for disconnecting to the Twitch service.
+        /// </summary>
+        private static String DisconnectEndpoint = SqualrApi.ApiBase + "api/Stream/Disconnect";
+
+        /// <summary>
+        /// The endpoint for querying the connection status to the Twitch service.
+        /// </summary>
+        private static String ConnectionStatusEndpoint = SqualrApi.ApiBase + "api/Stream/ConnectionStatusEndpoint";
+
+        /// <summary>
         /// The active API base depending on the environment.
         /// </summary>
         private static String apiBase;
@@ -180,6 +195,30 @@
             parameters.Add("access_token", accessToken);
 
             return SqualrApi.ExecuteRequest<User>(Method.GET, SqualrApi.UserApi, parameters);
+        }
+
+        public static ConnectionStatus Connect(String accessToken)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.ConnectEndpoint, parameters);
+        }
+
+        public static ConnectionStatus Disconnect(String accessToken)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.DisconnectEndpoint, parameters);
+        }
+
+        public static ConnectionStatus GetConnectionStatus(String accessToken)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.ConnectionStatusEndpoint, parameters);
         }
 
         public static StreamIcon[] GetStreamIcons()
