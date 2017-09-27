@@ -5,5 +5,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Squalr" #>
-- Improved search keywords for stream icons
-- Reinstating dev tools
+- Huge refactor to support:
+	- Twitch connections
+	- Marketplace
+	- Libraries
