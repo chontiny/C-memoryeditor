@@ -613,10 +613,6 @@
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\ProjectExplorer.xaml.cs">
-      <DependentUpon>ProjectExplorer.xaml</DependentUpon>
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
     <Compile Include="View\PropertyViewer.xaml.cs">
       <DependentUpon>PropertyViewer.xaml</DependentUpon>
     </Compile>

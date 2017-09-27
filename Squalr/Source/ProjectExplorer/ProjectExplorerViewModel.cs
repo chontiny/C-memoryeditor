@@ -13,6 +13,7 @@
     using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.Utils;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -78,7 +79,7 @@
             this.ExportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ExportProject(), () => true);
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ProjectItemStorage.ImportProject(false, filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
-            this.SelectProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.SelectedProjectItems = new ProjectItem[] { projectItem }, (projectItem) => true);
+            this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItems) => this.SelectedProjectItems = (selectedItems as IList)?.Cast<ProjectItem>(), (selectedItems) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
@@ -383,7 +384,7 @@
                 }
             }
 
-            foreach (ProjectItem projectItem in this.SelectedProjectItems)
+            foreach (ProjectItem projectItem in this.SelectedProjectItems.ToArray())
             {
                 this.ProjectItems.Remove(projectItem);
             }

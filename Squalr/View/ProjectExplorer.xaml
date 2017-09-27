@@ -12,6 +12,9 @@
     x:ClassModifier="internal"
     DataContext="{Binding ProjectExplorerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public ProjectExplorer() { InitializeComponent(); }]]>
+    </x:Code>
     <UserControl.Resources>
         <ContextMenu
             x:Key="RightClickMenu"
@@ -126,7 +129,7 @@
                     <!--  Click and Selection events  -->
                     <intr:Interaction.Triggers>
                         <intr:EventTrigger EventName="SelectionChanged">
-                            <intr:InvokeCommandAction Command="{Binding SelectProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItem}" />
+                            <intr:InvokeCommandAction Command="{Binding SelectProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItems}" />
                         </intr:EventTrigger>
                         <intr:EventTrigger EventName="MouseDoubleClick">
                             <intr:InvokeCommandAction Command="{Binding EditProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItem}" />
