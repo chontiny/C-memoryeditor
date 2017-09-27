@@ -266,12 +266,12 @@ namespace Squalr.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("{}")]
-        public string TwitchAccessTokens {
+        public string AccessTokens {
             get {
-                return ((string)(this["TwitchAccessTokens"]));
+                return ((string)(this["AccessTokens"]));
             }
             set {
-                this["TwitchAccessTokens"] = value;
+                this["AccessTokens"] = value;
             }
         }
     }

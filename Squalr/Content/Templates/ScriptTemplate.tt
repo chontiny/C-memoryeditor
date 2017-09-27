@@ -45,6 +45,11 @@ public class Script
 	/// </summary>
 	private IInputCore Input { get { return Engine.InputCore; } }
 	
+	/// <summary>
+	/// Gets or sets a function to deactivate this script. This allows for the script to deactivate itself.
+	/// </summary>
+	public Action Deactivate { get; set; }
+	
 	// The script will be inserted here:
 	<# this.Write(Squalr.Source.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); #>
 }

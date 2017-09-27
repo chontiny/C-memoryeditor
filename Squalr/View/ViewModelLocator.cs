@@ -2,7 +2,6 @@
 {
     using Source.ActionScheduler;
     using Source.ChangeLog;
-    using Source.CheatBrowser;
     using Source.DotNetExplorer;
     using Source.Editors.HotkeyEditor;
     using Source.Editors.ScriptEditor;
@@ -28,6 +27,7 @@
     using Squalr.Source.Browse.Store;
     using Squalr.Source.Browse.StreamConfig;
     using Squalr.Source.Browse.TwitchLogin;
+    using Squalr.Source.Editors.StreamIconEditor;
 
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -197,17 +197,6 @@
         }
 
         /// <summary>
-        /// Gets the Cheat Browser view model.
-        /// </summary>
-        public CheatBrowserViewModel CheatBrowserViewModel
-        {
-            get
-            {
-                return CheatBrowserViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
         /// Gets the Twitch Login view model.
         /// </summary>
         public TwitchLoginViewModel TwitchLoginViewModel
@@ -221,7 +210,7 @@
         /// <summary>
         /// Gets the Stream Config view model.
         /// </summary>
-        public StreamConfigViewModel TwitchConfigViewModel
+        public StreamConfigViewModel StreamConfigViewModel
         {
             get
             {
@@ -292,6 +281,17 @@
             get
             {
                 return OutputViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Stream Icon Editor view model.
+        /// </summary>
+        public StreamIconEditorViewModel StreamIconEditorViewModel
+        {
+            get
+            {
+                return StreamIconEditorViewModel.GetInstance();
             }
         }
 

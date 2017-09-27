@@ -76,10 +76,15 @@ public class Script
 	/// </summary>
 	private IInputCore Input { get { return Engine.InputCore; } }
 	
+	/// <summary>
+	/// Gets or sets a function to deactivate this script. This allows for the script to deactivate itself.
+	/// </summary>
+	public Action Deactivate { get; set; }
+	
 	// The script will be inserted here:
 	");
             
-            #line 49 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Squalr\Content\Templates\ScriptTemplate.tt"
+            #line 54 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Squalr\Content\Templates\ScriptTemplate.tt"
  this.Write(Squalr.Source.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); 
             
             #line default

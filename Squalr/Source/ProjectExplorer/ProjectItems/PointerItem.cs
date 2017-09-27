@@ -92,7 +92,7 @@
                 }
 
                 this.moduleName = value == null ? String.Empty : value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.ModuleName));
             }
         }
@@ -120,7 +120,7 @@
 
                 this.CalculatedAddress = value;
                 this.moduleOffset = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.ModuleOffset));
             }
         }
@@ -148,7 +148,7 @@
                 }
 
                 this.pointerOffsets = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.PointerOffsets));
             }
         }
@@ -175,27 +175,6 @@
                 Boolean readSuccess;
                 this.addressValue = EngineCore.GetInstance()?.OperatingSystem?.Read(this.DataType, this.CalculatedAddress, out readSuccess);
             }
-        }
-
-        /// <summary>
-        /// Clones the project item.
-        /// </summary>
-        /// <returns>The clone of the project item.</returns>
-        public override ProjectItem Clone()
-        {
-            PointerItem clone = new PointerItem();
-            clone.description = this.Description;
-            clone.parent = this.Parent;
-            clone.extendedDescription = this.ExtendedDescription;
-            clone.moduleName = this.moduleName;
-            clone.moduleOffset = this.moduleOffset;
-            clone.pointerOffsets = this.pointerOffsets?.ToArray();
-            clone.dataType = this.dataType;
-            clone.addressValue = this.addressValue;
-            clone.isValueHex = this.isValueHex;
-            clone.calculatedAddress = this.calculatedAddress;
-
-            return clone;
         }
 
         /// <summary>

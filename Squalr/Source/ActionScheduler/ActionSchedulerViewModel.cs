@@ -102,18 +102,6 @@
         }
 
         /// <summary>
-        /// Cancels the given scheduled task.
-        /// </summary>
-        /// <param name="scheduledTask">The scheduled task to cancel.</param>
-        public void CancelAction(ScheduledTask scheduledTask)
-        {
-            lock (this.AccessLock)
-            {
-                scheduledTask.Cancel();
-            }
-        }
-
-        /// <summary>
         /// The scheduler update loop. Cycles through tasks, updating them.
         /// </summary>
         private void Update()

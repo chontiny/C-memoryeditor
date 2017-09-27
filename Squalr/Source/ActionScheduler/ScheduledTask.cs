@@ -232,7 +232,6 @@
         /// </summary>
         public void Cancel()
         {
-            ActionSchedulerViewModel.GetInstance().CancelAction(this);
             this.IsCanceled = true;
         }
 
@@ -250,7 +249,7 @@
                     throw new Exception(error);
                 }
 
-                this.OnUpdate();
+                this.OnBegin();
                 this.IsBusy = false;
             }
         }

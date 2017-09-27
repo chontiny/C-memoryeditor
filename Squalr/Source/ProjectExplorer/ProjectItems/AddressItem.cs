@@ -17,7 +17,6 @@
         /// <summary>
         /// The data type at this address.
         /// </summary>
-        [DataMember]
         [Browsable(false)]
         protected DataType dataType;
 
@@ -80,6 +79,7 @@
         /// <summary>
         /// Gets or sets the data type of the value at this address.
         /// </summary>
+        [DataMember]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(DataTypeConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Data Type"), Description("Data type of the calculated address")]
@@ -102,7 +102,7 @@
                 // Clear our current address value
                 this.addressValue = null;
 
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.DataType));
             }
         }
@@ -148,7 +148,7 @@
                 }
 
                 this.isValueHex = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.IsValueHex));
             }
         }

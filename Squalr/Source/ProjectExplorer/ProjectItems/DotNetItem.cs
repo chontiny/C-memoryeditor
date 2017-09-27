@@ -11,12 +11,6 @@
 
         }
 
-        public override ProjectItem Clone()
-        {
-            throw new NotImplementedException();
-        }
-
-
         protected override IntPtr ResolveAddress()
         {
             throw new NotImplementedException();

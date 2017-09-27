@@ -14,11 +14,11 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
     <PublishUrl>F:\Users\Zachary\Documents\Visual Studio 2017\Projects\SqualrSite\public\Release\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Web</InstallFrom>
+    <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Background</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
@@ -26,17 +26,15 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://www.squalr.com/Release/</InstallUrl>
     <UpdateUrl>https://www.squalr.com/Release/</UpdateUrl>
     <SupportUrl>https://www.squalr.com/</SupportUrl>
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr</ProductName>
     <PublisherName>Squalr</PublisherName>
-    <MinimumRequiredVersion>1.0.2.0</MinimumRequiredVersion>
-    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <MinimumRequiredVersion>2.0.0.0</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.2.0</ApplicationVersion>
+    <ApplicationVersion>2.0.0.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -189,6 +187,12 @@
     <Reference Include="SharpDX.XInput, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.XInput.4.0.1\lib\net45\SharpDX.XInput.dll</HintPath>
     </Reference>
+    <Reference Include="StyleCop, Version=5.0.0.0, Culture=neutral, PublicKeyToken=f904653c63bc2738, processorArchitecture=MSIL">
+      <HintPath>..\packages\StyleCop.5.0.0\lib\net40\StyleCop.dll</HintPath>
+    </Reference>
+    <Reference Include="Svg, Version=2.2.1.39233, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
+      <HintPath>..\packages\Svg.2.3.0\lib\net35\Svg.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.AppContext.4.3.0\lib\net46\System.AppContext.dll</HintPath>
@@ -306,35 +310,51 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
-    <Compile Include="Source\Api\Models\TwitchUser.cs" />
-    <Compile Include="Source\Api\Models\TwitchAccessTokens.cs" />
-    <Compile Include="Source\Api\NotFoundException.cs" />
-    <Compile Include="Source\Api\StatusException.cs" />
-    <Compile Include="Source\Api\ResponseStatusException.cs" />
+    <Compile Include="Source\Api\Models\ConnectionStatus.cs" />
+    <Compile Include="Source\Api\Models\LibraryCheats.cs" />
+    <Compile Include="Source\Api\Models\StoreCheats.cs" />
+    <Compile Include="Source\Api\Models\Cheat.cs" />
+    <Compile Include="Source\Api\Models\Library.cs" />
+    <Compile Include="Source\Api\Models\Game.cs" />
+    <Compile Include="Source\Api\Models\User.cs" />
+    <Compile Include="Source\Api\Models\AccessTokens.cs" />
+    <Compile Include="Source\Api\Exceptions\NotFoundException.cs" />
+    <Compile Include="Source\Api\Exceptions\StatusException.cs" />
+    <Compile Include="Source\Api\Exceptions\ResponseStatusException.cs" />
+    <Compile Include="Source\Api\Models\Vote.cs" />
+    <Compile Include="Source\Api\NativeBrowser.cs" />
+    <Compile Include="Source\Api\PingClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Source\Api\SqualrApi.cs" />
-    <Compile Include="Source\Browse\BrowseView.cs" />
+    <Compile Include="Source\Browse\BrowseCategory.cs" />
+    <Compile Include="Source\Browse\BrowsePage.cs" />
+    <Compile Include="Source\Browse\INavigable.cs" />
     <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />
     <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
+    <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\BrowseViewToVisibilityConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\BrowseCategoryToVisibilityConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\BrowsePageToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\Browse\TwitchLogin\TwitchLoginViewModel.cs" />
-    <Compile Include="Source\CheatBrowser\CheatBrowserViewModel.cs" />
     <Compile Include="Source\Controls\RichTextBoxHelper.cs" />
     <Compile Include="Source\Engine\Networks\Network.cs" />
     <Compile Include="Source\Engine\Networks\INetwork.cs" />
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\JavaItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItem.cs" />
-    <Compile Include="Source\Api\Models\StreamActivationIds.cs" />
+    <Compile Include="Source\Api\Models\CheatVotes.cs" />
     <Compile Include="Source\Browse\StreamConfig\StreamVotePollTask.cs" />
     <Compile Include="Source\Browse\StreamConfig\StreamConfigViewModel.cs" />
     <Compile Include="Content\Images.cs" />
     <Compile Include="Source\Controls\SortedCategory.cs" />
-    <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Engine\Hook\Client\HookClient.cs" />
@@ -359,6 +379,7 @@
     <Compile Include="Source\Engine\Input\InputManager.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyState.cs" />
     <Compile Include="Source\Engine\Input\Keyboard\KeyboardCapture.cs" />
+    <Compile Include="Source\Api\Models\StreamIcon.cs" />
     <Compile Include="Source\Utils\DataStructures\TtlCache.cs" />
     <Compile Include="Source\Utils\DataType.cs" />
     <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
@@ -376,8 +397,6 @@
     <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
     <Compile Include="Source\Output\OutputViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\IProjectExplorerObserver.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectRoot.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemHotkey.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
@@ -503,7 +522,6 @@
     <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\AddressItem.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\FolderItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItem.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ScriptItem.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
@@ -558,13 +576,15 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
-    <Compile Include="Source\Controls\TreeView\ProjectNode.cs" />
     <Compile Include="Source\Utils\WebBrowserHelper.cs" />
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Browse\TwitchLogin.xaml.cs">
-      <DependentUpon>TwitchLogin.xaml</DependentUpon>
+    <Compile Include="View\Browse\Login\TwitchLoginPage.xaml.cs">
+      <DependentUpon>TwitchLoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Browse\StreamIconEditor.xaml.cs">
+      <DependentUpon>StreamIconEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\TextEditor.xaml.cs">
       <DependentUpon>TextEditor.xaml</DependentUpon>
@@ -599,9 +619,6 @@
     <Compile Include="View\PropertyViewer.xaml.cs">
       <DependentUpon>PropertyViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\CheatBrowser.xaml.cs">
-      <DependentUpon>CheatBrowser.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\ManualScanner.xaml.cs">
       <DependentUpon>ManualScanner.xaml</DependentUpon>
     </Compile>
@@ -619,15 +636,31 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Page Include="View\Browse\LoginScreen.xaml">
+    <Page Include="View\Browse\Library\LibrariesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Library.xaml">
+    <Page Include="View\Browse\Library\GamesPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Store.xaml">
+    <Page Include="View\Browse\Login\LoginHome.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\Library\LibraryHome.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\Store\CheatsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\Store\GamesPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\Store\StoreHome.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -635,15 +668,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\Browse.xaml">
+    <Page Include="View\Browse\BrowseHome.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\TwitchLogin.xaml">
+    <Page Include="View\Browse\Login\TwitchLoginPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\StreamConfig.xaml">
+    <Page Include="View\Browse\Streaming\StreamConfigurationHome.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Browse\StreamIconEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -652,6 +689,30 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Editors\ValueEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Loaders\SpinnerApple.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Loaders\SpinnerCogs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Loaders\SpinnerDotCircle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Loaders\SpinnerPiston.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Loaders\SpinnerSwirl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Loaders\Tail.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -727,10 +788,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\CheatBrowser.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\SnapshotManager.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -759,6 +816,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\Style\TextBoxPlaceHolder.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Style\VerticalSeparator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -778,6 +839,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="Content\Icons\Coin.png" />
+    <Resource Include="Content\Icons\Next.png" />
+    <Resource Include="Content\Icons\Previous.png" />
+    <Resource Include="Content\Icons\Script.png" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -892,10 +957,6 @@
     <ProjectReference Include="..\Microsoft.Diagnostics.Runtime\Microsoft.Diagnostics.Runtime.csproj">
       <Project>{A82126CA-23AA-41F1-8586-A5938D44D0A7}</Project>
       <Name>Microsoft.Diagnostics.Runtime</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TreeViewAdv\TreeViewAdv.csproj">
-      <Project>{e73bb233-d88b-44a7-a98f-d71ee158381d}</Project>
-      <Name>TreeViewAdv</Name>
     </ProjectReference>
     <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
       <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>

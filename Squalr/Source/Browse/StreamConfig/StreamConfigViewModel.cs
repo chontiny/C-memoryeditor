@@ -15,13 +15,14 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
 
     /// <summary>
     /// View model for the Stream Config.
     /// </summary>
-    internal class StreamConfigViewModel : ToolViewModel
+    internal class StreamConfigViewModel : ToolViewModel, INavigable
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -39,6 +40,11 @@
         /// Indicates whether a Stream connection is open.
         /// </summary>
         private Boolean isConnected;
+
+        /// <summary>
+        /// A value indicating if the connection status is loading
+        /// </summary>
+        public Boolean isConnectionStatusLoading;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="StreamConfigViewModel" /> class from being created.
@@ -115,6 +121,28 @@
         }
 
         /// <summary>
+        /// Gets or sets a value indicating if the connection status is loading
+        /// </summary>
+        public Boolean IsConnectionStatusLoading
+        {
+            get
+            {
+                return this.isConnectionStatusLoading;
+            }
+
+            set
+            {
+                this.isConnectionStatusLoading = value;
+                this.RaisePropertyChanged(nameof(this.IsConnectionStatusLoading));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the previous cheat votes.
+        /// </summary>
+        private IEnumerable<CheatVotes> PreviousCheatVotes { get; set; }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="StreamConfigViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -123,6 +151,20 @@
             return StreamConfigViewModel.streamConfigViewModelInstance.Value;
         }
 
+        /// <summary>
+        /// Event fired when the browse view navigates to a new page.
+        /// </summary>
+        /// <param name="browsePage">The new browse page.</param>
+        public void OnNavigate(BrowsePage browsePage)
+        {
+            switch (browsePage)
+            {
+                case BrowsePage.StreamHome:
+                    break;
+                default:
+                    return;
+            }
+        }
 
         /// <summary>
         /// Toggles the current Stream connection.
@@ -149,33 +191,68 @@
                 return;
             }
 
-
             try
             {
-                StreamActivationIds streamActivationIds = SqualrApi.GetStreamActivationIds(SettingsViewModel.GetInstance().TwitchChannel);
-                IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectRoot.Flatten();
+                // Check if disconnected
+                AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                ConnectionStatus status = SqualrApi.GetConnectionStatus(accessTokens.AccessToken);
 
-                // Use the given ids to determine which project items to activate
-                var itemsToActivate = streamActivationIds.ActivatedIds
-                     .Join(
-                         candidateProjectItems,
-                         activatedId => activatedId,
-                         projectItem => projectItem.Guid,
-                         (guid, projectItem) => new { projectItem = projectItem, guid = guid });
+                if (!status.Connected)
+                {
+                    this.IsConnected = false;
+                    return;
+                }
 
-                // Use the given ids to determine which project items to deactivate
-                var itemsToDeactivate = streamActivationIds.DeactivatedIds
-                     .Join(
-                         candidateProjectItems,
-                         activatedId => activatedId,
-                         projectItem => projectItem.Guid,
-                         (guid, projectItem) => new { projectItem = projectItem, guid = guid });
+                IEnumerable<CheatVotes> cheatVotes = SqualrApi.GetStreamActivationIds(SettingsViewModel.GetInstance().TwitchChannel);
+                IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectItems;
+
+                if (this.PreviousCheatVotes == null)
+                {
+                    this.PreviousCheatVotes = cheatVotes;
+                    return;
+                }
+
+                // Get cheat IDs to activate based on increased vote counts
+                IEnumerable<Int32> cheatIdsToActivate = cheatVotes
+                      .Join(
+                          this.PreviousCheatVotes,
+                          currentVote => currentVote.CheatId,
+                          previousVote => previousVote.CheatId,
+                          (currentVote, previousVote) => new { cheatId = currentVote.CheatId, currentCount = currentVote.VoteCount, previousCount = previousVote.VoteCount })
+                      .Where(combinedVote => combinedVote.currentCount != combinedVote.previousCount)
+                      .Select(combinedVote => combinedVote.cheatId);
+
+                // Add in new votes with no previous vote count
+                cheatIdsToActivate = cheatVotes
+                    .Select(vote => vote.CheatId)
+                    .Except(this.PreviousCheatVotes.Select(vote => vote.CheatId))
+                    .Concat(cheatIdsToActivate)
+                    .Distinct();
+
+                IEnumerable<ProjectItem> projectItemsToActivate = cheatIdsToActivate
+                      .Join(
+                          candidateProjectItems,
+                          cheatId => cheatId,
+                          projectItem => projectItem.AssociatedCheat?.CheatId,
+                          (cheatId, projectItem) => projectItem);
+
+                IEnumerable<ProjectItem> projectItemsToDeactivate = cheatVotes
+                      .Join(
+                          candidateProjectItems,
+                          cheatVote => cheatVote.CheatId,
+                          projectItem => projectItem.AssociatedCheat?.CheatId,
+                          (cheatId, projectItem) => projectItem)
+                      .Except(projectItemsToActivate);
+
+                // TODO: For now we are just toggling if we detect a change in votes. This blind toggling is horrible and we need to move to a cooldown/duration system.
 
                 // Handle deactivations
-                itemsToDeactivate.ForEach(item => item.projectItem.IsActivated = false);
+                // projectItemsToDeactivate.ForEach(item => item.IsActivated = false);
 
                 // Handle activations
-                itemsToActivate.ForEach(item => item.projectItem.IsActivated = true);
+                projectItemsToActivate.ForEach(item => item.IsActivated = !item.IsActivated);
+
+                this.PreviousCheatVotes = cheatVotes;
             }
             catch (Exception ex)
             {
@@ -188,7 +265,33 @@
         /// </summary>
         private void Connect()
         {
-            this.IsConnected = true;
+            this.IsConnectionStatusLoading = true;
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                    ConnectionStatus connectionStatus = SqualrApi.Connect(accessTokens.AccessToken);
+
+                    if (!connectionStatus.Connected)
+                    {
+                        throw new Exception("Connection failed");
+                    }
+
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Connected to Twitch");
+                    this.IsConnected = true;
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error connecting", ex);
+                    return;
+                }
+                finally
+                {
+                    this.IsConnectionStatusLoading = false;
+                }
+            });
         }
 
         /// <summary>
@@ -196,7 +299,34 @@
         /// </summary>
         private void Disconnect()
         {
-            this.IsConnected = false;
+            this.IsConnectionStatusLoading = true;
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                    ConnectionStatus connectionStatus = SqualrApi.Disconnect(accessTokens.AccessToken);
+
+                    if (connectionStatus.Connected)
+                    {
+                        throw new Exception("Disconnection failed");
+                    }
+
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Disconnected from Twitch");
+                    this.IsConnected = false;
+                    this.PreviousCheatVotes = null;
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error disconnecting", ex);
+                    return;
+                }
+                finally
+                {
+                    this.IsConnectionStatusLoading = false;
+                }
+            });
         }
     }
     //// End class

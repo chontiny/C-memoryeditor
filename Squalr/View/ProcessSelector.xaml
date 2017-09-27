@@ -26,6 +26,11 @@
             Background="{StaticResource AvalonDock_Expression_BaseColor3}"
             BorderThickness="0"
             ItemsSource="{Binding ProcessList}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -36,7 +41,7 @@
                                 Gesture="LeftDoubleClick" />
                         </Grid.InputBindings>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
                         <Image
@@ -46,7 +51,6 @@
                             Source="{Binding Path=Icon, Converter={StaticResource IconConverter}}" />
                         <TextBlock
                             Grid.Column="1"
-                            Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                             Margin="4,0,0,0"
                             Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                             Text="{Binding Path=ProcessName}" />

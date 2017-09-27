@@ -176,7 +176,7 @@
         /// <param name="window">The window to close.</param>
         private void Close(Window window)
         {
-            if (!ProjectExplorerViewModel.GetInstance().PromptSave())
+            if (!ProjectExplorerViewModel.GetInstance().ProjectItemStorage.PromptSave())
             {
                 return;
             }

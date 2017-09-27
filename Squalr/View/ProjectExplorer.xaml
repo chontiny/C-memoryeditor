@@ -2,6 +2,7 @@
     x:Class="Squalr.View.ProjectExplorer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrProjectExplorer"
@@ -10,6 +11,33 @@
     x:ClassModifier="internal"
     DataContext="{Binding ProjectExplorerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <ContextMenu
+            x:Key="RightClickMenu"
+            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+            Style="{StaticResource DropDownContextMenu}">
+            <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Add New Address" />
+            <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
+            <Separator />
+            <MenuItem Command="{Binding PasteSelectionCommand}" Header="Paste" />
+        </ContextMenu>
+        <ContextMenu
+            x:Key="ProjectItemRightClickMenu"
+            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+            Style="{StaticResource DropDownContextMenu}">
+            <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
+            <Separator />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.DeleteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Delete Selection" />
+            <Separator />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.CopySelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Copy" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.PasteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Paste" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.CutSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Cut" />
+        </ContextMenu>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -48,24 +76,6 @@
                     <MenuItem
                         Background="{StaticResource AvalonDock_Expression_BaseColor1}"
                         BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding AddNewFolderItemCommand}"
-                        ToolTip="Add New Folder">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/Open.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Add Folder" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
                         Command="{Binding AddNewAddressItemCommand}"
                         ToolTip="Add New Address">
                         <MenuItem.Header>
@@ -91,7 +101,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/CollectValues.png" />
+                                    Source="pack://application:,,,/Squalr;component/Content/Icons/Script.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -103,7 +113,64 @@
             </Menu>
         </WrapPanel>
 
-        <!--  Project Explorer Tree View  -->
-        <Grid Name="projectExplorerTreeViewContainer" Grid.Row="1" />
+        <Grid Grid.Row="1">
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+                <ListView
+                    Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                    BorderThickness="0"
+                    ContextMenu="{StaticResource RightClickMenu}"
+                    ItemsSource="{Binding ProjectItems}"
+                    SelectionMode="Extended">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ContextMenu="{StaticResource ProjectItemRightClickMenu}" Focusable="False">
+                                <Grid.InputBindings>
+                                    <MouseBinding
+                                        Command="{Binding DataContext.EditProjectItemCommand, ElementName=SqualrProjectExplorer}"
+                                        CommandParameter="{Binding .}"
+                                        Gesture="LeftDoubleClick" />
+                                    <MouseBinding
+                                        Command="{Binding DataContext.SelectProjectItemCommand, ElementName=SqualrProjectExplorer}"
+                                        CommandParameter="{Binding .}"
+                                        Gesture="LeftClick" />
+                                </Grid.InputBindings>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <CheckBox
+                                    Grid.Column="0"
+                                    Width="16"
+                                    Height="16"
+                                    Margin="0,0,4,0"
+                                    IsChecked="{Binding Path=IsActivated}" />
+                                <Image
+                                    Grid.Column="1"
+                                    Width="16"
+                                    Height="16"
+                                    Source="{Binding Path=Icon}" />
+                                <TextBlock
+                                    Grid.Column="2"
+                                    Margin="4,0,0,0"
+                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                    Text="{Binding Path=Description}" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    Margin="4,0,0,0"
+                                    Foreground="Yellow"
+                                    Text="{Binding Path=StreamCommand, FallbackValue=''}" />
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

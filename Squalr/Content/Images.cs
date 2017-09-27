@@ -46,6 +46,11 @@
         public static readonly BitmapImage Cog = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Cog.png"));
 
         /// <summary>
+        /// Image for a coin.
+        /// </summary>
+        public static readonly BitmapImage Coin = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Coin.png"));
+
+        /// <summary>
         /// Image for a connection.
         /// </summary>
         public static readonly BitmapImage Connect = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Connect.png"));
@@ -161,6 +166,11 @@
         public static readonly BitmapImage LogicalOr = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "LogicalOr.png"));
 
         /// <summary>
+        /// Image for the previous arrow.
+        /// </summary>
+        public static readonly BitmapImage Previous = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Previous.png"));
+
+        /// <summary>
         /// Image represeting a window maximize operation.
         /// </summary>
         public static readonly BitmapImage Maximize = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Maximize.png"));
@@ -204,6 +214,11 @@
         /// Image for a new scan.
         /// </summary>
         public static readonly BitmapImage NewScan = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "New.png"));
+
+        /// <summary>
+        /// Image for the next arrow.
+        /// </summary>
+        public static readonly BitmapImage Next = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Next.png"));
 
         /// <summary>
         /// Image for a next scan.
@@ -279,6 +294,11 @@
         /// Image represeting a save operation.
         /// </summary>
         public static readonly BitmapImage Save = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Save.png"));
+
+        /// <summary>
+        /// Image represeting a script.
+        /// </summary>
+        public static readonly BitmapImage Script = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Script.png"));
 
         /// <summary>
         /// Image for process selection.

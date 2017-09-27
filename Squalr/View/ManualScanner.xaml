@@ -332,47 +332,45 @@
             </WrapPanel>
 
             <!--  Column titles  -->
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
-                    <ListView.Template>
-                        <ControlTemplate>
-                            <Grid HorizontalAlignment="Left">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid
-                                    Grid.Row="0"
-                                    Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                                    VerticalAlignment="Center">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="5,0" />
-                                            <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                                            <Setter Property="FontWeight" Value="Bold" />
-                                        </Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="BorderThickness" Value="0" />
-                                            <Setter Property="Padding" Value="8,4,8,4" />
-                                            <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                                        </Style>
-                                    </Grid.Resources>
-                                    <Border Grid.Column="0">
-                                        <TextBlock Text="Active Constraints" />
-                                    </Border>
-                                    <Border Grid.Column="1">
-                                        <TextBlock Text="Value" />
-                                    </Border>
-                                </Grid>
+            <ListView Grid.Row="2" BorderThickness="0">
+                <ListView.Template>
+                    <ControlTemplate>
+                        <Grid HorizontalAlignment="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid
+                                Grid.Row="0"
+                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
+                                VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Margin" Value="5,0" />
+                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="Padding" Value="8,4,8,4" />
+                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Border Grid.Column="0">
+                                    <TextBlock Text="Active Constraints" />
+                                </Border>
+                                <Border Grid.Column="1">
+                                    <TextBlock Text="Value" />
+                                </Border>
                             </Grid>
-                        </ControlTemplate>
-                    </ListView.Template>
-                </ListView>
-            </ScrollViewer>
+                        </Grid>
+                    </ControlTemplate>
+                </ListView.Template>
+            </ListView>
 
             <!--  Pending constraint, visible if no constraints added  -->
             <ScrollViewer

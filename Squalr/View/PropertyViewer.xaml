@@ -17,11 +17,5 @@
         <Border>
             <Grid x:Name="propertyViewer" />
         </Border>
-        <!--<xctk:PropertyGrid Grid.Row="0"
-                           Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                           BorderThickness="0"
-                           Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                           SelectedObject="{Binding TargetObject}" />
-        -->
     </Grid>
 </UserControl>

@@ -1,9 +1,13 @@
 ﻿namespace Squalr.Source.Api
 {
     using RestSharp;
+    using Squalr.Source.Api.Exceptions;
     using Squalr.Source.Api.Models;
+    using Squalr.Source.Output;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
+    using System.Deployment.Application;
     using System.IO;
     using System.Net;
     using System.Runtime.Serialization.Json;
@@ -11,82 +15,424 @@
 
     internal static class SqualrApi
     {
-        public const String ApiBase = "https://www.squalr.com/api";
+        /// <summary>
+        /// The base API url for Squalr.
+        /// </summary>
+        public const String SqualrHostBase = "https://www.squalr.com/";
 
         /// <summary>
-        /// The API url to get the twitch auth tokens.
+        /// The base API url for Squalr development environments.
         /// </summary>
-        public const String TwitchTokenApi = SqualrApi.ApiBase + "/TwitchTokens";
+        public const String LocalHostBase = "http://localhost/";
 
         /// <summary>
-        /// The API url to get the twitch user.
+        /// The API url to get the access tokens.
         /// </summary>
-        public const String TwitchUserApi = SqualrApi.ApiBase + "/TwitchUser";
+        public static String VirtualCurrencyStoreEndpoint = SqualrApi.ApiBase + "Store";
+
+        /// <summary>
+        /// The API url to get the access tokens.
+        /// </summary>
+        public static String AccessTokensApi = SqualrApi.ApiBase + "api/User/Tokens";
+
+        /// <summary>
+        /// The API url to get the user.
+        /// </summary>
+        public static String UserApi = SqualrApi.ApiBase + "api/User";
+
+        /// <summary>
+        /// The endpoint for getting all available stream icons.
+        /// </summary>
+        private static String StreamIconsEndpoint = SqualrApi.ApiBase + "api/Stream/Icons";
+
+        /// <summary>
+        /// The endpoint for setting the stream integration configuration.
+        /// </summary>
+        private static String GetStreamConfigEndpoint = SqualrApi.ApiBase + "api/Stream/Config";
+
+        /// <summary>
+        /// The endpoint for setting the stream integration configuration.
+        /// </summary>
+        private static String SetStreamConfigEndpoint = SqualrApi.ApiBase + "api/Stream/SetConfig";
+
+        /// <summary>
+        /// The endpoint for setting the stream integration configuration.
+        /// </summary>
+        private static String SetCheatStreamMeta = SqualrApi.ApiBase + "api/Stream/SetCheatMeta";
 
         /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
         /// </summary>
-        private const String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "/ActiveCheatIds/";
+        private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/Stream/ActiveCheatIds/";
 
         /// <summary>
         /// The endpoint for querying the game lists.
         /// </summary>
-        private const String GameListEndpoint = SqualrApi.ApiBase + "/Games/List";
+        private static String GameListEndpoint = SqualrApi.ApiBase + "api/Games/List";
 
-        public static TwitchAccessTokens GetTwitchTokens(String code)
+        /// <summary>
+        /// The endpoint for querying the games for which a user has unlocked or uploaded at least one cheat.
+        /// </summary>
+        private static String OwnedGamesEndpoint = SqualrApi.ApiBase + "api/Games/Owned";
+
+        /// <summary>
+        /// The endpoint for searching games.
+        /// </summary>
+        private static String GameSearchEndpoint = SqualrApi.ApiBase + "api/Games/Search";
+
+        /// <summary>
+        /// The endpoint for querying the library lists.
+        /// </summary>
+        private static String LibrariesEndpoint = SqualrApi.ApiBase + "api/Libraries";
+
+        /// <summary>
+        /// The endpoint for setting the active library.
+        /// </summary>
+        private static String SetActiveLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Set";
+
+        /// <summary>
+        /// The endpoint for creating a library.
+        /// </summary>
+        private static String RenameLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Rename";
+
+        /// <summary>
+        /// The endpoint for creating a library.
+        /// </summary>
+        private static String CreateLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Create";
+
+        /// <summary>
+        /// The endpoint for deleting a library.
+        /// </summary>
+        private static String DeleteLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Delete";
+
+        /// <summary>
+        /// The endpoint for querying the available and unavailable cheats in a library.
+        /// </summary>
+        private static String CheatsEndpoint = SqualrApi.ApiBase + "api/Cheats";
+
+        /// <summary>
+        /// The endpoint for updating a cheat.
+        /// </summary>
+        private static String UpdateCheatEndpoint = SqualrApi.ApiBase + "api/Cheats/Update";
+
+        /// <summary>
+        /// The endpoint for updating a cheat.
+        /// </summary>
+        private static String UpdateCheatStreamMetaEndpoint = SqualrApi.ApiBase + "api/Stream/CheatMeta";
+
+        /// <summary>
+        /// The endpoint for querying the available and unavailable cheats in the store.
+        /// </summary>
+        private static String StoreCheatsEndpoint = SqualrApi.ApiBase + "api/Cheats/Store";
+
+        /// <summary>
+        /// The endpoint for unlocking cheats.
+        /// </summary>
+        private static String UnlockCheatEndpoint = SqualrApi.ApiBase + "api/Cheats/Unlock";
+
+        /// <summary>
+        /// The endpoint for adding cheats to the library.
+        /// </summary>
+        private static String AddCheatToLibraryEndpoint = SqualrApi.ApiBase + "api/Cheats/Add";
+
+        /// <summary>
+        /// The endpoint for removing cheats from the library.
+        /// </summary>
+        private static String RemoveCheatFromLibraryEndpoint = SqualrApi.ApiBase + "api/Cheats/Remove";
+
+        /// <summary>
+        /// The endpoint for connecting to the Twitch service.
+        /// </summary>
+        private static String ConnectEndpoint = SqualrApi.ApiBase + "api/Stream/Connect";
+
+        /// <summary>
+        /// The endpoint for disconnecting to the Twitch service.
+        /// </summary>
+        private static String DisconnectEndpoint = SqualrApi.ApiBase + "api/Stream/Disconnect";
+
+        /// <summary>
+        /// The endpoint for querying the connection status to the Twitch service.
+        /// </summary>
+        private static String ConnectionStatusEndpoint = SqualrApi.ApiBase + "api/Stream/ConnectionStatusEndpoint";
+
+        /// <summary>
+        /// The active API base depending on the environment.
+        /// </summary>
+        private static String apiBase;
+
+        public static AccessTokens GetAccessTokens(String code)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("code", code);
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.TwitchTokenApi, parameters);
+            return ExecuteRequest<AccessTokens>(Method.GET, SqualrApi.AccessTokensApi, parameters);
+        }
 
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
+        /// <summary>
+        /// Gets or sets the active API base depending on the environment.
+        /// </summary>
+        private static String ApiBase
+        {
+            get
             {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(TwitchAccessTokens));
+                if (SqualrApi.apiBase.IsNullOrEmpty())
+                {
+                    SqualrApi.ApiBase = SqualrApi.InitializeApiBase();
+                }
 
-                return deserializer.ReadObject(memoryStream) as TwitchAccessTokens;
+                return SqualrApi.apiBase;
+            }
+
+            set
+            {
+                SqualrApi.apiBase = value;
             }
         }
 
-        public static TwitchUser GetTwitchUser(String accessToken)
+        public static User GetTwitchUser(String accessToken)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("accessToken", accessToken);
+            parameters.Add("access_token", accessToken);
 
-            String result = ExecuteRequest(Method.GET, SqualrApi.TwitchUserApi, parameters);
-
-            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(result)))
-            {
-                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(TwitchUser));
-
-                return deserializer.ReadObject(memoryStream) as TwitchUser;
-            }
+            return SqualrApi.ExecuteRequest<User>(Method.GET, SqualrApi.UserApi, parameters);
         }
 
-        public static StreamActivationIds GetStreamActivationIds(String twitchChannel)
+        public static ConnectionStatus Connect(String accessToken)
         {
-            String endpoint = SqualrApi.ActiveCheatIdsEndpoint + twitchChannel;
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
 
-            using (WebClient webclient = new WebClient())
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.ConnectEndpoint, parameters);
+        }
+
+        public static ConnectionStatus Disconnect(String accessToken)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.DisconnectEndpoint, parameters);
+        }
+
+        public static ConnectionStatus GetConnectionStatus(String accessToken)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.ConnectionStatusEndpoint, parameters);
+        }
+
+        public static StreamIcon[] GetStreamIcons()
+        {
+            return SqualrApi.ExecuteRequest<StreamIcon[]>(Method.GET, SqualrApi.StreamIconsEndpoint);
+        }
+
+        public static IEnumerable<CheatVotes> GetStreamActivationIds(String twitchChannel)
+        {
+            return SqualrApi.ExecuteRequest<IEnumerable<CheatVotes>>(Method.GET, SqualrApi.ActiveCheatIdsEndpoint + twitchChannel);
+        }
+
+        public static Game[] GetGameList()
+        {
+            return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.GameListEndpoint);
+        }
+
+        public static Game[] GetOwnedGameList(String accessToken)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+
+            return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.OwnedGamesEndpoint, parameters);
+        }
+
+        public static Game[] SearchGameList(String searchTerm)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("search_term", searchTerm);
+
+            return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.GameSearchEndpoint, parameters);
+        }
+
+        public static Library[] GetLibraries(String accessToken, Int32 gameId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("game_id", gameId.ToString());
+
+            return SqualrApi.ExecuteRequest<Library[]>(Method.GET, SqualrApi.LibrariesEndpoint, parameters);
+        }
+
+        public static LibraryCheats GetCheats(String accessToken, Int32 libraryId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+
+            return SqualrApi.ExecuteRequest<LibraryCheats>(Method.GET, SqualrApi.CheatsEndpoint, parameters);
+        }
+
+        public static void SetActiveLibrary(String accessToken, Int32 libraryId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.SetActiveLibraryEndpoint, parameters);
+        }
+
+        public static void RenameLibrary(String accessToken, Int32 libraryId, String libraryName)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+            parameters.Add("library_name", libraryName);
+
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.RenameLibraryEndpoint, parameters);
+        }
+
+        public static Library CreateLibrary(String accessToken, Int32 gameId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("game_id", gameId.ToString());
+
+            return SqualrApi.ExecuteRequest<Library>(Method.POST, SqualrApi.CreateLibraryEndpoint, parameters);
+        }
+
+        public static void DeleteLibrary(String accessToken, Int32 libraryId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.DeleteLibraryEndpoint, parameters);
+        }
+
+        public static StoreCheats GetCheatList(String accessToken, Int32 gameId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("game_id", gameId.ToString());
+
+            return SqualrApi.ExecuteRequest<StoreCheats>(Method.GET, SqualrApi.StoreCheatsEndpoint, parameters);
+        }
+
+        public static Cheat UnlockCheat(String accessToken, Int32 cheatId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("cheat_id", cheatId.ToString());
+
+            return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.UnlockCheatEndpoint, parameters);
+        }
+
+        public static Cheat AddCheatToLibrary(String accessToken, Int32 libraryId, Int32 cheatId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+            parameters.Add("cheat_id", cheatId.ToString());
+
+            return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.AddCheatToLibraryEndpoint, parameters);
+        }
+
+        public static Cheat RemoveCheatFromLibrary(String accessToken, Int32 libraryId, Int32 cheatId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+            parameters.Add("cheat_id", cheatId.ToString());
+
+            return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.RemoveCheatFromLibraryEndpoint, parameters);
+        }
+
+        public static void UpdateCheatStreamMeta(String accessToken, Cheat cheat)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("cheat_id", cheat?.CheatId.ToString());
+            parameters.Add("icon", cheat?.Icon?.ToString());
+            parameters.Add("cooldown", cheat?.Cooldown.ToString());
+            parameters.Add("duration", cheat?.Duration.ToString());
+
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.UpdateCheatStreamMetaEndpoint, parameters);
+        }
+
+        public static void UpdateCheat(String accessToken, Cheat cheat)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            // TODO: Serialize cheat
+
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.UpdateCheatEndpoint, parameters);
+        }
+
+        /// <summary>
+        /// Gets the base url for api calls. In development environments this will be a local endpoint.
+        /// </summary>
+        /// <returns>The api base url.</returns>
+        private static String InitializeApiBase()
+        {
+            // Check if development environment API endpoint available
+            try
             {
-                using (MemoryStream memoryStream = new MemoryStream(webclient.DownloadData(endpoint)))
+                if (!ApplicationDeployment.IsNetworkDeployed)
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(StreamActivationIds));
-                    StreamActivationIds streamActivationIds = serializer.ReadObject(memoryStream) as StreamActivationIds;
+                    using (PingClient client = new PingClient())
+                    {
+                        Uri uri = new Uri(SqualrApi.LocalHostBase);
 
-                    return streamActivationIds;
+                        try
+                        {
+                            client.Ping(uri.GetLeftPart(UriPartial.Authority));
+
+                            return SqualrApi.LocalHostBase;
+                        }
+                        catch (Exception ex)
+                        {
+                            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "No local Squalr site found. Using production for API queries", ex);
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Unable to detect environment for API calls.", ex);
+            }
+
+            // None found, use the actual API base
+            return SqualrApi.SqualrHostBase;
         }
 
-        private static String ExecuteRequest(Method method, String endpoint, Dictionary<String, String> parameters)
+        /// <summary>
+        /// Executes the given REST request.
+        /// </summary>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="endpoint">The REST endpoint.</param>
+        /// <param name="parameters">The request parameters.</param>
+        /// <returns>The response content.</returns>
+        private static void ExecuteRequest(Method method, String endpoint, Dictionary<String, String> parameters = null)
+        {
+            SqualrApi.ExecuteRequest<String>(method, endpoint, parameters);
+        }
+
+        /// <summary>
+        /// Executes the given REST request.
+        /// </summary>
+        /// <param name="method">The HTTP method.</param>
+        /// <param name="endpoint">The REST endpoint.</param>
+        /// <param name="parameters">The request parameters.</param>
+        /// <returns>The response content.</returns>
+        private static T ExecuteRequest<T>(Method method, String endpoint, Dictionary<String, String> parameters = null) where T : class
         {
             RestClient client = new RestClient(endpoint);
             RestRequest request = new RestRequest(method);
 
-            foreach (KeyValuePair<String, String> parameter in parameters)
+            if (!parameters.IsNullOrEmpty())
             {
-                request.AddParameter(parameter.Key, parameter.Value);
+                foreach (KeyValuePair<String, String> parameter in parameters)
+                {
+                    request.AddParameter(parameter.Key, parameter.Value);
+                }
             }
 
             IRestResponse response = client.Execute(request);
@@ -104,7 +450,17 @@
                     throw new StatusException(response.ResponseUri, response.StatusCode);
             }
 
-            return response?.Content;
+            if (typeof(T) == typeof(String))
+            {
+                return response?.Content as T;
+            }
+
+            using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(response?.Content)))
+            {
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(T));
+
+                return deserializer.ReadObject(memoryStream) as T;
+            }
         }
     }
     //// End class

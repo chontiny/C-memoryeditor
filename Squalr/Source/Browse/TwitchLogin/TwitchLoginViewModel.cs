@@ -7,6 +7,7 @@
     using Squalr.Source.Docking;
     using Squalr.Source.Main;
     using Squalr.Source.Output;
+    using Squalr.View.Browse.Login;
     using System;
     using System.Threading;
     using System.Windows;
@@ -16,7 +17,7 @@
     /// <summary>
     /// View model for the Twitch Login.
     /// </summary>
-    internal class TwitchLoginViewModel : ToolViewModel
+    internal class TwitchLoginViewModel : ToolViewModel, INavigable
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -80,6 +81,21 @@
         }
 
         /// <summary>
+        /// Event fired when the browse view navigates to a new page.
+        /// </summary>
+        /// <param name="browsePage">The new browse page.</param>
+        public void OnNavigate(BrowsePage browsePage)
+        {
+            switch (browsePage)
+            {
+                case BrowsePage.Login:
+                    break;
+                default:
+                    return;
+            }
+        }
+
+        /// <summary>
         /// Navigates home in the browser.
         /// </summary>
         /// <param name="browser">The web browser.</param>
@@ -96,8 +112,8 @@
         {
             try
             {
-                TwitchAccessTokens twitchAccessTokens = SqualrApi.GetTwitchTokens(code);
-                SettingsViewModel.GetInstance().TwitchAccessTokens = twitchAccessTokens;
+                AccessTokens accessTokens = SqualrApi.GetAccessTokens(code);
+                SettingsViewModel.GetInstance().AccessTokens = accessTokens;
                 BrowseViewModel.GetInstance().IsLoggedIn = true;
             }
             catch (Exception ex)
@@ -111,9 +127,9 @@
         /// </summary>
         private void DisplayTwitchLogin()
         {
-            View.TwitchLogin twitchLogin = new View.TwitchLogin();
-            twitchLogin.Owner = Application.Current.MainWindow;
-            twitchLogin.ShowDialog();
+            TwitchLoginPage twitchLoginScreen = new TwitchLoginPage();
+            twitchLoginScreen.Owner = Application.Current.MainWindow;
+            twitchLoginScreen.ShowDialog();
         }
     }
     //// End class
