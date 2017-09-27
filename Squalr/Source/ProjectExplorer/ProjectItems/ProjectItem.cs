@@ -5,46 +5,35 @@
     using Editors.TextEditor;
     using Engine.Input.HotKeys;
     using SharpDX.DirectInput;
-    using Squalr.Source.Editors.StreamIconEditor;
+    using Squalr.Content;
+    using Squalr.Source.Api.Models;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
+    using System.IO;
     using System.Runtime.Serialization;
+    using System.Runtime.Serialization.Json;
+    using System.Windows.Media.Imaging;
     using Utils.TypeConverters;
 
     /// <summary>
     /// A base class for all project items that can be added to the project explorer.
     /// </summary>
     [KnownType(typeof(ProjectItem))]
-    [KnownType(typeof(FolderItem))]
     [KnownType(typeof(ScriptItem))]
     [KnownType(typeof(AddressItem))]
+    [KnownType(typeof(PointerItem))]
+    [KnownType(typeof(DotNetItem))]
+    [KnownType(typeof(JavaItem))]
     [DataContract]
     internal abstract class ProjectItem : INotifyPropertyChanged, IDisposable
     {
-        /// <summary>
-        /// The character limit for stream commands
-        /// </summary>
-        public const Int32 StreamCommandCharacterLimit = 6;
-
-        /// <summary>
-        /// The parent of this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected FolderItem parent;
-
         /// <summary>
         /// The description of this project item.
         /// </summary>
         [Browsable(false)]
         protected String description;
-
-        /// <summary>
-        /// The category of this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected ProjectItemCategory category;
 
         /// <summary>
         /// The extended description of this project item.
@@ -63,18 +52,6 @@
         /// </summary>
         [Browsable(false)]
         protected Hotkey hotkey;
-
-        /// <summary>
-        /// The stream icon path associated with this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected String streamIconPath;
-
-        /// <summary>
-        /// The stream command associated with this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected String streamCommand;
 
         /// <summary>
         /// A value indicating whether this project item has been activated.
@@ -97,7 +74,6 @@
         {
             // Bypass setters/getters to avoid triggering any view updates in constructor
             this.description = description == null ? String.Empty : description;
-            this.parent = null;
             this.isActivated = false;
             this.guid = Guid.NewGuid();
             this.ActivationLock = new Object();
@@ -107,56 +83,6 @@
         /// Occurs after a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-
-
-        /// <summary>
-        /// Defines the category for a project item.
-        /// </summary>
-        public enum ProjectItemCategory
-        {
-            /// <summary>
-            /// No specific category.
-            /// </summary>
-            Miscellaneous,
-
-            /// <summary>
-            /// A cheat that causes glitches.
-            /// </summary>
-            Glitch,
-
-            /// <summary>
-            /// A detrimental cheat.
-            /// </summary>
-            Curse,
-
-            /// <summary>
-            /// A useful cheat for standard gameplay.
-            /// </summary>
-            Buff,
-        }
-
-        /// <summary>
-        /// Gets or sets the parent of this project item.
-        /// </summary>
-        [Browsable(false)]
-        public FolderItem Parent
-        {
-            get
-            {
-                return this.parent;
-            }
-
-            set
-            {
-                if (this.parent == value)
-                {
-                    return;
-                }
-
-                this.parent = value;
-                this.NotifyPropertyChanged(nameof(this.Parent));
-            }
-        }
 
         /// <summary>
         /// Gets or sets the description for this object.
@@ -178,34 +104,8 @@
                 }
 
                 this.description = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Description));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the category of this project item.
-        /// </summary>
-        [DataMember]
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Category"), Description("The category for this project item")]
-        public ProjectItemCategory Category
-        {
-            get
-            {
-                return this.category;
-            }
-
-            set
-            {
-                if (this.category == value)
-                {
-                    return;
-                }
-
-                this.category = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Category));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -232,7 +132,7 @@
                 }
 
                 this.extendedDescription = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.ExtendedDescription));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
@@ -258,7 +158,7 @@
                 }
 
                 this.guid = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Guid));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
@@ -286,60 +186,8 @@
 
                 this.hotkey = value;
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.HotKey));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the stream icon path for this project item.
-        /// </summary>
-        [DataMember]
-        [Editor(typeof(StreamIconEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Icon"), Description("The stream icon for this item")]
-        public String StreamIconPath
-        {
-            get
-            {
-                return this.streamIconPath;
-            }
-
-            set
-            {
-                if (this.streamIconPath == value)
-                {
-                    return;
-                }
-
-                this.streamIconPath = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.StreamIconPath));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the stream command for this project item.
-        /// </summary>
-        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Command"), Description("The stream command for this item. Limit of 6 characters.")]
-        public String StreamCommand
-        {
-            get
-            {
-                return this.streamCommand;
-            }
-
-            set
-            {
-                if (this.streamCommand == value)
-                {
-                    return;
-                }
-
-                this.streamCommand = value?.Substring(0, Math.Min(value.Length, ProjectItem.StreamCommandCharacterLimit)).ToLower();
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.StreamCommand));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -352,25 +200,16 @@
         {
             get
             {
-                return this.CanActivate && this.isActivated;
+                return this.isActivated;
             }
 
             set
             {
                 lock (this.ActivationLock)
                 {
-                    if (this.isActivated == value || !this.CanActivate)
+                    if (this.isActivated == value)
                     {
                         return;
-                    }
-
-                    // If this project item is in a unique group, disable all siblings
-                    if (value == true && this.Parent != null && this.Parent.FolderType == FolderItem.FolderTypeEnum.UniqueGroup)
-                    {
-                        foreach (ProjectItem projectItem in this.Parent.Children)
-                        {
-                            projectItem.IsActivated = false;
-                        }
                     }
 
                     // Change activation state
@@ -391,14 +230,14 @@
         }
 
         /// <summary>
-        /// Gets a value indicating whether or not this item can be activated.
+        /// Gets the image associated with this project item.
         /// </summary>
         [Browsable(false)]
-        public Boolean CanActivate
+        public virtual BitmapSource Icon
         {
             get
             {
-                return this.IsActivatable();
+                return Images.CollectValues;
             }
         }
 
@@ -406,6 +245,12 @@
         /// Controls access to activating project items.
         /// </summary>
         private Object ActivationLock { get; set; }
+
+        /// <summary>
+        /// Gets or sets the library cheat associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        public Cheat AssociatedCheat { get; set; }
 
         /// <summary>
         /// Invoked when this object is deserialized.
@@ -428,20 +273,36 @@
         public abstract void Update();
 
         /// <summary>
-        /// Reconstructs the parents for all nodes of this graph. Call this from the root.
-        /// Needed since we cannot serialize the parent to json or we will get cyclic dependencies.
+        /// Associates a cheat with this project item.
         /// </summary>
-        /// <param name="parent">The parent of this project item.</param>
-        public virtual void BuildParents(FolderItem parent = null)
+        /// <param name="cheat">The associated cheat</param>
+        public virtual void AssociateCheat(Cheat cheat)
         {
-            this.Parent = parent;
+            this.AssociatedCheat = cheat;
         }
 
         /// <summary>
         /// Clones the project item.
         /// </summary>
         /// <returns>The clone of the project item.</returns>
-        public abstract ProjectItem Clone();
+        public ProjectItem Clone()
+        {
+            Byte[] serializedProjectItem;
+            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem));
+
+            // Serialize this project item
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                serializer.WriteObject(memoryStream, this);
+                serializedProjectItem = memoryStream.ToArray();
+            }
+
+            // Deserialize this project item to clone it
+            using (MemoryStream memoryStream = new MemoryStream(serializedProjectItem))
+            {
+                return serializer.ReadObject(memoryStream) as ProjectItem;
+            }
+        }
 
         /// <summary>
         /// Updates the hotkey, bypassing setters to avoid triggering view updates.
@@ -452,15 +313,6 @@
             this.hotkey = hotkey;
 
             this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
-        }
-
-        /// <summary>
-        /// Updates the stream command, bypassing setters to avoid triggering view updates.
-        /// </summary>
-        /// <param name="streamCommand">The stream command for this project item.</param>
-        public void LoadStreamCommand(String streamCommand)
-        {
-            this.streamCommand = streamCommand;
         }
 
         public void Dispose()

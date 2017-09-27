@@ -3,8 +3,8 @@
     using Docking;
     using Editors.HotkeyEditor;
     using Engine.Input.HotKeys;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Mvvm.Command;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -104,7 +104,7 @@
 
         private void StartScan()
         {
-            this.InputCorrelatorModel.Begin();
+            this.InputCorrelatorModel.Schedule();
         }
 
         private void StopScan()

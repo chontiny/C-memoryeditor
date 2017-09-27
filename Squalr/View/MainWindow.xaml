@@ -3,24 +3,30 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+    xmlns:browseView="clr-namespace:Squalr.View.Browse"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:local="clr-namespace:Squalr.Source.Docking"
     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
     xmlns:view="clr-namespace:Squalr.View"
     x:Name="SqualrWindow"
     Title="Squalr"
-    Width="840"
+    Width="1280"
     Height="840"
     x:ClassModifier="internal"
     AllowsTransparency="False"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
     WindowStyle="None">
+    <x:Code>
+        <![CDATA[ public MainWindow() { InitializeComponent(); }]]>
+    </x:Code>
     <shell:Window.Resources>
         <converters:IconConverter x:Key="IconConverter" />
-        <avalonDock:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToHiddenConverter"
+            False="Hidden"
+            True="Visible" />
     </shell:Window.Resources>
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
@@ -84,7 +90,7 @@
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
                     Text="* "
-                    Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BoolToVisibilityConverter}}" />
+                    Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <shell:TextBlock
                     Grid.Column="2"
                     VerticalAlignment="Center"
@@ -108,10 +114,10 @@
                 Background="Transparent">
                 <shell:MenuItem
                     Height="24"
-                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
                     Command="{Binding MinimizeCommand}"
                     CommandParameter="{Binding ElementName=SqualrWindow}"
-                    ToolTip="Minimize">
+                    ToolTip="Minimize"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
                     <shell:MenuItem.Header>
                         <shell:Image
                             Width="16"
@@ -121,10 +127,10 @@
                 </shell:MenuItem>
                 <shell:MenuItem
                     Height="24"
-                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
                     Command="{Binding MaximizeRestoreCommand}"
                     CommandParameter="{Binding ElementName=SqualrWindow}"
-                    ToolTip="Maximize/Restore">
+                    ToolTip="Maximize/Restore"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
                     <shell:MenuItem.Header>
                         <shell:Image
                             Width="16"
@@ -134,10 +140,10 @@
                 </shell:MenuItem>
                 <shell:MenuItem
                     Height="24"
-                    shell:WindowChrome.IsHitTestVisibleInChrome="True"
                     Command="{Binding CloseCommand}"
                     CommandParameter="{Binding ElementName=SqualrWindow}"
-                    ToolTip="Close">
+                    ToolTip="Close"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
                     <shell:MenuItem.Header>
                         <shell:Image
                             Width="16"
@@ -208,9 +214,9 @@
                     Header="View"
                     Style="{StaticResource DropDown}">
                     <shell:MenuItem
-                        Header="Cheat Browser"
+                        Header="Browse"
                         IsCheckable="True"
-                        IsChecked="{Binding CheatBrowserViewModel.IsVisible, Mode=TwoWay}"
+                        IsChecked="{Binding BrowseViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
                         Header="Process Selector"
@@ -228,20 +234,21 @@
                         IsChecked="{Binding PropertyViewerViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
-                        Header="Stream Weaver"
-                        IsCheckable="True"
-                        IsChecked="{Binding StreamWeaverViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
                         Header="Output"
                         IsCheckable="True"
                         IsChecked="{Binding OutputViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
-                    <shell:Separator />
+                </shell:MenuItem>
+
+                <!--  Layout Header  -->
+                <shell:MenuItem
+                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                    Header="Layout"
+                    Style="{StaticResource DropDown}">
                     <shell:MenuItem
                         Command="{Binding MainViewModel.ResetLayoutStandardCommand}"
                         CommandParameter="{Binding ., ElementName=dockManager}"
-                        Header="Simple Layout"
+                        Header="Streamer Layout"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
                         Command="{Binding MainViewModel.ResetLayoutDeveloperCommand}"
@@ -450,18 +457,12 @@
                             <view:PointerScanResults />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.PointerScanResultsViewTemplate>
-                    <!--  Cheat Browser  -->
-                    <view:ViewTemplateSelector.CheatBrowserViewTemplate>
+                    <!--  Browse  -->
+                    <view:ViewTemplateSelector.BrowseViewTemplate>
                         <shell:DataTemplate>
-                            <view:CheatBrowser />
+                            <browseView:BrowseHome />
                         </shell:DataTemplate>
-                    </view:ViewTemplateSelector.CheatBrowserViewTemplate>
-                    <!--  Stream Weaver  -->
-                    <view:ViewTemplateSelector.StreamWeaverViewTemplate>
-                        <shell:DataTemplate>
-                            <view:StreamWeaver />
-                        </shell:DataTemplate>
-                    </view:ViewTemplateSelector.StreamWeaverViewTemplate>
+                    </view:ViewTemplateSelector.BrowseViewTemplate>
                     <!--  .Net Explorer  -->
                     <view:ViewTemplateSelector.DotNetExplorerViewTemplate>
                         <shell:DataTemplate>
@@ -503,7 +504,7 @@
                         <shell:Style TargetType="{x:Type avalonDock:LayoutAnchorableItem}">
                             <shell:Setter Property="Title" Value="{Binding Model.Title}" />
                             <shell:Setter Property="IconSource" Value="{Binding Model.IconSource}" />
-                            <shell:Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BoolToVisibilityConverter}, ConverterParameter={x:Static Visibility.Hidden}}" />
+                            <shell:Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToHiddenConverter}}" />
                             <shell:Setter Property="ContentId" Value="{Binding Model.ContentId}" />
                             <shell:Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}" />
                             <shell:Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}" />

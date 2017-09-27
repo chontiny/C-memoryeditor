@@ -49,7 +49,7 @@
             this.RegionLock = new Object();
             this.processedCount = 0;
 
-            PointerCollector.GetInstance().Begin();
+            PointerCollector.GetInstance().Schedule();
         }
 
         /// <summary>
@@ -76,7 +76,7 @@
         /// </summary>
         public void BeginPrefilter()
         {
-            this.Begin();
+            this.Schedule();
         }
 
         /// <summary>

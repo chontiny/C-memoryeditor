@@ -1,28 +1,24 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
-    using Controls;
     using Docking;
     using Engine;
-    using Engine.AddressResolver;
     using Engine.OperatingSystems;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Microsoft.Win32;
-    using Mvvm.Command;
-    using Output;
     using ProjectItems;
     using PropertyViewer;
-    using Squalr.Source.Analytics;
+    using Squalr.Properties;
+    using Squalr.Source.Controls;
+    using Squalr.Source.Editors.ScriptEditor;
+    using Squalr.Source.Editors.ValueEditor;
+    using Squalr.Source.Utils;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.IO;
     using System.Linq;
-    using System.Runtime.Serialization.Json;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Windows;
     using System.Windows.Input;
-    using UserSettings;
     using Utils.Extensions;
 
     /// <summary>
@@ -60,22 +56,12 @@
         /// <summary>
         /// The project root which contains all project items.
         /// </summary>
-        private ProjectRoot projectRoot;
+        private ObservableCollection<ProjectItem> projectItems;
 
         /// <summary>
         /// The selected project item.
         /// </summary>
         private IEnumerable<ProjectItem> selectedProjectItems;
-
-        /// <summary>
-        /// Whether or not there are unsaved project changes.
-        /// </summary>
-        private Boolean hasUnsavedChanges;
-
-        /// <summary>
-        /// The file path to the project file.
-        /// </summary>
-        private String projectFilePath;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="ProjectExplorerViewModel" /> class from being created.
@@ -84,20 +70,24 @@
         {
             this.ContentId = ProjectExplorerViewModel.ToolContentId;
             this.ObserverLock = new Object();
-            this.ProjectExplorerObservers = new HashSet<IProjectExplorerObserver>();
+            this.ProjectItemStorage = new ProjectItemStorage();
 
             // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
-            this.OpenProjectCommand = new RelayCommand(() => this.OpenProject(), () => true);
-            this.ImportProjectCommand = new RelayCommand(() => this.ImportProject(), () => true);
-            this.ExportProjectCommand = new RelayCommand(() => this.ExportProject(), () => true);
-            this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ImportProject(filename), (filename) => true);
-            this.SaveProjectCommand = new RelayCommand(() => this.SaveProject(), () => true);
-            this.AddNewFolderItemCommand = new RelayCommand(() => this.AddNewFolderItem(), () => true);
-            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewAddressItem(), () => true);
+            this.OpenProjectCommand = new RelayCommand(() => this.ProjectItemStorage.OpenProject(), () => true);
+            this.ImportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ImportProject(), () => true);
+            this.ExportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ExportProject(), () => true);
+            this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ProjectItemStorage.ImportProject(false, filename), (filename) => true);
+            this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
+            this.SelectProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.SelectedProjectItems = new ProjectItem[] { projectItem }, (projectItem) => true);
+            this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
+            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
-            this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
-            this.ProjectRoot = new ProjectRoot();
+            this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
+            this.CopySelectionCommand = new RelayCommand(() => this.CopySelection(), () => true);
+            this.PasteSelectionCommand = new RelayCommand(() => this.PasteSelection(), () => true);
+            this.CutSelectionCommand = new RelayCommand(() => this.CutSelection(), () => true);
+            this.ProjectItems = new ObservableCollection<ProjectItem>();
             this.Update();
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
@@ -129,11 +119,6 @@
         public ICommand SaveProjectCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to add a new folder.
-        /// </summary>
-        public ICommand AddNewFolderItemCommand { get; private set; }
-
-        /// <summary>
         /// Gets the command to add a new address.
         /// </summary>
         public ICommand AddNewAddressItemCommand { get; private set; }
@@ -144,9 +129,14 @@
         public ICommand AddNewScriptItemCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to delete the selected project explorer items.
+        /// Gets the command to select a project item.
         /// </summary>
-        public ICommand DeleteSelectionCommand { get; private set; }
+        public ICommand SelectProjectItemCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to edit a project item.
+        /// </summary>
+        public ICommand EditProjectItemCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to toggle the activation the selected project explorer items.
@@ -154,60 +144,44 @@
         public ICommand ToggleSelectionActivationCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to clear the selected project item.
+        /// Gets the command to delete the selected project explorer items.
         /// </summary>
-        public ICommand ClearSelectionCommand { get; private set; }
+        public ICommand DeleteSelectionCommand { get; private set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether there are unsaved changes.
+        /// Gets the command to copy the selection to the clipboard.
         /// </summary>
-        public Boolean HasUnsavedChanges
-        {
-            get
-            {
-                return this.hasUnsavedChanges;
-            }
-
-            set
-            {
-                this.hasUnsavedChanges = value;
-                this.RaisePropertyChanged(nameof(this.HasUnsavedChanges));
-            }
-        }
+        public ICommand CopySelectionCommand { get; private set; }
 
         /// <summary>
-        /// Gets the path to the project file.
+        /// Gets the command to paste the selection to the clipboard.
         /// </summary>
-        public String ProjectFilePath
-        {
-            get
-            {
-                return this.projectFilePath;
-            }
+        public ICommand PasteSelectionCommand { get; private set; }
 
-            private set
-            {
-                this.projectFilePath = value;
-                this.RaisePropertyChanged(nameof(this.ProjectFilePath));
-            }
-        }
+        /// <summary>
+        /// Gets the command to cut the selection to the clipboard.
+        /// </summary>
+        public ICommand CutSelectionCommand { get; private set; }
+
+        /// <summary>
+        /// Gets an object that allows accesses to saving and loading project items.
+        /// </summary>
+        public ProjectItemStorage ProjectItemStorage { get; private set; }
 
         /// <summary>
         /// Gets the root that contains all project items.
         /// </summary>
-        public ProjectRoot ProjectRoot
+        public ObservableCollection<ProjectItem> ProjectItems
         {
             get
             {
-                return this.projectRoot;
+                return this.projectItems;
             }
 
-            private set
+            set
             {
-                this.projectRoot?.RemoveAllNodes();
-                this.projectRoot = value;
-                this.NotifyObserversStructureChange();
-                this.RaisePropertyChanged(nameof(this.ProjectRoot));
+                this.projectItems = value;
+                this.RaisePropertyChanged(nameof(this.ProjectItems));
             }
         }
 
@@ -218,7 +192,7 @@
         {
             get
             {
-                return new ObservableCollection<ProjectItem>(this.projectRoot.Children);
+                return new ObservableCollection<ProjectItem>(this.projectItems);
             }
         }
 
@@ -240,14 +214,14 @@
         }
 
         /// <summary>
+        /// The current project items copied to the clip board.
+        /// </summary>
+        private IEnumerable<ProjectItem> ClipBoard { get; set; }
+
+        /// <summary>
         /// Gets or sets a lock that controls access to observing classes.
         /// </summary>
         private Object ObserverLock { get; set; }
-
-        /// <summary>
-        /// Gets or sets objects observing changes in the selected objects.
-        /// </summary>
-        private HashSet<IProjectExplorerObserver> ProjectExplorerObservers { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
@@ -263,52 +237,7 @@
         /// </summary>
         public void DisableAllProjectItems()
         {
-            this.ProjectRoot.Flatten().ForEach(item => item.IsActivated = false);
-        }
-
-        /// <summary>
-        /// Disables all active project items with stream commands.
-        /// </summary>
-        public void DisableAllStreamProjectItems()
-        {
-            this.ProjectRoot.Flatten().Select(item => item).Where(item => !String.IsNullOrWhiteSpace(item.StreamCommand)).ForEach(item => item.IsActivated = false);
-        }
-
-        /// <summary>
-        /// Prompts the user to save the project if there are unsaved changes.
-        /// </summary>
-        /// <returns>Returns false if canceled, otherwise true.</returns>
-        public Boolean PromptSave()
-        {
-            if (!this.HasUnsavedChanges)
-            {
-                return true;
-            }
-
-            String projectName = Path.GetFileName(this.ProjectFilePath);
-
-            if (String.IsNullOrWhiteSpace(projectName))
-            {
-                projectName = "Untitled";
-            }
-
-            MessageBoxResult result = CenteredDialogBox.Show(
-                "Save changes to project " + projectName + "?",
-                "Unsaved Changes",
-                MessageBoxButton.YesNoCancel,
-                MessageBoxImage.Question);
-
-            if (result == MessageBoxResult.Cancel)
-            {
-                return false;
-            }
-
-            if (result == MessageBoxResult.Yes)
-            {
-                this.SaveProject();
-            }
-
-            return true;
+            this.ProjectItems?.ForEach(item => item.IsActivated = false);
         }
 
         /// <summary>
@@ -325,11 +254,10 @@
                 {
                     this.AddNewProjectItems(
                         addToSelected: true,
-                        projectItems: new AddressItem(
+                        projectItems: new PointerItem(
                             baseAddress: baseAddress.Subtract(module.BaseAddress),
                             elementType: elementType,
-                            resolveType: AddressResolver.ResolveTypeEnum.Module,
-                            baseIdentifier: module.Name));
+                            moduleName: module.Name));
 
                     return;
                 }
@@ -337,7 +265,7 @@
 
             this.AddNewProjectItems(
                 addToSelected: true,
-                projectItems: new AddressItem(
+                projectItems: new PointerItem(
                     baseAddress: baseAddress,
                     elementType: elementType));
         }
@@ -356,32 +284,10 @@
 
             foreach (ProjectItem projectItem in projectItems)
             {
-                if (ProjectRoot.HasNode(projectItem))
-                {
-                    return;
-                }
-
-                ProjectItem target = this.SelectedProjectItems?.FirstOrDefault();
-
-                // Atempt to find the correct folder to place the new item into
-                while (target != null && !(target is FolderItem))
-                {
-                    target = target.Parent as ProjectItem;
-                }
-
-                FolderItem targetFolder = target as FolderItem;
-
-                if (target != null)
-                {
-                    targetFolder.AddChild(projectItem);
-                }
-                else
-                {
-                    this.ProjectRoot.AddChild(projectItem);
-                }
+                this.ProjectItems.Add(projectItem);
             }
 
-            this.NotifyObserversStructureChange();
+            this.RaisePropertyChanged(nameof(this.ProjectItems));
         }
 
         /// <summary>
@@ -389,55 +295,15 @@
         /// </summary>
         public void OnPropertyUpdate()
         {
-            this.NotifyObserversValueChange();
-        }
-
-        /// <summary>
-        /// Subscribes the given object to changes in the project structure.
-        /// </summary>
-        /// <param name="projectExplorerObserver">The object to observe project structure changes.</param>
-        public void Subscribe(IProjectExplorerObserver projectExplorerObserver)
-        {
-            lock (this.ObserverLock)
-            {
-                if (!this.ProjectExplorerObservers.Contains(projectExplorerObserver))
-                {
-                    this.ProjectExplorerObservers.Add(projectExplorerObserver);
-                    projectExplorerObserver.Update(this.ProjectRoot);
-                    projectExplorerObserver.UpdateStructure(this.ProjectRoot);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Unsubscribes the given object from changes in the project structure.
-        /// </summary>
-        /// <param name="projectExplorerObserver">The object to observe project structure changes.</param>
-        public void Unsubscribe(IProjectExplorerObserver projectExplorerObserver)
-        {
-            lock (this.ObserverLock)
-            {
-                if (this.ProjectExplorerObservers.Contains(projectExplorerObserver))
-                {
-                    this.ProjectExplorerObservers.Remove(projectExplorerObserver);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Adds a new folder to the project items.
-        /// </summary>
-        private void AddNewFolderItem()
-        {
-            this.AddNewProjectItems(true, new FolderItem());
+            this.RaisePropertyChanged(nameof(this.ProjectItems));
         }
 
         /// <summary>
         /// Adds a new address to the project items.
         /// </summary>
-        private void AddNewAddressItem()
+        private void AddNewPointerItem()
         {
-            this.AddNewProjectItems(true, new AddressItem());
+            this.AddNewProjectItems(true, new PointerItem());
         }
 
         /// <summary>
@@ -449,14 +315,28 @@
         }
 
         /// <summary>
-        /// Deletes the selected project explorer items.
+        /// Edits a project item based on the project item type.
         /// </summary>
-        private void DeleteSelection()
+        /// <param name="projectItem">The project item to edit.</param>
+        private void EditProjectItem(ProjectItem projectItem)
         {
-            this.ProjectRoot.RemoveNodes(this.SelectedProjectItems);
-            this.SelectedProjectItems = null;
+            if (projectItem is AddressItem)
+            {
+                ValueEditorModel valueEditor = new ValueEditorModel();
+                AddressItem addressItem = projectItem as AddressItem;
+                dynamic result = valueEditor.EditValue(null, null, addressItem);
 
-            this.NotifyObserversStructureChange();
+                if (CheckSyntax.CanParseValue(addressItem.DataType, result?.ToString()))
+                {
+                    addressItem.AddressValue = result;
+                }
+            }
+            else if (projectItem is ScriptItem)
+            {
+                ScriptEditorModel scriptEditor = new ScriptEditorModel();
+                ScriptItem scriptItem = projectItem as ScriptItem;
+                scriptItem.Script = scriptEditor.EditValue(null, null, scriptItem.Script) as String;
+            }
         }
 
         /// <summary>
@@ -464,7 +344,7 @@
         /// </summary>
         private void ToggleSelectionActivation()
         {
-            if (this.SelectedProjectItems == null || this.SelectedProjectItems.Count() < 0)
+            if (this.SelectedProjectItems == null)
             {
                 return;
             }
@@ -479,6 +359,68 @@
         }
 
         /// <summary>
+        /// Deletes the selected project explorer items.
+        /// </summary>
+        private void DeleteSelection()
+        {
+            if (this.SelectedProjectItems.IsNullOrEmpty())
+            {
+                return;
+            }
+
+            System.Windows.MessageBoxResult result = CenteredDialogBox.Show(
+                System.Windows.Application.Current.MainWindow,
+                "Delete selected items?",
+                "Confirm",
+                System.Windows.MessageBoxButton.OKCancel,
+                System.Windows.MessageBoxImage.Warning);
+
+            if (result == System.Windows.MessageBoxResult.OK)
+            {
+                foreach (ProjectItem projectItem in this.SelectedProjectItems)
+                {
+                    this.ProjectItems.Remove(projectItem);
+                }
+
+                this.SelectedProjectItems = null;
+            }
+        }
+
+        /// <summary>
+        /// Copies the selected project explorer items.
+        /// </summary>
+        private void CopySelection()
+        {
+            this.ClipBoard = this.SelectedProjectItems?.SoftClone();
+        }
+
+        /// <summary>
+        /// Pastes the copied project explorer items.
+        /// </summary>
+        private void PasteSelection()
+        {
+            if (this.ClipBoard == null || this.ClipBoard.Count() <= 0)
+            {
+                return;
+            }
+
+            foreach (ProjectItem projectItem in this.ClipBoard)
+            {
+                // We must clone the item, such as to prevent duplicate references of the same exact object
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, projectItem.Clone());
+            }
+        }
+
+        /// <summary>
+        /// Cuts the selected project explorer items.
+        /// </summary>
+        private void CutSelection()
+        {
+            this.ClipBoard = this.SelectedProjectItems?.SoftClone();
+            this.DeleteSelection();
+        }
+
+        /// <summary>
         /// Continously updates the project explorer items.
         /// </summary>
         private void Update()
@@ -487,350 +429,14 @@
             {
                 while (true)
                 {
-                    this.ProjectRoot.Update();
-                    this.NotifyObserversValueChange();
+                    foreach (ProjectItem projectItem in this.ProjectItems)
+                    {
+                        projectItem.Update();
+                    }
+
                     Thread.Sleep(SettingsViewModel.GetInstance().TableReadInterval);
                 }
             });
-        }
-
-        /// <summary>
-        /// Opens a project from disk.
-        /// </summary>
-        private void OpenProject()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = ProjectExtensionFilter;
-            openFileDialog.Title = "Open Project";
-
-            if (openFileDialog.ShowDialog() == false)
-            {
-                return;
-            }
-
-            this.ProjectRoot = new ProjectRoot();
-            this.ProjectFilePath = openFileDialog.FileName;
-
-            // Open the project file
-            try
-            {
-                if (!File.Exists(this.ProjectFilePath))
-                {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to locate project.");
-                    return;
-                }
-
-                using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
-                {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    this.ProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
-                    this.HasUnsavedChanges = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                this.ProjectFilePath = String.Empty;
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to open project", ex.ToString());
-                return;
-            }
-
-            // Open the hotkey file
-            try
-            {
-                String hotkeyFilePath = this.GetHotkeyFilePathFromProjectFilePath(this.projectFilePath);
-
-                if (File.Exists(hotkeyFilePath))
-                {
-                    using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Open, FileAccess.Read))
-                    {
-                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
-                        ProjectItemHotkey[] projectItemHotkeys = serializer.ReadObject(fileStream) as ProjectItemHotkey[];
-
-                        this.BindHotkeys(this.ProjectRoot.Flatten(), projectItemHotkeys);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
-                return;
-            }
-        }
-
-        /// <summary>
-        /// Imports a project from disk, adding the project items to the current project.
-        /// </summary>
-        /// <param name="filename">The file path of the project to import.</param>
-        private void ImportProject(String filename = null)
-        {
-            // Ask for a specific file if one was not explicitly provided
-            if (filename == null || filename == String.Empty)
-            {
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = ProjectExtensionFilter;
-                openFileDialog.Title = "Import Project";
-
-                if (openFileDialog.ShowDialog() == false)
-                {
-                    return;
-                }
-
-                filename = openFileDialog.FileName;
-
-                // Clear the current project, such that on save the user is prompted to reselect this
-                this.ProjectFilePath = null;
-            }
-
-            // Import the project file
-            ProjectRoot importedProjectRoot = null;
-            try
-            {
-                if (!File.Exists(filename))
-                {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to locate project.");
-                    return;
-                }
-
-                using (FileStream fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-                {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                    importedProjectRoot = serializer.ReadObject(fileStream) as ProjectRoot;
-
-                    // Add each high level child in the project root to this project
-                    foreach (ProjectItem child in importedProjectRoot.Children)
-                    {
-                        this.AddNewProjectItems(false, child);
-                    }
-
-                    this.HasUnsavedChanges = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to import project", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
-                return;
-            }
-
-            // Import the hotkey file
-            try
-            {
-                String hotkeyFilePath = this.GetHotkeyFilePathFromProjectFilePath(filename);
-
-                if (File.Exists(hotkeyFilePath))
-                {
-                    using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Open, FileAccess.Read))
-                    {
-                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
-                        ProjectItemHotkey[] projectItemHotkeys = serializer.ReadObject(fileStream) as ProjectItemHotkey[];
-
-                        // Bind the hotkey to this project item
-                        this.BindHotkeys(importedProjectRoot?.Flatten(), projectItemHotkeys);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to open hotkey profile", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
-                return;
-            }
-
-            // Randomize the guid for imported project items, preventing possible conflicts
-            if (importedProjectRoot != null)
-            {
-                foreach (ProjectItem child in importedProjectRoot.Flatten())
-                {
-                    child.ResetGuid();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Save a project to disk.
-        /// </summary>
-        private void SaveProject()
-        {
-            // Save the project file
-            try
-            {
-
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
-                saveFileDialog.Filter = ProjectExplorerViewModel.ProjectExtensionFilter;
-                saveFileDialog.Title = "Save Project";
-                saveFileDialog.FileName = String.IsNullOrWhiteSpace(this.ProjectFilePath) ? String.Empty : Path.GetFileName(this.ProjectFilePath);
-                saveFileDialog.RestoreDirectory = true;
-                saveFileDialog.InitialDirectory = String.IsNullOrWhiteSpace(this.ProjectFilePath) ? String.Empty : Path.GetDirectoryName(this.ProjectFilePath);
-
-                if (saveFileDialog.ShowDialog() == true)
-                {
-                    this.ProjectFilePath = saveFileDialog.FileName;
-
-                    using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Create, FileAccess.Write))
-                    {
-                        DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                        serializer.WriteObject(fileStream, this.ProjectRoot);
-                    }
-
-                    this.HasUnsavedChanges = false;
-                }
-            }
-            catch (Exception ex)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to save project", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
-                return;
-            }
-
-            // Save the hotkey profile
-            try
-            {
-                String hotkeyFilePath = this.GetHotkeyFilePathFromProjectFilePath(this.projectFilePath);
-
-                using (FileStream fileStream = new FileStream(hotkeyFilePath, FileMode.Create, FileAccess.Write))
-                {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItemHotkey[]));
-                    ProjectItemHotkey[] hotkeys = ProjectExplorerViewModel.GetInstance().ProjectRoot?.Flatten().Select(x => new ProjectItemHotkey(x.HotKey, x.StreamCommand, x.Guid)).ToArray();
-                    serializer.WriteObject(fileStream, hotkeys);
-                }
-            }
-            catch (Exception ex)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to save hotkey profile", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
-                return;
-            }
-        }
-
-        /// <summary>
-        /// Export a project to separate files.
-        /// </summary>
-        private void ExportProject()
-        {
-            Task.Run(() =>
-            {
-                // Export the project items to thier own individual files
-                try
-                {
-                    if (String.IsNullOrEmpty(this.ProjectFilePath) || !Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
-                    {
-                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Please save the project before exporting");
-                        return;
-                    }
-
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Project export starting");
-
-                    String folderPath = Path.Combine(Path.GetDirectoryName(this.ProjectFilePath), "Export");
-                    Directory.CreateDirectory(folderPath);
-
-                    Parallel.ForEach(
-                        this.ProjectRoot
-                            .Flatten(item => (item is FolderItem) && !(item as FolderItem).ExportStop)
-                            .Where(item => !(item is FolderItem) || (item as FolderItem).ExportStop),
-                        SettingsViewModel.GetInstance().ParallelSettingsFast,
-                        (projectItem) =>
-                    {
-                        ProjectItem targetProjectItem = projectItem;
-
-                        if (projectItem is ScriptItem)
-                        {
-                            ScriptItem scriptItem = projectItem as ScriptItem;
-
-                            if (!scriptItem.IsCompiled)
-                            {
-                                targetProjectItem = scriptItem?.Compile();
-                            }
-                        }
-
-                        if (targetProjectItem == null)
-                        {
-                            return;
-                        }
-
-                        String filePath = Path.Combine(folderPath, targetProjectItem.Description + ProjectExplorerViewModel.ProjectFileExtension);
-
-                        using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                        {
-                            ProjectRoot newProjectRoot = new ProjectRoot();
-                            newProjectRoot.AddChild(targetProjectItem);
-
-                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectRoot));
-                            serializer.WriteObject(fileStream, newProjectRoot);
-                        }
-                    });
-                }
-                catch (Exception ex)
-                {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unable to complete export project", ex);
-                    AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
-                    return;
-                }
-
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Project export complete");
-            });
-        }
-
-        /// <summary>
-        /// Binds deserailized project item hotkeys to the corresponding project items.
-        /// </summary>
-        /// <param name="projectItems">The candidate project items to which we are binding the hotkeys.</param>
-        /// <param name="projectItemHotkeys">The deserialized project item hotkeys.</param>
-        private void BindHotkeys(IEnumerable<ProjectItem> projectItems, IEnumerable<ProjectItemHotkey> projectItemHotkeys)
-        {
-            if (projectItemHotkeys.IsNullOrEmpty())
-            {
-                return;
-            }
-
-            projectItemHotkeys
-                .Join(
-                    projectItems,
-                    binding => binding.ProjectItemGuid,
-                    item => item.Guid,
-                    (binding, item) => new { binding = binding, item = item })
-                .ForEach(x => x.item.LoadHotkey(x.binding.Hotkey))
-                .ForEach(x => x.item.LoadStreamCommand(x.binding.StreamCommand));
-        }
-
-        /// <summary>
-        /// Notify all observing objects of a change in the project structure.
-        /// </summary>
-        private void NotifyObserversStructureChange()
-        {
-            lock (this.ObserverLock)
-            {
-                foreach (IProjectExplorerObserver observer in this.ProjectExplorerObservers)
-                {
-                    observer.UpdateStructure(this.ProjectRoot);
-                }
-            }
-
-            this.RaisePropertyChanged(nameof(this.ProjectRoot));
-        }
-
-        /// <summary>
-        /// Notify all observing objects of a change in the project structure.
-        /// </summary>
-        private void NotifyObserversValueChange()
-        {
-            lock (this.ObserverLock)
-            {
-                foreach (IProjectExplorerObserver observer in this.ProjectExplorerObservers)
-                {
-                    observer.Update(this.ProjectRoot);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the hotkey file path that corresponds to this project file path.
-        /// </summary>
-        /// <param name="projectFilePath">The path to the project file.</param>
-        /// <returns>The file path to the hotkey file.</returns>
-        private String GetHotkeyFilePathFromProjectFilePath(String projectFilePath)
-        {
-            return Path.Combine(Path.GetDirectoryName(projectFilePath), Path.GetFileNameWithoutExtension(projectFilePath)) + ProjectExplorerViewModel.HotkeyFileExtension;
         }
     }
     //// End class

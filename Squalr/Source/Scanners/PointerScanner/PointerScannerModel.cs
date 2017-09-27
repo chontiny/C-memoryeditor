@@ -3,17 +3,16 @@
     using ActionScheduler;
     using BackgroundScans.Prefilters;
     using Engine;
-    using Engine.AddressResolver;
     using ProjectExplorer;
     using ProjectExplorer.ProjectItems;
     using ScanConstraints;
     using Snapshots;
+    using Squalr.Properties;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using UserSettings;
     using Utils;
     using Utils.Extensions;
 
@@ -138,13 +137,12 @@
                 String pointerValue = String.Empty;
                 this.IndexValueMap.TryGetValue(index, out pointerValue);
 
-                AddressItem newPointer = new AddressItem(
+                PointerItem newPointer = new PointerItem(
                     baseAddress: this.AcceptedPointers[index].Item1,
                     elementType: this.ElementType,
                     description: "New Pointer",
-                    resolveType: AddressResolver.ResolveTypeEnum.Module,
-                    baseIdentifier: String.Empty,
-                    offsets: this.AcceptedPointers[index].Item2,
+                    moduleName: String.Empty,
+                    pointerOffsets: this.AcceptedPointers[index].Item2,
                     isValueHex: false,
                     value: pointerValue
                 );

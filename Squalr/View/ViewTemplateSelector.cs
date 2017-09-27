@@ -1,6 +1,5 @@
 ﻿namespace Squalr.View
 {
-    using Source.CheatBrowser;
     using Source.DotNetExplorer;
     using Source.Editors.HotkeyEditor;
     using Source.Editors.ScriptEditor;
@@ -17,10 +16,10 @@
     using Source.Scanners.ManualScanner;
     using Source.Scanners.PointerScanner;
     using Source.Snapshots;
-    using Source.StreamWeaver;
-    using Source.UserSettings;
-    using Squalr.Source.Editors.StreamIconEditor;
-    using Squalr.Source.StreamWeaver.Table;
+    using Squalr.Properties;
+    using Squalr.Source.Browse;
+    using Squalr.Source.Browse.StreamConfig;
+    using Squalr.Source.Browse.TwitchLogin;
     using System;
     using System.Windows;
     using System.Windows.Controls;
@@ -83,14 +82,24 @@
         public DataTemplate PointerScanResultsViewTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the template for the Browser.
+        /// </summary>
+        public DataTemplate BrowseViewTemplate { get; set; }
+
+        /// <summary>
         /// Gets or sets the template for the Cheat Browser.
         /// </summary>
         public DataTemplate CheatBrowserViewTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the template for the Twitch Login.
+        /// </summary>
+        public DataTemplate TwitchLoginViewTemplate { get; set; }
+
+        /// <summary>
         /// Gets or sets the template for the Stream Weaver.
         /// </summary>
-        public DataTemplate StreamWeaverViewTemplate { get; set; }
+        public DataTemplate TwitchConfigViewTemplate { get; set; }
 
         /// <summary>
         /// Gets or sets the template for the Stream Table.
@@ -201,21 +210,17 @@
             {
                 return this.PointerScanResultsViewTemplate;
             }
-            else if (item is CheatBrowserViewModel)
+            else if (item is BrowseViewModel)
             {
-                return this.CheatBrowserViewTemplate;
+                return this.BrowseViewTemplate;
             }
-            else if (item is StreamWeaverViewModel)
+            else if (item is TwitchLoginViewModel)
             {
-                return this.StreamWeaverViewTemplate;
+                return this.TwitchLoginViewTemplate;
             }
-            else if (item is StreamTableViewModel)
+            else if (item is StreamConfigViewModel)
             {
-                return this.StreamTableViewTemplate;
-            }
-            else if (item is StreamIconEditorViewModel)
-            {
-                return this.StreamIconEditorViewTemplate;
+                return this.TwitchConfigViewTemplate;
             }
             else if (item is DotNetExplorerViewModel)
             {

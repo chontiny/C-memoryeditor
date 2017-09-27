@@ -1,78 +1,47 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
     using Controls;
-    using Editors.OffsetEditor;
     using Engine;
-    using Engine.AddressResolver;
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Drawing.Design;
-    using System.Linq;
     using System.Runtime.Serialization;
     using Utils;
-    using Utils.Extensions;
     using Utils.TypeConverters;
 
     /// <summary>
     /// Defines an address that can be added to the project explorer.
     /// </summary>
     [DataContract]
-    internal class AddressItem : ProjectItem
+    internal abstract class AddressItem : ProjectItem
     {
         /// <summary>
-        /// The identifier type for this address item.
+        /// The data type at this address.
         /// </summary>
         [Browsable(false)]
-        private AddressResolver.ResolveTypeEnum resolveType;
-
-        /// <summary>
-        /// The identifier for the base address of this object.
-        /// </summary>
-        [Browsable(false)]
-        private String baseIdentifier;
-
-        /// <summary>
-        /// The base address of this object. This will be added as an offset from the resolved base identifier.
-        /// </summary>
-        [Browsable(false)]
-        private IntPtr baseAddress;
-
-        /// <summary>
-        /// The pointer offsets of this address item.
-        /// </summary>
-        [Browsable(false)]
-        private IEnumerable<Int32> offsets;
-
-        /// <summary>
-        /// The type name of the element type of this address. Used for serailization purposes.
-        /// </summary>
-        [DataMember]
-        [Browsable(false)]
-        private String typeName;
+        protected DataType dataType;
 
         /// <summary>
         /// The value at this address.
         /// </summary>
         [Browsable(false)]
-        private Object addressValue;
+        protected Object addressValue;
 
         /// <summary>
         /// A value indicating whether the value at this address should be displayed as hex.
         /// </summary>
         [Browsable(false)]
-        private Boolean isValueHex;
+        protected Boolean isValueHex;
 
         /// <summary>
         /// The effective address after tracing all pointer offsets.
         /// </summary>
         [Browsable(false)]
-        private IntPtr effectiveAddress;
+        protected IntPtr calculatedAddress;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
         /// </summary>
-        public AddressItem() : this(IntPtr.Zero, typeof(Int32), "New Address")
+        public AddressItem() : this(typeof(Int32), "New Address")
         {
         }
 
@@ -80,176 +49,61 @@
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
         /// </summary>
         /// <param name="baseAddress">The base address. This will be added as an offset from the resolved base identifier.</param>
-        /// <param name="elementType">The data type of the value at this address.</param>
+        /// <param name="dataType">The data type of the value at this address.</param>
         /// <param name="description">The description of this address.</param>
-        /// <param name="resolveType">The identifier type for this address item.</param>
         /// <param name="baseIdentifier">The identifier for the base address of this object.</param>
         /// <param name="offsets">The pointer offsets of this address item.</param>
         /// <param name="isValueHex">A value indicating whether the value at this address should be displayed as hex.</param>
         /// <param name="value">The value at this address. If none provided, it will be figured out later. Used here to allow immediate view updates upon creation.</param>
         public AddressItem(
-            IntPtr baseAddress,
-            Type elementType,
+            Type dataType,
             String description = "New Address",
-            AddressResolver.ResolveTypeEnum resolveType = AddressResolver.ResolveTypeEnum.Module,
-            String baseIdentifier = null,
-            IEnumerable<Int32> offsets = null,
             Boolean isValueHex = false,
             String value = null)
             : base(description)
         {
             // Bypass setters to avoid running setter code
-            this.baseAddress = baseAddress;
-            this.ElementType = elementType;
-            this.resolveType = resolveType;
-            this.baseIdentifier = baseIdentifier;
-            this.offsets = offsets;
+            this.dataType = dataType;
             this.isValueHex = isValueHex;
 
-            if (!this.isValueHex && CheckSyntax.CanParseValue(elementType, value))
+            if (!this.isValueHex && CheckSyntax.CanParseValue(dataType, value))
             {
-                this.addressValue = Conversions.ParsePrimitiveStringAsPrimitive(elementType, value);
+                this.addressValue = Conversions.ParsePrimitiveStringAsPrimitive(dataType, value);
             }
-            else if (this.isValueHex && CheckSyntax.CanParseHex(elementType, value))
+            else if (this.isValueHex && CheckSyntax.CanParseHex(dataType, value))
             {
-                this.addressValue = Conversions.ParseHexStringAsPrimitiveString(elementType, value);
+                this.addressValue = Conversions.ParseHexStringAsPrimitiveString(dataType, value);
             }
         }
 
         /// <summary>
-        /// Gets or sets the identifier type for this address item.
+        /// Gets or sets the data type of the value at this address.
         /// </summary>
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
-        [TypeConverter(typeof(EnumDescriptionConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Resolve Type"), Description("Method to use for resolving the address base. If there is an identifier to resolve, the address is treated as an offset.")]
-        public AddressResolver.ResolveTypeEnum ResolveType
+        [TypeConverter(typeof(DataTypeConverter))]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Data Type"), Description("Data type of the calculated address")]
+        public DataType DataType
         {
             get
             {
-                return this.resolveType;
+                return this.dataType;
             }
 
             set
             {
-                if (this.resolveType == value)
+                if (this.dataType == value)
                 {
                     return;
                 }
 
-                this.resolveType = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.ResolveType));
-            }
-        }
+                this.dataType = value;
 
-        /// <summary>
-        /// Gets or sets the identifier for the base address of this object.
-        /// </summary>
-        [DataMember]
-        [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Resolve Id"), Description("Text identifier to use when resolving the base address, such as a module or .NET Object name")]
-        public String BaseIdentifier
-        {
-            get
-            {
-                return this.baseIdentifier;
-            }
+                // Clear our current address value
+                this.addressValue = null;
 
-            set
-            {
-                if (this.baseIdentifier == value)
-                {
-                    return;
-                }
-
-                this.baseIdentifier = value == null ? String.Empty : value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.BaseIdentifier));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the base address of this object. This will be added as an offset from the resolved base identifier.
-        /// </summary>
-        [DataMember]
-        [RefreshProperties(RefreshProperties.All)]
-        [TypeConverter(typeof(AddressConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Address Base"), Description("Base address")]
-        public IntPtr BaseAddress
-        {
-            get
-            {
-                return this.baseAddress;
-            }
-
-            set
-            {
-                if (this.baseAddress == value)
-                {
-                    return;
-                }
-
-                this.EffectiveAddress = value;
-                this.baseAddress = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.BaseAddress));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the pointer offsets of this address item.
-        /// </summary>
-        [DataMember]
-        [RefreshProperties(RefreshProperties.All)]
-        [TypeConverter(typeof(OffsetConverter))]
-        [Editor(typeof(OffsetEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Address Offsets"), Description("Address offsets")]
-        public IEnumerable<Int32> Offsets
-        {
-            get
-            {
-                return this.offsets;
-            }
-
-            set
-            {
-                if (this.offsets != null && this.offsets.SequenceEqual(value))
-                {
-                    return;
-                }
-
-                this.offsets = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Offsets));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the element type of the value at this address.
-        /// </summary>
-        [RefreshProperties(RefreshProperties.All)]
-        [TypeConverter(typeof(ValueTypeConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value Type"), Description("Data type of the address")]
-        public Type ElementType
-        {
-            get
-            {
-                return Type.GetType(this.typeName);
-            }
-
-            set
-            {
-                if (this.typeName == (value == null ? String.Empty : value.FullName))
-                {
-                    return;
-                }
-
-                String oldTypeName = this.typeName;
-                this.typeName = value == null ? String.Empty : value.FullName;
-                this.addressValue = (oldTypeName != this.typeName) ? null : this.addressValue;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.ElementType));
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.DataType));
             }
         }
 
@@ -257,8 +111,8 @@
         /// Gets or sets the value at this address.
         /// </summary>
         [TypeConverter(typeof(DynamicConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value"), Description("Value at the address")]
-        public Object Value
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value"), Description("Value at the calculated address")]
+        public Object AddressValue
         {
             get
             {
@@ -269,7 +123,7 @@
             {
                 this.addressValue = value;
                 this.WriteValue(value);
-                this.NotifyPropertyChanged(nameof(this.Value));
+                this.NotifyPropertyChanged(nameof(this.AddressValue));
             }
         }
 
@@ -278,7 +132,7 @@
         /// </summary>
         [DataMember]
         [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether or not to display value as hexedecimal")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether the value is displayed as hexedecimal")]
         public Boolean IsValueHex
         {
             get
@@ -294,7 +148,7 @@
                 }
 
                 this.isValueHex = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.IsValueHex));
             }
         }
@@ -304,23 +158,23 @@
         /// </summary>
         [ReadOnly(true)]
         [TypeConverter(typeof(AddressConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Address"), Description("Effective address")]
-        public IntPtr EffectiveAddress
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Calculated Address"), Description("The final computed address of this variable")]
+        public IntPtr CalculatedAddress
         {
             get
             {
-                return this.effectiveAddress;
+                return this.calculatedAddress;
             }
 
-            private set
+            protected set
             {
-                if (this.effectiveAddress == value)
+                if (this.calculatedAddress == value)
                 {
                     return;
                 }
 
-                this.effectiveAddress = value;
-                this.NotifyPropertyChanged(nameof(this.EffectiveAddress));
+                this.calculatedAddress = value;
+                this.NotifyPropertyChanged(nameof(this.CalculatedAddress));
             }
         }
 
@@ -329,13 +183,13 @@
         /// </summary>
         public override void Update()
         {
-            this.EffectiveAddress = this.ResolveAddress();
+            this.CalculatedAddress = this.ResolveAddress();
 
             if (this.IsActivated)
             {
                 // Freeze current value if this entry is activated
-                Object value = this.Value;
-                if (value != null && value.GetType() == this.ElementType)
+                Object value = this.AddressValue;
+                if (value != null && value.GetType() == this.DataType)
                 {
                     this.WriteValue(value);
                 }
@@ -344,98 +198,28 @@
             {
                 // Otherwise we read as normal (bypass value setter and set value directly to avoid a write-back to memory)
                 Boolean readSuccess;
-                this.addressValue = EngineCore.GetInstance()?.OperatingSystem?.Read(this.ElementType, this.EffectiveAddress, out readSuccess);
+                this.addressValue = EngineCore.GetInstance()?.OperatingSystem?.Read(this.DataType, this.CalculatedAddress, out readSuccess);
             }
         }
 
         /// <summary>
-        /// Clones the project item.
-        /// </summary>
-        /// <returns>The clone of the project item.</returns>
-        public override ProjectItem Clone()
-        {
-            AddressItem clone = new AddressItem();
-            clone.category = this.Category;
-            clone.description = this.Description;
-            clone.parent = this.Parent;
-            clone.extendedDescription = this.ExtendedDescription;
-            clone.streamIconPath = this.StreamIconPath;
-            clone.resolveType = this.resolveType;
-            clone.baseIdentifier = this.baseIdentifier;
-            clone.baseAddress = this.baseAddress;
-            clone.offsets = this.offsets?.ToArray();
-            clone.typeName = this.typeName;
-            clone.addressValue = this.addressValue;
-            clone.isValueHex = this.isValueHex;
-            clone.effectiveAddress = this.effectiveAddress;
-
-            return clone;
-        }
-
-        /// <summary>
-        /// Resolves the address of an address, pointer, or managed object.
+        /// Resolves the address of this object.
         /// </summary>
         /// <returns>The base address of this object.</returns>
-        public IntPtr ResolveAddress()
-        {
-            IntPtr pointer = IntPtr.Zero;
-            Boolean successReading = true;
-
-            switch (this.ResolveType)
-            {
-                case AddressResolver.ResolveTypeEnum.Module:
-                    pointer = AddressResolver.GetInstance().ResolveModule(this.BaseIdentifier);
-                    break;
-                case AddressResolver.ResolveTypeEnum.GlobalKeyword:
-                    pointer = AddressResolver.GetInstance().ResolveGlobalKeyword(this.BaseIdentifier);
-                    break;
-                case AddressResolver.ResolveTypeEnum.DotNet:
-                    pointer = AddressResolver.GetInstance().ResolveDotNetObject(this.BaseIdentifier);
-                    break;
-            }
-
-            pointer = pointer.Add(this.BaseAddress);
-
-            if (this.Offsets == null || this.Offsets.Count() == 0)
-            {
-                return pointer;
-            }
-
-            foreach (Int32 offset in this.Offsets)
-            {
-                if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
-                {
-                    pointer = EngineCore.GetInstance().OperatingSystem.Read<Int32>(pointer, out successReading).ToIntPtr();
-                }
-                else
-                {
-                    pointer = EngineCore.GetInstance().OperatingSystem.Read<Int64>(pointer, out successReading).ToIntPtr();
-                }
-
-                pointer = pointer.Add(offset);
-
-                if (pointer == IntPtr.Zero || !successReading)
-                {
-                    pointer = IntPtr.Zero;
-                    break;
-                }
-            }
-
-            return pointer;
-        }
+        protected abstract IntPtr ResolveAddress();
 
         /// <summary>
         /// Writes a value to the computed address of this item.
         /// </summary>
         /// <param name="newValue">The value to write.</param>
-        private void WriteValue(Object newValue)
+        protected virtual void WriteValue(Object newValue)
         {
             if (newValue == null)
             {
                 return;
             }
 
-            EngineCore.GetInstance()?.OperatingSystem?.Write(this.ElementType, this.EffectiveAddress, newValue);
+            EngineCore.GetInstance()?.OperatingSystem?.Write(this.DataType, this.CalculatedAddress, newValue);
         }
     }
     //// End class

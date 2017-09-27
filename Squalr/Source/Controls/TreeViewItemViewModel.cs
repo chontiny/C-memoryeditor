@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Controls
 {
-    using Mvvm;
+    using GalaSoft.MvvmLight;
     using System;
     using System.Collections.ObjectModel;
 

@@ -2,14 +2,9 @@
     x:Class="Squalr.View.ManualScanner"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:Controls="clr-namespace:Squalr.Source.Controls"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-    xmlns:local="clr-namespace:Squalr"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
     x:Name="SqualrManualScanner"
     d:DesignHeight="256"
     d:DesignWidth="384"
@@ -19,7 +14,7 @@
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid.Resources>
             <converters:IconConverter x:Key="IconConverter" />
-            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </Grid.Resources>
         <Grid>
             <Grid.RowDefinitions>
@@ -337,53 +332,51 @@
             </WrapPanel>
 
             <!--  Column titles  -->
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
-                    <ListView.Template>
-                        <ControlTemplate>
-                            <Grid HorizontalAlignment="Left">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <Grid
-                                    Grid.Row="0"
-                                    Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                                    VerticalAlignment="Center">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition />
-                                        <ColumnDefinition />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="5,0" />
-                                            <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                                            <Setter Property="FontWeight" Value="Bold" />
-                                        </Style>
-                                        <Style TargetType="Border">
-                                            <Setter Property="BorderThickness" Value="0" />
-                                            <Setter Property="Padding" Value="8,4,8,4" />
-                                            <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                                        </Style>
-                                    </Grid.Resources>
-                                    <Border Grid.Column="0">
-                                        <TextBlock Text="Active Constraints" />
-                                    </Border>
-                                    <Border Grid.Column="1">
-                                        <TextBlock Text="Value" />
-                                    </Border>
-                                </Grid>
+            <ListView Grid.Row="2" BorderThickness="0">
+                <ListView.Template>
+                    <ControlTemplate>
+                        <Grid HorizontalAlignment="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid
+                                Grid.Row="0"
+                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
+                                VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Margin" Value="5,0" />
+                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="Padding" Value="8,4,8,4" />
+                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Border Grid.Column="0">
+                                    <TextBlock Text="Active Constraints" />
+                                </Border>
+                                <Border Grid.Column="1">
+                                    <TextBlock Text="Value" />
+                                </Border>
                             </Grid>
-                        </ControlTemplate>
-                    </ListView.Template>
-                </ListView>
-            </ScrollViewer>
+                        </Grid>
+                    </ControlTemplate>
+                </ListView.Template>
+            </ListView>
 
             <!--  Pending constraint, visible if no constraints added  -->
             <ScrollViewer
                 Grid.Row="3"
                 VerticalScrollBarVisibility="Auto"
-                Visibility="{Binding HasNoConstraints, Converter={StaticResource BoolToVisibilityConverter}}">
+                Visibility="{Binding HasNoConstraints, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
                     <ListView.Resources>
                         <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />

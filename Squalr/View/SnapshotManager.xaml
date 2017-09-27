@@ -4,17 +4,16 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-    xmlns:local="clr-namespace:Squalr"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
     x:Name="SqualrSnapshotManager"
     d:DesignHeight="256"
     d:DesignWidth="320"
     x:ClassModifier="internal"
     DataContext="{Binding SnapshotManagerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public SnapshotManager() { InitializeComponent(); }]]>
+    </x:Code>
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid>
             <Grid.Resources>

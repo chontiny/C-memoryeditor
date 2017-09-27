@@ -5,10 +5,10 @@
     using Output;
     using Results.ScanResults;
     using Scanners.ScanConstraints;
+    using Squalr.Properties;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using UserSettings;
     using Utils;
     using Utils.Extensions;
 

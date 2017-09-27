@@ -253,78 +253,6 @@ namespace Squalr.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TwitchUsername {
-            get {
-                return ((string)(this["TwitchUsername"]));
-            }
-            set {
-                this["TwitchUsername"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string TwitchAccessToken {
-            get {
-                return ((string)(this["TwitchAccessToken"]));
-            }
-            set {
-                this["TwitchAccessToken"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2")]
-        public int NumberOfGlitches {
-            get {
-                return ((int)(this["NumberOfGlitches"]));
-            }
-            set {
-                this["NumberOfGlitches"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2")]
-        public int NumberOfCurses {
-            get {
-                return ((int)(this["NumberOfCurses"]));
-            }
-            set {
-                this["NumberOfCurses"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("4")]
-        public int NumberOfBuffs {
-            get {
-                return ((int)(this["NumberOfBuffs"]));
-            }
-            set {
-                this["NumberOfBuffs"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2")]
-        public int NumberOfMiscellaneous {
-            get {
-                return ((int)(this["NumberOfMiscellaneous"]));
-            }
-            set {
-                this["NumberOfMiscellaneous"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ScriptKittiez")]
         public string TwitchChannel {
             get {
@@ -337,13 +265,13 @@ namespace Squalr.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("6969")]
-        public int OverlayPort {
+        [global::System.Configuration.DefaultSettingValueAttribute("{}")]
+        public string AccessTokens {
             get {
-                return ((int)(this["OverlayPort"]));
+                return ((string)(this["AccessTokens"]));
             }
             set {
-                this["OverlayPort"] = value;
+                this["AccessTokens"] = value;
             }
         }
     }

@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Editors.StreamIconEditor
 {
     using Docking;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Mvvm.Command;
-    using Squalr.Source.StreamWeaver;
-    using Squalr.Source.StreamWeaver.Table;
+    using Squalr.Source.Api;
+    using Squalr.Source.Api.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -28,6 +28,11 @@
         private const String StreamIconsPath = @"Content/Overlay/Images/Buffs/";
 
         /// <summary>
+        /// The list of available stream icons.
+        /// </summary>
+        private IEnumerable<StreamIcon> streamIcons;
+
+        /// <summary>
         /// Singleton instance of the <see cref="StreamIconEditorViewModel" /> class.
         /// </summary>
         private static Lazy<StreamIconEditorViewModel> streamIconEditorViewModelInstance = new Lazy<StreamIconEditorViewModel>(
@@ -44,6 +49,12 @@
             this.ContentId = StreamIconEditorViewModel.ToolContentId;
             this.SetIconCommand = new RelayCommand<StreamIcon>((streamIcon) => this.UpdateStreamIconPath(streamIcon), (streamIcon) => true);
             this.SelectIconCommand = new RelayCommand<StreamIcon>((streamIcon) => this.ChangeSelectedIcon(streamIcon), (streamIcon) => true);
+
+            Task.Run(() =>
+            {
+                this.streamIcons = SqualrApi.GetStreamIcons();
+                this.RaisePropertyChanged(nameof(this.FilteredStreamIconList));
+            });
 
             Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
         }
@@ -85,13 +96,13 @@
             {
                 if (String.IsNullOrWhiteSpace(this.SearchTerm))
                 {
-                    return StreamTableViewModel.GetInstance().StreamIconList;
+                    return this.streamIcons;
                 }
 
-                return StreamTableViewModel.GetInstance().StreamIconList
+                return this.streamIcons?
                     .Select(item => item)
                     .Where(item => item.IconName.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0
-                        || item.IconMeta.Keywords.Any(keyword => keyword.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0));
+                        || item.Keywords.Any(keyword => keyword.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0));
             }
         }
 
@@ -139,7 +150,7 @@
                 return;
             }
 
-            this.StreamIconName = streamIcon.IconName + ".svg";
+            this.StreamIconName = streamIcon.IconName;
             this.SelectionCallBack?.Invoke();
         }
     }

@@ -2,8 +2,8 @@
 {
     using Docking;
     using Engine.Input.HotKeys;
+    using GalaSoft.MvvmLight.Command;
     using Main;
-    using Mvvm.Command;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

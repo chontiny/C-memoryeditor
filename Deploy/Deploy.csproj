@@ -60,12 +60,6 @@
     <None Include="App.config" />
     <None Include="Properties\app.manifest" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SharpDX\SharpCli\SharpCli.csproj">
-      <Project>{4e2d9a17-2195-4a51-aae3-924517440293}</Project>
-      <Name>SharpCli</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

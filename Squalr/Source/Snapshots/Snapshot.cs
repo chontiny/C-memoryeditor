@@ -3,11 +3,11 @@
     using Engine.OperatingSystems;
     using Output;
     using Results.ScanResults;
+    using Squalr.Properties;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using UserSettings;
     using Utils.Extensions;
 
     /// <summary>

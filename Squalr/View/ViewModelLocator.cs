@@ -2,7 +2,6 @@
 {
     using Source.ActionScheduler;
     using Source.ChangeLog;
-    using Source.CheatBrowser;
     using Source.DotNetExplorer;
     using Source.Editors.HotkeyEditor;
     using Source.Editors.ScriptEditor;
@@ -22,10 +21,13 @@
     using Source.Scanners.PointerScanner;
     using Source.Scanners.ValueCollector;
     using Source.Snapshots;
-    using Source.StreamWeaver;
-    using Source.UserSettings;
+    using Squalr.Properties;
+    using Squalr.Source.Browse;
+    using Squalr.Source.Browse.Library;
+    using Squalr.Source.Browse.Store;
+    using Squalr.Source.Browse.StreamConfig;
+    using Squalr.Source.Browse.TwitchLogin;
     using Squalr.Source.Editors.StreamIconEditor;
-    using Squalr.Source.StreamWeaver.Table;
 
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -162,35 +164,57 @@
         }
 
         /// <summary>
-        /// Gets the Cheat Browser view model.
+        /// Gets the Browser view model.
         /// </summary>
-        public CheatBrowserViewModel CheatBrowserViewModel
+        public BrowseViewModel BrowseViewModel
         {
             get
             {
-                return CheatBrowserViewModel.GetInstance();
+                return BrowseViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets the Stream Weaver view model.
+        /// Gets the Store view model.
         /// </summary>
-        public StreamWeaverViewModel StreamWeaverViewModel
+        public StoreViewModel StoreViewModel
         {
             get
             {
-                return StreamWeaverViewModel.GetInstance();
+                return StoreViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets the Stream Table view model.
+        /// Gets the Library view model.
         /// </summary>
-        public StreamTableViewModel StreamTableViewModel
+        public LibraryViewModel LibraryViewModel
         {
             get
             {
-                return StreamTableViewModel.GetInstance();
+                return LibraryViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Twitch Login view model.
+        /// </summary>
+        public TwitchLoginViewModel TwitchLoginViewModel
+        {
+            get
+            {
+                return TwitchLoginViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Stream Config view model.
+        /// </summary>
+        public StreamConfigViewModel StreamConfigViewModel
+        {
+            get
+            {
+                return StreamConfigViewModel.GetInstance();
             }
         }
 
@@ -261,6 +285,17 @@
         }
 
         /// <summary>
+        /// Gets the Stream Icon Editor view model.
+        /// </summary>
+        public StreamIconEditorViewModel StreamIconEditorViewModel
+        {
+            get
+            {
+                return StreamIconEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
         /// Gets the Script Editor view model.
         /// </summary>
         public ScriptEditorViewModel ScriptEditorViewModel
@@ -279,17 +314,6 @@
             get
             {
                 return TextEditorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Stream Icon Editor view model.
-        /// </summary>
-        public StreamIconEditorViewModel StreamIconEditorViewModel
-        {
-            get
-            {
-                return StreamIconEditorViewModel.GetInstance();
             }
         }
 

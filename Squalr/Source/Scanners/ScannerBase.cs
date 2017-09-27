@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners
 {
     using ActionScheduler;
+    using Squalr.Properties;
     using System;
-    using UserSettings;
 
     /// <summary>
     /// The base of all scanner classes.

@@ -21,7 +21,7 @@
             this.RefreshAction = refreshAction;
             this.UpdateInterval = ProcessSelectorTask.RefreshInterval;
 
-            this.Begin();
+            this.Schedule();
         }
 
         /// <summary>

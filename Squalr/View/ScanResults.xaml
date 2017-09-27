@@ -1,19 +1,19 @@
 ﻿<UserControl
-    x:Class="Squalr.View.ScanResults "
+    x:Class="Squalr.View.ScanResults"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Squalr"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib"
-    xmlns:sysWindows="clr-namespace:System.Windows;assembly=PresentationCore"
     x:Name="SqualrScanResults"
     d:DesignHeight="256"
     d:DesignWidth="512"
     x:ClassModifier="internal"
     DataContext="{Binding ScanResultsViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public ScanResults() { InitializeComponent(); }]]>
+    </x:Code>
     <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
         <Grid.Resources>
             <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
@@ -271,9 +271,14 @@
                 <ListView.Resources>
                     <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
                 </ListView.Resources>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
+                        <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition />
@@ -314,7 +319,7 @@
                             </Grid.RowDefinitions>
                             <Grid
                                 Grid.Row="0"
-                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
+                                Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
                                 VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />

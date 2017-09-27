@@ -45,7 +45,7 @@
                 return valueEditor.ValueEditorViewModel.Value;
             }
 
-            return (value as AddressItem)?.Value;
+            return (value as AddressItem)?.AddressValue;
         }
     }
     //// End class

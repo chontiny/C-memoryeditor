@@ -24,18 +24,22 @@
         /// Gets all primitive types.
         /// </summary>
         /// <returns>An enumeration of primitive types.</returns>
-        public static IEnumerable<Type> GetPrimitiveTypes()
+        public static IEnumerable<DataType> GetPrimitiveTypes()
         {
-            return typeof(Int32).Assembly.GetTypes().Where(x => x.IsPrimitive);
+            return typeof(Object).Assembly.GetTypes()
+                .Where(x => x.IsPrimitive)
+                .Select(x => new DataType(x));
         }
 
         /// <summary>
         /// Gets primitive types that are available for scanning.
         /// </summary>
         /// <returns>An enumeration of scannable types.</returns>
-        public static IEnumerable<Type> GetScannablePrimitiveTypes()
+        public static IEnumerable<DataType> GetScannablePrimitiveTypes()
         {
-            return typeof(Int32).Assembly.GetTypes().Where(x => x.IsPrimitive && !ExcludedTypes.Contains(x));
+            return typeof(Object).Assembly.GetTypes()
+                .Where(x => x.IsPrimitive && !PrimitiveTypes.ExcludedTypes.Contains(x))
+                .Select(x => new DataType(x));
         }
 
         /// <summary>
@@ -45,7 +49,7 @@
         /// <returns>Returns true if the type is primitive, otherwise false.</returns>
         public static Boolean IsPrimitive(Type type)
         {
-            foreach (Type primitiveType in GetPrimitiveTypes())
+            foreach (Type primitiveType in PrimitiveTypes.GetPrimitiveTypes())
             {
                 if (type == primitiveType)
                 {
@@ -62,7 +66,7 @@
         /// <returns>The size of the largest primitive type.</returns>
         public static Int32 GetLargestPrimitiveSize()
         {
-            return GetScannablePrimitiveTypes().Select(x => Marshal.SizeOf(x)).Max();
+            return PrimitiveTypes.GetScannablePrimitiveTypes().Select(x => Marshal.SizeOf(x.Type)).Max();
         }
     }
     //// End class

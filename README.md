@@ -10,14 +10,19 @@ Official web site: [squalr.com](https://www.squalr.com)
 
 You can find more documentation on the [Wiki](https://github.com/Squalr/Squalr/wiki)
 
+## Coding Conventions
+Reference | Description 
+--- | ---
+[XAML Formatter](https://marketplace.visualstudio.com/items?itemName=TeamXavalon.XAMLStyler) | XAML should be run through this formatter
+[StyleCop](https://github.com/StyleCop/StyleCop) | StyleCop to enforce code conventions. Included as NuGet. Note that we deviate on some standard conventions. We use the full type name for variables (ex Int32 rather than int). The reasoning is that this is a memory editor, so we prefer to use the type name that is most explicit to avoid coding mistakes.
+
 ## Build
 
-In order to compile Squalr, you should only need **Visual Studio 2017**. External libraries are mostly compiled from source (with the exception of most C++ applications). This is because almost every library I use has had issues where I've needed access to the source code (to be fair, I am using most of these in unexpected ways). Currently this consists of:
+In order to compile Squalr, you should only need **Visual Studio 2017**. Here are the important 3rd party libraries that this project uses:
 
-Library | Description
+Library | Description 
 --- | ---
 [SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper
-[OpenTK](https://github.com/opentk/opentk) | OpenGL Wrapper (Not actually used yet)
 [CLRMD](https://github.com/Microsoft/clrmd) | .NET Application Inspection Library
 [AvalonDock](https://avalondock.codeplex.com/) | Docking Library
 [AvalonEdit](https://github.com/icsharpcode/AvalonEdit) | Code Editing Library
@@ -27,19 +32,15 @@ Library | Description
 [SharpDisasm](https://github.com/spazzarama/SharpDisasm) | Udis86 Assembler Ported to C#
 [MemorySharp](https://github.com/ZenLulz/MemorySharp) | Memory Editing Library
 [FASM](https://flatassembler.net/) | Flat Assembler (C# Invocation done via MemorySharp)
-[TreeViewAdv](https://sourceforge.net/projects/treeviewadv/) | Advanced Tree View Control
-[WPFToolKit](http://wpftoolkit.codeplex.com/) | Toolkit for WPF Applications
-[TwitchLib](https://github.com/swiftyspiffy/TwitchLib) | Twitch API Wrapper
-[WebSocketSharp](https://github.com/sta/websocket-sharp) | WebSocket Protocol Implementation
-[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) | JSON Framework
-[Ninject](https://github.com/ninject/Ninject) | Dependency Injection Framework
 
-Buff icons made by:
-- Carl Olsen, https://twitter.com/unstoppableCarl
-- Cathelineau
-- Delapouite, http://delapouite.com
-- Faithtoken, http://fungustoken.deviantart.com
-- Lorc, http://lorcblog.blogspot.com
-- PriorBlue
-- Skoll
-- Zeromancer - CC0
+Intending to Use (Eventually):
+
+Library | Description | Purpose
+--- | --- | ---
+[AsmJit](https://github.com/hypeartist/AsmJit) | x86/x64 Assembler | Replace FASM, improve scripting drastically
+[AsmJit](https://github.com/asmjit/asmjit) | x86/x64 Assembler | Original C++ project. May port/interop this if the above version does not work.
+[Ninject](https://github.com/ninject/Ninject) | Dependency Injection Framework | Fixing my abuse of singletons
+[OpenTK](https://github.com/opentk/opentk) | OpenGL Wrapper | Graphics Injection
+[SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper | Graphics Injection (Currently using SharpDX just for input)
+[SharpPCap](https://github.com/chmorgan/sharppcap) | Packet Capture | Packet Editor
+[Packet.Net](https://github.com/antmicro/Packet.Net) | Packet Capture | Packet Editor

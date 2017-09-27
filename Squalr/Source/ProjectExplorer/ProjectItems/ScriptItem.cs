@@ -2,13 +2,17 @@
 {
     using Controls;
     using Editors.ScriptEditor;
-    using ScriptEngine;
+    using Scripting;
+    using Squalr.Content;
     using Squalr.Source.Analytics;
+    using Squalr.Source.Api.Models;
+    using Squalr.Source.Editors.StreamIconEditor;
     using Squalr.Source.Output;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Runtime.Serialization;
+    using System.Windows.Media.Imaging;
     using Utils.TypeConverters;
 
     /// <summary>
@@ -28,6 +32,22 @@
         /// </summary>
         [Browsable(false)]
         private Boolean isCompiled;
+
+        /// <summary>
+        /// The cooldown in milliseconds of this project item.
+        /// </summary>
+        protected Int32 cooldown;
+
+        /// <summary>
+        /// The duration in milliseconds of this project item.
+        /// </summary>
+        protected Int32 duration;
+
+        /// <summary>
+        /// The stream icon path associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        protected String streamIconPath;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptItem" /> class.
@@ -73,7 +93,7 @@
                 }
 
                 this.script = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
         }
 
@@ -99,7 +119,103 @@
                 }
 
                 this.isCompiled = value;
-                ProjectExplorerViewModel.GetInstance().HasUnsavedChanges = true;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the coolodown in milliseconds of this project item.
+        /// </summary>
+        [DataMember]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Cooldown"), Description("The cooldown (in milliseconds) for stream activation for this project item.")]
+        public Int32 Cooldown
+        {
+            get
+            {
+                return this.cooldown;
+            }
+
+            set
+            {
+                if (this.cooldown == value)
+                {
+                    return;
+                }
+
+                this.cooldown = value;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.Cooldown));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the coolodown in milliseconds of this project item.
+        /// </summary>
+        [DataMember]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Duration"), Description("The duration (in milliseconds) for stream activation for this project item.")]
+        public Int32 Duration
+        {
+            get
+            {
+                return this.duration;
+            }
+
+            set
+            {
+                if (this.duration == value)
+                {
+                    return;
+                }
+
+                this.duration = value;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.Duration));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the stream icon path for this project item.
+        /// </summary>
+        [DataMember]
+        [Editor(typeof(StreamIconEditorModel), typeof(UITypeEditor))]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Icon"), Description("The stream icon for this item")]
+        public String StreamIconPath
+        {
+            get
+            {
+                return this.streamIconPath;
+            }
+
+            set
+            {
+                if (this.streamIconPath == value)
+                {
+                    return;
+                }
+
+                this.streamIconPath = value;
+
+                if (this.AssociatedCheat != null)
+                {
+                    this.AssociatedCheat.Icon = value;
+                }
+
+                this.NotifyPropertyChanged(nameof(this.StreamIconPath));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets the image associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        public override BitmapSource Icon
+        {
+            get
+            {
+                return Images.Script;
             }
         }
 
@@ -110,21 +226,16 @@
         private ScriptManager ScriptManager { get; set; }
 
         /// <summary>
-        /// Clones the project item.
+        /// Associates a cheat with this project item.
         /// </summary>
-        /// <returns>The clone of the project item.</returns>
-        public override ProjectItem Clone()
+        /// <param name="cheat">The associated cheat</param>
+        public override void AssociateCheat(Cheat cheat)
         {
-            ScriptItem clone = new ScriptItem();
-            clone.category = this.Category;
-            clone.description = this.Description;
-            clone.extendedDescription = this.ExtendedDescription;
-            clone.streamIconPath = this.StreamIconPath;
-            clone.parent = this.Parent;
-            clone.script = this.Script;
-            clone.isCompiled = this.IsCompiled;
+            base.AssociateCheat(cheat);
 
-            return clone;
+            this.streamIconPath = cheat.Icon;
+            this.cooldown = cheat.Cooldown;
+            this.duration = cheat.Duration;
         }
 
         /// <summary>
