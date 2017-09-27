@@ -361,29 +361,34 @@
         /// <summary>
         /// Deletes the selected project explorer items.
         /// </summary>
-        private void DeleteSelection()
+        private void DeleteSelection(Boolean promptUser = true)
         {
             if (this.SelectedProjectItems.IsNullOrEmpty())
             {
                 return;
             }
 
-            System.Windows.MessageBoxResult result = CenteredDialogBox.Show(
-                System.Windows.Application.Current.MainWindow,
-                "Delete selected items?",
-                "Confirm",
-                System.Windows.MessageBoxButton.OKCancel,
-                System.Windows.MessageBoxImage.Warning);
-
-            if (result == System.Windows.MessageBoxResult.OK)
+            if (promptUser)
             {
-                foreach (ProjectItem projectItem in this.SelectedProjectItems)
-                {
-                    this.ProjectItems.Remove(projectItem);
-                }
+                System.Windows.MessageBoxResult result = CenteredDialogBox.Show(
+                    System.Windows.Application.Current.MainWindow,
+                    "Delete selected items?",
+                    "Confirm",
+                    System.Windows.MessageBoxButton.OKCancel,
+                    System.Windows.MessageBoxImage.Warning);
 
-                this.SelectedProjectItems = null;
+                if (result != System.Windows.MessageBoxResult.OK)
+                {
+                    return;
+                }
             }
+
+            foreach (ProjectItem projectItem in this.SelectedProjectItems)
+            {
+                this.ProjectItems.Remove(projectItem);
+            }
+
+            this.SelectedProjectItems = null;
         }
 
         /// <summary>
@@ -417,7 +422,7 @@
         private void CutSelection()
         {
             this.ClipBoard = this.SelectedProjectItems?.SoftClone();
-            this.DeleteSelection();
+            this.DeleteSelection(promptUser: false);
         }
 
         /// <summary>
