@@ -32,10 +32,10 @@
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr</ProductName>
     <PublisherName>Squalr</PublisherName>
-    <MinimumRequiredVersion>2.0.1.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.0.3.0</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.0.1.0</ApplicationVersion>
+    <ApplicationVersion>2.0.3.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -863,7 +863,7 @@
     <Resource Include="Content\Icons\BlueBlocks2.png" />
     <Resource Include="Content\Icons\BlueBlocks4.png" />
     <Resource Include="Content\Icons\MainAppIcon.ico" />
-    <EmbeddedResource Include="Content\StandardLayout.xml" />
+    <EmbeddedResource Include="Content\StreamerLayout.xml" />
     <Content Include="Content\ChangeLog.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ChangeLog.cs</LastGenOutput>

@@ -402,16 +402,16 @@
         {
             this.IsLoginStatusLoading = true;
 
-            AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-
-            if (accessTokens == null || accessTokens.AccessToken.IsNullOrEmpty())
-            {
-                this.IsLoggedIn = false;
-                return;
-            }
-
             try
             {
+                AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+
+                if (accessTokens == null || accessTokens.AccessToken.IsNullOrEmpty())
+                {
+                    this.IsLoggedIn = false;
+                    return;
+                }
+
                 User user = SqualrApi.GetTwitchUser(accessTokens.AccessToken);
                 this.ActiveUser = user;
 
@@ -422,8 +422,10 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to log in using stored credentials", ex);
                 this.IsLoggedIn = false;
             }
-
-            this.IsLoginStatusLoading = false;
+            finally
+            {
+                this.IsLoginStatusLoading = false;
+            }
         }
 
         /// <summary>

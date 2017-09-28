@@ -29,8 +29,7 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Displaying stream icons in project explorer\r\n- Bug fixes to hotkeys and project" +
-                    " explorer item selection");
+            this.Write("- Login bug fix\r\n- Default layout fixes");
             return this.GenerationEnvironment.ToString();
         }
     }
