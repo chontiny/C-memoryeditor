@@ -63,7 +63,7 @@
 
         /// <summary>
         /// Compiles a script. Will compress the file and convert to base64. This will compile using CodeDOM becuase this
-        /// generates a file that we can read to create the assembly. At runtime we can compile using Mono instead.
+        /// generates a file that we can read to create the assembly.
         /// </summary>
         /// <param name="script">The input script in plaintext.</param>
         /// <returns>The compiled script. Returns null on failure.</returns>
@@ -77,14 +77,10 @@
                 String compiledScriptFile = CSScript.CompileCode(script);
                 Byte[] compressedScript = Compression.Compress(File.ReadAllBytes(compiledScriptFile));
                 result = Convert.ToBase64String(compressedScript);
-
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script compiled");
             }
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error compiling script", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
-                throw ex;
             }
 
             return result;
@@ -99,26 +95,14 @@
         {
             try
             {
-                Assembly assembly;
-
-                if (scriptItem.IsCompiled)
-                {
-                    // Assembly already compiled, just load it
-                    assembly = Assembly.Load(Compression.Decompress(Convert.FromBase64String(scriptItem.Script)));
-                }
-                else
-                {
-                    // Raw script, compile it. Use Mono at runtime instead of CodeDOM.
-                    String script = this.PrecompileScript(scriptItem.Script);
-                    assembly = CSScript.MonoEvaluator.CompileCode(script);
-                }
+                Assembly assembly = Assembly.Load(Compression.Decompress(Convert.FromBase64String(scriptItem.CompiledScript)));
 
                 this.ScriptObject = assembly.CreateObject("*");
 
                 // Bind the deactivation function such that scripts can deactivate themselves
                 this.ScriptObject.Deactivate = new Action(() => scriptItem.IsActivated = false);
 
-
+                // Call OnActivate function in the script
                 this.ScriptObject.OnActivate();
 
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script activated: " + scriptItem.Description?.ToString());
@@ -132,7 +116,6 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to activate script", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return false;
             }
 
