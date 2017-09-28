@@ -14,11 +14,11 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
     <TargetFrameworkProfile />
     <PublishUrl>F:\Users\Zachary\Documents\Visual Studio 2017\Projects\SqualrSite\public\Release\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
+    <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
     <UpdateMode>Background</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
@@ -26,15 +26,16 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>https://www.squalr.com/Release/</InstallUrl>
     <UpdateUrl>https://www.squalr.com/Release/</UpdateUrl>
     <SupportUrl>https://www.squalr.com/</SupportUrl>
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr</ProductName>
     <PublisherName>Squalr</PublisherName>
-    <MinimumRequiredVersion>2.0.0.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.0.1.0</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.0.0.0</ApplicationVersion>
+    <ApplicationVersion>2.0.1.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -120,7 +121,7 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>C1A711EAE328CAEA08DA8ACE57DFE7AA5D129D11</ManifestCertificateThumbprint>
@@ -335,6 +336,7 @@
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
+    <Compile Include="Source\Editors\StreamIconEditor\IStreamIconsLoadedObserver.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
@@ -611,10 +613,6 @@
     <Compile Include="Source\Controls\WinformsHostingHelper.cs" />
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\ProjectExplorer.xaml.cs">
-      <DependentUpon>ProjectExplorer.xaml</DependentUpon>
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="View\PropertyViewer.xaml.cs">
       <DependentUpon>PropertyViewer.xaml</DependentUpon>

@@ -4,14 +4,16 @@
     using Editors.ScriptEditor;
     using Scripting;
     using Squalr.Content;
-    using Squalr.Source.Analytics;
+    using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
     using Squalr.Source.Editors.StreamIconEditor;
-    using Squalr.Source.Output;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
+    using System.Linq;
     using System.Runtime.Serialization;
+    using System.Threading.Tasks;
     using System.Windows.Media.Imaging;
     using Utils.TypeConverters;
 
@@ -19,7 +21,7 @@
     /// Defines a script that can be added to the project explorer.
     /// </summary>
     [DataContract]
-    internal class ScriptItem : ProjectItem
+    internal class ScriptItem : ProjectItem, IStreamIconsLoadedObserver
     {
         /// <summary>
         /// The raw script text.
@@ -28,26 +30,28 @@
         private String script;
 
         /// <summary>
-        /// Whether the script is compiled.
+        /// The base 64 encoded compiled script.
         /// </summary>
         [Browsable(false)]
-        private Boolean isCompiled;
+        private String compiledScript;
 
         /// <summary>
         /// The cooldown in milliseconds of this project item.
         /// </summary>
+        [Browsable(false)]
         protected Int32 cooldown;
 
         /// <summary>
         /// The duration in milliseconds of this project item.
         /// </summary>
+        [Browsable(false)]
         protected Int32 duration;
 
         /// <summary>
         /// The stream icon path associated with this project item.
         /// </summary>
         [Browsable(false)]
-        protected String streamIconPath;
+        protected String streamIconName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptItem" /> class.
@@ -62,12 +66,19 @@
         /// <param name="description">The description of the project item.</param>
         /// <param name="script">The raw script text.</param>
         /// <param name="compiled">Whether or not this script is compiled.</param>
-        public ScriptItem(String description, String script, Boolean compiled = false) : base(description)
+        public ScriptItem(String description, String script) : base(description)
         {
-            this.script = script;
-            this.isCompiled = compiled;
+            this.ScriptManager = new ScriptManager();
 
-            this.ScriptManager = null;
+            // Initialize script and bypass setters
+            this.script = script;
+
+            Task.Run(() => this.compiledScript = this.ScriptManager.CompileScript(script));
+
+            if (StreamIconEditorViewModel.GetInstance().IsStreamIconListLoading)
+            {
+                StreamIconEditorViewModel.GetInstance().Subscribe(this);
+            }
         }
 
         /// <summary>
@@ -92,33 +103,30 @@
                     return;
                 }
 
+                Task.Run(() => this.CompiledScript = this.ScriptManager.CompileScript(value));
+
                 this.script = value;
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the script is compiled.
+        /// Gets or sets the base 64 encoded compiled script.
         /// </summary>
         [DataMember]
-        [ReadOnly(true)]
-        [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Compiled"), Description("Whether or not this script has been compiled.")]
-        public Boolean IsCompiled
+        [Browsable(false)]
+        public String CompiledScript
         {
             get
             {
-                return this.isCompiled;
+                return this.compiledScript;
             }
 
-            set
+            private set
             {
-                if (this.isCompiled == value)
-                {
-                    return;
-                }
 
-                this.isCompiled = value;
+                this.compiledScript = value;
+
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
         }
@@ -176,33 +184,34 @@
         }
 
         /// <summary>
-        /// Gets or sets the stream icon path for this project item.
+        /// Gets or sets the stream icon for this project item.
         /// </summary>
         [DataMember]
         [Editor(typeof(StreamIconEditorModel), typeof(UITypeEditor))]
         [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Icon"), Description("The stream icon for this item")]
-        public String StreamIconPath
+        public String StreamIconName
         {
             get
             {
-                return this.streamIconPath;
+                return this.streamIconName;
             }
 
             set
             {
-                if (this.streamIconPath == value)
+                if (this.streamIconName == value)
                 {
                     return;
                 }
 
-                this.streamIconPath = value;
+                this.streamIconName = value;
 
                 if (this.AssociatedCheat != null)
                 {
                     this.AssociatedCheat.Icon = value;
                 }
 
-                this.NotifyPropertyChanged(nameof(this.StreamIconPath));
+                this.NotifyPropertyChanged(nameof(this.StreamIconName));
+                this.NotifyPropertyChanged(nameof(this.Icon));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -215,7 +224,17 @@
         {
             get
             {
-                return Images.Script;
+                BitmapSource displayIcon = null;
+
+                if (!StreamIconEditorViewModel.GetInstance().IsStreamIconListLoading)
+                {
+                    displayIcon = SqualrApi.GetStreamIcons()
+                        .Select(icon => icon)
+                        .Where(icon => icon.IconName == this.StreamIconName)
+                        .FirstOrDefault()?.Icon;
+                }
+
+                return displayIcon ?? Images.Script;
             }
         }
 
@@ -226,6 +245,26 @@
         private ScriptManager ScriptManager { get; set; }
 
         /// <summary>
+        /// Invoked when this object is deserialized.
+        /// </summary>
+        /// <param name="streamingContext">Streaming context.</param>
+        [OnDeserialized]
+        public void OnDeserialized(StreamingContext streamingContext)
+        {
+            this.ScriptManager = new ScriptManager();
+        }
+
+        /// <summary>
+        /// Recieves a notification of the loaded stream icons.
+        /// </summary>
+        /// <param name="streamIcons">The loaded stream icons.</param>
+        public void Update(IEnumerable<StreamIcon> streamIcons)
+        {
+            this.NotifyPropertyChanged(nameof(this.Icon));
+            StreamIconEditorViewModel.GetInstance().Unsubscribe(this);
+        }
+
+        /// <summary>
         /// Associates a cheat with this project item.
         /// </summary>
         /// <param name="cheat">The associated cheat</param>
@@ -233,41 +272,9 @@
         {
             base.AssociateCheat(cheat);
 
-            this.streamIconPath = cheat.Icon;
+            this.streamIconName = cheat.Icon;
             this.cooldown = cheat.Cooldown;
             this.duration = cheat.Duration;
-        }
-
-        /// <summary>
-        /// Clones the script item and compiles it.
-        /// </summary>
-        /// <returns>The clone of the project. Returns null on compilation failure.</returns>
-        public ScriptItem Compile()
-        {
-            if (this.ScriptManager == null)
-            {
-                this.ScriptManager = new ScriptManager();
-            }
-
-            if (this.IsCompiled)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Script already compiled");
-                return null;
-            }
-
-            try
-            {
-                ScriptItem clone = this.Clone() as ScriptItem;
-                clone.isCompiled = true;
-                clone.script = this.ScriptManager.CompileScript(clone.script);
-                return clone;
-            }
-            catch (Exception ex)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to complete compile request", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
-                return null;
-            }
         }
 
         /// <summary>
@@ -282,11 +289,6 @@
         /// </summary>
         protected override void OnActivationChanged()
         {
-            if (this.ScriptManager == null)
-            {
-                this.ScriptManager = new ScriptManager();
-            }
-
             if (this.IsActivated)
             {
                 // Try to run script.

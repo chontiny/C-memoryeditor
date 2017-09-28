@@ -221,9 +221,16 @@
             return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.ConnectionStatusEndpoint, parameters);
         }
 
+        private static StreamIcon[] cachedIcons = null;
+
         public static StreamIcon[] GetStreamIcons()
         {
-            return SqualrApi.ExecuteRequest<StreamIcon[]>(Method.GET, SqualrApi.StreamIconsEndpoint);
+            if (cachedIcons == null)
+            {
+                cachedIcons = SqualrApi.ExecuteRequest<StreamIcon[]>(Method.GET, SqualrApi.StreamIconsEndpoint);
+            }
+
+            return cachedIcons;
         }
 
         public static IEnumerable<CheatVotes> GetStreamActivationIds(String twitchChannel)

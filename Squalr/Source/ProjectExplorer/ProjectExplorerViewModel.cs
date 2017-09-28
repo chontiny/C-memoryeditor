@@ -13,6 +13,7 @@
     using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.Utils;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -78,7 +79,7 @@
             this.ExportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ExportProject(), () => true);
             this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ProjectItemStorage.ImportProject(false, filename), (filename) => true);
             this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
-            this.SelectProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.SelectedProjectItems = new ProjectItem[] { projectItem }, (projectItem) => true);
+            this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItems) => this.SelectedProjectItems = (selectedItems as IList)?.Cast<ProjectItem>(), (selectedItems) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
@@ -361,29 +362,34 @@
         /// <summary>
         /// Deletes the selected project explorer items.
         /// </summary>
-        private void DeleteSelection()
+        private void DeleteSelection(Boolean promptUser = true)
         {
             if (this.SelectedProjectItems.IsNullOrEmpty())
             {
                 return;
             }
 
-            System.Windows.MessageBoxResult result = CenteredDialogBox.Show(
-                System.Windows.Application.Current.MainWindow,
-                "Delete selected items?",
-                "Confirm",
-                System.Windows.MessageBoxButton.OKCancel,
-                System.Windows.MessageBoxImage.Warning);
-
-            if (result == System.Windows.MessageBoxResult.OK)
+            if (promptUser)
             {
-                foreach (ProjectItem projectItem in this.SelectedProjectItems)
-                {
-                    this.ProjectItems.Remove(projectItem);
-                }
+                System.Windows.MessageBoxResult result = CenteredDialogBox.Show(
+                    System.Windows.Application.Current.MainWindow,
+                    "Delete selected items?",
+                    "Confirm",
+                    System.Windows.MessageBoxButton.OKCancel,
+                    System.Windows.MessageBoxImage.Warning);
 
-                this.SelectedProjectItems = null;
+                if (result != System.Windows.MessageBoxResult.OK)
+                {
+                    return;
+                }
             }
+
+            foreach (ProjectItem projectItem in this.SelectedProjectItems.ToArray())
+            {
+                this.ProjectItems.Remove(projectItem);
+            }
+
+            this.SelectedProjectItems = null;
         }
 
         /// <summary>
@@ -417,7 +423,7 @@
         private void CutSelection()
         {
             this.ClipBoard = this.SelectedProjectItems?.SoftClone();
-            this.DeleteSelection();
+            this.DeleteSelection(promptUser: false);
         }
 
         /// <summary>

@@ -29,7 +29,8 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Huge refactor to support:\r\n\t- Twitch connections\r\n\t- Marketplace\r\n\t- Libraries");
+            this.Write("- Displaying stream icons in project explorer\r\n- Bug fixes to hotkeys and project" +
+                    " explorer item selection");
             return this.GenerationEnvironment.ToString();
         }
     }

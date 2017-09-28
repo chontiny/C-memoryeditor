@@ -328,16 +328,6 @@
                     {
                         ProjectItem targetProjectItem = projectItem;
 
-                        if (projectItem is ScriptItem)
-                        {
-                            ScriptItem scriptItem = projectItem as ScriptItem;
-
-                            if (!scriptItem.IsCompiled)
-                            {
-                                targetProjectItem = scriptItem?.Compile();
-                            }
-                        }
-
                         if (targetProjectItem == null)
                         {
                             return;
