@@ -63,7 +63,7 @@
         /// <summary>
         /// The endpoint for updating cheat stream metadata.
         /// </summary>
-        private static String UpdateCheatStreamMetaEndpoint = SqualrApi.ApiBase + "api/Stream/CheatMeta";
+        private static String UpdateCheatStreamMetaEndpoint = SqualrApi.ApiBase + "api/streamMeta";
 
         /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
@@ -317,11 +317,13 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
             parameters.Add("cheat_id", cheat?.CheatId.ToString());
-            parameters.Add("icon", cheat?.Icon?.ToString());
+
+            parameters.Add("is_stream_disabled", ((cheat?.IsStreamDisabled ?? false) ? 1 : 0).ToString());
             parameters.Add("cooldown", cheat?.Cooldown.ToString());
             parameters.Add("duration", cheat?.Duration.ToString());
+            parameters.Add("icon", cheat?.Icon?.ToString());
 
-            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.UpdateCheatStreamMetaEndpoint, parameters);
+            SqualrApi.ExecuteRequest(Method.PUT, SqualrApi.UpdateCheatStreamMetaEndpoint + "/" + cheat?.CheatId.ToString(), parameters);
         }
 
         /// <summary>
