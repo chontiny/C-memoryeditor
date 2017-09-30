@@ -435,7 +435,7 @@
             {
                 while (true)
                 {
-                    foreach (ProjectItem projectItem in this.ProjectItems)
+                    foreach (ProjectItem projectItem in this.ProjectItems.ToArray())
                     {
                         projectItem.Update();
                     }

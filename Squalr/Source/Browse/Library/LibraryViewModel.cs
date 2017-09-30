@@ -658,7 +658,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error unlocking cheat", ex);
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error removing cheat from library", ex);
             }
         }
     }
