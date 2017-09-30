@@ -31,7 +31,7 @@
         /// <summary>
         /// Default layout file for browsing cheats.
         /// </summary>
-        private const String StandardLayoutResource = "Squalr.Content.StandardLayout.xml";
+        private const String StreamerLayoutResource = "Squalr.Content.StreamerLayout.xml";
 
         /// <summary>
         /// Default layout file for browsing cheats.
@@ -246,7 +246,7 @@
         /// <param name="dockManager">The docking root to which content is loaded.</param>
         private void ResetLayoutStandard(DockingManager dockManager)
         {
-            this.LoadLayout(dockManager, resourceName: StandardLayoutResource);
+            this.LoadLayout(dockManager, resourceName: StreamerLayoutResource);
         }
 
         /// <summary>
@@ -282,7 +282,7 @@
                 }
 
                 // Something went wrong or the file is not present -- use the standard layout
-                resourceName = MainViewModel.StandardLayoutResource;
+                resourceName = MainViewModel.StreamerLayoutResource;
             }
 
             // Attempt to load layout from resource name

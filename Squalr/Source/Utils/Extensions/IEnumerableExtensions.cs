@@ -34,6 +34,25 @@
             }
         }
 
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
+        {
+            return source.ShuffleIterator(new Random());
+        }
+
+        private static IEnumerable<T> ShuffleIterator<T>(this IEnumerable<T> source, Random random)
+        {
+            IList<T> buffer = source.ToList();
+
+            for (Int32 index = 0; index < buffer.Count; index++)
+            {
+                Int32 j = random.Next(index, buffer.Count);
+
+                yield return buffer[j];
+
+                buffer[j] = buffer[index];
+            }
+        }
+
         public static IEnumerable<IEnumerable<T>> Batch<T>(this IEnumerable<T> source, Int32 size)
         {
             T[] bucket = null;

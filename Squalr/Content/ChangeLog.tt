@@ -5,5 +5,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Squalr" #>
-- Displaying stream icons in project explorer
-- Bug fixes to hotkeys and project explorer item selection
+- Stream integration fixes
+- Added application icon

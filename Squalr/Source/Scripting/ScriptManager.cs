@@ -105,7 +105,7 @@
                 // Call OnActivate function in the script
                 this.ScriptObject.OnActivate();
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script activated: " + scriptItem.Description?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script activated: " + scriptItem.Name?.ToString());
             }
             catch (SecurityException ex)
             {
@@ -191,7 +191,7 @@
             {
                 this.ScriptObject.OnDeactivate();
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script deactivated: " + scriptItem.Description?.ToString());
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script deactivated: " + scriptItem.Name?.ToString());
 
                 try
                 {

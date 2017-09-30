@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Api.Models
 {
     using Squalr.Properties;
+    using Squalr.Source.Output;
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using Squalr.Source.Utils.Extensions;
     using System;
@@ -13,6 +14,9 @@
     [DataContract]
     internal class Cheat
     {
+        [DataMember(Name = "is_stream_disabled")]
+        private Boolean isStreamDisabled;
+
         [DataMember(Name = "cooldown")]
         private Int32 cooldown;
 
@@ -55,6 +59,20 @@
         [DataMember(Name = "cost")]
         public Int32 Cost { get; set; }
 
+        public Boolean IsStreamDisabled
+        {
+            get
+            {
+                return this.isStreamDisabled;
+            }
+
+            set
+            {
+                this.isStreamDisabled = value;
+                this.UpdateStreamMeta();
+            }
+        }
+
         public Int32 Cooldown
         {
             get
@@ -65,7 +83,7 @@
             set
             {
                 this.cooldown = value;
-                Task.Run(() => SqualrApi.UpdateCheatStreamMeta(SettingsViewModel.GetInstance().AccessTokens?.AccessToken, this));
+                this.UpdateStreamMeta();
             }
         }
 
@@ -79,7 +97,7 @@
             set
             {
                 this.duration = value;
-                Task.Run(() => SqualrApi.UpdateCheatStreamMeta(SettingsViewModel.GetInstance().AccessTokens?.AccessToken, this));
+                this.UpdateStreamMeta();
             }
         }
 
@@ -93,7 +111,7 @@
             set
             {
                 this.icon = value;
-                Task.Run(() => SqualrApi.UpdateCheatStreamMeta(SettingsViewModel.GetInstance().AccessTokens?.AccessToken, this));
+                this.UpdateStreamMeta();
             }
         }
 
@@ -123,6 +141,21 @@
                 this.ProjectItem = deserializer.ReadObject(memoryStream) as ProjectItem;
                 this.ProjectItem.AssociateCheat(this);
             }
+        }
+
+        private void UpdateStreamMeta()
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    SqualrApi.UpdateCheatStreamMeta(SettingsViewModel.GetInstance().AccessTokens?.AccessToken, this);
+                }
+                catch (Exception ex)
+                {
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error updating stream with local change. Try again.", ex);
+                }
+            });
         }
     }
     //// End class

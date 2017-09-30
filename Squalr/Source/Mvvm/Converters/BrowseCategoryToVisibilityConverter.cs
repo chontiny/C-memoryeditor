@@ -28,10 +28,10 @@
             {
                 BrowseCategory val = (BrowseCategory)value;
 
-                // If no parameter specified, we return Visible if not on an unspecified screen
+                // If no parameter specified, we return Visible if not on login/unspecified screen
                 if (parameter == null)
                 {
-                    if (val == BrowseCategory.None)
+                    if (val == BrowseCategory.None || val == BrowseCategory.Login)
                     {
                         return Visibility.Collapsed;
                     }

@@ -36,6 +36,12 @@
         private String compiledScript;
 
         /// <summary>
+        /// A value indicating if this script is enabled for stream interaction.
+        /// </summary>
+        [Browsable(false)]
+        protected Boolean isStreamDisabled;
+
+        /// <summary>
         /// The cooldown in milliseconds of this project item.
         /// </summary>
         [Browsable(false)]
@@ -103,7 +109,7 @@
                     return;
                 }
 
-                Task.Run(() => this.CompiledScript = this.ScriptManager.CompileScript(value));
+                Task.Run(() => this.CompiledScript = this.ScriptManager?.CompileScript(value));
 
                 this.script = value;
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
@@ -132,6 +138,39 @@
         }
 
         /// <summary>
+        /// Gets or sets a value indicating if this script is disabled for stream interaction.
+        /// </summary>
+        [DataMember]
+        [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Disabled"), Description("Indicates whether this item is available for activation via stream commands.")]
+        public Boolean IsStreamDisabled
+        {
+            get
+            {
+                return this.isStreamDisabled;
+            }
+
+            set
+            {
+                if (this.isStreamDisabled == value)
+                {
+                    return;
+                }
+
+                this.isStreamDisabled = value;
+
+                if (this.AssociatedCheat != null)
+                {
+                    this.AssociatedCheat.IsStreamDisabled = value;
+                }
+
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.IsStreamDisabled));
+                this.NotifyPropertyChanged(nameof(this.Icon));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the coolodown in milliseconds of this project item.
         /// </summary>
         [DataMember]
@@ -151,6 +190,12 @@
                 }
 
                 this.cooldown = value;
+
+                if (this.AssociatedCheat != null)
+                {
+                    this.AssociatedCheat.Cooldown = value;
+                }
+
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Cooldown));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
@@ -177,6 +222,12 @@
                 }
 
                 this.duration = value;
+
+                if (this.AssociatedCheat != null)
+                {
+                    this.AssociatedCheat.Duration = value;
+                }
+
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Duration));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
@@ -226,6 +277,11 @@
             {
                 BitmapSource displayIcon = null;
 
+                if (this.IsStreamDisabled)
+                {
+                    return Images.Cancel;
+                }
+
                 if (!StreamIconEditorViewModel.GetInstance().IsStreamIconListLoading)
                 {
                     displayIcon = SqualrApi.GetStreamIcons()
@@ -249,9 +305,16 @@
         /// </summary>
         /// <param name="streamingContext">Streaming context.</param>
         [OnDeserialized]
-        public void OnDeserialized(StreamingContext streamingContext)
+        public new void OnDeserialized(StreamingContext streamingContext)
         {
+            base.OnDeserialized(streamingContext);
+
             this.ScriptManager = new ScriptManager();
+
+            if (StreamIconEditorViewModel.GetInstance().IsStreamIconListLoading)
+            {
+                StreamIconEditorViewModel.GetInstance().Subscribe(this);
+            }
         }
 
         /// <summary>
@@ -272,9 +335,10 @@
         {
             base.AssociateCheat(cheat);
 
-            this.streamIconName = cheat.Icon;
+            this.isStreamDisabled = cheat.IsStreamDisabled;
             this.cooldown = cheat.Cooldown;
             this.duration = cheat.Duration;
+            this.streamIconName = cheat.Icon;
         }
 
         /// <summary>

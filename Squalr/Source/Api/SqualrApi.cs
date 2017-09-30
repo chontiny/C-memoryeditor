@@ -61,6 +61,11 @@
         private static String SetCheatStreamMeta = SqualrApi.ApiBase + "api/Stream/SetCheatMeta";
 
         /// <summary>
+        /// The endpoint for updating cheat stream metadata.
+        /// </summary>
+        private static String UpdateCheatStreamMetaEndpoint = SqualrApi.ApiBase + "api/streamMeta";
+
+        /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
         /// </summary>
         private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/Stream/ActiveCheatIds/";
@@ -83,77 +88,22 @@
         /// <summary>
         /// The endpoint for querying the library lists.
         /// </summary>
-        private static String LibrariesEndpoint = SqualrApi.ApiBase + "api/Libraries";
-
-        /// <summary>
-        /// The endpoint for setting the active library.
-        /// </summary>
-        private static String SetActiveLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Set";
-
-        /// <summary>
-        /// The endpoint for creating a library.
-        /// </summary>
-        private static String RenameLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Rename";
-
-        /// <summary>
-        /// The endpoint for creating a library.
-        /// </summary>
-        private static String CreateLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Create";
-
-        /// <summary>
-        /// The endpoint for deleting a library.
-        /// </summary>
-        private static String DeleteLibraryEndpoint = SqualrApi.ApiBase + "api/Libraries/Delete";
+        private static String LibraryEndpoint = SqualrApi.ApiBase + "api/library";
 
         /// <summary>
         /// The endpoint for querying the available and unavailable cheats in a library.
         /// </summary>
-        private static String CheatsEndpoint = SqualrApi.ApiBase + "api/Cheats";
-
-        /// <summary>
-        /// The endpoint for updating a cheat.
-        /// </summary>
-        private static String UpdateCheatEndpoint = SqualrApi.ApiBase + "api/Cheats/Update";
-
-        /// <summary>
-        /// The endpoint for updating a cheat.
-        /// </summary>
-        private static String UpdateCheatStreamMetaEndpoint = SqualrApi.ApiBase + "api/Stream/CheatMeta";
+        private static String CheatsEndpoint = SqualrApi.ApiBase + "api/cheat";
 
         /// <summary>
         /// The endpoint for querying the available and unavailable cheats in the store.
         /// </summary>
-        private static String StoreCheatsEndpoint = SqualrApi.ApiBase + "api/Cheats/Store";
+        private static String StoreEndpoint = SqualrApi.ApiBase + "api/store";
 
         /// <summary>
-        /// The endpoint for unlocking cheats.
+        /// The endpoint for interacting with the Twitch service.
         /// </summary>
-        private static String UnlockCheatEndpoint = SqualrApi.ApiBase + "api/Cheats/Unlock";
-
-        /// <summary>
-        /// The endpoint for adding cheats to the library.
-        /// </summary>
-        private static String AddCheatToLibraryEndpoint = SqualrApi.ApiBase + "api/Cheats/Add";
-
-        /// <summary>
-        /// The endpoint for removing cheats from the library.
-        /// </summary>
-        private static String RemoveCheatFromLibraryEndpoint = SqualrApi.ApiBase + "api/Cheats/Remove";
-
-        /// <summary>
-        /// The endpoint for connecting to the Twitch service.
-        /// </summary>
-        private static String ConnectEndpoint = SqualrApi.ApiBase + "api/Stream/Connect";
-
-        /// <summary>
-        /// The endpoint for disconnecting to the Twitch service.
-        /// </summary>
-        private static String DisconnectEndpoint = SqualrApi.ApiBase + "api/Stream/Disconnect";
-
-        /// <summary>
-        /// The endpoint for querying the connection status to the Twitch service.
-        /// </summary>
-        private static String ConnectionStatusEndpoint = SqualrApi.ApiBase + "api/Stream/ConnectionStatusEndpoint";
+        private static String TwitchConnectionEndpoint = SqualrApi.ApiBase + "api/twitch";
 
         /// <summary>
         /// The active API base depending on the environment.
@@ -202,7 +152,7 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.ConnectEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.GET, SqualrApi.TwitchConnectionEndpoint + "/create", parameters);
         }
 
         public static ConnectionStatus Disconnect(String accessToken)
@@ -210,7 +160,7 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.DisconnectEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.DELETE, SqualrApi.TwitchConnectionEndpoint + "/" + accessToken, parameters);
         }
 
         public static ConnectionStatus GetConnectionStatus(String accessToken)
@@ -218,16 +168,16 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.ConnectionStatusEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.GET, SqualrApi.TwitchConnectionEndpoint, parameters);
         }
 
-        private static StreamIcon[] cachedIcons = null;
+        private static IEnumerable<StreamIcon> cachedIcons = null;
 
-        public static StreamIcon[] GetStreamIcons()
+        public static IEnumerable<StreamIcon> GetStreamIcons()
         {
             if (cachedIcons == null)
             {
-                cachedIcons = SqualrApi.ExecuteRequest<StreamIcon[]>(Method.GET, SqualrApi.StreamIconsEndpoint);
+                cachedIcons = SqualrApi.ExecuteRequest<StreamIcon[]>(Method.GET, SqualrApi.StreamIconsEndpoint).Shuffle();
             }
 
             return cachedIcons;
@@ -238,12 +188,12 @@
             return SqualrApi.ExecuteRequest<IEnumerable<CheatVotes>>(Method.GET, SqualrApi.ActiveCheatIdsEndpoint + twitchChannel);
         }
 
-        public static Game[] GetGameList()
+        public static IEnumerable<Game> GetGameList()
         {
             return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.GameListEndpoint);
         }
 
-        public static Game[] GetOwnedGameList(String accessToken)
+        public static IEnumerable<Game> GetOwnedGameList(String accessToken)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
@@ -251,7 +201,7 @@
             return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.OwnedGamesEndpoint, parameters);
         }
 
-        public static Game[] SearchGameList(String searchTerm)
+        public static IEnumerable<Game> SearchGameList(String searchTerm)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("search_term", searchTerm);
@@ -259,13 +209,68 @@
             return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.GameSearchEndpoint, parameters);
         }
 
-        public static Library[] GetLibraries(String accessToken, Int32 gameId)
+        public static IEnumerable<Library> GetLibraries(String accessToken, Int32 gameId)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
             parameters.Add("game_id", gameId.ToString());
 
-            return SqualrApi.ExecuteRequest<Library[]>(Method.GET, SqualrApi.LibrariesEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<Library[]>(Method.GET, SqualrApi.LibraryEndpoint, parameters);
+        }
+
+        public static void SetActiveLibrary(String accessToken, Int32 libraryId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+
+            SqualrApi.ExecuteRequest(Method.GET, SqualrApi.LibraryEndpoint + "/" + libraryId.ToString() + "/edit", parameters);
+        }
+
+        public static void RenameLibrary(String accessToken, Int32 libraryId, String libraryName)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+            parameters.Add("library_name", libraryName);
+
+            SqualrApi.ExecuteRequest(Method.PUT, SqualrApi.LibraryEndpoint + "/" + libraryId.ToString(), parameters);
+        }
+
+        public static Library CreateLibrary(String accessToken, Int32 gameId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("game_id", gameId.ToString());
+
+            return SqualrApi.ExecuteRequest<Library>(Method.GET, SqualrApi.LibraryEndpoint + "/create", parameters);
+        }
+
+        public static void DeleteLibrary(String accessToken, Int32 libraryId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("library_id", libraryId.ToString());
+
+            SqualrApi.ExecuteRequest(Method.DELETE, SqualrApi.LibraryEndpoint + "/" + libraryId.ToString(), parameters);
+        }
+
+        public static StoreCheats GetStoreCheats(String accessToken, Int32 gameId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("game_id", gameId.ToString());
+
+            return SqualrApi.ExecuteRequest<StoreCheats>(Method.GET, SqualrApi.StoreEndpoint, parameters);
+        }
+
+        public static UnlockedCheat UnlockCheat(String accessToken, Int32 cheatId)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+            parameters.Add("cheat_id", cheatId.ToString());
+
+            return SqualrApi.ExecuteRequest<UnlockedCheat>(Method.GET, SqualrApi.StoreEndpoint + "/create", parameters);
         }
 
         public static LibraryCheats GetCheats(String accessToken, Int32 libraryId)
@@ -277,61 +282,6 @@
             return SqualrApi.ExecuteRequest<LibraryCheats>(Method.GET, SqualrApi.CheatsEndpoint, parameters);
         }
 
-        public static void SetActiveLibrary(String accessToken, Int32 libraryId)
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("access_token", accessToken);
-            parameters.Add("library_id", libraryId.ToString());
-
-            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.SetActiveLibraryEndpoint, parameters);
-        }
-
-        public static void RenameLibrary(String accessToken, Int32 libraryId, String libraryName)
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("access_token", accessToken);
-            parameters.Add("library_id", libraryId.ToString());
-            parameters.Add("library_name", libraryName);
-
-            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.RenameLibraryEndpoint, parameters);
-        }
-
-        public static Library CreateLibrary(String accessToken, Int32 gameId)
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("access_token", accessToken);
-            parameters.Add("game_id", gameId.ToString());
-
-            return SqualrApi.ExecuteRequest<Library>(Method.POST, SqualrApi.CreateLibraryEndpoint, parameters);
-        }
-
-        public static void DeleteLibrary(String accessToken, Int32 libraryId)
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("access_token", accessToken);
-            parameters.Add("library_id", libraryId.ToString());
-
-            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.DeleteLibraryEndpoint, parameters);
-        }
-
-        public static StoreCheats GetCheatList(String accessToken, Int32 gameId)
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("access_token", accessToken);
-            parameters.Add("game_id", gameId.ToString());
-
-            return SqualrApi.ExecuteRequest<StoreCheats>(Method.GET, SqualrApi.StoreCheatsEndpoint, parameters);
-        }
-
-        public static Cheat UnlockCheat(String accessToken, Int32 cheatId)
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("access_token", accessToken);
-            parameters.Add("cheat_id", cheatId.ToString());
-
-            return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.UnlockCheatEndpoint, parameters);
-        }
-
         public static Cheat AddCheatToLibrary(String accessToken, Int32 libraryId, Int32 cheatId)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
@@ -339,7 +289,7 @@
             parameters.Add("library_id", libraryId.ToString());
             parameters.Add("cheat_id", cheatId.ToString());
 
-            return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.AddCheatToLibraryEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<Cheat>(Method.GET, SqualrApi.CheatsEndpoint + "/create", parameters);
         }
 
         public static Cheat RemoveCheatFromLibrary(String accessToken, Int32 libraryId, Int32 cheatId)
@@ -349,7 +299,7 @@
             parameters.Add("library_id", libraryId.ToString());
             parameters.Add("cheat_id", cheatId.ToString());
 
-            return SqualrApi.ExecuteRequest<Cheat>(Method.POST, SqualrApi.RemoveCheatFromLibraryEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<Cheat>(Method.DELETE, SqualrApi.CheatsEndpoint + "/" + cheatId.ToString(), parameters);
         }
 
         public static void UpdateCheatStreamMeta(String accessToken, Cheat cheat)
@@ -357,20 +307,13 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
             parameters.Add("cheat_id", cheat?.CheatId.ToString());
-            parameters.Add("icon", cheat?.Icon?.ToString());
+
+            parameters.Add("is_stream_disabled", ((cheat?.IsStreamDisabled ?? false) ? 1 : 0).ToString());
             parameters.Add("cooldown", cheat?.Cooldown.ToString());
             parameters.Add("duration", cheat?.Duration.ToString());
+            parameters.Add("icon", cheat?.Icon?.ToString());
 
-            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.UpdateCheatStreamMetaEndpoint, parameters);
-        }
-
-        public static void UpdateCheat(String accessToken, Cheat cheat)
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("access_token", accessToken);
-            // TODO: Serialize cheat
-
-            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.UpdateCheatEndpoint, parameters);
+            SqualrApi.ExecuteRequest(Method.PUT, SqualrApi.UpdateCheatStreamMetaEndpoint + "/" + cheat?.CheatId.ToString(), parameters);
         }
 
         /// <summary>

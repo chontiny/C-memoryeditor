@@ -333,7 +333,7 @@
                             return;
                         }
 
-                        String filePath = Path.Combine(folderPath, targetProjectItem.Description + ProjectItemStorage.ProjectFileExtension);
+                        String filePath = Path.Combine(folderPath, targetProjectItem.Name + ProjectItemStorage.ProjectFileExtension);
 
                         using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                         {

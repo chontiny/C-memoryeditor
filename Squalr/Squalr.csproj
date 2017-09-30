@@ -32,10 +32,10 @@
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr</ProductName>
     <PublisherName>Squalr</PublisherName>
-    <MinimumRequiredVersion>2.0.1.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.0.4.0</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.0.1.0</ApplicationVersion>
+    <ApplicationVersion>2.0.4.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -67,8 +67,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>
-    </ApplicationIcon>
+    <ApplicationIcon>Content\Icons\MainAppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -311,6 +310,7 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
+    <Compile Include="Source\Api\Models\UnlockedCheat.cs" />
     <Compile Include="Source\Api\Models\ConnectionStatus.cs" />
     <Compile Include="Source\Api\Models\LibraryCheats.cs" />
     <Compile Include="Source\Api\Models\StoreCheats.cs" />
@@ -334,6 +334,7 @@
     <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />
     <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
+    <Compile Include="Source\Browse\RefreshCoinsTask.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\IStreamIconsLoadedObserver.cs" />
@@ -585,7 +586,7 @@
     <Compile Include="View\Browse\Login\TwitchLoginPage.xaml.cs">
       <DependentUpon>TwitchLoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Browse\StreamIconEditor.xaml.cs">
+    <Compile Include="View\Editors\StreamIconEditor.xaml.cs">
       <DependentUpon>StreamIconEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\TextEditor.xaml.cs">
@@ -678,7 +679,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\StreamIconEditor.xaml">
+    <Page Include="View\Editors\StreamIconEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -863,7 +864,7 @@
     <Resource Include="Content\Icons\BlueBlocks2.png" />
     <Resource Include="Content\Icons\BlueBlocks4.png" />
     <Resource Include="Content\Icons\MainAppIcon.ico" />
-    <EmbeddedResource Include="Content\StandardLayout.xml" />
+    <EmbeddedResource Include="Content\StreamerLayout.xml" />
     <Content Include="Content\ChangeLog.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ChangeLog.cs</LastGenOutput>

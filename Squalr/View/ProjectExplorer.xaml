@@ -159,7 +159,6 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition />
-                                    <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <CheckBox
                                     Grid.Column="0"
@@ -178,13 +177,7 @@
                                     Margin="4,0,0,0"
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                     IsHitTestVisible="False"
-                                    Text="{Binding Path=Description}" />
-                                <TextBlock
-                                    Grid.Column="3"
-                                    Margin="4,0,0,0"
-                                    Foreground="Yellow"
-                                    IsHitTestVisible="False"
-                                    Text="{Binding Path=StreamCommand, FallbackValue=''}" />
+                                    Text="{Binding Path=Name}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
