@@ -101,19 +101,9 @@
         private static String StoreEndpoint = SqualrApi.ApiBase + "api/store";
 
         /// <summary>
-        /// The endpoint for connecting to the Twitch service.
+        /// The endpoint for interacting with the Twitch service.
         /// </summary>
-        private static String ConnectEndpoint = SqualrApi.ApiBase + "api/Stream/Connect";
-
-        /// <summary>
-        /// The endpoint for disconnecting to the Twitch service.
-        /// </summary>
-        private static String DisconnectEndpoint = SqualrApi.ApiBase + "api/Stream/Disconnect";
-
-        /// <summary>
-        /// The endpoint for querying the connection status to the Twitch service.
-        /// </summary>
-        private static String ConnectionStatusEndpoint = SqualrApi.ApiBase + "api/Stream/ConnectionStatusEndpoint";
+        private static String TwitchConnectionEndpoint = SqualrApi.ApiBase + "api/twitch";
 
         /// <summary>
         /// The active API base depending on the environment.
@@ -162,7 +152,7 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.ConnectEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.GET, SqualrApi.TwitchConnectionEndpoint + "/create", parameters);
         }
 
         public static ConnectionStatus Disconnect(String accessToken)
@@ -170,7 +160,7 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.DisconnectEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.DELETE, SqualrApi.TwitchConnectionEndpoint + "/" + accessToken, parameters);
         }
 
         public static ConnectionStatus GetConnectionStatus(String accessToken)
@@ -178,7 +168,7 @@
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.POST, SqualrApi.ConnectionStatusEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.GET, SqualrApi.TwitchConnectionEndpoint, parameters);
         }
 
         private static StreamIcon[] cachedIcons = null;
