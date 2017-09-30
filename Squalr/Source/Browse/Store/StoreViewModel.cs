@@ -10,6 +10,7 @@
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -57,6 +58,11 @@
         private Boolean isCheatListLoading;
 
         /// <summary>
+        /// The current search term.
+        /// </summary>
+        private String searchTerm;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="StoreViewModel" /> class from being created.
         /// </summary>
         private StoreViewModel() : base("Store")
@@ -83,6 +89,42 @@
         public ICommand UnlockCheatCommand { get; private set; }
 
         /// <summary>
+        /// Gets or sets the current search term.
+        /// </summary>
+        public String SearchTerm
+        {
+            get
+            {
+                return this.searchTerm;
+            }
+
+            set
+            {
+                this.searchTerm = value;
+                this.RaisePropertyChanged(nameof(this.SearchTerm));
+                this.RaisePropertyChanged(nameof(this.FilteredGameList));
+            }
+        }
+
+        /// <summary>
+        /// Gets the filtered list of games.
+        /// </summary>
+        public IEnumerable<Game> FilteredGameList
+        {
+            get
+            {
+                if (String.IsNullOrWhiteSpace(this.SearchTerm))
+                {
+                    return this.GameList;
+                }
+
+                return this.GameList?
+                    .Select(item => item)
+                    .Where(item => item.GameName.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0);
+            }
+        }
+
+        /// <summary>
         /// Gets the list of games.
         /// </summary>
         public IEnumerable<Game> GameList
@@ -96,6 +138,7 @@
             {
                 this.gameList = value;
                 this.RaisePropertyChanged(nameof(this.GameList));
+                this.RaisePropertyChanged(nameof(this.FilteredGameList));
             }
         }
 
@@ -240,7 +283,7 @@
                 {
                     // Select new game
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                    StoreCheats storeCheats = SqualrApi.GetCheatList(accessTokens.AccessToken, game.GameId);
+                    StoreCheats storeCheats = SqualrApi.GetStoreCheats(accessTokens.AccessToken, game.GameId);
                     this.LockedCheatList = new ObservableCollection<Cheat>(storeCheats.LockedCheats);
                     this.UnlockedCheatList = new ObservableCollection<Cheat>(storeCheats.UnlockedCheats);
                 }

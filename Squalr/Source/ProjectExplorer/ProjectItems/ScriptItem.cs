@@ -103,7 +103,7 @@
                     return;
                 }
 
-                Task.Run(() => this.CompiledScript = this.ScriptManager.CompileScript(value));
+                Task.Run(() => this.CompiledScript = this.ScriptManager?.CompileScript(value));
 
                 this.script = value;
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
@@ -249,8 +249,10 @@
         /// </summary>
         /// <param name="streamingContext">Streaming context.</param>
         [OnDeserialized]
-        public void OnDeserialized(StreamingContext streamingContext)
+        public new void OnDeserialized(StreamingContext streamingContext)
         {
+            base.OnDeserialized(streamingContext);
+
             this.ScriptManager = new ScriptManager();
         }
 

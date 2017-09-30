@@ -27,10 +27,14 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <TextBox
+                    Height="18"
                     Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                    BorderBrush="White"
+                    BorderThickness="1"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                     Style="{StaticResource PlaceHolder}"
-                    Tag="Search Games" />
+                    Tag="Search Games"
+                    Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
 
             <!--  HEADERS  -->
@@ -82,7 +86,7 @@
                                 Grid.Row="0"
                                 Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                                 BorderThickness="0"
-                                ItemsSource="{Binding GameList}">
+                                ItemsSource="{Binding FilteredGameList}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>

@@ -121,7 +121,7 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>C1A711EAE328CAEA08DA8ACE57DFE7AA5D129D11</ManifestCertificateThumbprint>
@@ -585,7 +585,7 @@
     <Compile Include="View\Browse\Login\TwitchLoginPage.xaml.cs">
       <DependentUpon>TwitchLoginPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Browse\StreamIconEditor.xaml.cs">
+    <Compile Include="View\Editors\StreamIconEditor.xaml.cs">
       <DependentUpon>StreamIconEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\TextEditor.xaml.cs">
@@ -678,7 +678,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Browse\StreamIconEditor.xaml">
+    <Page Include="View\Editors\StreamIconEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
