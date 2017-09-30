@@ -373,6 +373,16 @@
         }
 
         /// <summary>
+        /// Updates the display value of the coins.
+        /// </summary>
+        /// <param name="coins">The new coin amount.</param>
+        public void SetCoinAmount(Int32 coins)
+        {
+            this.ActiveUser.Coins = coins;
+            this.RaisePropertyChanged(nameof(this.ActiveUser));
+        }
+
+        /// <summary>
         /// Opens the virtual currency store in the native browser.
         /// </summary>
         private void OpenVirtualCurrencyStore()

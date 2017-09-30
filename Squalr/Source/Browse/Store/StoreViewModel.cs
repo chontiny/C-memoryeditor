@@ -315,10 +315,12 @@
             // We need the unlocked cheat, since the locked one does not include the payload
             try
             {
-                Cheat unlockedCheat = SqualrApi.UnlockCheat(accessTokens.AccessToken, cheat.CheatId);
+                UnlockedCheat unlockedCheat = SqualrApi.UnlockCheat(accessTokens.AccessToken, cheat.CheatId);
+
+                BrowseViewModel.GetInstance().SetCoinAmount(unlockedCheat.RemainingCoins);
 
                 this.LockedCheatList.Remove(cheat);
-                this.UnlockedCheatList.Insert(0, unlockedCheat);
+                this.UnlockedCheatList.Insert(0, unlockedCheat.Cheat);
             }
             catch (Exception ex)
             {

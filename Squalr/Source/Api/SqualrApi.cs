@@ -274,13 +274,13 @@
             return SqualrApi.ExecuteRequest<StoreCheats>(Method.GET, SqualrApi.StoreEndpoint, parameters);
         }
 
-        public static Cheat UnlockCheat(String accessToken, Int32 cheatId)
+        public static UnlockedCheat UnlockCheat(String accessToken, Int32 cheatId)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
             parameters.Add("cheat_id", cheatId.ToString());
 
-            return SqualrApi.ExecuteRequest<Cheat>(Method.GET, SqualrApi.StoreEndpoint + "/create", parameters);
+            return SqualrApi.ExecuteRequest<UnlockedCheat>(Method.GET, SqualrApi.StoreEndpoint + "/create", parameters);
         }
 
         public static LibraryCheats GetCheats(String accessToken, Int32 libraryId)
