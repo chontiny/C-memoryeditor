@@ -52,6 +52,7 @@
         private StreamConfigViewModel() : base("Stream Config")
         {
             this.ContentId = StreamConfigViewModel.ToolContentId;
+            this.VoteLock = new Object();
 
             StreamVotePollTask streamVotePollTask = new StreamVotePollTask(this.OnUpdate);
 
@@ -143,12 +144,28 @@
         private IEnumerable<CheatVotes> PreviousCheatVotes { get; set; }
 
         /// <summary>
+        /// Gets or sets and object to access votes.
+        /// </summary>
+        private Object VoteLock { get; set; }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="StreamConfigViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
         public static StreamConfigViewModel GetInstance()
         {
             return StreamConfigViewModel.streamConfigViewModelInstance.Value;
+        }
+
+        /// <summary>
+        /// Called when the cheat list changes.
+        /// </summary>
+        public void OnCheatListChange()
+        {
+            lock (this.VoteLock)
+            {
+                this.PreviousCheatVotes = null;
+            }
         }
 
         /// <summary>
@@ -193,66 +210,69 @@
 
             try
             {
-                // Check if disconnected
-                AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                ConnectionStatus status = SqualrApi.GetConnectionStatus(accessTokens.AccessToken);
-
-                if (!status.Connected)
+                lock (this.VoteLock)
                 {
-                    this.IsConnected = false;
-                    return;
-                }
+                    // Check if disconnected
+                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                    ConnectionStatus status = SqualrApi.GetConnectionStatus(accessTokens.AccessToken);
 
-                IEnumerable<CheatVotes> cheatVotes = SqualrApi.GetStreamActivationIds(SettingsViewModel.GetInstance().TwitchChannel);
-                IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectItems;
+                    if (!status.Connected)
+                    {
+                        this.IsConnected = false;
+                        return;
+                    }
 
-                if (this.PreviousCheatVotes == null)
-                {
+                    IEnumerable<CheatVotes> cheatVotes = SqualrApi.GetStreamActivationIds(SettingsViewModel.GetInstance().TwitchChannel);
+                    IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectItems;
+
+                    if (this.PreviousCheatVotes == null)
+                    {
+                        this.PreviousCheatVotes = cheatVotes;
+                        return;
+                    }
+
+                    // Get cheat IDs to activate based on increased vote counts
+                    IEnumerable<Int32> cheatIdsToActivate = cheatVotes
+                          .Join(
+                              this.PreviousCheatVotes,
+                              currentVote => currentVote.CheatId,
+                              previousVote => previousVote.CheatId,
+                              (currentVote, previousVote) => new { cheatId = currentVote.CheatId, currentCount = currentVote.VoteCount, previousCount = previousVote.VoteCount })
+                          .Where(combinedVote => combinedVote.currentCount != combinedVote.previousCount)
+                          .Select(combinedVote => combinedVote.cheatId);
+
+                    // Add in new votes with no previous vote count
+                    cheatIdsToActivate = cheatVotes
+                        .Select(vote => vote.CheatId)
+                        .Except(this.PreviousCheatVotes.Select(vote => vote.CheatId))
+                        .Concat(cheatIdsToActivate)
+                        .Distinct();
+
+                    IEnumerable<ProjectItem> projectItemsToActivate = cheatIdsToActivate
+                          .Join(
+                              candidateProjectItems,
+                              cheatId => cheatId,
+                              projectItem => projectItem.AssociatedCheat?.CheatId,
+                              (cheatId, projectItem) => projectItem);
+
+                    IEnumerable<ProjectItem> projectItemsToDeactivate = cheatVotes
+                          .Join(
+                              candidateProjectItems,
+                              cheatVote => cheatVote.CheatId,
+                              projectItem => projectItem.AssociatedCheat?.CheatId,
+                              (cheatId, projectItem) => projectItem)
+                          .Except(projectItemsToActivate);
+
+                    // TODO: For now we are just toggling if we detect a change in votes. This blind toggling is horrible and we need to move to a cooldown/duration system.
+
+                    // Handle deactivations
+                    // projectItemsToDeactivate.ForEach(item => item.IsActivated = false);
+
+                    // Handle activations
+                    projectItemsToActivate.ForEach(item => item.IsActivated = !item.IsActivated);
+
                     this.PreviousCheatVotes = cheatVotes;
-                    return;
                 }
-
-                // Get cheat IDs to activate based on increased vote counts
-                IEnumerable<Int32> cheatIdsToActivate = cheatVotes
-                      .Join(
-                          this.PreviousCheatVotes,
-                          currentVote => currentVote.CheatId,
-                          previousVote => previousVote.CheatId,
-                          (currentVote, previousVote) => new { cheatId = currentVote.CheatId, currentCount = currentVote.VoteCount, previousCount = previousVote.VoteCount })
-                      .Where(combinedVote => combinedVote.currentCount != combinedVote.previousCount)
-                      .Select(combinedVote => combinedVote.cheatId);
-
-                // Add in new votes with no previous vote count
-                cheatIdsToActivate = cheatVotes
-                    .Select(vote => vote.CheatId)
-                    .Except(this.PreviousCheatVotes.Select(vote => vote.CheatId))
-                    .Concat(cheatIdsToActivate)
-                    .Distinct();
-
-                IEnumerable<ProjectItem> projectItemsToActivate = cheatIdsToActivate
-                      .Join(
-                          candidateProjectItems,
-                          cheatId => cheatId,
-                          projectItem => projectItem.AssociatedCheat?.CheatId,
-                          (cheatId, projectItem) => projectItem);
-
-                IEnumerable<ProjectItem> projectItemsToDeactivate = cheatVotes
-                      .Join(
-                          candidateProjectItems,
-                          cheatVote => cheatVote.CheatId,
-                          projectItem => projectItem.AssociatedCheat?.CheatId,
-                          (cheatId, projectItem) => projectItem)
-                      .Except(projectItemsToActivate);
-
-                // TODO: For now we are just toggling if we detect a change in votes. This blind toggling is horrible and we need to move to a cooldown/duration system.
-
-                // Handle deactivations
-                // projectItemsToDeactivate.ForEach(item => item.IsActivated = false);
-
-                // Handle activations
-                projectItemsToActivate.ForEach(item => item.IsActivated = !item.IsActivated);
-
-                this.PreviousCheatVotes = cheatVotes;
             }
             catch (Exception ex)
             {
@@ -315,7 +335,11 @@
 
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Disconnected from Twitch");
                     this.IsConnected = false;
-                    this.PreviousCheatVotes = null;
+
+                    lock (this.VoteLock)
+                    {
+                        this.PreviousCheatVotes = null;
+                    }
                 }
                 catch (Exception ex)
                 {

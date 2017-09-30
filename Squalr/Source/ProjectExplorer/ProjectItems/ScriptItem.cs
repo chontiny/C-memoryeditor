@@ -6,6 +6,7 @@
     using Squalr.Content;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
+    using Squalr.Source.Browse.StreamConfig;
     using Squalr.Source.Editors.StreamIconEditor;
     using System;
     using System.Collections.Generic;
@@ -162,6 +163,8 @@
                 {
                     this.AssociatedCheat.IsStreamDisabled = value;
                 }
+
+                StreamConfigViewModel.GetInstance().OnCheatListChange();
 
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.IsStreamDisabled));
