@@ -80,6 +80,7 @@
             {
                 this.UpdateLoginStatus();
                 this.SetDefaultViewOptions();
+                RefreshCoinsTask refreshCoinsTask = new RefreshCoinsTask(this.SetCoinAmount);
             });
 
             MainViewModel.GetInstance().RegisterTool(this);
@@ -373,6 +374,16 @@
         }
 
         /// <summary>
+        /// Updates the display value of the coins.
+        /// </summary>
+        /// <param name="coins">The new coin amount.</param>
+        public void SetCoinAmount(Int32 coins)
+        {
+            this.ActiveUser.Coins = coins;
+            this.RaisePropertyChanged(nameof(this.ActiveUser));
+        }
+
+        /// <summary>
         /// Opens the virtual currency store in the native browser.
         /// </summary>
         private void OpenVirtualCurrencyStore()
@@ -402,16 +413,16 @@
         {
             this.IsLoginStatusLoading = true;
 
-            AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-
-            if (accessTokens == null || accessTokens.AccessToken.IsNullOrEmpty())
-            {
-                this.IsLoggedIn = false;
-                return;
-            }
-
             try
             {
+                AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+
+                if (accessTokens == null || accessTokens.AccessToken.IsNullOrEmpty())
+                {
+                    this.IsLoggedIn = false;
+                    return;
+                }
+
                 User user = SqualrApi.GetTwitchUser(accessTokens.AccessToken);
                 this.ActiveUser = user;
 
@@ -422,8 +433,10 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to log in using stored credentials", ex);
                 this.IsLoggedIn = false;
             }
-
-            this.IsLoginStatusLoading = false;
+            finally
+            {
+                this.IsLoginStatusLoading = false;
+            }
         }
 
         /// <summary>

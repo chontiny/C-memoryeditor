@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrProjectExplorer"
     d:DesignHeight="256"
@@ -11,6 +12,9 @@
     x:ClassModifier="internal"
     DataContext="{Binding ProjectExplorerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public ProjectExplorer() { InitializeComponent(); }]]>
+    </x:Code>
     <UserControl.Resources>
         <ContextMenu
             x:Key="RightClickMenu"
@@ -116,33 +120,44 @@
         <Grid Grid.Row="1">
             <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
                 <ListView
+                    Name="ProjectExplorerListView"
                     Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                     BorderThickness="0"
                     ContextMenu="{StaticResource RightClickMenu}"
                     ItemsSource="{Binding ProjectItems}"
                     SelectionMode="Extended">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
+                    <!--  Click and Selection events  -->
+                    <intr:Interaction.Triggers>
+                        <intr:EventTrigger EventName="SelectionChanged">
+                            <intr:InvokeCommandAction Command="{Binding SelectProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItems}" />
+                        </intr:EventTrigger>
+                        <intr:EventTrigger EventName="MouseDoubleClick">
+                            <intr:InvokeCommandAction Command="{Binding EditProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItem}" />
+                        </intr:EventTrigger>
+                    </intr:Interaction.Triggers>
+                    <!--  Keyboard shortcuts  -->
+                    <ListView.InputBindings>
+                        <KeyBinding
+                            Key="C"
+                            Command="{Binding CopySelectionCommand}"
+                            Modifiers="Ctrl" />
+                        <KeyBinding
+                            Key="X"
+                            Command="{Binding CutSelectionCommand}"
+                            Modifiers="Ctrl" />
+                        <KeyBinding
+                            Key="V"
+                            Command="{Binding PasteSelectionCommand}"
+                            Modifiers="Ctrl" />
+                        <KeyBinding Key="Space" Command="{Binding ToggleSelectionActivationCommand}" />
+                        <KeyBinding Key="Delete" Command="{Binding DeleteSelectionCommand}" />
+                    </ListView.InputBindings>
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid ContextMenu="{StaticResource ProjectItemRightClickMenu}" Focusable="False">
-                                <Grid.InputBindings>
-                                    <MouseBinding
-                                        Command="{Binding DataContext.EditProjectItemCommand, ElementName=SqualrProjectExplorer}"
-                                        CommandParameter="{Binding .}"
-                                        Gesture="LeftDoubleClick" />
-                                    <MouseBinding
-                                        Command="{Binding DataContext.SelectProjectItemCommand, ElementName=SqualrProjectExplorer}"
-                                        CommandParameter="{Binding .}"
-                                        Gesture="LeftClick" />
-                                </Grid.InputBindings>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <CheckBox
@@ -155,17 +170,14 @@
                                     Grid.Column="1"
                                     Width="16"
                                     Height="16"
+                                    IsHitTestVisible="False"
                                     Source="{Binding Path=Icon}" />
                                 <TextBlock
                                     Grid.Column="2"
                                     Margin="4,0,0,0"
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                    Text="{Binding Path=Description}" />
-                                <TextBlock
-                                    Grid.Column="3"
-                                    Margin="4,0,0,0"
-                                    Foreground="Yellow"
-                                    Text="{Binding Path=StreamCommand, FallbackValue=''}" />
+                                    IsHitTestVisible="False"
+                                    Text="{Binding Path=Name}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

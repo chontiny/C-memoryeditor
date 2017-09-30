@@ -29,7 +29,7 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Huge refactor to support:\r\n\t- Twitch connections\r\n\t- Marketplace\r\n\t- Libraries");
+            this.Write("- Stream integration fixes\r\n- Added application icon");
             return this.GenerationEnvironment.ToString();
         }
     }

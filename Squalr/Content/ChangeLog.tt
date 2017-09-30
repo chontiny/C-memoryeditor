@@ -5,7 +5,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Squalr" #>
-- Huge refactor to support:
-	- Twitch connections
-	- Marketplace
-	- Libraries
+- Stream integration fixes
+- Added application icon

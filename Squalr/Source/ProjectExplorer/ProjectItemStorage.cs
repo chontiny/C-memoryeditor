@@ -328,22 +328,12 @@
                     {
                         ProjectItem targetProjectItem = projectItem;
 
-                        if (projectItem is ScriptItem)
-                        {
-                            ScriptItem scriptItem = projectItem as ScriptItem;
-
-                            if (!scriptItem.IsCompiled)
-                            {
-                                targetProjectItem = scriptItem?.Compile();
-                            }
-                        }
-
                         if (targetProjectItem == null)
                         {
                             return;
                         }
 
-                        String filePath = Path.Combine(folderPath, targetProjectItem.Description + ProjectItemStorage.ProjectFileExtension);
+                        String filePath = Path.Combine(folderPath, targetProjectItem.Name + ProjectItemStorage.ProjectFileExtension);
 
                         using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                         {

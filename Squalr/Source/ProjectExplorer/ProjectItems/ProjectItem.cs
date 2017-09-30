@@ -30,16 +30,16 @@
     internal abstract class ProjectItem : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
+        /// The name of this project item.
+        /// </summary>
+        [Browsable(false)]
+        protected String name;
+
+        /// <summary>
         /// The description of this project item.
         /// </summary>
         [Browsable(false)]
         protected String description;
-
-        /// <summary>
-        /// The extended description of this project item.
-        /// </summary>
-        [Browsable(false)]
-        protected String extendedDescription;
 
         /// <summary>
         /// The unique identifier of this project item.
@@ -73,7 +73,7 @@
         public ProjectItem(String description)
         {
             // Bypass setters/getters to avoid triggering any view updates in constructor
-            this.description = description == null ? String.Empty : description;
+            this.name = description == null ? String.Empty : description;
             this.isActivated = false;
             this.guid = Guid.NewGuid();
             this.ActivationLock = new Object();
@@ -88,7 +88,35 @@
         /// Gets or sets the description for this object.
         /// </summary>
         [DataMember]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Description"), Description("Description to be shown for the Project Items")]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Name"), Description("The name of this cheat")]
+        public String Name
+        {
+            get
+            {
+                return this.name;
+            }
+
+            set
+            {
+                if (this.name == value)
+                {
+                    return;
+                }
+
+                this.name = value;
+                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                this.NotifyPropertyChanged(nameof(this.Name));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the description for this object.
+        /// </summary>
+        [DataMember]
+        [TypeConverter(typeof(TextConverter))]
+        [Editor(typeof(TextEditorModel), typeof(UITypeEditor))]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Description"), Description("The description of this cheat")]
         public String Description
         {
             get
@@ -106,34 +134,6 @@
                 this.description = value;
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Description));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the description for this object.
-        /// </summary>
-        [DataMember]
-        [TypeConverter(typeof(TextConverter))]
-        [Editor(typeof(TextEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Extended Description"), Description("Extended description for additional information about this item")]
-        public String ExtendedDescription
-        {
-            get
-            {
-                return this.extendedDescription;
-            }
-
-            set
-            {
-                if (this.extendedDescription == value)
-                {
-                    return;
-                }
-
-                this.extendedDescription = value;
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.ExtendedDescription));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
