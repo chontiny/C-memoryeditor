@@ -80,6 +80,7 @@
             {
                 this.UpdateLoginStatus();
                 this.SetDefaultViewOptions();
+                RefreshCoinsTask refreshCoinsTask = new RefreshCoinsTask(this.SetCoinAmount);
             });
 
             MainViewModel.GetInstance().RegisterTool(this);

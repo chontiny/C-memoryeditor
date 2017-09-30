@@ -335,6 +335,7 @@
     <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />
     <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
     <Compile Include="Source\Browse\BrowseViewModel.cs" />
+    <Compile Include="Source\Browse\RefreshCoinsTask.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\IStreamIconsLoadedObserver.cs" />

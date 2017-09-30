@@ -171,13 +171,13 @@
             return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.GET, SqualrApi.TwitchConnectionEndpoint, parameters);
         }
 
-        private static StreamIcon[] cachedIcons = null;
+        private static IEnumerable<StreamIcon> cachedIcons = null;
 
-        public static StreamIcon[] GetStreamIcons()
+        public static IEnumerable<StreamIcon> GetStreamIcons()
         {
             if (cachedIcons == null)
             {
-                cachedIcons = SqualrApi.ExecuteRequest<StreamIcon[]>(Method.GET, SqualrApi.StreamIconsEndpoint);
+                cachedIcons = SqualrApi.ExecuteRequest<StreamIcon[]>(Method.GET, SqualrApi.StreamIconsEndpoint).Shuffle();
             }
 
             return cachedIcons;
