@@ -310,6 +310,7 @@
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
+    <Compile Include="Source\Api\Models\OverlayMeta.cs" />
     <Compile Include="Source\Api\Models\UnlockedCheat.cs" />
     <Compile Include="Source\Api\Models\ConnectionStatus.cs" />
     <Compile Include="Source\Api\Models\LibraryCheats.cs" />

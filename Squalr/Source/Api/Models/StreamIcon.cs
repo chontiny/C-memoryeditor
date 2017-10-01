@@ -14,10 +14,6 @@
         /// </summary>
         public StreamIcon()
         {
-            this.Icon = null;
-            this.Keywords = null;
-            this.IconBase64 = String.Empty;
-            this.IconName = String.Empty;
         }
 
         /// <summary>

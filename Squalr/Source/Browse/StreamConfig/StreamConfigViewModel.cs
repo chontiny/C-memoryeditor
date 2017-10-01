@@ -263,11 +263,6 @@
                               (cheatId, projectItem) => projectItem)
                           .Except(projectItemsToActivate);
 
-                    // TODO: For now we are just toggling if we detect a change in votes. This blind toggling is horrible and we need to move to a cooldown/duration system.
-
-                    // Handle deactivations
-                    // projectItemsToDeactivate.ForEach(item => item.IsActivated = false);
-
                     // Handle activations
                     projectItemsToActivate.ForEach(item =>
                     {
@@ -279,6 +274,34 @@
                             (item as ScriptItem).CurrentDuration = 0.0f;
                         }
                     });
+
+                    // Notify which project items were activated such that Squalr can update the stream overlay
+                    if (projectItemsToActivate.Count() > 0)
+                    {
+                        Task.Run(() =>
+                        {
+                            IEnumerable<ProjectItem> activatedProjectItems = candidateProjectItems
+                                .Select(item => item)
+                                .Where(item => item.IsActivated)
+                                .Where(item => (item.AssociatedCheat?.Cooldown ?? 0.0f) > 0.0f)
+                                .Where(item => (item.AssociatedCheat?.Duration ?? 0.0f) > 0.0f);
+
+                            IEnumerable<OverlayMeta> overlayMeta = activatedProjectItems
+                                .Select(item => new OverlayMeta(item.AssociatedCheat.CheatId, item.AssociatedCheat.Cooldown, item.AssociatedCheat.Duration));
+
+                            if (overlayMeta.Count() > 0)
+                            {
+                                try
+                                {
+                                    SqualrApi.UpdateOverlayMeta(accessTokens.AccessToken, overlayMeta.ToArray());
+                                }
+                                catch (Exception ex)
+                                {
+                                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error updating overlay cooldowns and durations", ex);
+                                }
+                            }
+                        });
+                    }
 
                     this.PreviousCheatVotes = cheatVotes;
                 }

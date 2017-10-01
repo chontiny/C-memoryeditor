@@ -370,7 +370,7 @@
             this.ScriptManager = new ScriptManager();
             this.LastCooldownUpdate = DateTime.MinValue;
 
-            if (this.compiledScript == null)
+            if (this.compiledScript.IsNullOrEmpty())
             {
                 Task.Run(() => this.compiledScript = this.ScriptManager.CompileScript(script));
             }

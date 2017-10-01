@@ -8,10 +8,6 @@
     {
         public Vote()
         {
-            this.Coins = 0;
-            this.Name = String.Empty;
-            this.DisplayName = String.Empty;
-            this.Email = String.Empty;
         }
 
         [DataMember(Name = "coins")]

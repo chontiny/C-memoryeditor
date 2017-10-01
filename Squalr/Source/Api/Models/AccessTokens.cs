@@ -8,8 +8,6 @@
     {
         public AccessTokens()
         {
-            this.AccessToken = String.Empty;
-            this.RefreshToken = String.Empty;
         }
 
         [DataMember(Name = "access_token")]
