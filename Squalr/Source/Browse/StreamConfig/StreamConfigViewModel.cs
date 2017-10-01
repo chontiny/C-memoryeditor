@@ -269,7 +269,16 @@
                     // projectItemsToDeactivate.ForEach(item => item.IsActivated = false);
 
                     // Handle activations
-                    projectItemsToActivate.ForEach(item => item.IsActivated = !item.IsActivated);
+                    projectItemsToActivate.ForEach(item =>
+                    {
+                        item.IsActivated = true;
+
+                        // Reset duration always
+                        if (item is ScriptItem)
+                        {
+                            (item as ScriptItem).CurrentDuration = 0.0f;
+                        }
+                    });
 
                     this.PreviousCheatVotes = cheatVotes;
                 }

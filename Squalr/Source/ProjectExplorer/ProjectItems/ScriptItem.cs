@@ -8,6 +8,7 @@
     using Squalr.Source.Api.Models;
     using Squalr.Source.Browse.StreamConfig;
     using Squalr.Source.Editors.StreamIconEditor;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -46,19 +47,29 @@
         /// The cooldown in milliseconds of this project item.
         /// </summary>
         [Browsable(false)]
-        protected Int32 cooldown;
+        protected Single cooldown;
 
         /// <summary>
         /// The duration in milliseconds of this project item.
         /// </summary>
         [Browsable(false)]
-        protected Int32 duration;
+        protected Single duration;
 
         /// <summary>
         /// The stream icon path associated with this project item.
         /// </summary>
         [Browsable(false)]
         protected String streamIconName;
+
+        /// <summary>
+        /// The current cooldown for this script item.
+        /// </summary>
+        private Single currentCooldown;
+
+        /// <summary>
+        /// The current duration for this script item.
+        /// </summary>
+        private Single currentDuration;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptItem" /> class.
@@ -76,6 +87,7 @@
         public ScriptItem(String description, String script) : base(description)
         {
             this.ScriptManager = new ScriptManager();
+            this.LastCooldownUpdate = DateTime.MinValue;
 
             // Initialize script and bypass setters
             this.script = script;
@@ -178,7 +190,7 @@
         /// </summary>
         [DataMember]
         [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Cooldown"), Description("The cooldown (in milliseconds) for stream activation for this project item.")]
-        public Int32 Cooldown
+        public Single Cooldown
         {
             get
             {
@@ -210,7 +222,7 @@
         /// </summary>
         [DataMember]
         [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Duration"), Description("The duration (in milliseconds) for stream activation for this project item.")]
-        public Int32 Duration
+        public Single Duration
         {
             get
             {
@@ -298,10 +310,53 @@
         }
 
         /// <summary>
+        /// Gets or sets the current cooldown for this script item.
+        /// </summary>
+        [Browsable(false)]
+        public Single CurrentCooldown
+        {
+            get
+            {
+                return this.currentCooldown;
+            }
+
+            set
+            {
+                this.currentCooldown = value;
+                this.NotifyPropertyChanged(nameof(this.CurrentCooldown));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the current duration for this script item.
+        /// </summary>
+        [Browsable(false)]
+        public Single CurrentDuration
+        {
+            get
+            {
+                return this.currentDuration;
+            }
+
+            set
+            {
+                this.currentDuration = value;
+                this.NotifyPropertyChanged(nameof(this.CurrentDuration));
+                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the script manager associated with this script.
         /// </summary>
         [Browsable(false)]
         private ScriptManager ScriptManager { get; set; }
+
+        /// <summary>
+        /// Gets or sets the time since the last cooldown update.
+        /// </summary>
+        private DateTime LastCooldownUpdate { get; set; }
 
         /// <summary>
         /// Invoked when this object is deserialized.
@@ -313,6 +368,12 @@
             base.OnDeserialized(streamingContext);
 
             this.ScriptManager = new ScriptManager();
+            this.LastCooldownUpdate = DateTime.MinValue;
+
+            if (this.compiledScript == null)
+            {
+                Task.Run(() => this.compiledScript = this.ScriptManager.CompileScript(script));
+            }
 
             if (StreamIconEditorViewModel.GetInstance().IsStreamIconListLoading)
             {
@@ -349,6 +410,7 @@
         /// </summary>
         public override void Update()
         {
+            this.UpdateCooldown();
         }
 
         /// <summary>
@@ -358,6 +420,12 @@
         {
             if (this.IsActivated)
             {
+                if (this.CurrentCooldown > 0)
+                {
+                    this.IsActivated = false;
+                    return;
+                }
+
                 // Try to run script.
                 if (!this.ScriptManager.RunActivationFunction(this))
                 {
@@ -368,12 +436,53 @@
 
                 // Run the update loop for the script
                 this.ScriptManager.RunUpdateFunction(this);
+
+                this.CurrentCooldown = this.Cooldown;
+                this.CurrentDuration = 0.0f;
             }
             else
             {
                 // Try to deactivate script (we do not care if this fails)
                 this.ScriptManager.RunDeactivationFunction(this);
             }
+        }
+
+        /// <summary>
+        /// Updates the cooldown for this script.
+        /// </summary>
+        private void UpdateCooldown()
+        {
+            if (this.IsStreamDisabled || !this.IsActivated)
+            {
+                // Clear state
+                this.LastCooldownUpdate = DateTime.MinValue;
+                this.CurrentDuration = 0.0f;
+                this.CurrentCooldown = 0.0f;
+                return;
+            }
+
+            DateTime currentTime = DateTime.Now;
+
+            if (this.LastCooldownUpdate == DateTime.MinValue)
+            {
+                this.LastCooldownUpdate = currentTime;
+            }
+
+            Single elapsedTime = (Single)(currentTime - this.LastCooldownUpdate).TotalSeconds;
+
+            // Update current cooldown
+            this.CurrentCooldown = (this.CurrentCooldown - elapsedTime).Clamp(0, this.Cooldown);
+
+            // Update current duration
+            this.CurrentDuration = (this.CurrentDuration + elapsedTime).Clamp(0, this.Duration);
+
+            // Deactivate if exceeding the duration
+            if (this.CurrentDuration >= this.Duration)
+            {
+                this.IsActivated = false;
+            }
+
+            this.LastCooldownUpdate = currentTime;
         }
     }
     //// End class
