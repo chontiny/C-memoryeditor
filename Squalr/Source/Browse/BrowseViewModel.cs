@@ -379,8 +379,11 @@
         /// <param name="coins">The new coin amount.</param>
         public void SetCoinAmount(Int32 coins)
         {
-            this.ActiveUser.Coins = coins;
-            this.RaisePropertyChanged(nameof(this.ActiveUser));
+            if (this.ActiveUser == null)
+            {
+                this.ActiveUser.Coins = coins;
+                this.RaisePropertyChanged(nameof(this.ActiveUser));
+            }
         }
 
         /// <summary>

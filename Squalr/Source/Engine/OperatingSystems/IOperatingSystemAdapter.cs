@@ -141,6 +141,8 @@
         /// <returns>The address of all matches.</returns>
         IEnumerable<IntPtr> SearchllAob(String pattern);
 
+        IntPtr EvaluatePointer(IntPtr address, IEnumerable<Int32> offsets);
+
         /// <summary>
         /// Reads a value from the opened processes memory.
         /// </summary>

@@ -560,16 +560,9 @@
 
         public UInt64 EvaluatePointer(UInt64 address, IEnumerable<Int32> offsets)
         {
-            UInt64 finalAddress = address;
+            this.PrintDebugTag();
 
-            if (offsets != null)
-            {
-                foreach (Int32 offset in offsets)
-                {
-                    finalAddress = (this.Read<UInt64>(finalAddress).ToInt64() + offset).ToUInt64();
-                }
-            }
-
+            UInt64 finalAddress = EngineCore.GetInstance().OperatingSystem.EvaluatePointer(address.ToIntPtr(), offsets).ToUInt64();
             return finalAddress;
         }
 
