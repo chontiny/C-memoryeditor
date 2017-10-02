@@ -27,12 +27,12 @@
         /// <summary>
         /// The url for the twitch login.
         /// </summary>
-        public const String LoginUrl = "https://www.squalr.com/Client/Login";
+        public const String LoginUrl = "https://www.squalr.com/client/login";
 
         /// <summary>
         /// The callback url for the twitch login.
         /// </summary>
-        public const String LoginCallbackUrl = "https://squalr.com/Login/Callback";
+        public const String LoginCallbackUrl = "https://squalr.com/login/callback";
 
         /// <summary>
         /// Singleton instance of the <see cref="TwitchLoginViewModel" /> class.

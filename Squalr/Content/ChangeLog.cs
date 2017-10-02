@@ -29,7 +29,7 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Fixes to evaluating pointers via scripts");
+            this.Write("- Login fixes");
             return this.GenerationEnvironment.ToString();
         }
     }
