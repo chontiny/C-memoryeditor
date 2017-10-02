@@ -8,8 +8,6 @@
     {
         public LibraryCheats()
         {
-            this.CheatsInLibrary = null;
-            this.CheatsAvailable = null;
         }
 
         [DataMember(Name = "cheats_in_library")]

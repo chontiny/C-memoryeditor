@@ -18,10 +18,10 @@
         private Boolean isStreamDisabled;
 
         [DataMember(Name = "cooldown")]
-        private Int32 cooldown;
+        private Single cooldown;
 
         [DataMember(Name = "duration")]
-        private Int32 duration;
+        private Single duration;
 
         [DataMember(Name = "icon")]
         private String icon;
@@ -73,7 +73,7 @@
             }
         }
 
-        public Int32 Cooldown
+        public Single Cooldown
         {
             get
             {
@@ -87,7 +87,7 @@
             }
         }
 
-        public Int32 Duration
+        public Single Duration
         {
             get
             {

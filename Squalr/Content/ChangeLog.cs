@@ -29,7 +29,7 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Stream integration fixes\r\n- Added application icon");
+            this.Write("- Fixes to evaluating pointers via scripts");
             return this.GenerationEnvironment.ToString();
         }
     }

@@ -114,6 +114,10 @@
             {
                 AccessTokens accessTokens = SqualrApi.GetAccessTokens(code);
                 SettingsViewModel.GetInstance().AccessTokens = accessTokens;
+
+                User user = SqualrApi.GetTwitchUser(accessTokens.AccessToken);
+                BrowseViewModel.GetInstance().ActiveUser = user;
+
                 BrowseViewModel.GetInstance().IsLoggedIn = true;
             }
             catch (Exception ex)

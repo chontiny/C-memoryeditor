@@ -28,37 +28,32 @@
         /// <summary>
         /// The API url to get the access tokens.
         /// </summary>
-        public static String VirtualCurrencyStoreEndpoint = SqualrApi.ApiBase + "Store";
+        public static String VirtualCurrencyStoreEndpoint = SqualrApi.ApiBase + "store";
 
         /// <summary>
         /// The API url to get the access tokens.
         /// </summary>
-        public static String AccessTokensApi = SqualrApi.ApiBase + "api/User/Tokens";
+        public static String AccessTokensApi = SqualrApi.ApiBase + "api/user/tokens";
 
         /// <summary>
         /// The API url to get the user.
         /// </summary>
-        public static String UserApi = SqualrApi.ApiBase + "api/User";
+        public static String UserApi = SqualrApi.ApiBase + "api/user";
 
         /// <summary>
         /// The endpoint for getting all available stream icons.
         /// </summary>
-        private static String StreamIconsEndpoint = SqualrApi.ApiBase + "api/Stream/Icons";
+        private static String StreamIconsEndpoint = SqualrApi.ApiBase + "api/stream/icons";
 
         /// <summary>
         /// The endpoint for setting the stream integration configuration.
         /// </summary>
-        private static String GetStreamConfigEndpoint = SqualrApi.ApiBase + "api/Stream/Config";
+        private static String GetStreamConfigEndpoint = SqualrApi.ApiBase + "api/stream/config";
 
         /// <summary>
         /// The endpoint for setting the stream integration configuration.
         /// </summary>
-        private static String SetStreamConfigEndpoint = SqualrApi.ApiBase + "api/Stream/SetConfig";
-
-        /// <summary>
-        /// The endpoint for setting the stream integration configuration.
-        /// </summary>
-        private static String SetCheatStreamMeta = SqualrApi.ApiBase + "api/Stream/SetCheatMeta";
+        private static String SetOverlayConfigEndpoint = SqualrApi.ApiBase + "api/stream/overlay";
 
         /// <summary>
         /// The endpoint for updating cheat stream metadata.
@@ -68,22 +63,22 @@
         /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
         /// </summary>
-        private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/Stream/ActiveCheatIds/";
+        private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/stream/activeCheatIds/";
 
         /// <summary>
         /// The endpoint for querying the game lists.
         /// </summary>
-        private static String GameListEndpoint = SqualrApi.ApiBase + "api/Games/List";
+        private static String GameListEndpoint = SqualrApi.ApiBase + "api/games/list";
 
         /// <summary>
         /// The endpoint for querying the games for which a user has unlocked or uploaded at least one cheat.
         /// </summary>
-        private static String OwnedGamesEndpoint = SqualrApi.ApiBase + "api/Games/Owned";
+        private static String OwnedGamesEndpoint = SqualrApi.ApiBase + "api/games/owned";
 
         /// <summary>
         /// The endpoint for searching games.
         /// </summary>
-        private static String GameSearchEndpoint = SqualrApi.ApiBase + "api/Games/Search";
+        private static String GameSearchEndpoint = SqualrApi.ApiBase + "api/games/search";
 
         /// <summary>
         /// The endpoint for querying the library lists.
@@ -314,6 +309,23 @@
             parameters.Add("icon", cheat?.Icon?.ToString());
 
             SqualrApi.ExecuteRequest(Method.PUT, SqualrApi.UpdateCheatStreamMetaEndpoint + "/" + cheat?.CheatId.ToString(), parameters);
+        }
+
+        public static void UpdateOverlayMeta(String accessToken, OverlayMeta[] activeCooldowns)
+        {
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(OverlayMeta[]));
+
+                deserializer.WriteObject(memoryStream, activeCooldowns);
+
+                parameters.Add("active_cooldowns", Encoding.ASCII.GetString(memoryStream.ToArray()));
+            }
+
+            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.SetOverlayConfigEndpoint, parameters);
         }
 
         /// <summary>

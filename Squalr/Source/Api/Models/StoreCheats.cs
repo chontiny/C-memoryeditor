@@ -8,8 +8,6 @@
     {
         public StoreCheats()
         {
-            this.LockedCheats = null;
-            this.UnlockedCheats = null;
         }
 
         [DataMember(Name = "locked_cheats")]

@@ -159,6 +159,8 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <CheckBox
                                     Grid.Column="0"
@@ -178,6 +180,18 @@
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                     IsHitTestVisible="False"
                                     Text="{Binding Path=Name}" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    Margin="4,0,0,0"
+                                    Foreground="Yellow"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding Path=CurrentCooldown, FallbackValue=''}" />
+                                <TextBlock
+                                    Grid.Column="4"
+                                    Margin="4,0,0,0"
+                                    Foreground="LightBlue"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding Path=CurrentDuration, FallbackValue=''}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

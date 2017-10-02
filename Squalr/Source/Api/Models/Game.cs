@@ -8,9 +8,6 @@
     {
         public Game()
         {
-            this.GameId = 0;
-            this.GameName = String.Empty;
-            this.GameMode = 0;
         }
 
         [DataMember(Name = "id")]
