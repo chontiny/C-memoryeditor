@@ -452,7 +452,7 @@
         /// </summary>
         private void UpdateCooldown()
         {
-            if (this.IsStreamDisabled || !this.IsActivated)
+            if (this.IsStreamDisabled || !this.IsActivated || this.Duration <= 0)
             {
                 // Clear state
                 this.LastCooldownUpdate = DateTime.MinValue;

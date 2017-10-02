@@ -553,6 +553,33 @@
             throw new NotImplementedException();
         }
 
+        public IntPtr EvaluatePointer(IntPtr address, IEnumerable<Int32> offsets)
+        {
+            IntPtr finalAddress = address;
+
+            if (!offsets.IsNullOrEmpty())
+            {
+                // Add and trace offsets
+                foreach (Int32 offset in offsets.Take(offsets.Count() - 1))
+                {
+                    Boolean success;
+                    if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
+                    {
+                        finalAddress = (this.Read<UInt32>(finalAddress + offset, out success).ToInt64()).ToIntPtr();
+                    }
+                    else
+                    {
+                        finalAddress = (this.Read<UInt64>(finalAddress, out success).ToInt64() + offset).ToIntPtr();
+                    }
+                }
+
+                // The last offset is added, but not traced
+                finalAddress = finalAddress.Add(offsets.Last());
+            }
+
+            return finalAddress;
+        }
+
         #endregion
 
         /// <summary>
@@ -614,7 +641,7 @@
 
             try
             {
-                if (this.SystemProcess == null || !Native.NativeMethods.IsWow64Process(this.SystemProcess.Handle, out isWow64))
+                if (this.SystemProcess == null || !NativeMethods.IsWow64Process(this.SystemProcess.Handle, out isWow64))
                 {
                     // Error, assume 32 bit
                     return true;
