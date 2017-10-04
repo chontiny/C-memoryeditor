@@ -4,6 +4,7 @@
     using Squalr.Properties;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
+    using Squalr.Source.Output;
     using Squalr.Source.Utils.Extensions;
     using System;
 
@@ -38,16 +39,24 @@
         /// </summary>
         protected override void OnUpdate()
         {
-            AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-
-            if (accessTokens == null || accessTokens.AccessToken.IsNullOrEmpty())
+            try
             {
-                return;
+                AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+
+                if (accessTokens == null || accessTokens.AccessToken.IsNullOrEmpty())
+                {
+                    return;
+                }
+
+                User user = SqualrApi.GetTwitchUser(accessTokens.AccessToken);
+
+                this.UpdateAction?.Invoke(user.Coins);
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error refreshing user", ex);
             }
 
-            User user = SqualrApi.GetTwitchUser(accessTokens.AccessToken);
-
-            this.UpdateAction?.Invoke(user.Coins);
             base.OnUpdate();
         }
     }

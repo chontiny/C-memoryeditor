@@ -53,7 +53,7 @@
         /// <summary>
         /// The endpoint for setting the stream integration configuration.
         /// </summary>
-        private static String SetOverlayConfigEndpoint = SqualrApi.ApiBase + "api/stream/overlay";
+        private static String OverlayConfigEndpoint = SqualrApi.ApiBase + "api/stream/overlay";
 
         /// <summary>
         /// The endpoint for updating cheat stream metadata.
@@ -325,7 +325,7 @@
                 parameters.Add("active_cooldowns", Encoding.ASCII.GetString(memoryStream.ToArray()));
             }
 
-            SqualrApi.ExecuteRequest(Method.POST, SqualrApi.SetOverlayConfigEndpoint, parameters);
+            SqualrApi.ExecuteRequest(Method.GET, SqualrApi.OverlayConfigEndpoint + "/create", parameters);
         }
 
         /// <summary>
