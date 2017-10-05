@@ -121,6 +121,15 @@
         [DataMember(Name = "in_market")]
         public Boolean InMarket { get; set; }
 
+        [DataMember(Name = "default_cooldown")]
+        public Single DefaultCooldown { get; set; }
+
+        [DataMember(Name = "default_duration")]
+        public Single DefaultDuration { get; set; }
+
+        [DataMember(Name = "default_is_stream_disabled")]
+        public Boolean DefaultIsStreamDisabled { get; set; }
+
         /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
@@ -141,6 +150,14 @@
                 this.ProjectItem = deserializer.ReadObject(memoryStream) as ProjectItem;
                 this.ProjectItem.AssociateCheat(this);
             }
+        }
+
+        /// <summary>
+        /// Loads the default stream settings into the associated project item.
+        /// </summary>
+        public void LoadDefaultStreamSettings()
+        {
+            this.ProjectItem.AssociateCheat(this, loadDefaults: true);
         }
 
         private void UpdateStreamMeta()

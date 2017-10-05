@@ -276,7 +276,7 @@
         /// Associates a cheat with this project item.
         /// </summary>
         /// <param name="cheat">The associated cheat</param>
-        public virtual void AssociateCheat(Cheat cheat)
+        public virtual void AssociateCheat(Cheat cheat, Boolean loadDefaults = false)
         {
             this.AssociatedCheat = cheat;
         }

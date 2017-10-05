@@ -395,13 +395,23 @@
         /// Associates a cheat with this project item.
         /// </summary>
         /// <param name="cheat">The associated cheat</param>
-        public override void AssociateCheat(Cheat cheat)
+        public override void AssociateCheat(Cheat cheat, Boolean loadDefaults = false)
         {
-            base.AssociateCheat(cheat);
+            base.AssociateCheat(cheat, loadDefaults);
 
-            this.isStreamDisabled = cheat.IsStreamDisabled;
-            this.cooldown = cheat.Cooldown;
-            this.duration = cheat.Duration;
+            if (loadDefaults)
+            {
+                this.isStreamDisabled = cheat.DefaultIsStreamDisabled;
+                this.cooldown = cheat.DefaultCooldown;
+                this.duration = cheat.DefaultDuration;
+            }
+            else
+            {
+                this.isStreamDisabled = cheat.IsStreamDisabled;
+                this.cooldown = cheat.Cooldown;
+                this.duration = cheat.Duration;
+            }
+
             this.streamIconName = cheat.Icon;
         }
 
