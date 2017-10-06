@@ -142,10 +142,12 @@
                                                 <ColumnDefinition />
                                             </Grid.ColumnDefinitions>
                                             <Button
+                                                Padding="0"
                                                 Background="Transparent"
                                                 Command="{Binding StoreViewModel.UnlockCheatCommand, Source={StaticResource ViewModelLocator}}"
                                                 CommandParameter="{Binding .}"
-                                                ToolTip="Purchase this cheat">
+                                                ToolTip="Purchase this cheat"
+                                                Visibility="{Binding Path=IsPaid, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                 <WrapPanel Grid.Column="0">
                                                     <Image
                                                         Width="16"
@@ -156,6 +158,20 @@
                                                         Grid.Column="0"
                                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                                         Text="{Binding Path=Cost}" />
+                                                </WrapPanel>
+                                            </Button>
+                                            <Button
+                                                Padding="0"
+                                                Background="ForestGreen"
+                                                Command="{Binding StoreViewModel.UnlockCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                CommandParameter="{Binding .}"
+                                                ToolTip="Get this cheat"
+                                                Visibility="{Binding Path=IsFree, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <WrapPanel>
+                                                    <TextBlock
+                                                        Grid.Column="0"
+                                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                        Text="FREE" />
                                                 </WrapPanel>
                                             </Button>
                                             <TextBlock

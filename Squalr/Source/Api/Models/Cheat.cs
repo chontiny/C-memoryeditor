@@ -59,6 +59,22 @@
         [DataMember(Name = "cost")]
         public Int32 Cost { get; set; }
 
+        public Boolean IsFree
+        {
+            get
+            {
+                return this.Cost == 0;
+            }
+        }
+
+        public Boolean IsPaid
+        {
+            get
+            {
+                return !this.IsFree;
+            }
+        }
+
         public Boolean IsStreamDisabled
         {
             get
