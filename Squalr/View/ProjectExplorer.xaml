@@ -126,6 +126,11 @@
                     ContextMenu="{StaticResource RightClickMenu}"
                     ItemsSource="{Binding ProjectItems}"
                     SelectionMode="Extended">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="ContextMenu" Value="{StaticResource ProjectItemRightClickMenu}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
                     <!--  Click and Selection events  -->
                     <intr:Interaction.Triggers>
                         <intr:EventTrigger EventName="SelectionChanged">
@@ -154,7 +159,7 @@
                     </ListView.InputBindings>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid ContextMenu="{StaticResource ProjectItemRightClickMenu}" Focusable="False">
+                            <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
