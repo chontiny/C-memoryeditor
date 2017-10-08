@@ -79,7 +79,7 @@
 
                 foreach (SnapshotElementIterator element in region)
                 {
-                    element.ElementLabel = (UInt16)element.ElementLabel + 1;
+                    element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
                 }
 
                 lock (this.ProgressLock)
