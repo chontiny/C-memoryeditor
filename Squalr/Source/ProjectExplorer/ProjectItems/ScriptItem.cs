@@ -87,7 +87,7 @@
         public ScriptItem(String description, String script) : base(description)
         {
             this.ScriptManager = new ScriptManager();
-            this.LastCooldownUpdate = DateTime.MinValue;
+            this.LastUpdate = DateTime.MinValue;
 
             // Initialize script and bypass setters
             this.script = script;
@@ -324,6 +324,7 @@
             {
                 this.currentCooldown = value;
                 this.NotifyPropertyChanged(nameof(this.CurrentCooldown));
+                this.NotifyPropertyChanged(nameof(this.IsEnabled));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -348,6 +349,17 @@
         }
 
         /// <summary>
+        /// Gets a value indicating if this project item is enabled.
+        /// </summary>
+        public override Boolean IsEnabled
+        {
+            get
+            {
+                return this.CurrentCooldown <= 0.0f;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the script manager associated with this script.
         /// </summary>
         [Browsable(false)]
@@ -356,7 +368,7 @@
         /// <summary>
         /// Gets or sets the time since the last cooldown update.
         /// </summary>
-        private DateTime LastCooldownUpdate { get; set; }
+        private DateTime LastUpdate { get; set; }
 
         /// <summary>
         /// Invoked when this object is deserialized.
@@ -368,7 +380,7 @@
             base.OnDeserialized(streamingContext);
 
             this.ScriptManager = new ScriptManager();
-            this.LastCooldownUpdate = DateTime.MinValue;
+            this.LastUpdate = DateTime.MinValue;
 
             if (this.compiledScript.IsNullOrEmpty())
             {
@@ -420,7 +432,19 @@
         /// </summary>
         public override void Update()
         {
-            this.UpdateCooldown();
+            DateTime currentTime = DateTime.Now;
+
+            if (this.LastUpdate == DateTime.MinValue)
+            {
+                this.LastUpdate = currentTime;
+            }
+
+            Single elapsedTime = (Single)(currentTime - this.LastUpdate).TotalSeconds;
+
+            this.UpdateCooldown(elapsedTime);
+            this.UpdateDuration(elapsedTime);
+
+            this.LastUpdate = currentTime;
         }
 
         /// <summary>
@@ -428,14 +452,15 @@
         /// </summary>
         protected override void OnActivationChanged()
         {
+            // Prevent activation if cooldown is non-zero
+            if (this.CurrentCooldown > 0)
+            {
+                this.isActivated = false;
+                return;
+            }
+
             if (this.IsActivated)
             {
-                if (this.CurrentCooldown > 0)
-                {
-                    this.IsActivated = false;
-                    return;
-                }
-
                 // Try to run script.
                 if (!this.ScriptManager.RunActivationFunction(this))
                 {
@@ -447,8 +472,8 @@
                 // Run the update loop for the script
                 this.ScriptManager.RunUpdateFunction(this);
 
+                // Start cooldown
                 this.CurrentCooldown = this.Cooldown;
-                this.CurrentDuration = 0.0f;
             }
             else
             {
@@ -460,28 +485,24 @@
         /// <summary>
         /// Updates the cooldown for this script.
         /// </summary>
-        private void UpdateCooldown()
+        private void UpdateCooldown(Single elapsedTime)
         {
-            if (this.IsStreamDisabled || !this.IsActivated || this.Duration <= 0)
+            if (this.IsStreamDisabled)
             {
-                // Clear state
-                this.LastCooldownUpdate = DateTime.MinValue;
-                this.CurrentDuration = 0.0f;
-                this.CurrentCooldown = 0.0f;
                 return;
             }
 
-            DateTime currentTime = DateTime.Now;
-
-            if (this.LastCooldownUpdate == DateTime.MinValue)
-            {
-                this.LastCooldownUpdate = currentTime;
-            }
-
-            Single elapsedTime = (Single)(currentTime - this.LastCooldownUpdate).TotalSeconds;
-
             // Update current cooldown
             this.CurrentCooldown = (this.CurrentCooldown - elapsedTime).Clamp(0, this.Cooldown);
+
+        }
+
+        private void UpdateDuration(Single elapsedTime)
+        {
+            if (this.IsStreamDisabled || !this.IsActivated)
+            {
+                return;
+            }
 
             // Update current duration
             this.CurrentDuration = (this.CurrentDuration + elapsedTime).Clamp(0, this.Duration);
@@ -491,8 +512,6 @@
             {
                 this.IsActivated = false;
             }
-
-            this.LastCooldownUpdate = currentTime;
         }
     }
     //// End class

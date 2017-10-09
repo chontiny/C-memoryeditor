@@ -16,6 +16,11 @@
         <![CDATA[ public ProjectExplorer() { InitializeComponent(); }]]>
     </x:Code>
     <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToHiddenConverter"
+            False="Hidden"
+            True="Visible" />
         <ContextMenu
             x:Key="RightClickMenu"
             Background="{StaticResource AvalonDock_Expression_BaseColor1}"
@@ -172,7 +177,8 @@
                                     Width="16"
                                     Height="16"
                                     Margin="0,0,4,0"
-                                    IsChecked="{Binding Path=IsActivated}" />
+                                    IsChecked="{Binding Path=IsActivated}"
+                                    Visibility="{Binding Path=IsEnabled, Converter={StaticResource BooleanToHiddenConverter}}" />
                                 <Image
                                     Grid.Column="1"
                                     Width="16"

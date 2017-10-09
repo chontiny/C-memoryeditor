@@ -230,6 +230,17 @@
         }
 
         /// <summary>
+        /// Gets a value indicating if this project item is enabled.
+        /// </summary>
+        public virtual Boolean IsEnabled
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Gets the image associated with this project item.
         /// </summary>
         [Browsable(false)]
