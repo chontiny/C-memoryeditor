@@ -232,6 +232,7 @@
         /// <summary>
         /// Gets a value indicating if this project item is enabled.
         /// </summary>
+        [Browsable(false)]
         public virtual Boolean IsEnabled
         {
             get

@@ -325,6 +325,7 @@
                 this.currentCooldown = value;
                 this.NotifyPropertyChanged(nameof(this.CurrentCooldown));
                 this.NotifyPropertyChanged(nameof(this.IsEnabled));
+                this.NotifyPropertyChanged(nameof(this.CooldownProgress));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -344,7 +345,32 @@
             {
                 this.currentDuration = value;
                 this.NotifyPropertyChanged(nameof(this.CurrentDuration));
+                this.NotifyPropertyChanged(nameof(this.DurationProgress));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets the progress of the current cooldown out of the maximum cooldown.
+        /// </summary>
+        [Browsable(false)]
+        public Single CooldownProgress
+        {
+            get
+            {
+                return this.Cooldown <= 0.0f ? 0.0f : (this.CurrentCooldown / this.Cooldown);
+            }
+        }
+
+        /// <summary>
+        /// Gets the progress of the current duration out of the maximum duration.
+        /// </summary>
+        [Browsable(false)]
+        public Single DurationProgress
+        {
+            get
+            {
+                return 1.0f - (this.Duration <= 0.0f ? 0.0f : (this.CurrentDuration / this.Duration));
             }
         }
 
@@ -452,15 +478,15 @@
         /// </summary>
         protected override void OnActivationChanged()
         {
-            // Prevent activation if cooldown is non-zero
-            if (this.CurrentCooldown > 0)
-            {
-                this.isActivated = false;
-                return;
-            }
-
             if (this.IsActivated)
             {
+                // Prevent activation if cooldown is non-zero
+                if (this.CurrentCooldown > 0)
+                {
+                    this.isActivated = false;
+                    return;
+                }
+
                 // Try to run script.
                 if (!this.ScriptManager.RunActivationFunction(this))
                 {
@@ -479,6 +505,9 @@
             {
                 // Try to deactivate script (we do not care if this fails)
                 this.ScriptManager.RunDeactivationFunction(this);
+
+                // Clear duration
+                this.CurrentDuration = 0.0f;
             }
         }
 
