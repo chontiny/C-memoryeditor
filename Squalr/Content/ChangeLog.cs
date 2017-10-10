@@ -29,7 +29,8 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Login fixes");
+            this.Write("- Fix to activating scripts with a duration of 0\r\n- Adding visual indications to " +
+                    "durations/cooldowns in the form of progress bars.");
             return this.GenerationEnvironment.ToString();
         }
     }

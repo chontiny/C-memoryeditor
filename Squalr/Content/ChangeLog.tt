@@ -5,4 +5,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Squalr" #>
-- Login fixes
+- Fix to activating scripts with a duration of 0
+- Adding visual indications to durations/cooldowns in the form of progress bars.
