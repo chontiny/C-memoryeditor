@@ -5,5 +5,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Squalr" #>
-- Fix to activating scripts with a duration of 0
-- Adding visual indications to durations/cooldowns in the form of progress bars.
+- Change to make connection to twitch chat is automatic
+- Fix to updating the stream overlay

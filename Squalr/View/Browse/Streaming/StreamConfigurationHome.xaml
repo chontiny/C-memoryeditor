@@ -37,7 +37,7 @@
                     Padding="8,4,8,4"
                     Background="{StaticResource AvalonDock_Expression_BaseColor4}">
                     <Menu Background="Transparent">
-                        <MenuItem Command="{Binding ToggleConnectionCommand}" Visibility="{Binding IsConnectionStatusLoading, Converter={StaticResource BooleanToVisibilityConverterInverse}}">
+                        <MenuItem Command="{Binding ToggleConnectionCommand}">
                             <MenuItem.Header>
                                 <WrapPanel>
                                     <Image
@@ -56,13 +56,6 @@
                         </MenuItem>
                     </Menu>
                 </Border>
-
-                <Grid
-                    Grid.Row="0"
-                    Margin="8,0,0,0"
-                    Visibility="{Binding IsConnectionStatusLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <loaders:SpinnerCogs HorizontalAlignment="Left" VerticalAlignment="Center" />
-                </Grid>
 
                 <Grid Grid.Row="1">
                     <Grid DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">

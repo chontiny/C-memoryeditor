@@ -142,28 +142,12 @@
             return SqualrApi.ExecuteRequest<User>(Method.GET, SqualrApi.UserApi, parameters);
         }
 
-        public static ConnectionStatus Connect(String accessToken)
+        public static String Connect(String accessToken)
         {
             Dictionary<String, String> parameters = new Dictionary<String, String>();
             parameters.Add("access_token", accessToken);
 
-            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.GET, SqualrApi.TwitchConnectionEndpoint + "/create", parameters);
-        }
-
-        public static ConnectionStatus Disconnect(String accessToken)
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("access_token", accessToken);
-
-            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.DELETE, SqualrApi.TwitchConnectionEndpoint + "/" + accessToken, parameters);
-        }
-
-        public static ConnectionStatus GetConnectionStatus(String accessToken)
-        {
-            Dictionary<String, String> parameters = new Dictionary<String, String>();
-            parameters.Add("access_token", accessToken);
-
-            return SqualrApi.ExecuteRequest<ConnectionStatus>(Method.GET, SqualrApi.TwitchConnectionEndpoint, parameters);
+            return SqualrApi.ExecuteRequest<String>(Method.GET, SqualrApi.TwitchConnectionEndpoint + "/create", parameters);
         }
 
         private static IEnumerable<StreamIcon> cachedIcons = null;

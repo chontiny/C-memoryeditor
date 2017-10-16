@@ -113,6 +113,7 @@
             try
             {
                 AccessTokens accessTokens = SqualrApi.GetAccessTokens(code);
+                SqualrApi.Connect(accessTokens.AccessToken);
                 SettingsViewModel.GetInstance().AccessTokens = accessTokens;
 
                 User user = SqualrApi.GetTwitchUser(accessTokens.AccessToken);
