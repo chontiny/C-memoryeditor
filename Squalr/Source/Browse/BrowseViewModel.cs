@@ -427,8 +427,9 @@
                 }
 
                 User user = SqualrApi.GetTwitchUser(accessTokens.AccessToken);
-                this.ActiveUser = user;
+                SqualrApi.Connect(accessTokens.AccessToken);
 
+                this.ActiveUser = user;
                 this.IsLoggedIn = true;
             }
             catch (Exception ex)

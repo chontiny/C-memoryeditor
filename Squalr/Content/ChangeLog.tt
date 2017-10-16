@@ -5,4 +5,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Squalr" #>
-- Fixes to evaluating pointers via scripts
+- Change to make connection to twitch chat is automatic
+- Fix to updating the stream overlay

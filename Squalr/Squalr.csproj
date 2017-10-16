@@ -32,10 +32,10 @@
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr</ProductName>
     <PublisherName>Squalr</PublisherName>
-    <MinimumRequiredVersion>2.0.5.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.0.8.0</MinimumRequiredVersion>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.0.5.0</ApplicationVersion>
+    <ApplicationVersion>2.0.8.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -120,7 +120,7 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>C1A711EAE328CAEA08DA8ACE57DFE7AA5D129D11</ManifestCertificateThumbprint>
@@ -312,7 +312,6 @@
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\Api\Models\OverlayMeta.cs" />
     <Compile Include="Source\Api\Models\UnlockedCheat.cs" />
-    <Compile Include="Source\Api\Models\ConnectionStatus.cs" />
     <Compile Include="Source\Api\Models\LibraryCheats.cs" />
     <Compile Include="Source\Api\Models\StoreCheats.cs" />
     <Compile Include="Source\Api\Models\Cheat.cs" />

@@ -53,6 +53,7 @@
         {
             this.ContentId = StreamConfigViewModel.ToolContentId;
             this.VoteLock = new Object();
+            this.IsConnected = true;
 
             StreamVotePollTask streamVotePollTask = new StreamVotePollTask(this.OnUpdate);
 
@@ -118,23 +119,6 @@
                 this.RaisePropertyChanged(nameof(this.IsConnected));
                 this.RaisePropertyChanged(nameof(this.ConnectionOption));
                 this.RaisePropertyChanged(nameof(this.ConnectionImage));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating if the connection status is loading
-        /// </summary>
-        public Boolean IsConnectionStatusLoading
-        {
-            get
-            {
-                return this.isConnectionStatusLoading;
-            }
-
-            set
-            {
-                this.isConnectionStatusLoading = value;
-                this.RaisePropertyChanged(nameof(this.IsConnectionStatusLoading));
             }
         }
 
@@ -212,13 +196,8 @@
             {
                 lock (this.VoteLock)
                 {
-                    // Check if disconnected
-                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                    ConnectionStatus status = SqualrApi.GetConnectionStatus(accessTokens.AccessToken);
-
-                    if (!status.Connected)
+                    if (!this.IsConnected || !BrowseViewModel.GetInstance().IsLoggedIn)
                     {
-                        this.IsConnected = false;
                         return;
                     }
 
@@ -282,9 +261,8 @@
                         {
                             IEnumerable<ProjectItem> activatedProjectItems = candidateProjectItems
                                 .Select(item => item)
-                                .Where(item => item.IsActivated)
-                                .Where(item => (item.AssociatedCheat?.Cooldown ?? 0.0f) > 0.0f)
-                                .Where(item => (item.AssociatedCheat?.Duration ?? 0.0f) > 0.0f);
+                                .Where(item => !item.AssociatedCheat.IsStreamDisabled)
+                                .Where(item => item.IsActivated);
 
                             IEnumerable<OverlayMeta> overlayMeta = activatedProjectItems
                                 .Select(item => new OverlayMeta(item.AssociatedCheat.CheatId, item.AssociatedCheat.Cooldown, item.AssociatedCheat.Duration));
@@ -293,6 +271,7 @@
                             {
                                 try
                                 {
+                                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                                     SqualrApi.UpdateOverlayMeta(accessTokens.AccessToken, overlayMeta.ToArray());
                                 }
                                 catch (Exception ex)
@@ -317,33 +296,7 @@
         /// </summary>
         private void Connect()
         {
-            this.IsConnectionStatusLoading = true;
-
-            Task.Run(() =>
-            {
-                try
-                {
-                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                    ConnectionStatus connectionStatus = SqualrApi.Connect(accessTokens.AccessToken);
-
-                    if (!connectionStatus.Connected)
-                    {
-                        throw new Exception("Connection failed");
-                    }
-
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Connected to Twitch");
-                    this.IsConnected = true;
-                }
-                catch (Exception ex)
-                {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error connecting", ex);
-                    return;
-                }
-                finally
-                {
-                    this.IsConnectionStatusLoading = false;
-                }
-            });
+            this.IsConnected = true;
         }
 
         /// <summary>
@@ -351,38 +304,7 @@
         /// </summary>
         private void Disconnect()
         {
-            this.IsConnectionStatusLoading = true;
-
-            Task.Run(() =>
-            {
-                try
-                {
-                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                    ConnectionStatus connectionStatus = SqualrApi.Disconnect(accessTokens.AccessToken);
-
-                    if (connectionStatus.Connected)
-                    {
-                        throw new Exception("Disconnection failed");
-                    }
-
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Disconnected from Twitch");
-                    this.IsConnected = false;
-
-                    lock (this.VoteLock)
-                    {
-                        this.PreviousCheatVotes = null;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error disconnecting", ex);
-                    return;
-                }
-                finally
-                {
-                    this.IsConnectionStatusLoading = false;
-                }
-            });
+            this.IsConnected = false;
         }
     }
     //// End class

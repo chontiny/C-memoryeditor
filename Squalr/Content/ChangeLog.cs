@@ -29,7 +29,8 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Fixes to evaluating pointers via scripts");
+            this.Write("- Change to make connection to twitch chat is automatic\r\n- Fix to updating the st" +
+                    "ream overlay");
             return this.GenerationEnvironment.ToString();
         }
     }

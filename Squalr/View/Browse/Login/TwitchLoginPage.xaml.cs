@@ -6,8 +6,10 @@
     using Squalr.Source.Utils;
     using System;
     using System.Collections.Specialized;
+    using System.Reflection;
     using System.Web;
     using System.Windows;
+    using System.Windows.Controls;
     using System.Windows.Navigation;
 
     /// <summary>
@@ -27,8 +29,19 @@
 
             // This ensures that we will actually hit the login screen without a saved login
             WebBrowserHelper.ClearCache();
+            this.HideScriptErrors();
         }
 
+        /// <summary>
+        /// Hides javascript warnings in the web browser control.
+        /// </summary>
+        public void HideScriptErrors()
+        {
+            FieldInfo fiComWebBrowser = typeof(WebBrowser).GetField("_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
+            Object objComWebBrowser = fiComWebBrowser?.GetValue(this.browser);
+
+            objComWebBrowser?.GetType().InvokeMember("Silent", BindingFlags.SetProperty, null, objComWebBrowser, new Object[] { true });
+        }
 
         /// <summary>
         /// Gets the view model associated with this view.

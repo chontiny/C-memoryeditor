@@ -16,6 +16,11 @@
         <![CDATA[ public ProjectExplorer() { InitializeComponent(); }]]>
     </x:Code>
     <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToHiddenConverter"
+            False="Hidden"
+            True="Visible" />
         <ContextMenu
             x:Key="RightClickMenu"
             Background="{StaticResource AvalonDock_Expression_BaseColor1}"
@@ -126,6 +131,11 @@
                     ContextMenu="{StaticResource RightClickMenu}"
                     ItemsSource="{Binding ProjectItems}"
                     SelectionMode="Extended">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="ContextMenu" Value="{StaticResource ProjectItemRightClickMenu}" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
                     <!--  Click and Selection events  -->
                     <intr:Interaction.Triggers>
                         <intr:EventTrigger EventName="SelectionChanged">
@@ -154,7 +164,7 @@
                     </ListView.InputBindings>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid ContextMenu="{StaticResource ProjectItemRightClickMenu}" Focusable="False">
+                            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
@@ -162,6 +172,44 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0" Grid.ColumnSpan="3">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition />
+                                        <ColumnDefinition />
+                                    </Grid.ColumnDefinitions>
+                                    <Rectangle Grid.Column="0">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Offset="0.0" Color="Red" />
+                                                <GradientStop Offset="{Binding Path=CooldownProgress, FallbackValue='0.0'}" Color="Transparent" />
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <!--
+                                    <TextBlock
+                                        Grid.Column="0"
+                                        Margin="4,0,0,0"
+                                        Foreground="Yellow"
+                                        IsHitTestVisible="False"
+                                        Text="{Binding Path=CurrentCooldown, FallbackValue=''}" />
+                                    -->
+                                    <Rectangle Grid.Column="1">
+                                        <Rectangle.Fill>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                <GradientStop Offset="{Binding Path=DurationProgress, FallbackValue='0.0'}" Color="Transparent" />
+                                                <GradientStop Offset="1.0" Color="Blue" />
+                                            </LinearGradientBrush>
+                                        </Rectangle.Fill>
+                                    </Rectangle>
+                                    <!--
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="4,0,0,0"
+                                        Foreground="LightBlue"
+                                        IsHitTestVisible="False"
+                                        Text="{Binding Path=CurrentDuration, FallbackValue=''}" />
+                                    -->
+                                </Grid>
                                 <CheckBox
                                     Grid.Column="0"
                                     Width="16"
@@ -180,18 +228,6 @@
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                     IsHitTestVisible="False"
                                     Text="{Binding Path=Name}" />
-                                <TextBlock
-                                    Grid.Column="3"
-                                    Margin="4,0,0,0"
-                                    Foreground="Yellow"
-                                    IsHitTestVisible="False"
-                                    Text="{Binding Path=CurrentCooldown, FallbackValue=''}" />
-                                <TextBlock
-                                    Grid.Column="4"
-                                    Margin="4,0,0,0"
-                                    Foreground="LightBlue"
-                                    IsHitTestVisible="False"
-                                    Text="{Binding Path=CurrentDuration, FallbackValue=''}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

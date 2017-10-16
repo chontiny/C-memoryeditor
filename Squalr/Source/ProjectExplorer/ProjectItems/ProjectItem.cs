@@ -230,6 +230,18 @@
         }
 
         /// <summary>
+        /// Gets a value indicating if this project item is enabled.
+        /// </summary>
+        [Browsable(false)]
+        public virtual Boolean IsEnabled
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// Gets the image associated with this project item.
         /// </summary>
         [Browsable(false)]
@@ -276,7 +288,7 @@
         /// Associates a cheat with this project item.
         /// </summary>
         /// <param name="cheat">The associated cheat</param>
-        public virtual void AssociateCheat(Cheat cheat)
+        public virtual void AssociateCheat(Cheat cheat, Boolean loadDefaults = false)
         {
             this.AssociatedCheat = cheat;
         }
