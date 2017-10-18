@@ -30,7 +30,7 @@ namespace Squalr.Content
         public virtual string TransformText()
         {
             this.Write("- Simplifications to stream integration\r\n- Fix to vote shuffle bug if a vote is d" +
-                    "eleted from a library while streaming");
+                    "eleted from a library while streaming\r\n- Only showing supported game list");
             return this.GenerationEnvironment.ToString();
         }
     }

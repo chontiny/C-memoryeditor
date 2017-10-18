@@ -7,3 +7,4 @@
 <#@ import namespace="Squalr" #>
 - Simplifications to stream integration
 - Fix to vote shuffle bug if a vote is deleted from a library while streaming
+- Only showing supported game list

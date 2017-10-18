@@ -71,6 +71,11 @@
         private static String GameListEndpoint = SqualrApi.ApiBase + "api/games/list";
 
         /// <summary>
+        /// The endpoint for querying the available game lists.
+        /// </summary>
+        private static String GameAvailableEndpoint = SqualrApi.ApiBase + "api/games/available";
+
+        /// <summary>
         /// The endpoint for querying the games for which a user has unlocked or uploaded at least one cheat.
         /// </summary>
         private static String OwnedGamesEndpoint = SqualrApi.ApiBase + "api/games/owned";
@@ -172,7 +177,7 @@
 
         public static IEnumerable<Game> GetGameList()
         {
-            return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.GameListEndpoint);
+            return SqualrApi.ExecuteRequest<Game[]>(Method.GET, SqualrApi.GameAvailableEndpoint);
         }
 
         public static IEnumerable<Game> GetOwnedGameList(String accessToken)
