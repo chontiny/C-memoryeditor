@@ -462,23 +462,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the Twitch API channel.
-        /// </summary>
-        public String TwitchChannel
-        {
-            get
-            {
-                return Settings.Default.TwitchChannel;
-            }
-
-            set
-            {
-                Settings.Default.TwitchChannel = value;
-                this.RaisePropertyChanged(nameof(this.TwitchChannel));
-            }
-        }
-
-        /// <summary>
         /// Gets a singleton instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>

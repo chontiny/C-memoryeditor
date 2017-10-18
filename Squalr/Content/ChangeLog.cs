@@ -29,8 +29,8 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Change to make connection to twitch chat is automatic\r\n- Fix to updating the st" +
-                    "ream overlay");
+            this.Write("- Simplifications to stream integration\r\n- Fix to vote shuffle bug if a vote is d" +
+                    "eleted from a library while streaming");
             return this.GenerationEnvironment.ToString();
         }
     }

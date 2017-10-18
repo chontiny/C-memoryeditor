@@ -201,10 +201,11 @@
                         return;
                     }
 
-                    IEnumerable<CheatVotes> cheatVotes = SqualrApi.GetStreamActivationIds(SettingsViewModel.GetInstance().TwitchChannel);
+                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
+                    IEnumerable<CheatVotes> cheatVotes = SqualrApi.GetStreamActivationIds(accessTokens.AccessToken);
                     IEnumerable<ProjectItem> candidateProjectItems = ProjectExplorerViewModel.GetInstance().ProjectItems;
 
-                    if (this.PreviousCheatVotes == null)
+                    if (this.PreviousCheatVotes == null || cheatVotes == null || this.PreviousCheatVotes.Count() != cheatVotes.Count())
                     {
                         this.PreviousCheatVotes = cheatVotes;
                         return;
@@ -271,7 +272,6 @@
                             {
                                 try
                                 {
-                                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                                     SqualrApi.UpdateOverlayMeta(accessTokens.AccessToken, overlayMeta.ToArray());
                                 }
                                 catch (Exception ex)

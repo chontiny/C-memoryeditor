@@ -56,27 +56,6 @@
                         </MenuItem>
                     </Menu>
                 </Border>
-
-                <Grid Grid.Row="1">
-                    <Grid DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}">
-                        <StackPanel Grid.Column="0" Margin="4">
-                            <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
-                                Channel:
-                            </TextBlock>
-                            <TextBox
-                                Name="twitchChannel"
-                                Width="148"
-                                Height="18"
-                                Margin="0,4,8,0"
-                                HorizontalAlignment="Left"
-                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                                BorderBrush="White"
-                                BorderThickness="1"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                Text="{Binding TwitchChannel, UpdateSourceTrigger=PropertyChanged}" />
-                        </StackPanel>
-                    </Grid>
-                </Grid>
             </Grid>
         </Grid>
     </Border>

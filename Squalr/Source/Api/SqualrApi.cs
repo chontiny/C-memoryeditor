@@ -63,7 +63,7 @@
         /// <summary>
         /// The endpoint for querying active and unactive cheat ids.
         /// </summary>
-        private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/stream/activeCheatIds/";
+        private static String ActiveCheatIdsEndpoint = SqualrApi.ApiBase + "api/stream/activeCheatIds";
 
         /// <summary>
         /// The endpoint for querying the game lists.
@@ -162,9 +162,12 @@
             return cachedIcons;
         }
 
-        public static IEnumerable<CheatVotes> GetStreamActivationIds(String twitchChannel)
+        public static IEnumerable<CheatVotes> GetStreamActivationIds(String accessToken)
         {
-            return SqualrApi.ExecuteRequest<IEnumerable<CheatVotes>>(Method.GET, SqualrApi.ActiveCheatIdsEndpoint + twitchChannel);
+            Dictionary<String, String> parameters = new Dictionary<String, String>();
+            parameters.Add("access_token", accessToken);
+
+            return SqualrApi.ExecuteRequest<IEnumerable<CheatVotes>>(Method.GET, SqualrApi.ActiveCheatIdsEndpoint, parameters);
         }
 
         public static IEnumerable<Game> GetGameList()

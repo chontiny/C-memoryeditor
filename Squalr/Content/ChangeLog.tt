@@ -5,5 +5,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="Squalr" #>
-- Change to make connection to twitch chat is automatic
-- Fix to updating the stream overlay
+- Simplifications to stream integration
+- Fix to vote shuffle bug if a vote is deleted from a library while streaming
