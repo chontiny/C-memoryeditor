@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Editors.OffsetEditor
+﻿namespace SqualrCore.Source.Editors.OffsetEditor
 {
     using System;
     using System.Collections.Generic;

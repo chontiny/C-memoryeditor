@@ -1,9 +1,9 @@
-﻿namespace Squalr.Source.Engine.OperatingSystems.Windows
+﻿namespace SqualrCore.Source.Engine.OperatingSystems.Windows
 {
     using Native;
     using Output;
     using Processes;
-    using Squalr.Source.Analytics;
+    using SqualrCore.Source.Analytics;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;

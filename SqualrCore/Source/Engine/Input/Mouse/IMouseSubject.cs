@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Input.Mouse
+﻿namespace SqualrCore.Source.Engine.Input.Mouse
 {
     /// <summary>
     /// Interface for an object which will capture mouse input

@@ -1,12 +1,12 @@
-﻿namespace Squalr.Source.Engine
+﻿namespace SqualrCore.Source.Engine
 {
-    using Squalr.Source.Engine.Networks;
     using Architecture;
     using Graphics;
     using Input;
     using OperatingSystems;
     using Processes;
     using SpeedManipulator;
+    using SqualrCore.Source.Engine.Networks;
     using System;
     using System.Threading;
     using Unrandomizer;

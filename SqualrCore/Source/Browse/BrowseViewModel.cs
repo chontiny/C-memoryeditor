@@ -1,17 +1,17 @@
-﻿namespace Squalr.Source.Browse
+﻿namespace SqualrCore.Source.Browse
 {
     using GalaSoft.MvvmLight.Command;
-    using Squalr.Properties;
-    using Squalr.Source.Api;
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Browse.Library;
-    using Squalr.Source.Browse.Store;
-    using Squalr.Source.Browse.StreamConfig;
-    using Squalr.Source.Browse.TwitchLogin;
-    using Squalr.Source.Docking;
-    using Squalr.Source.Main;
-    using Squalr.Source.Output;
-    using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Properties;
+    using SqualrCore.Source.Api;
+    using SqualrCore.Source.Api.Models;
+    using SqualrCore.Source.Browse.Library;
+    using SqualrCore.Source.Browse.Store;
+    using SqualrCore.Source.Browse.StreamConfig;
+    using SqualrCore.Source.Browse.TwitchLogin;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Main;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Threading;

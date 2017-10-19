@@ -1,7 +1,7 @@
-﻿namespace Squalr.Source.Engine.Proxy
+﻿namespace SqualrCore.Source.Engine.Proxy
 {
     using Output;
-    using Squalr.Source.Analytics;
+    using SqualrCore.Source.Analytics;
     using SqualrProxy;
     using System;
     using System.Diagnostics;

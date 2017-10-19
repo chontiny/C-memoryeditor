@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.ValueCollector
+﻿namespace SqualrCore.Source.Scanners.ValueCollector
 {
     using ActionScheduler;
     using BackgroundScans.Prefilters;

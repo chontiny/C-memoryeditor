@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.InputCorrelator
+﻿namespace SqualrCore.Source.Scanners.InputCorrelator
 {
     using ActionScheduler;
     using BackgroundScans.Prefilters;
@@ -7,7 +7,7 @@
     using Engine.Input.Keyboard;
     using LabelThresholder;
     using Snapshots;
-    using Squalr.Properties;
+    using SqualrCore.Properties;
     using System;
     using System.Collections.Generic;
     using System.Linq;

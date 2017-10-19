@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scripting.Memory
+﻿namespace SqualrCore.Source.Scripting.Memory
 {
     using System;
     using System.Collections.Generic;

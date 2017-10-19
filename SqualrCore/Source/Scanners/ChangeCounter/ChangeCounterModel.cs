@@ -1,10 +1,10 @@
-﻿namespace Squalr.Source.Scanners.ChangeCounter
+﻿namespace SqualrCore.Source.Scanners.ChangeCounter
 {
     using ActionScheduler;
     using BackgroundScans.Prefilters;
     using LabelThresholder;
     using Snapshots;
-    using Squalr.Properties;
+    using SqualrCore.Properties;
     using System;
     using System.Linq;
     using System.Threading.Tasks;

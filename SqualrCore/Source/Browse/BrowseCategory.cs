@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Browse
+﻿namespace SqualrCore.Source.Browse
 {
     /// <summary>
     /// An enum of the sections for the Browse view.

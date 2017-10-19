@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Analytics
+﻿namespace SqualrCore.Source.Analytics
 {
     using Garlic;
     using System;

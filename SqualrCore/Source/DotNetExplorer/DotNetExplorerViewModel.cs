@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.DotNetExplorer
+﻿namespace SqualrCore.Source.DotNetExplorer
 {
     using Docking;
     using Engine.AddressResolver.DotNet;

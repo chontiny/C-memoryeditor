@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Utils.Observables
+﻿namespace SqualrCore.Source.Utils.Observables
 {
     using System;
     using System.Collections.Generic;

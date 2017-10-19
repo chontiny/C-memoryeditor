@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Hook.Graphics
+﻿namespace SqualrCore.Source.Engine.Hook.Graphics
 {
     using System;
 

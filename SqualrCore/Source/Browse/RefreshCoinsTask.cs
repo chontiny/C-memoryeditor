@@ -1,11 +1,11 @@
-﻿namespace Squalr.Source.Browse.StreamConfig
+﻿namespace SqualrCore.Source.Browse.StreamConfig
 {
     using ActionScheduler;
-    using Squalr.Properties;
-    using Squalr.Source.Api;
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Output;
-    using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Properties;
+    using SqualrCore.Source.Api;
+    using SqualrCore.Source.Api.Models;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
 
     /// <summary>

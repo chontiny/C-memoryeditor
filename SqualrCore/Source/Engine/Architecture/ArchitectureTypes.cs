@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Architecture
+﻿namespace SqualrCore.Source.Engine.Architecture
 {
     /// <summary>
     /// An enum defining possible system architecture types

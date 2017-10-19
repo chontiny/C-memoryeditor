@@ -1,6 +1,6 @@
-﻿namespace Squalr.View.Editors
+﻿namespace SqualrCore.View.Editors
 {
-    using Squalr.Source.Editors.StreamIconEditor;
+    using SqualrCore.Source.Editors.StreamIconEditor;
     using System;
     using System.Windows;
     using System.Windows.Controls;

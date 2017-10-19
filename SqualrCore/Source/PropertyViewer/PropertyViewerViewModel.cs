@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.PropertyViewer
+﻿namespace SqualrCore.Source.PropertyViewer
 {
     using Docking;
     using Main;

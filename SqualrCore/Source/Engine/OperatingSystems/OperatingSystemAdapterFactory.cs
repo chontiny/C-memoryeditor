@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.OperatingSystems
+﻿namespace SqualrCore.Source.Engine.OperatingSystems
 {
     using System;
     using System.Threading;

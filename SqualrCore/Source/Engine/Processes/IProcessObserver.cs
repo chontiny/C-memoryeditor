@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Processes
+﻿namespace SqualrCore.Source.Engine.Processes
 {
     /// <summary>
     /// An interface for an object that enumerates and selects processes running on the system

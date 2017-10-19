@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Input.HotKeys
+﻿namespace SqualrCore.Source.Engine.Input.HotKeys
 {
     using System;
 

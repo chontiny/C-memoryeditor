@@ -1,11 +1,11 @@
-﻿namespace Squalr.Source.Snapshots
+﻿namespace SqualrCore.Source.Snapshots
 {
     using Engine;
     using Engine.OperatingSystems;
     using Output;
     using Results.ScanResults;
     using Scanners.ScanConstraints;
-    using Squalr.Properties;
+    using SqualrCore.Properties;
     using System;
     using System.Collections;
     using System.Collections.Generic;

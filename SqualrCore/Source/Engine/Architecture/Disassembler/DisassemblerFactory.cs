@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Architecture.Disassembler
+﻿namespace SqualrCore.Source.Engine.Architecture.Disassembler
 {
     using System;
 

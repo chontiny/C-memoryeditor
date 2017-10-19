@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Api.Exceptions
+﻿namespace SqualrCore.Source.Api.Exceptions
 {
     using RestSharp;
     using System;

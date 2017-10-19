@@ -1,9 +1,9 @@
-﻿namespace Squalr.Source.Api.Models
+﻿namespace SqualrCore.Source.Api.Models
 {
-    using Squalr.Properties;
-    using Squalr.Source.Output;
-    using Squalr.Source.ProjectExplorer.ProjectItems;
-    using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Properties;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.IO;
     using System.Runtime.Serialization;

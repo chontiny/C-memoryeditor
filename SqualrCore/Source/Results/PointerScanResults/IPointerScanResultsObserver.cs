@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Results.PointerScanResults
+﻿namespace SqualrCore.Source.Results.PointerScanResults
 {
     using System;
 

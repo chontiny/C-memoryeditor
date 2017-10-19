@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.ChangeCounter
+﻿namespace SqualrCore.Source.Scanners.ChangeCounter
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;

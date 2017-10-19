@@ -1,14 +1,14 @@
-﻿namespace Squalr.Source.Browse.Library
+﻿namespace SqualrCore.Source.Browse.Library
 {
     using GalaSoft.MvvmLight.Command;
-    using Squalr.Properties;
-    using Squalr.Source.Api;
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Controls;
-    using Squalr.Source.Docking;
-    using Squalr.Source.Main;
-    using Squalr.Source.Output;
-    using Squalr.Source.ProjectExplorer;
+    using SqualrCore.Properties;
+    using SqualrCore.Source.Api;
+    using SqualrCore.Source.Api.Models;
+    using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Main;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.ProjectExplorer;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

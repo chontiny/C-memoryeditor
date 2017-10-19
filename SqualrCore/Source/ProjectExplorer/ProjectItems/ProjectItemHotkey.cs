@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
+﻿namespace SqualrCore.Source.ProjectExplorer.ProjectItems
 {
     using Engine.Input.HotKeys;
     using System;

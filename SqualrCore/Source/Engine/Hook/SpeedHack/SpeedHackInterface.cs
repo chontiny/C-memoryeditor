@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Hook.SpeedHack
+﻿namespace SqualrCore.Source.Engine.Hook.SpeedHack
 {
     using System;
     using System.Runtime.InteropServices;

@@ -1,9 +1,9 @@
-﻿namespace Squalr.Source.Editors.ScriptEditor
+﻿namespace SqualrCore.Source.Editors.ScriptEditor
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;
     using Main;
-    using SqualrCore.Content.Templates;
+    using SqualrCoreCore.Content.Templates;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

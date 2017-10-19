@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scripting.Memory
+﻿namespace SqualrCore.Source.Scripting.Memory
 {
     using Engine;
     using Engine.Architecture.Disassembler.SharpDisasm;

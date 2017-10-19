@@ -1,7 +1,7 @@
-﻿namespace Squalr.Source.Engine.Hook.Client
+﻿namespace SqualrCore.Source.Engine.Hook.Client
 {
-    using Squalr.Source.Analytics;
-    using Squalr.Source.Output;
+    using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.Output;
     using SqualrHookClient.Source;
     using SqualrHookServer.Source;
     using System;

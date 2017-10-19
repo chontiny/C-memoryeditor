@@ -1,4 +1,4 @@
-﻿namespace Squalr.Content
+﻿namespace SqualrCore.Content
 {
     using Source.Utils;
     using System;
@@ -333,7 +333,7 @@
         /// <summary>
         /// The base path for image content.
         /// </summary>
-        private const String ImageBasePath = "pack://application:,,,/Squalr;component/Content/Icons/";
+        private const String ImageBasePath = "pack://application:,,,/SqualrCore;component/Content/Icons/";
     }
     //// End class
 }

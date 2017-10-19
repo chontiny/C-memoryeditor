@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ActionScheduler
+﻿namespace SqualrCore.Source.ActionScheduler
 {
     using System;
     using System.Collections.Generic;

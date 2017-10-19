@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.AddressResolver.DotNet
+﻿namespace SqualrCore.Source.Engine.AddressResolver.DotNet
 {
     using Controls;
     using PropertyViewer;

@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Architecture.Disassembler.SharpDisasm.Translators
+﻿namespace SqualrCore.Source.Engine.Architecture.Disassembler.SharpDisasm.Translators
 {
     using System;
 

@@ -1,7 +1,7 @@
-﻿namespace Squalr.Source.Scanners
+﻿namespace SqualrCore.Source.Scanners
 {
     using ActionScheduler;
-    using Squalr.Properties;
+    using SqualrCore.Properties;
     using System;
 
     /// <summary>

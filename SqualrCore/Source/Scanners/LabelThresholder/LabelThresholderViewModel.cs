@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.LabelThresholder
+﻿namespace SqualrCore.Source.Scanners.LabelThresholder
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;

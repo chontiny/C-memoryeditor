@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ProjectExplorer
+﻿namespace SqualrCore.Source.ProjectExplorer
 {
     using Docking;
     using Engine;
@@ -7,11 +7,11 @@
     using Main;
     using ProjectItems;
     using PropertyViewer;
-    using Squalr.Properties;
-    using Squalr.Source.Controls;
-    using Squalr.Source.Editors.ScriptEditor;
-    using Squalr.Source.Editors.ValueEditor;
-    using Squalr.Source.Utils;
+    using SqualrCore.Properties;
+    using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Editors.ScriptEditor;
+    using SqualrCore.Source.Editors.ValueEditor;
+    using SqualrCore.Source.Utils;
     using System;
     using System.Collections;
     using System.Collections.Generic;

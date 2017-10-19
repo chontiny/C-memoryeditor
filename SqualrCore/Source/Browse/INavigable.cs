@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Browse
+﻿namespace SqualrCore.Source.Browse
 {
     internal interface INavigable
     {

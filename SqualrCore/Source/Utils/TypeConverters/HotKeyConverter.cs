@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Utils.TypeConverters
+﻿namespace SqualrCore.Source.Utils.TypeConverters
 {
     using Engine.Input.HotKeys;
     using System;

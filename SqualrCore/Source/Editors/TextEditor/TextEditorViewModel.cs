@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Editors.TextEditor
+﻿namespace SqualrCore.Source.Editors.TextEditor
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;

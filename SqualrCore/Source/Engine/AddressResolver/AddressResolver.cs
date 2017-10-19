@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.AddressResolver
+﻿namespace SqualrCore.Source.Engine.AddressResolver
 {
     using ActionScheduler;
     using DotNet;

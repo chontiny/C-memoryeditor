@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Input
+﻿namespace SqualrCore.Source.Engine.Input
 {
     using ActionScheduler;
     using Controller;

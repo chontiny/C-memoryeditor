@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Results.PointerScanResults
+﻿namespace SqualrCore.Source.Results.PointerScanResults
 {
     using Content;
     using Docking;
@@ -7,7 +7,7 @@
     using Main;
     using ProjectExplorer;
     using Snapshots;
-    using Squalr.Properties;
+    using SqualrCore.Properties;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

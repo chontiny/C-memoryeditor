@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Editors.StreamIconEditor
+﻿namespace SqualrCore.Source.Editors.StreamIconEditor
 {
     using System;
     using System.ComponentModel;

@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.BackgroundScans.Prefilters
+﻿namespace SqualrCore.Source.Scanners.BackgroundScans.Prefilters
 {
     using Snapshots;
     using System;

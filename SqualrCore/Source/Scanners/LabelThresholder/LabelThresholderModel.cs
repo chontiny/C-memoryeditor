@@ -1,7 +1,7 @@
-﻿namespace Squalr.Source.Scanners.LabelThresholder
+﻿namespace SqualrCore.Source.Scanners.LabelThresholder
 {
     using Snapshots;
-    using Squalr.Properties;
+    using SqualrCore.Properties;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;

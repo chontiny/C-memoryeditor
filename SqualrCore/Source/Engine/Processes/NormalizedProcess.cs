@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Processes
+﻿namespace SqualrCore.Source.Engine.Processes
 {
     using System;
     using System.Drawing;

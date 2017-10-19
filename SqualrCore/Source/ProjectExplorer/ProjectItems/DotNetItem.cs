@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
+﻿namespace SqualrCore.Source.ProjectExplorer.ProjectItems
 {
     using System;
     using System.Runtime.Serialization;

@@ -1,10 +1,11 @@
-﻿namespace Squalr.Source.Scripting
+﻿namespace SqualrCore.Source.Scripting
 {
+    using CSScriptLibrary;
     using Output;
     using ProjectExplorer.ProjectItems;
-    using Squalr.Source.Analytics;
     using SqualrCore.Content.Templates;
-    using CSScriptLibrary;
+    using SqualrCore.Source.Analytics;
+    using SqualrCoreCore.Content.Templates;
     using System;
     using System.IO;
     using System.Reflection;

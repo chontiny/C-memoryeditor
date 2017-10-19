@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ProcessSelector
+﻿namespace SqualrCore.Source.ProcessSelector
 {
     using Docking;
     using Engine;

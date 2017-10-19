@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Utils.Extensions
+﻿namespace SqualrCore.Source.Utils.Extensions
 {
     using System.Collections.Generic;
 

@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Snapshots
+﻿namespace SqualrCore.Source.Snapshots
 {
     /// <summary>
     /// Enums determining which pointers need to be updated every iteration.

@@ -1,11 +1,11 @@
-﻿namespace Squalr.Source.Editors.StreamIconEditor
+﻿namespace SqualrCore.Source.Editors.StreamIconEditor
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;
     using Main;
-    using Squalr.Source.Api;
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Output;
+    using SqualrCore.Source.Api;
+    using SqualrCore.Source.Api.Models;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.Linq;

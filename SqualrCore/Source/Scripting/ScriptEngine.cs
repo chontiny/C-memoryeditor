@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scripting
+﻿namespace SqualrCore.Source.Scripting
 {
     using Graphics;
     using Hook;

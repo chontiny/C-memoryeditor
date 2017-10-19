@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Graphics
+﻿namespace SqualrCore.Source.Engine.Graphics
 {
     /// <summary>
     /// An interface for an object that manipulates the graphics of a target process

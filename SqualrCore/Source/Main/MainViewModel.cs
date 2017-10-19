@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Main
+﻿namespace SqualrCore.Source.Main
 {
     using Analytics;
     using Docking;
@@ -8,8 +8,8 @@
     using GalaSoft.MvvmLight.Command;
     using Output;
     using ProjectExplorer;
-    using Squalr.Properties;
-    using Squalr.Source.Scanners.BackgroundScans.Prefilters;
+    using SqualrCore.Properties;
+    using SqualrCore.Source.Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Collections.Generic;
     using System.Deployment.Application;

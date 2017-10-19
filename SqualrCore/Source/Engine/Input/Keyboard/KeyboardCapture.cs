@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Input.Keyboard
+﻿namespace SqualrCore.Source.Engine.Input.Keyboard
 {
     using Output;
     using SharpDX;

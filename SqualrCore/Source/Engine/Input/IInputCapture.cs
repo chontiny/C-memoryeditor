@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Input
+﻿namespace SqualrCore.Source.Engine.Input
 {
     /// <summary>
     /// An interface defining an object responsable for capturing input for a specific device

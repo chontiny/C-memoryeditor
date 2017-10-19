@@ -1,5 +1,5 @@
 ﻿<shell:Window
-    x:Class="Squalr.View.Editors.TextEditor"
+    x:Class="SqualrCore.View.Editors.TextEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonedit="http://icsharpcode.net/sharpdevelop/avalonedit"

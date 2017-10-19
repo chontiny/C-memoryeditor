@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Architecture.Assembler
+﻿namespace SqualrCore.Source.Engine.Architecture.Assembler
 {
     using System;
 

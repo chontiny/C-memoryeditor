@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ChangeLog
+﻿namespace SqualrCore.Source.ChangeLog
 {
     using GalaSoft.MvvmLight;
     using System;
@@ -27,7 +27,7 @@
         /// </summary>
         private ChangeLogViewModel()
         {
-            this.changeLog = new SqualrCore.Content.ChangeLog().TransformText();
+            this.changeLog = new Content.ChangeLog().TransformText();
         }
 
         /// <summary>

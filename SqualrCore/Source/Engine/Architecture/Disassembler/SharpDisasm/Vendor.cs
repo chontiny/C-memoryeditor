@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Architecture.Disassembler.SharpDisasm
+﻿namespace SqualrCore.Source.Engine.Architecture.Disassembler.SharpDisasm
 {
     /// <summary>
     /// Allows control over which vendor instructions should be disassembled.

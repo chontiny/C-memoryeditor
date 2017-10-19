@@ -1,16 +1,16 @@
-﻿namespace Squalr.Source.Browse.StreamConfig
+﻿namespace SqualrCore.Source.Browse.StreamConfig
 {
     using Content;
     using Docking;
     using GalaSoft.MvvmLight.Command;
     using Main;
-    using Squalr.Properties;
-    using Squalr.Source.Api;
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Output;
-    using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.ProjectExplorer.ProjectItems;
-    using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Properties;
+    using SqualrCore.Source.Api;
+    using SqualrCore.Source.Api.Models;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.ProjectExplorer;
+    using SqualrCore.Source.ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;

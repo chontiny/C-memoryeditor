@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Controls
+﻿namespace SqualrCore.Source.Controls
 {
     using GalaSoft.MvvmLight;
     using System;

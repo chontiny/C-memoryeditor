@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.ManualScanner
+﻿namespace SqualrCore.Source.Scanners.ManualScanner
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;

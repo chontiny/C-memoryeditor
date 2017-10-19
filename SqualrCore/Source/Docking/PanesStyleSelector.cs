@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Docking
+﻿namespace SqualrCore.Source.Docking
 {
     using System;
     using System.Windows;

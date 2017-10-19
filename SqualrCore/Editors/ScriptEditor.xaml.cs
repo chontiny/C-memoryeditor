@@ -1,4 +1,4 @@
-﻿namespace Squalr.View.Editors
+﻿namespace SqualrCore.View.Editors
 {
     using ICSharpCode.AvalonEdit.CodeCompletion;
     using ICSharpCode.AvalonEdit.Document;

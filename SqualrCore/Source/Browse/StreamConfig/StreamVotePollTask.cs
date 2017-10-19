@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Browse.StreamConfig
+﻿namespace SqualrCore.Source.Browse.StreamConfig
 {
     using ActionScheduler;
     using System;

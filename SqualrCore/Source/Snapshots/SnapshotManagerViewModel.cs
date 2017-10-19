@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Snapshots
+﻿namespace SqualrCore.Source.Snapshots
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;

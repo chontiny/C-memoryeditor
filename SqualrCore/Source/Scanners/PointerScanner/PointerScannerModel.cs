@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.PointerScanner
+﻿namespace SqualrCore.Source.Scanners.PointerScanner
 {
     using ActionScheduler;
     using BackgroundScans.Prefilters;
@@ -7,7 +7,7 @@
     using ProjectExplorer.ProjectItems;
     using ScanConstraints;
     using Snapshots;
-    using Squalr.Properties;
+    using SqualrCore.Properties;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;

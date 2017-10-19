@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Squalr.Properties {
+namespace SqualrCore.Properties {
     using System;
     
     

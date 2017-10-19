@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Snapshots
+﻿namespace SqualrCore.Source.Snapshots
 {
     /// <summary>
     /// Interface for a class which listens for changes in the active snapshot.

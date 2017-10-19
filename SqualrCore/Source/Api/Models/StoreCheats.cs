@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Api.Models
+﻿namespace SqualrCore.Source.Api.Models
 {
     using System.Runtime.Serialization;
 

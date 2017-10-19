@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Mvvm
+﻿namespace SqualrCore.Source.Mvvm
 {
     /// <summary>
     /// Display class to allow MVVM binding for ObservableCollection of primitive types, which is normally not allowed.

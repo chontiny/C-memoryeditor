@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Controls
+﻿namespace SqualrCore.Source.Controls
 {
     using System.Drawing;
 

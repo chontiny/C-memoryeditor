@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Snapshots
+﻿namespace SqualrCore.Source.Snapshots
 {
     using Scanners.ScanConstraints;
     using System;

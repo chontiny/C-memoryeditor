@@ -1,11 +1,11 @@
-﻿namespace Squalr.Source.ProjectExplorer
+﻿namespace SqualrCore.Source.ProjectExplorer
 {
     using Controls;
     using Microsoft.Win32;
     using Output;
     using ProjectItems;
-    using Squalr.Properties;
-    using Squalr.Source.Analytics;
+    using SqualrCore.Properties;
+    using SqualrCore.Source.Analytics;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

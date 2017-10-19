@@ -1,9 +1,9 @@
-﻿namespace Squalr.Source.Scanners.BackgroundScans
+﻿namespace SqualrCore.Source.Scanners.BackgroundScans
 {
     using ActionScheduler;
     using Engine;
     using Snapshots;
-    using Squalr.Properties;
+    using SqualrCore.Properties;
     using System;
     using System.Collections.Generic;
     using System.Linq;

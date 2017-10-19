@@ -1,7 +1,7 @@
-﻿namespace Squalr.Source.Engine.Networks
+﻿namespace SqualrCore.Source.Engine.Networks
 {
-    using Squalr.Source.Engine.Hook.Client;
-    using Squalr.Source.Engine.Processes;
+    using SqualrCore.Source.Engine.Hook.Client;
+    using SqualrCore.Source.Engine.Processes;
     using System.Threading.Tasks;
 
     internal class Network : INetwork, IProcessObserver

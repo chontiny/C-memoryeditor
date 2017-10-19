@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Results.ScanResults
+﻿namespace SqualrCore.Source.Results.ScanResults
 {
     using System;
     using System.ComponentModel;

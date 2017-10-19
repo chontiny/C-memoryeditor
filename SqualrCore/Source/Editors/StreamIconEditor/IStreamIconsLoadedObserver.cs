@@ -1,6 +1,6 @@
-﻿namespace Squalr.Source.Editors.StreamIconEditor
+﻿namespace SqualrCore.Source.Editors.StreamIconEditor
 {
-    using Squalr.Source.Api.Models;
+    using SqualrCore.Source.Api.Models;
     using System.Collections.Generic;
 
     /// <summary>

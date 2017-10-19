@@ -1,14 +1,14 @@
-﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
+﻿namespace SqualrCore.Source.ProjectExplorer.ProjectItems
 {
     using Controls;
     using Editors.ScriptEditor;
     using Scripting;
-    using Squalr.Content;
-    using Squalr.Source.Api;
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Browse.StreamConfig;
-    using Squalr.Source.Editors.StreamIconEditor;
-    using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Content;
+    using SqualrCore.Source.Api;
+    using SqualrCore.Source.Api.Models;
+    using SqualrCore.Source.Browse.StreamConfig;
+    using SqualrCore.Source.Editors.StreamIconEditor;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;

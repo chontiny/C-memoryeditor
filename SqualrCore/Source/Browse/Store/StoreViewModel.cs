@@ -1,12 +1,12 @@
-﻿namespace Squalr.Source.Browse.Store
+﻿namespace SqualrCore.Source.Browse.Store
 {
     using GalaSoft.MvvmLight.Command;
-    using Squalr.Properties;
-    using Squalr.Source.Api;
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Docking;
-    using Squalr.Source.Main;
-    using Squalr.Source.Output;
+    using SqualrCore.Properties;
+    using SqualrCore.Source.Api;
+    using SqualrCore.Source.Api.Models;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Main;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

@@ -4,7 +4,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="Squalr" #>
+<#@ import namespace="SqualrCore" #>
 - Simplifications to stream integration
 - Fix to vote shuffle bug if a vote is deleted from a library while streaming
 - Only showing supported game list

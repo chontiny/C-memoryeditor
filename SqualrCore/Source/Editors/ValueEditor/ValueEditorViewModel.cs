@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Editors.ValueEditor
+﻿namespace SqualrCore.Source.Editors.ValueEditor
 {
     using Docking;
     using Main;

@@ -1,9 +1,9 @@
-﻿namespace Squalr.Source.Utils
+﻿namespace SqualrCore.Source.Utils
 {
     using DataStructures;
-    using Squalr.Source.Analytics;
-    using Squalr.Source.Output;
-    using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Extensions;
     using Svg;
     using System;
     using System.Drawing;

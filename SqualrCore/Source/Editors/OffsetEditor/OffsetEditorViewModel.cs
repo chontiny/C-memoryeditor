@@ -1,8 +1,8 @@
-﻿namespace Squalr.Source.Editors.ScriptEditor
+﻿namespace SqualrCore.Source.Editors.ScriptEditor
 {
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
-    using Squalr.Source.Mvvm;
+    using SqualrCore.Source.Mvvm;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

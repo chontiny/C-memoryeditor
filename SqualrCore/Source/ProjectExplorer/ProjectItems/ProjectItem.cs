@@ -1,12 +1,12 @@
-﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
+﻿namespace SqualrCore.Source.ProjectExplorer.ProjectItems
 {
     using Controls;
     using Editors.HotkeyEditor;
     using Editors.TextEditor;
     using Engine.Input.HotKeys;
     using SharpDX.DirectInput;
-    using Squalr.Content;
-    using Squalr.Source.Api.Models;
+    using SqualrCore.Content;
+    using SqualrCore.Source.Api.Models;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;

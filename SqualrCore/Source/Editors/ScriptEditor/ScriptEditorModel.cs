@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Editors.ScriptEditor
+﻿namespace SqualrCore.Source.Editors.ScriptEditor
 {
     using System;
     using System.ComponentModel;

@@ -1,6 +1,6 @@
 ﻿
 
-namespace Squalr.Source.Utils
+namespace SqualrCore.Source.Utils
 {
     using System;
     using System.Runtime.InteropServices;

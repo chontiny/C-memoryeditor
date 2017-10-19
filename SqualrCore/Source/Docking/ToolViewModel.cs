@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Docking
+﻿namespace SqualrCore.Source.Docking
 {
     using GalaSoft.MvvmLight.Command;
     using System;

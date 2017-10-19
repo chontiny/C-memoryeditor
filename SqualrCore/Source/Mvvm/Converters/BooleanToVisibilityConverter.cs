@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Mvvm.Converters
+﻿namespace SqualrCore.Source.Mvvm.Converters
 {
     using System;
     using System.Windows;

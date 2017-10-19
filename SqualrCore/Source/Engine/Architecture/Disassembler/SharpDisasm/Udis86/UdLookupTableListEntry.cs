@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Architecture.Disassembler.SharpDisasm.Udis86
+﻿namespace SqualrCore.Source.Engine.Architecture.Disassembler.SharpDisasm.Udis86
 {
     using System;
 

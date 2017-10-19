@@ -1,6 +1,6 @@
-﻿namespace Squalr.Source.Mvvm.Converters
+﻿namespace SqualrCore.Source.Mvvm.Converters
 {
-    using Squalr.Source.Browse;
+    using SqualrCore.Source.Browse;
     using System;
     using System.Globalization;
     using System.Windows;

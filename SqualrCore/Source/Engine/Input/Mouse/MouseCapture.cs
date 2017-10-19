@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Input.Mouse
+﻿namespace SqualrCore.Source.Engine.Input.Mouse
 {
     using Output;
     using SharpDX;

@@ -1,6 +1,6 @@
-﻿namespace Squalr.Source.Controls
+﻿namespace SqualrCore.Source.Controls
 {
-    using Squalr.Source.Output;
+    using SqualrCore.Source.Output;
     using System;
     using System.IO;
     using System.Linq;

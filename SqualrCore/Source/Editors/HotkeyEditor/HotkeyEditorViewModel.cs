@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Editors.HotkeyEditor
+﻿namespace SqualrCore.Source.Editors.HotkeyEditor
 {
     using Docking;
     using Engine.Input.HotKeys;

@@ -1,8 +1,8 @@
-﻿namespace Squalr.Source.ActionScheduler
+﻿namespace SqualrCore.Source.ActionScheduler
 {
     using Docking;
     using Output;
-    using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;

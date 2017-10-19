@@ -1,6 +1,6 @@
-﻿namespace Squalr.Source.Api.Models
+﻿namespace SqualrCore.Source.Api.Models
 {
-    using Squalr.Source.Utils;
+    using SqualrCore.Source.Utils;
     using System;
     using System.Drawing;
     using System.Runtime.Serialization;

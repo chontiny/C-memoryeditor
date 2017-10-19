@@ -1,9 +1,9 @@
-﻿namespace Squalr.Properties
+﻿namespace SqualrCore.Properties
 {
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Docking;
-    using Squalr.Source.Engine.OperatingSystems;
-    using Squalr.Source.Main;
+    using SqualrCore.Source.Api.Models;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Main;
     using System;
     using System.IO;
     using System.Runtime.Serialization.Json;

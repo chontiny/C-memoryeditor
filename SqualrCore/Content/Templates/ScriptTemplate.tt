@@ -3,17 +3,17 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="Squalr" #>
+<#@ import namespace="SqualrCore" #>
 
 using System;
-using Squalr.Source.Scripting;
-using Squalr.Source.Scripting.Graphics;
-using Squalr.Source.Scripting.Hook;
-using Squalr.Source.Scripting.Input;
-using Squalr.Source.Scripting.Memory;
+using SqualrCore.Source.Scripting;
+using SqualrCore.Source.Scripting.Graphics;
+using SqualrCore.Source.Scripting.Hook;
+using SqualrCore.Source.Scripting.Input;
+using SqualrCore.Source.Scripting.Memory;
 	
 // The using statements, if any, will be inserted here:
-<# this.Write(Squalr.Source.Scripting.ScriptManager.ScriptUsingsInsertionIdentifier); #>
+<# this.Write(SqualrCore.Source.Scripting.ScriptManager.ScriptUsingsInsertionIdentifier); #>
 
 /// <summary>
 /// A script template which includes all necessary engine components by default.
@@ -51,6 +51,6 @@ public class Script
 	public Action Deactivate { get; set; }
 	
 	// The script will be inserted here:
-	<# this.Write(Squalr.Source.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); #>
+	<# this.Write(SqualrCore.Source.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); #>
 }
 //// End class

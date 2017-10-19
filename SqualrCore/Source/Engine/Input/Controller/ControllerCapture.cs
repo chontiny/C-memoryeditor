@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Input.Controller
+﻿namespace SqualrCore.Source.Engine.Input.Controller
 {
     using Output;
     using SharpDX.DirectInput;

@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.ScanConstraints
+﻿namespace SqualrCore.Source.Scanners.ScanConstraints
 {
     using Content;
     using System;

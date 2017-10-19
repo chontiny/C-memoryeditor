@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.PacketEditor
+﻿namespace SqualrCore.Source.PacketEditor
 {
     using Docking;
     using Main;

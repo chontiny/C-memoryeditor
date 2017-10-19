@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.InputCorrelator
+﻿namespace SqualrCore.Source.Scanners.InputCorrelator
 {
     using Docking;
     using Editors.HotkeyEditor;

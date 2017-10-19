@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Hook.Unrandomizer
+﻿namespace SqualrCore.Source.Engine.Hook.Unrandomizer
 {
     using System;
 

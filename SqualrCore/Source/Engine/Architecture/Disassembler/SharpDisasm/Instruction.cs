@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Architecture.Disassembler.SharpDisasm
+﻿namespace SqualrCore.Source.Engine.Architecture.Disassembler.SharpDisasm
 {
     using System;
     using System.Collections.Generic;

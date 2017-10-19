@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Engine.Networks
+﻿namespace SqualrCore.Source.Engine.Networks
 {
     internal interface INetwork
     {
