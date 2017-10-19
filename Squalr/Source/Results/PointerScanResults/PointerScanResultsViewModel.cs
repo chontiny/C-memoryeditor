@@ -2,12 +2,12 @@
 {
     using Content;
     using Docking;
-    using Engine;
     using GalaSoft.MvvmLight.Command;
     using Main;
     using ProjectExplorer;
     using Snapshots;
     using Squalr.Properties;
+    using SqualrCore.Source.Engine;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

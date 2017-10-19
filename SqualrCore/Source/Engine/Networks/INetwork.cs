@@ -1,6 +1,6 @@
 ﻿namespace SqualrCore.Source.Engine.Networks
 {
-    internal interface INetwork
+    public interface INetwork
     {
         void InstallHook();
 

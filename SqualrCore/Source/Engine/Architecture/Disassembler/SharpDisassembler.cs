@@ -3,6 +3,7 @@
     using SharpDisasm;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Utils.Extensions;
 
     /// <summary>
@@ -22,10 +23,14 @@
         /// <param name="isProcess32Bit">Whether or not the assembly is in the context of a 32 bit program.</param>
         /// <param name="baseAddress">The address where the code is rebased.</param>
         /// <returns>An array of bytes containing the assembly code.</returns>
-        public List<Instruction> Disassemble(Byte[] bytes, Boolean isProcess32Bit, IntPtr baseAddress)
+        public IEnumerable<NormalizedInstruction> Disassemble(Byte[] bytes, Boolean isProcess32Bit, IntPtr baseAddress)
         {
             this.disassembler = new Disassembler(bytes, isProcess32Bit ? ArchitectureMode.x86_32 : ArchitectureMode.x86_64, baseAddress.ToUInt64());
-            return new List<Instruction>(this.disassembler.Disassemble());
+            IEnumerable<Instruction> instructions = this.disassembler.Disassemble();
+
+            return instructions.Select(
+                instruction => new NormalizedInstruction(instruction.ToString(), instruction.Bytes, instruction.Bytes.Length)
+            );
         }
     }
     //// End class

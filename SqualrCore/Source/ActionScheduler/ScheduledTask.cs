@@ -9,7 +9,7 @@
     /// <summary>
     /// A task that repeatedly performs an action.
     /// </summary>
-    internal abstract class ScheduledTask : INotifyPropertyChanged
+    public abstract class ScheduledTask : INotifyPropertyChanged
     {
         /// <summary>
         /// The default update loop time.

@@ -6,6 +6,7 @@
     using Main;
     using ProjectExplorer;
     using ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.Engine.AddressResolver.DotNet;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

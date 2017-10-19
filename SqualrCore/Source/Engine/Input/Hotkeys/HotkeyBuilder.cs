@@ -5,7 +5,7 @@
     /// <summary>
     /// An interface defining a hotkey, which is activated by a given set of input.
     /// </summary>
-    internal abstract class HotkeyBuilder
+    public abstract class HotkeyBuilder
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HotkeyBuilder" /> class.

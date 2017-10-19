@@ -5,7 +5,6 @@
     using ProjectExplorer.ProjectItems;
     using SqualrCore.Content.Templates;
     using SqualrCore.Source.Analytics;
-    using SqualrCoreCore.Content.Templates;
     using System;
     using System.IO;
     using System.Reflection;

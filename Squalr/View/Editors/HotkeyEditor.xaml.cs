@@ -1,7 +1,7 @@
 ﻿namespace Squalr.View.Editors
 {
     using Source.Editors.HotkeyEditor;
-    using Source.Engine.Input.HotKeys;
+    using SqualrCore.Source.Engine.Input.HotKeys;
     using System;
     using System.Windows;
 

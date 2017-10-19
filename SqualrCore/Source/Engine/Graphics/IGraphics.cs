@@ -3,7 +3,7 @@
     /// <summary>
     /// An interface for an object that manipulates the graphics of a target process
     /// </summary>
-    internal interface IGraphics
+    public interface IGraphics
     {
     }
     //// End interface

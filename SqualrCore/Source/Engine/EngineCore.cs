@@ -14,7 +14,7 @@
     /// <summary>
     /// Abstraction of the system, providing the ability to easily manipulate system internals regardless of the platform.
     /// </summary>
-    internal class EngineCore
+    public class EngineCore
     {
         /// <summary>
         /// Singleton instance of the <see cref="EngineCore" /> class.

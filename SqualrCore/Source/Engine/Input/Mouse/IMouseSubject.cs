@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface for an object which will capture mouse input
     /// </summary>
-    internal interface IMouseSubject : IInputCapture
+    public interface IMouseSubject : IInputCapture
     {
         /// <summary>
         /// Subscribes to mouse capture events

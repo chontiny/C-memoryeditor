@@ -12,7 +12,7 @@
     /// A keyboard hotkey, which is activated by a given set of input.
     /// </summary>
     [DataContract]
-    internal class KeyboardHotkey : Hotkey, IObserver<KeyState>
+    public class KeyboardHotkey : Hotkey, IObserver<KeyState>
     {
         /// <summary>
         /// The default delay in miliseconds between hotkey activations.

@@ -1,8 +1,6 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using Docking;
-    using Engine;
-    using Engine.OperatingSystems;
     using GalaSoft.MvvmLight.Command;
     using Main;
     using ProjectItems;
@@ -12,6 +10,8 @@
     using Squalr.Source.Editors.ScriptEditor;
     using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.Utils;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.OperatingSystems;
     using System;
     using System.Collections;
     using System.Collections.Generic;

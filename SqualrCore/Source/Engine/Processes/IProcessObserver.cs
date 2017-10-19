@@ -3,7 +3,7 @@
     /// <summary>
     /// An interface for an object that enumerates and selects processes running on the system
     /// </summary>
-    internal interface IProcessObserver
+    public interface IProcessObserver
     {
         /// <summary>
         /// Recieves an update of the process that was opened

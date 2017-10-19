@@ -4,6 +4,7 @@
     using Engine;
     using Snapshots;
     using Squalr.Properties;
+    using SqualrCore.Source.Engine;
     using System;
     using System.Collections.Generic;
     using System.Linq;

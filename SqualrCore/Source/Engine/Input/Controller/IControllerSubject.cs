@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface for an object which will capture controller input
     /// </summary>
-    internal interface IControllerSubject : IInputCapture
+    public interface IControllerSubject : IInputCapture
     {
         /// <summary>
         /// Subscribes to controller capture events

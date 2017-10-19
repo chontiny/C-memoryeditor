@@ -7,7 +7,7 @@
     /// A controller hotkey, which is activated by a given set of input.
     /// </summary>
     [DataContract]
-    internal class ControllerHotkey : Hotkey
+    public class ControllerHotkey : Hotkey
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ControllerHotkey" /> class.

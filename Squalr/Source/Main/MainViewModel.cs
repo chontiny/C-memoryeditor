@@ -2,14 +2,14 @@
 {
     using Analytics;
     using Docking;
-    using Engine.AddressResolver;
-    using Engine.AddressResolver.DotNet;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using Output;
     using ProjectExplorer;
     using Squalr.Properties;
     using Squalr.Source.Scanners.BackgroundScans.Prefilters;
+    using SqualrCore.Source.Engine.AddressResolver;
+    using SqualrCore.Source.Engine.AddressResolver.DotNet;
     using System;
     using System.Collections.Generic;
     using System.Deployment.Application;

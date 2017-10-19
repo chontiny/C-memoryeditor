@@ -11,7 +11,7 @@
     [KnownType(typeof(KeyboardHotkey))]
     [KnownType(typeof(MouseHotkey))]
     [DataContract]
-    internal abstract class Hotkey : IDisposable
+    public abstract class Hotkey : IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Hotkey" /> class.

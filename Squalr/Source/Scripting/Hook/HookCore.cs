@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scripting.Hook
 {
-    using Source.Engine.SpeedManipulator;
+    using SqualrCore.Source.Engine.SpeedManipulator;
     using System;
 
     /// <summary>

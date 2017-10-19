@@ -9,7 +9,7 @@
     /// <summary>
     /// An object representing a .Net object in an external process.
     /// </summary>
-    internal class DotNetObject : IEnumerable, IComparable<DotNetObject>
+    public class DotNetObject : IEnumerable, IComparable<DotNetObject>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DotNetObject" /> class.

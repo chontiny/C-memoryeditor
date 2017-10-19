@@ -8,7 +8,7 @@
     /// Base class for all ViewModel classes displayed by TreeViewItems.  
     /// This acts as an adapter between a raw data object and a TreeViewItem.
     /// </summary>
-    internal class TreeViewItemViewModel : ViewModelBase
+    public class TreeViewItemViewModel : ViewModelBase
     {
         /// <summary>
         /// Dummy child for nodes with dynamically loaded children.

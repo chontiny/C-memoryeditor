@@ -2,8 +2,8 @@
 {
     using Squalr.Source.Api.Models;
     using Squalr.Source.Docking;
-    using Squalr.Source.Engine.OperatingSystems;
     using Squalr.Source.Main;
+    using SqualrCore.Source.Engine.OperatingSystems;
     using System;
     using System.IO;
     using System.Runtime.Serialization.Json;

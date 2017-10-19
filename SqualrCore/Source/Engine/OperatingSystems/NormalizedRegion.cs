@@ -8,7 +8,7 @@
     /// <summary>
     /// Defines an OS independent region in process memory space.
     /// </summary>
-    internal class NormalizedRegion
+    public class NormalizedRegion
     {
         /// <summary>
         /// The size of the region.

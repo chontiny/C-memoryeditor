@@ -6,7 +6,7 @@
     /// <summary>
     /// An interface for an object that enumerates and selects processes running on the system.
     /// </summary>
-    internal interface IProcesses
+    public interface IProcesses
     {
         /// <summary>
         /// Subscribes the listener to process change events.

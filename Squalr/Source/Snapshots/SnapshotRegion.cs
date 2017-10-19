@@ -1,11 +1,11 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Engine;
-    using Engine.OperatingSystems;
     using Output;
     using Results.ScanResults;
     using Scanners.ScanConstraints;
     using Squalr.Properties;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.OperatingSystems;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -15,7 +15,7 @@
     /// <summary>
     /// Defines a region of memory in an external process.
     /// </summary>
-    internal class SnapshotRegion : NormalizedRegion, IEnumerable
+    public class SnapshotRegion : NormalizedRegion, IEnumerable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.

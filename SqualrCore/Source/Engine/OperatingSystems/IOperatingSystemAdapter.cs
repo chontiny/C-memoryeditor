@@ -7,7 +7,7 @@
     /// <summary>
     /// An interface that describes general methods for memory manipulations that must be handled by the operating system.
     /// </summary>
-    internal interface IOperatingSystemAdapter : IProcessObserver
+    public interface IOperatingSystemAdapter : IProcessObserver
     {
         /// <summary>
         /// Gets regions of memory allocated in the remote process based on provided parameters.

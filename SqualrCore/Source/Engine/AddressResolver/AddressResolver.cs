@@ -12,7 +12,7 @@
     /// <summary>
     /// Singleton class to resolve the address of managed objects in an external process.
     /// </summary>
-    internal class AddressResolver : ScheduledTask
+    public class AddressResolver : ScheduledTask
     {
         /// <summary>
         /// Time in ms of how often to poll and resolve addresses initially.

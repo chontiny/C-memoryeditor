@@ -2,6 +2,7 @@
 {
     using Controls;
     using Engine;
+    using SqualrCore.Source.Engine;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;

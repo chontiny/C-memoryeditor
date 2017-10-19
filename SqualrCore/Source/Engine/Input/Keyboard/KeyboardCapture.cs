@@ -7,10 +7,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using Utils.Observables;
+
     /// <summary>
     /// Class to capture keyboard input.
     /// </summary>
-    internal class KeyboardCapture : IObservable<KeyState>
+    public class KeyboardCapture : IObservable<KeyState>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="KeyboardCapture" /> class.

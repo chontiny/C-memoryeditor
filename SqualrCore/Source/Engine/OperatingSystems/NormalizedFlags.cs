@@ -6,7 +6,7 @@
     /// Flags that indicate the memory protection for a region of memory
     /// </summary>
     [Flags]
-    internal enum MemoryProtectionEnum
+    public enum MemoryProtectionEnum
     {
         /// <summary>
         /// Writable memory
@@ -28,7 +28,7 @@
     /// Flags that indicate the memory type for a region of memory
     /// </summary>
     [Flags]
-    internal enum MemoryTypeEnum
+    public enum MemoryTypeEnum
     {
         /// <summary>
         /// No other flags specified

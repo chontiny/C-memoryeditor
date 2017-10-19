@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.ProcessSelector
 {
     using Docking;
-    using Engine;
-    using Engine.Processes;
     using GalaSoft.MvvmLight.Command;
     using Main;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.Processes;
     using System;
     using System.Collections.Generic;
     using System.Linq;

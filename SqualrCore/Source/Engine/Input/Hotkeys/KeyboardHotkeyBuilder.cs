@@ -10,7 +10,7 @@
     /// A keyboard hotkey builder, which is used to construct a keyboard hotkey.
     /// </summary>
     [DataContract]
-    internal class KeyboardHotkeyBuilder : HotkeyBuilder, IObserver<KeyState>
+    public class KeyboardHotkeyBuilder : HotkeyBuilder, IObserver<KeyState>
     {
         /// <summary>
         /// The default delay in miliseconds between hotkey activations.

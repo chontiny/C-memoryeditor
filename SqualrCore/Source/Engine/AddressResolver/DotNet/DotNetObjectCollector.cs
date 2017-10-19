@@ -16,7 +16,7 @@
     /// Class to walk through the managed heap of a .NET process, allowing for the easy retrieval.
     /// of fully labeled objects.
     /// </summary>
-    internal class DotNetObjectCollector : ScheduledTask
+    public class DotNetObjectCollector : ScheduledTask
     {
         /// <summary>
         /// Duration in ms to poll the target process for .Net objects initially.

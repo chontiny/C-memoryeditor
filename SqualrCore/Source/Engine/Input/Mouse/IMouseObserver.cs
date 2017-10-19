@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface for an object which will observe changes in mouse input
     /// </summary>
-    internal interface IMouseObserver
+    public interface IMouseObserver
     {
     }
     //// End interface

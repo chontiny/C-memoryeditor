@@ -3,7 +3,7 @@
     using Docking;
     using GalaSoft.MvvmLight.Command;
     using Main;
-    using SqualrCoreCore.Content.Templates;
+    using SqualrCore.Content.Templates;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

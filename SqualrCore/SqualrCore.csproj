@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SqualrCore</RootNamespace>
     <AssemblyName>SqualrCore</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -227,7 +227,6 @@
     <Compile Include="Source\Docking\PanesStyleSelector.cs" />
     <Compile Include="Source\Docking\PaneViewModel.cs" />
     <Compile Include="Source\Docking\ToolViewModel.cs" />
-    <Compile Include="Source\DotNetExplorer\DotNetExplorerViewModel.cs" />
     <Compile Include="Source\Editors\HotkeyEditor\HotkeyEditorModel.cs" />
     <Compile Include="Source\Editors\HotkeyEditor\HotkeyEditorViewModel.cs" />
     <Compile Include="Source\Editors\OffsetEditor\OffsetEditorModel.cs" />
@@ -244,7 +243,6 @@
     <Compile Include="Source\Engine\AddressResolver\AddressResolver.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObject.cs" />
     <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
-    <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Engine\Architecture\Architecture86_64.cs" />
     <Compile Include="Source\Engine\Architecture\ArchitectureFactory.cs" />
     <Compile Include="Source\Engine\Architecture\ArchitectureTypes.cs" />
@@ -253,6 +251,7 @@
     <Compile Include="Source\Engine\Architecture\Assembler\IAssembler.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\DisassemblerFactory.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\IDisassembler.cs" />
+    <Compile Include="Source\Engine\Architecture\NormalizedInstruction.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\ArchitectureMode.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\AutoPinner.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Disassembler.cs" />

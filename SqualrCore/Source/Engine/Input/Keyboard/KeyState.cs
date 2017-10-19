@@ -3,7 +3,7 @@
     using SharpDX.DirectInput;
     using System.Collections.Generic;
 
-    internal class KeyState
+    public class KeyState
     {
         public KeyState(HashSet<Key> pressedKeys, HashSet<Key> releasedKeys, HashSet<Key> downKeys, HashSet<Key> heldKeys)
         {

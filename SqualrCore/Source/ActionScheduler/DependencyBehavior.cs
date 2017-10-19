@@ -7,7 +7,7 @@
     /// <summary>
     /// A class that defines how a task dependency should be handled.
     /// </summary>
-    internal class DependencyBehavior
+    public class DependencyBehavior
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="DependencyBehavior" /> class.

@@ -5,7 +5,7 @@
     /// <summary>
     /// Defines an OS independent module region and attributes.
     /// </summary>
-    internal class NormalizedModule : NormalizedRegion
+    public class NormalizedModule : NormalizedRegion
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NormalizedModule" /> class.

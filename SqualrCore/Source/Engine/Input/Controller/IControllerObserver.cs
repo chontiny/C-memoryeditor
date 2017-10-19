@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface for an object which will observe changes in controller input
     /// </summary>
-    internal interface IControllerObserver
+    public interface IControllerObserver
     {
     }
     //// End interface

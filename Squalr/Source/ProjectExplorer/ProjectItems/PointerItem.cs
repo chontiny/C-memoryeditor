@@ -2,8 +2,8 @@
 {
     using Controls;
     using Editors.OffsetEditor;
-    using Engine;
-    using Engine.AddressResolver;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.AddressResolver;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;

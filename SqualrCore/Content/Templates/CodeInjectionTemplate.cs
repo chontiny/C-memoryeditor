@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace SqualrCoreCore.Content.Templates
+namespace SqualrCore.Content.Templates
 {
     using System.Linq;
     using System.Text;

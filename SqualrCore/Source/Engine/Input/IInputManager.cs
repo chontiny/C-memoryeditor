@@ -7,7 +7,7 @@
     /// <summary>
     /// An interface defining an object which is responsable for managing all input devices
     /// </summary>
-    internal interface IInputManager
+    public interface IInputManager
     {
         /// <summary>
         /// Gets the keyboard capture interface

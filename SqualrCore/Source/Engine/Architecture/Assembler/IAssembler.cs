@@ -5,7 +5,7 @@
     /// <summary>
     /// Interface defining an assembler.
     /// </summary>
-    internal interface IAssembler
+    public interface IAssembler
     {
         /// <summary>
         /// Assemble the specified assembly code.
