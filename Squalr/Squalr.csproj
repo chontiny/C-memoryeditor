@@ -922,6 +922,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SqualrCore\SqualrCore.csproj">
+      <Project>{78010aa2-1ecc-4cf6-87d0-c27578e79698}</Project>
+      <Name>SqualrCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SqualrHookClient\SqualrHookClient.csproj">
       <Project>{e9576568-5640-4883-aa5d-0bb2f6853e18}</Project>
       <Name>SqualrHookClient</Name>
