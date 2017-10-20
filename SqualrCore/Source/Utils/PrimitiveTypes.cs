@@ -8,7 +8,7 @@
     /// <summary>
     /// Methods for primitive types on the system.
     /// </summary>
-    internal class PrimitiveTypes
+    public class PrimitiveTypes
     {
         /// <summary>
         /// System types excluded from the list of primitive types.

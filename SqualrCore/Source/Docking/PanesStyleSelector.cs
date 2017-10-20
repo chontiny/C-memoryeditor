@@ -7,7 +7,7 @@
     /// <summary>
     /// Provides the style required to view a pane.
     /// </summary>
-    internal class PanesStyleSelector : StyleSelector
+    public class PanesStyleSelector : StyleSelector
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PanesStyleSelector" /> class.

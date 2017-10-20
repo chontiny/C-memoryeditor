@@ -4,7 +4,7 @@
     using System.ComponentModel;
     using System.Reflection;
 
-    internal static class EnumExtensions
+    public static class EnumExtensions
     {
         public static String GetDescription<T>(this T enumerationValue) where T : struct
         {

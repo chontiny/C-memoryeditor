@@ -8,7 +8,7 @@
     /// <summary>
     /// Address type converter for use in the property viewer.
     /// </summary>
-    internal class AddressConverter : TypeConverter
+    public class AddressConverter : TypeConverter
     {
         /// <summary>
         /// Converts a value to an address.

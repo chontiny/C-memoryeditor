@@ -8,7 +8,7 @@
     /// <summary>
     /// Converts IntPtrs to an address with leading 0s.
     /// </summary>
-    internal class IntPtrToAddressConverter : IValueConverter
+    public class IntPtrToAddressConverter : IValueConverter
     {
         /// <summary>
         /// Converts an IntPtr to an address string.

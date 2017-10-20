@@ -9,7 +9,7 @@
     /// Converter class to convert a boolean to an arbitrary value.
     /// </summary>
     /// <typeparam name="T">The target conversion type.</typeparam>
-    internal class BooleanConverter<T> : IValueConverter
+    public class BooleanConverter<T> : IValueConverter
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="BooleanConverter{T}" /> class.

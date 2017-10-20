@@ -7,7 +7,7 @@
     /// <summary>
     /// Generic view model for all tool panes.
     /// </summary>
-    internal class ToolViewModel : PaneViewModel
+    public class ToolViewModel : PaneViewModel
     {
         /// <summary>
         /// Value indicating if tool pane is visible.

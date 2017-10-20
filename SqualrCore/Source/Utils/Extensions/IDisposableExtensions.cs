@@ -6,7 +6,7 @@
     /// <summary>
     /// Extension methods for the IDisposable interface.
     /// </summary>
-    internal static class IDisposableExtensions
+    public static class IDisposableExtensions
     {
         public static IDisposable WeakSubscribe<T>(this IObservable<T> observable, IObserver<T> observer)
         {

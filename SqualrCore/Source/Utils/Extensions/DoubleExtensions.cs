@@ -5,7 +5,7 @@
     /// <summary>
     /// Contains extension methods for doubles.
     /// </summary>
-    internal static class DoubleExtensions
+    public static class DoubleExtensions
     {
         /// <summary>
         /// Determines if two doubles are almost equal in value via https://en.wikipedia.org/wiki/Unit_in_the_last_place distance.

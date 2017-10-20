@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class AccessTokens
+    public class AccessTokens
     {
         public AccessTokens()
         {

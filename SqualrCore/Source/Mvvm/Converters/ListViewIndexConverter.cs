@@ -8,7 +8,7 @@
     /// <summary>
     /// Converts a <see cref="ListViewItem"/> to its row index in the parent data grid.
     /// </summary>
-    internal class ListViewIndexConverter : IValueConverter
+    public class ListViewIndexConverter : IValueConverter
     {
         /// <summary>
         /// Converts an <see cref="ListViewItem"/> to its row index.

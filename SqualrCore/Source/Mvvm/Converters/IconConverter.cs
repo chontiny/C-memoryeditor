@@ -11,7 +11,7 @@
     /// <summary>
     /// Converts Icons to a format readily usable by the view.
     /// </summary>
-    internal class IconConverter : IValueConverter
+    public class IconConverter : IValueConverter
     {
         /// <summary>
         /// Converts an Icon to a BitmapSource.

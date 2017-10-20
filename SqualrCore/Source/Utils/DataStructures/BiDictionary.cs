@@ -11,7 +11,7 @@
     /// <typeparam name="TFirst">The first type.</typeparam>
     /// <typeparam name="TSecond">The second type.</typeparam>
     [Serializable]
-    internal class BiDictionary<TFirst, TSecond> : IDictionary<TFirst, TSecond>, IReadOnlyDictionary<TFirst, TSecond>, IDictionary
+    public class BiDictionary<TFirst, TSecond> : IDictionary<TFirst, TSecond>, IReadOnlyDictionary<TFirst, TSecond>, IDictionary
     {
         /// <summary>
         /// The dictionary mapping from the first type to the second type.

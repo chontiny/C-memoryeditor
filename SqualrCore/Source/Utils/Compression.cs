@@ -7,7 +7,7 @@
     /// <summary>
     /// Static class to help with compression and decompression.
     /// </summary>
-    internal static class Compression
+    public static class Compression
     {
         /// <summary>
         /// Compresses the provided bytes via gzip.

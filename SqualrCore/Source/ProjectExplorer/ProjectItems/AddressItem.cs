@@ -12,7 +12,7 @@
     /// Defines an address that can be added to the project explorer.
     /// </summary>
     [DataContract]
-    internal abstract class AddressItem : ProjectItem
+    public abstract class AddressItem : ProjectItem
     {
         /// <summary>
         /// The data type at this address.

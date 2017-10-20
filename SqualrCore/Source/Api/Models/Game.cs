@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class Game
+    public class Game
     {
         public Game()
         {

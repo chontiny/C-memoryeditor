@@ -10,7 +10,7 @@
     /// <summary>
     /// Hotkey type converter for use in the property viewer.
     /// </summary>
-    internal class HotkeyConverter : TypeConverter
+    public class HotkeyConverter : TypeConverter
     {
         /// <summary>
         /// Converts a value to a string indicating whether a hotkey is present.

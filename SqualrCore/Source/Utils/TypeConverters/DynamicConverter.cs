@@ -8,7 +8,7 @@
     /// <summary>
     /// Dynamic type converter for use in the property viewer.
     /// </summary>
-    internal class DynamicConverter : StringConverter
+    public class DynamicConverter : StringConverter
     {
         /// <summary>
         /// Converts a value to the proper dynamic type.

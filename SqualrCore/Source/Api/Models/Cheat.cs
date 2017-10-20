@@ -12,7 +12,7 @@
     using System.Threading.Tasks;
 
     [DataContract]
-    internal class Cheat
+    public class Cheat
     {
         [DataMember(Name = "is_stream_disabled")]
         private Boolean isStreamDisabled;

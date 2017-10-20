@@ -8,7 +8,7 @@
     /// <summary>
     /// Extension methods for IEnumerable interfaces.
     /// </summary>
-    internal static class IEnumerableExtensions
+    public static class IEnumerableExtensions
     {
         /// <summary>
         /// Determines if a collection is null or empty.

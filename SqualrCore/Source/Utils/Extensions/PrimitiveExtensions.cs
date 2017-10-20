@@ -5,7 +5,7 @@
     /// <summary>
     /// Extension methods for primitive data types.
     /// </summary>
-    internal static class PrimitiveExtensions
+    public static class PrimitiveExtensions
     {
         /// <summary>
         /// Bounds the value between the min and the maximum values provided.

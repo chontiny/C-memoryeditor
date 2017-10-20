@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
 
-    internal class Unsubscriber<T> : IDisposable
+    public class Unsubscriber<T> : IDisposable
     {
         private HashSet<IObserver<T>> observers;
         private IObserver<T> observer;

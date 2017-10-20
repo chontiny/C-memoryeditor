@@ -8,7 +8,7 @@
     /// <summary>
     /// Static images for use by the entire project, which reference local content.
     /// </summary>
-    internal class Images
+    public class Images
     {
         /// <summary>
         /// Image of one blue block.

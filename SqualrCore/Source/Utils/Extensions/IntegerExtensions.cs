@@ -5,7 +5,7 @@
     /// <summary>
     /// Contains extension methods for integers.
     /// </summary>
-    internal static class IntegerExtensions
+    public static class IntegerExtensions
     {
         /// <summary>
         /// Converts the given integer to a <see cref="Int32"/>.

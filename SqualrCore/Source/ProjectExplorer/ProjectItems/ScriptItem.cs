@@ -23,7 +23,7 @@
     /// Defines a script that can be added to the project explorer.
     /// </summary>
     [DataContract]
-    internal class ScriptItem : ProjectItem, IStreamIconsLoadedObserver
+    public class ScriptItem : ProjectItem, IStreamIconsLoadedObserver
     {
         /// <summary>
         /// The raw script text.

@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class JavaItem : AddressItem
+    public class JavaItem : AddressItem
     {
         public JavaItem()
         {

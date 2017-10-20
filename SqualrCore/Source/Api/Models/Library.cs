@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class Library
+    public class Library
     {
         public Library()
         {

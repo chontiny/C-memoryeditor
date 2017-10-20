@@ -10,7 +10,7 @@
     /// A hash set data structure that can handle multithreaded access.
     /// </summary>
     /// <typeparam name="T">The type contained in the hash set.</typeparam>
-    internal class ConcurrentHashSet<T> : IEnumerable, IDisposable
+    public class ConcurrentHashSet<T> : IEnumerable, IDisposable
     {
         /// <summary>
         /// Locking object for access to the data contained in this structure.

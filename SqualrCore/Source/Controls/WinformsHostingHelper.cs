@@ -6,7 +6,7 @@
     /// <summary>
     /// Helper class for embedded windows forms controls in WPF.
     /// </summary>
-    internal static class WinformsHostingHelper
+    public static class WinformsHostingHelper
     {
         /// <summary>
         /// Creates a windows form hosting object for a winforms control.

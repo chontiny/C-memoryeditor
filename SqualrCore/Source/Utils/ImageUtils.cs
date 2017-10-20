@@ -17,7 +17,7 @@
     /// <summary>
     /// Static class for useful image utilities.
     /// </summary>
-    internal static class ImageUtils
+    public static class ImageUtils
     {
         /// <summary>
         /// Cached bitmap mappings stored by this utility.

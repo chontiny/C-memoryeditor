@@ -5,7 +5,7 @@
     /// <summary>
     /// Class for hashing helper methods.
     /// </summary>
-    internal static class Hashing
+    public static class Hashing
     {
         /// <summary>
         /// Computes the checksum of an array of bytes. This is fast but has terrible collision avoidance.

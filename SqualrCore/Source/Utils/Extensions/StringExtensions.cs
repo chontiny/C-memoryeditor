@@ -6,7 +6,7 @@
     /// <summary>
     /// Extension methods for strings.
     /// </summary>
-    internal static class StringExtensions
+    public static class StringExtensions
     {
         /// <summary>
         /// Removes the provided subjects from the given string. Will remove the first match only.

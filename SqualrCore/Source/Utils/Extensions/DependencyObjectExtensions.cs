@@ -8,7 +8,7 @@
     /// <summary>
     /// Extension methods for dependency objects.
     /// </summary>
-    internal static class DependencyObjectExtensions
+    public static class DependencyObjectExtensions
     {
         /// <summary>
         /// Gets all decendent dependency objects from the provided dependency object.

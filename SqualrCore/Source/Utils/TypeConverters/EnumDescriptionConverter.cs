@@ -5,7 +5,7 @@
     using System.Globalization;
     using System.Reflection;
 
-    internal class EnumDescriptionConverter : EnumConverter
+    public class EnumDescriptionConverter : EnumConverter
     {
         private Type enumType;
 

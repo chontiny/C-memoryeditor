@@ -7,7 +7,7 @@
     /// <summary>
     /// View model for dockable panes.
     /// </summary>
-    internal class PaneViewModel : ViewModelBase
+    public class PaneViewModel : ViewModelBase
     {
         /// <summary>
         /// The pane title.

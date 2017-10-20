@@ -4,7 +4,7 @@
 
     [DataContract]
     [KnownType(typeof(Cheat))]
-    internal class StoreCheats
+    public class StoreCheats
     {
         public StoreCheats()
         {

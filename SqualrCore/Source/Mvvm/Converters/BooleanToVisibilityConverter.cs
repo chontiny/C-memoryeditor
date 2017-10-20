@@ -8,7 +8,7 @@
     /// Converter class to convert a boolean to a <see cref="Visibility"/> value.
     /// </summary>
     [ValueConversion(typeof(Boolean), typeof(Visibility))]
-    internal class BooleanToVisibilityConverter : BooleanConverter<Visibility>
+    public class BooleanToVisibilityConverter : BooleanConverter<Visibility>
     {
         public BooleanToVisibilityConverter() :
             base(Visibility.Visible, Visibility.Collapsed)

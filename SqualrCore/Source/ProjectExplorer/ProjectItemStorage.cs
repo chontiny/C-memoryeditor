@@ -19,7 +19,7 @@
     /// <summary>
     /// View model for the Project Explorer.
     /// </summary>
-    internal class ProjectItemStorage
+    public class ProjectItemStorage
     {
         /// <summary>
         /// The filter to use for saving and loading project filters.

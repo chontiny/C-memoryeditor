@@ -8,7 +8,7 @@
     /// <summary>
     /// Converts an Int32 value to a hexedecimal value.
     /// </summary>
-    internal class Int32ToHexConverter : IValueConverter
+    public class Int32ToHexConverter : IValueConverter
     {
         /// <summary>
         /// Converts an Int32 to a Hex string.

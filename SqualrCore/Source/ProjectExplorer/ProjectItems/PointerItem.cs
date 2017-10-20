@@ -17,7 +17,7 @@
     /// Defines an address that can be added to the project explorer.
     /// </summary>
     [DataContract]
-    internal class PointerItem : AddressItem
+    public class PointerItem : AddressItem
     {
         /// <summary>
         /// The identifier for the base address of this object.

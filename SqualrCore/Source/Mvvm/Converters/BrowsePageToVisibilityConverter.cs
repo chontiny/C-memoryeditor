@@ -10,7 +10,7 @@
     /// Converter class to convert a boolean to a <see cref="Visibility"/> value.
     /// </summary>
     [ValueConversion(typeof(BrowsePage), typeof(Visibility))]
-    internal class BrowsePageToVisibilityConverter : IValueConverter
+    public class BrowsePageToVisibilityConverter : IValueConverter
     {
         /// <summary> 
         /// Converts a value. 

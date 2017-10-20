@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Concurrent;
 
-    internal class TtlCache<V>
+    public class TtlCache<V>
     {
         private ConcurrentDictionary<V, DateTime> cache;
 

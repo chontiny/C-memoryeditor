@@ -10,7 +10,7 @@
     /// <summary>
     /// Offset type converter for use in the property viewer.
     /// </summary>
-    internal class OffsetConverter : TypeConverter
+    public class OffsetConverter : TypeConverter
     {
         /// <summary>
         /// Converts a value to an offset string.

@@ -10,7 +10,7 @@
     /// Converter class to convert a boolean to a <see cref="Visibility"/> value.
     /// </summary>
     [ValueConversion(typeof(BrowseCategory), typeof(Visibility))]
-    internal class BrowseCategoryToVisibilityConverter : IValueConverter
+    public class BrowseCategoryToVisibilityConverter : IValueConverter
     {
         /// <summary> 
         /// Converts a value. 

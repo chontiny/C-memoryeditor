@@ -5,7 +5,7 @@
     /// <summary>
     /// Dark brushes for GUI rendering. This is based on the colors in the xaml theme.
     /// </summary>
-    internal static class DarkBrushes
+    public static class DarkBrushes
     {
         /// <summary>
         /// Base color 1.

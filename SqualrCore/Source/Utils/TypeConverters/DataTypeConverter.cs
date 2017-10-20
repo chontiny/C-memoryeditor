@@ -9,7 +9,7 @@
     /// <summary>
     /// Data type converter for use in the property viewer.
     /// </summary>
-    internal class DataTypeConverter : StringConverter
+    public class DataTypeConverter : StringConverter
     {
         /// <summary>
         /// Gets the standard collection of values to display in a drop down.

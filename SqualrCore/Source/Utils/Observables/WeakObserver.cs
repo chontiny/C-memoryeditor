@@ -2,7 +2,7 @@
 {
     using System;
 
-    internal class WeakObserver<T> : IDisposable, IObserver<T>
+    public class WeakObserver<T> : IDisposable, IObserver<T>
     {
         private readonly WeakReference reference;
 

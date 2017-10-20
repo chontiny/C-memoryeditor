@@ -10,7 +10,7 @@
     /// </summary>
     [KnownType(typeof(Hotkey))]
     [DataContract]
-    internal class ProjectItemHotkey : INotifyPropertyChanged
+    public class ProjectItemHotkey : INotifyPropertyChanged
     {
         /// <summary>
         /// The target guid, from which the target project is derived.

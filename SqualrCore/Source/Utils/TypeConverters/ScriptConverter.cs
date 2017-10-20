@@ -7,7 +7,7 @@
     /// <summary>
     /// Script type converter for use in the property viewer.
     /// </summary>
-    internal class ScriptConverter : TypeConverter
+    public class ScriptConverter : TypeConverter
     {
         /// <summary>
         /// Converts a value to a string indicating whether a script is present.

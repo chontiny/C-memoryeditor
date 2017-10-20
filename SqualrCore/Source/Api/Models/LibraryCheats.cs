@@ -4,7 +4,7 @@
 
     [DataContract]
     [KnownType(typeof(Cheat))]
-    internal class LibraryCheats
+    public class LibraryCheats
     {
         public LibraryCheats()
         {

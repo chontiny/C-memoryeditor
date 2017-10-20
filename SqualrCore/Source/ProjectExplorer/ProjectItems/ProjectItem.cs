@@ -27,7 +27,7 @@
     [KnownType(typeof(DotNetItem))]
     [KnownType(typeof(JavaItem))]
     [DataContract]
-    internal abstract class ProjectItem : INotifyPropertyChanged, IDisposable
+    public abstract class ProjectItem : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// The name of this project item.

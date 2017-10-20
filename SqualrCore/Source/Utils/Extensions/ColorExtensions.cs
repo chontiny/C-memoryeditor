@@ -3,7 +3,7 @@
     using System;
     using System.Windows.Media;
 
-    static class ColorExtensions
+    public static class ColorExtensions
     {
         public static Color ToWpfColor(this System.Drawing.Color color)
         {

@@ -6,7 +6,7 @@
     /// <summary>
     /// Collection of methods to convert values from one format to another format.
     /// </summary>
-    internal class Conversions
+    public class Conversions
     {
         /// <summary>
         /// Parse a string containing a non-hex value and return the value.

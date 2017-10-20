@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class DotNetItem : AddressItem
+    public class DotNetItem : AddressItem
     {
         public DotNetItem(String name, Type type, String identifier)
         {

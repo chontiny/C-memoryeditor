@@ -9,7 +9,7 @@
     /// <summary>
     /// A class for displaying a dialog box centered to the calling parent.
     /// </summary>
-    internal class CenteredDialogBox
+    public class CenteredDialogBox
     {
         public const Int32 WH_CALLWNDPROCRET = 12;
 

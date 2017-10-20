@@ -8,7 +8,7 @@
     /// <summary>
     /// A service that handles analytics reporting.
     /// </summary>
-    internal class AnalyticsService
+    public class AnalyticsService
     {
         /// <summary>
         /// The url for the Google Analytics associated site.

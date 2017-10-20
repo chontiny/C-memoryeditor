@@ -10,7 +10,7 @@
     /// <summary>
     /// Converts a <see cref="DataGridCell"/> to its row index in the parent data grid.
     /// </summary>
-    internal class DataGridIndexConverter : IValueConverter
+    public class DataGridIndexConverter : IValueConverter
     {
         /// <summary>
         /// Converts an <see cref="DataGridCell"/> to its row index.

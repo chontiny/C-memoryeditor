@@ -7,7 +7,7 @@
     /// <summary>
     /// Converts a size in bytes to the metric size (B, KB, MB, GB, TB, PB, EB).
     /// </summary>
-    internal class ValueToMetricSize : IValueConverter
+    public class ValueToMetricSize : IValueConverter
     {
         /// <summary>
         /// Converts an Icon to a BitmapSource.

@@ -6,7 +6,7 @@
     /// <summary>
     /// A thread safe static random class.
     /// </summary>
-    internal static class StaticRandom
+    public static class StaticRandom
     {
         /// <summary>
         /// The thread safe random class instance.
