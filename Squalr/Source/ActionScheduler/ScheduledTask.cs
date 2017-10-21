@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.ActionScheduler
 {
-    using Squalr.Source.Output;
+    using SqualrCore.Source.Output;
     using System;
     using System.ComponentModel;
     using System.Threading;

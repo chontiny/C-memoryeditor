@@ -2,8 +2,8 @@
 {
     using DataStructures;
     using Squalr.Source.Analytics;
-    using Squalr.Source.Output;
     using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Source.Output;
     using Svg;
     using System;
     using System.Drawing;

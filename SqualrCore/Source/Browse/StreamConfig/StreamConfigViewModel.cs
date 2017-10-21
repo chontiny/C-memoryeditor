@@ -3,7 +3,6 @@
     using Content;
     using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using SqualrCore.Properties;
     using SqualrCore.Source.Api;
     using SqualrCore.Source.Api.Models;
@@ -59,7 +58,7 @@
 
             this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

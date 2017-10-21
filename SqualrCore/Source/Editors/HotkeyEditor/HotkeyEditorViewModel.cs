@@ -3,7 +3,6 @@
     using Docking;
     using Engine.Input.HotKeys;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -40,7 +39,7 @@
             this.ClearHotkeysCommand = new RelayCommand(() => this.ClearActiveHotkey(), () => true);
             this.AccessLock = new Object();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

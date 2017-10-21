@@ -1,12 +1,11 @@
 ﻿namespace Squalr.Source.Results.PointerScanResults
 {
     using Content;
-    using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using ProjectExplorer;
     using Snapshots;
     using Squalr.Properties;
+    using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
     using System;
     using System.Collections.Generic;
@@ -83,7 +82,7 @@
             this.addresses = new ObservableCollection<PointerScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
 
             this.UpdateScanResults();
         }

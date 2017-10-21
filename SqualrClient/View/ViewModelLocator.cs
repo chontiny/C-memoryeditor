@@ -11,7 +11,7 @@
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
     /// </summary>
-    internal class ViewModelLocator
+    internal class ViewModelLocator : SqualrCore.View.ViewModelLocator
     {
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.

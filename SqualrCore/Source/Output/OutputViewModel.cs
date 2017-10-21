@@ -2,7 +2,6 @@
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.IO;
@@ -21,7 +20,7 @@
     /// <summary>
     /// View model for the Output.
     /// </summary>
-    internal class OutputViewModel : ToolViewModel
+    public class OutputViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -75,7 +74,7 @@
             this.ClearOutputCommand = new RelayCommand(() => this.ClearOutput(), () => true);
             this.AccessLock = new Object();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

@@ -2,7 +2,6 @@
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using Results.ScanResults;
     using ScanConstraints;
     using System;
@@ -74,7 +73,7 @@
             this.ScanConstraintManager.SetElementType(typeof(Int32));
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

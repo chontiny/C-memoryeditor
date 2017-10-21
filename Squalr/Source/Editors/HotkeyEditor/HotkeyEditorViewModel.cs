@@ -1,8 +1,7 @@
 ﻿namespace Squalr.Source.Editors.HotkeyEditor
 {
-    using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
+    using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using System;
     using System.Threading;
@@ -40,7 +39,7 @@
             this.ClearHotkeysCommand = new RelayCommand(() => this.ClearActiveHotkey(), () => true);
             this.AccessLock = new Object();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

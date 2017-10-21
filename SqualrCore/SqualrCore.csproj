@@ -149,6 +149,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Source\Docking\MainViewModel.cs" />
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
@@ -431,6 +432,11 @@
     <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\TextConverter.cs" />
     <Compile Include="Source\Utils\WebBrowserHelper.cs" />
+    <Compile Include="View\Output.xaml.cs">
+      <DependentUpon>Output.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ViewModelLocator.cs" />
+    <Compile Include="View\ViewTemplateSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Source\Engine\AddressResolver\Java\" />
@@ -663,6 +669,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Loaders\Tail.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Output.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -3,13 +3,11 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using SqualrClient.Properties;
-    using SqualrClient.Source.Output;
     using SqualrCore.Source.Analytics;
-    using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.AddressResolver;
     using SqualrCore.Source.Engine.AddressResolver.DotNet;
+    using SqualrCore.Source.Output;
     using System;
-    using System.Collections.Generic;
     using System.Deployment.Application;
     using System.IO;
     using System.Reflection;
@@ -49,18 +47,11 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Collection of tools contained in the main docking panel.
-        /// </summary>
-        private HashSet<ToolViewModel> tools;
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="MainViewModel" /> class from being created.
         /// </summary>
         private MainViewModel()
         {
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr started");
-
-            this.tools = new HashSet<ToolViewModel>();
 
             // Note: These cannot be async, as the logic to update the layout or window cannot be on a new thread
             this.CloseCommand = new RelayCommand<Window>((window) => this.Close(window), (window) => true);
@@ -116,42 +107,12 @@
         public ICommand SaveLayoutCommand { get; private set; }
 
         /// <summary>
-        /// Gets the tools contained in the main docking panel.
-        /// </summary>
-        public IEnumerable<ToolViewModel> Tools
-        {
-            get
-            {
-                if (this.tools == null)
-                {
-                    this.tools = new HashSet<ToolViewModel>();
-                }
-
-                return this.tools;
-            }
-        }
-
-        /// <summary>
         /// Gets the singleton instance of the <see cref="MainViewModel" /> class.
         /// </summary>
         /// <returns>The singleton instance of the <see cref="MainViewModel" /> class.</returns>
         public static MainViewModel GetInstance()
         {
             return mainViewModelInstance.Value;
-        }
-
-        /// <summary>
-        /// Adds a tool to the list of tools controlled by the main view model.
-        /// </summary>
-        /// <param name="observer">The tool to be added.</param>
-        public void RegisterTool(ToolViewModel observer)
-        {
-            if (observer != null && !this.tools.Contains(observer))
-            {
-                this.tools?.Add(observer);
-            }
-
-            this.RaisePropertyChanged(nameof(this.Tools));
         }
 
         /// <summary>

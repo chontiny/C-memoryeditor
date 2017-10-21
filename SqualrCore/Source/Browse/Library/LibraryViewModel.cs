@@ -6,7 +6,6 @@
     using SqualrCore.Source.Api.Models;
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Main;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectExplorer;
     using System;
@@ -103,7 +102,7 @@
             this.AddNewLibraryCommand = new RelayCommand(() => this.AddNewLibrary(), () => true);
             this.DeleteLibraryCommand = new RelayCommand(() => this.DeleteLibrary(), () => true);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

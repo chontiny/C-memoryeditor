@@ -1,12 +1,12 @@
 ﻿namespace Squalr.Source.Scanners.BackgroundScans.Prefilters
 {
     using ActionScheduler;
-    using Output;
     using Snapshots;
     using Squalr.Properties;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.OperatingSystems;
     using SqualrCore.Source.Engine.Processes;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.Linq;

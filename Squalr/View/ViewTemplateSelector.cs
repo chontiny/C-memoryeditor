@@ -1,13 +1,7 @@
 ﻿namespace Squalr.View
 {
     using Source.DotNetExplorer;
-    using Source.Editors.HotkeyEditor;
-    using Source.Editors.ScriptEditor;
-    using Source.Editors.TextEditor;
-    using Source.Output;
-    using Source.ProcessSelector;
     using Source.ProjectExplorer;
-    using Source.PropertyViewer;
     using Source.Results.PointerScanResults;
     using Source.Results.ScanResults;
     using Source.Scanners.ChangeCounter;
@@ -22,12 +16,11 @@
     using Squalr.Source.Browse.TwitchLogin;
     using System;
     using System.Windows;
-    using System.Windows.Controls;
 
     /// <summary>
     /// Provides the template required to view a pane.
     /// </summary>
-    internal class ViewTemplateSelector : DataTemplateSelector
+    internal class ViewTemplateSelector : SqualrCore.View.ViewTemplateSelector
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
@@ -35,11 +28,6 @@
         public ViewTemplateSelector()
         {
         }
-
-        /// <summary>
-        /// Gets or sets the template for the Process Selector.
-        /// </summary>
-        public DataTemplate ProcessSelectorViewTemplate { get; set; }
 
         /// <summary>
         /// Gets or sets the template for the Change Counter.
@@ -117,16 +105,6 @@
         public DataTemplate DotNetExplorerViewTemplate { get; set; }
 
         /// <summary>
-        /// Gets or sets the template for the Property Viewer.
-        /// </summary>
-        public DataTemplate PropertyViewerViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Settings.
-        /// </summary>
-        public DataTemplate SettingsViewTemplate { get; set; }
-
-        /// <summary>
         /// Gets or sets the template for the Project Explorer.
         /// </summary>
         public DataTemplate ProjectExplorerViewTemplate { get; set; }
@@ -137,36 +115,6 @@
         public DataTemplate SignatureCollectorViewTemplate { get; set; }
 
         /// <summary>
-        /// Gets or sets the template for the Output.
-        /// </summary>
-        public DataTemplate OutputViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Offset Editor.
-        /// </summary>
-        public DataTemplate OffsetEditorViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Script Editor.
-        /// </summary>
-        public DataTemplate ScriptEditorViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Text Editor.
-        /// </summary>
-        public DataTemplate TextEditorViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Hotkey Manager.
-        /// </summary>
-        public DataTemplate HotkeyManagerViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Hotkey Editor.
-        /// </summary>
-        public DataTemplate HotkeyEditorViewTemplate { get; set; }
-
-        /// <summary>
         /// Returns the required template to display the given view model.
         /// </summary>
         /// <param name="item">The view model.</param>
@@ -174,11 +122,7 @@
         /// <returns>The template associated with the provided view model.</returns>
         public override DataTemplate SelectTemplate(Object item, DependencyObject container)
         {
-            if (item is ProcessSelectorViewModel)
-            {
-                return this.ProcessSelectorViewTemplate;
-            }
-            else if (item is ChangeCounterViewModel)
+            if (item is ChangeCounterViewModel)
             {
                 return this.ChangeCounterViewTemplate;
             }
@@ -226,10 +170,6 @@
             {
                 return this.DotNetExplorerViewTemplate;
             }
-            else if (item is PropertyViewerViewModel)
-            {
-                return this.PropertyViewerViewTemplate;
-            }
             else if (item is SettingsViewModel)
             {
                 return this.SettingsViewTemplate;
@@ -237,22 +177,6 @@
             else if (item is ProjectExplorerViewModel)
             {
                 return this.ProjectExplorerViewTemplate;
-            }
-            else if (item is OutputViewModel)
-            {
-                return this.OutputViewTemplate;
-            }
-            else if (item is ScriptEditorViewModel)
-            {
-                return this.ScriptEditorViewTemplate;
-            }
-            else if (item is TextEditorViewModel)
-            {
-                return this.TextEditorViewTemplate;
-            }
-            else if (item is HotkeyEditorViewModel)
-            {
-                return this.HotkeyEditorViewTemplate;
             }
 
             return base.SelectTemplate(item, container);

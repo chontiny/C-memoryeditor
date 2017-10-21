@@ -5,8 +5,9 @@
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
     xmlns:browseView="clr-namespace:SqualrClient.View.Browse"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
-    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:coreView="clr-namespace:SqualrCore.View;assembly=SqualrCore"
     xmlns:docking="clr-namespace:SqualrCore.Source.Docking;assembly=SqualrCore"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:view="clr-namespace:SqualrClient.View"
     x:Name="SqualrClientWindow"
@@ -82,7 +83,7 @@
                     Width="24"
                     Height="24"
                     Margin="4"
-                    Source="pack://application:,,,/Squalr;component/Content/Icons/MainAppIcon.ico" />
+                    Source="pack://application:,,,/SqualrCore;component/Content/Icons/MainAppIcon.ico" />
 
                 <shell:TextBlock
                     Grid.Column="1"
@@ -115,40 +116,40 @@
                 <shell:MenuItem
                     Height="24"
                     Command="{Binding MinimizeCommand}"
-                    CommandParameter="{Binding ElementName=SqualrWindow}"
+                    CommandParameter="{Binding ElementName=SqualrClientWindow}"
                     ToolTip="Minimize"
                     WindowChrome.IsHitTestVisibleInChrome="True">
                     <shell:MenuItem.Header>
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Decreased.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Decreased.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem
                     Height="24"
                     Command="{Binding MaximizeRestoreCommand}"
-                    CommandParameter="{Binding ElementName=SqualrWindow}"
+                    CommandParameter="{Binding ElementName=SqualrClientWindow}"
                     ToolTip="Maximize/Restore"
                     WindowChrome.IsHitTestVisibleInChrome="True">
                     <shell:MenuItem.Header>
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Maximize.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Maximize.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem
                     Height="24"
                     Command="{Binding CloseCommand}"
-                    CommandParameter="{Binding ElementName=SqualrWindow}"
+                    CommandParameter="{Binding ElementName=SqualrClientWindow}"
                     ToolTip="Close"
                     WindowChrome.IsHitTestVisibleInChrome="True">
                     <shell:MenuItem.Header>
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/X.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/X.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
             </shell:Menu>
@@ -191,7 +192,7 @@
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
                         Command="{Binding MainViewModel.CloseCommand}"
-                        CommandParameter="{Binding ElementName=SqualrWindow}"
+                        CommandParameter="{Binding ElementName=SqualrClientWindow}"
                         Header="Exit"
                         Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
@@ -330,7 +331,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/SelectProcess.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/SelectProcess.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
@@ -339,7 +340,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Open.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Open.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}" ToolTip="Save Project">
@@ -347,7 +348,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Save.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Save.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
@@ -356,7 +357,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/New.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/New.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem Command="{Binding ValueCollectorViewModel.CollectValuesCommand}" ToolTip="Collect Values">
@@ -364,7 +365,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/CollectValues.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/CollectValues.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
@@ -393,7 +394,7 @@
         <avalonDock:DockingManager
             x:Name="dockManager"
             Grid.Row="3"
-            AnchorablesSource="{Binding Tools}"
+            AnchorablesSource="{Binding DockingViewModel.Tools, Source={StaticResource ViewModelLocator}}"
             Background="{StaticResource AvalonDock_Expression_BaseColor4}">
             <!--  Theme  -->
             <avalonDock:DockingManager.Theme>
@@ -409,6 +410,12 @@
                             <browseView:BrowseHome />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.BrowseViewTemplate>
+                    <!--  Output  -->
+                    <view:ViewTemplateSelector.OutputViewTemplate>
+                        <shell:DataTemplate>
+                            <coreView:Output />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.OutputViewTemplate>
                 </view:ViewTemplateSelector>
             </avalonDock:DockingManager.LayoutItemTemplateSelector>
 

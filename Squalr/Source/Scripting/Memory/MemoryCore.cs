@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Scripting.Memory
 {
-    using Output;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Architecture;
     using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;

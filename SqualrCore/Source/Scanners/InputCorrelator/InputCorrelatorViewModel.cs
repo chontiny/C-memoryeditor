@@ -4,7 +4,6 @@
     using Editors.HotkeyEditor;
     using Engine.Input.HotKeys;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -41,7 +40,7 @@
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
             this.InputCorrelatorModel = new InputCorrelatorModel(this.ScanCountUpdated);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         public ICommand StartScanCommand { get; private set; }

@@ -4,7 +4,6 @@
     using Docking;
     using Engine;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using ProjectExplorer;
     using Snapshots;
     using SqualrCore.Properties;
@@ -91,7 +90,7 @@
             this.addresses = new ObservableCollection<ScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
 
             this.UpdateScanResults();
         }

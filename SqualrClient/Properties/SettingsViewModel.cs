@@ -1,7 +1,6 @@
 ﻿namespace SqualrClient.Properties
 {
     using SqualrClient.Source.Api.Models;
-    using SqualrClient.Source.Main;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.OperatingSystems;
     using System;
@@ -66,7 +65,7 @@
             this.ContentId = SettingsViewModel.ToolContentId;
 
             // Subscribe async to avoid a deadlock situation
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

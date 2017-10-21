@@ -5,7 +5,7 @@
     /// <summary>
     /// Interface for a class which listens for changes in the selected properties.
     /// </summary>
-    internal interface IPropertyViewerObserver
+    public interface IPropertyViewerObserver
     {
         /// <summary>
         /// Recieves an update of the selected objects.

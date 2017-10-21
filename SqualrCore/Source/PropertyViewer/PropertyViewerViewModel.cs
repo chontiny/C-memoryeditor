@@ -1,7 +1,6 @@
 ﻿namespace SqualrCore.Source.PropertyViewer
 {
     using Docking;
-    using Main;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -10,7 +9,7 @@
     /// <summary>
     /// View model for the Property Viewer.
     /// </summary>
-    internal class PropertyViewerViewModel : ToolViewModel
+    public class PropertyViewerViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -38,7 +37,7 @@
             this.ObserverLock = new Object();
             this.PropertyViewerObservers = new List<IPropertyViewerObserver>();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

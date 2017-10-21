@@ -2,7 +2,6 @@
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using SqualrCore.Content.Templates;
     using System;
     using System.Threading;
@@ -35,7 +34,7 @@
             this.UpdateScriptCommand = new RelayCommand<String>((script) => this.UpdateScript(script), (script) => true);
             this.SaveScriptCommand = new RelayCommand<String>((script) => this.SaveScript(script), (script) => true);
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

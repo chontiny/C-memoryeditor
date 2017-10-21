@@ -2,10 +2,10 @@
 {
     using Controls;
     using Microsoft.Win32;
-    using Output;
     using ProjectItems;
     using Squalr.Properties;
     using Squalr.Source.Analytics;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

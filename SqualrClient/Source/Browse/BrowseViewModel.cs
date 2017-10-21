@@ -8,9 +8,8 @@
     using SqualrClient.Source.Browse.Store;
     using SqualrClient.Source.Browse.StreamConfig;
     using SqualrClient.Source.Browse.TwitchLogin;
-    using SqualrClient.Source.Main;
-    using SqualrClient.Source.Output;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -83,7 +82,7 @@
                 RefreshCoinsTask refreshCoinsTask = new RefreshCoinsTask(this.SetCoinAmount);
             });
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

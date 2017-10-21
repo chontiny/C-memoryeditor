@@ -12,7 +12,7 @@
     /// <summary>
     /// Class to schedule tasks that are executed.
     /// </summary>
-    internal class ActionSchedulerViewModel : ToolViewModel
+    public class ActionSchedulerViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.

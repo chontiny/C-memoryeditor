@@ -1,17 +1,12 @@
 ﻿namespace Squalr.View
 {
-    using Source.ActionScheduler;
-    using Source.ChangeLog;
     using Source.DotNetExplorer;
     using Source.Editors.HotkeyEditor;
     using Source.Editors.ScriptEditor;
     using Source.Editors.TextEditor;
     using Source.Editors.ValueEditor;
     using Source.Main;
-    using Source.Output;
-    using Source.ProcessSelector;
     using Source.ProjectExplorer;
-    using Source.PropertyViewer;
     using Source.Results.PointerScanResults;
     using Source.Results.ScanResults;
     using Source.Scanners.ChangeCounter;
@@ -33,7 +28,7 @@
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
     /// </summary>
-    internal class ViewModelLocator
+    internal class ViewModelLocator : SqualrCore.View.ViewModelLocator
     {
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
@@ -50,28 +45,6 @@
             get
             {
                 return MainViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Action Scheduler view model.
-        /// </summary>
-        public ActionSchedulerViewModel ActionSchedulerViewModel
-        {
-            get
-            {
-                return ActionSchedulerViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Process Selector view model.
-        /// </summary>
-        public ProcessSelectorViewModel ProcessSelectorViewModel
-        {
-            get
-            {
-                return ProcessSelectorViewModel.GetInstance();
             }
         }
 
@@ -230,17 +203,6 @@
         }
 
         /// <summary>
-        /// Gets the Property Viewer view model.
-        /// </summary>
-        public PropertyViewerViewModel PropertyViewerViewModel
-        {
-            get
-            {
-                return PropertyViewerViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
         /// Gets the Settings view model.
         /// </summary>
         public SettingsViewModel SettingsViewModel
@@ -270,17 +232,6 @@
             get
             {
                 return ValueCollectorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets a Output view model.
-        /// </summary>
-        public OutputViewModel OutputViewModel
-        {
-            get
-            {
-                return OutputViewModel.GetInstance();
             }
         }
 
@@ -347,17 +298,6 @@
             get
             {
                 return HotkeyEditorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets a Change Log view model. Note: Not a singleton, will create a new object.
-        /// </summary>
-        public ChangeLogViewModel ChangeLogViewModel
-        {
-            get
-            {
-                return ChangeLogViewModel.GetInstance();
             }
         }
     }

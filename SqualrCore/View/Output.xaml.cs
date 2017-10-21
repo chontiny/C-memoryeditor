@@ -1,4 +1,4 @@
-﻿namespace Squalr.View
+﻿namespace SqualrCore.View
 {
     using System;
     using System.Windows.Controls;
@@ -6,7 +6,7 @@
     /// <summary>
     /// Interaction logic for Output.xaml.
     /// </summary>
-    internal partial class Output : UserControl
+    public partial class Output : UserControl
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Output" /> class.

@@ -5,7 +5,6 @@
     using SqualrCore.Source.Api;
     using SqualrCore.Source.Api.Models;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Main;
     using SqualrCore.Source.Output;
     using System;
     using System.Collections.Generic;
@@ -75,7 +74,7 @@
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
             this.UnlockCheatCommand = new RelayCommand<Cheat>((cheat) => this.UnlockCheat(cheat), (cheat) => true);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

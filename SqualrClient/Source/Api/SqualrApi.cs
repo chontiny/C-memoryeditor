@@ -3,7 +3,7 @@
     using RestSharp;
     using SqualrClient.Source.Api.Exceptions;
     using SqualrClient.Source.Api.Models;
-    using SqualrClient.Source.Output;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;

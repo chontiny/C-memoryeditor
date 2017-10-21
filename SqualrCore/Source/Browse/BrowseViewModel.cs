@@ -9,7 +9,6 @@
     using SqualrCore.Source.Browse.StreamConfig;
     using SqualrCore.Source.Browse.TwitchLogin;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Main;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -83,7 +82,7 @@
                 RefreshCoinsTask refreshCoinsTask = new RefreshCoinsTask(this.SetCoinAmount);
             });
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

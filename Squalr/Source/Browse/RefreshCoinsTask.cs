@@ -4,8 +4,8 @@
     using Squalr.Properties;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
-    using Squalr.Source.Output;
     using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Source.Output;
     using System;
 
     /// <summary>

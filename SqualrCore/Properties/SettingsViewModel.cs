@@ -3,7 +3,6 @@
     using SqualrCore.Source.Api.Models;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.OperatingSystems;
-    using SqualrCore.Source.Main;
     using System;
     using System.IO;
     using System.Runtime.Serialization.Json;
@@ -66,7 +65,7 @@
             this.ContentId = SettingsViewModel.ToolContentId;
 
             // Subscribe async to avoid a deadlock situation
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

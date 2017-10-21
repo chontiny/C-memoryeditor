@@ -1,8 +1,7 @@
 ﻿namespace Squalr.Source.Editors.TextEditor
 {
-    using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
+    using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -34,7 +33,7 @@
             this.UpdateTextCommand = new RelayCommand<String>((text) => this.UpdateText(text), (text) => true);
             this.SaveTextCommand = new RelayCommand<String>((text) => this.SaveText(text), (text) => true);
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

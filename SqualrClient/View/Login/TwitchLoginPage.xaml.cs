@@ -1,8 +1,8 @@
 ﻿namespace SqualrClient.View.Browse.Login
 {
     using SqualrClient.Source.Browse.TwitchLogin;
-    using SqualrClient.Source.Output;
     using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils;
     using System;
     using System.Collections.Specialized;

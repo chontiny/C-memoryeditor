@@ -2,7 +2,6 @@
 {
     using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using SqualrCore.Source.Api;
     using SqualrCore.Source.Api.Models;
     using SqualrCore.Source.Output;
@@ -65,7 +64,7 @@
 
             this.LoadIcons();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

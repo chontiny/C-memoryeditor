@@ -4,9 +4,8 @@
     using Squalr.Properties;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
-    using Squalr.Source.Docking;
-    using Squalr.Source.Main;
-    using Squalr.Source.Output;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -75,7 +74,7 @@
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
             this.UnlockCheatCommand = new RelayCommand<Cheat>((cheat) => this.UnlockCheat(cheat), (cheat) => true);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

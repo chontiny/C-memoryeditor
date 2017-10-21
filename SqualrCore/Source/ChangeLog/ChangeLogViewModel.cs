@@ -8,7 +8,7 @@
     /// <summary>
     /// View model for the Change Log.
     /// </summary>
-    internal class ChangeLogViewModel : ViewModelBase
+    public class ChangeLogViewModel : ViewModelBase
     {
         /// <summary>
         /// The changelog text.

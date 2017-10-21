@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Source.PropertyViewer
 {
-    using Docking;
-    using Main;
+    using SqualrCore.Source.Docking;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -38,7 +37,7 @@
             this.ObserverLock = new Object();
             this.PropertyViewerObservers = new List<IPropertyViewerObserver>();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

@@ -4,20 +4,19 @@
     using Engine;
     using Engine.Processes;
     using GalaSoft.MvvmLight.Command;
-    using Main;
+    using SqualrCore.Content;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Utils;
     using Utils.Extensions;
 
     /// <summary>
     /// View model for the Process Selector.
     /// </summary>
-    internal class ProcessSelectorViewModel : ToolViewModel, IProcessObserver
+    public class ProcessSelectorViewModel : ToolViewModel, IProcessObserver
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -47,7 +46,7 @@
         private ProcessSelectorViewModel() : base("Process Selector")
         {
             this.ContentId = ProcessSelectorViewModel.ToolContentId;
-            this.IconSource = ImageUtils.LoadImage("pack://application:,,,/Squalr;component/Content/Icons/SelectProcess.png");
+            this.IconSource = Images.SelectProcess;
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<NormalizedProcess>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
 
@@ -55,7 +54,7 @@
             ProcessSelectorTask processSelectorTask = new ProcessSelectorTask(this.RefreshProcessList);
 
             // Subscribe async to avoid a deadlock situation
-            Task.Run(() => { MainViewModel.GetInstance().RegisterTool(this); });
+            Task.Run(() => { DockingViewModel.GetInstance().RegisterViewModel(this); });
 
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
             Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });

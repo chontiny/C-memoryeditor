@@ -1,7 +1,6 @@
 ﻿namespace SqualrCore.Source.PacketEditor
 {
     using Docking;
-    using Main;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -30,7 +29,7 @@
         {
             this.ContentId = PacketEditorViewModel.ToolContentId;
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

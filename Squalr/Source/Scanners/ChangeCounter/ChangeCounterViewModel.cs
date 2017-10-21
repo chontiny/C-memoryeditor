@@ -1,8 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.ChangeCounter
 {
-    using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
+    using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -35,7 +34,7 @@
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
             this.ChangeCounterModel = new ChangeCounterModel(this.ScanCountUpdated);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         public ICommand StartScanCommand { get; private set; }

@@ -3,8 +3,8 @@
     using SqualrClient.Properties;
     using SqualrClient.Source.Api;
     using SqualrClient.Source.Api.Models;
-    using SqualrClient.Source.Output;
     using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
 

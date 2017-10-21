@@ -1,16 +1,15 @@
 ﻿namespace Squalr.Source.Browse.StreamConfig
 {
     using Content;
-    using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using Squalr.Properties;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
-    using Squalr.Source.Output;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using Squalr.Source.Utils.Extensions;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -59,7 +58,7 @@
 
             this.ToggleConnectionCommand = new RelayCommand(() => this.ToggleConnection(), () => true);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

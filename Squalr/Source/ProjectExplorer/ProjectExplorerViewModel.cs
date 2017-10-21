@@ -1,8 +1,6 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
-    using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using ProjectItems;
     using PropertyViewer;
     using Squalr.Properties;
@@ -10,6 +8,7 @@
     using Squalr.Source.Editors.ScriptEditor;
     using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.Utils;
+    using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.OperatingSystems;
     using System;
@@ -91,7 +90,7 @@
             this.ProjectItems = new ObservableCollection<ProjectItem>();
             this.Update();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

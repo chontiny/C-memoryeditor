@@ -1,7 +1,7 @@
 ﻿namespace SqualrClient.Source.Api.Models
 {
     using SqualrClient.Properties;
-    using SqualrClient.Source.Output;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectExplorer.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;
     using System;

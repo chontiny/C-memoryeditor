@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Output;
     using Results.ScanResults;
     using Squalr.Properties;
     using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections;
     using System.Collections.Generic;

@@ -4,7 +4,6 @@
     using Engine;
     using Engine.OperatingSystems;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using ProjectItems;
     using PropertyViewer;
     using SqualrCore.Properties;
@@ -91,7 +90,7 @@
             this.ProjectItems = new ObservableCollection<ProjectItem>();
             this.Update();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

@@ -5,7 +5,6 @@
     using SqualrCore.Source.Api;
     using SqualrCore.Source.Api.Models;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Main;
     using SqualrCore.Source.Output;
     using System;
     using System.Threading;
@@ -51,7 +50,7 @@
             this.NavigateHomeCommand = new RelayCommand<WebBrowser>((browser) => this.NavigateHome(browser), (browser) => true);
             this.PerformLoginCommand = new RelayCommand<String>((code) => this.PerformLogin(code), (code) => true);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

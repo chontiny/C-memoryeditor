@@ -1,9 +1,8 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
-    using Docking;
     using Editors.HotkeyEditor;
     using GalaSoft.MvvmLight.Command;
-    using Main;
+    using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using System;
     using System.Collections.Generic;
@@ -41,7 +40,7 @@
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
             this.InputCorrelatorModel = new InputCorrelatorModel(this.ScanCountUpdated);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         public ICommand StartScanCommand { get; private set; }

@@ -1,11 +1,10 @@
 ﻿namespace Squalr.Source.Editors.StreamIconEditor
 {
-    using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using Squalr.Source.Api;
     using Squalr.Source.Api.Models;
-    using Squalr.Source.Output;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -65,7 +64,7 @@
 
             this.LoadIcons();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>
