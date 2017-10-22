@@ -12,8 +12,8 @@
     xmlns:view="clr-namespace:SqualrClient.View"
     x:Name="SqualrClientWindow"
     Title="Squalr"
-    Width="1280"
-    Height="840"
+    Width="1028"
+    Height="720"
     x:ClassModifier="internal"
     AllowsTransparency="False"
     DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
@@ -74,9 +74,6 @@
                 <shell:Grid.ColumnDefinitions>
                     <shell:ColumnDefinition Width="Auto" />
                     <shell:ColumnDefinition Width="Auto" />
-                    <shell:ColumnDefinition Width="Auto" />
-                    <shell:ColumnDefinition Width="Auto" />
-                    <shell:ColumnDefinition Width="Auto" />
                 </shell:Grid.ColumnDefinitions>
                 <shell:Image
                     Grid.Column="0"
@@ -84,30 +81,11 @@
                     Height="24"
                     Margin="4"
                     Source="pack://application:,,,/SqualrCore;component/Content/Icons/MainAppIcon.ico" />
-
                 <shell:TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
-                    Text="* "
-                    Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <shell:TextBlock
-                    Grid.Column="2"
-                    VerticalAlignment="Center"
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
                     Text="Squalr" />
-                <shell:TextBlock
-                    Grid.Column="3"
-                    VerticalAlignment="Center"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
-                    Text=" - " />
-                <shell:TextBlock
-                    Grid.Column="4"
-                    VerticalAlignment="Center"
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
-                    Text="{Binding ProjectExplorerViewModel.ProjectFilePath}" />
             </shell:Grid>
             <shell:Menu
                 Grid.Column="1"
@@ -175,22 +153,6 @@
                     Header="File"
                     Style="{StaticResource DropDown}">
                     <shell:MenuItem
-                        Command="{Binding ProjectExplorerViewModel.OpenProjectCommand}"
-                        Header="Open"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}"
-                        Header="Save"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Command="{Binding ProjectExplorerViewModel.ImportProjectCommand}"
-                        Header="Import Project"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Command="{Binding ProjectExplorerViewModel.ExportProjectCommand}"
-                        Header="Export Project"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
                         Command="{Binding MainViewModel.CloseCommand}"
                         CommandParameter="{Binding ElementName=SqualrClientWindow}"
                         Header="Exit"
@@ -225,11 +187,6 @@
                         IsChecked="{Binding ProcessSelectorViewModel.IsVisible, Mode=TwoWay}"
                         Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
-                        Header="Project Explorer"
-                        IsCheckable="True"
-                        IsChecked="{Binding ProjectExplorerViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
                         Header="Property Viewer"
                         IsCheckable="True"
                         IsChecked="{Binding PropertyViewerViewModel.IsVisible, Mode=TwoWay}"
@@ -241,80 +198,30 @@
                         Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
 
+                <!--  View Header  -->
+                <shell:MenuItem
+                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                    Header="Developer"
+                    Style="{StaticResource DropDown}">
+                    <shell:MenuItem
+                        Command="{Binding MainViewModel.LaunchDeveloperToolsCommand}"
+                        Header="Developer Tools"
+                        Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
+                        Command="{Binding MainViewModel.LaunchDeveloperToolsAsAdminCommand}"
+                        Header="Developer Tools (admin)"
+                        Style="{StaticResource menuItemStyle}" />
+                </shell:MenuItem>
+
                 <!--  Layout Header  -->
                 <shell:MenuItem
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                     Header="Layout"
                     Style="{StaticResource DropDown}">
                     <shell:MenuItem
-                        Command="{Binding MainViewModel.ResetLayoutStandardCommand}"
+                        Command="{Binding MainViewModel.ResetLayoutCommand}"
                         CommandParameter="{Binding ., ElementName=dockManager}"
-                        Header="Streamer Layout"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Command="{Binding MainViewModel.ResetLayoutDeveloperCommand}"
-                        CommandParameter="{Binding ., ElementName=dockManager}"
-                        Header="Developer Layout"
-                        Style="{StaticResource menuItemStyle}" />
-                </shell:MenuItem>
-
-                <!--  Tools Header  -->
-                <shell:MenuItem
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Header="Tools"
-                    Style="{StaticResource DropDown}">
-                    <shell:MenuItem
-                        Header="Scan Results"
-                        IsCheckable="True"
-                        IsChecked="{Binding ScanResultsViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Header="Pointer Scan Results"
-                        IsCheckable="True"
-                        IsChecked="{Binding PointerScanResultsViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Header="Snapshot Manager"
-                        IsCheckable="True"
-                        IsChecked="{Binding SnapshotManagerViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Header=".Net Explorer"
-                        IsCheckable="True"
-                        IsChecked="{Binding DotNetExplorerViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                </shell:MenuItem>
-
-                <!--  Scans Header  -->
-                <shell:MenuItem
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Header="Scans"
-                    Style="{StaticResource DropDown}">
-                    <shell:MenuItem
-                        Header="Change Counter"
-                        IsCheckable="True"
-                        IsChecked="{Binding ChangeCounterViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Header="Input Correlator"
-                        IsCheckable="True"
-                        IsChecked="{Binding InputCorrelatorViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Header="Manual Scanner"
-                        IsCheckable="True"
-                        IsChecked="{Binding ManualScannerViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:MenuItem
-                        Header="Label Thresholder"
-                        IsCheckable="True"
-                        IsChecked="{Binding LabelThresholderViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
-                    <shell:Separator />
-                    <shell:MenuItem
-                        Header="Pointer Scanner"
-                        IsCheckable="True"
-                        IsChecked="{Binding PointerScannerViewModel.IsVisible, Mode=TwoWay}"
+                        Header="Reset Window Layout"
                         Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
             </shell:Menu>
@@ -332,40 +239,6 @@
                             Width="16"
                             Height="16"
                             Source="pack://application:,,,/SqualrCore;component/Content/Icons/SelectProcess.png" />
-                    </shell:MenuItem.Header>
-                </shell:MenuItem>
-                <shell:Separator Style="{DynamicResource VerticalSeparator}" />
-                <shell:MenuItem Command="{Binding ProjectExplorerViewModel.OpenProjectCommand}" ToolTip="Open Project">
-                    <shell:MenuItem.Header>
-                        <shell:Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Open.png" />
-                    </shell:MenuItem.Header>
-                </shell:MenuItem>
-                <shell:MenuItem Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}" ToolTip="Save Project">
-                    <shell:MenuItem.Header>
-                        <shell:Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Save.png" />
-                    </shell:MenuItem.Header>
-                </shell:MenuItem>
-                <shell:Separator Style="{DynamicResource VerticalSeparator}" />
-                <shell:MenuItem Command="{Binding SnapshotManagerViewModel.ClearSnapshotsCommand}" ToolTip="New Scan">
-                    <shell:MenuItem.Header>
-                        <shell:Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/New.png" />
-                    </shell:MenuItem.Header>
-                </shell:MenuItem>
-                <shell:MenuItem Command="{Binding ValueCollectorViewModel.CollectValuesCommand}" ToolTip="Collect Values">
-                    <shell:MenuItem.Header>
-                        <shell:Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/CollectValues.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />

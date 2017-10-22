@@ -4,18 +4,16 @@
     using GalaSoft.MvvmLight.Command;
     using Squalr.Properties;
     using Squalr.Source.Scanners.BackgroundScans.Prefilters;
+    using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectExplorer;
     using System;
     using System.Deployment.Application;
-    using System.IO;
-    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
     using Xceed.Wpf.AvalonDock;
-    using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
     /// <summary>
     /// Main view model.
@@ -26,12 +24,7 @@
         /// <summary>
         /// Default layout file for browsing cheats.
         /// </summary>
-        private const String StreamerLayoutResource = "Squalr.Content.StreamerLayout.xml";
-
-        /// <summary>
-        /// Default layout file for browsing cheats.
-        /// </summary>
-        private const String DeveloperLayoutResource = "Squalr.Content.DeveloperLayout.xml";
+        private const String DefaultLayoutResource = "Squalr.Content.DefaultLayout.xml";
 
         /// <summary>
         /// The save file for the docking layout.
@@ -50,17 +43,20 @@
         /// </summary>
         private MainViewModel()
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr started");
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr developer tools started");
 
             // Note: These cannot be async, as the logic to update the layout or window cannot be on a new thread
+            this.DisplayChangeLogCommand = new RelayCommand(() => this.DisplayChangeLog(), () => true);
             this.CloseCommand = new RelayCommand<Window>((window) => this.Close(window), (window) => true);
             this.MaximizeRestoreCommand = new RelayCommand<Window>((window) => this.MaximizeRestore(window), (window) => true);
             this.MinimizeCommand = new RelayCommand<Window>((window) => this.Minimize(window), (window) => true);
-            this.ResetLayoutStandardCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutStandard(dockingManager), (dockingManager) => true);
-            this.ResetLayoutDeveloperCommand = new RelayCommand<DockingManager>((dockingManager) => this.ResetLayoutDeveloper(dockingManager), (dockingManager) => true);
-            this.LoadLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.LoadLayout(dockingManager), (dockingManager) => true);
-            this.DisplayChangeLogCommand = new RelayCommand(() => this.DisplayChangeLog(), () => true);
-            this.SaveLayoutCommand = new RelayCommand<DockingManager>((dockingManager) => this.SaveLayout(dockingManager), (dockingManager) => true);
+
+            this.ResetLayoutCommand = new RelayCommand<DockingManager>((dockingManager)
+                => DockingViewModel.GetInstance().LoadLayoutFromResource(dockingManager, MainViewModel.DefaultLayoutResource), (dockingManager) => true);
+            this.LoadLayoutCommand = new RelayCommand<DockingManager>((dockingManager)
+                => DockingViewModel.GetInstance().LoadLayoutFromFile(dockingManager, MainViewModel.LayoutSaveFile, MainViewModel.DefaultLayoutResource), (dockingManager) => true);
+            this.SaveLayoutCommand = new RelayCommand<DockingManager>((dockingManager)
+                => DockingViewModel.GetInstance().SaveLayout(dockingManager, MainViewModel.LayoutSaveFile), (dockingManager) => true);
 
             Task.Run(() => this.StartBackgroundServices());
         }
@@ -83,7 +79,7 @@
         /// <summary>
         /// Gets the command to reset the current docking layout to the default.
         /// </summary>
-        public ICommand ResetLayoutStandardCommand { get; private set; }
+        public ICommand ResetLayoutCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to reset the current docking layout to the default.
@@ -192,84 +188,6 @@
             View.ChangeLog changeLog = new View.ChangeLog();
             changeLog.Owner = Application.Current.MainWindow;
             changeLog.ShowDialog();
-        }
-
-        /// <summary>
-        /// Loads and deserializes the default layout from the project resources.
-        /// </summary>
-        /// <param name="dockManager">The docking root to which content is loaded.</param>
-        private void ResetLayoutStandard(DockingManager dockManager)
-        {
-            this.LoadLayout(dockManager, resourceName: StreamerLayoutResource);
-        }
-
-        /// <summary>
-        /// Loads and deserializes the default layout from the project resources.
-        /// </summary>
-        /// <param name="dockManager">The docking root to which content is loaded.</param>
-        private void ResetLayoutDeveloper(DockingManager dockManager)
-        {
-            this.LoadLayout(dockManager, resourceName: DeveloperLayoutResource);
-        }
-
-        /// <summary>
-        /// Loads and deserializes the saved layout from disk. If no layout found, the default is loaded from resources.
-        /// </summary>
-        /// <param name="dockManager">The docking root to which content is loaded.</param>
-        /// <param name="resourceName">Resource to load the layout from. This is optional.</param>
-        private void LoadLayout(DockingManager dockManager, String resourceName = null)
-        {
-            // Attempt to load from personal saved layout file
-            if (String.IsNullOrEmpty(resourceName))
-            {
-                if (File.Exists(MainViewModel.LayoutSaveFile))
-                {
-                    try
-                    {
-                        XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-                        serializer.Deserialize(MainViewModel.LayoutSaveFile);
-                        return;
-                    }
-                    catch
-                    {
-                    }
-                }
-
-                // Something went wrong or the file is not present -- use the standard layout
-                resourceName = MainViewModel.StreamerLayoutResource;
-            }
-
-            // Attempt to load layout from resource name
-            try
-            {
-                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
-                {
-                    if (stream != null)
-                    {
-                        XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-                        serializer.Deserialize(stream);
-                    }
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        /// <summary>
-        /// Saves and deserializes the saved layout from disk.
-        /// </summary>
-        /// <param name="dockManager">The docking root to save.</param>
-        private void SaveLayout(DockingManager dockManager)
-        {
-            try
-            {
-                XmlLayoutSerializer serializer = new XmlLayoutSerializer(dockManager);
-                serializer.Serialize(MainViewModel.LayoutSaveFile);
-            }
-            catch
-            {
-            }
         }
     }
     //// End class

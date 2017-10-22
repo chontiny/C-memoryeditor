@@ -140,16 +140,8 @@
     </Compile>
     <Compile Include="View\ViewModelLocator.cs" />
     <Compile Include="View\ViewTemplateSelector.cs" />
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\BrowseHome.xaml">
@@ -253,10 +245,17 @@
       <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
       <Name>SqualrProxy</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Squalr\Squalr.csproj">
+      <Project>{bcc372dd-2823-459d-9594-c16e777ad292}</Project>
+      <Name>Squalr</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>
       <Name>Xceed.Wpf.AvalonDock</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Content\DefaultLayout.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

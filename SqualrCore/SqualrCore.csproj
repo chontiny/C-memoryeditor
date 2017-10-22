@@ -149,7 +149,7 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Source\Docking\MainViewModel.cs" />
+    <Compile Include="Source\Docking\DockingViewModel.cs" />
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
