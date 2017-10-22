@@ -151,6 +151,9 @@
     </Compile>
     <Compile Include="Source\Docking\DockingViewModel.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="View\ChangeLog.xaml.cs">
+      <DependentUpon>ChangeLog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
@@ -206,9 +209,9 @@
     <Compile Include="Source\Editors\TextEditor\TextEditorViewModel.cs" />
     <Compile Include="Source\Editors\ValueEditor\ValueEditorModel.cs" />
     <Compile Include="Source\Editors\ValueEditor\ValueEditorViewModel.cs" />
-    <Compile Include="Source\Engine\AddressResolver\AddressResolver.cs" />
-    <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObject.cs" />
-    <Compile Include="Source\Engine\AddressResolver\DotNet\DotNetObjectCollector.cs" />
+    <Compile Include="Source\Engine\VirtualMachines\AddressResolver.cs" />
+    <Compile Include="Source\Engine\VirtualMachines\DotNet\DotNetObject.cs" />
+    <Compile Include="Source\Engine\VirtualMachines\DotNet\DotNetObjectCollector.cs" />
     <Compile Include="Source\Engine\Architecture\Architecture86_64.cs" />
     <Compile Include="Source\Engine\Architecture\ArchitectureFactory.cs" />
     <Compile Include="Source\Engine\Architecture\ArchitectureTypes.cs" />
@@ -290,7 +293,6 @@
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
     <Compile Include="Source\Engine\SpeedManipulator\ISpeedManipulator.cs" />
     <Compile Include="Source\Engine\Unrandomizer\IUnrandomizer.cs" />
-    <Compile Include="Source\Main\MainViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\DataGridIndexConverter.cs" />
@@ -371,8 +373,8 @@
     <Compile Include="View\ViewTemplateSelector.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Source\Engine\AddressResolver\Java\" />
-    <Folder Include="Source\Engine\AddressResolver\Python\" />
+    <Folder Include="Source\Engine\VirtualMachines\Java\" />
+    <Folder Include="Source\Engine\VirtualMachines\Python\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -551,6 +553,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="View\ChangeLog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\Editors\HotkeyEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

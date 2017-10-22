@@ -3,7 +3,7 @@
     using Controls;
     using Editors.OffsetEditor;
     using Engine;
-    using Engine.AddressResolver;
+    using Engine.VirtualMachines;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;

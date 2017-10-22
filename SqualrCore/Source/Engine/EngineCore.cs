@@ -6,7 +6,11 @@
     using OperatingSystems;
     using Processes;
     using SpeedManipulator;
+    using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Engine.Networks;
+    using SqualrCore.Source.Engine.VirtualMachines;
+    using SqualrCore.Source.Engine.VirtualMachines.DotNet;
+    using SqualrCore.Source.Output;
     using System;
     using System.Threading;
     using Unrandomizer;
@@ -33,6 +37,8 @@
             this.Network = new Network();
             this.Architecture = ArchitectureFactory.GetArchitecture();
             this.Input = new InputManager();
+
+            this.StartBackgroundServices();
         }
 
         /// <summary>
@@ -82,6 +88,19 @@
         public static EngineCore GetInstance()
         {
             return engineCoreInstance.Value;
+        }
+
+        /// <summary>
+        /// Starts useful services that run in the background to assist in various operations.
+        /// </summary>
+        private void StartBackgroundServices()
+        {
+            DotNetObjectCollector.GetInstance().Schedule();
+            AddressResolver.GetInstance().Schedule();
+            AnalyticsService.GetInstance().Start();
+
+            AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background services started");
         }
     }
     //// End interface

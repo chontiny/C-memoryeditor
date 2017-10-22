@@ -8,7 +8,6 @@
     using SqualrCore.Source.Editors.ScriptEditor;
     using SqualrCore.Source.Editors.TextEditor;
     using SqualrCore.Source.Editors.ValueEditor;
-    using SqualrCore.Source.Main;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProcessSelector;
     using SqualrCore.Source.PropertyViewer;
@@ -24,17 +23,6 @@
         /// </summary>
         public ViewModelLocator()
         {
-        }
-
-        /// <summary>
-        /// Gets the Main view model.
-        /// </summary>
-        internal MainViewModel MainViewModel
-        {
-            get
-            {
-                return MainViewModel.GetInstance();
-            }
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace Squalr.View
+﻿namespace SqualrCore.View
 {
     using Source.ChangeLog;
     using System;

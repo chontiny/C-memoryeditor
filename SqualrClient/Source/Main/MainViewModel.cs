@@ -3,18 +3,14 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using SqualrClient.Properties;
-    using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.ChangeLog;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine.AddressResolver;
-    using SqualrCore.Source.Engine.AddressResolver.DotNet;
     using SqualrCore.Source.Output;
     using System;
-    using System.Deployment.Application;
     using System.Diagnostics;
     using System.IO;
     using System.Reflection;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
     using Xceed.Wpf.AvalonDock;
@@ -55,7 +51,7 @@
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr started");
 
             // Note: These cannot be async, as the logic to update the layout or window cannot be on a new thread
-            this.DisplayChangeLogCommand = new RelayCommand(() => this.DisplayChangeLog(), () => true);
+            this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(), () => true);
             this.CloseCommand = new RelayCommand<Window>((window) => this.Close(window), (window) => true);
             this.MaximizeRestoreCommand = new RelayCommand<Window>((window) => this.MaximizeRestore(window), (window) => true);
             this.MinimizeCommand = new RelayCommand<Window>((window) => this.Minimize(window), (window) => true);
@@ -69,8 +65,6 @@
 
             this.LaunchDeveloperToolsCommand = new RelayCommand(() => this.LaunchDeveloperTools(asAdmin: false), () => true);
             this.LaunchDeveloperToolsAsAdminCommand = new RelayCommand(() => this.LaunchDeveloperTools(asAdmin: true), () => true);
-
-            Task.Run(() => this.StartBackgroundServices());
         }
 
         /// <summary>
@@ -128,19 +122,6 @@
         }
 
         /// <summary>
-        /// Starts useful services that run in the background to assist in various operations.
-        /// </summary>
-        private void StartBackgroundServices()
-        {
-            DotNetObjectCollector.GetInstance().Schedule();
-            AddressResolver.GetInstance().Schedule();
-            AnalyticsService.GetInstance().Start();
-
-            AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background services started");
-        }
-
-        /// <summary>
         /// Closes the main window.
         /// </summary>
         /// <param name="window">The window to close.</param>
@@ -179,29 +160,6 @@
         private void Minimize(Window window)
         {
             window.WindowState = WindowState.Minimized;
-        }
-
-        /// <summary>
-        /// Displays the change log to the user if there has been a recent update.
-        /// </summary>
-        private void DisplayChangeLog()
-        {
-            try
-            {
-                if (!ApplicationDeployment.IsNetworkDeployed || !ApplicationDeployment.CurrentDeployment.IsFirstRun)
-                {
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Error displaying change log", ex);
-                return;
-            }
-
-            // View.ChangeLog changeLog = new View.ChangeLog();
-            // changeLog.Owner = Application.Current.MainWindow;
-            // changeLog.ShowDialog();
         }
 
         /// <summary>

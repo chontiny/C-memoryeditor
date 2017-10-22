@@ -3,7 +3,7 @@
     using Engine.AddressResolver.DotNet;
     using GalaSoft.MvvmLight.Command;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine.AddressResolver.DotNet;
+    using SqualrCore.Source.Engine.VirtualMachines.DotNet;
     using SqualrCore.Source.ProjectExplorer;
     using SqualrCore.Source.ProjectExplorer.ProjectItems;
     using System;

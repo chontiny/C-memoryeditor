@@ -8,7 +8,6 @@
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectExplorer;
     using System;
-    using System.Deployment.Application;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
@@ -46,7 +45,6 @@
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr developer tools started");
 
             // Note: These cannot be async, as the logic to update the layout or window cannot be on a new thread
-            this.DisplayChangeLogCommand = new RelayCommand(() => this.DisplayChangeLog(), () => true);
             this.CloseCommand = new RelayCommand<Window>((window) => this.Close(window), (window) => true);
             this.MaximizeRestoreCommand = new RelayCommand<Window>((window) => this.MaximizeRestore(window), (window) => true);
             this.MinimizeCommand = new RelayCommand<Window>((window) => this.Minimize(window), (window) => true);
@@ -116,8 +114,6 @@
         private void StartBackgroundServices()
         {
             SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
-
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background services started");
         }
 
         /// <summary>
@@ -165,29 +161,6 @@
         private void Minimize(Window window)
         {
             window.WindowState = WindowState.Minimized;
-        }
-
-        /// <summary>
-        /// Displays the change log to the user if there has been a recent update.
-        /// </summary>
-        private void DisplayChangeLog()
-        {
-            try
-            {
-                if (!ApplicationDeployment.IsNetworkDeployed || !ApplicationDeployment.CurrentDeployment.IsFirstRun)
-                {
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Error displaying change log", ex);
-                return;
-            }
-
-            View.ChangeLog changeLog = new View.ChangeLog();
-            changeLog.Owner = Application.Current.MainWindow;
-            changeLog.ShowDialog();
         }
     }
     //// End class

@@ -8,11 +8,12 @@
     xmlns:coreView="clr-namespace:SqualrCore.View;assembly=SqualrCore"
     xmlns:docking="clr-namespace:SqualrCore.Source.Docking;assembly=SqualrCore"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:libraryView="clr-namespace:SqualrClient.View.Browse.Library"
     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:view="clr-namespace:SqualrClient.View"
     x:Name="SqualrClientWindow"
     Title="Squalr"
-    Width="1028"
+    Width="960"
     Height="720"
     x:ClassModifier="internal"
     AllowsTransparency="False"
@@ -177,6 +178,11 @@
                     Header="View"
                     Style="{StaticResource DropDown}">
                     <shell:MenuItem
+                        Header="Library"
+                        IsCheckable="True"
+                        IsChecked="{Binding LibraryViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{StaticResource menuItemStyle}" />
+                    <shell:MenuItem
                         Header="Browse"
                         IsCheckable="True"
                         IsChecked="{Binding BrowseViewModel.IsVisible, Mode=TwoWay}"
@@ -283,18 +289,24 @@
                             <coreView:DataTemplateError />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.DataTemplateErrorViewTemplate>
-                    <!--  Process Selector  -->
-                    <view:ViewTemplateSelector.ProcessSelectorViewTemplate>
-                        <shell:DataTemplate>
-                            <coreView:ProcessSelector />
-                        </shell:DataTemplate>
-                    </view:ViewTemplateSelector.ProcessSelectorViewTemplate>
                     <!--  Browse  -->
                     <view:ViewTemplateSelector.BrowseViewTemplate>
                         <shell:DataTemplate>
                             <browseView:BrowseHome />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.BrowseViewTemplate>
+                    <!--  Library  -->
+                    <view:ViewTemplateSelector.LibraryViewTemplate>
+                        <shell:DataTemplate>
+                            <libraryView:LibraryHome />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.LibraryViewTemplate>
+                    <!--  Process Selector  -->
+                    <view:ViewTemplateSelector.ProcessSelectorViewTemplate>
+                        <shell:DataTemplate>
+                            <coreView:ProcessSelector />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.ProcessSelectorViewTemplate>
                     <!--  Property Viewer  -->
                     <view:ViewTemplateSelector.PropertyViewerViewTemplate>
                         <shell:DataTemplate>

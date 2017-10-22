@@ -289,11 +289,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Content\ChangeLog.cs">
-      <DependentUpon>ChangeLog.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Content\Templates\ScriptTemplate.cs">
       <DependentUpon>ScriptTemplate.tt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -310,7 +305,6 @@
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
-    <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
@@ -427,9 +421,6 @@
     </Compile>
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
     <Compile Include="Source\Utils\WebBrowserHelper.cs" />
-    <Compile Include="View\ChangeLog.xaml.cs">
-      <DependentUpon>ChangeLog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Source\Controls\DarkBrushes.cs" />
     <Compile Include="Source\Controls\HexDecTextBox.cs">
       <SubType>Component</SubType>
@@ -448,10 +439,6 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Page Include="View\ChangeLog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\Loaders\SpinnerApple.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -575,10 +562,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Content Include="Content\ChangeLog.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ChangeLog.cs</LastGenOutput>
-    </Content>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

@@ -1,9 +1,12 @@
 ﻿namespace SqualrCore.Source.ChangeLog
 {
     using GalaSoft.MvvmLight;
+    using SqualrCore.Source.Output;
     using System;
+    using System.Deployment.Application;
     using System.Reflection;
     using System.Threading;
+    using System.Windows;
 
     /// <summary>
     /// View model for the Change Log.
@@ -59,6 +62,29 @@
         public static ChangeLogViewModel GetInstance()
         {
             return ChangeLogViewModel.changeLogViewModelInstance.Value;
+        }
+
+        /// <summary>
+        /// Displays the change log to the user if there has been a recent update.
+        /// </summary>
+        public void DisplayChangeLog()
+        {
+            try
+            {
+                if (!ApplicationDeployment.IsNetworkDeployed || !ApplicationDeployment.CurrentDeployment.IsFirstRun)
+                {
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Error displaying change log", ex);
+                return;
+            }
+
+            View.ChangeLog changeLog = new View.ChangeLog();
+            changeLog.Owner = Application.Current.MainWindow;
+            changeLog.ShowDialog();
         }
     }
     //// End class

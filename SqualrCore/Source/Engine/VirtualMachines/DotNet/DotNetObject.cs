@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Engine.AddressResolver.DotNet
+﻿namespace SqualrCore.Source.Engine.VirtualMachines.DotNet
 {
     using System;
     using System.Collections;
