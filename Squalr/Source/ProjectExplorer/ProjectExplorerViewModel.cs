@@ -1,16 +1,17 @@
-﻿namespace SqualrCore.Source.ProjectExplorer
+﻿namespace Squalr.Source.ProjectExplorer
 {
-    using Docking;
-    using Engine;
-    using Engine.OperatingSystems;
     using GalaSoft.MvvmLight.Command;
-    using ProjectItems;
-    using PropertyViewer;
-    using SqualrCore.Properties;
+    using Squalr.Properties;
     using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Docking;
     using SqualrCore.Source.Editors.ScriptEditor;
     using SqualrCore.Source.Editors.ValueEditor;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.PropertyViewer;
     using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -19,7 +20,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Utils.Extensions;
 
     /// <summary>
     /// View model for the Project Explorer.

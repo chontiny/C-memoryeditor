@@ -1,6 +1,6 @@
 ﻿namespace SqualrCore.Source.Utils.TypeConverters
 {
-    using ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.ProjectItems;
     using System;
     using System.ComponentModel;
     using System.Globalization;

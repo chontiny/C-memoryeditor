@@ -5,7 +5,6 @@
     using SqualrCore.Source.Editors.TextEditor;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProcessSelector;
-    using SqualrCore.Source.ProjectExplorer;
     using SqualrCore.Source.PropertyViewer;
     using System;
     using System.Collections.Generic;
@@ -56,11 +55,6 @@
         /// The template for the Hotkey Editor.
         /// </summary>
         public DataTemplate hotkeyEditorViewTemplate;
-
-        /// <summary>
-        /// The template for the Project Explorer.
-        /// </summary>
-        public DataTemplate projectExplorerViewTemplate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
@@ -186,23 +180,6 @@
             {
                 this.hotkeyEditorViewTemplate = value;
                 this.DataTemplates[typeof(HotkeyEditorViewModel)] = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the template for the Project Explorer.
-        /// </summary>
-        public DataTemplate ProjectExplorerViewTemplate
-        {
-            get
-            {
-                return this.projectExplorerViewTemplate;
-            }
-
-            set
-            {
-                this.projectExplorerViewTemplate = value;
-                this.DataTemplates[typeof(ProjectExplorerViewModel)] = value;
             }
         }
 

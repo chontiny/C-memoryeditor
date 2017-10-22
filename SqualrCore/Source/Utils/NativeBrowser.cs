@@ -6,7 +6,7 @@
     /// <summary>
     /// Static class for sending requests to the native browser.
     /// </summary>
-    internal static class NativeBrowser
+    public static class NativeBrowser
     {
         /// <summary>
         /// Opens the url in the native browser.

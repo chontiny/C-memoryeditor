@@ -10,6 +10,7 @@
     using Source.Scanners.PointerScanner;
     using Source.Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.ProjectExplorer;
     using System.Windows;
 
     /// <summary>
@@ -61,6 +62,11 @@
         /// The template for the .Net Explorer.
         /// </summary>
         public DataTemplate dotNetExplorerViewTemplate;
+
+        /// <summary>
+        /// The template for the Project Explorer.
+        /// </summary>
+        public DataTemplate projectExplorerViewTemplate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
@@ -236,6 +242,23 @@
             {
                 this.dotNetExplorerViewTemplate = value;
                 this.DataTemplates[typeof(DotNetExplorerViewModel)] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the template for the Project Explorer.
+        /// </summary>
+        public DataTemplate ProjectExplorerViewTemplate
+        {
+            get
+            {
+                return this.projectExplorerViewTemplate;
+            }
+
+            set
+            {
+                this.projectExplorerViewTemplate = value;
+                this.DataTemplates[typeof(ProjectExplorerViewModel)] = value;
             }
         }
     }

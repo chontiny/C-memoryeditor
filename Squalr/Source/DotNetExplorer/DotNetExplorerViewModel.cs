@@ -2,10 +2,10 @@
 {
     using Engine.AddressResolver.DotNet;
     using GalaSoft.MvvmLight.Command;
+    using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.VirtualMachines.DotNet;
-    using SqualrCore.Source.ProjectExplorer;
-    using SqualrCore.Source.ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.ProjectItems;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

@@ -4,7 +4,7 @@
     using CSScriptLibrary;
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Output;
-    using SqualrCore.Source.ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
     using System;
     using System.IO;

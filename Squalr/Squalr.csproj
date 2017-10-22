@@ -318,6 +318,8 @@
     <Compile Include="Source\Mvvm\Converters\ListViewIndexConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
     <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
@@ -428,6 +430,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\InputCorrelator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProjectExplorer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

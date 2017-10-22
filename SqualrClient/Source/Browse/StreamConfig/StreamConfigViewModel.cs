@@ -7,7 +7,7 @@
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
-    using SqualrCore.Source.ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.ProjectItems;
     using System;
     using System.Collections.Generic;
     using System.Linq;

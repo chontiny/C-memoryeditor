@@ -1,11 +1,12 @@
-﻿namespace SqualrCore.Source.ProjectExplorer
+﻿namespace Squalr.Source.ProjectExplorer
 {
     using Controls;
     using Microsoft.Win32;
-    using Output;
-    using ProjectItems;
-    using SqualrCore.Properties;
+    using Squalr.Properties;
     using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -14,7 +15,6 @@
     using System.Runtime.Serialization.Json;
     using System.Threading.Tasks;
     using System.Windows;
-    using Utils.Extensions;
 
     /// <summary>
     /// View model for the Project Explorer.

@@ -1,16 +1,15 @@
-﻿namespace SqualrCore.Source.ProjectExplorer.ProjectItems
+﻿namespace SqualrCore.Source.ProjectItems
 {
     using System;
     using System.Runtime.Serialization;
 
     [DataContract]
-    public class JavaItem : AddressItem
+    public class DotNetItem : AddressItem
     {
-        public JavaItem()
+        public DotNetItem(String name, Type type, String identifier)
         {
 
         }
-
 
         protected override IntPtr ResolveAddress()
         {

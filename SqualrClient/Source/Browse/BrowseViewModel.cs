@@ -10,6 +10,7 @@
     using SqualrClient.Source.Browse.TwitchLogin;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;

@@ -9,7 +9,6 @@
     using SqualrCore.Source.Editors.ValueEditor;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProcessSelector;
-    using SqualrCore.Source.ProjectExplorer;
     using SqualrCore.Source.PropertyViewer;
 
     /// <summary>
@@ -55,17 +54,6 @@
             get
             {
                 return ProcessSelectorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Project Explorer view model.
-        /// </summary>
-        public ProjectExplorerViewModel ProjectExplorerViewModel
-        {
-            get
-            {
-                return ProjectExplorerViewModel.GetInstance();
             }
         }
 

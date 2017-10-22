@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.ProjectExplorer.ProjectItems
+﻿namespace SqualrCore.Source.ProjectItems
 {
     using Controls;
     using Editors.ScriptEditor;
@@ -114,7 +114,7 @@
                 Task.Run(() => this.CompiledScript = this.ScriptManager?.CompileScript(value));
 
                 this.script = value;
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
         }
 
@@ -135,7 +135,7 @@
 
                 this.compiledScript = value;
 
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
         }
 
@@ -160,10 +160,10 @@
 
                 this.isStreamDisabled = value;
 
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.IsStreamDisabled));
                 this.NotifyPropertyChanged(nameof(this.Icon));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -188,9 +188,9 @@
 
                 this.cooldown = value;
 
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Cooldown));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -215,9 +215,9 @@
 
                 this.duration = value;
 
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Duration));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -244,7 +244,7 @@
 
                 this.NotifyPropertyChanged(nameof(this.StreamIconName));
                 this.NotifyPropertyChanged(nameof(this.Icon));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -284,7 +284,7 @@
                 this.NotifyPropertyChanged(nameof(this.CurrentCooldown));
                 this.NotifyPropertyChanged(nameof(this.IsEnabled));
                 this.NotifyPropertyChanged(nameof(this.CooldownProgress));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -304,7 +304,7 @@
                 this.currentDuration = value;
                 this.NotifyPropertyChanged(nameof(this.CurrentDuration));
                 this.NotifyPropertyChanged(nameof(this.DurationProgress));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 

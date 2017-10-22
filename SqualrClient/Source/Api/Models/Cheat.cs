@@ -2,7 +2,7 @@
 {
     using SqualrClient.Properties;
     using SqualrCore.Source.Output;
-    using SqualrCore.Source.ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.IO;

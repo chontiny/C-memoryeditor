@@ -306,15 +306,13 @@
     <Compile Include="Source\Output\OutputViewModel.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorTask.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\AddressItem.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItem.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\JavaItem.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItem.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItem.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemHotkey.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItems\ScriptItem.cs" />
+    <Compile Include="Source\ProjectItems\AddressItem.cs" />
+    <Compile Include="Source\ProjectItems\DotNetItem.cs" />
+    <Compile Include="Source\ProjectItems\JavaItem.cs" />
+    <Compile Include="Source\ProjectItems\PointerItem.cs" />
+    <Compile Include="Source\ProjectItems\ProjectItem.cs" />
+    <Compile Include="Source\ProjectItems\ProjectItemHotkey.cs" />
+    <Compile Include="Source\ProjectItems\ScriptItem.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
     <Compile Include="Source\Scripting\Graphics\GraphicsCore.cs" />
@@ -610,10 +608,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\ProcessSelector.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\ProjectExplorer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

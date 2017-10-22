@@ -2,7 +2,7 @@
 {
     using Source.Controls;
     using Source.Editors.ValueEditor;
-    using Source.ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.ProjectItems;
     using System;
     using System.Windows;
 

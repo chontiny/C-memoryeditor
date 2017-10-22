@@ -12,6 +12,7 @@
     using Source.Scanners.ValueCollector;
     using Source.Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.ProjectExplorer;
 
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -100,6 +101,17 @@
             get
             {
                 return PointerScannerViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Project Explorer view model.
+        /// </summary>
+        public ProjectExplorerViewModel ProjectExplorerViewModel
+        {
+            get
+            {
+                return ProjectExplorerViewModel.GetInstance();
             }
         }
 

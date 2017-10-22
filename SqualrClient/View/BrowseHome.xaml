@@ -119,7 +119,7 @@
                                     Width="16"
                                     Height="16"
                                     Margin="0,0,4,0"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Icons/Coin.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/Coin.png" />
                                 <Grid>
                                     <TextBlock
                                         Foreground="White"
@@ -170,7 +170,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Icons/Previous.png">
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Previous.png">
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Style.Triggers>
@@ -193,7 +193,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Icons/Next.png">
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Next.png">
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Style.Triggers>

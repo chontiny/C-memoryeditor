@@ -5,9 +5,9 @@
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.ProjectExplorer;
-    using SqualrCore.Source.ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;

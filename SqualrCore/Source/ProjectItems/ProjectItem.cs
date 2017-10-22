@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.ProjectExplorer.ProjectItems
+﻿namespace SqualrCore.Source.ProjectItems
 {
     using Controls;
     using Editors.HotkeyEditor;
@@ -103,9 +103,9 @@
                 }
 
                 this.name = value;
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Name));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -131,9 +131,9 @@
                 }
 
                 this.description = value;
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Description));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -157,9 +157,9 @@
                 }
 
                 this.guid = value;
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Guid));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -185,9 +185,9 @@
 
                 this.hotkey = value;
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.HotKey));
-                ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -223,7 +223,7 @@
                     }
 
                     this.NotifyPropertyChanged(nameof(this.IsActivated));
-                    ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+                    // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
                 }
             }
         }

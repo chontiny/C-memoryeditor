@@ -401,6 +401,12 @@
                             <coreView:DataTemplateError />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.DataTemplateErrorViewTemplate>
+                    <!--  Project Explorer  -->
+                    <view:ViewTemplateSelector.ProjectExplorerViewTemplate>
+                        <shell:DataTemplate>
+                            <view:ProjectExplorer />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.ProjectExplorerViewTemplate>
                     <!--  Change Counter  -->
                     <view:ViewTemplateSelector.ChangeCounterViewTemplate>
                         <shell:DataTemplate>
@@ -467,12 +473,6 @@
                             <coreView:ProcessSelector />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.ProcessSelectorViewTemplate>
-                    <!--  Project Explorer  -->
-                    <view:ViewTemplateSelector.ProjectExplorerViewTemplate>
-                        <shell:DataTemplate>
-                            <coreView:ProjectExplorer />
-                        </shell:DataTemplate>
-                    </view:ViewTemplateSelector.ProjectExplorerViewTemplate>
                     <!--  Property Viewer  -->
                     <view:ViewTemplateSelector.PropertyViewerViewTemplate>
                         <shell:DataTemplate>

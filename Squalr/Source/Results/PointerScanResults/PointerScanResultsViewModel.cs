@@ -3,10 +3,10 @@
     using GalaSoft.MvvmLight.Command;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.ProjectExplorer;
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.ProjectExplorer;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;

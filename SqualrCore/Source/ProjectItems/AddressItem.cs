@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.ProjectExplorer.ProjectItems
+﻿namespace SqualrCore.Source.ProjectItems
 {
     using Controls;
     using Engine;
@@ -102,7 +102,7 @@
                 // Clear our current address value
                 this.addressValue = null;
 
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.DataType));
             }
         }
@@ -148,7 +148,7 @@
                 }
 
                 this.isValueHex = value;
-                ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.IsValueHex));
             }
         }
