@@ -27,6 +27,17 @@
         }
 
         /// <summary>
+        /// Gets the Settings view model.
+        /// </summary>
+        public SettingsViewModel SettingsViewModel
+        {
+            get
+            {
+                return SettingsViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
         /// Gets the Main view model.
         /// </summary>
         public MainViewModel MainViewModel
@@ -133,17 +144,6 @@
             get
             {
                 return DotNetExplorerViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Settings view model.
-        /// </summary>
-        public SettingsViewModel SettingsViewModel
-        {
-            get
-            {
-                return SettingsViewModel.GetInstance();
             }
         }
 

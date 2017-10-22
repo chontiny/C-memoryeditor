@@ -1,6 +1,7 @@
 ﻿namespace SqualrClient.View
 {
     using Source.Main;
+    using SqualrClient.Properties;
     using SqualrClient.Source.Browse;
     using SqualrClient.Source.Browse.Library;
     using SqualrClient.Source.Browse.Store;
@@ -19,6 +20,17 @@
         /// </summary>
         public ViewModelLocator()
         {
+        }
+
+        /// <summary>
+        /// Gets the Settings view model.
+        /// </summary>
+        public SettingsViewModel SettingsViewModel
+        {
+            get
+            {
+                return SettingsViewModel.GetInstance();
+            }
         }
 
         /// <summary>

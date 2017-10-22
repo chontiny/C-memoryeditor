@@ -1,6 +1,5 @@
 ﻿namespace SqualrCore.View
 {
-    using SqualrCore.Properties;
     using SqualrCore.Source.Editors.HotkeyEditor;
     using SqualrCore.Source.Editors.ScriptEditor;
     using SqualrCore.Source.Editors.TextEditor;
@@ -102,23 +101,6 @@
             {
                 this.propertyViewerViewTemplate = value;
                 this.DataTemplates[typeof(PropertyViewerViewModel)] = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the template for the Settings.
-        /// </summary>
-        public DataTemplate SettingsViewTemplate
-        {
-            get
-            {
-                return this.settingsViewTemplate;
-            }
-
-            set
-            {
-                this.settingsViewTemplate = value;
-                this.DataTemplates[typeof(SettingsViewModel)] = value;
             }
         }
 

@@ -1,6 +1,5 @@
 ﻿namespace SqualrCore.View
 {
-    using SqualrCore.Properties;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.ChangeLog;
     using SqualrCore.Source.Docking;
@@ -78,17 +77,6 @@
             get
             {
                 return PropertyViewerViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Settings view model.
-        /// </summary>
-        internal SettingsViewModel SettingsViewModel
-        {
-            get
-            {
-                return SettingsViewModel.GetInstance();
             }
         }
 

@@ -181,7 +181,6 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Properties\SettingsViewModel.cs" />
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />
     <Compile Include="Source\ActionScheduler\ScheduledTask.cs" />

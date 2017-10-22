@@ -59,8 +59,5 @@
     <Setting Name="IsUserMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="AccessTokens" Type="System.String" Scope="User">
-      <Value Profile="(Default)">{}</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

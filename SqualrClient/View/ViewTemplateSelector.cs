@@ -1,5 +1,6 @@
 ﻿namespace SqualrClient.View
 {
+    using SqualrClient.Properties;
     using SqualrClient.Source.Browse;
     using SqualrClient.Source.Browse.Library;
     using SqualrClient.Source.Browse.StreamConfig;
@@ -42,6 +43,23 @@
         /// </summary>
         public ViewTemplateSelector() : base()
         {
+        }
+
+        /// <summary>
+        /// Gets or sets the template for the Settings.
+        /// </summary>
+        public DataTemplate SettingsViewTemplate
+        {
+            get
+            {
+                return this.settingsViewTemplate;
+            }
+
+            set
+            {
+                this.settingsViewTemplate = value;
+                this.DataTemplates[typeof(SettingsViewModel)] = value;
+            }
         }
 
         /// <summary>

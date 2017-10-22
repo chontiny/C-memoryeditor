@@ -9,6 +9,7 @@
     using Source.Scanners.ManualScanner;
     using Source.Scanners.PointerScanner;
     using Source.Snapshots;
+    using Squalr.Properties;
     using System.Windows;
 
     /// <summary>
@@ -66,6 +67,23 @@
         /// </summary>
         public ViewTemplateSelector()
         {
+        }
+
+        /// <summary>
+        /// Gets or sets the template for the Settings.
+        /// </summary>
+        public DataTemplate SettingsViewTemplate
+        {
+            get
+            {
+                return this.settingsViewTemplate;
+            }
+
+            set
+            {
+                this.settingsViewTemplate = value;
+                this.DataTemplates[typeof(SettingsViewModel)] = value;
+            }
         }
 
         /// <summary>
