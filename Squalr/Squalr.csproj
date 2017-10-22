@@ -68,7 +68,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Content\Icons\MainAppIcon.ico</ApplicationIcon>
+    <ApplicationIcon>Content\Images\AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -316,7 +316,6 @@
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\Controls\RichTextBoxHelper.cs" />
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
-    <Compile Include="Content\Images.cs" />
     <Compile Include="Source\Controls\SortedCategory.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Utils\DataStructures\TtlCache.cs" />
@@ -442,10 +441,6 @@
     <Compile Include="View\ManualScanner.xaml.cs">
       <DependentUpon>ManualScanner.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Source\ProcessSelector\ProcessSelectorTask.cs" />
-    <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
     <Compile Include="View\ViewTemplateSelector.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
@@ -553,10 +548,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\ProcessSelector.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\Style\DropDownAutoClose.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -584,44 +575,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Resource Include="Content\Icons\Coin.png" />
-    <Resource Include="Content\Icons\Next.png" />
-    <Resource Include="Content\Icons\Previous.png" />
-    <Resource Include="Content\Icons\Script.png" />
-    <Resource Include="Content\Icons\BlueBlocks1.png" />
-    <Resource Include="Content\Icons\BlueBlocks2.png" />
-    <Resource Include="Content\Icons\BlueBlocks4.png" />
-    <Resource Include="Content\Icons\MainAppIcon.ico" />
     <Content Include="Content\ChangeLog.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ChangeLog.cs</LastGenOutput>
     </Content>
-    <Resource Include="Content\Icons\Connected.png" />
-    <Resource Include="Content\Icons\Disconnected.png" />
-    <Resource Include="Content\Icons\Connect.png" />
-    <Resource Include="Content\Icons\Curse.png" />
-    <Resource Include="Content\Icons\Heart.png" />
-    <Resource Include="Content\Icons\Cog.png" />
-    <Resource Include="Content\Icons\Glitch.png" />
-    <Content Include="Content\Icons\MainIcon.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Resource Include="Content\Icons\MainIconSmall.ico" />
-    <Resource Include="Content\Icons\OrangeBlocks1.png" />
-    <Resource Include="Content\Icons\OrangeBlocks2.png" />
-    <Resource Include="Content\Icons\OrangeBlocks4.png" />
-    <Resource Include="Content\Icons\BlueBlocks8.png" />
-    <Resource Include="Content\Icons\OrangeBlocks8.png" />
-    <Resource Include="Content\Icons\PurpleBlocks1.png" />
-    <Resource Include="Content\Icons\PurpleBlocks2.png" />
-    <Resource Include="Content\Icons\PurpleBlocks4.png" />
-    <Resource Include="Content\Icons\PurpleBlocks8.png" />
-    <Resource Include="Content\Icons\Redo.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Content\CSharp.xshd" />
+    <Content Include="Content\Images\AppIcon.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Templates\ScriptTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
@@ -699,50 +664,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Resource Include="Content\Icons\SelectProcess.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Content\Icons\Cancel.png" />
-    <Resource Include="Content\Icons\Changed.png" />
-    <Resource Include="Content\Icons\CollectValues.png" />
-    <Resource Include="Content\Icons\Decreased.png" />
-    <Resource Include="Content\Icons\DownArrows.png" />
-    <Resource Include="Content\Icons\ENotation.png" />
-    <Resource Include="Content\Icons\Equal.png" />
-    <Resource Include="Content\Icons\GreaterThan.png" />
-    <Resource Include="Content\Icons\GreaterThanOrEqual.png" />
-    <Resource Include="Content\Icons\Home.png" />
-    <Resource Include="Content\Icons\Increased.png" />
-    <Resource Include="Content\Icons\Intersection.png" />
-    <Resource Include="Content\Icons\Invert.png" />
-    <Resource Include="Content\Icons\LeftArrow.png" />
-    <Resource Include="Content\Icons\LessThan.png" />
-    <Resource Include="Content\Icons\LessThanOrEqual.png" />
-    <Resource Include="Content\Icons\LogicalAnd.png" />
-    <Resource Include="Content\Icons\LogicalOr.png" />
-    <Resource Include="Content\Icons\Merge.png" />
-    <Resource Include="Content\Icons\MinusX.png" />
-    <Resource Include="Content\Icons\MoveDown.png" />
-    <Resource Include="Content\Icons\MoveLeft.png" />
-    <Resource Include="Content\Icons\MoveRight.png" />
-    <Resource Include="Content\Icons\MoveUp.png" />
-    <Resource Include="Content\Icons\Negation.png" />
-    <Resource Include="Content\Icons\New.png" />
-    <Resource Include="Content\Icons\NextScan.png" />
-    <Resource Include="Content\Icons\NotEqual.png" />
-    <Resource Include="Content\Icons\Open.png" />
-    <Resource Include="Content\Icons\PlusX.png" />
-    <Resource Include="Content\Icons\RightArrow.png" />
-    <Resource Include="Content\Icons\Save.png" />
-    <Resource Include="Content\Icons\Stop.png" />
-    <Resource Include="Content\Icons\Unchanged.png" />
-    <Resource Include="Content\Icons\Undo.png" />
-    <Resource Include="Content\Icons\Union.png" />
-    <Resource Include="Content\Icons\UnknownValue.png" />
-    <Resource Include="Content\Icons\X.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
@@ -759,17 +681,10 @@
   <ItemGroup>
     <FileAssociation Include=".Hax">
       <Visible>False</Visible>
-      <Description>Ana Cheat File</Description>
+      <Description>Squalr Cheat File</Description>
       <Progid>420</Progid>
-      <DefaultIcon>Content\Icons\MainIcon.ico</DefaultIcon>
+      <DefaultIcon>Content\Images\AppIcon.ico</DefaultIcon>
     </FileAssociation>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Content\Icons\Maximize.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Content\Icons\LeftArrows.png" />
-    <Resource Include="Content\Icons\RightArrows.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Content\DefaultLayout.xml" />

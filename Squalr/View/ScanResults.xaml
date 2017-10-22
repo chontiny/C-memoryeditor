@@ -35,7 +35,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Increased.png"
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Increased.png"
                             ToolTip="Add Selected Items" />
                     </MenuItem.Header>
                 </MenuItem>
@@ -80,7 +80,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/BlueBlocks1.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/BlueBlocks1.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -99,7 +99,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/BlueBlocks2.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/BlueBlocks2.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -118,7 +118,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/BlueBlocks4.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/BlueBlocks4.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -137,7 +137,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/BlueBlocks8.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/BlueBlocks8.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -156,7 +156,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/PurpleBlocks1.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/PurpleBlocks1.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -175,7 +175,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/PurpleBlocks2.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/PurpleBlocks2.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -194,7 +194,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/PurpleBlocks4.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/PurpleBlocks4.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -213,7 +213,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/PurpleBlocks8.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/PurpleBlocks8.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -232,7 +232,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/OrangeBlocks4.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/OrangeBlocks4.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -251,7 +251,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/Squalr;component/Content/Icons/OrangeBlocks8.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/OrangeBlocks8.png" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
@@ -374,7 +374,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/LeftArrows.png"
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/LeftArrows.png"
                                 ToolTip="First Page" />
                         </MenuItem.Header>
                     </MenuItem>
@@ -383,7 +383,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/LeftArrow.png"
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/LeftArrow.png"
                                 ToolTip="Previous Page" />
                         </MenuItem.Header>
                     </MenuItem>
@@ -403,7 +403,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/RightArrow.png"
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrow.png"
                                 ToolTip="Next Page" />
                         </MenuItem.Header>
                     </MenuItem>
@@ -412,7 +412,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/RightArrows.png"
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrows.png"
                                 ToolTip="Last Page" />
                         </MenuItem.Header>
                     </MenuItem>

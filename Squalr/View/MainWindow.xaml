@@ -82,7 +82,7 @@
                     Width="24"
                     Height="24"
                     Margin="4"
-                    Source="pack://application:,,,/SqualrCore;component/Content/Icons/MainAppIcon.ico" />
+                    Source="pack://application:,,,/Squalr;component/Content/Images/AppIcon.ico" />
 
                 <shell:TextBlock
                     Grid.Column="1"
@@ -122,7 +122,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Decreased.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Decreased.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem
@@ -135,7 +135,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Maximize.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Maximize.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem
@@ -148,7 +148,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/X.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/X.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
             </shell:Menu>
@@ -325,7 +325,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/SelectProcess.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/SelectProcess.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
@@ -334,7 +334,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Open.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Open.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}" ToolTip="Save Project">
@@ -342,7 +342,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Save.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Save.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
@@ -351,7 +351,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/New.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/New.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem Command="{Binding ValueCollectorViewModel.CollectValuesCommand}" ToolTip="Collect Values">
@@ -359,7 +359,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/CollectValues.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/CollectValues.png" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
@@ -398,10 +398,16 @@
             <!--  All Dockable Windows  -->
             <avalonDock:DockingManager.LayoutItemTemplateSelector>
                 <view:ViewTemplateSelector>
+                    <!--  Error Message When Missing Data Template (KEEP AS FIRST IN THIS LIST)  -->
+                    <view:ViewTemplateSelector.DataTemplateErrorViewTemplate>
+                        <shell:DataTemplate>
+                            <coreView:DataTemplateError />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.DataTemplateErrorViewTemplate>
                     <!--  Process Selector  -->
                     <view:ViewTemplateSelector.ProcessSelectorViewTemplate>
                         <shell:DataTemplate>
-                            <view:ProcessSelector />
+                            <coreView:ProcessSelector />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.ProcessSelectorViewTemplate>
                     <!--  Change Counter  -->

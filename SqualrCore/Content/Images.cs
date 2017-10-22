@@ -333,7 +333,7 @@
         /// <summary>
         /// The base path for image content.
         /// </summary>
-        private const String ImageBasePath = "pack://application:,,,/SqualrCore;component/Content/Icons/";
+        private const String ImageBasePath = "pack://application:,,,/SqualrCore;component/Content/Images/";
     }
     //// End class
 }

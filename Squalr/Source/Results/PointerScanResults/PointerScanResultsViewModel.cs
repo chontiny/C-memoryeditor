@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Results.PointerScanResults
 {
-    using Content;
     using GalaSoft.MvvmLight.Command;
     using Snapshots;
     using Squalr.Properties;
+    using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.ProjectExplorer;

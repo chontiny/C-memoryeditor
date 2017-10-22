@@ -27,7 +27,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/RightArrow.png" />
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrow.png" />
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem Command="{Binding StopScanCommand}" ToolTip="Stop Scan">
@@ -35,7 +35,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/Stop.png" />
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/Stop.png" />
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
@@ -44,7 +44,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/Increased.png" />
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/Increased.png" />
                         </MenuItem.Header>
                     </MenuItem>
                 </Menu>
@@ -85,7 +85,7 @@
                                                 <Image
                                                     Width="16"
                                                     Height="16"
-                                                    Source="pack://application:,,,/Squalr;component/Content/Icons/X.png" />
+                                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/X.png" />
                                             </MenuItem.Header>
                                         </MenuItem>
                                     </Menu>

@@ -9,8 +9,7 @@
     using Source.Scanners.ManualScanner;
     using Source.Scanners.PointerScanner;
     using Source.Snapshots;
-    using Squalr.Properties;
-    using System;
+    using SqualrCore.Source.ProjectExplorer;
     using System.Windows;
 
     /// <summary>
@@ -18,6 +17,56 @@
     /// </summary>
     internal class ViewTemplateSelector : SqualrCore.View.ViewTemplateSelector
     {
+        /// <summary>
+        /// The template for the Change Counter.
+        /// </summary>
+        public DataTemplate changeCounterViewTemplate;
+
+        /// <summary>
+        /// The template for the Input Correlator.
+        /// </summary>
+        public DataTemplate inputCorrelatorViewTemplate;
+
+        /// <summary>
+        /// The template for the Label Thresholder.
+        /// </summary>
+        public DataTemplate labelThresholderViewTemplate;
+
+        /// <summary>
+        /// The template for the Manual Scanner.
+        /// </summary>
+        public DataTemplate manualScannerViewTemplate;
+
+        /// <summary>
+        /// The template for the Pointer Scanner.
+        /// </summary>
+        public DataTemplate pointerScannerViewTemplate;
+
+        /// <summary>
+        /// The template for the Snapshot Manager.
+        /// </summary>
+        public DataTemplate snapshotManagerViewTemplate;
+
+        /// <summary>
+        /// The template for the Scan Results.
+        /// </summary>
+        public DataTemplate scanResultsViewTemplate;
+
+        /// <summary>
+        /// The template for the Pointer Scan Results.
+        /// </summary>
+        public DataTemplate pointerScanResultsViewTemplate;
+
+        /// <summary>
+        /// The template for the .Net Explorer.
+        /// </summary>
+        public DataTemplate dotNetExplorerViewTemplate;
+
+        /// <summary>
+        /// The template for the Project Explorer.
+        /// </summary>
+        public DataTemplate projectExplorerViewTemplate;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
         /// </summary>
@@ -28,103 +77,171 @@
         /// <summary>
         /// Gets or sets the template for the Change Counter.
         /// </summary>
-        public DataTemplate ChangeCounterViewTemplate { get; set; }
+        public DataTemplate ChangeCounterViewTemplate
+        {
+            get
+            {
+                return this.changeCounterViewTemplate;
+            }
+
+            set
+            {
+                this.changeCounterViewTemplate = value;
+                this.DataTemplates[typeof(ChangeCounterViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Input Correlator.
         /// </summary>
-        public DataTemplate InputCorrelatorViewTemplate { get; set; }
+        public DataTemplate InputCorrelatorViewTemplate
+        {
+            get
+            {
+                return this.inputCorrelatorViewTemplate;
+            }
+
+            set
+            {
+                this.inputCorrelatorViewTemplate = value;
+                this.DataTemplates[typeof(InputCorrelatorViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Label Thresholder.
         /// </summary>
-        public DataTemplate LabelThresholderViewTemplate { get; set; }
+        public DataTemplate LabelThresholderViewTemplate
+        {
+            get
+            {
+                return this.labelThresholderViewTemplate;
+            }
+
+            set
+            {
+                this.labelThresholderViewTemplate = value;
+                this.DataTemplates[typeof(LabelThresholderViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Manual Scanner.
         /// </summary>
-        public DataTemplate ManualScannerViewTemplate { get; set; }
+        public DataTemplate ManualScannerViewTemplate
+        {
+            get
+            {
+                return this.manualScannerViewTemplate;
+            }
+
+            set
+            {
+                this.manualScannerViewTemplate = value;
+                this.DataTemplates[typeof(ManualScannerViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Pointer Scanner.
         /// </summary>
-        public DataTemplate PointerScannerViewTemplate { get; set; }
+        public DataTemplate PointerScannerViewTemplate
+        {
+            get
+            {
+                return this.pointerScannerViewTemplate;
+            }
+
+            set
+            {
+                this.pointerScannerViewTemplate = value;
+                this.DataTemplates[typeof(PointerScannerViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Snapshot Manager.
         /// </summary>
-        public DataTemplate SnapshotManagerViewTemplate { get; set; }
+        public DataTemplate SnapshotManagerViewTemplate
+        {
+            get
+            {
+                return this.snapshotManagerViewTemplate;
+            }
+
+            set
+            {
+                this.snapshotManagerViewTemplate = value;
+                this.DataTemplates[typeof(SnapshotManagerViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Scan Results.
         /// </summary>
-        public DataTemplate ScanResultsViewTemplate { get; set; }
+        public DataTemplate ScanResultsViewTemplate
+        {
+            get
+            {
+                return this.scanResultsViewTemplate;
+            }
+
+            set
+            {
+                this.scanResultsViewTemplate = value;
+                this.DataTemplates[typeof(ScanResultsViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Pointer Scan Results.
         /// </summary>
-        public DataTemplate PointerScanResultsViewTemplate { get; set; }
+        public DataTemplate PointerScanResultsViewTemplate
+        {
+            get
+            {
+                return this.pointerScanResultsViewTemplate;
+            }
+
+            set
+            {
+                this.pointerScanResultsViewTemplate = value;
+                this.DataTemplates[typeof(PointerScanResultsViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the .Net Explorer.
         /// </summary>
-        public DataTemplate DotNetExplorerViewTemplate { get; set; }
+        public DataTemplate DotNetExplorerViewTemplate
+        {
+            get
+            {
+                return this.dotNetExplorerViewTemplate;
+            }
+
+            set
+            {
+                this.dotNetExplorerViewTemplate = value;
+                this.DataTemplates[typeof(DotNetExplorerViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Project Explorer.
         /// </summary>
-        public DataTemplate ProjectExplorerViewTemplate { get; set; }
-
-        /// <summary>
-        /// Returns the required template to display the given view model.
-        /// </summary>
-        /// <param name="item">The view model.</param>
-        /// <param name="container">The dependency object.</param>
-        /// <returns>The template associated with the provided view model.</returns>
-        public override DataTemplate SelectTemplate(Object item, DependencyObject container)
+        public DataTemplate ProjectExplorerViewTemplate
         {
-            if (item is ChangeCounterViewModel)
+            get
             {
-                return this.ChangeCounterViewTemplate;
-            }
-            else if (item is InputCorrelatorViewModel)
-            {
-                return this.InputCorrelatorViewTemplate;
-            }
-            else if (item is LabelThresholderViewModel)
-            {
-                return this.LabelThresholderViewTemplate;
-            }
-            else if (item is ManualScannerViewModel)
-            {
-                return this.ManualScannerViewTemplate;
-            }
-            else if (item is PointerScannerViewModel)
-            {
-                return this.PointerScannerViewTemplate;
-            }
-            else if (item is SnapshotManagerViewModel)
-            {
-                return this.SnapshotManagerViewTemplate;
-            }
-            else if (item is ScanResultsViewModel)
-            {
-                return this.ScanResultsViewTemplate;
-            }
-            else if (item is PointerScanResultsViewModel)
-            {
-                return this.PointerScanResultsViewTemplate;
-            }
-            else if (item is DotNetExplorerViewModel)
-            {
-                return this.DotNetExplorerViewTemplate;
-            }
-            else if (item is SettingsViewModel)
-            {
-                return this.SettingsViewTemplate;
+                return this.projectExplorerViewTemplate;
             }
 
-            return base.SelectTemplate(item, container);
+            set
+            {
+                this.projectExplorerViewTemplate = value;
+                this.DataTemplates[typeof(ProjectExplorerViewModel)] = value;
+            }
         }
     }
     //// End class

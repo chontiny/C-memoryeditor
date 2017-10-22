@@ -138,7 +138,7 @@
                                         <Image
                                             Width="16"
                                             Height="16"
-                                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Increased.png">
+                                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Increased.png">
                                             <Image.Style>
                                                 <Style TargetType="Image">
                                                     <Style.Triggers>

@@ -150,6 +150,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Source\Docking\DockingViewModel.cs" />
+    <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
@@ -437,9 +438,6 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ChangeLog.cs</LastGenOutput>
     </Content>
-    <Content Include="Content\Icons\MainIcon.ico">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\Templates\CodeInjectionTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>
@@ -453,74 +451,72 @@
       <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
     </Content>
     <EmbeddedResource Include="Content\StreamerLayout.xml" />
-    <Resource Include="Content\Icons\X.png" />
-    <Resource Include="Content\Icons\UnknownValue.png" />
-    <Resource Include="Content\Icons\Union.png" />
-    <Resource Include="Content\Icons\Undo.png" />
-    <Resource Include="Content\Icons\Unchanged.png" />
-    <Resource Include="Content\Icons\Stop.png" />
-    <Resource Include="Content\Icons\SelectProcess.png" />
-    <Resource Include="Content\Icons\Script.png" />
-    <Resource Include="Content\Icons\Save.png" />
-    <Resource Include="Content\Icons\RightArrows.png" />
-    <Resource Include="Content\Icons\RightArrow.png" />
-    <Resource Include="Content\Icons\Redo.png" />
-    <Resource Include="Content\Icons\PurpleBlocks8.png" />
-    <Resource Include="Content\Icons\PurpleBlocks4.png" />
-    <Resource Include="Content\Icons\PurpleBlocks2.png" />
-    <Resource Include="Content\Icons\PurpleBlocks1.png" />
-    <Resource Include="Content\Icons\Previous.png" />
-    <Resource Include="Content\Icons\PlusX.png" />
-    <Resource Include="Content\Icons\OrangeBlocks8.png" />
-    <Resource Include="Content\Icons\OrangeBlocks4.png" />
-    <Resource Include="Content\Icons\OrangeBlocks2.png" />
-    <Resource Include="Content\Icons\OrangeBlocks1.png" />
-    <Resource Include="Content\Icons\Open.png" />
-    <Resource Include="Content\Icons\NotEqual.png" />
-    <Resource Include="Content\Icons\NextScan.png" />
-    <Resource Include="Content\Icons\Next.png" />
-    <Resource Include="Content\Icons\New.png" />
-    <Resource Include="Content\Icons\Negation.png" />
-    <Resource Include="Content\Icons\MoveUp.png" />
-    <Resource Include="Content\Icons\MoveRight.png" />
-    <Resource Include="Content\Icons\MoveLeft.png" />
-    <Resource Include="Content\Icons\MoveDown.png" />
-    <Resource Include="Content\Icons\MinusX.png" />
-    <Resource Include="Content\Icons\Merge.png" />
-    <Resource Include="Content\Icons\Maximize.png" />
-    <Resource Include="Content\Icons\MainIconSmall.ico" />
-    <Resource Include="Content\Icons\MainAppIcon.ico" />
-    <Resource Include="Content\Icons\LogicalOR.png" />
-    <Resource Include="Content\Icons\LogicalAND.png" />
-    <Resource Include="Content\Icons\LessThanOrEqual.png" />
-    <Resource Include="Content\Icons\LessThan.png" />
-    <Resource Include="Content\Icons\LeftArrows.png" />
-    <Resource Include="Content\Icons\LeftArrow.png" />
-    <Resource Include="Content\Icons\Invert.png" />
-    <Resource Include="Content\Icons\Intersection.png" />
-    <Resource Include="Content\Icons\Increased.png" />
-    <Resource Include="Content\Icons\Home.png" />
-    <Resource Include="Content\Icons\Heart.png" />
-    <Resource Include="Content\Icons\GreaterThanOrEqual.png" />
-    <Resource Include="Content\Icons\GreaterThan.png" />
-    <Resource Include="Content\Icons\Glitch.png" />
-    <Resource Include="Content\Icons\Equal.png" />
-    <Resource Include="Content\Icons\ENotation.png" />
-    <Resource Include="Content\Icons\DownArrows.png" />
-    <Resource Include="Content\Icons\Disconnected.png" />
-    <Resource Include="Content\Icons\Decreased.png" />
-    <Resource Include="Content\Icons\Curse.png" />
-    <Resource Include="Content\Icons\Connected.png" />
-    <Resource Include="Content\Icons\Connect.png" />
-    <Resource Include="Content\Icons\CollectValues.png" />
-    <Resource Include="Content\Icons\Coin.png" />
-    <Resource Include="Content\Icons\Cog.png" />
-    <Resource Include="Content\Icons\Changed.png" />
-    <Resource Include="Content\Icons\Cancel.png" />
-    <Resource Include="Content\Icons\BlueBlocks8.png" />
-    <Resource Include="Content\Icons\BlueBlocks4.png" />
-    <Resource Include="Content\Icons\BlueBlocks2.png" />
-    <Resource Include="Content\Icons\BlueBlocks1.png" />
+    <Resource Include="Content\Images\X.png" />
+    <Resource Include="Content\Images\UnknownValue.png" />
+    <Resource Include="Content\Images\Union.png" />
+    <Resource Include="Content\Images\Undo.png" />
+    <Resource Include="Content\Images\Unchanged.png" />
+    <Resource Include="Content\Images\Stop.png" />
+    <Resource Include="Content\Images\SelectProcess.png" />
+    <Resource Include="Content\Images\Script.png" />
+    <Resource Include="Content\Images\Save.png" />
+    <Resource Include="Content\Images\RightArrows.png" />
+    <Resource Include="Content\Images\RightArrow.png" />
+    <Resource Include="Content\Images\Redo.png" />
+    <Resource Include="Content\Images\PurpleBlocks8.png" />
+    <Resource Include="Content\Images\PurpleBlocks4.png" />
+    <Resource Include="Content\Images\PurpleBlocks2.png" />
+    <Resource Include="Content\Images\PurpleBlocks1.png" />
+    <Resource Include="Content\Images\Previous.png" />
+    <Resource Include="Content\Images\PlusX.png" />
+    <Resource Include="Content\Images\OrangeBlocks8.png" />
+    <Resource Include="Content\Images\OrangeBlocks4.png" />
+    <Resource Include="Content\Images\OrangeBlocks2.png" />
+    <Resource Include="Content\Images\OrangeBlocks1.png" />
+    <Resource Include="Content\Images\Open.png" />
+    <Resource Include="Content\Images\NotEqual.png" />
+    <Resource Include="Content\Images\NextScan.png" />
+    <Resource Include="Content\Images\Next.png" />
+    <Resource Include="Content\Images\New.png" />
+    <Resource Include="Content\Images\Negation.png" />
+    <Resource Include="Content\Images\MoveUp.png" />
+    <Resource Include="Content\Images\MoveRight.png" />
+    <Resource Include="Content\Images\MoveLeft.png" />
+    <Resource Include="Content\Images\MoveDown.png" />
+    <Resource Include="Content\Images\MinusX.png" />
+    <Resource Include="Content\Images\Merge.png" />
+    <Resource Include="Content\Images\Maximize.png" />
+    <Resource Include="Content\Images\LogicalOR.png" />
+    <Resource Include="Content\Images\LogicalAND.png" />
+    <Resource Include="Content\Images\LessThanOrEqual.png" />
+    <Resource Include="Content\Images\LessThan.png" />
+    <Resource Include="Content\Images\LeftArrows.png" />
+    <Resource Include="Content\Images\LeftArrow.png" />
+    <Resource Include="Content\Images\Invert.png" />
+    <Resource Include="Content\Images\Intersection.png" />
+    <Resource Include="Content\Images\Increased.png" />
+    <Resource Include="Content\Images\Home.png" />
+    <Resource Include="Content\Images\Heart.png" />
+    <Resource Include="Content\Images\GreaterThanOrEqual.png" />
+    <Resource Include="Content\Images\GreaterThan.png" />
+    <Resource Include="Content\Images\Glitch.png" />
+    <Resource Include="Content\Images\Equal.png" />
+    <Resource Include="Content\Images\ENotation.png" />
+    <Resource Include="Content\Images\DownArrows.png" />
+    <Resource Include="Content\Images\Disconnected.png" />
+    <Resource Include="Content\Images\Decreased.png" />
+    <Resource Include="Content\Images\Curse.png" />
+    <Resource Include="Content\Images\Connected.png" />
+    <Resource Include="Content\Images\Connect.png" />
+    <Resource Include="Content\Images\CollectValues.png" />
+    <Resource Include="Content\Images\Coin.png" />
+    <Resource Include="Content\Images\Cog.png" />
+    <Resource Include="Content\Images\Changed.png" />
+    <Resource Include="Content\Images\Cancel.png" />
+    <Resource Include="Content\Images\BlueBlocks8.png" />
+    <Resource Include="Content\Images\BlueBlocks4.png" />
+    <Resource Include="Content\Images\BlueBlocks2.png" />
+    <Resource Include="Content\Images\BlueBlocks1.png" />
     <EmbeddedResource Include="Content\DeveloperLayout.xml" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -600,6 +596,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Output.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DataTemplateError.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProcessSelector.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

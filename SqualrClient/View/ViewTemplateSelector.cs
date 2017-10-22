@@ -1,10 +1,10 @@
 ﻿namespace SqualrClient.View
 {
     using SqualrClient.Source.Browse;
+    using SqualrClient.Source.Browse.Library;
     using SqualrClient.Source.Browse.StreamConfig;
     using SqualrClient.Source.Browse.TwitchLogin;
-    using SqualrClient.View.Editors;
-    using System;
+    using SqualrClient.Source.Editors.StreamIconEditor;
     using System.Windows;
 
     /// <summary>
@@ -13,63 +13,120 @@
     internal class ViewTemplateSelector : SqualrCore.View.ViewTemplateSelector
     {
         /// <summary>
+        /// The template for the Browser.
+        /// </summary>
+        public DataTemplate browseViewTemplate;
+
+        /// <summary>
+        /// The template for the Library.
+        /// </summary>
+        public DataTemplate libraryViewTemplate;
+
+        /// <summary>
+        /// The template for the Twitch Login.
+        /// </summary>
+        public DataTemplate twitchLoginViewTemplate;
+
+        /// <summary>
+        /// The template for the Stream Config.
+        /// </summary>
+        public DataTemplate streamConfigViewTemplate;
+
+        /// <summary>
+        /// The template for the Stream Icon Editor.
+        /// </summary>
+        public DataTemplate streamIconEditorViewTemplate;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
         /// </summary>
-        public ViewTemplateSelector()
+        public ViewTemplateSelector() : base()
         {
         }
 
         /// <summary>
         /// Gets or sets the template for the Browser.
         /// </summary>
-        public DataTemplate BrowseViewTemplate { get; set; }
+        public DataTemplate BrowseViewTemplate
+        {
+            get
+            {
+                return this.browseViewTemplate;
+            }
+
+            set
+            {
+                this.browseViewTemplate = value;
+                this.DataTemplates[typeof(BrowseViewModel)] = value;
+            }
+        }
 
         /// <summary>
-        /// Gets or sets the template for the Cheat Browser.
+        /// Gets or sets the template for the Library.
         /// </summary>
-        public DataTemplate CheatBrowserViewTemplate { get; set; }
+        public DataTemplate LibraryViewTemplate
+        {
+            get
+            {
+                return this.libraryViewTemplate;
+            }
+
+            set
+            {
+                this.libraryViewTemplate = value;
+                this.DataTemplates[typeof(LibraryViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Twitch Login.
         /// </summary>
-        public DataTemplate TwitchLoginViewTemplate { get; set; }
+        public DataTemplate TwitchLoginViewTemplate
+        {
+            get
+            {
+                return this.twitchLoginViewTemplate;
+            }
+
+            set
+            {
+                this.twitchLoginViewTemplate = value;
+                this.DataTemplates[typeof(TwitchLoginViewModel)] = value;
+            }
+        }
 
         /// <summary>
-        /// Gets or sets the template for the Stream Weaver.
+        /// Gets or sets the template for the Stream Config.
         /// </summary>
-        public DataTemplate TwitchConfigViewTemplate { get; set; }
+        public DataTemplate StreamConfigViewTemplate
+        {
+            get
+            {
+                return this.streamConfigViewTemplate;
+            }
+
+            set
+            {
+                this.streamConfigViewTemplate = value;
+                this.DataTemplates[typeof(StreamConfigViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Stream Icon Editor.
         /// </summary>
-        public DataTemplate StreamIconEditorViewTemplate { get; set; }
-
-        /// <summary>
-        /// Returns the required template to display the given view model.
-        /// </summary>
-        /// <param name="item">The view model.</param>
-        /// <param name="container">The dependency object.</param>
-        /// <returns>The template associated with the provided view model.</returns>
-        public override DataTemplate SelectTemplate(Object item, DependencyObject container)
+        public DataTemplate StreamIconEditorViewTemplate
         {
-            if (item is BrowseViewModel)
+            get
             {
-                return this.BrowseViewTemplate;
-            }
-            else if (item is TwitchLoginViewModel)
-            {
-                return this.TwitchLoginViewTemplate;
-            }
-            else if (item is StreamConfigViewModel)
-            {
-                return this.TwitchConfigViewTemplate;
-            }
-            else if (item is StreamIconEditor)
-            {
-                return this.StreamIconEditorViewTemplate;
+                return this.streamIconEditorViewTemplate;
             }
 
-            return base.SelectTemplate(item, container);
+            set
+            {
+                this.streamIconEditorViewTemplate = value;
+                this.DataTemplates[typeof(StreamIconEditorViewModel)] = value;
+            }
         }
     }
     //// End class

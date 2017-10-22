@@ -37,7 +37,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/RightArrow.png" />
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrow.png" />
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
@@ -46,7 +46,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/Cancel.png" />
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/Cancel.png" />
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
@@ -84,7 +84,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Changed.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Changed.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -102,7 +102,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Unchanged.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Unchanged.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -120,7 +120,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Increased.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Increased.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -138,7 +138,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Decreased.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Decreased.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -156,7 +156,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Equal.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Equal.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -174,7 +174,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/NotEqual.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/NotEqual.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -192,7 +192,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/PlusX.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/PlusX.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -210,7 +210,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/MinusX.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/MinusX.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -228,7 +228,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/GreaterThan.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/GreaterThan.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -246,7 +246,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/GreaterThanOrEqual.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/GreaterThanOrEqual.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -264,7 +264,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/LessThan.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/LessThan.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -282,7 +282,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/LessThanOrEqual.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/LessThanOrEqual.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -300,7 +300,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/ENotation.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/ENotation.png" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -325,7 +325,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/DownArrows.png" />
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/DownArrows.png" />
                         </MenuItem.Header>
                     </MenuItem>
                 </Menu>
@@ -462,7 +462,7 @@
                                                 <Image
                                                     Width="16"
                                                     Height="16"
-                                                    Source="pack://application:,,,/Squalr;component/Content/Icons/X.png" />
+                                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/X.png" />
                                             </MenuItem.Header>
                                         </MenuItem>
                                         <MenuItem
@@ -473,7 +473,7 @@
                                                 <Image
                                                     Width="16"
                                                     Height="16"
-                                                    Source="pack://application:,,,/Squalr;component/Content/Icons/MoveUp.png" />
+                                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/MoveUp.png" />
                                             </MenuItem.Header>
                                         </MenuItem>
                                     </Menu>
