@@ -4,11 +4,11 @@
     using Squalr.Properties;
     using SqualrCore.Source.Engine.OperatingSystems;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
-    using Utils.Extensions;
 
     /// <summary>
     /// Defines a snapshot of memory in an external process.

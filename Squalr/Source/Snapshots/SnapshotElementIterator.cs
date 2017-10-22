@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Scanners.ScanConstraints;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
-    using Utils.Extensions;
 
     /// <summary>
     /// Defines a reference to an element within a snapshot region.

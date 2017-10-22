@@ -1,4 +1,4 @@
-﻿namespace SqualrClient.Source.Api
+﻿namespace SqualrCore.Source.Utils
 {
     using System;
     using System.Diagnostics;

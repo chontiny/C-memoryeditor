@@ -6,11 +6,11 @@
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.OperatingSystems;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using Utils;
-    using Utils.Extensions;
 
     /// <summary>
     /// Defines a region of memory in an external process.

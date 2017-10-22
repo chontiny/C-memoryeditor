@@ -1,17 +1,16 @@
 ﻿namespace Squalr.Source.Scanners.BackgroundScans
 {
     using ActionScheduler;
-    using Engine;
     using Snapshots;
     using Squalr.Properties;
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Utils.DataStructures;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Utils.DataStructures;
-    using Utils.Extensions;
 
     /// <summary>
     /// Class to collect all pointers in the running process.

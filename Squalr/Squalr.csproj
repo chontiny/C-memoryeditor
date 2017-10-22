@@ -312,12 +312,6 @@
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\Controls\SortedCategory.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetObjectViewModel.cs" />
-    <Compile Include="Source\Utils\DataStructures\TtlCache.cs" />
-    <Compile Include="Source\Utils\DataType.cs" />
-    <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\EnumExtensions.cs" />
-    <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
-    <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\DataGridIndexConverter.cs" />
@@ -336,27 +330,7 @@
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
-    <Compile Include="Source\Utils\Compression.cs" />
-    <Compile Include="Source\Utils\DataStructures\BiDictionary.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Utils\Extensions\LinkedListExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\IDisposableExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\SingleExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\DoubleExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\StringExtensions.cs" />
-    <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />
-    <Compile Include="Source\Utils\StaticRandom.cs" />
-    <Compile Include="Source\Utils\TypeConverters\EnumDescriptionConverter.cs" />
-    <Compile Include="Source\Utils\TypeConverters\TextConverter.cs" />
-    <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
-    <Compile Include="Source\Utils\TypeConverters\DynamicConverter.cs" />
-    <Compile Include="Source\Utils\TypeConverters\HotkeyConverter.cs" />
-    <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
-    <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
-    <Compile Include="Source\Utils\TypeConverters\DataTypeConverter.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetExplorerViewModel.cs" />
     <Compile Include="Source\Scripting\Graphics\GraphicsCore.cs" />
     <Compile Include="Source\Scripting\Graphics\IGraphicsCore.cs" />
@@ -396,31 +370,13 @@
     <Compile Include="Source\Snapshots\SnapshotManager.cs" />
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
-    <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Utils\Extensions\ArrayExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\IEnumerableExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\IntegerExtensions.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Utils\Extensions\IntPtrExtensions.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
-    <Compile Include="Source\Utils\Extensions\ObjectExtensions.cs" />
-    <Compile Include="Source\Utils\Extensions\PrimitiveExtensions.cs" />
-    <Compile Include="Source\Utils\ImageUtils.cs" />
-    <Compile Include="Source\Utils\PrimitiveTypes.cs" />
     <Compile Include="Source\ActionScheduler\ScheduledTask.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Compile Include="Source\Utils\CheckSyntax.cs" />
-    <Compile Include="Source\Utils\Conversions.cs" />
     <Compile Include="Source\Controls\CenteredDialogBox.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
-    <Compile Include="Source\Utils\WebBrowserHelper.cs" />
     <Compile Include="Source\Controls\DarkBrushes.cs" />
     <Compile Include="Source\Controls\HexDecTextBox.cs">
       <SubType>Component</SubType>
@@ -504,10 +460,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Settings.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\ProjectExplorer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

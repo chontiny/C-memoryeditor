@@ -5,10 +5,10 @@
     using Squalr.Properties;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using Utils.Extensions;
 
     /// <summary>
     /// Manages snapshots of memory taken from the target process.

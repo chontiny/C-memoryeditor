@@ -7,13 +7,13 @@
     using SqualrCore.Source.Engine.OperatingSystems;
     using SqualrCore.Source.Engine.Processes;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Utils;
-    using Utils.Extensions;
 
     /// <summary>
     /// <para>

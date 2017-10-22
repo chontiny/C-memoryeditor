@@ -5,6 +5,7 @@
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectExplorer.ProjectItems;
+    using SqualrCore.Source.Utils;
     using System;
     using System.IO;
     using System.Reflection;
@@ -12,7 +13,6 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using Utils;
 
     /// <summary>
     /// Class for managing a single script.

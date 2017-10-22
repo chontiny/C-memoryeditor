@@ -151,6 +151,7 @@
     </Compile>
     <Compile Include="Source\Docking\DockingViewModel.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Source\Utils\NativeBrowser.cs" />
     <Compile Include="View\ChangeLog.xaml.cs">
       <DependentUpon>ChangeLog.xaml</DependentUpon>
     </Compile>
@@ -610,6 +611,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\ProcessSelector.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProjectExplorer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

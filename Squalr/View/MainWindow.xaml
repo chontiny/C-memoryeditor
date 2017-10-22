@@ -401,12 +401,6 @@
                             <coreView:DataTemplateError />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.DataTemplateErrorViewTemplate>
-                    <!--  Process Selector  -->
-                    <view:ViewTemplateSelector.ProcessSelectorViewTemplate>
-                        <shell:DataTemplate>
-                            <coreView:ProcessSelector />
-                        </shell:DataTemplate>
-                    </view:ViewTemplateSelector.ProcessSelectorViewTemplate>
                     <!--  Change Counter  -->
                     <view:ViewTemplateSelector.ChangeCounterViewTemplate>
                         <shell:DataTemplate>
@@ -467,10 +461,16 @@
                             <view:Settings />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.SettingsViewTemplate>
+                    <!--  Process Selector  -->
+                    <view:ViewTemplateSelector.ProcessSelectorViewTemplate>
+                        <shell:DataTemplate>
+                            <coreView:ProcessSelector />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.ProcessSelectorViewTemplate>
                     <!--  Project Explorer  -->
                     <view:ViewTemplateSelector.ProjectExplorerViewTemplate>
                         <shell:DataTemplate>
-                            <view:ProjectExplorer />
+                            <coreView:ProjectExplorer />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.ProjectExplorerViewTemplate>
                     <!--  Property Viewer  -->

@@ -8,11 +8,11 @@
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using SqualrCore.Source.Engine.Input.Keyboard;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Utils.Extensions;
 
     internal class InputCorrelatorModel : ScannerBase, IObserver<KeyState>
     {

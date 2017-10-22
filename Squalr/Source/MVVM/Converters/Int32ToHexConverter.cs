@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
+    using SqualrCore.Source.Utils;
     using System;
     using System.Globalization;
     using System.Windows.Data;
-    using Utils;
 
     /// <summary>
     /// Converts an Int32 value to a hexedecimal value.

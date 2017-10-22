@@ -7,6 +7,7 @@
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.ProjectExplorer;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -14,7 +15,6 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
-    using Utils.Extensions;
 
     /// <summary>
     /// View model for the Process Selector.

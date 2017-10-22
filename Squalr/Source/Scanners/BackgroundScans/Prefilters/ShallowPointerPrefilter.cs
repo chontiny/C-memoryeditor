@@ -6,11 +6,11 @@
     using SqualrCore.Source.Engine.OperatingSystems;
     using SqualrCore.Source.Engine.Processes;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.DataStructures;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using Utils.DataStructures;
-    using Utils.Extensions;
 
     /// <summary>
     /// Class to collect all pointers in the module bases of the target process, and slowly trace pointers from there.

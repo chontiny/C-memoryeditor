@@ -1,11 +1,11 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Globalization;
     using System.Linq;
     using System.Windows.Controls;
     using System.Windows.Data;
-    using Utils.Extensions;
 
     /// <summary>
     /// Converts a <see cref="DataGridCell"/> to its row index in the parent data grid.

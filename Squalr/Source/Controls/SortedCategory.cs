@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Controls
 {
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.ComponentModel;
-    using Utils.Extensions;
 
     public class SortedCategory : CategoryAttribute
     {

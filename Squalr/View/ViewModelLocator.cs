@@ -148,7 +148,7 @@
         }
 
         /// <summary>
-        /// Gets the Project Explorer view model.
+        /// Gets the Value Collector view model.
         /// </summary>
         public ValueCollectorViewModel ValueCollectorViewModel
         {

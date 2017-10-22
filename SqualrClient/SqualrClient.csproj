@@ -114,7 +114,6 @@
     <Compile Include="Source\Api\Models\UnlockedCheat.cs" />
     <Compile Include="Source\Api\Models\User.cs" />
     <Compile Include="Source\Api\Models\Vote.cs" />
-    <Compile Include="Source\Api\NativeBrowser.cs" />
     <Compile Include="Source\Api\PingClient.cs">
       <SubType>Component</SubType>
     </Compile>

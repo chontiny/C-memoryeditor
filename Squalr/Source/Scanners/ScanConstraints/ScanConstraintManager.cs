@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Scanners.ScanConstraints
 {
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.ObjectModel;
     using System.Linq;
-    using Utils.Extensions;
 
     /// <summary>
     /// Class for storing a collection of constraints to be used in a scan that applies more than one constraint per update.
