@@ -2,12 +2,12 @@
 {
     using ActionScheduler;
     using BackgroundScans.Prefilters;
-    using ProjectExplorer;
-    using ProjectExplorer.ProjectItems;
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.ProjectExplorer;
+    using SqualrCore.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;

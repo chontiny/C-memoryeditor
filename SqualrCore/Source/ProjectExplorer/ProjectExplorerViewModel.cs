@@ -24,7 +24,7 @@
     /// <summary>
     /// View model for the Project Explorer.
     /// </summary>
-    internal class ProjectExplorerViewModel : ToolViewModel
+    public class ProjectExplorerViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.

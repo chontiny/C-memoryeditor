@@ -4,16 +4,10 @@
     using Editors.ScriptEditor;
     using Scripting;
     using SqualrCore.Content;
-    using SqualrCore.Source.Api;
-    using SqualrCore.Source.Api.Models;
-    using SqualrCore.Source.Browse.StreamConfig;
-    using SqualrCore.Source.Editors.StreamIconEditor;
     using SqualrCore.Source.Utils.Extensions;
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
-    using System.Linq;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
     using System.Windows.Media.Imaging;
@@ -23,7 +17,7 @@
     /// Defines a script that can be added to the project explorer.
     /// </summary>
     [DataContract]
-    public class ScriptItem : ProjectItem, IStreamIconsLoadedObserver
+    public class ScriptItem : ProjectItem
     {
         /// <summary>
         /// The raw script text.
@@ -93,11 +87,6 @@
             this.script = script;
 
             Task.Run(() => this.compiledScript = this.ScriptManager.CompileScript(script));
-
-            if (StreamIconEditorViewModel.GetInstance().IsStreamIconListLoading)
-            {
-                StreamIconEditorViewModel.GetInstance().Subscribe(this);
-            }
         }
 
         /// <summary>
@@ -171,13 +160,6 @@
 
                 this.isStreamDisabled = value;
 
-                if (this.AssociatedCheat != null)
-                {
-                    this.AssociatedCheat.IsStreamDisabled = value;
-                }
-
-                StreamConfigViewModel.GetInstance().OnCheatListChange();
-
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.IsStreamDisabled));
                 this.NotifyPropertyChanged(nameof(this.Icon));
@@ -206,11 +188,6 @@
 
                 this.cooldown = value;
 
-                if (this.AssociatedCheat != null)
-                {
-                    this.AssociatedCheat.Cooldown = value;
-                }
-
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Cooldown));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
@@ -238,11 +215,6 @@
 
                 this.duration = value;
 
-                if (this.AssociatedCheat != null)
-                {
-                    this.AssociatedCheat.Duration = value;
-                }
-
                 ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.NotifyPropertyChanged(nameof(this.Duration));
                 ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
@@ -253,7 +225,6 @@
         /// Gets or sets the stream icon for this project item.
         /// </summary>
         [DataMember]
-        [Editor(typeof(StreamIconEditorModel), typeof(UITypeEditor))]
         [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Stream Icon"), Description("The stream icon for this item")]
         public String StreamIconName
         {
@@ -270,11 +241,6 @@
                 }
 
                 this.streamIconName = value;
-
-                if (this.AssociatedCheat != null)
-                {
-                    this.AssociatedCheat.Icon = value;
-                }
 
                 this.NotifyPropertyChanged(nameof(this.StreamIconName));
                 this.NotifyPropertyChanged(nameof(this.Icon));
@@ -295,14 +261,6 @@
                 if (this.IsStreamDisabled)
                 {
                     return Images.Cancel;
-                }
-
-                if (!StreamIconEditorViewModel.GetInstance().IsStreamIconListLoading)
-                {
-                    displayIcon = SqualrApi.GetStreamIcons()
-                        .Select(icon => icon)
-                        .Where(icon => icon.IconName == this.StreamIconName)
-                        .FirstOrDefault()?.Icon;
                 }
 
                 return displayIcon ?? Images.Script;
@@ -412,45 +370,6 @@
             {
                 Task.Run(() => this.compiledScript = this.ScriptManager.CompileScript(script));
             }
-
-            if (StreamIconEditorViewModel.GetInstance().IsStreamIconListLoading)
-            {
-                StreamIconEditorViewModel.GetInstance().Subscribe(this);
-            }
-        }
-
-        /// <summary>
-        /// Recieves a notification of the loaded stream icons.
-        /// </summary>
-        /// <param name="streamIcons">The loaded stream icons.</param>
-        public void Update(IEnumerable<StreamIcon> streamIcons)
-        {
-            this.NotifyPropertyChanged(nameof(this.Icon));
-            StreamIconEditorViewModel.GetInstance().Unsubscribe(this);
-        }
-
-        /// <summary>
-        /// Associates a cheat with this project item.
-        /// </summary>
-        /// <param name="cheat">The associated cheat</param>
-        public override void AssociateCheat(Cheat cheat, Boolean loadDefaults = false)
-        {
-            base.AssociateCheat(cheat, loadDefaults);
-
-            if (loadDefaults)
-            {
-                this.isStreamDisabled = cheat.DefaultIsStreamDisabled;
-                this.cooldown = cheat.DefaultCooldown;
-                this.duration = cheat.DefaultDuration;
-            }
-            else
-            {
-                this.isStreamDisabled = cheat.IsStreamDisabled;
-                this.cooldown = cheat.Cooldown;
-                this.duration = cheat.Duration;
-            }
-
-            this.streamIconName = cheat.Icon;
         }
 
         /// <summary>

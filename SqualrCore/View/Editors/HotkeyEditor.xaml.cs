@@ -8,7 +8,7 @@
     /// <summary>
     /// Interaction logic for HotkeyEditor.xaml.
     /// </summary>
-    internal partial class HotkeyEditor : Window
+    public partial class HotkeyEditor : Window
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HotkeyEditor" /> class.

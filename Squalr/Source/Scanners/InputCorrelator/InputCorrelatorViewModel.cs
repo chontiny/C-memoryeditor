@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
-    using Editors.HotkeyEditor;
     using GalaSoft.MvvmLight.Command;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Editors.HotkeyEditor;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using System;
     using System.Collections.Generic;

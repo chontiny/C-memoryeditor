@@ -8,7 +8,6 @@
     using Output;
     using ProjectExplorer;
     using SqualrCore.Properties;
-    using SqualrCore.Source.Scanners.BackgroundScans.Prefilters;
     using System;
     using System.Deployment.Application;
     using System.IO;
@@ -122,7 +121,6 @@
         /// </summary>
         private void StartBackgroundServices()
         {
-            SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
             DotNetObjectCollector.GetInstance().Schedule();
             AddressResolver.GetInstance().Schedule();
             AnalyticsService.GetInstance().Start();

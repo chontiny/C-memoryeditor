@@ -8,12 +8,10 @@
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectExplorer.ProjectItems;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
 
@@ -211,6 +209,7 @@
                         return;
                     }
 
+                    /*
                     // Get cheat IDs to activate based on increased vote counts
                     IEnumerable<Int32> cheatIdsToActivate = cheatVotes
                           .Join(
@@ -281,7 +280,7 @@
                             }
                         });
                     }
-
+                    */
                     this.PreviousCheatVotes = cheatVotes;
                 }
             }

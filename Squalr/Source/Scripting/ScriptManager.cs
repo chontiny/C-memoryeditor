@@ -2,9 +2,9 @@
 {
     using Content.Templates;
     using CSScriptLibrary;
-    using ProjectExplorer.ProjectItems;
-    using Squalr.Source.Analytics;
+    using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.IO;
     using System.Reflection;

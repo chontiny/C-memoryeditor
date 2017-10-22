@@ -4,7 +4,7 @@
     using System.Runtime.Serialization;
 
     [DataContract]
-    internal class Vote
+    public class Vote
     {
         public Vote()
         {

@@ -7,7 +7,7 @@
     using System.Windows.Media.Imaging;
 
     [DataContract]
-    internal class StreamIcon
+    public class StreamIcon
     {
         /// <summary>
         /// 

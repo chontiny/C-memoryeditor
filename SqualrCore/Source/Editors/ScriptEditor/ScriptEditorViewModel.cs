@@ -11,7 +11,7 @@
     /// <summary>
     /// View model for the Script Editor.
     /// </summary>
-    internal class ScriptEditorViewModel : ToolViewModel
+    public class ScriptEditorViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.

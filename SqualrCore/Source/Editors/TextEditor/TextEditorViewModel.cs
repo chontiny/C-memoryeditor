@@ -10,7 +10,7 @@
     /// <summary>
     /// View model for the Text Editor.
     /// </summary>
-    internal class TextEditorViewModel : ToolViewModel
+    public class TextEditorViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.

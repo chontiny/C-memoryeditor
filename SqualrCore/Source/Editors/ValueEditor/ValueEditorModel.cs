@@ -9,7 +9,7 @@
     /// <summary>
     /// Type editor for scripts.
     /// </summary>
-    internal class ValueEditorModel : UITypeEditor
+    public class ValueEditorModel : UITypeEditor
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueEditorModel" /> class.

@@ -10,7 +10,7 @@
     /// <summary>
     /// Type editor for pointer offsets.
     /// </summary>
-    internal class OffsetEditorModel : UITypeEditor
+    public class OffsetEditorModel : UITypeEditor
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="OffsetEditorModel" /> class.

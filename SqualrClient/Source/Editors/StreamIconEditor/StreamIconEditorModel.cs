@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Editors.ScriptEditor
+﻿namespace SqualrClient.Source.Editors.StreamIconEditor
 {
     using System;
     using System.ComponentModel;
@@ -6,14 +6,14 @@
     using System.Windows;
 
     /// <summary>
-    /// Type editor for scripts.
+    /// Stream icon path editor.
     /// </summary>
-    public class ScriptEditorModel : UITypeEditor
+    public class StreamIconEditorModel : UITypeEditor
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScriptEditorModel" /> class.
+        /// Initializes a new instance of the <see cref="StreamIconEditorModel" /> class.
         /// </summary>
-        public ScriptEditorModel()
+        public StreamIconEditorModel()
         {
         }
 
@@ -36,12 +36,12 @@
         /// <returns>The updated values.</returns>
         public override Object EditValue(ITypeDescriptorContext context, IServiceProvider provider, Object value)
         {
-            View.Editors.ScriptEditor scriptEditor = new View.Editors.ScriptEditor(value as String);
+            View.Editors.StreamIconEditor streamIconEditor = new View.Editors.StreamIconEditor(value as String);
 
-            scriptEditor.Owner = Application.Current.MainWindow;
-            if (scriptEditor.ShowDialog() == true)
+            streamIconEditor.Owner = Application.Current.MainWindow;
+            if (streamIconEditor.ShowDialog() == true)
             {
-                return scriptEditor.ScriptEditorViewModel.Script ?? String.Empty;
+                return streamIconEditor.StreamIconEditorViewModel.StreamIconName ?? String.Empty;
             }
 
             return value;

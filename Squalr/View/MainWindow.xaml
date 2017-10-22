@@ -3,7 +3,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
-    xmlns:browseView="clr-namespace:Squalr.View.Browse"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:coreView="clr-namespace:SqualrCore.View;assembly=SqualrCore"
     xmlns:docking="clr-namespace:SqualrCore.Source.Docking;assembly=SqualrCore"
@@ -214,11 +213,6 @@
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                     Header="View"
                     Style="{StaticResource DropDown}">
-                    <shell:MenuItem
-                        Header="Browse"
-                        IsCheckable="True"
-                        IsChecked="{Binding BrowseViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
                     <shell:MenuItem
                         Header="Process Selector"
                         IsCheckable="True"
@@ -458,24 +452,12 @@
                             <view:PointerScanResults />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.PointerScanResultsViewTemplate>
-                    <!--  Browse  -->
-                    <view:ViewTemplateSelector.BrowseViewTemplate>
-                        <shell:DataTemplate>
-                            <browseView:BrowseHome />
-                        </shell:DataTemplate>
-                    </view:ViewTemplateSelector.BrowseViewTemplate>
                     <!--  .Net Explorer  -->
                     <view:ViewTemplateSelector.DotNetExplorerViewTemplate>
                         <shell:DataTemplate>
                             <view:DotNetExplorer />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.DotNetExplorerViewTemplate>
-                    <!--  Property Viewer  -->
-                    <view:ViewTemplateSelector.PropertyViewerViewTemplate>
-                        <shell:DataTemplate>
-                            <view:PropertyViewer />
-                        </shell:DataTemplate>
-                    </view:ViewTemplateSelector.PropertyViewerViewTemplate>
                     <!--  Settings  -->
                     <view:ViewTemplateSelector.SettingsViewTemplate>
                         <shell:DataTemplate>
@@ -488,6 +470,12 @@
                             <view:ProjectExplorer />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.ProjectExplorerViewTemplate>
+                    <!--  Property Viewer  -->
+                    <view:ViewTemplateSelector.PropertyViewerViewTemplate>
+                        <shell:DataTemplate>
+                            <coreView:PropertyViewer />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.PropertyViewerViewTemplate>
                     <!--  Output  -->
                     <view:ViewTemplateSelector.OutputViewTemplate>
                         <shell:DataTemplate>

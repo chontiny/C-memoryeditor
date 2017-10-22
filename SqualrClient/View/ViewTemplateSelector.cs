@@ -3,6 +3,7 @@
     using SqualrClient.Source.Browse;
     using SqualrClient.Source.Browse.StreamConfig;
     using SqualrClient.Source.Browse.TwitchLogin;
+    using SqualrClient.View.Editors;
     using System;
     using System.Windows;
 
@@ -39,6 +40,11 @@
         public DataTemplate TwitchConfigViewTemplate { get; set; }
 
         /// <summary>
+        /// Gets or sets the template for the Stream Icon Editor.
+        /// </summary>
+        public DataTemplate StreamIconEditorViewTemplate { get; set; }
+
+        /// <summary>
         /// Returns the required template to display the given view model.
         /// </summary>
         /// <param name="item">The view model.</param>
@@ -57,6 +63,10 @@
             else if (item is StreamConfigViewModel)
             {
                 return this.TwitchConfigViewTemplate;
+            }
+            else if (item is StreamIconEditor)
+            {
+                return this.StreamIconEditorViewTemplate;
             }
 
             return base.SelectTemplate(item, container);

@@ -8,7 +8,7 @@
     /// <summary>
     /// Type editor for text.
     /// </summary>
-    internal class TextEditorModel : UITypeEditor
+    public class TextEditorModel : UITypeEditor
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TextEditorModel" /> class.

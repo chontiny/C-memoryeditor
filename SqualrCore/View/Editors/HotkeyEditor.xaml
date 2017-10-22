@@ -13,7 +13,6 @@
     Height="112"
     d:DesignHeight="256"
     d:DesignWidth="256"
-    x:ClassModifier="internal"
     BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
     BorderThickness="2"
     DataContext="{Binding HotkeyEditorViewModel, Source={StaticResource ViewModelLocator}}"

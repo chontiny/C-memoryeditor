@@ -8,7 +8,7 @@
     /// <summary>
     /// View model for the Value Editor.
     /// </summary>
-    internal class ValueEditorViewModel : ToolViewModel
+    public class ValueEditorViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.

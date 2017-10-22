@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:browse="clr-namespace:SqualrClient.View.Browse"
+    xmlns:browseConverters="clr-namespace:SqualrClient.Source.Mvvm.Converters"
     xmlns:browseViewModel="clr-namespace:SqualrClient.Source.Browse"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -23,7 +24,7 @@
     </x:Code>
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <converters:BrowseCategoryToVisibilityConverter x:Key="BrowseCategoryToVisibilityConverter" />
+        <browseConverters:BrowseCategoryToVisibilityConverter x:Key="BrowseCategoryToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid>

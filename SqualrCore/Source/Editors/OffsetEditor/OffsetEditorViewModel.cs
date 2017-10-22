@@ -13,7 +13,7 @@
     /// <summary>
     /// View model for the Offset Editor.
     /// </summary>
-    internal class OffsetEditorViewModel : ViewModelBase
+    public class OffsetEditorViewModel : ViewModelBase
     {
         /// <summary>
         /// The collection of offsets.

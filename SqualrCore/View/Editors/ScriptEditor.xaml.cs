@@ -18,7 +18,7 @@
     /// <summary>
     /// Interaction logic for ScriptEditor.xaml.
     /// </summary>
-    internal partial class ScriptEditor : Window
+    public partial class ScriptEditor : Window
     {
         /// <summary>
         /// The resource file for C# script highlighting rules.

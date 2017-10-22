@@ -12,7 +12,7 @@
     /// <summary>
     /// Interaction logic for OffsetEditor.xaml.
     /// </summary>
-    internal partial class OffsetEditor : Window
+    public partial class OffsetEditor : Window
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="OffsetEditor" /> class.

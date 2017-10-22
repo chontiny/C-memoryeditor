@@ -1,14 +1,11 @@
 ﻿namespace Squalr.Source.Main
 {
-    using Analytics;
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
-    using ProjectExplorer;
     using Squalr.Properties;
     using Squalr.Source.Scanners.BackgroundScans.Prefilters;
-    using SqualrCore.Source.Engine.AddressResolver;
-    using SqualrCore.Source.Engine.AddressResolver.DotNet;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.ProjectExplorer;
     using System;
     using System.Deployment.Application;
     using System.IO;
@@ -123,11 +120,7 @@
         private void StartBackgroundServices()
         {
             SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
-            DotNetObjectCollector.GetInstance().Schedule();
-            AddressResolver.GetInstance().Schedule();
-            AnalyticsService.GetInstance().Start();
 
-            AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background services started");
         }
 

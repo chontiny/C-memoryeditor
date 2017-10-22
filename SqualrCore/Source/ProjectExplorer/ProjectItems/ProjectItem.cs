@@ -6,7 +6,6 @@
     using Engine.Input.HotKeys;
     using SharpDX.DirectInput;
     using SqualrCore.Content;
-    using SqualrCore.Source.Api.Models;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -259,12 +258,6 @@
         private Object ActivationLock { get; set; }
 
         /// <summary>
-        /// Gets or sets the library cheat associated with this project item.
-        /// </summary>
-        [Browsable(false)]
-        public Cheat AssociatedCheat { get; set; }
-
-        /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
         /// <param name="streamingContext">Streaming context.</param>
@@ -283,15 +276,6 @@
         /// Updates event for this project item.
         /// </summary>
         public abstract void Update();
-
-        /// <summary>
-        /// Associates a cheat with this project item.
-        /// </summary>
-        /// <param name="cheat">The associated cheat</param>
-        public virtual void AssociateCheat(Cheat cheat, Boolean loadDefaults = false)
-        {
-            this.AssociatedCheat = cheat;
-        }
 
         /// <summary>
         /// Clones the project item.

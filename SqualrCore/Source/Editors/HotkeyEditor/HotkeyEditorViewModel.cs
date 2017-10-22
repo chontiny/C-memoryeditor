@@ -11,7 +11,7 @@
     /// <summary>
     /// View model for the Script Editor.
     /// </summary>
-    internal class HotkeyEditorViewModel : ToolViewModel
+    public class HotkeyEditorViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.

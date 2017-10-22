@@ -9,7 +9,7 @@
     /// <summary>
     /// Type editor for hot keys.
     /// </summary>
-    internal class HotkeyEditorModel : UITypeEditor
+    public class HotkeyEditorModel : UITypeEditor
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HotkeyEditorModel" /> class.

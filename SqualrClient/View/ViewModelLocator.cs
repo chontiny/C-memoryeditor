@@ -6,6 +6,7 @@
     using SqualrClient.Source.Browse.Store;
     using SqualrClient.Source.Browse.StreamConfig;
     using SqualrClient.Source.Browse.TwitchLogin;
+    using SqualrClient.Source.Editors.StreamIconEditor;
 
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -83,6 +84,17 @@
             get
             {
                 return StreamConfigViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Stream Icon Editor view model.
+        /// </summary>
+        public StreamIconEditorViewModel StreamIconEditorViewModel
+        {
+            get
+            {
+                return StreamIconEditorViewModel.GetInstance();
             }
         }
     }

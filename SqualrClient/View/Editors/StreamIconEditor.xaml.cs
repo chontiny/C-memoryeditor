@@ -1,46 +1,35 @@
-﻿namespace SqualrCore.View.Editors
+﻿namespace SqualrClient.View.Editors
 {
-    using Source.Editors.TextEditor;
+    using SqualrClient.Source.Editors.StreamIconEditor;
     using System;
     using System.Windows;
-    using System.Windows.Media;
+    using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for TextEditor.xaml.
+    /// Interaction logic for StreamIconEditor.xaml.
     /// </summary>
-    public partial class TextEditor : Window
+    public partial class StreamIconEditor : Window
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TextEditor" /> class.
+        /// Initializes a new instance of the <see cref="StreamIconEditor" /> class.
         /// </summary>
-        /// <param name="text">The initial text being edited.</param>
-        public TextEditor(String text = null)
+        /// <param name="path">The initial icon path.</param>
+        public StreamIconEditor(String path = null)
         {
             this.InitializeComponent();
-            this.TextEditorTextEditor.FontFamily = new FontFamily("Consolas");
-            this.TextEditorTextEditor.TextChanged += this.TextEditorTextEditorTextChanged;
-            this.TextEditorTextEditor.Text = text ?? String.Empty;
+
+            this.StreamIconEditorViewModel.SelectionCallBack = this.TakeSelection;
         }
 
         /// <summary>
         /// Gets the view model associated with this view.
         /// </summary>
-        public TextEditorViewModel TextEditorViewModel
+        public StreamIconEditorViewModel StreamIconEditorViewModel
         {
             get
             {
-                return this.DataContext as TextEditorViewModel;
+                return this.DataContext as StreamIconEditorViewModel;
             }
-        }
-
-        /// <summary>
-        /// Invoked when the text editor text is changed.
-        /// </summary>
-        /// <param name="sender">Sending object.</param>
-        /// <param name="e">Event args.</param>
-        private void TextEditorTextEditorTextChanged(Object sender, EventArgs e)
-        {
-            this.TextEditorViewModel.UpdateTextCommand.Execute(this.TextEditorTextEditor.Text);
         }
 
         /// <summary>
@@ -61,8 +50,7 @@
         /// <param name="e">Event args.</param>
         private void AcceptButtonClick(Object sender, RoutedEventArgs e)
         {
-            this.DialogResult = true;
-            this.Close();
+            this.StreamIconEditorViewModel.SetIconCommand.Execute(this.StreamIconEditorViewModel.SelectedStreamIcon);
         }
 
         /// <summary>
@@ -72,7 +60,22 @@
         /// <param name="e">Event args.</param>
         private void ExitFileMenuItemClick(Object sender, RoutedEventArgs e)
         {
+            this.DialogResult = false;
             this.Close();
+        }
+
+        /// <summary>
+        /// Callback function for when a selection event is triggered.
+        /// </summary>
+        private void TakeSelection()
+        {
+            this.DialogResult = true;
+            this.Close();
+        }
+
+        private void ListViewSelectionChanged(Object sender, SelectionChangedEventArgs e)
+        {
+            this.StreamIconEditorViewModel.SelectIconCommand.Execute(e.AddedItems.Count > 0 ? e.AddedItems[0] : null);
         }
     }
     //// End class

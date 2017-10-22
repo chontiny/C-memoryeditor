@@ -1,7 +1,6 @@
 ﻿namespace Squalr.View
 {
     using Source.DotNetExplorer;
-    using Source.ProjectExplorer;
     using Source.Results.PointerScanResults;
     using Source.Results.ScanResults;
     using Source.Scanners.ChangeCounter;
@@ -11,9 +10,6 @@
     using Source.Scanners.PointerScanner;
     using Source.Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.Browse;
-    using Squalr.Source.Browse.StreamConfig;
-    using Squalr.Source.Browse.TwitchLogin;
     using System;
     using System.Windows;
 
@@ -70,36 +66,6 @@
         public DataTemplate PointerScanResultsViewTemplate { get; set; }
 
         /// <summary>
-        /// Gets or sets the template for the Browser.
-        /// </summary>
-        public DataTemplate BrowseViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Cheat Browser.
-        /// </summary>
-        public DataTemplate CheatBrowserViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Twitch Login.
-        /// </summary>
-        public DataTemplate TwitchLoginViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Stream Weaver.
-        /// </summary>
-        public DataTemplate TwitchConfigViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Stream Table.
-        /// </summary>
-        public DataTemplate StreamTableViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Stream Icon Editor.
-        /// </summary>
-        public DataTemplate StreamIconEditorViewTemplate { get; set; }
-
-        /// <summary>
         /// Gets or sets the template for the .Net Explorer.
         /// </summary>
         public DataTemplate DotNetExplorerViewTemplate { get; set; }
@@ -108,11 +74,6 @@
         /// Gets or sets the template for the Project Explorer.
         /// </summary>
         public DataTemplate ProjectExplorerViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Signature Collector.
-        /// </summary>
-        public DataTemplate SignatureCollectorViewTemplate { get; set; }
 
         /// <summary>
         /// Returns the required template to display the given view model.
@@ -154,18 +115,6 @@
             {
                 return this.PointerScanResultsViewTemplate;
             }
-            else if (item is BrowseViewModel)
-            {
-                return this.BrowseViewTemplate;
-            }
-            else if (item is TwitchLoginViewModel)
-            {
-                return this.TwitchLoginViewTemplate;
-            }
-            else if (item is StreamConfigViewModel)
-            {
-                return this.TwitchConfigViewTemplate;
-            }
             else if (item is DotNetExplorerViewModel)
             {
                 return this.DotNetExplorerViewTemplate;
@@ -173,10 +122,6 @@
             else if (item is SettingsViewModel)
             {
                 return this.SettingsViewTemplate;
-            }
-            else if (item is ProjectExplorerViewModel)
-            {
-                return this.ProjectExplorerViewTemplate;
             }
 
             return base.SelectTemplate(item, container);

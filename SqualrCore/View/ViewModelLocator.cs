@@ -4,6 +4,10 @@
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.ChangeLog;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Editors.HotkeyEditor;
+    using SqualrCore.Source.Editors.ScriptEditor;
+    using SqualrCore.Source.Editors.TextEditor;
+    using SqualrCore.Source.Editors.ValueEditor;
     using SqualrCore.Source.Main;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProcessSelector;
@@ -107,6 +111,61 @@
             get
             {
                 return ChangeLogViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Script Editor view model.
+        /// </summary>
+        public ScriptEditorViewModel ScriptEditorViewModel
+        {
+            get
+            {
+                return ScriptEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Text Editor view model.
+        /// </summary>
+        public TextEditorViewModel TextEditorViewModel
+        {
+            get
+            {
+                return TextEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Value Editor view model.
+        /// </summary>
+        public ValueEditorViewModel ValueEditorViewModel
+        {
+            get
+            {
+                return ValueEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets a Offset Editor view model.
+        /// </summary>
+        public OffsetEditorViewModel OffsetEditorViewModel
+        {
+            get
+            {
+                return OffsetEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets a Hotkey Editor view model.
+        /// </summary>
+        public HotkeyEditorViewModel HotkeyEditorViewModel
+        {
+            get
+            {
+                return HotkeyEditorViewModel.GetInstance();
             }
         }
     }

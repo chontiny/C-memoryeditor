@@ -12,7 +12,6 @@
     Height="320"
     d:DesignHeight="320"
     d:DesignWidth="320"
-    x:ClassModifier="internal"
     BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
     BorderThickness="2"
     DataContext="{Binding OffsetEditorViewModel, Source={StaticResource ViewModelLocator}}"

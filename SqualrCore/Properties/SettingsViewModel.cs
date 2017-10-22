@@ -1,12 +1,8 @@
 ﻿namespace SqualrCore.Properties
 {
-    using SqualrCore.Source.Api.Models;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.OperatingSystems;
     using System;
-    using System.IO;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -87,34 +83,6 @@
             get
             {
                 return parallelSettingsMedium.Value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the saved twitch access tokens.
-        /// </summary>
-        public AccessTokens AccessTokens
-        {
-            get
-            {
-                using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(Settings.Default.AccessTokens)))
-                {
-                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AccessTokens));
-
-                    return deserializer.ReadObject(memoryStream) as AccessTokens;
-                }
-            }
-
-            set
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(AccessTokens));
-                    serializer.WriteObject(memoryStream, value);
-
-                    Settings.Default.AccessTokens = Encoding.ASCII.GetString(memoryStream.ToArray());
-                    this.RaisePropertyChanged(nameof(this.AccessTokens));
-                }
             }
         }
 

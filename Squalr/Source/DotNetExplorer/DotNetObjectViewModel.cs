@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Engine.AddressResolver.DotNet
 {
     using Controls;
-    using PropertyViewer;
     using SqualrCore.Source.Engine.AddressResolver.DotNet;
+    using SqualrCore.Source.PropertyViewer;
     using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows.Media.Imaging;

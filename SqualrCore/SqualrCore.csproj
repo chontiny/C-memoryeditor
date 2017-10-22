@@ -159,9 +159,6 @@
     <Compile Include="View\Editors\ScriptEditor.xaml.cs">
       <DependentUpon>ScriptEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Editors\StreamIconEditor.xaml.cs">
-      <DependentUpon>StreamIconEditor.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Editors\TextEditor.xaml.cs">
       <DependentUpon>TextEditor.xaml</DependentUpon>
     </Compile>
@@ -184,36 +181,6 @@
     <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />
     <Compile Include="Source\ActionScheduler\ScheduledTask.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
-    <Compile Include="Source\Api\Exceptions\NotFoundException.cs" />
-    <Compile Include="Source\Api\Exceptions\ResponseStatusException.cs" />
-    <Compile Include="Source\Api\Exceptions\StatusException.cs" />
-    <Compile Include="Source\Api\Models\AccessTokens.cs" />
-    <Compile Include="Source\Api\Models\Cheat.cs" />
-    <Compile Include="Source\Api\Models\CheatVotes.cs" />
-    <Compile Include="Source\Api\Models\Game.cs" />
-    <Compile Include="Source\Api\Models\Library.cs" />
-    <Compile Include="Source\Api\Models\LibraryCheats.cs" />
-    <Compile Include="Source\Api\Models\OverlayMeta.cs" />
-    <Compile Include="Source\Api\Models\StoreCheats.cs" />
-    <Compile Include="Source\Api\Models\StreamIcon.cs" />
-    <Compile Include="Source\Api\Models\UnlockedCheat.cs" />
-    <Compile Include="Source\Api\Models\User.cs" />
-    <Compile Include="Source\Api\Models\Vote.cs" />
-    <Compile Include="Source\Api\NativeBrowser.cs" />
-    <Compile Include="Source\Api\PingClient.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Source\Api\SqualrApi.cs" />
-    <Compile Include="Source\Browse\BrowseCategory.cs" />
-    <Compile Include="Source\Browse\BrowsePage.cs" />
-    <Compile Include="Source\Browse\BrowseViewModel.cs" />
-    <Compile Include="Source\Browse\INavigable.cs" />
-    <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />
-    <Compile Include="Source\Browse\RefreshCoinsTask.cs" />
-    <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
-    <Compile Include="Source\Browse\StreamConfig\StreamConfigViewModel.cs" />
-    <Compile Include="Source\Browse\StreamConfig\StreamVotePollTask.cs" />
-    <Compile Include="Source\Browse\TwitchLogin\TwitchLoginViewModel.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />
     <Compile Include="Source\Controls\CenteredDialogBox.cs" />
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
@@ -234,9 +201,6 @@
     <Compile Include="Source\Editors\OffsetEditor\OffsetEditorViewModel.cs" />
     <Compile Include="Source\Editors\ScriptEditor\ScriptEditorModel.cs" />
     <Compile Include="Source\Editors\ScriptEditor\ScriptEditorViewModel.cs" />
-    <Compile Include="Source\Editors\StreamIconEditor\IStreamIconsLoadedObserver.cs" />
-    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
-    <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorViewModel.cs" />
     <Compile Include="Source\Editors\TextEditor\TextEditorModel.cs" />
     <Compile Include="Source\Editors\TextEditor\TextEditorViewModel.cs" />
     <Compile Include="Source\Editors\ValueEditor\ValueEditorModel.cs" />
@@ -328,8 +292,6 @@
     <Compile Include="Source\Main\MainViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\BrowseCategoryToVisibilityConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\BrowsePageToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\DataGridIndexConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
@@ -339,7 +301,6 @@
     <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\Output\OutputViewModel.cs" />
-    <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorTask.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
@@ -353,32 +314,6 @@
     <Compile Include="Source\ProjectExplorer\ProjectItems\ScriptItem.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
-    <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
-    <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
-    <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
-    <Compile Include="Source\Results\ScanResults\IScanResultsObserver.cs" />
-    <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
-    <Compile Include="Source\Results\ScanResults\ScanResultsViewModel.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ISnapshotPrefilter.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ShallowPointerPrefilter.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\SnapshotPrefilterFactory.cs" />
-    <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterModel.cs" />
-    <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterViewModel.cs" />
-    <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
-    <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorViewModel.cs" />
-    <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderModel.cs" />
-    <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderViewModel.cs" />
-    <Compile Include="Source\Scanners\ManualScanner\ManualScannerModel.cs" />
-    <Compile Include="Source\Scanners\ManualScanner\ManualScannerViewModel.cs" />
-    <Compile Include="Source\Scanners\PointerScanner\PointerScannerModel.cs" />
-    <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
-    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraint.cs" />
-    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintManager.cs" />
-    <Compile Include="Source\Scanners\ScannerBase.cs" />
-    <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
-    <Compile Include="Source\Scanners\ValueCollector\ValueCollectorViewModel.cs" />
     <Compile Include="Source\Scripting\Graphics\GraphicsCore.cs" />
     <Compile Include="Source\Scripting\Graphics\IGraphicsCore.cs" />
     <Compile Include="Source\Scripting\Hook\HookCore.cs" />
@@ -389,13 +324,6 @@
     <Compile Include="Source\Scripting\Memory\MemoryCore.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\Scripting\ScriptManager.cs" />
-    <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
-    <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
-    <Compile Include="Source\Snapshots\Snapshot.cs" />
-    <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
-    <Compile Include="Source\Snapshots\SnapshotManager.cs" />
-    <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
-    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Utils\CheckSyntax.cs" />
     <Compile Include="Source\Utils\Compression.cs" />
     <Compile Include="Source\Utils\Conversions.cs" />
@@ -434,6 +362,9 @@
     <Compile Include="Source\Utils\WebBrowserHelper.cs" />
     <Compile Include="View\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PropertyViewer.xaml.cs">
+      <DependentUpon>PropertyViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ViewModelLocator.cs" />
     <Compile Include="View\ViewTemplateSelector.cs" />
@@ -636,10 +567,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Editors\StreamIconEditor.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\Editors\TextEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -673,6 +600,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Output.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PropertyViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

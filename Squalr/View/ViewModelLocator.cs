@@ -1,12 +1,7 @@
 ﻿namespace Squalr.View
 {
     using Source.DotNetExplorer;
-    using Source.Editors.HotkeyEditor;
-    using Source.Editors.ScriptEditor;
-    using Source.Editors.TextEditor;
-    using Source.Editors.ValueEditor;
     using Source.Main;
-    using Source.ProjectExplorer;
     using Source.Results.PointerScanResults;
     using Source.Results.ScanResults;
     using Source.Scanners.ChangeCounter;
@@ -17,12 +12,6 @@
     using Source.Scanners.ValueCollector;
     using Source.Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.Browse;
-    using Squalr.Source.Browse.Library;
-    using Squalr.Source.Browse.Store;
-    using Squalr.Source.Browse.StreamConfig;
-    using Squalr.Source.Browse.TwitchLogin;
-    using Squalr.Source.Editors.StreamIconEditor;
 
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -137,61 +126,6 @@
         }
 
         /// <summary>
-        /// Gets the Browser view model.
-        /// </summary>
-        public BrowseViewModel BrowseViewModel
-        {
-            get
-            {
-                return BrowseViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Store view model.
-        /// </summary>
-        public StoreViewModel StoreViewModel
-        {
-            get
-            {
-                return StoreViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Library view model.
-        /// </summary>
-        public LibraryViewModel LibraryViewModel
-        {
-            get
-            {
-                return LibraryViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Twitch Login view model.
-        /// </summary>
-        public TwitchLoginViewModel TwitchLoginViewModel
-        {
-            get
-            {
-                return TwitchLoginViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Stream Config view model.
-        /// </summary>
-        public StreamConfigViewModel StreamConfigViewModel
-        {
-            get
-            {
-                return StreamConfigViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
         /// Gets the .Net Explorer view model.
         /// </summary>
         public DotNetExplorerViewModel DotNetExplorerViewModel
@@ -216,88 +150,11 @@
         /// <summary>
         /// Gets the Project Explorer view model.
         /// </summary>
-        public ProjectExplorerViewModel ProjectExplorerViewModel
-        {
-            get
-            {
-                return ProjectExplorerViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Project Explorer view model.
-        /// </summary>
         public ValueCollectorViewModel ValueCollectorViewModel
         {
             get
             {
                 return ValueCollectorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Stream Icon Editor view model.
-        /// </summary>
-        public StreamIconEditorViewModel StreamIconEditorViewModel
-        {
-            get
-            {
-                return StreamIconEditorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Script Editor view model.
-        /// </summary>
-        public ScriptEditorViewModel ScriptEditorViewModel
-        {
-            get
-            {
-                return ScriptEditorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Text Editor view model.
-        /// </summary>
-        public TextEditorViewModel TextEditorViewModel
-        {
-            get
-            {
-                return TextEditorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets the Value Editor view model.
-        /// </summary>
-        public ValueEditorViewModel ValueEditorViewModel
-        {
-            get
-            {
-                return ValueEditorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets a Offset Editor view model.
-        /// </summary>
-        public OffsetEditorViewModel OffsetEditorViewModel
-        {
-            get
-            {
-                return OffsetEditorViewModel.GetInstance();
-            }
-        }
-
-        /// <summary>
-        /// Gets a Hotkey Editor view model.
-        /// </summary>
-        public HotkeyEditorViewModel HotkeyEditorViewModel
-        {
-            get
-            {
-                return HotkeyEditorViewModel.GetInstance();
             }
         }
     }

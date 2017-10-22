@@ -9,7 +9,7 @@
     /// <summary>
     /// Interaction logic for ValueEditor.xaml.
     /// </summary>
-    internal partial class ValueEditor : Window
+    public partial class ValueEditor : Window
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueEditor" /> class.
