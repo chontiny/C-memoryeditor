@@ -1,9 +1,10 @@
-﻿namespace SqualrClient.Source.Browse.Library
+﻿namespace SqualrClient.Source.Library
 {
     using GalaSoft.MvvmLight.Command;
     using SqualrClient.Properties;
     using SqualrClient.Source.Api;
     using SqualrClient.Source.Api.Models;
+    using SqualrClient.Source.Navigation;
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
@@ -389,14 +390,11 @@
         /// Event fired when the browse view navigates to a new page.
         /// </summary>
         /// <param name="browsePage">The new browse page.</param>
-        public void OnNavigate(BrowsePage browsePage)
+        public void OnNavigate(NavigationPage browsePage)
         {
             switch (browsePage)
             {
-                case BrowsePage.LibraryHome:
-                    BrowseViewModel.GetInstance().Navigate(BrowsePage.LibraryGameSelect, addCurrentPageToHistory: false);
-                    break;
-                case BrowsePage.LibraryGameSelect:
+                case NavigationPage.GameSelect:
                     this.LoadGameList();
                     break;
                 default:
@@ -445,7 +443,7 @@
             this.libraries = null;
             this.RaisePropertyChanged(nameof(this.Libraries));
 
-            BrowseViewModel.GetInstance().Navigate(BrowsePage.LibrarySelect);
+            BrowseViewModel.GetInstance().Navigate(NavigationPage.LibrarySelect);
 
             Task.Run(() =>
             {
@@ -461,7 +459,7 @@
                 catch (Exception ex)
                 {
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error loading libraries", ex);
-                    BrowseViewModel.GetInstance().Navigate(BrowsePage.StoreGameSelect);
+                    BrowseViewModel.GetInstance().Navigate(NavigationPage.GameSelect);
                 }
                 finally
                 {

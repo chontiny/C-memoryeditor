@@ -4,13 +4,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:browse="clr-namespace:SqualrClient.View.Browse"
     xmlns:browseConverters="clr-namespace:SqualrClient.Source.Mvvm.Converters"
-    xmlns:browseViewModel="clr-namespace:SqualrClient.Source.Browse"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:library="clr-namespace:SqualrClient.View.Browse.Library"
     xmlns:loaders="clr-namespace:SqualrCore.View.Loaders;assembly=SqualrCore"
     xmlns:login="clr-namespace:SqualrClient.View.Browse.Login"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:navigationViewModel="clr-namespace:SqualrClient.Source.Navigation"
     xmlns:store="clr-namespace:SqualrClient.View.Browse.Store"
     xmlns:streaming="clr-namespace:SqualrClient.View.Browse.Streaming"
     x:Name="SqualrBrowseHome"
@@ -23,8 +23,8 @@
         <![CDATA[ public BrowseHome() { InitializeComponent(); }]]>
     </x:Code>
     <UserControl.Resources>
+        <browseConverters:BrowsePageToVisibilityConverter x:Key="BrowsePageToVisibilityConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-        <browseConverters:BrowseCategoryToVisibilityConverter x:Key="BrowseCategoryToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid>
@@ -39,7 +39,7 @@
             <Grid
                 Grid.Row="0"
                 Background="{StaticResource AvalonDock_Expression_BaseColor4}"
-                Visibility="{Binding CurrentCategory, Converter={StaticResource BrowseCategoryToVisibilityConverter}}">
+                Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
@@ -136,7 +136,7 @@
                     </MenuItem>
                 </Menu>
             </Grid>
-            <Grid Grid.Row="1" Visibility="{Binding CurrentCategory, Converter={StaticResource BrowseCategoryToVisibilityConverter}}">
+            <Grid Grid.Row="1" Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="64" />
@@ -229,17 +229,11 @@
                 </Grid>
             </Grid>
             <Grid Grid.Row="2">
-                <Grid Visibility="{Binding CurrentCategory, Converter={StaticResource BrowseCategoryToVisibilityConverter}, ConverterParameter={x:Static browseViewModel:BrowseCategory.Login}}">
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.Login}}">
                     <login:LoginHome />
                 </Grid>
-                <Grid Visibility="{Binding CurrentCategory, Converter={StaticResource BrowseCategoryToVisibilityConverter}, ConverterParameter={x:Static browseViewModel:BrowseCategory.Store}}">
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.LibraryEdit}}">
                     <store:StoreHome />
-                </Grid>
-                <Grid Visibility="{Binding CurrentCategory, Converter={StaticResource BrowseCategoryToVisibilityConverter}, ConverterParameter={x:Static browseViewModel:BrowseCategory.Library}}">
-                    <library:LibraryHome />
-                </Grid>
-                <Grid Visibility="{Binding CurrentCategory, Converter={StaticResource BrowseCategoryToVisibilityConverter}, ConverterParameter={x:Static browseViewModel:BrowseCategory.Stream}}">
-                    <streaming:StreamConfigurationHome />
                 </Grid>
             </Grid>
         </Grid>

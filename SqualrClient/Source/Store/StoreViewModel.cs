@@ -1,9 +1,10 @@
-﻿namespace SqualrClient.Source.Browse.Store
+﻿namespace SqualrClient.Source.Store
 {
     using GalaSoft.MvvmLight.Command;
     using SqualrClient.Properties;
     using SqualrClient.Source.Api;
     using SqualrClient.Source.Api.Models;
+    using SqualrClient.Source.Navigation;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using System;
@@ -222,16 +223,10 @@
         /// Event fired when the browse view navigates to a new page.
         /// </summary>
         /// <param name="browsePage">The new browse page.</param>
-        public void OnNavigate(BrowsePage browsePage)
+        public void OnNavigate(NavigationPage browsePage)
         {
             switch (browsePage)
             {
-                case BrowsePage.StoreHome:
-                    BrowseViewModel.GetInstance().Navigate(BrowsePage.StoreGameSelect, addCurrentPageToHistory: false);
-                    break;
-                case BrowsePage.StoreGameSelect:
-                    this.LoadGameList();
-                    break;
                 default:
                     return;
             }
@@ -271,7 +266,6 @@
         private void SelectGame(Game game)
         {
             // Deselect current game
-            BrowseViewModel.GetInstance().Navigate(BrowsePage.CheatStore);
             this.IsCheatListLoading = true;
             this.LockedCheatList = null;
             this.UnlockedCheatList = null;

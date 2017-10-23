@@ -1,6 +1,6 @@
 ﻿namespace SqualrClient.Source.Mvvm.Converters
 {
-    using SqualrClient.Source.Browse;
+    using SqualrClient.Source.Navigation;
     using System;
     using System.Globalization;
     using System.Windows;
@@ -9,7 +9,7 @@
     /// <summary>
     /// Converter class to convert a boolean to a <see cref="Visibility"/> value.
     /// </summary>
-    [ValueConversion(typeof(BrowsePage), typeof(Visibility))]
+    [ValueConversion(typeof(NavigationPage), typeof(Visibility))]
     public class BrowsePageToVisibilityConverter : IValueConverter
     {
         /// <summary> 
@@ -24,14 +24,14 @@
         /// </returns> 
         public Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
-            if (value is BrowsePage && targetType == typeof(Visibility))
+            if (value is NavigationPage && targetType == typeof(Visibility))
             {
-                BrowsePage val = (BrowsePage)value;
+                NavigationPage val = (NavigationPage)value;
 
                 // If no parameter specified, we return Visible if not on an unspecified screen
                 if (parameter == null)
                 {
-                    if (val == BrowsePage.None)
+                    if (val == NavigationPage.None)
                     {
                         return Visibility.Collapsed;
                     }
@@ -41,7 +41,7 @@
                     }
                 }
 
-                BrowsePage targetVal = (BrowsePage)parameter;
+                NavigationPage targetVal = (NavigationPage)parameter;
 
                 if (val == targetVal)
                 {

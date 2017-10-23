@@ -1,13 +1,13 @@
-﻿namespace SqualrClient.Source.Browse
+﻿namespace SqualrClient.Source.Navigation
 {
     using GalaSoft.MvvmLight.Command;
     using SqualrClient.Properties;
     using SqualrClient.Source.Api;
     using SqualrClient.Source.Api.Models;
-    using SqualrClient.Source.Browse.Library;
-    using SqualrClient.Source.Browse.Store;
-    using SqualrClient.Source.Browse.StreamConfig;
     using SqualrClient.Source.Browse.TwitchLogin;
+    using SqualrClient.Source.Library;
+    using SqualrClient.Source.Store;
+    using SqualrClient.Source.Stream;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils;
@@ -48,7 +48,7 @@
         /// <summary>
         /// The current browse page.
         /// </summary>
-        private BrowsePage currentPage;
+        private NavigationPage currentPage;
 
         /// <summary>
         /// A value indicating whether the login status is loading.
@@ -61,16 +61,13 @@
         private BrowseViewModel() : base("Browse")
         {
             this.ContentId = BrowseViewModel.ToolContentId;
-            this.PreviousPages = new Stack<BrowsePage>();
-            this.NextPages = new Stack<BrowsePage>();
+            this.PreviousPages = new Stack<NavigationPage>();
+            this.NextPages = new Stack<NavigationPage>();
             this.AccessLock = new Object();
 
-            this.OpenLoginScreenCommand = new RelayCommand(() => this.Navigate(BrowsePage.Login), () => true);
+            this.OpenLoginScreenCommand = new RelayCommand(() => this.Navigate(NavigationPage.Login), () => true);
             this.LogoutCommand = new RelayCommand(() => this.Logout(), () => true);
             this.OpenVirtualCurrencyStoreCommand = new RelayCommand(() => this.OpenVirtualCurrencyStore(), () => true);
-            this.OpenStoreCommand = new RelayCommand(() => this.Navigate(BrowsePage.StoreHome), () => true);
-            this.OpenLibraryCommand = new RelayCommand(() => this.Navigate(BrowsePage.LibraryHome), () => true);
-            this.OpenStreamCommand = new RelayCommand(() => this.Navigate(BrowsePage.StreamHome), () => true);
             this.NavigateForwardCommand = new RelayCommand(() => this.NavigateForward());
             this.NavigateBackCommand = new RelayCommand(() => this.NavigateBack());
 
@@ -164,15 +161,15 @@
         {
             get
             {
-                switch (this.CurrentCategory)
+                switch (this.CurrentPage)
                 {
-                    case BrowseCategory.Library:
-                        return "Library".ToUpper();
-                    case BrowseCategory.Store:
+                    case NavigationPage.GameSelect:
+                        return "Select a Game".ToUpper();
+                    case NavigationPage.LibrarySelect:
+                        return "Select a Library".ToUpper();
+                    case NavigationPage.LibraryEdit:
                         return "Store".ToUpper();
-                    case BrowseCategory.Stream:
-                        return "Stream".ToUpper();
-                    case BrowseCategory.Login:
+                    case NavigationPage.Login:
                     default:
                         return "Login".ToUpper();
 
@@ -183,7 +180,7 @@
         /// <summary>
         /// Gets or sets the current browse section.
         /// </summary>
-        public BrowsePage CurrentPage
+        public NavigationPage CurrentPage
         {
             get
             {
@@ -194,35 +191,7 @@
             {
                 this.currentPage = value;
                 this.RaisePropertyChanged(nameof(this.CurrentPage));
-                this.RaisePropertyChanged(nameof(this.CurrentCategory));
                 this.RaisePropertyChanged(nameof(this.BannerText));
-            }
-        }
-
-        /// <summary>
-        /// Gets the current browse category based on the current page.
-        /// </summary>
-        public BrowseCategory CurrentCategory
-        {
-            get
-            {
-                switch (this.CurrentPage)
-                {
-                    case BrowsePage.LibraryHome:
-                    case BrowsePage.LibrarySelect:
-                    case BrowsePage.LibraryGameSelect:
-                        return BrowseCategory.Library;
-                    case BrowsePage.StreamHome:
-                        return BrowseCategory.Stream;
-                    case BrowsePage.StoreHome:
-                    case BrowsePage.StoreGameSelect:
-                    case BrowsePage.CheatStore:
-                        return BrowseCategory.Store;
-                    case BrowsePage.Login:
-                        return BrowseCategory.Login;
-                    default:
-                        return BrowseCategory.None;
-                }
             }
         }
 
@@ -286,12 +255,12 @@
         /// <summary>
         /// Gets or sets the previous pages in the browse history.
         /// </summary>
-        private Stack<BrowsePage> PreviousPages { get; set; }
+        private Stack<NavigationPage> PreviousPages { get; set; }
 
         /// <summary>
         /// Gets or sets the next pages in the browse history.
         /// </summary>
-        private Stack<BrowsePage> NextPages { get; set; }
+        private Stack<NavigationPage> NextPages { get; set; }
 
         /// <summary>
         /// Gets or sets the access lock to page history.
@@ -302,7 +271,7 @@
         /// Navigates the Browse view to the specified page.
         /// </summary>
         /// <param name="newPage">The page to which to navigate.</param>
-        public void Navigate(BrowsePage newPage, Boolean addCurrentPageToHistory = true, Boolean clearHistory = false)
+        public void Navigate(NavigationPage newPage, Boolean addCurrentPageToHistory = true, Boolean clearHistory = false)
         {
             if (this.CurrentPage == newPage)
             {
@@ -318,7 +287,7 @@
                 }
 
                 // Save current page in history (not including none or login page)
-                if (addCurrentPageToHistory && this.CurrentPage != BrowsePage.None && this.CurrentPage != BrowsePage.Login)
+                if (addCurrentPageToHistory && this.CurrentPage != NavigationPage.None && this.CurrentPage != NavigationPage.Login)
                 {
                     this.NextPages.Clear();
                     this.PreviousPages.Push(this.CurrentPage);
@@ -336,7 +305,7 @@
         /// </summary>
         public void NavigateBack()
         {
-            BrowsePage previousPage;
+            NavigationPage previousPage;
 
             lock (this.AccessLock)
             {
@@ -357,7 +326,7 @@
         /// </summary>
         public void NavigateForward()
         {
-            BrowsePage nextPage;
+            NavigationPage nextPage;
 
             lock (this.AccessLock)
             {
@@ -401,11 +370,11 @@
         {
             if (!this.IsLoggedIn)
             {
-                this.Navigate(BrowsePage.Login, addCurrentPageToHistory: true, clearHistory: true);
+                this.Navigate(NavigationPage.Login, addCurrentPageToHistory: true, clearHistory: true);
             }
             else
             {
-                this.Navigate(BrowsePage.StoreHome, addCurrentPageToHistory: true, clearHistory: true);
+                this.Navigate(NavigationPage.GameSelect, addCurrentPageToHistory: true, clearHistory: true);
             }
         }
 
@@ -450,7 +419,7 @@
         {
             SettingsViewModel.GetInstance().AccessTokens = null;
             Settings.Default.Save();
-            this.Navigate(BrowsePage.Login);
+            this.Navigate(NavigationPage.Login);
         }
 
         /// <summary>

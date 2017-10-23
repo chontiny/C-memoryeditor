@@ -2,12 +2,12 @@
 {
     using Source.Main;
     using SqualrClient.Properties;
-    using SqualrClient.Source.Browse;
-    using SqualrClient.Source.Browse.Library;
-    using SqualrClient.Source.Browse.Store;
-    using SqualrClient.Source.Browse.StreamConfig;
     using SqualrClient.Source.Browse.TwitchLogin;
     using SqualrClient.Source.Editors.StreamIconEditor;
+    using SqualrClient.Source.Library;
+    using SqualrClient.Source.Navigation;
+    using SqualrClient.Source.Store;
+    using SqualrClient.Source.Stream;
 
     /// <summary>
     /// This class contains static references to all the view models in the

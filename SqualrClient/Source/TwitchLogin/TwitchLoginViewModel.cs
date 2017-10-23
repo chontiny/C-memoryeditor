@@ -4,6 +4,7 @@
     using SqualrClient.Properties;
     using SqualrClient.Source.Api;
     using SqualrClient.Source.Api.Models;
+    using SqualrClient.Source.Navigation;
     using SqualrClient.View.Browse.Login;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
@@ -83,11 +84,11 @@
         /// Event fired when the browse view navigates to a new page.
         /// </summary>
         /// <param name="browsePage">The new browse page.</param>
-        public void OnNavigate(BrowsePage browsePage)
+        public void OnNavigate(NavigationPage browsePage)
         {
             switch (browsePage)
             {
-                case BrowsePage.Login:
+                case NavigationPage.Login:
                     break;
                 default:
                     return;

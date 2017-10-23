@@ -1,4 +1,4 @@
-﻿namespace SqualrClient.Source.Browse.StreamConfig
+﻿namespace SqualrClient.Source.Store
 {
     using SqualrClient.Properties;
     using SqualrClient.Source.Api;

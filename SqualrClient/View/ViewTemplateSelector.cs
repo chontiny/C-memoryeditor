@@ -1,11 +1,11 @@
 ﻿namespace SqualrClient.View
 {
     using SqualrClient.Properties;
-    using SqualrClient.Source.Browse;
-    using SqualrClient.Source.Browse.Library;
-    using SqualrClient.Source.Browse.StreamConfig;
     using SqualrClient.Source.Browse.TwitchLogin;
     using SqualrClient.Source.Editors.StreamIconEditor;
+    using SqualrClient.Source.Library;
+    using SqualrClient.Source.Navigation;
+    using SqualrClient.Source.Stream;
     using System.Windows;
 
     /// <summary>

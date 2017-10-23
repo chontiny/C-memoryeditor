@@ -281,7 +281,7 @@
                                                         <Image
                                                             Width="16"
                                                             Height="16"
-                                                            Source="pack://application:,,,/SqualrCore;component/Content/Icons/Increased.png" />
+                                                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Increased.png" />
                                                     </MenuItem.Header>
                                                 </MenuItem>
                                             </Menu>
@@ -380,7 +380,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Icons/DownArrows.png" />
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/DownArrows.png" />
                                 </MenuItem.Header>
                             </MenuItem>
                         </Menu>
@@ -421,7 +421,7 @@
                                                             <Image
                                                                 Width="16"
                                                                 Height="16"
-                                                                Source="pack://application:,,,/SqualrCore;component/Content/Icons/X.png" />
+                                                                Source="pack://application:,,,/SqualrCore;component/Content/Images/X.png" />
                                                         </MenuItem.Header>
                                                     </MenuItem>
                                                 </Menu>
@@ -463,7 +463,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Icons/Cancel.png" />
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/Cancel.png" />
                             </MenuItem.Header>
                         </MenuItem>
                     </Menu>

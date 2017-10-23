@@ -1,9 +1,10 @@
-﻿namespace SqualrClient.Source.Browse.StreamConfig
+﻿namespace SqualrClient.Source.Stream
 {
     using GalaSoft.MvvmLight.Command;
     using SqualrClient.Properties;
     using SqualrClient.Source.Api;
     using SqualrClient.Source.Api.Models;
+    using SqualrClient.Source.Navigation;
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
@@ -152,12 +153,10 @@
         /// Event fired when the browse view navigates to a new page.
         /// </summary>
         /// <param name="browsePage">The new browse page.</param>
-        public void OnNavigate(BrowsePage browsePage)
+        public void OnNavigate(NavigationPage browsePage)
         {
             switch (browsePage)
             {
-                case BrowsePage.StreamHome:
-                    break;
                 default:
                     return;
             }

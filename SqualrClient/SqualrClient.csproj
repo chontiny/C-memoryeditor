@@ -118,21 +118,19 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Source\Api\SqualrApi.cs" />
-    <Compile Include="Source\Browse\BrowseCategory.cs" />
-    <Compile Include="Source\Browse\BrowsePage.cs" />
-    <Compile Include="Source\Browse\BrowseViewModel.cs" />
-    <Compile Include="Source\Browse\INavigable.cs" />
-    <Compile Include="Source\Browse\Library\LibraryViewModel.cs" />
-    <Compile Include="Source\Browse\RefreshCoinsTask.cs" />
-    <Compile Include="Source\Browse\Store\StoreViewModel.cs" />
-    <Compile Include="Source\Browse\StreamConfig\StreamConfigViewModel.cs" />
-    <Compile Include="Source\Browse\StreamConfig\StreamVotePollTask.cs" />
-    <Compile Include="Source\Browse\TwitchLogin\TwitchLoginViewModel.cs" />
+    <Compile Include="Source\Navigation\NavigationPage.cs" />
+    <Compile Include="Source\Navigation\BrowseViewModel.cs" />
+    <Compile Include="Source\Navigation\INavigable.cs" />
+    <Compile Include="Source\Library\LibraryViewModel.cs" />
+    <Compile Include="Source\Store\RefreshCoinsTask.cs" />
+    <Compile Include="Source\Store\StoreViewModel.cs" />
+    <Compile Include="Source\Stream\StreamConfigViewModel.cs" />
+    <Compile Include="Source\Stream\StreamVotePollTask.cs" />
+    <Compile Include="Source\TwitchLogin\TwitchLoginViewModel.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\IStreamIconsLoadedObserver.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorModel.cs" />
     <Compile Include="Source\Editors\StreamIconEditor\StreamIconEditorViewModel.cs" />
     <Compile Include="Source\Main\MainViewModel.cs" />
-    <Compile Include="Source\Mvvm\Converters\BrowseCategoryToVisibilityConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\BrowsePageToVisibilityConverter.cs" />
     <Compile Include="View\Editors\StreamIconEditor.xaml.cs">
       <DependentUpon>StreamIconEditor.xaml</DependentUpon>

@@ -4,10 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:browse="clr-namespace:SqualrClient.View.Browse"
     xmlns:browseConverters="clr-namespace:SqualrClient.Source.Mvvm.Converters"
-    xmlns:browseViewModel="clr-namespace:SqualrClient.Source.Browse"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:navigationViewModel="clr-namespace:SqualrClient.Source.Navigation"
     xmlns:store="clr-namespace:SqualrClient.View.Browse.Store"
     x:Name="SqualrStoreHome"
     d:DesignHeight="480"
@@ -28,10 +28,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
-                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static browseViewModel:BrowsePage.StoreGameSelect}}">
-                    <store:GamesPage />
-                </Grid>
-                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static browseViewModel:BrowsePage.CheatStore}}">
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.LibraryEdit}}">
                     <store:CheatsPage />
                 </Grid>
             </Grid>
