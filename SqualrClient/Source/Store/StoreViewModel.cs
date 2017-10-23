@@ -8,9 +8,7 @@
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -33,11 +31,6 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// The list of games.
-        /// </summary>
-        private IEnumerable<Game> gameList;
-
-        /// <summary>
         /// The list of cheats in the store for the selected game.
         /// </summary>
         private ObservableCollection<Cheat> lockedCheatList;
@@ -48,19 +41,9 @@
         private ObservableCollection<Cheat> unlockedCheatList;
 
         /// <summary>
-        /// A value indicating whether the game list is loading.
-        /// </summary>
-        private Boolean isGameListLoading;
-
-        /// <summary>
         /// A value indicating whether the cheat list is loading.
         /// </summary>
         private Boolean isCheatListLoading;
-
-        /// <summary>
-        /// The current search term.
-        /// </summary>
-        private String searchTerm;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="StoreViewModel" /> class from being created.
@@ -72,75 +55,15 @@
             this.LockedCheatList = new ObservableCollection<Cheat>();
             this.UnlockedCheatList = new ObservableCollection<Cheat>();
 
-            this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
             this.UnlockCheatCommand = new RelayCommand<Cheat>((cheat) => this.UnlockCheat(cheat), (cheat) => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
-        /// Gets the command to select a game.
-        /// </summary>
-        public ICommand SelectGameCommand { get; private set; }
-
-        /// <summary>
         /// Gets the command to unlock a cheat.
         /// </summary>
         public ICommand UnlockCheatCommand { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the current search term.
-        /// </summary>
-        public String SearchTerm
-        {
-            get
-            {
-                return this.searchTerm;
-            }
-
-            set
-            {
-                this.searchTerm = value;
-                this.RaisePropertyChanged(nameof(this.SearchTerm));
-                this.RaisePropertyChanged(nameof(this.FilteredGameList));
-            }
-        }
-
-        /// <summary>
-        /// Gets the filtered list of games.
-        /// </summary>
-        public IEnumerable<Game> FilteredGameList
-        {
-            get
-            {
-                if (String.IsNullOrWhiteSpace(this.SearchTerm))
-                {
-                    return this.GameList;
-                }
-
-                return this.GameList?
-                    .Select(item => item)
-                    .Where(item => item.GameName.IndexOf(this.SearchTerm, StringComparison.InvariantCultureIgnoreCase) >= 0);
-            }
-        }
-
-        /// <summary>
-        /// Gets the list of games.
-        /// </summary>
-        public IEnumerable<Game> GameList
-        {
-            get
-            {
-                return this.gameList;
-            }
-
-            private set
-            {
-                this.gameList = value;
-                this.RaisePropertyChanged(nameof(this.GameList));
-                this.RaisePropertyChanged(nameof(this.FilteredGameList));
-            }
-        }
 
         /// <summary>
         /// Gets or sets the list of cheats in the store for the selected game.
@@ -177,23 +100,6 @@
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the game list is loading.
-        /// </summary>
-        public Boolean IsGameListLoading
-        {
-            get
-            {
-                return this.isGameListLoading;
-            }
-
-            set
-            {
-                this.isGameListLoading = value;
-                this.RaisePropertyChanged(nameof(this.IsGameListLoading));
-            }
-        }
-
-        /// <summary>
         /// Gets or sets a value indicating whether the cheat list is loading.
         /// </summary>
         public Boolean IsCheatListLoading
@@ -225,6 +131,9 @@
         /// <param name="browsePage">The new browse page.</param>
         public void OnNavigate(NavigationPage browsePage)
         {
+            this.RaisePropertyChanged(nameof(this.LockedCheatList));
+            this.RaisePropertyChanged(nameof(this.UnlockedCheatList));
+
             switch (browsePage)
             {
                 default:
@@ -233,37 +142,10 @@
         }
 
         /// <summary>
-        /// Loads the list of games from the API.
-        /// </summary>
-        private void LoadGameList()
-        {
-            this.IsGameListLoading = true;
-            this.GameList = null;
-
-            Task.Run(() =>
-            {
-                try
-                {
-                    this.GameList = SqualrApi.GetGameList();
-                }
-                catch (Exception ex)
-                {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error fetching game list", ex);
-
-                    BrowseViewModel.GetInstance().NavigateBack();
-                }
-                finally
-                {
-                    this.IsGameListLoading = false;
-                }
-            });
-        }
-
-        /// <summary>
         /// Selects a specific game for which to view the store.
         /// </summary>
         /// <param name="game">The selected game.</param>
-        private void SelectGame(Game game)
+        public void SelectGame(Game game)
         {
             // Deselect current game
             this.IsCheatListLoading = true;

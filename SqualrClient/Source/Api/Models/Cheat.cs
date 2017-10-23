@@ -164,18 +164,7 @@
                 DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(ProjectItem));
 
                 this.ProjectItem = deserializer.ReadObject(memoryStream) as ProjectItem;
-                throw new NotImplementedException();
-                // this.ProjectItem.AssociateCheat(this);
             }
-        }
-
-        /// <summary>
-        /// Loads the default stream settings into the associated project item.
-        /// </summary>
-        public void LoadDefaultStreamSettings()
-        {
-            throw new NotImplementedException();
-            // this.ProjectItem.AssociateCheat(this, loadDefaults: true);
         }
 
         private void UpdateStreamMeta()

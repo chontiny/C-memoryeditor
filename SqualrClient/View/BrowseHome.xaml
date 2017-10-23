@@ -44,56 +44,6 @@
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Menu Grid.Column="0" Background="Transparent">
-                    <MenuItem
-                        Padding="4"
-                        Command="{Binding OpenStoreCommand}"
-                        ToolTip="Open Store">
-                        <MenuItem.Header>
-                            <Grid>
-                                <TextBlock
-                                    Foreground="White"
-                                    Opacity="0.5"
-                                    Text="STORE">
-                                    <TextBlock.Effect>
-                                        <BlurEffect KernelType="Gaussian" Radius="8.0" />
-                                    </TextBlock.Effect>
-                                </TextBlock>
-                                <TextBlock Foreground="LightCyan" Text="STORE" />
-                            </Grid>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Padding="4" Command="{Binding OpenLibraryCommand}">
-                        <MenuItem.Header>
-                            <Grid>
-                                <TextBlock
-                                    Foreground="White"
-                                    Opacity="0.5"
-                                    Text="LIBRARY">
-                                    <TextBlock.Effect>
-                                        <BlurEffect KernelType="Gaussian" Radius="8.0" />
-                                    </TextBlock.Effect>
-                                </TextBlock>
-                                <TextBlock Foreground="LightCyan" Text="LIBRARY" />
-                            </Grid>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Padding="4" Command="{Binding OpenStreamCommand}">
-                        <MenuItem.Header>
-                            <Grid>
-                                <TextBlock
-                                    Foreground="White"
-                                    Opacity="0.5"
-                                    Text="STREAM">
-                                    <TextBlock.Effect>
-                                        <BlurEffect KernelType="Gaussian" Radius="8.0" />
-                                    </TextBlock.Effect>
-                                </TextBlock>
-                                <TextBlock Foreground="LightCyan" Text="STREAM" />
-                            </Grid>
-                        </MenuItem.Header>
-                    </MenuItem>
-                </Menu>
                 <Menu Grid.Column="1" Background="Transparent">
                     <MenuItem Padding="4" Command="{Binding LogoutCommand}">
                         <MenuItem.Header>
@@ -207,12 +157,11 @@
                                 </MenuItem.Header>
                             </MenuItem>
                         </Menu>
-
                     </Grid>
                     <Grid Grid.Column="1">
                         <TextBlock
                             HorizontalAlignment="Center"
-                            FontSize="32"
+                            FontSize="24"
                             Foreground="White"
                             Opacity="0.5"
                             Text="{Binding BannerText}">
@@ -222,7 +171,7 @@
                         </TextBlock>
                         <TextBlock
                             HorizontalAlignment="Center"
-                            FontSize="32"
+                            FontSize="24"
                             Foreground="LightCyan"
                             Text="{Binding BannerText}" />
                     </Grid>

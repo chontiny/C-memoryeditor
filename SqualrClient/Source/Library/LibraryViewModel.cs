@@ -5,6 +5,7 @@
     using SqualrClient.Source.Api;
     using SqualrClient.Source.Api.Models;
     using SqualrClient.Source.Navigation;
+    using SqualrClient.Source.Store;
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
@@ -373,6 +374,29 @@
         }
 
         /// <summary>
+        /// Gets the banner text.
+        /// </summary>
+        public String BannerText
+        {
+            get
+            {
+                switch (BrowseViewModel.GetInstance().CurrentPage)
+                {
+                    case NavigationPage.GameSelect:
+                        return "Select a Game".ToUpper();
+                    case NavigationPage.LibrarySelect:
+                        return (this.SelectedGame?.GameName)?.ToUpper();
+                    case NavigationPage.LibraryEdit:
+                        return ("Library - " + this.SelectedGame?.GameName)?.ToUpper();
+                    case NavigationPage.Login:
+                    default:
+                        return String.Empty;
+
+                }
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the cancellation source for a running task.
         /// </summary>
         private CancellationTokenSource CancellationTokenSource { get; set; }
@@ -392,6 +416,8 @@
         /// <param name="browsePage">The new browse page.</param>
         public void OnNavigate(NavigationPage browsePage)
         {
+            this.RaisePropertyChanged(nameof(this.BannerText));
+
             switch (browsePage)
             {
                 case NavigationPage.GameSelect:
@@ -443,18 +469,20 @@
             this.libraries = null;
             this.RaisePropertyChanged(nameof(this.Libraries));
 
-            BrowseViewModel.GetInstance().Navigate(NavigationPage.LibrarySelect);
-
             Task.Run(() =>
             {
                 try
                 {
+                    StoreViewModel.GetInstance().SelectGame(game);
+
                     // Select new game
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     IEnumerable<Library> libraries = SqualrApi.GetLibraries(accessTokens.AccessToken, game.GameId);
                     this.libraries = new List<Library>(libraries);
                     this.RaisePropertyChanged(nameof(this.Libraries));
                     this.SelectedGame = game;
+
+                    BrowseViewModel.GetInstance().Navigate(NavigationPage.LibrarySelect);
                 }
                 catch (Exception ex)
                 {
@@ -495,6 +523,8 @@
                     this.cheatsInLibrary = new List<Cheat>(libraryCheats.CheatsInLibrary);
                     this.RaisePropertyChanged(nameof(this.CheatsAvailable));
                     this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
+
+                    BrowseViewModel.GetInstance().Navigate(NavigationPage.LibraryEdit);
                 }
                 catch (Exception ex)
                 {
@@ -616,7 +646,6 @@
             try
             {
                 SqualrApi.AddCheatToLibrary(accessTokens.AccessToken, this.SelectedLibrary.LibraryId, cheat.CheatId);
-                cheat.LoadDefaultStreamSettings();
 
                 this.cheatsAvailable.Remove(cheat);
                 this.cheatsInLibrary.Insert(0, cheat);

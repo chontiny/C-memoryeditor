@@ -25,14 +25,109 @@
     <Border>
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+            <Grid Grid.Row="0" DataContext="{Binding Source={StaticResource ViewModelLocator}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Rectangle Grid.Column="1">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Offset="0.0" Color="Transparent" />
+                            <GradientStop Offset="0.5" Color="MediumPurple" />
+                            <GradientStop Offset="1.0" Color="Transparent" />
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <Grid Grid.Column="0">
+                    <Menu
+                        Grid.Row="0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Background="Transparent"
+                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                        <MenuItem
+                            Width="24"
+                            Height="24"
+                            Command="{Binding BrowseViewModel.NavigateBackCommand}"
+                            IsEnabled="{Binding BrowseViewModel.IsBackAvailable}"
+                            ToolTip="Navigate back">
+                            <MenuItem.Header>
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/Previous.png">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.5" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Width="24"
+                            Height="24"
+                            Command="{Binding BrowseViewModel.NavigateForwardCommand}"
+                            IsEnabled="{Binding BrowseViewModel.IsForwardAvailable}"
+                            ToolTip="Navigate forward">
+                            <MenuItem.Header>
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/Next.png">
+                                    <Image.Style>
+                                        <Style TargetType="Image">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.5" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </Menu>
+                </Grid>
+                <Grid Grid.Column="1">
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="18"
+                        Foreground="White"
+                        Opacity="0.5"
+                        Text="{Binding LibraryViewModel.BannerText}">
+                        <TextBlock.Effect>
+                            <BlurEffect KernelType="Gaussian" Radius="8.0" />
+                        </TextBlock.Effect>
+                    </TextBlock>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        FontSize="18"
+                        Foreground="LightCyan"
+                        Text="{Binding LibraryViewModel.BannerText}" />
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="1" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
                 <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.GameSelect}}">
                     <library:GamesPage />
                 </Grid>
                 <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.LibrarySelect}}">
                     <library:LibrariesPage />
+                </Grid>
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.LibraryEdit}}">
+                    <library:LibraryPage />
                 </Grid>
             </Grid>
         </Grid>

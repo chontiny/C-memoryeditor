@@ -164,11 +164,9 @@
                 switch (this.CurrentPage)
                 {
                     case NavigationPage.GameSelect:
-                        return "Select a Game".ToUpper();
                     case NavigationPage.LibrarySelect:
-                        return "Select a Library".ToUpper();
                     case NavigationPage.LibraryEdit:
-                        return "Store".ToUpper();
+                        return "Edit Library".ToUpper();
                     case NavigationPage.Login:
                     default:
                         return "Login".ToUpper();
