@@ -59,7 +59,7 @@
                                     <TextBlock Text="Available Cheats" />
                                 </Border>
                                 <Border Grid.Column="1">
-                                    <TextBlock Text="Library" />
+                                    <TextBlock Text="Store" />
                                 </Border>
                             </Grid>
                         </Grid>
@@ -76,14 +76,11 @@
 
                 <!--  AVAILABLE CHEATS  -->
                 <Grid Grid.Column="0" DataContext="{Binding LibraryViewModel, Source={StaticResource ViewModelLocator}}">
-                    <ScrollViewer
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                        BorderThickness="1"
-                        HorizontalScrollBarVisibility="Hidden"
-                        VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
                         <ListView
                             Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                            BorderThickness="0"
+                            BorderBrush="White"
+                            BorderThickness="1"
                             ItemsSource="{Binding CheatsAvailable}">
                             <ListView.ItemContainerStyle>
                                 <Style TargetType="ListViewItem">
@@ -99,7 +96,7 @@
                                         </Grid.ColumnDefinitions>
                                         <Menu Grid.Column="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
                                             <MenuItem
-                                                Command="{Binding ElementName=SqualrLibrariesPage, Path=DataContext.AddCheatToLibraryCommand}"
+                                                Command="{Binding LibraryViewModel.AddCheatToLibraryCommand, Source={StaticResource ViewModelLocator}}"
                                                 CommandParameter="{Binding .}"
                                                 ToolTip="Add Cheat">
                                                 <MenuItem.Header>
@@ -130,14 +127,11 @@
 
                 <!--  CHEATS IN STORE  -->
                 <Grid Grid.Column="1" DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}">
-                    <ScrollViewer
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                        BorderThickness="1"
-                        HorizontalScrollBarVisibility="Hidden"
-                        VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
                         <ListView
                             Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                            BorderThickness="0"
+                            BorderBrush="White"
+                            BorderThickness="1"
                             ItemsSource="{Binding LockedCheatList}">
                             <ListView.ItemTemplate>
                                 <DataTemplate>
@@ -202,6 +196,7 @@
             </Grid>
 
             <!--  FOOTER  -->
+
             <Menu
                 Grid.Row="2"
                 Background="{StaticResource AvalonDock_Expression_BaseColor1}"
@@ -213,6 +208,16 @@
                         <DockPanel HorizontalAlignment="Stretch" />
                     </ItemsPanelTemplate>
                 </Menu.ItemsPanel>
+                <TextBlock Foreground="White" Text="Edit Library Name:" />
+                <TextBox
+                    MinWidth="96"
+                    Margin="0"
+                    Padding="0"
+                    Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                    Style="{StaticResource PlaceHolder}"
+                    Tag="Library Name"
+                    Text="{Binding SelectedLibraryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <MenuItem
                     HorizontalAlignment="Right"
                     Command="{Binding LibraryViewModel.DeleteLibraryCommand}"

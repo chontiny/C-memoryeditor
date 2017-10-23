@@ -101,21 +101,25 @@
                     </Menu>
                 </Grid>
                 <Grid Grid.Column="1">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontSize="18"
-                        Foreground="White"
-                        Opacity="0.5"
-                        Text="{Binding LibraryViewModel.BannerText}">
-                        <TextBlock.Effect>
-                            <BlurEffect KernelType="Gaussian" Radius="8.0" />
-                        </TextBlock.Effect>
-                    </TextBlock>
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        FontSize="18"
-                        Foreground="LightCyan"
-                        Text="{Binding LibraryViewModel.BannerText}" />
+                    <Viewbox Stretch="Uniform" StretchDirection="DownOnly"  Margin="8,0,8,0">
+                        <Grid>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="18"
+                                Foreground="White"
+                                Opacity="0.5"
+                                Text="{Binding LibraryViewModel.BannerText}">
+                                <TextBlock.Effect>
+                                    <BlurEffect KernelType="Gaussian" Radius="8.0" />
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                FontSize="18"
+                                Foreground="LightCyan"
+                                Text="{Binding LibraryViewModel.BannerText}" />
+                        </Grid>
+                    </Viewbox>
                 </Grid>
             </Grid>
 

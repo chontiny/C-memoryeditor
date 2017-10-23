@@ -165,6 +165,7 @@
                 {
                     case NavigationPage.GameSelect:
                     case NavigationPage.LibrarySelect:
+                        return String.Empty;
                     case NavigationPage.LibraryEdit:
                         return "Edit Library".ToUpper();
                     case NavigationPage.Login:

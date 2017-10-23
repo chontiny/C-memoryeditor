@@ -22,23 +22,11 @@
         <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <TextBox
-                    Height="18"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor4}"
-                    BorderBrush="White"
-                    BorderThickness="1"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                    Style="{StaticResource PlaceHolder}"
-                    Tag="Search Games"
-                    Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>
 
             <!--  HEADERS  -->
-            <ListView Grid.Row="1" BorderThickness="0">
+            <ListView Grid.Row="0" BorderThickness="0">
                 <ListView.Template>
                     <ControlTemplate>
                         <Grid HorizontalAlignment="Left">
@@ -65,9 +53,16 @@
                                         <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
                                     </Style>
                                 </Grid.Resources>
-                                <Border Grid.Column="0">
-                                    <TextBlock Text="Games" />
-                                </Border>
+                                <TextBox
+                                    Grid.Column="0"
+                                    Height="18"
+                                    Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                                    BorderBrush="White"
+                                    BorderThickness="1"
+                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                    Style="{StaticResource PlaceHolder}"
+                                    Tag="Search Games"
+                                    Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                             </Grid>
                         </Grid>
                     </ControlTemplate>
@@ -75,7 +70,7 @@
             </ListView>
 
             <!--  CONTENT  -->
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="1">
                 <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />

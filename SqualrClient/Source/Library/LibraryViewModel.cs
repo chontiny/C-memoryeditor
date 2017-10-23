@@ -9,6 +9,7 @@
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.PropertyViewer;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -61,9 +62,9 @@
         private Game selectedGame;
 
         /// <summary>
-        /// The selected library.
+        /// The active library.
         /// </summary>
-        private Library selectedLibrary;
+        private Library activeLibrary;
 
         /// <summary>
         /// A value indicating whether the game list is loading.
@@ -95,6 +96,7 @@
             this.cheatsAvailable = new List<Cheat>();
             this.cheatsInLibrary = new List<Cheat>();
 
+            this.SelectCheatCommand = new RelayCommand<Cheat>((cheat) => this.SelectCheat(cheat), (cheat) => true);
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
             this.ImportSelectedLibraryCommand = new RelayCommand(() => this.ImportSelectedLibrary(), () => true);
             this.SelectLibraryCommand = new RelayCommand<Library>((library) => this.SelectLibrary(library), (library) => true);
@@ -105,6 +107,11 @@
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
+
+        /// <summary>
+        /// Gets the command to select a cheat.
+        /// </summary>
+        public ICommand SelectCheatCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to select a game.
@@ -213,23 +220,23 @@
         }
 
         /// <summary>
-        /// Gets or sets the selected library name.
+        /// Gets or sets the active library name.
         /// </summary>
-        public String SelectedLibraryName
+        public String ActiveLibraryName
         {
             get
             {
-                return this.SelectedLibrary?.LibraryName;
+                return this.ActiveLibrary?.LibraryName;
             }
 
             set
             {
-                if (this.SelectedLibrary == null)
+                if (this.ActiveLibrary == null)
                 {
                     return;
                 }
 
-                this.SelectedLibrary.LibraryName = value;
+                this.ActiveLibrary.LibraryName = value;
 
                 // Cancel the previous API call if it exists
                 this.CancellationTokenSource?.Cancel();
@@ -248,32 +255,32 @@
                         if (!cancellationTokenSource.IsCancellationRequested)
                         {
                             AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                            SqualrApi.RenameLibrary(accessTokens.AccessToken, this.SelectedLibrary.LibraryId, this.SelectedLibrary.LibraryName);
+                            SqualrApi.RenameLibrary(accessTokens.AccessToken, this.ActiveLibrary.LibraryId, this.ActiveLibrary.LibraryName);
                         }
                     },
                     this.CancellationTokenSource,
                     this.CancellationTokenSource.Token);
 
                 this.RaisePropertyChanged(nameof(this.Libraries));
-                this.RaisePropertyChanged(nameof(this.SelectedLibraryName));
+                this.RaisePropertyChanged(nameof(this.ActiveLibraryName));
             }
         }
 
         /// <summary>
-        /// Gets or sets the selected library.
+        /// Gets or sets the active library.
         /// </summary>
-        public Library SelectedLibrary
+        public Library ActiveLibrary
         {
             get
             {
-                return this.selectedLibrary;
+                return this.activeLibrary;
             }
 
             set
             {
-                this.selectedLibrary = value;
-                this.RaisePropertyChanged(nameof(this.SelectedLibrary));
-                this.RaisePropertyChanged(nameof(this.SelectedLibraryName));
+                this.activeLibrary = value;
+                this.RaisePropertyChanged(nameof(this.ActiveLibrary));
+                this.RaisePropertyChanged(nameof(this.ActiveLibraryName));
                 this.RaisePropertyChanged(nameof(this.IsLibrarySelected));
             }
         }
@@ -285,7 +292,7 @@
         {
             get
             {
-                return this.SelectedLibrary != null;
+                return this.ActiveLibrary != null;
             }
         }
 
@@ -387,7 +394,7 @@
                     case NavigationPage.LibrarySelect:
                         return (this.SelectedGame?.GameName)?.ToUpper();
                     case NavigationPage.LibraryEdit:
-                        return ("Library - " + this.SelectedGame?.GameName)?.ToUpper();
+                        return (this.ActiveLibrary?.LibraryName)?.ToUpper();
                     case NavigationPage.Login:
                     default:
                         return String.Empty;
@@ -457,6 +464,15 @@
         }
 
         /// <summary>
+        /// Selects a given cheat.
+        /// </summary>
+        /// <param name="cheat">The cheat to select</param>
+        private void SelectCheat(Cheat cheat)
+        {
+            PropertyViewerViewModel.GetInstance().SetTargetObjects(cheat);
+        }
+
+        /// <summary>
         /// Selects a specific game for which to view the store.
         /// </summary>
         /// <param name="game">The selected game.</param>
@@ -465,7 +481,7 @@
             // Deselect current game
             this.SelectedGame = null;
             this.IsLibraryListLoading = true;
-            this.SelectedLibrary = null;
+            this.ActiveLibrary = null;
             this.libraries = null;
             this.RaisePropertyChanged(nameof(this.Libraries));
 
@@ -509,7 +525,7 @@
                     this.IsLibraryLoading = true;
 
                     // Deselect current library
-                    this.SelectedLibrary = null;
+                    this.ActiveLibrary = null;
                     this.cheatsAvailable = null;
                     this.cheatsInLibrary = null;
                     this.RaisePropertyChanged(nameof(this.CheatsAvailable));
@@ -518,7 +534,7 @@
                     // Select library
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     LibraryCheats libraryCheats = SqualrApi.GetCheats(accessTokens.AccessToken, library.LibraryId);
-                    this.SelectedLibrary = library;
+                    this.ActiveLibrary = library;
                     this.cheatsAvailable = new List<Cheat>(libraryCheats.CheatsAvailable);
                     this.cheatsInLibrary = new List<Cheat>(libraryCheats.CheatsInLibrary);
                     this.RaisePropertyChanged(nameof(this.CheatsAvailable));
@@ -542,7 +558,7 @@
         /// </summary>
         private void ImportSelectedLibrary()
         {
-            if (this.SelectedLibrary == null)
+            if (this.ActiveLibrary == null)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "No library selected");
             }
@@ -558,7 +574,7 @@
                 try
                 {
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                    SqualrApi.SetActiveLibrary(accessTokens?.AccessToken, this.SelectedLibrary.LibraryId);
+                    SqualrApi.SetActiveLibrary(accessTokens?.AccessToken, this.ActiveLibrary.LibraryId);
                 }
                 catch (Exception ex)
                 {
@@ -596,14 +612,14 @@
         /// </summary>
         private void DeleteLibrary()
         {
-            if (this.SelectedLibrary == null)
+            if (this.ActiveLibrary == null)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "No library selected");
                 return;
             }
 
             MessageBoxResult result = CenteredDialogBox.Show(
-                "Delete library '" + this.SelectedLibrary.LibraryName + "'?",
+                "Delete library '" + this.ActiveLibrary.LibraryName + "'?",
                 "Confirm Library Delete",
                 MessageBoxButton.YesNoCancel,
                 MessageBoxImage.Question);
@@ -615,11 +631,11 @@
                     try
                     {
                         AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                        SqualrApi.DeleteLibrary(accessTokens?.AccessToken, this.SelectedLibrary.LibraryId);
-                        this.libraries.Remove(this.SelectedLibrary);
-                        this.SelectedLibrary = null;
+                        SqualrApi.DeleteLibrary(accessTokens?.AccessToken, this.ActiveLibrary.LibraryId);
+                        this.libraries.Remove(this.ActiveLibrary);
+                        this.ActiveLibrary = null;
                         this.RaisePropertyChanged(nameof(this.Libraries));
-                        this.RaisePropertyChanged(nameof(this.SelectedLibrary));
+                        this.RaisePropertyChanged(nameof(this.ActiveLibrary));
                     }
                     catch (Exception ex)
                     {
@@ -645,7 +661,7 @@
 
             try
             {
-                SqualrApi.AddCheatToLibrary(accessTokens.AccessToken, this.SelectedLibrary.LibraryId, cheat.CheatId);
+                SqualrApi.AddCheatToLibrary(accessTokens.AccessToken, this.ActiveLibrary.LibraryId, cheat.CheatId);
 
                 this.cheatsAvailable.Remove(cheat);
                 this.cheatsInLibrary.Insert(0, cheat);
@@ -674,7 +690,7 @@
 
             try
             {
-                SqualrApi.RemoveCheatFromLibrary(accessTokens.AccessToken, this.SelectedLibrary.LibraryId, cheat.CheatId);
+                SqualrApi.RemoveCheatFromLibrary(accessTokens.AccessToken, this.ActiveLibrary.LibraryId, cheat.CheatId);
 
                 this.cheatsInLibrary.Remove(cheat);
                 this.cheatsAvailable.Insert(0, cheat);
