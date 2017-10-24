@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
-    using Controls;
     using Microsoft.Win32;
     using Squalr.Properties;
     using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.Controls;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;

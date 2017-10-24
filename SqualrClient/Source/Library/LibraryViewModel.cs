@@ -98,7 +98,6 @@
 
             this.SelectCheatCommand = new RelayCommand<Cheat>((cheat) => this.SelectCheat(cheat), (cheat) => true);
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
-            this.ImportSelectedLibraryCommand = new RelayCommand(() => this.ImportSelectedLibrary(), () => true);
             this.SelectLibraryCommand = new RelayCommand<Library>((library) => this.SelectLibrary(library), (library) => true);
             this.AddCheatToLibraryCommand = new RelayCommand<Cheat>((cheat) => this.AddCheatToLibrary(cheat), (cheat) => true);
             this.RemoveCheatFromLibraryCommand = new RelayCommand<Cheat>((cheat) => this.RemoveCheatFromLibrary(cheat), (cheat) => true);
@@ -122,11 +121,6 @@
         /// Gets the command to select a library.
         /// </summary>
         public ICommand SelectLibraryCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to import the selected library.
-        /// </summary>
-        public ICommand ImportSelectedLibraryCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to create a new library.
@@ -564,6 +558,8 @@
                     // Select library
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     LibraryCheats libraryCheats = SqualrApi.GetCheats(accessTokens.AccessToken, library.LibraryId);
+                    SqualrApi.SetActiveLibrary(accessTokens.AccessToken, library.LibraryId);
+
                     this.ActiveLibrary = library;
                     this.CheatsAvailable = new ObservableCollection<Cheat>(libraryCheats.CheatsAvailable);
                     this.CheatsInLibrary = new ObservableCollection<Cheat>(libraryCheats.CheatsInLibrary);
@@ -581,39 +577,6 @@
                     this.IsLibraryLoading = false;
                 }
             });
-        }
-
-        /// <summary>
-        /// Imports the currently selected library.
-        /// </summary>
-        private void ImportSelectedLibrary()
-        {
-            if (this.ActiveLibrary == null)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "No library selected");
-            }
-
-            if (this.cheatsInLibrary == null)
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error fetching cheats from selected library");
-            }
-
-            // Set imported library as the active library
-            Task.Run(() =>
-            {
-                try
-                {
-                    AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
-                    SqualrApi.SetActiveLibrary(accessTokens?.AccessToken, this.ActiveLibrary.LibraryId);
-                }
-                catch (Exception ex)
-                {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error setting active library", ex);
-                }
-            });
-
-            // Import the cheats
-            throw new Exception("dbg");
         }
 
         /// <summary>

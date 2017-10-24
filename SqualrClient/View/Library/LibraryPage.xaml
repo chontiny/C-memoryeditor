@@ -51,15 +51,60 @@
                                                 Gesture="LeftClick" />
                                         </Grid.InputBindings>
                                         <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock
+                                        <Grid Grid.Column="0" Grid.ColumnSpan="3">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.Column="0">
+                                                <Rectangle.Fill>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Offset="0.0" Color="Red" />
+                                                        <GradientStop Offset="{Binding Path=ProjectItem.CooldownProgress, FallbackValue='0.0'}" Color="Transparent" />
+                                                    </LinearGradientBrush>
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                            <!--
+                                            <TextBlock
+                                                Grid.Column="0"
+                                                Margin="4,0,0,0"
+                                                Foreground="Yellow"
+                                                IsHitTestVisible="False"
+                                                Text="{Binding Path=ProjectItem.CurrentCooldown, FallbackValue=''}" />
+                                            -->
+                                            <Rectangle Grid.Column="1">
+                                                <Rectangle.Fill>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Offset="{Binding Path=ProjectItem.DurationProgress, FallbackValue='0.0'}" Color="Transparent" />
+                                                        <GradientStop Offset="1.0" Color="Blue" />
+                                                    </LinearGradientBrush>
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                            <!--
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Margin="4,0,0,0"
+                                                Foreground="LightBlue"
+                                                IsHitTestVisible="False"
+                                                Text="{Binding Path=ProjectItem.CurrentDuration, FallbackValue=''}" />
+                                            -->
+                                        </Grid>
+                                        <CheckBox
                                             Grid.Column="0"
+                                            Width="16"
+                                            Height="16"
+                                            Margin="0,0,4,0"
+                                            IsChecked="{Binding Path=ProjectItem.IsActivated}" />
+                                        <TextBlock
+                                            Grid.Column="1"
                                             Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                             IsHitTestVisible="False"
                                             Text="{Binding Path=CheatName}" />
-                                        <Menu Grid.Column="1" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                                        <Menu Grid.Column="2" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
                                             <MenuItem
                                                 Command="{Binding LibraryViewModel.RemoveCheatFromLibraryCommand, Source={StaticResource ViewModelLocator}}"
                                                 CommandParameter="{Binding .}"

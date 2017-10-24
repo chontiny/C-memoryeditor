@@ -298,7 +298,7 @@
             parameters.Add("is_stream_disabled", ((cheat?.IsStreamDisabled ?? false) ? 1 : 0).ToString());
             parameters.Add("cooldown", cheat?.Cooldown.ToString());
             parameters.Add("duration", cheat?.Duration.ToString());
-            parameters.Add("icon", cheat?.Icon?.ToString());
+            parameters.Add("icon", cheat?.IconName?.ToString());
 
             SqualrApi.ExecuteRequest(Method.PUT, SqualrApi.UpdateCheatStreamMetaEndpoint + "/" + cheat?.CheatId.ToString(), parameters);
         }

@@ -63,7 +63,7 @@
         /// <param name="address">The address of the first byte of code. This value is used to resolve relative addresses into absolute addresses while disassembling.</param>
         /// <param name="copyBinaryToInstruction">Keeps a copy of the binary code for the instruction. This will increase the memory usage for each instruction. This is necessary if planning on using the <see cref="Translators.Translator.IncludeBinary"/> option.</param>
         /// <param name="vendor">What vendor instructions to support during disassembly, default is Any. Other options are AMD or Intel.</param>
-        public Disassembler(Byte[] code, ArchitectureMode architecture, ulong address = 0x0, bool copyBinaryToInstruction = false, Vendor vendor = Vendor.Any)
+        public Disassembler(Byte[] code, ArchitectureMode architecture, ulong address = 0x0, bool copyBinaryToInstruction = true, Vendor vendor = Vendor.Any)
         {
             this.code = code;
             this.Architecture = architecture;
