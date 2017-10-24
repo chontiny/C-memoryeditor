@@ -386,8 +386,8 @@
         {
             this.LastUpdate = DateTime.MinValue;
 
-            this.CooldownMax = this.DefaultCooldown;
-            this.DurationMax = this.DefaultDuration;
+            this.cooldownMax = this.DefaultCooldown;
+            this.durationMax = this.DefaultDuration;
 
             if (this.CheatPayload.IsNullOrEmpty())
             {
