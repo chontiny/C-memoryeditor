@@ -118,6 +118,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Source\Api\SqualrApi.cs" />
+    <Compile Include="Source\Library\CheatUpdateTask.cs" />
     <Compile Include="Source\Navigation\NavigationPage.cs" />
     <Compile Include="Source\Navigation\BrowseViewModel.cs" />
     <Compile Include="Source\Navigation\INavigable.cs" />

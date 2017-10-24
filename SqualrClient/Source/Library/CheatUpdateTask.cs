@@ -4,22 +4,22 @@
     using System;
 
     /// <summary>
-    /// Task to poll for the current cheat votes.
+    /// Task to update cheats.
     /// </summary>
-    internal class StreamVotePollTask : ScheduledTask
+    internal class CheatUpdateTask : ScheduledTask
     {
         /// <summary>
-        /// The interval between refreshes.
+        /// The interval in milliseconds between refreshes.
         /// </summary>
-        private const Int32 RefreshInterval = 5000;
+        private const Int32 RefreshInterval = 50;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StreamVotePollTask" /> class.
+        /// Initializes a new instance of the <see cref="CheatUpdateTask" /> class.
         /// </summary>
-        public StreamVotePollTask(Action updateAction) : base(taskName: "Stream Vote Poll", isRepeated: true, trackProgress: false)
+        public CheatUpdateTask(Action updateAction) : base(taskName: "Cheat Updater", isRepeated: true, trackProgress: false)
         {
             this.UpdateAction = updateAction;
-            this.UpdateInterval = StreamVotePollTask.RefreshInterval;
+            this.UpdateInterval = CheatUpdateTask.RefreshInterval;
 
             this.Schedule();
         }

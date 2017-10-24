@@ -64,41 +64,17 @@
                                                 <Rectangle.Fill>
                                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                                         <GradientStop Offset="0.0" Color="Red" />
-                                                        <GradientStop Offset="{Binding Path=ProjectItem.CooldownProgress, FallbackValue='0.0'}" Color="Transparent" />
+                                                        <GradientStop Offset="{Binding Path=CooldownProgress, FallbackValue='0.0'}" Color="Transparent" />
                                                     </LinearGradientBrush>
                                                 </Rectangle.Fill>
                                             </Rectangle>
-                                            <!--
-                                            <TextBlock
-                                                Grid.Column="0"
-                                                Margin="4,0,0,0"
-                                                Foreground="Yellow"
-                                                IsHitTestVisible="False"
-                                                Text="{Binding Path=ProjectItem.CurrentCooldown, FallbackValue=''}" />
-                                            -->
-                                            <Rectangle Grid.Column="1">
-                                                <Rectangle.Fill>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                        <GradientStop Offset="{Binding Path=ProjectItem.DurationProgress, FallbackValue='0.0'}" Color="Transparent" />
-                                                        <GradientStop Offset="1.0" Color="Blue" />
-                                                    </LinearGradientBrush>
-                                                </Rectangle.Fill>
-                                            </Rectangle>
-                                            <!--
-                                            <TextBlock
-                                                Grid.Column="1"
-                                                Margin="4,0,0,0"
-                                                Foreground="LightBlue"
-                                                IsHitTestVisible="False"
-                                                Text="{Binding Path=ProjectItem.CurrentDuration, FallbackValue=''}" />
-                                            -->
                                         </Grid>
                                         <CheckBox
                                             Grid.Column="0"
                                             Width="16"
                                             Height="16"
                                             Margin="0,0,4,0"
-                                            IsChecked="{Binding Path=ProjectItem.IsActivated}" />
+                                            IsChecked="{Binding Path=IsActivated}" />
                                         <TextBlock
                                             Grid.Column="1"
                                             Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
@@ -117,6 +93,23 @@
                                                 </MenuItem.Header>
                                             </MenuItem>
                                         </Menu>
+                                        <Grid
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="3"
+                                            IsHitTestVisible="False">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <Rectangle Grid.Column="1">
+                                                <Rectangle.Fill>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Offset="0.0" Color="#7F606060" />
+                                                        <GradientStop Offset="{Binding Path=DurationProgress, FallbackValue='0.0'}" Color="Transparent" />
+                                                    </LinearGradientBrush>
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                        </Grid>
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>

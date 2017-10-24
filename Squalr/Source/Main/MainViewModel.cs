@@ -28,7 +28,7 @@
         /// <summary>
         /// The save file for the docking layout.
         /// </summary>
-        private const String LayoutSaveFile = "layout.xml";
+        private const String LayoutSaveFile = "DeveloperLayout.xml";
 
         /// <summary>
         /// Singleton instance of the <see cref="MainViewModel" /> class

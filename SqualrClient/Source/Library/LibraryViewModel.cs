@@ -6,6 +6,7 @@
     using SqualrClient.Source.Api.Models;
     using SqualrClient.Source.Navigation;
     using SqualrClient.Source.Store;
+    using SqualrClient.Source.Stream;
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
@@ -103,6 +104,8 @@
             this.RemoveCheatFromLibraryCommand = new RelayCommand<Cheat>((cheat) => this.RemoveCheatFromLibrary(cheat), (cheat) => true);
             this.AddNewLibraryCommand = new RelayCommand(() => this.AddNewLibrary(), () => true);
             this.DeleteLibraryCommand = new RelayCommand(() => this.DeleteLibrary(), () => true);
+
+            this.CheatUpdateTask = new CheatUpdateTask(this.UpdateCheats);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -421,6 +424,11 @@
         private CancellationTokenSource CancellationTokenSource { get; set; }
 
         /// <summary>
+        /// Gets or sets the task to update all cheats.
+        /// </summary>
+        private CheatUpdateTask CheatUpdateTask { get; set; }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="LibraryViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -455,6 +463,24 @@
         {
             this.CheatsAvailable.Insert(0, unlockedCheat);
             this.RaisePropertyChanged(nameof(this.CheatsAvailable));
+        }
+
+        /// <summary>
+        /// Event fired to update all cheats.
+        /// </summary>
+        private void UpdateCheats()
+        {
+            Cheat[] cheats = this.CheatsInLibrary?.ToArray();
+
+            if (cheats == null)
+            {
+                return;
+            }
+
+            foreach (Cheat cheat in cheats)
+            {
+                cheat.Update();
+            }
         }
 
         /// <summary>

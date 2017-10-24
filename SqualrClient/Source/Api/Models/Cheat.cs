@@ -28,13 +28,13 @@
         /// The cooldown in milliseconds of this cheat.
         /// </summary>
         [Browsable(false)]
-        protected Single cooldown;
+        protected Single cooldownMax;
 
         /// <summary>
         /// The duration in milliseconds of this cheat.
         /// </summary>
         [Browsable(false)]
-        protected Single duration;
+        protected Single durationMax;
 
         /// <summary>
         /// The stream icon path associated with this cheat.
@@ -45,12 +45,12 @@
         /// <summary>
         /// The current cooldown for this script item.
         /// </summary>
-        private Single currentCooldown;
+        private Single cooldown;
 
         /// <summary>
         /// The current duration for this script item.
         /// </summary>
-        private Single currentDuration;
+        private Single duration;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -156,8 +156,8 @@
                 this.isStreamDisabled = value;
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.IsStreamDisabled));
-                this.NotifyPropertyChanged(nameof(this.IconName));
+                this.RaisePropertyChanged(nameof(this.IsStreamDisabled));
+                this.RaisePropertyChanged(nameof(this.IconName));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
 
                 this.UpdateStreamMeta();
@@ -170,24 +170,24 @@
         [DataMember]
         [Browsable(true)]
         [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Cooldown"), Description("The cooldown (in milliseconds) for stream activation for this project item.")]
-        public Single Cooldown
+        public Single CooldownMax
         {
             get
             {
-                return this.cooldown;
+                return this.cooldownMax;
             }
 
             set
             {
-                if (this.cooldown == value)
+                if (this.cooldownMax == value)
                 {
                     return;
                 }
 
-                this.cooldown = value;
+                this.cooldownMax = value;
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Cooldown));
+                this.RaisePropertyChanged(nameof(this.CooldownMax));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
 
                 this.UpdateStreamMeta();
@@ -200,24 +200,24 @@
         [DataMember]
         [Browsable(true)]
         [SortedCategory(SortedCategory.CategoryType.Stream), DisplayName("Duration"), Description("The duration (in milliseconds) for stream activation for this project item.")]
-        public Single Duration
+        public Single DurationMax
         {
             get
             {
-                return this.duration;
+                return this.durationMax;
             }
 
             set
             {
-                if (this.duration == value)
+                if (this.durationMax == value)
                 {
                     return;
                 }
 
-                this.duration = value;
+                this.durationMax = value;
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Duration));
+                this.RaisePropertyChanged(nameof(this.DurationMax));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
 
                 this.UpdateStreamMeta();
@@ -246,8 +246,8 @@
 
                 this.iconName = value;
 
-                this.NotifyPropertyChanged(nameof(this.IconName));
-                this.NotifyPropertyChanged(nameof(this.Icon));
+                this.RaisePropertyChanged(nameof(this.IconName));
+                this.RaisePropertyChanged(nameof(this.Icon));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
 
                 this.UpdateStreamMeta();
@@ -277,18 +277,18 @@
         /// Gets or sets the current cooldown for this script item.
         /// </summary>
         [Browsable(false)]
-        public Single CurrentCooldown
+        public Single Cooldown
         {
             get
             {
-                return this.currentCooldown;
+                return this.cooldown;
             }
 
             set
             {
-                this.currentCooldown = value;
-                this.NotifyPropertyChanged(nameof(this.CurrentCooldown));
-                this.NotifyPropertyChanged(nameof(this.CooldownProgress));
+                this.cooldown = value;
+                this.RaisePropertyChanged(nameof(this.Cooldown));
+                this.RaisePropertyChanged(nameof(this.CooldownProgress));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -297,18 +297,18 @@
         /// Gets or sets the current duration for this script item.
         /// </summary>
         [Browsable(false)]
-        public Single CurrentDuration
+        public Single Duration
         {
             get
             {
-                return this.currentDuration;
+                return this.duration;
             }
 
             set
             {
-                this.currentDuration = value;
-                this.NotifyPropertyChanged(nameof(this.CurrentDuration));
-                this.NotifyPropertyChanged(nameof(this.DurationProgress));
+                this.duration = value;
+                this.RaisePropertyChanged(nameof(this.Duration));
+                this.RaisePropertyChanged(nameof(this.DurationProgress));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -321,7 +321,7 @@
         {
             get
             {
-                return this.Cooldown <= 0.0f ? 0.0f : (this.CurrentCooldown / this.Cooldown);
+                return this.CooldownMax <= 0.0f ? 0.0f : (this.Cooldown / this.CooldownMax);
             }
         }
 
@@ -333,39 +333,39 @@
         {
             get
             {
-                return 1.0f - (this.Duration <= 0.0f ? 0.0f : (this.CurrentDuration / this.Duration));
+                return 1.0f - (this.DurationMax <= 0.0f ? 0.0f : (this.Duration / this.DurationMax));
             }
         }
 
-        /// <summary>
-        /// Updates the cooldown for this script.
-        /// </summary>
-        private void UpdateCooldown(Single elapsedTime)
+        public Boolean IsActivated
         {
-            if (this.IsStreamDisabled)
+            get
             {
-                return;
+                return this.ProjectItem?.IsActivated ?? false;
             }
 
-            // Update current cooldown
-            this.CurrentCooldown = (this.CurrentCooldown - elapsedTime).Clamp(0, this.Cooldown);
-
-        }
-
-        private void UpdateDuration(Single elapsedTime)
-        {
-            if (this.IsStreamDisabled || !this.ProjectItem.IsActivated)
+            set
             {
-                return;
-            }
+                if (this.ProjectItem == null || (value == this.ProjectItem.IsActivated))
+                {
+                    return;
+                }
 
-            // Update current duration
-            this.CurrentDuration = (this.CurrentDuration + elapsedTime).Clamp(0, this.Duration);
+                if (value == true && this.Cooldown > 0.0f)
+                {
+                    return;
+                }
 
-            // Deactivate if exceeding the duration
-            if (this.CurrentDuration >= this.Duration)
-            {
-                this.ProjectItem.IsActivated = false;
+                this.ProjectItem.IsActivated = value;
+
+                // Check if activation attempt successful
+                if (value == true && this.ProjectItem.IsActivated)
+                {
+                    // If so, start cooldown
+                    this.Cooldown = this.CooldownMax;
+                }
+
+                this.RaisePropertyChanged(nameof(this.IsActivated));
             }
         }
 
@@ -386,6 +386,9 @@
         {
             this.LastUpdate = DateTime.MinValue;
 
+            this.CooldownMax = this.DefaultCooldown;
+            this.DurationMax = this.DefaultDuration;
+
             if (this.CheatPayload.IsNullOrEmpty())
             {
                 return;
@@ -402,7 +405,6 @@
 
         public void Update()
         {
-
             DateTime currentTime = DateTime.Now;
 
             if (this.LastUpdate == DateTime.MinValue)
@@ -416,6 +418,37 @@
             this.UpdateDuration(elapsedTime);
 
             this.LastUpdate = currentTime;
+        }
+
+        /// <summary>
+        /// Updates the cooldown for this script.
+        /// </summary>
+        private void UpdateCooldown(Single elapsedTime)
+        {
+            if (this.IsStreamDisabled)
+            {
+                return;
+            }
+
+            // Update current cooldown
+            this.Cooldown = (this.Cooldown - elapsedTime).Clamp(0, this.CooldownMax);
+        }
+
+        private void UpdateDuration(Single elapsedTime)
+        {
+            if (this.IsStreamDisabled || !this.IsActivated)
+            {
+                return;
+            }
+
+            // Update current duration
+            this.Duration = (this.Duration + elapsedTime).Clamp(0, this.DurationMax);
+
+            // Deactivate if exceeding the duration
+            if (this.Duration >= this.DurationMax)
+            {
+                this.IsActivated = false;
+            }
         }
 
         private void UpdateStreamMeta()
@@ -437,7 +470,7 @@
         /// Indicates that a given property in this project item has changed.
         /// </summary>
         /// <param name="propertyName">The name of the changed property.</param>
-        protected void NotifyPropertyChanged(String propertyName)
+        protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

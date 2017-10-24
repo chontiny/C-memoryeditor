@@ -29,7 +29,7 @@
         /// <summary>
         /// The save file for the docking layout.
         /// </summary>
-        private const String LayoutSaveFile = "layout.xml";
+        private const String LayoutSaveFile = "StreamLayout.xml";
 
         /// <summary>
         /// The developer tools executable.
