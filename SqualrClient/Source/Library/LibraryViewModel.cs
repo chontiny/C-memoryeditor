@@ -44,17 +44,17 @@
         /// <summary>
         /// The list of libraries.
         /// </summary>
-        private List<Library> libraries;
+        private ObservableCollection<Library> libraries;
 
         /// <summary>
         /// The list of cheats available to the library.
         /// </summary>
-        private List<Cheat> cheatsAvailable;
+        private ObservableCollection<Cheat> cheatsAvailable;
 
         /// <summary>
         /// The list of cheats in the library.
         /// </summary>
-        private List<Cheat> cheatsInLibrary;
+        private ObservableCollection<Cheat> cheatsInLibrary;
 
         /// <summary>
         /// The selected game.
@@ -92,9 +92,9 @@
         private LibraryViewModel() : base("Library")
         {
             this.ContentId = LibraryViewModel.ToolContentId;
-            this.libraries = new List<Library>();
-            this.cheatsAvailable = new List<Cheat>();
-            this.cheatsInLibrary = new List<Cheat>();
+            this.Libraries = new ObservableCollection<Library>();
+            this.CheatsAvailable = new ObservableCollection<Cheat>();
+            this.CheatsInLibrary = new ObservableCollection<Cheat>();
 
             this.SelectCheatCommand = new RelayCommand<Cheat>((cheat) => this.SelectCheat(cheat), (cheat) => true);
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
@@ -348,35 +348,53 @@
         }
 
         /// <summary>
-        /// Gets the list of libraries.
+        /// Gets or sets the list of libraries.
         /// </summary>
         public ObservableCollection<Library> Libraries
         {
             get
             {
-                return this.libraries == null ? null : new ObservableCollection<Library>(this.libraries);
+                return this.libraries;
+            }
+
+            set
+            {
+                this.libraries = value;
+                this.RaisePropertyChanged(nameof(this.Libraries));
             }
         }
 
         /// <summary>
-        /// Gets the list of cheats available to the library.
+        /// Gets or sets the list of cheats available to the library.
         /// </summary>
         public ObservableCollection<Cheat> CheatsAvailable
         {
             get
             {
-                return this.cheatsAvailable == null ? null : new ObservableCollection<Cheat>(this.cheatsAvailable);
+                return this.cheatsAvailable;
+            }
+
+            set
+            {
+                this.cheatsAvailable = value;
+                this.RaisePropertyChanged(nameof(this.CheatsAvailable));
             }
         }
 
         /// <summary>
-        /// Gets the  list of cheats in the library.
+        /// Gets or sets the  list of cheats in the library.
         /// </summary>
         public ObservableCollection<Cheat> CheatsInLibrary
         {
             get
             {
-                return this.cheatsInLibrary == null ? null : new ObservableCollection<Cheat>(this.cheatsInLibrary);
+                return this.cheatsInLibrary;
+            }
+
+            set
+            {
+                this.cheatsInLibrary = value;
+                this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
             }
         }
 
@@ -436,6 +454,16 @@
         }
 
         /// <summary>
+        /// Event fired when a cheat is unlocked and made available to this library.
+        /// </summary>
+        /// <param name="unlockedCheat">The cheat that was unlocked.</param>
+        public void OnUnlock(Cheat unlockedCheat)
+        {
+            this.CheatsAvailable.Insert(0, unlockedCheat);
+            this.RaisePropertyChanged(nameof(this.CheatsAvailable));
+        }
+
+        /// <summary>
         /// Loads the list of games from the API.
         /// </summary>
         private void LoadGameList()
@@ -480,9 +508,9 @@
         {
             // Deselect current game
             this.SelectedGame = null;
+            this.Libraries = null;
             this.IsLibraryListLoading = true;
             this.ActiveLibrary = null;
-            this.libraries = null;
             this.RaisePropertyChanged(nameof(this.Libraries));
 
             Task.Run(() =>
@@ -494,8 +522,10 @@
                     // Select new game
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     IEnumerable<Library> libraries = SqualrApi.GetLibraries(accessTokens.AccessToken, game.GameId);
-                    this.libraries = new List<Library>(libraries);
+
+                    this.Libraries = new ObservableCollection<Library>(libraries);
                     this.RaisePropertyChanged(nameof(this.Libraries));
+
                     this.SelectedGame = game;
 
                     BrowseViewModel.GetInstance().Navigate(NavigationPage.LibrarySelect);
@@ -526,8 +556,8 @@
 
                     // Deselect current library
                     this.ActiveLibrary = null;
-                    this.cheatsAvailable = null;
-                    this.cheatsInLibrary = null;
+                    this.CheatsAvailable = null;
+                    this.CheatsInLibrary = null;
                     this.RaisePropertyChanged(nameof(this.CheatsAvailable));
                     this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
 
@@ -535,8 +565,8 @@
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     LibraryCheats libraryCheats = SqualrApi.GetCheats(accessTokens.AccessToken, library.LibraryId);
                     this.ActiveLibrary = library;
-                    this.cheatsAvailable = new List<Cheat>(libraryCheats.CheatsAvailable);
-                    this.cheatsInLibrary = new List<Cheat>(libraryCheats.CheatsInLibrary);
+                    this.CheatsAvailable = new ObservableCollection<Cheat>(libraryCheats.CheatsAvailable);
+                    this.CheatsInLibrary = new ObservableCollection<Cheat>(libraryCheats.CheatsInLibrary);
                     this.RaisePropertyChanged(nameof(this.CheatsAvailable));
                     this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
 

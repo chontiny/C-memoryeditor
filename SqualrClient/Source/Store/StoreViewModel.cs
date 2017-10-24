@@ -4,6 +4,7 @@
     using SqualrClient.Properties;
     using SqualrClient.Source.Api;
     using SqualrClient.Source.Api.Models;
+    using SqualrClient.Source.Library;
     using SqualrClient.Source.Navigation;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
@@ -196,6 +197,7 @@
 
                 this.LockedCheatList.Remove(cheat);
                 this.UnlockedCheatList.Insert(0, unlockedCheat.Cheat);
+                LibraryViewModel.GetInstance().OnUnlock(unlockedCheat.Cheat);
             }
             catch (Exception ex)
             {

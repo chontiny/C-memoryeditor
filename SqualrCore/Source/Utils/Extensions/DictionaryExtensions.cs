@@ -3,7 +3,7 @@
     using System.Collections.Generic;
 
     /// <summary>
-    /// Extension methods for Dictionary interfaces.
+    /// Extension methods for Dictionaries.
     /// </summary>
     public static class DictionaryExtensions
     {

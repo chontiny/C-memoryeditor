@@ -101,7 +101,10 @@
                     </Menu>
                 </Grid>
                 <Grid Grid.Column="1">
-                    <Viewbox Stretch="Uniform" StretchDirection="DownOnly"  Margin="8,0,8,0">
+                    <Viewbox
+                        Margin="8,0,8,0"
+                        Stretch="Uniform"
+                        StretchDirection="DownOnly">
                         <Grid>
                             <TextBlock
                                 HorizontalAlignment="Center"

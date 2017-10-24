@@ -50,7 +50,6 @@
                                     <TextBlock
                                         Grid.Column="0"
                                         Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                        IsHitTestVisible="False"
                                         Text="{Binding Path=LibraryName}">
                                         <TextBlock.InputBindings>
                                             <MouseBinding
