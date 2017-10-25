@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSScriptLibrary, Version=3.27.2.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033, processorArchitecture=MSIL">
@@ -450,7 +451,6 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
     </Content>
-    <EmbeddedResource Include="Content\StreamerLayout.xml" />
     <Resource Include="Content\Images\X.png" />
     <Resource Include="Content\Images\UnknownValue.png" />
     <Resource Include="Content\Images\Union.png" />
@@ -517,7 +517,6 @@
     <Resource Include="Content\Images\BlueBlocks4.png" />
     <Resource Include="Content\Images\BlueBlocks2.png" />
     <Resource Include="Content\Images\BlueBlocks1.png" />
-    <EmbeddedResource Include="Content\DeveloperLayout.xml" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

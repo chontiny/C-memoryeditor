@@ -29,8 +29,7 @@ namespace SqualrCore.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Simplifications to stream integration\r\n- Fix to vote shuffle bug if a vote is d" +
-                    "eleted from a library while streaming\r\n- Only showing supported game list");
+            this.Write("- Decoupled cheat development and streamer tool");
             return this.GenerationEnvironment.ToString();
         }
     }
