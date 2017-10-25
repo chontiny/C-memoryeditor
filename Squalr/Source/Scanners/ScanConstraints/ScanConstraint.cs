@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.ScanConstraints
 {
-    using Content;
+    using SqualrCore.Content;
     using System;
     using System.ComponentModel;
     using System.Windows.Media.Imaging;
@@ -8,7 +8,7 @@
     /// <summary>
     /// Enumeration of all possible scan constraints.
     /// </summary>
-    internal enum ConstraintsEnum
+    public enum ConstraintsEnum
     {
         /// <summary>
         /// Comparative: The values must be equal.

@@ -1,13 +1,8 @@
 ﻿namespace Squalr.Properties
 {
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Docking;
-    using Squalr.Source.Engine.OperatingSystems;
-    using Squalr.Source.Main;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.OperatingSystems;
     using System;
-    using System.IO;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -66,7 +61,7 @@
             this.ContentId = SettingsViewModel.ToolContentId;
 
             // Subscribe async to avoid a deadlock situation
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>
@@ -88,34 +83,6 @@
             get
             {
                 return parallelSettingsMedium.Value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the saved twitch access tokens.
-        /// </summary>
-        public AccessTokens AccessTokens
-        {
-            get
-            {
-                using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(Settings.Default.AccessTokens)))
-                {
-                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AccessTokens));
-
-                    return deserializer.ReadObject(memoryStream) as AccessTokens;
-                }
-            }
-
-            set
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(AccessTokens));
-                    serializer.WriteObject(memoryStream, value);
-
-                    Settings.Default.AccessTokens = Encoding.ASCII.GetString(memoryStream.ToArray());
-                    this.RaisePropertyChanged(nameof(this.AccessTokens));
-                }
             }
         }
 
@@ -458,23 +425,6 @@
             {
                 Settings.Default.EndAddress = value;
                 this.RaisePropertyChanged(nameof(this.EndAddress));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Twitch API channel.
-        /// </summary>
-        public String TwitchChannel
-        {
-            get
-            {
-                return Settings.Default.TwitchChannel;
-            }
-
-            set
-            {
-                Settings.Default.TwitchChannel = value;
-                this.RaisePropertyChanged(nameof(this.TwitchChannel));
             }
         }
 

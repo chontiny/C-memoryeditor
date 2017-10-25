@@ -1,13 +1,6 @@
 ﻿namespace Squalr.View
 {
     using Source.DotNetExplorer;
-    using Source.Editors.HotkeyEditor;
-    using Source.Editors.ScriptEditor;
-    using Source.Editors.TextEditor;
-    using Source.Output;
-    using Source.ProcessSelector;
-    using Source.ProjectExplorer;
-    using Source.PropertyViewer;
     using Source.Results.PointerScanResults;
     using Source.Results.ScanResults;
     using Source.Scanners.ChangeCounter;
@@ -17,18 +10,64 @@
     using Source.Scanners.PointerScanner;
     using Source.Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.Browse;
-    using Squalr.Source.Browse.StreamConfig;
-    using Squalr.Source.Browse.TwitchLogin;
-    using System;
+    using Squalr.Source.ProjectExplorer;
     using System.Windows;
-    using System.Windows.Controls;
 
     /// <summary>
     /// Provides the template required to view a pane.
     /// </summary>
-    internal class ViewTemplateSelector : DataTemplateSelector
+    internal class ViewTemplateSelector : SqualrCore.View.ViewTemplateSelector
     {
+        /// <summary>
+        /// The template for the Change Counter.
+        /// </summary>
+        public DataTemplate changeCounterViewTemplate;
+
+        /// <summary>
+        /// The template for the Input Correlator.
+        /// </summary>
+        public DataTemplate inputCorrelatorViewTemplate;
+
+        /// <summary>
+        /// The template for the Label Thresholder.
+        /// </summary>
+        public DataTemplate labelThresholderViewTemplate;
+
+        /// <summary>
+        /// The template for the Manual Scanner.
+        /// </summary>
+        public DataTemplate manualScannerViewTemplate;
+
+        /// <summary>
+        /// The template for the Pointer Scanner.
+        /// </summary>
+        public DataTemplate pointerScannerViewTemplate;
+
+        /// <summary>
+        /// The template for the Snapshot Manager.
+        /// </summary>
+        public DataTemplate snapshotManagerViewTemplate;
+
+        /// <summary>
+        /// The template for the Scan Results.
+        /// </summary>
+        public DataTemplate scanResultsViewTemplate;
+
+        /// <summary>
+        /// The template for the Pointer Scan Results.
+        /// </summary>
+        public DataTemplate pointerScanResultsViewTemplate;
+
+        /// <summary>
+        /// The template for the .Net Explorer.
+        /// </summary>
+        public DataTemplate dotNetExplorerViewTemplate;
+
+        /// <summary>
+        /// The template for the Project Explorer.
+        /// </summary>
+        public DataTemplate projectExplorerViewTemplate;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
         /// </summary>
@@ -37,225 +76,190 @@
         }
 
         /// <summary>
-        /// Gets or sets the template for the Process Selector.
+        /// Gets or sets the template for the Settings.
         /// </summary>
-        public DataTemplate ProcessSelectorViewTemplate { get; set; }
+        public DataTemplate SettingsViewTemplate
+        {
+            get
+            {
+                return this.settingsViewTemplate;
+            }
+
+            set
+            {
+                this.settingsViewTemplate = value;
+                this.DataTemplates[typeof(SettingsViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Change Counter.
         /// </summary>
-        public DataTemplate ChangeCounterViewTemplate { get; set; }
+        public DataTemplate ChangeCounterViewTemplate
+        {
+            get
+            {
+                return this.changeCounterViewTemplate;
+            }
+
+            set
+            {
+                this.changeCounterViewTemplate = value;
+                this.DataTemplates[typeof(ChangeCounterViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Input Correlator.
         /// </summary>
-        public DataTemplate InputCorrelatorViewTemplate { get; set; }
+        public DataTemplate InputCorrelatorViewTemplate
+        {
+            get
+            {
+                return this.inputCorrelatorViewTemplate;
+            }
+
+            set
+            {
+                this.inputCorrelatorViewTemplate = value;
+                this.DataTemplates[typeof(InputCorrelatorViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Label Thresholder.
         /// </summary>
-        public DataTemplate LabelThresholderViewTemplate { get; set; }
+        public DataTemplate LabelThresholderViewTemplate
+        {
+            get
+            {
+                return this.labelThresholderViewTemplate;
+            }
+
+            set
+            {
+                this.labelThresholderViewTemplate = value;
+                this.DataTemplates[typeof(LabelThresholderViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Manual Scanner.
         /// </summary>
-        public DataTemplate ManualScannerViewTemplate { get; set; }
+        public DataTemplate ManualScannerViewTemplate
+        {
+            get
+            {
+                return this.manualScannerViewTemplate;
+            }
+
+            set
+            {
+                this.manualScannerViewTemplate = value;
+                this.DataTemplates[typeof(ManualScannerViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Pointer Scanner.
         /// </summary>
-        public DataTemplate PointerScannerViewTemplate { get; set; }
+        public DataTemplate PointerScannerViewTemplate
+        {
+            get
+            {
+                return this.pointerScannerViewTemplate;
+            }
+
+            set
+            {
+                this.pointerScannerViewTemplate = value;
+                this.DataTemplates[typeof(PointerScannerViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Snapshot Manager.
         /// </summary>
-        public DataTemplate SnapshotManagerViewTemplate { get; set; }
+        public DataTemplate SnapshotManagerViewTemplate
+        {
+            get
+            {
+                return this.snapshotManagerViewTemplate;
+            }
+
+            set
+            {
+                this.snapshotManagerViewTemplate = value;
+                this.DataTemplates[typeof(SnapshotManagerViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Scan Results.
         /// </summary>
-        public DataTemplate ScanResultsViewTemplate { get; set; }
+        public DataTemplate ScanResultsViewTemplate
+        {
+            get
+            {
+                return this.scanResultsViewTemplate;
+            }
+
+            set
+            {
+                this.scanResultsViewTemplate = value;
+                this.DataTemplates[typeof(ScanResultsViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Pointer Scan Results.
         /// </summary>
-        public DataTemplate PointerScanResultsViewTemplate { get; set; }
+        public DataTemplate PointerScanResultsViewTemplate
+        {
+            get
+            {
+                return this.pointerScanResultsViewTemplate;
+            }
 
-        /// <summary>
-        /// Gets or sets the template for the Browser.
-        /// </summary>
-        public DataTemplate BrowseViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Cheat Browser.
-        /// </summary>
-        public DataTemplate CheatBrowserViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Twitch Login.
-        /// </summary>
-        public DataTemplate TwitchLoginViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Stream Weaver.
-        /// </summary>
-        public DataTemplate TwitchConfigViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Stream Table.
-        /// </summary>
-        public DataTemplate StreamTableViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Stream Icon Editor.
-        /// </summary>
-        public DataTemplate StreamIconEditorViewTemplate { get; set; }
+            set
+            {
+                this.pointerScanResultsViewTemplate = value;
+                this.DataTemplates[typeof(PointerScanResultsViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the .Net Explorer.
         /// </summary>
-        public DataTemplate DotNetExplorerViewTemplate { get; set; }
+        public DataTemplate DotNetExplorerViewTemplate
+        {
+            get
+            {
+                return this.dotNetExplorerViewTemplate;
+            }
 
-        /// <summary>
-        /// Gets or sets the template for the Property Viewer.
-        /// </summary>
-        public DataTemplate PropertyViewerViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Settings.
-        /// </summary>
-        public DataTemplate SettingsViewTemplate { get; set; }
+            set
+            {
+                this.dotNetExplorerViewTemplate = value;
+                this.DataTemplates[typeof(DotNetExplorerViewModel)] = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the template for the Project Explorer.
         /// </summary>
-        public DataTemplate ProjectExplorerViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Signature Collector.
-        /// </summary>
-        public DataTemplate SignatureCollectorViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Output.
-        /// </summary>
-        public DataTemplate OutputViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Offset Editor.
-        /// </summary>
-        public DataTemplate OffsetEditorViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Script Editor.
-        /// </summary>
-        public DataTemplate ScriptEditorViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Text Editor.
-        /// </summary>
-        public DataTemplate TextEditorViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Hotkey Manager.
-        /// </summary>
-        public DataTemplate HotkeyManagerViewTemplate { get; set; }
-
-        /// <summary>
-        /// Gets or sets the template for the Hotkey Editor.
-        /// </summary>
-        public DataTemplate HotkeyEditorViewTemplate { get; set; }
-
-        /// <summary>
-        /// Returns the required template to display the given view model.
-        /// </summary>
-        /// <param name="item">The view model.</param>
-        /// <param name="container">The dependency object.</param>
-        /// <returns>The template associated with the provided view model.</returns>
-        public override DataTemplate SelectTemplate(Object item, DependencyObject container)
+        public DataTemplate ProjectExplorerViewTemplate
         {
-            if (item is ProcessSelectorViewModel)
+            get
             {
-                return this.ProcessSelectorViewTemplate;
-            }
-            else if (item is ChangeCounterViewModel)
-            {
-                return this.ChangeCounterViewTemplate;
-            }
-            else if (item is InputCorrelatorViewModel)
-            {
-                return this.InputCorrelatorViewTemplate;
-            }
-            else if (item is LabelThresholderViewModel)
-            {
-                return this.LabelThresholderViewTemplate;
-            }
-            else if (item is ManualScannerViewModel)
-            {
-                return this.ManualScannerViewTemplate;
-            }
-            else if (item is PointerScannerViewModel)
-            {
-                return this.PointerScannerViewTemplate;
-            }
-            else if (item is SnapshotManagerViewModel)
-            {
-                return this.SnapshotManagerViewTemplate;
-            }
-            else if (item is ScanResultsViewModel)
-            {
-                return this.ScanResultsViewTemplate;
-            }
-            else if (item is PointerScanResultsViewModel)
-            {
-                return this.PointerScanResultsViewTemplate;
-            }
-            else if (item is BrowseViewModel)
-            {
-                return this.BrowseViewTemplate;
-            }
-            else if (item is TwitchLoginViewModel)
-            {
-                return this.TwitchLoginViewTemplate;
-            }
-            else if (item is StreamConfigViewModel)
-            {
-                return this.TwitchConfigViewTemplate;
-            }
-            else if (item is DotNetExplorerViewModel)
-            {
-                return this.DotNetExplorerViewTemplate;
-            }
-            else if (item is PropertyViewerViewModel)
-            {
-                return this.PropertyViewerViewTemplate;
-            }
-            else if (item is SettingsViewModel)
-            {
-                return this.SettingsViewTemplate;
-            }
-            else if (item is ProjectExplorerViewModel)
-            {
-                return this.ProjectExplorerViewTemplate;
-            }
-            else if (item is OutputViewModel)
-            {
-                return this.OutputViewTemplate;
-            }
-            else if (item is ScriptEditorViewModel)
-            {
-                return this.ScriptEditorViewTemplate;
-            }
-            else if (item is TextEditorViewModel)
-            {
-                return this.TextEditorViewTemplate;
-            }
-            else if (item is HotkeyEditorViewModel)
-            {
-                return this.HotkeyEditorViewTemplate;
+                return this.projectExplorerViewTemplate;
             }
 
-            return base.SelectTemplate(item, container);
+            set
+            {
+                this.projectExplorerViewTemplate = value;
+                this.DataTemplates[typeof(ProjectExplorerViewModel)] = value;
+            }
         }
     }
     //// End class

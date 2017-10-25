@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
+    using SqualrCore.Source.Utils;
     using System;
     using System.Globalization;
     using System.Windows.Data;
-    using Utils;
 
     /// <summary>
     /// Converts IntPtrs to an address with leading 0s.

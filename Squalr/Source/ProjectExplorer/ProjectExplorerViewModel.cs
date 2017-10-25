@@ -1,17 +1,17 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
-    using Docking;
-    using Engine;
-    using Engine.OperatingSystems;
     using GalaSoft.MvvmLight.Command;
-    using Main;
-    using ProjectItems;
-    using PropertyViewer;
     using Squalr.Properties;
-    using Squalr.Source.Controls;
-    using Squalr.Source.Editors.ScriptEditor;
-    using Squalr.Source.Editors.ValueEditor;
-    using Squalr.Source.Utils;
+    using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Editors.ScriptEditor;
+    using SqualrCore.Source.Editors.ValueEditor;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.PropertyViewer;
+    using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -20,12 +20,11 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Utils.Extensions;
 
     /// <summary>
     /// View model for the Project Explorer.
     /// </summary>
-    internal class ProjectExplorerViewModel : ToolViewModel
+    public class ProjectExplorerViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -91,7 +90,7 @@
             this.ProjectItems = new ObservableCollection<ProjectItem>();
             this.Update();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

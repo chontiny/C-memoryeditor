@@ -1,0 +1,196 @@
+﻿<UserControl
+    x:Class="SqualrClient.View.Browse.BrowseHome"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:browse="clr-namespace:SqualrClient.View.Browse"
+    xmlns:browseConverters="clr-namespace:SqualrClient.Source.Mvvm.Converters"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:library="clr-namespace:SqualrClient.View.Browse.Library"
+    xmlns:loaders="clr-namespace:SqualrCore.View.Loaders;assembly=SqualrCore"
+    xmlns:login="clr-namespace:SqualrClient.View.Browse.Login"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:navigationViewModel="clr-namespace:SqualrClient.Source.Navigation"
+    xmlns:store="clr-namespace:SqualrClient.View.Browse.Store"
+    xmlns:streaming="clr-namespace:SqualrClient.View.Browse.Streaming"
+    x:Name="SqualrBrowseHome"
+    d:DesignHeight="256"
+    d:DesignWidth="256"
+    x:ClassModifier="internal"
+    DataContext="{Binding BrowseViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public BrowseHome() { InitializeComponent(); }]]>
+    </x:Code>
+    <UserControl.Resources>
+        <browseConverters:BrowsePageToVisibilityConverter x:Key="BrowsePageToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid>
+            <Grid.Background>
+                <StaticResource ResourceKey="AvalonDock_Expression_BaseColor3" />
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid
+                Grid.Row="0"
+                Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Menu Grid.Column="1" Background="Transparent">
+                    <MenuItem Padding="4" Command="{Binding LogoutCommand}">
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Grid>
+                                    <TextBlock
+                                        Foreground="White"
+                                        Opacity="0.5"
+                                        Text="Log Out">
+                                        <TextBlock.Effect>
+                                            <BlurEffect KernelType="Gaussian" Radius="8.0" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Foreground="LightBlue" Text="Log Out" />
+                                </Grid>
+                            </WrapPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem Padding="4" Command="{Binding OpenVirtualCurrencyStoreCommand}">
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Margin="0,0,4,0"
+                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/Coin.png" />
+                                <Grid>
+                                    <TextBlock
+                                        Foreground="White"
+                                        Opacity="0.5"
+                                        Text="{Binding ActiveUser.Coins}">
+                                        <TextBlock.Effect>
+                                            <BlurEffect KernelType="Gaussian" Radius="8.0" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Foreground="LightCyan" Text="{Binding ActiveUser.Coins}" />
+                                </Grid>
+                            </WrapPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </Menu>
+            </Grid>
+            <Grid Grid.Row="1" Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="64" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Grid.Column="1">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Offset="0.0" Color="Transparent" />
+                                <GradientStop Offset="0.5" Color="MediumPurple" />
+                                <GradientStop Offset="1.0" Color="Transparent" />
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Grid Grid.Column="0">
+                        <Menu
+                            Grid.Row="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                            DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                            <MenuItem
+                                Width="24"
+                                Height="24"
+                                Command="{Binding BrowseViewModel.NavigateBackCommand}"
+                                IsEnabled="{Binding BrowseViewModel.IsBackAvailable}"
+                                ToolTip="Navigate back">
+                                <MenuItem.Header>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Previous.png">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Opacity" Value="0.5" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Width="24"
+                                Height="24"
+                                Command="{Binding BrowseViewModel.NavigateForwardCommand}"
+                                IsEnabled="{Binding BrowseViewModel.IsForwardAvailable}"
+                                ToolTip="Navigate forward">
+                                <MenuItem.Header>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Next.png">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Opacity" Value="0.5" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </Menu>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="24"
+                            Foreground="White"
+                            Opacity="0.5"
+                            Text="{Binding BannerText}">
+                            <TextBlock.Effect>
+                                <BlurEffect KernelType="Gaussian" Radius="8.0" />
+                            </TextBlock.Effect>
+                        </TextBlock>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="24"
+                            Foreground="LightCyan"
+                            Text="{Binding BannerText}" />
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.Login}}">
+                    <login:LoginHome />
+                </Grid>
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.LibraryEdit}}">
+                    <store:StoreHome />
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Visibility="{Binding IsLoginStatusLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <loaders:SpinnerCogs
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Grid>
+    </Grid>
+</UserControl>

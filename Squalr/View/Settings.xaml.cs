@@ -1,7 +1,7 @@
 ﻿namespace Squalr.View
 {
-    using Source.Controls;
     using Squalr.Properties;
+    using SqualrCore.Source.Controls;
     using System;
     using System.Windows.Controls;
 

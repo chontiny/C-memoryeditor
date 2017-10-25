@@ -2,19 +2,19 @@
 {
     using ActionScheduler;
     using BackgroundScans.Prefilters;
-    using Engine;
-    using ProjectExplorer;
-    using ProjectExplorer.ProjectItems;
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.ProjectExplorer;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Utils;
-    using Utils.Extensions;
 
     /// <summary>
     /// Trace-Retrace Algorithm:

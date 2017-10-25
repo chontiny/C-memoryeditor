@@ -1,10 +1,9 @@
 ﻿namespace Squalr.Source.Scanners.ManualScanner
 {
-    using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
     using Results.ScanResults;
     using ScanConstraints;
+    using SqualrCore.Source.Docking;
     using System;
     using System.Collections.ObjectModel;
     using System.Threading;
@@ -74,7 +73,7 @@
             this.ScanConstraintManager.SetElementType(typeof(Int32));
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

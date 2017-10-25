@@ -1,0 +1,242 @@
+﻿<UserControl
+    x:Class="SqualrClient.View.Browse.Store.CheatsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:loaders="clr-namespace:SqualrCore.View.Loaders;assembly=SqualrCore"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="SqualrCheatsPage"
+    d:DesignHeight="480"
+    d:DesignWidth="480"
+    x:ClassModifier="internal"
+    DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public CheatsPage() { InitializeComponent(); }]]>
+    </x:Code>
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  HEADERS  -->
+            <ListView Grid.Row="0" BorderThickness="0">
+                <ListView.Template>
+                    <ControlTemplate>
+                        <Grid HorizontalAlignment="Left">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Grid
+                                Grid.Row="0"
+                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
+                                VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <Grid.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Margin" Value="5,0" />
+                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="FontWeight" Value="Bold" />
+                                    </Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BorderThickness" Value="0" />
+                                        <Setter Property="Padding" Value="8,4,8,4" />
+                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                    </Style>
+                                </Grid.Resources>
+                                <Border Grid.Column="0">
+                                    <TextBlock Text="Available Cheats" />
+                                </Border>
+                                <Border Grid.Column="1">
+                                    <TextBlock Text="Store" />
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </ListView.Template>
+            </ListView>
+
+            <!--  CONTENT  -->
+            <Grid Grid.Row="1" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <!--  AVAILABLE CHEATS  -->
+                <Grid Grid.Column="0" DataContext="{Binding LibraryViewModel, Source={StaticResource ViewModelLocator}}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+                        <ListView
+                            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                            BorderBrush="White"
+                            BorderThickness="1"
+                            ItemsSource="{Binding CheatsAvailable}">
+                            <ListView.ItemContainerStyle>
+                                <Style TargetType="ListViewItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                </Style>
+                            </ListView.ItemContainerStyle>
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition />
+                                        </Grid.ColumnDefinitions>
+                                        <Menu Grid.Column="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                                            <MenuItem
+                                                Command="{Binding LibraryViewModel.AddCheatToLibraryCommand, Source={StaticResource ViewModelLocator}}"
+                                                CommandParameter="{Binding .}"
+                                                ToolTip="Add Cheat">
+                                                <MenuItem.Header>
+                                                    <Image
+                                                        Width="16"
+                                                        Height="16"
+                                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Increased.png" />
+                                                </MenuItem.Header>
+                                            </MenuItem>
+                                        </Menu>
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                            Text="{Binding Path=CheatName}">
+                                            <TextBlock.InputBindings>
+                                                <MouseBinding
+                                                    Command="{Binding LibraryViewModel.SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                    CommandParameter="{Binding .}"
+                                                    Gesture="LeftDoubleClick" />
+                                            </TextBlock.InputBindings>
+                                        </TextBlock>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+                </Grid>
+
+                <!--  CHEATS IN STORE  -->
+                <Grid Grid.Column="1" DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}">
+                    <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+                        <ListView
+                            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                            BorderBrush="White"
+                            BorderThickness="1"
+                            ItemsSource="{Binding LockedCheatList}">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.InputBindings>
+                                            <MouseBinding
+                                                Command="{Binding StoreViewModel.SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                CommandParameter="{Binding .}"
+                                                Gesture="LeftDoubleClick" />
+                                        </Grid.InputBindings>
+                                        <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="48" />
+                                                <ColumnDefinition />
+                                            </Grid.ColumnDefinitions>
+                                            <Button
+                                                Padding="0"
+                                                Background="Transparent"
+                                                Command="{Binding StoreViewModel.UnlockCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                CommandParameter="{Binding .}"
+                                                ToolTip="Purchase this cheat"
+                                                Visibility="{Binding Path=IsPaid, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <WrapPanel Grid.Column="0">
+                                                    <Image
+                                                        Width="16"
+                                                        Height="16"
+                                                        Margin="0,0,4,0"
+                                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Coin.png" />
+                                                    <TextBlock
+                                                        Grid.Column="0"
+                                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                        Text="{Binding Path=Cost}" />
+                                                </WrapPanel>
+                                            </Button>
+                                            <Button
+                                                Padding="0"
+                                                Background="ForestGreen"
+                                                Command="{Binding StoreViewModel.UnlockCheatCommand, Source={StaticResource ViewModelLocator}}"
+                                                CommandParameter="{Binding .}"
+                                                ToolTip="Get this cheat"
+                                                Visibility="{Binding Path=IsFree, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <WrapPanel>
+                                                    <TextBlock
+                                                        Grid.Column="0"
+                                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                        Text="FREE" />
+                                                </WrapPanel>
+                                            </Button>
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                Margin="4,0,0,0"
+                                                Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                Text="{Binding Path=CheatName}"
+                                                ToolTip="{Binding Path=CheatDescription}" />
+                                        </Grid>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+
+            <!--  FOOTER  -->
+
+            <Menu
+                Grid.Row="2"
+                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                <Menu.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <DockPanel HorizontalAlignment="Stretch" />
+                    </ItemsPanelTemplate>
+                </Menu.ItemsPanel>
+                <TextBlock Foreground="White" Text="Edit Library Name:" />
+                <TextBox
+                    MinWidth="96"
+                    Margin="0"
+                    Padding="0"
+                    Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                    Style="{StaticResource PlaceHolder}"
+                    Tag="Library Name"
+                    Text="{Binding SelectedLibraryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                <MenuItem
+                    HorizontalAlignment="Right"
+                    Command="{Binding LibraryViewModel.DeleteLibraryCommand}"
+                    ToolTip="Delete Library">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Cancel.png" />
+                    </MenuItem.Header>
+                </MenuItem>
+            </Menu>
+        </Grid>
+
+        <Grid Visibility="{Binding IsCheatListLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <loaders:SpinnerCogs
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Grid>
+    </Grid>
+</UserControl>

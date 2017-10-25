@@ -28,7 +28,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/RightArrow.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrow.png" />
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Command="{Binding InvertSelectionCommand}" ToolTip="Invert Filter">
@@ -36,7 +36,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Invert.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Invert.png" />
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>

@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.ActionScheduler
 {
-    using Squalr.Source.Output;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.ComponentModel;
     using System.Threading;
-    using Utils.Extensions;
 
     /// <summary>
     /// A task that repeatedly performs an action.

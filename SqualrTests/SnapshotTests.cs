@@ -1,9 +1,8 @@
 ﻿namespace SqualrTests
 {
-    using Squalr.Source.Snapshots;
-    using Squalr.Source.UserSettings;
-    using Squalr.Source.Utils.Extensions;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Squalr.Source.Snapshots;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -17,7 +16,6 @@
             Random random = new Random();
             List<SnapshotRegion> groundTruth = new List<SnapshotRegion>();
             List<SnapshotRegion> chunkedRegions = new List<SnapshotRegion>();
-            SettingsViewModel.GetInstance().Alignment = 1;
 
             UInt64 baseAddress = 0;
             for (Int32 i = 0; i < 10000; i++)
@@ -46,7 +44,6 @@
             Random random = new Random();
             List<SnapshotRegion> groundTruth = new List<SnapshotRegion>();
             List<SnapshotRegion> chunkedRegions = new List<SnapshotRegion>();
-            SettingsViewModel.GetInstance().Alignment = 1;
 
             UInt64 baseAddress = 0;
             for (Int32 i = 0; i < 10000; i++)

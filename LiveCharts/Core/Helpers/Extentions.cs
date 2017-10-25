@@ -28,7 +28,7 @@ namespace LiveCharts.Helpers
     /// <summary>
     /// LiveCharts extensions methods
     /// </summary>
-    public static class Extentions
+    internal static class Extentions
     {
         /// <summary>
         /// Executes an Action in every item of a collection

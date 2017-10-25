@@ -1,13 +1,13 @@
 ﻿namespace Squalr.Source.Results.PointerScanResults
 {
-    using Content;
-    using Docking;
-    using Engine;
     using GalaSoft.MvvmLight.Command;
-    using Main;
-    using ProjectExplorer;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.ProjectExplorer;
+    using SqualrCore.Content;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -15,7 +15,6 @@
     using System.Threading.Tasks;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
-    using Utils.Extensions;
 
     /// <summary>
     /// View model for the Process Selector.
@@ -83,7 +82,7 @@
             this.addresses = new ObservableCollection<PointerScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
 
             this.UpdateScanResults();
         }

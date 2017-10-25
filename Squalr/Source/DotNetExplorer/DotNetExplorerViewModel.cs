@@ -1,11 +1,11 @@
 ﻿namespace Squalr.Source.DotNetExplorer
 {
-    using Docking;
     using Engine.AddressResolver.DotNet;
     using GalaSoft.MvvmLight.Command;
-    using Main;
-    using ProjectExplorer;
-    using ProjectExplorer.ProjectItems;
+    using Squalr.Source.ProjectExplorer;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.VirtualMachines.DotNet;
+    using SqualrCore.Source.ProjectItems;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -45,7 +45,7 @@
             this.RefreshObjectsCommand = new RelayCommand(() => this.RefreshObjects(), () => true);
             this.AddDotNetObjectCommand = new RelayCommand<DotNetObjectViewModel>((dotNetObjectViewModel) => this.AddDotNetObject(dotNetObjectViewModel), (dotNetObjectViewModel) => true);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

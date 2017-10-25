@@ -1,16 +1,16 @@
 ﻿namespace Squalr.Source.Scripting.Memory
 {
-    using Engine;
-    using Engine.Architecture.Disassembler.SharpDisasm;
-    using Engine.OperatingSystems;
-    using Output;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.Architecture;
+    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
-    using Utils;
-    using Utils.Extensions;
 
     /// <summary>
     /// Provides access to memory manipulations in an external process for scripts.
@@ -144,13 +144,13 @@
             }
 
             // Grab instructions at code entry point
-            List<Instruction> instructions = EngineCore.GetInstance().Architecture.GetDisassembler().Disassemble(originalBytes, EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), address.ToIntPtr());
+            IEnumerable<NormalizedInstruction> instructions = EngineCore.GetInstance().Architecture.GetDisassembler().Disassemble(originalBytes, EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), address.ToIntPtr());
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;
-            foreach (Instruction instruction in instructions)
+            foreach (NormalizedInstruction instruction in instructions)
             {
-                replacedInstructionSize += instruction.Length;
+                replacedInstructionSize += instruction.Size;
                 if (replacedInstructionSize >= injectedCodeSize)
                 {
                     break;

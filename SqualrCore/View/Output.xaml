@@ -1,0 +1,42 @@
+﻿<UserControl
+    x:Class="SqualrCore.View.Output"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:SqualrCore.Source.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="OutputViewModel"
+    d:DesignHeight="256"
+    d:DesignWidth="256"
+    DataContext="{Binding OutputViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <ScrollViewer Name="outputScrollViewer" ScrollChanged="OutputScrollViewerScrollChanged">
+            <RichTextBox
+                Name="outputTextBox"
+                controls:RichTextBoxHelper.DocumentRTF="{Binding LogText, Mode=OneWay}"
+                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                IsDocumentEnabled="True"
+                IsReadOnly="True" />
+        </ScrollViewer>
+        <Popup
+            Width="480"
+            MinHeight="64"
+            MaxHeight="512"
+            HorizontalOffset="240"
+            IsOpen="{Binding InnerMessageVisible}"
+            Placement="Mouse"
+            StaysOpen="False">
+            <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}" BorderThickness="1">
+                <ScrollViewer>
+                    <TextBox
+                        Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        IsReadOnly="True"
+                        Text="{Binding InnerMessageText}"
+                        TextWrapping="Wrap" />
+                </ScrollViewer>
+            </Border>
+        </Popup>
+    </Grid>
+</UserControl>

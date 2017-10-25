@@ -1,8 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Docking;
     using GalaSoft.MvvmLight.Command;
-    using Main;
+    using SqualrCore.Source.Docking;
     using System;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -39,7 +38,7 @@
             this.UndoSnapshotCommand = new RelayCommand(() => this.UndoSnapshot(), () => true);
             this.RedoSnapshotCommand = new RelayCommand(() => this.RedoSnapshot(), () => true);
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
             Task.Run(() => SnapshotManager.GetInstance().Subscribe(this));
         }
 

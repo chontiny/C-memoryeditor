@@ -26,7 +26,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/RightArrow.png" />
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrow.png" />
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem Command="{Binding StopScanCommand}">
@@ -34,7 +34,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/Stop.png" />
+                                Source="pack://application:,,,/SqualrCore;component/Content/Images/Stop.png" />
                         </MenuItem.Header>
                     </MenuItem>
                 </Menu>

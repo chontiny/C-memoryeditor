@@ -36,7 +36,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/New.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/New.png" />
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Command="{Binding SnapshotManagerViewModel.UndoSnapshotCommand}" ToolTip="Undo">
@@ -44,7 +44,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Undo.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Undo.png" />
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Command="{Binding SnapshotManagerViewModel.RedoSnapshotCommand}" ToolTip="Redo">
@@ -52,7 +52,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Redo.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Redo.png" />
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Command="{Binding SnapshotManagerViewModel.ClearSnapshotsCommand}" ToolTip="Clear Scans">
@@ -60,7 +60,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/Squalr;component/Content/Icons/Cancel.png" />
+                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Cancel.png" />
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>

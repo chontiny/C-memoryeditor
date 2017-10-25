@@ -1,0 +1,14 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/DarkBrushes.xaml" />
+
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/CheckBoxes.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/DropDown.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/DropDownAutoClose.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/DropDownContextMenu.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/FlatComboBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/ScrollViewer.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/TextBoxPlaceHolder.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/VerticalSeparator.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>
