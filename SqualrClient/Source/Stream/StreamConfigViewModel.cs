@@ -4,15 +4,17 @@
     using SqualrClient.Properties;
     using SqualrClient.Source.Api;
     using SqualrClient.Source.Api.Models;
+    using SqualrClient.Source.Library;
     using SqualrClient.Source.Navigation;
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
-    using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
 
@@ -198,17 +200,14 @@
 
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     IEnumerable<CheatVotes> cheatVotes = SqualrApi.GetStreamActivationIds(accessTokens.AccessToken);
-                    IEnumerable<ProjectItem> candidateProjectItems = null; // ProjectExplorerViewModel.GetInstance().ProjectItems;
+                    IEnumerable<Cheat> candidateCheats = LibraryViewModel.GetInstance().CheatsInLibrary;
 
-                    throw new NotImplementedException();
-
-                    if (this.PreviousCheatVotes == null || cheatVotes == null || this.PreviousCheatVotes.Count() != cheatVotes.Count())
+                    if (candidateCheats == null || this.PreviousCheatVotes == null || cheatVotes == null || this.PreviousCheatVotes.Count() != cheatVotes.Count())
                     {
                         this.PreviousCheatVotes = cheatVotes;
                         return;
                     }
 
-                    /*
                     // Get cheat IDs to activate based on increased vote counts
                     IEnumerable<Int32> cheatIdsToActivate = cheatVotes
                           .Join(
@@ -226,18 +225,18 @@
                         .Concat(cheatIdsToActivate)
                         .Distinct();
 
-                    IEnumerable<ProjectItem> projectItemsToActivate = cheatIdsToActivate
+                    IEnumerable<Cheat> projectItemsToActivate = cheatIdsToActivate
                           .Join(
-                              candidateProjectItems,
+                              candidateCheats,
                               cheatId => cheatId,
-                              projectItem => projectItem.AssociatedCheat?.CheatId,
+                              projectItem => projectItem?.CheatId,
                               (cheatId, projectItem) => projectItem);
 
-                    IEnumerable<ProjectItem> projectItemsToDeactivate = cheatVotes
+                    IEnumerable<Cheat> projectItemsToDeactivate = cheatVotes
                           .Join(
-                              candidateProjectItems,
+                              candidateCheats,
                               cheatVote => cheatVote.CheatId,
-                              projectItem => projectItem.AssociatedCheat?.CheatId,
+                              projectItem => projectItem?.CheatId,
                               (cheatId, projectItem) => projectItem)
                           .Except(projectItemsToActivate);
 
@@ -247,10 +246,7 @@
                         item.IsActivated = true;
 
                         // Reset duration always
-                        if (item is ScriptItem)
-                        {
-                            (item as ScriptItem).CurrentDuration = 0.0f;
-                        }
+                        item.Duration = 0.0f;
                     });
 
                     // Notify which project items were activated such that Squalr can update the stream overlay
@@ -258,13 +254,13 @@
                     {
                         Task.Run(() =>
                         {
-                            IEnumerable<ProjectItem> activatedProjectItems = candidateProjectItems
+                            IEnumerable<Cheat> activatedProjectItems = candidateCheats
                                 .Select(item => item)
-                                .Where(item => !item.AssociatedCheat.IsStreamDisabled)
+                                .Where(item => !item.IsStreamDisabled)
                                 .Where(item => item.IsActivated);
 
                             IEnumerable<OverlayMeta> overlayMeta = activatedProjectItems
-                                .Select(item => new OverlayMeta(item.AssociatedCheat.CheatId, item.AssociatedCheat.Cooldown, item.AssociatedCheat.Duration));
+                                .Select(item => new OverlayMeta(item.CheatId, item.Cooldown, item.Duration));
 
                             if (overlayMeta.Count() > 0)
                             {
@@ -279,7 +275,7 @@
                             }
                         });
                     }
-                    */
+
                     this.PreviousCheatVotes = cheatVotes;
                 }
             }
