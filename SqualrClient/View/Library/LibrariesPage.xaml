@@ -47,17 +47,15 @@
                             </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
-                                        Text="{Binding Path=LibraryName}">
-                                        <TextBlock.InputBindings>
+                                    <Grid Background="Transparent">
+                                        <Grid.InputBindings>
                                             <MouseBinding
                                                 Command="{Binding LibraryViewModel.SelectLibraryCommand, Source={StaticResource ViewModelLocator}}"
                                                 CommandParameter="{Binding .}"
-                                                Gesture="LeftClick" />
-                                        </TextBlock.InputBindings>
-                                    </TextBlock>
+                                                Gesture="LeftDoubleClick" />
+                                        </Grid.InputBindings>
+                                        <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor12}" Text="{Binding Path=LibraryName}" />
+                                    </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>

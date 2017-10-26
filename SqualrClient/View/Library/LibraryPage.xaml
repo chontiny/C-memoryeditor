@@ -46,6 +46,7 @@
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="0">
                         <ListView
+                            Name="LibraryListView"
                             Grid.Row="0"
                             Background="{StaticResource AvalonDock_Expression_BaseColor3}"
                             BorderThickness="0"
@@ -55,22 +56,27 @@
                                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                                 </Style>
                             </ListView.ItemContainerStyle>
+                            <!--  Click and Selection events  -->
+                            <intr:Interaction.Triggers>
+                                <intr:EventTrigger EventName="SelectionChanged">
+                                    <intr:InvokeCommandAction Command="{Binding LibraryViewModel.SelectCheatCommand, Source={StaticResource ViewModelLocator}}" CommandParameter="{Binding ElementName=LibraryListView, Path=SelectedItem}" />
+                                </intr:EventTrigger>
+                            </intr:Interaction.Triggers>
+
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid x:Name="CheatGridItem">
-                                        <Grid.InputBindings>
-                                            <MouseBinding
-                                                Command="{Binding LibraryViewModel.SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
-                                                CommandParameter="{Binding .}"
-                                                Gesture="LeftClick" />
-                                        </Grid.InputBindings>
+                                    <Grid x:Name="CheatGridItem" Background="Transparent">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition />
                                             <ColumnDefinition Width="Auto" />
                                         </Grid.ColumnDefinitions>
-                                        <Grid Grid.Column="0" Grid.ColumnSpan="2">
-                                            <Rectangle>
+                                        <Grid
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            Background="Transparent"
+                                            IsHitTestVisible="False">
+                                            <Rectangle IsHitTestVisible="False">
                                                 <Rectangle.Fill>
                                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                                         <GradientStop Offset="0.0" Color="#BF707070" />
@@ -81,8 +87,12 @@
                                                 </Rectangle.Fill>
                                             </Rectangle>
                                         </Grid>
-                                        <Grid Grid.Column="0" Grid.ColumnSpan="2">
-                                            <Rectangle>
+                                        <Grid
+                                            Grid.Column="0"
+                                            Grid.ColumnSpan="2"
+                                            Background="Transparent"
+                                            IsHitTestVisible="False">
+                                            <Rectangle IsHitTestVisible="False">
                                                 <Rectangle.Fill>
                                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                                         <GradientStop Offset="0.0" Color="#BF004080" />
@@ -101,10 +111,11 @@
                                             IsChecked="{Binding Path=IsActivated}" />
                                         <TextBlock
                                             Grid.Column="1"
+                                            Background="Transparent"
                                             Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                             IsHitTestVisible="False"
                                             Text="{Binding Path=CheatName}" />
-                                        <Menu Grid.Column="3" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                                        <Menu Grid.Column="2" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
                                             <MenuItem
                                                 Command="{Binding LibraryViewModel.RemoveCheatFromLibraryCommand, Source={StaticResource ViewModelLocator}}"
                                                 CommandParameter="{Binding .}"
@@ -121,8 +132,9 @@
                                         <Grid
                                             Grid.Column="0"
                                             Grid.ColumnSpan="2"
+                                            Background="Transparent"
                                             IsHitTestVisible="False">
-                                            <Rectangle>
+                                            <Rectangle IsHitTestVisible="False">
                                                 <Rectangle.Fill>
                                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                                         <GradientStop Offset="0.0" Color="#BF707070" />

@@ -84,21 +84,18 @@
                                 ItemsSource="{Binding FilteredGameList}">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid>
+                                        <Grid Background="Transparent">
                                             <Grid.InputBindings>
                                                 <MouseBinding
                                                     Command="{Binding LibraryViewModel.SelectGameCommand, Source={StaticResource ViewModelLocator}}"
                                                     CommandParameter="{Binding .}"
                                                     Gesture="LeftDoubleClick" />
                                             </Grid.InputBindings>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition />
-                                            </Grid.ColumnDefinitions>
                                             <TextBlock
-                                                Grid.Column="0"
                                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                                                 Margin="4,0,0,0"
                                                 Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                IsHitTestVisible="False"
                                                 Text="{Binding Path=GameName}" />
                                         </Grid>
                                     </DataTemplate>
