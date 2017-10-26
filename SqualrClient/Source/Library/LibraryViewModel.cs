@@ -244,7 +244,7 @@
                     {
                         // When updating the library name in the API, put a cancellable delay
                         // This prevents the API from being called for every keystroke
-                        Thread.Sleep(600);
+                        Thread.Sleep(1000);
 
                         CancellationTokenSource cancellationTokenSource = cancellationTokenSourceObject as CancellationTokenSource;
 
@@ -258,7 +258,10 @@
                     this.CancellationTokenSource,
                     this.CancellationTokenSource.Token);
 
-                this.RaisePropertyChanged(nameof(this.Libraries));
+                this.Libraries.Select(x => x).Where(x => x.LibraryId == this.ActiveLibrary.LibraryId).Select(x => x.LibraryName = this.ActiveLibrary.LibraryName);
+
+                this.RaisePropertyChanged(nameof(this.BannerText));
+                this.RaisePropertyChanged(nameof(this.ActiveLibrary));
                 this.RaisePropertyChanged(nameof(this.ActiveLibraryName));
             }
         }

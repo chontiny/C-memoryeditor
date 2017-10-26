@@ -17,6 +17,20 @@
         <![CDATA[ public LibraryPage() { InitializeComponent(); }]]>
     </x:Code>
     <UserControl.Resources>
+        <VisualBrush
+            x:Key="CheckeredBrush"
+            TileMode="Tile"
+            Viewbox="0,0,10,10"
+            ViewboxUnits="Absolute"
+            Viewport="0,0,10,10"
+            ViewportUnits="Absolute">
+            <VisualBrush.Visual>
+                <Grid Background="Black">
+                    <Path Data="M 0 10 L 10 0" Stroke="Gray" />
+                    <Path Data="M 0 0 L 10 10" Stroke="Gray" />
+                </Grid>
+            </VisualBrush.Visual>
+        </VisualBrush>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
     <Border>
@@ -43,7 +57,7 @@
                             </ListView.ItemContainerStyle>
                             <ListView.ItemTemplate>
                                 <DataTemplate>
-                                    <Grid>
+                                    <Grid x:Name="CheatGridItem">
                                         <Grid.InputBindings>
                                             <MouseBinding
                                                 Command="{Binding LibraryViewModel.SelectCheatCommand, Source={StaticResource ViewModelLocator}}"
@@ -120,6 +134,11 @@
                                             </Rectangle>
                                         </Grid>
                                     </Grid>
+                                    <DataTemplate.Triggers>
+                                        <DataTrigger Binding="{Binding Path=IsStreamDisabled}" Value="True">
+                                            <Setter TargetName="CheatGridItem" Property="Background" Value="{StaticResource CheckeredBrush}" />
+                                        </DataTrigger>
+                                    </DataTemplate.Triggers>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
                         </ListView>

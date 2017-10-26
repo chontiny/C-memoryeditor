@@ -217,7 +217,7 @@
                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                     Style="{StaticResource PlaceHolder}"
                     Tag="Library Name"
-                    Text="{Binding SelectedLibraryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                    Text="{Binding LibraryViewModel.ActiveLibraryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <MenuItem
                     HorizontalAlignment="Right"
                     Command="{Binding LibraryViewModel.DeleteLibraryCommand}"
