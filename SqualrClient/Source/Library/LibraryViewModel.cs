@@ -685,6 +685,8 @@
             {
                 SqualrApi.AddCheatToLibrary(accessTokens.AccessToken, this.ActiveLibrary.LibraryId, cheat.CheatId);
 
+                cheat.LoadDefaultStreamSettings();
+
                 this.cheatsAvailable.Remove(cheat);
                 this.cheatsInLibrary.Insert(0, cheat);
                 this.RaisePropertyChanged(nameof(this.CheatsAvailable));

@@ -22,18 +22,21 @@
         /// A value indicating if this script is enabled for stream interaction.
         /// </summary>
         [Browsable(false)]
+        [DataMember(Name = "is_stream_disabled")]
         protected Boolean isStreamDisabled;
 
         /// <summary>
         /// The cooldown in milliseconds of this cheat.
         /// </summary>
         [Browsable(false)]
+        [DataMember(Name = "cooldown")]
         protected Single cooldownMax;
 
         /// <summary>
         /// The duration in milliseconds of this cheat.
         /// </summary>
         [Browsable(false)]
+        [DataMember(Name = "duration")]
         protected Single durationMax;
 
         /// <summary>
@@ -378,6 +381,16 @@
         private DateTime LastUpdate { get; set; }
 
         /// <summary>
+        /// Loads the default stream settings into the associated project item.
+        /// </summary>
+        public void LoadDefaultStreamSettings()
+        {
+            this.isStreamDisabled = this.DefaultIsStreamDisabled;
+            this.cooldownMax = this.DefaultCooldown;
+            this.durationMax = this.DefaultDuration;
+        }
+
+        /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
         /// <param name="streamingContext">Streaming context.</param>
@@ -385,9 +398,6 @@
         public void OnDeserialized(StreamingContext streamingContext)
         {
             this.LastUpdate = DateTime.MinValue;
-
-            this.cooldownMax = this.DefaultCooldown;
-            this.durationMax = this.DefaultDuration;
 
             if (this.CheatPayload.IsNullOrEmpty())
             {
