@@ -2,6 +2,7 @@
     x:Class="Squalr.View.ProjectExplorer"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
@@ -67,7 +68,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/Increased.png" />
+                                Source="{x:Static content:Images.Increased}" />
                             <Grid
                                 x:Name="arrowGlyph"
                                 Grid.Column="1"
@@ -92,7 +93,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/CollectValues.png" />
+                                    Source="{x:Static content:Images.CollectValues}" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
@@ -110,7 +111,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/Script.png" />
+                                    Source="{x:Static content:Images.Script}" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"

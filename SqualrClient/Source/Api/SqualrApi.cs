@@ -403,7 +403,6 @@
                 default:
                     throw new StatusException(response.ResponseUri, response.StatusCode);
             }
-            throw new StatusException(response.ResponseUri, response.StatusCode);
 
             if (typeof(T) == typeof(String))
             {

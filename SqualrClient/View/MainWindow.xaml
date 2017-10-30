@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
     xmlns:browseView="clr-namespace:SqualrClient.View.Browse"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:coreView="clr-namespace:SqualrCore.View;assembly=SqualrCore"
     xmlns:docking="clr-namespace:SqualrCore.Source.Docking;assembly=SqualrCore"
@@ -81,7 +82,7 @@
                     Width="24"
                     Height="24"
                     Margin="4"
-                    Source="pack://application:,,,/SqualrClient;component/Content/Images/AppIcon.ico" />
+                    Source="{x:Static content:Images.Squalr}" />
                 <shell:TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
@@ -102,7 +103,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Decreased.png" />
+                            Source="{x:Static content:Images.Decreased}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem
@@ -115,7 +116,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Maximize.png" />
+                            Source="{x:Static content:Images.Maximize}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem
@@ -128,7 +129,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/X.png" />
+                            Source="{x:Static content:Images.X}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
             </shell:Menu>
@@ -244,7 +245,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/SelectProcess.png" />
+                            Source="{x:Static content:Images.SelectProcess}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />

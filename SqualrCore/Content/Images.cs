@@ -83,12 +83,12 @@
         /// <summary>
         /// Image of two down arrows.
         /// </summary>
-        public static readonly BitmapImage DownArrows = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "ENotation.png"));
+        public static readonly BitmapImage DownArrows = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "DownArrows.png"));
 
         /// <summary>
         /// Image representing mathmateical exponentiation.
         /// </summary>
-        public static readonly BitmapImage ExponentialNotation = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "ENotation.png"));
+        public static readonly BitmapImage ENotation = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "ENotation.png"));
 
         /// <summary>
         /// Image for an equal to scan.
@@ -213,7 +213,7 @@
         /// <summary>
         /// Image for a new scan.
         /// </summary>
-        public static readonly BitmapImage NewScan = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "New.png"));
+        public static readonly BitmapImage New = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "New.png"));
 
         /// <summary>
         /// Image for the next arrow.
@@ -291,6 +291,11 @@
         public static readonly BitmapImage RightArrows = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "RightArrows.png"));
 
         /// <summary>
+        /// Image for redo.
+        /// </summary>
+        public static readonly BitmapImage Redo = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Redo.png"));
+
+        /// <summary>
         /// Image represeting a save operation.
         /// </summary>
         public static readonly BitmapImage Save = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Save.png"));
@@ -311,6 +316,16 @@
         public static readonly BitmapImage Stop = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Stop.png"));
 
         /// <summary>
+        /// Image for Squalr.
+        /// </summary>
+        public static readonly BitmapImage Squalr = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Squalr.png"));
+
+        /// <summary>
+        /// Image for Squalr Dev.
+        /// </summary>
+        public static readonly BitmapImage SqualrDev = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "SqualrDev.png"));
+
+        /// <summary>
         /// Image for an unchanged value scan.
         /// </summary>
         public static readonly BitmapImage Unchanged = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Unchanged.png"));
@@ -329,6 +344,11 @@
         /// Image for an unknown value scan.
         /// </summary>
         public static readonly BitmapImage UnknownValue = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "UnknownValue.png"));
+
+        /// <summary>
+        /// Image for an X.
+        /// </summary>
+        public static readonly BitmapImage X = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "X.png"));
 
         /// <summary>
         /// The base path for image content.

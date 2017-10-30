@@ -2,8 +2,8 @@
     x:Class="SqualrClient.View.Browse.Library.LibraryHome"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:browse="clr-namespace:SqualrClient.View.Browse"
     xmlns:browseConverters="clr-namespace:SqualrClient.Source.Mvvm.Converters"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:library="clr-namespace:SqualrClient.View.Browse.Library"
@@ -62,7 +62,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/Previous.png">
+                                    Source="{x:Static content:Images.Previous}">
                                     <Image.Style>
                                         <Style TargetType="Image">
                                             <Style.Triggers>
@@ -85,7 +85,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/Next.png">
+                                    Source="{x:Static content:Images.Next}">
                                     <Image.Style>
                                         <Style TargetType="Image">
                                             <Style.Triggers>
