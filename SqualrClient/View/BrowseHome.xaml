@@ -24,6 +24,7 @@
     </x:Code>
     <UserControl.Resources>
         <browseConverters:BrowsePageToVisibilityConverter x:Key="BrowsePageToVisibilityConverter" />
+        <browseConverters:BrowsePageToInvisibilityConverter x:Key="BrowsePageToInvisibilityConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
@@ -39,7 +40,7 @@
             <Grid
                 Grid.Row="0"
                 Background="{StaticResource AvalonDock_Expression_BaseColor4}"
-                Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}}">
+                Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToInvisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.Login}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />

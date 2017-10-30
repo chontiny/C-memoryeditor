@@ -213,6 +213,7 @@
             {
                 this.selectedGame = value;
                 this.RaisePropertyChanged(nameof(this.SelectedGame));
+                this.RaisePropertyChanged(nameof(this.BannerText));
             }
         }
 
@@ -280,6 +281,7 @@
             {
                 this.activeLibrary = value;
                 this.RaisePropertyChanged(nameof(this.ActiveLibrary));
+                this.RaisePropertyChanged(nameof(this.BannerText));
                 this.RaisePropertyChanged(nameof(this.ActiveLibraryName));
                 this.RaisePropertyChanged(nameof(this.IsLibrarySelected));
             }
@@ -536,6 +538,8 @@
             this.ActiveLibrary = null;
             this.RaisePropertyChanged(nameof(this.Libraries));
 
+            BrowseViewModel.GetInstance().Navigate(NavigationPage.LibrarySelect);
+
             Task.Run(() =>
             {
                 try
@@ -550,8 +554,6 @@
                     this.RaisePropertyChanged(nameof(this.Libraries));
 
                     this.SelectedGame = game;
-
-                    BrowseViewModel.GetInstance().Navigate(NavigationPage.LibrarySelect);
                 }
                 catch (Exception ex)
                 {
@@ -571,6 +573,8 @@
         /// <param name="library">The selected library.</param>
         private void SelectLibrary(Library library)
         {
+            BrowseViewModel.GetInstance().Navigate(NavigationPage.LibraryEdit);
+
             Task.Run(() =>
             {
                 try
@@ -594,8 +598,6 @@
                     this.CheatsInLibrary = new ObservableCollection<Cheat>(libraryCheats.CheatsInLibrary);
                     this.RaisePropertyChanged(nameof(this.CheatsAvailable));
                     this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
-
-                    BrowseViewModel.GetInstance().Navigate(NavigationPage.LibraryEdit);
                 }
                 catch (Exception ex)
                 {

@@ -10,7 +10,7 @@
     /// Converter class to convert a boolean to a <see cref="Visibility"/> value.
     /// </summary>
     [ValueConversion(typeof(NavigationPage), typeof(Visibility))]
-    public class BrowsePageToVisibilityConverter : IValueConverter
+    public class BrowsePageToInvisibilityConverter : IValueConverter
     {
         /// <summary> 
         /// Converts a value. 
@@ -40,7 +40,7 @@
 
                 NavigationPage targetVal = (NavigationPage)parameter;
 
-                if (val == targetVal)
+                if (val != targetVal)
                 {
                     return Visibility.Visible;
                 }
@@ -65,7 +65,7 @@
         /// </returns> 
         public Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
-            if ((Visibility)value == Visibility.Visible)
+            if ((Visibility)value != Visibility.Visible)
             {
                 return true;
             }

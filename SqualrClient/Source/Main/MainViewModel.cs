@@ -37,6 +37,11 @@
         private const String DeveloperToolsExecutable = "Squalr.exe";
 
         /// <summary>
+        /// Gets or sets the regular expression for filtering access tokens from the logs.
+        /// </summary>
+        private const String AccessTokenRegex = "access_token=([A-Za-z0-9=+/])*";
+
+        /// <summary>
         /// Singleton instance of the <see cref="MainViewModel" /> class
         /// </summary>
         private static Lazy<MainViewModel> mainViewModelInstance = new Lazy<MainViewModel>(
@@ -49,6 +54,7 @@
         private MainViewModel()
         {
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr started");
+            OutputViewModel.GetInstance().AddOutputMask(new OutputMask(MainViewModel.AccessTokenRegex, "access_token={{REDACTED}}"));
 
             // Note: These cannot be async, as the logic to update the layout or window cannot be on a new thread
             this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(), () => true);

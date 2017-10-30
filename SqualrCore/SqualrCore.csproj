@@ -151,6 +151,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Source\Docking\DockingViewModel.cs" />
+    <Compile Include="Source\Output\OutputMask.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Source\Utils\NativeBrowser.cs" />
     <Compile Include="View\ChangeLog.xaml.cs">
