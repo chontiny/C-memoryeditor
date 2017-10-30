@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners.ValueCollector
 {
     using ActionScheduler;
-    using BackgroundScans.Prefilters;
     using Snapshots;
+    using Squalr.Source.Prefilters;
 
     /// <summary>
     /// Collect values for the current snapshot, or a new one if none exists. The values are then assigned to a new snapshot.

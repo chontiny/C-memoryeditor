@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.BackgroundScans
+﻿namespace Squalr.Source.Scanners
 {
     using ActionScheduler;
     using Snapshots;

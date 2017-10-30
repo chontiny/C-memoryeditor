@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Scanners.PointerScanner
 {
     using ActionScheduler;
-    using BackgroundScans.Prefilters;
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Prefilters;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.ProjectItems;

@@ -3,8 +3,8 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.Command;
     using Squalr.Properties;
+    using Squalr.Source.Prefilters;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.Scanners.BackgroundScans.Prefilters;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using System;

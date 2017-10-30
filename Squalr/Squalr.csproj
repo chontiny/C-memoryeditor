@@ -320,14 +320,14 @@
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
+    <Compile Include="Source\Scanners\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
+    <Compile Include="Source\Prefilters\ChunkLinkedListPrefilter.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
     <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetExplorerViewModel.cs" />
@@ -363,9 +363,9 @@
     </Compile>
     <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
     <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ISnapshotPrefilter.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ShallowPointerPrefilter.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\SnapshotPrefilterFactory.cs" />
+    <Compile Include="Source\Prefilters\ISnapshotPrefilter.cs" />
+    <Compile Include="Source\Prefilters\ShallowPointerPrefilter.cs" />
+    <Compile Include="Source\Prefilters\SnapshotPrefilterFactory.cs" />
     <Compile Include="Source\Snapshots\SnapshotManager.cs" />
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />

@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
     using ActionScheduler;
-    using BackgroundScans.Prefilters;
     using LabelThresholder;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Prefilters;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using SqualrCore.Source.Engine.Input.Keyboard;

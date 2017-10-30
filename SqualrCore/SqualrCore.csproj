@@ -151,6 +151,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Source\Docking\DockingViewModel.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\PEB\ManagedPeb.cs" />
     <Compile Include="Source\Output\OutputMask.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Source\Utils\NativeBrowser.cs" />

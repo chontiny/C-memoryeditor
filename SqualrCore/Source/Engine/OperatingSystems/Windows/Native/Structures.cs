@@ -9,6 +9,51 @@
     /// </summary>
     internal class Structures
     {
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        internal struct ProcessBasicInformation
+        {
+            /// <summary>
+            /// The exit status.
+            /// </summary>
+            public IntPtr ExitStatus;
+
+            /// <summary>
+            /// The base address of Process Environment Block.
+            /// </summary>
+            public IntPtr PebBaseAddress;
+
+            /// <summary>
+            /// The affinity mask.
+            /// </summary>
+            public IntPtr AffinityMask;
+
+            /// <summary>
+            /// The base priority.
+            /// </summary>
+            public IntPtr BasePriority;
+
+            /// <summary>
+            /// The process id.
+            /// </summary>
+            public UIntPtr UniqueProcessId;
+
+            /// <summary>
+            /// The process id of the parent process.
+            /// </summary>
+            public IntPtr InheritedFromUniqueProcessId;
+
+            /// <summary>
+            /// The size of this structure.
+            /// </summary>
+            public Int32 Size
+            {
+                get
+                {
+                    return Marshal.SizeOf(typeof(ProcessBasicInformation));
+                }
+            }
+        }
+
         /// <summary>
         /// Contains information about a module in an external process.
         /// </summary>

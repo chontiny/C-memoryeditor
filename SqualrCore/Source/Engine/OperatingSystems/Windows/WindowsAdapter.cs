@@ -4,6 +4,7 @@
     using Output;
     using Processes;
     using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.Engine.OperatingSystems.Windows.PEB;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -315,10 +316,10 @@
         }
 
         /// <summary>
-        /// Gets the address of the stack in the target process
+        /// Gets the address of the stacks in the opened process.
         /// </summary>
-        /// <returns>The stack address in the target process</returns>
-        public IntPtr GetStackAddress()
+        /// <returns>A pointer to the stacks of the opened process.</returns>
+        public IEnumerable<NormalizedRegion> GetStackAddresses()
         {
             throw new NotImplementedException();
         }
@@ -327,9 +328,11 @@
         /// Gets the address(es) of the heap in the target process
         /// </summary>
         /// <returns>The heap addresses in the target process</returns>
-        public IEnumerable<IntPtr> GetHeapAddresses()
+        public IEnumerable<NormalizedRegion> GetHeapAddresses()
         {
-            throw new NotImplementedException();
+            ManagedPeb peb = new ManagedPeb(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle);
+
+            return null;
         }
 
         /// <summary>
@@ -489,7 +492,7 @@
             try
             {
                 // Determine number of modules
-                if (!Native.NativeMethods.EnumProcessModulesEx(this.SystemProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
+                if (!NativeMethods.EnumProcessModulesEx(this.SystemProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
                 {
                     return normalizedModules;
                 }
@@ -497,16 +500,16 @@
                 Int32 totalNumberofModules = bytesNeeded / IntPtr.Size;
                 modulePointers = new IntPtr[totalNumberofModules];
 
-                if (Native.NativeMethods.EnumProcessModulesEx(this.SystemProcess.Handle, modulePointers, bytesNeeded, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
+                if (NativeMethods.EnumProcessModulesEx(this.SystemProcess.Handle, modulePointers, bytesNeeded, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
                 {
                     for (Int32 index = 0; index < totalNumberofModules; index++)
                     {
                         StringBuilder moduleFilePath = new StringBuilder(1024);
-                        Native.NativeMethods.GetModuleFileNameEx(this.SystemProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)moduleFilePath.Capacity);
+                        NativeMethods.GetModuleFileNameEx(this.SystemProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)moduleFilePath.Capacity);
 
                         String moduleName = Path.GetFileName(moduleFilePath.ToString());
                         ModuleInformation moduleInformation = new ModuleInformation();
-                        Native.NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
+                        NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
                         // Convert to a normalized module and add it to our list
                         NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase, moduleInformation.SizeOfImage.ToUInt64());
