@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Prefilters
 {
-    using ActionScheduler;
     using Snapshots;
     using Squalr.Source.Scanners;
+    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.OperatingSystems;
     using SqualrCore.Source.Engine.Processes;
@@ -113,6 +113,8 @@
         /// </summary>
         protected override void OnBegin()
         {
+            PointerCollector.GetInstance().Schedule();
+
             this.UpdateInterval = ShallowPointerPrefilter.RescanTime;
 
             base.OnBegin();

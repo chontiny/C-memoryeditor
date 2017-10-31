@@ -113,7 +113,7 @@
         /// </summary>
         private void StartBackgroundServices()
         {
-            SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
+            SnapshotPrefilterFactory.StartPrefilter(typeof(NullPrefilter));
         }
 
         /// <summary>

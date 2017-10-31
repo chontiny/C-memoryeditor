@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Scanners.ManualScanner
 {
-    using ActionScheduler;
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
     using Squalr.Source.Prefilters;
+    using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Generic;
     using System.Linq;

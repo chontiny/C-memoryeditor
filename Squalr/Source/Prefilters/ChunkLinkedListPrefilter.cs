@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Prefilters
 {
-    using ActionScheduler;
     using Snapshots;
     using Squalr.Properties;
+    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.OperatingSystems;
     using SqualrCore.Source.Engine.Processes;

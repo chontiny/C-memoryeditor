@@ -28,16 +28,17 @@
         /// <returns>A prefilter of the specified type.</returns>
         public static ISnapshotPrefilter GetSnapshotPrefilter(Type prefilterClass)
         {
-            if (prefilterClass == typeof(ShallowPointerPrefilter))
+            switch (prefilterClass)
             {
-                return ShallowPointerPrefilter.GetInstance();
+                case Type _ when prefilterClass == typeof(ShallowPointerPrefilter):
+                    return ShallowPointerPrefilter.GetInstance();
+                case Type _ when prefilterClass == typeof(ChunkLinkedListPrefilter):
+                    return ChunkLinkedListPrefilter.GetInstance();
+                case Type _ when prefilterClass == typeof(NullPrefilter):
+                    return NullPrefilter.GetInstance();
+                default:
+                    throw new Exception(prefilterClass?.ToString() + " - Type is not a valid prefilter");
             }
-            else if (prefilterClass == typeof(ChunkLinkedListPrefilter))
-            {
-                return ChunkLinkedListPrefilter.GetInstance();
-            }
-
-            throw new Exception(prefilterClass?.ToString() + " - Type is not a valid prefilter");
         }
     }
     //// End class

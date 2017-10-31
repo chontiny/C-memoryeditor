@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners
 {
-    using ActionScheduler;
     using Snapshots;
     using Squalr.Properties;
+    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
@@ -166,22 +166,46 @@
                     return;
                 }
 
-                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
+                if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
                 {
-                    SnapshotElementIterator element = enumerator.Current;
-                    UInt64 value = unchecked((UInt64)element.GetCurrentValue());
-
-                    // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
-                    if (value < UInt16.MaxValue || value % 4 != 0)
+                    for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
                     {
-                        continue;
+                        SnapshotElementIterator element = enumerator.Current;
+                        UInt32 value = unchecked((UInt32)element.GetCurrentValue());
+
+                        // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
+                        if (value < UInt16.MaxValue || value % 4 != 0)
+                        {
+                            continue;
+                        }
+
+                        // Check if it is possible that this pointer is valid, if so keep it
+                        if (this.CurrentSnapshot.ContainsAddress(value))
+                        {
+                            value = value - value % PointerCollector.ChunkSize;
+                            foundPointerDestinations.Add(value);
+                        }
                     }
-
-                    // Check if it is possible that this pointer is valid, if so keep it
-                    if (this.CurrentSnapshot.ContainsAddress(value))
+                }
+                else
+                {
+                    for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
                     {
-                        value = value - value % PointerCollector.ChunkSize;
-                        foundPointerDestinations.Add(value);
+                        SnapshotElementIterator element = enumerator.Current;
+                        UInt64 value = unchecked((UInt64)element.GetCurrentValue());
+
+                        // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
+                        if (value < UInt16.MaxValue || value % 4 != 0)
+                        {
+                            continue;
+                        }
+
+                        // Check if it is possible that this pointer is valid, if so keep it
+                        if (this.CurrentSnapshot.ContainsAddress(value))
+                        {
+                            value = value - value % PointerCollector.ChunkSize;
+                            foundPointerDestinations.Add(value);
+                        }
                     }
                 }
 
