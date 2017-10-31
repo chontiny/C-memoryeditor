@@ -22,6 +22,7 @@
     [KnownType(typeof(ProjectItem))]
     [KnownType(typeof(ScriptItem))]
     [KnownType(typeof(AddressItem))]
+    [KnownType(typeof(InstructionItem))]
     [KnownType(typeof(PointerItem))]
     [KnownType(typeof(DotNetItem))]
     [KnownType(typeof(JavaItem))]

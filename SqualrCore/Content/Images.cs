@@ -66,6 +66,11 @@
         public static readonly BitmapImage CollectValues = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "CollectValues.png"));
 
         /// <summary>
+        /// Image for a microprocessor.
+        /// </summary>
+        public static readonly BitmapImage Cpu = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Cpu.png"));
+
+        /// <summary>
         /// Image for a curse.
         /// </summary>
         public static readonly BitmapImage Curse = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Curse.png"));

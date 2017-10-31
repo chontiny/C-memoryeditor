@@ -8,6 +8,7 @@
     using SqualrCore.Source.Editors.ValueEditor;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.PropertyViewer;
     using SqualrCore.Source.Utils;
@@ -80,8 +81,9 @@
             this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
             this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItems) => this.SelectedProjectItems = (selectedItems as IList)?.Cast<ProjectItem>(), (selectedItems) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
-            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
-            this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
+            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
+            this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(ScriptItem)), () => true);
+            this.AddNewInstructionItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(InstructionItem)), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
             this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.CopySelectionCommand = new RelayCommand(() => this.CopySelection(), () => true);
@@ -122,6 +124,11 @@
         /// Gets the command to add a new address.
         /// </summary>
         public ICommand AddNewAddressItemCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add a new instruction.
+        /// </summary>
+        public ICommand AddNewInstructionItemCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to add a new script.
@@ -301,17 +308,23 @@
         /// <summary>
         /// Adds a new address to the project items.
         /// </summary>
-        private void AddNewPointerItem()
+        private void AddNewProjectItem(Type projectItemType)
         {
-            this.AddNewProjectItems(true, new PointerItem());
-        }
-
-        /// <summary>
-        /// Adds a new script to the project items.
-        /// </summary>
-        private void AddNewScriptItem()
-        {
-            this.AddNewProjectItems(true, new ScriptItem());
+            switch (projectItemType)
+            {
+                case Type _ when projectItemType == typeof(PointerItem):
+                    this.AddNewProjectItems(true, new PointerItem());
+                    break;
+                case Type _ when projectItemType == typeof(ScriptItem):
+                    this.AddNewProjectItems(true, new ScriptItem());
+                    break;
+                case Type _ when projectItemType == typeof(InstructionItem):
+                    this.AddNewProjectItems(true, new InstructionItem());
+                    break;
+                default:
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
+                    break;
+            }
         }
 
         /// <summary>

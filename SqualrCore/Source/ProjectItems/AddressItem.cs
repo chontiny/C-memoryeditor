@@ -80,10 +80,11 @@
         /// Gets or sets the data type of the value at this address.
         /// </summary>
         [DataMember]
+        [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(DataTypeConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Data Type"), Description("Data type of the calculated address")]
-        public DataType DataType
+        public virtual DataType DataType
         {
             get
             {
@@ -110,9 +111,10 @@
         /// <summary>
         /// Gets or sets the value at this address.
         /// </summary>
+        [Browsable(true)]
         [TypeConverter(typeof(DynamicConverter))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value"), Description("Value at the calculated address")]
-        public Object AddressValue
+        public virtual Object AddressValue
         {
             get
             {
@@ -131,9 +133,10 @@
         /// Gets or sets a value indicating whether the value at this address should be displayed as hex.
         /// </summary>
         [DataMember]
+        [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether the value is displayed as hexedecimal")]
-        public Boolean IsValueHex
+        public virtual Boolean IsValueHex
         {
             get
             {

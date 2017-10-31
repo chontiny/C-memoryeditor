@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SqualrCore</RootNamespace>
     <AssemblyName>SqualrCore</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -153,6 +153,7 @@
     <Compile Include="Source\Docking\DockingViewModel.cs" />
     <Compile Include="Source\Engine\OperatingSystems\Windows\PEB\ManagedPeb.cs" />
     <Compile Include="Source\Output\OutputMask.cs" />
+    <Compile Include="Source\ProjectItems\InstructionItem.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Source\Utils\NativeBrowser.cs" />
     <Compile Include="View\ChangeLog.xaml.cs">
@@ -443,6 +444,7 @@
     </Content>
     <Resource Include="Content\Images\Squalr.png" />
     <Resource Include="Content\Images\SqualrDev.png" />
+    <Resource Include="Content\Images\Cpu.png" />
     <Content Include="Content\Templates\CodeInjectionTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>

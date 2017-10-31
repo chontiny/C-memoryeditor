@@ -31,6 +31,8 @@
             <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Add New Address" />
             <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
             <Separator />
+            <MenuItem Command="{Binding AddNewInstructionItemCommand}" Header="Add New Instruction" />
+            <Separator />
             <MenuItem Command="{Binding PasteSelectionCommand}" Header="Paste" />
         </ContextMenu>
         <ContextMenu
@@ -116,6 +118,24 @@
                                     Padding="4,0,0,0"
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
                                     Text="Add Script" />
+                            </WrapPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem
+                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Command="{Binding AddNewInstructionItemCommand}"
+                        ToolTip="Add New Instruction">
+                        <MenuItem.Header>
+                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Source="{x:Static content:Images.Cpu}" />
+                                <TextBlock
+                                    Padding="4,0,0,0"
+                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Text="Add Instruction" />
                             </WrapPanel>
                         </MenuItem.Header>
                     </MenuItem>

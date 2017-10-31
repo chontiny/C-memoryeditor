@@ -3,12 +3,14 @@
     using Controls;
     using Editors.ScriptEditor;
     using Scripting;
+    using SqualrCore.Content;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
+    using System.Windows.Media.Imaging;
     using Utils.TypeConverters;
 
     /// <summary>
@@ -99,6 +101,17 @@
                 this.compiledScript = value;
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
+            }
+        }
+
+        /// <summary>
+        /// Gets the image associated with this project item.
+        /// </summary>
+        public override BitmapSource Icon
+        {
+            get
+            {
+                return Images.Script;
             }
         }
 
