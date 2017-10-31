@@ -54,7 +54,7 @@
 
         private void StartScan()
         {
-            this.PointerScannerModel.Schedule();
+            this.PointerScannerModel.Start();
         }
 
         private void StopScan()

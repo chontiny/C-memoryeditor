@@ -26,7 +26,7 @@
             this.UpdateAction = updateAction;
             this.UpdateInterval = RefreshCoinsTask.RefreshInterval;
 
-            this.Schedule();
+            this.Start();
         }
 
         /// <summary>

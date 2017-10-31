@@ -25,7 +25,7 @@
             this.KeyboardSubject = new KeyboardCapture();
             this.MouseSubject = new MouseCapture();
 
-            this.Schedule();
+            this.Start();
         }
 
         /// <summary>

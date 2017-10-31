@@ -24,7 +24,6 @@
         private NullPrefilter() : base("Prefilter", isRepeated: true, trackProgress: true)
         {
             this.UpdateProgress(100.0);
-            this.IsTaskComplete = true;
         }
 
         /// <summary>
@@ -41,7 +40,7 @@
         /// </summary>
         public void BeginPrefilter()
         {
-            this.Schedule();
+            this.Start();
         }
 
         /// <summary>

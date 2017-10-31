@@ -136,7 +136,7 @@
 
                             // Start the task
                             nextTask.InitializeStart();
-                            Task.Run(() => nextTask.Start());
+                            Task.Run(() => nextTask.Begin());
                         }
                         else if (nextTask.CanUpdate)
                         {

@@ -1,9 +1,9 @@
 ﻿namespace SqualrCore.Source.Engine.VirtualMachines.DotNet
 {
     using ActionScheduler;
-    using SqualrProxy;
     using Processes;
     using Proxy;
+    using SqualrProxy;
     using System;
     using System.Collections.Generic;
     using System.Linq;

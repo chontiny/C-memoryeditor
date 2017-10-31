@@ -50,7 +50,7 @@
             this.RegionLock = new Object();
             this.processedCount = 0;
 
-            PointerCollector.GetInstance().Schedule();
+            PointerCollector.GetInstance().Start();
         }
 
         /// <summary>
@@ -77,7 +77,7 @@
         /// </summary>
         public void BeginPrefilter()
         {
-            this.Schedule();
+            this.Start();
         }
 
         /// <summary>
@@ -113,7 +113,7 @@
         /// </summary>
         protected override void OnBegin()
         {
-            PointerCollector.GetInstance().Schedule();
+            PointerCollector.GetInstance().Start();
 
             this.UpdateInterval = ShallowPointerPrefilter.RescanTime;
 

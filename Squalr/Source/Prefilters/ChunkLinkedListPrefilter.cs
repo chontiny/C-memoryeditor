@@ -110,7 +110,7 @@
         /// </summary>
         public void BeginPrefilter()
         {
-            this.Schedule();
+            this.Start();
         }
 
         /// <summary>
@@ -177,8 +177,7 @@
 
             lock (this.ChunkLock)
             {
-                this.UpdateProgress(this.ChunkList.Where(x => x.IsProcessed()).Count(), this.ChunkList.Count());
-                this.IsTaskComplete = this.IsProgressComplete;
+                this.UpdateProgress(this.ChunkList.Where(x => x.IsProcessed()).Count(), this.ChunkList.Count(), canFinalize: true);
             }
 
             // Set rescan time based on whether or not we have already cycled through all the pages

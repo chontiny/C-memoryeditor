@@ -85,7 +85,7 @@
                 lock (this.ProgressLock)
                 {
                     processedPages++;
-                    this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
+                    this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                 }
             });
 

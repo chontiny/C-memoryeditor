@@ -43,7 +43,7 @@
             private set
             {
                 this.scanCount = value;
-                this.NotifyPropertyChanged(nameof(this.ScanCount));
+                this.RaisePropertyChanged(nameof(this.ScanCount));
             }
         }
 
@@ -58,7 +58,6 @@
         protected override void OnBegin()
         {
             this.ScanCount = 0;
-            this.IsTaskComplete = false;
 
             base.OnBegin();
         }
@@ -78,8 +77,6 @@
         /// </summary>
         protected override void OnEnd()
         {
-            this.IsTaskComplete = true;
-
             base.OnEnd();
         }
     }

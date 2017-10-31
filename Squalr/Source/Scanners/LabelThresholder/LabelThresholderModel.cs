@@ -98,7 +98,7 @@
                 }
             }
 
-            this.Schedule();
+            this.Start();
         }
 
         public void ApplyThreshold()
@@ -212,7 +212,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                     //// End foreach element
                 });

@@ -289,10 +289,7 @@
                 return;
             }
 
-            foreach (ProjectItem projectItem in projectItems)
-            {
-                this.ProjectItems.Add(projectItem);
-            }
+            this.ProjectItems = new ObservableCollection<ProjectItem>(this.ProjectItems.Concat(projectItems));
 
             this.RaisePropertyChanged(nameof(this.ProjectItems));
         }
