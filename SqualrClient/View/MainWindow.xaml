@@ -358,7 +358,7 @@
                 <shell:ItemsControl HorizontalAlignment="Right" ItemsSource="{Binding Path=ActiveTasks}">
                     <shell:ItemsControl.ItemTemplate>
                         <shell:DataTemplate>
-                            <shell:WrapPanel>
+                            <shell:WrapPanel Visibility="{Binding Path=TrackProgress, Converter={StaticResource BooleanToHiddenConverter}}">
                                 <shell:TextBlock
                                     Padding="4,0,4,0"
                                     Foreground="{StaticResource SqualrColorWhite}"
