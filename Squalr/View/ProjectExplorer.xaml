@@ -22,6 +22,7 @@
             x:Key="BooleanToHiddenConverter"
             False="Hidden"
             True="Visible" />
+        <converters:ProjectItemValueConverter x:Key="ProjectItemValueConverter" />
         <ContextMenu
             x:Key="RightClickMenu"
             Background="{StaticResource AvalonDock_Expression_BaseColor1}"
@@ -144,7 +145,10 @@
         </WrapPanel>
 
         <Grid Grid.Row="1">
-            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer
+                Grid.Row="0"
+                HorizontalScrollBarVisibility="Hidden"
+                VerticalScrollBarVisibility="Auto">
                 <ListView
                     Name="ProjectExplorerListView"
                     Background="{StaticResource AvalonDock_Expression_BaseColor3}"
@@ -155,6 +159,7 @@
                     <ListView.ItemContainerStyle>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Setter Property="ContextMenu" Value="{StaticResource ProjectItemRightClickMenu}" />
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         </Style>
                     </ListView.ItemContainerStyle>
                     <!--  Click and Selection events  -->
@@ -185,11 +190,12 @@
                     </ListView.InputBindings>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
+                            <Grid HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
                                 <CheckBox
                                     Grid.Column="0"
@@ -209,6 +215,13 @@
                                     Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
                                     IsHitTestVisible="False"
                                     Text="{Binding Path=Name}" />
+                                <TextBlock
+                                    Grid.Column="3"
+                                    Margin="4,0,0,0"
+                                    HorizontalAlignment="Right"
+                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding Path=., Converter={StaticResource ProjectItemValueConverter}}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
