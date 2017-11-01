@@ -29,7 +29,7 @@
                     FontFamily="Tahoma"
                     FontSize="14"
                     FontWeight="Bold"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     ToolTip="Twitch Login">
                     LOGIN WITH TWITCH
                 </Button>

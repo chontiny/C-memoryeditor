@@ -63,7 +63,7 @@
         <shell:Grid
             x:Name="titlebar"
             Grid.Row="0"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            Background="{StaticResource SqualrColorGray20}">
             <shell:Grid.ColumnDefinitions>
                 <!--  Title Text Column  -->
                 <shell:ColumnDefinition />
@@ -86,7 +86,7 @@
                 <shell:TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     Text="Squalr" />
             </shell:Grid>
             <shell:Menu
@@ -138,14 +138,14 @@
         <!--  Menu Bar  -->
         <shell:Grid Grid.Row="1">
             <shell:Menu
-                Background="{StaticResource AvalonDock_Expression_BaseColor4}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                Background="{StaticResource SqualrColorGray20}"
+                BorderBrush="{StaticResource SqualrColorWhite}"
+                Foreground="{StaticResource SqualrColorWhite}">
                 <shell:Menu.Resources>
                     <shell:Style x:Key="menuItemStyle" TargetType="{x:Type MenuItem}">
-                        <shell:Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                        <shell:Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                        <shell:Setter Property="BorderBrush" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                        <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                        <shell:Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
+                        <shell:Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray20}" />
                         <shell:Setter Property="BorderThickness" Value="0" />
                     </shell:Style>
                 </shell:Menu.Resources>
@@ -235,7 +235,7 @@
         </shell:Grid>
 
         <!--  Button Menu Bar  -->
-        <shell:WrapPanel Grid.Row="2" Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+        <shell:WrapPanel Grid.Row="2" Background="{StaticResource SqualrColorGray20}">
             <shell:Menu
                 Padding="4"
                 Background="Transparent"
@@ -275,7 +275,7 @@
             x:Name="dockManager"
             Grid.Row="3"
             AnchorablesSource="{Binding DockingViewModel.Tools, Source={StaticResource ViewModelLocator}}"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            Background="{StaticResource SqualrColorGray20}">
             <!--  Theme  -->
             <avalonDock:DockingManager.Theme>
                 <avalonDock:DarkTheme />
@@ -352,7 +352,7 @@
             Grid.Row="4"
             Height="24"
             Padding="4"
-            Background="{StaticResource AvalonDock_Expression_BaseColor15}"
+            Background="{StaticResource SqualrGradientBlue}"
             DataContext="{Binding ActionSchedulerViewModel, Source={StaticResource ViewModelLocator}}">
             <shell:Grid>
                 <shell:ItemsControl HorizontalAlignment="Right" ItemsSource="{Binding Path=ActiveTasks}">
@@ -361,7 +361,7 @@
                             <shell:WrapPanel>
                                 <shell:TextBlock
                                     Padding="4,0,4,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=TaskName}" />
                                 <shell:ProgressBar Width="96" Value="{Binding Path=Progress, Mode=OneWay}" />
                             </shell:WrapPanel>

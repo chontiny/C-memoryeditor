@@ -27,7 +27,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+            <Grid Grid.Row="0" Background="{StaticResource SqualrColorBlack}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition />
@@ -35,7 +35,7 @@
                 <Border
                     Grid.Row="0"
                     Padding="8,4,8,4"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+                    Background="{StaticResource SqualrColorGray20}">
                     <Menu Background="Transparent">
                         <MenuItem Command="{Binding ToggleConnectionCommand}">
                             <MenuItem.Header>
@@ -50,7 +50,7 @@
                                         Height="16"
                                         Source="{Binding ConnectionImage}"
                                         ToolTip="Connect/Disconnect from Stream Service" />
-                                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ConnectionOption}" />
+                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ConnectionOption}" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>

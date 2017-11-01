@@ -12,7 +12,7 @@
     x:ClassModifier="internal"
     DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
             <converters:IconConverter x:Key="IconConverter" />
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -30,9 +30,9 @@
                     Grid.Row="0"
                     Padding="4"
                     Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    BorderBrush="{StaticResource SqualrColorWhite}"
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                    Foreground="{StaticResource SqualrColorWhite}">
                     <MenuItem Command="{Binding ManualScannerViewModel.StartScanCommand}" ToolTip="Start Scan">
                         <MenuItem.Header>
                             <Image
@@ -88,7 +88,7 @@
                                         Source="{x:Static content:Images.Changed}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Changed" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -106,7 +106,7 @@
                                         Source="{x:Static content:Images.Unchanged}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Unchanged" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -124,7 +124,7 @@
                                         Source="{x:Static content:Images.Increased}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Increased" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -142,7 +142,7 @@
                                         Source="{x:Static content:Images.Decreased}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Decreased" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -160,7 +160,7 @@
                                         Source="{x:Static content:Images.Equal}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Equal" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -178,7 +178,7 @@
                                         Source="{x:Static content:Images.NotEqual}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Not Equal To" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -196,7 +196,7 @@
                                         Source="{x:Static content:Images.PlusX}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Increased By" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -214,7 +214,7 @@
                                         Source="{x:Static content:Images.MinusX}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Decreased By" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -232,7 +232,7 @@
                                         Source="{x:Static content:Images.GreaterThan}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Greater Than" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -250,7 +250,7 @@
                                         Source="{x:Static content:Images.GreaterThanOrEqual}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Greater Than Or Equal To" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -268,7 +268,7 @@
                                         Source="{x:Static content:Images.LessThan}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Less Than" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -286,7 +286,7 @@
                                         Source="{x:Static content:Images.LessThanOrEqual}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Less Than Or Equal To" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -304,7 +304,7 @@
                                         Source="{x:Static content:Images.ENotation}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Not Scientific Notation" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -316,7 +316,7 @@
                     Width="196"
                     Height="20"
                     Margin="4,0,0,0"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                    Background="{StaticResource SqualrColorGray20}" />
                 <Menu
                     VerticalAlignment="Center"
                     Background="Transparent"
@@ -352,13 +352,13 @@
                                 <Grid.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                         <Setter Property="FontWeight" Value="Bold" />
                                     </Style>
                                     <Style TargetType="Border">
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                     </Style>
                                 </Grid.Resources>
                                 <Border Grid.Column="0">
@@ -412,11 +412,11 @@
                                         Source="{Binding Path=ConstraintImage}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="{Binding Path=ConstraintName}" />
                                 </WrapPanel>
                                 <WrapPanel Grid.Column="1">
-                                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding Path=ConstraintValue}" />
+                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding Path=ConstraintValue}" />
                                 </WrapPanel>
                             </Grid>
                         </DataTemplate>
@@ -454,7 +454,7 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <WrapPanel Grid.Column="0">
-                                    <Menu Name="debug" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                                    <Menu Name="debug" Background="{StaticResource SqualrColorBlack}">
                                         <MenuItem
                                             Command="{Binding ElementName=SqualrManualScanner, Path=DataContext.RemoveConstraintCommand}"
                                             CommandParameter="{Binding .}"
@@ -485,12 +485,12 @@
                                         Source="{Binding Path=ConstraintImage}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="{Binding Path=ConstraintName}" />
                                 </WrapPanel>
                                 <TextBlock
                                     Grid.Column="1"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=ConstraintValue}" />
                             </Grid>
                         </DataTemplate>

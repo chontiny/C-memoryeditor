@@ -12,13 +12,13 @@
     d:DesignHeight="544"
     d:DesignWidth="480"
     x:ClassModifier="internal"
-    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+    BorderBrush="{StaticResource SqualrColorWhite}"
     BorderThickness="2"
     DataContext="{Binding TwitchLoginViewModel, Source={StaticResource ViewModelLocator}}"
     WindowStartupLocation="CenterOwner"
     WindowStyle="None"
     mc:Ignorable="d">
-    <shell:Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <shell:Grid Background="{StaticResource SqualrColorBlack}">
         <shell:Grid.RowDefinitions>
             <shell:RowDefinition />
             <shell:RowDefinition Height="Auto" />

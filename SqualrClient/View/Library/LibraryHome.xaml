@@ -49,9 +49,9 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Background="Transparent"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        BorderBrush="{StaticResource SqualrColorWhite}"
                         DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                        Foreground="{StaticResource SqualrColorWhite}">
                         <MenuItem
                             Width="24"
                             Height="24"
@@ -126,7 +126,7 @@
                 </Grid>
             </Grid>
 
-            <Grid Grid.Row="1" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+            <Grid Grid.Row="1" Background="{StaticResource SqualrColorBlack}">
                 <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.GameSelect}}">
                     <library:GamesPage />
                 </Grid>

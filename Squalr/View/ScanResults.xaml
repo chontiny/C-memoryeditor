@@ -15,7 +15,7 @@
     <x:Code>
         <![CDATA[ public ScanResults() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
             <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
         </Grid.Resources>
@@ -29,8 +29,8 @@
             <Menu
                 Padding="4"
                 Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                BorderBrush="{StaticResource SqualrColorWhite}"
+                Foreground="{StaticResource SqualrColorWhite}">
                 <MenuItem VerticalAlignment="Center">
                     <MenuItem.Header>
                         <Image
@@ -54,7 +54,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     VerticalAlignment="Center"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding ActiveTypeName}" />
                             </WrapPanel>
                             <Grid
@@ -85,7 +85,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="SByte" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -104,7 +104,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Int16" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -123,7 +123,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Int32" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -142,7 +142,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Int64" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -161,7 +161,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Byte" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -180,7 +180,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="UInt16" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -199,7 +199,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="UInt32" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -218,7 +218,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="UInt64" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -237,7 +237,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Single" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -256,7 +256,7 @@
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Double" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -266,7 +266,7 @@
         </Border>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ListView
-                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                Background="{StaticResource SqualrColorBlack}"
                 BorderThickness="0"
                 ItemsSource="{Binding Addresses}">
                 <ListView.Resources>
@@ -294,19 +294,19 @@
                             </Grid.InputBindings>
                             <TextBlock
                                 Grid.Column="0"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                Foreground="{StaticResource SqualrColorWhite}"
                                 Text="{Binding Path=ElementAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
                             <TextBlock
                                 Grid.Column="1"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                Foreground="{StaticResource SqualrColorWhite}"
                                 Text="{Binding Path=ElementValue}" />
                             <TextBlock
                                 Grid.Column="2"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                Foreground="{StaticResource SqualrColorWhite}"
                                 Text="{Binding Path=ElementPreviousValue}" />
                             <TextBlock
                                 Grid.Column="3"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                Foreground="{StaticResource SqualrColorWhite}"
                                 Text="{Binding Path=ElementLabel}" />
                         </Grid>
                     </DataTemplate>
@@ -331,13 +331,13 @@
                                 <Grid.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                         <Setter Property="FontWeight" Value="Bold" />
                                     </Style>
                                     <Style TargetType="Border">
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                     </Style>
                                 </Grid.Resources>
                                 <Border Grid.Column="0">
@@ -390,10 +390,10 @@
                     </MenuItem>
                 </Menu>
                 <WrapPanel Grid.Column="1" HorizontalAlignment="Center">
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="Page: " />
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding CurrentPage}" />
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text=" of " />
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding PageCount}" />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Page: " />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding CurrentPage}" />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" of " />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding PageCount}" />
                 </WrapPanel>
                 <Menu
                     Grid.Column="2"
@@ -425,10 +425,10 @@
             Padding="8,4,8,4"
             Background="{StaticResource AvalonDock_Expression_BaseColor1}">
             <WrapPanel HorizontalAlignment="Center">
-                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ByteCount, Converter={StaticResource ValueToMetricSize}}" />
-                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text=" - (Count: " />
-                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ResultCount}" />
-                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text=")" />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ByteCount, Converter={StaticResource ValueToMetricSize}}" />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" - (Count: " />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ResultCount}" />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=")" />
             </WrapPanel>
         </Border>
     </Grid>

@@ -19,7 +19,7 @@
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
     <Border>
-        <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <Grid Background="{StaticResource SqualrColorBlack}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
@@ -44,22 +44,22 @@
                                 <Grid.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                         <Setter Property="FontWeight" Value="Bold" />
                                     </Style>
                                     <Style TargetType="Border">
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                     </Style>
                                 </Grid.Resources>
                                 <TextBox
                                     Grid.Column="0"
                                     Height="18"
-                                    Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                                    Background="{StaticResource SqualrColorGray20}"
                                     BorderBrush="White"
                                     BorderThickness="1"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Style="{StaticResource PlaceHolder}"
                                     Tag="Search Games"
                                     Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
@@ -71,15 +71,15 @@
 
             <!--  CONTENT  -->
             <Grid Grid.Row="1">
-                <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                <Grid Background="{StaticResource SqualrColorBlack}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="0">
-                        <Border BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}" BorderThickness="1">
+                        <Border BorderBrush="{StaticResource SqualrColorWhite}" BorderThickness="1">
                             <ListView
                                 Grid.Row="0"
-                                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                                Background="{StaticResource SqualrColorBlack}"
                                 BorderThickness="0"
                                 ItemsSource="{Binding FilteredGameList}">
                                 <ListView.ItemTemplate>
@@ -94,7 +94,7 @@
                                             <TextBlock
                                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                                                 Margin="4,0,0,0"
-                                                Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                Foreground="{StaticResource SqualrColorWhite}"
                                                 IsHitTestVisible="False"
                                                 Text="{Binding Path=GameName}" />
                                         </Grid>

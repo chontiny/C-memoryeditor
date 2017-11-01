@@ -20,7 +20,7 @@
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
     <Grid>
-        <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <Grid Background="{StaticResource SqualrColorBlack}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
@@ -47,13 +47,13 @@
                                 <Grid.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                         <Setter Property="FontWeight" Value="Bold" />
                                     </Style>
                                     <Style TargetType="Border">
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                     </Style>
                                 </Grid.Resources>
                                 <Border Grid.Column="0">
@@ -69,7 +69,7 @@
             </ListView>
 
             <!--  CONTENT  -->
-            <Grid Grid.Row="1" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+            <Grid Grid.Row="1" Background="{StaticResource SqualrColorBlack}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition />
@@ -79,7 +79,7 @@
                 <Grid Grid.Column="0" DataContext="{Binding LibraryViewModel, Source={StaticResource ViewModelLocator}}">
                     <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
                         <ListView
-                            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                            Background="{StaticResource SqualrColorBlack}"
                             BorderBrush="White"
                             BorderThickness="1"
                             ItemsSource="{Binding CheatsAvailable}">
@@ -95,7 +95,7 @@
                                             <ColumnDefinition Width="Auto" />
                                             <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <Menu Grid.Column="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                                        <Menu Grid.Column="0" Background="{StaticResource SqualrColorBlack}">
                                             <MenuItem
                                                 Command="{Binding LibraryViewModel.AddCheatToLibraryCommand, Source={StaticResource ViewModelLocator}}"
                                                 CommandParameter="{Binding .}"
@@ -110,7 +110,7 @@
                                         </Menu>
                                         <TextBlock
                                             Grid.Column="1"
-                                            Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                            Foreground="{StaticResource SqualrColorWhite}"
                                             Text="{Binding Path=CheatName}">
                                             <TextBlock.InputBindings>
                                                 <MouseBinding
@@ -130,7 +130,7 @@
                 <Grid Grid.Column="1" DataContext="{Binding StoreViewModel, Source={StaticResource ViewModelLocator}}">
                     <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
                         <ListView
-                            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                            Background="{StaticResource SqualrColorBlack}"
                             BorderBrush="White"
                             BorderThickness="1"
                             ItemsSource="{Binding LockedCheatList}">
@@ -163,7 +163,7 @@
                                                         Source="{x:Static content:Images.Coin}" />
                                                     <TextBlock
                                                         Grid.Column="0"
-                                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                        Foreground="{StaticResource SqualrColorWhite}"
                                                         Text="{Binding Path=Cost}" />
                                                 </WrapPanel>
                                             </Button>
@@ -177,14 +177,14 @@
                                                 <WrapPanel>
                                                     <TextBlock
                                                         Grid.Column="0"
-                                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                        Foreground="{StaticResource SqualrColorWhite}"
                                                         Text="FREE" />
                                                 </WrapPanel>
                                             </Button>
                                             <TextBlock
                                                 Grid.Column="1"
                                                 Margin="4,0,0,0"
-                                                Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                                Foreground="{StaticResource SqualrColorWhite}"
                                                 Text="{Binding Path=CheatName}"
                                                 ToolTip="{Binding Path=CheatDescription}" />
                                         </Grid>
@@ -201,9 +201,9 @@
             <Menu
                 Grid.Row="2"
                 Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                BorderBrush="{StaticResource SqualrColorWhite}"
                 DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                Foreground="{StaticResource SqualrColorWhite}">
                 <Menu.ItemsPanel>
                     <ItemsPanelTemplate>
                         <DockPanel HorizontalAlignment="Stretch" />
@@ -214,8 +214,8 @@
                     MinWidth="96"
                     Margin="0"
                     Padding="0"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor4}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                    Background="{StaticResource SqualrColorGray20}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     Style="{StaticResource PlaceHolder}"
                     Tag="Library Name"
                     Text="{Binding LibraryViewModel.ActiveLibraryName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

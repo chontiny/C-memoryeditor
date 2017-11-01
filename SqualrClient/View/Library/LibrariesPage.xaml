@@ -20,14 +20,14 @@
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
     <Border>
-        <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+        <Grid Background="{StaticResource SqualrColorBlack}">
             <Grid Name="LibraryListPanel">
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <Grid Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                <Grid Grid.Row="0" Background="{StaticResource SqualrColorBlack}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition />
@@ -38,7 +38,7 @@
                     <Grid Grid.Column="0">
                         <ListView
                             Grid.Row="0"
-                            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                            Background="{StaticResource SqualrColorBlack}"
                             BorderThickness="0"
                             ItemsSource="{Binding Libraries}">
                             <ListView.ItemContainerStyle>
@@ -55,7 +55,7 @@
                                                 CommandParameter="{Binding .}"
                                                 Gesture="LeftDoubleClick" />
                                         </Grid.InputBindings>
-                                        <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor12}" Text="{Binding Path=LibraryName}" />
+                                        <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding Path=LibraryName}" />
                                     </Grid>
                                 </DataTemplate>
                             </ListView.ItemTemplate>
@@ -84,7 +84,7 @@
                                     </Image>
                                     <TextBlock
                                         Margin="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Create New Library" />
                                 </WrapPanel>
                             </MenuItem.Header>

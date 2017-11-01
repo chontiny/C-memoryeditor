@@ -5,15 +5,15 @@
     <Style x:Key="DropDown" TargetType="MenuItem">
         <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="true">
-                <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor8}" />
+                <Setter Property="Background" Value="{StaticResource SqualrColorGray35}" />
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="true">
-                <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor7}" />
+                <Setter Property="Background" Value="{StaticResource SqualrColorWhite}" />
             </Trigger>
         </Style.Triggers>
-        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-        <Setter Property="BorderBrush" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
+        <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray20}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="MenuItem">

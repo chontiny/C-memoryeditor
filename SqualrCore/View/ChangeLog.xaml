@@ -12,7 +12,7 @@
     d:DesignHeight="320"
     d:DesignWidth="320"
     x:ClassModifier="internal"
-    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+    BorderBrush="{StaticResource SqualrColorWhite}"
     BorderThickness="2"
     DataContext="{Binding ChangeLogViewModel, Source={StaticResource ViewModelLocator}}"
     WindowStartupLocation="CenterOwner"
@@ -21,8 +21,7 @@
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
     </shell:WindowChrome.WindowChrome>
-
-    <shell:Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <shell:Grid Background="{StaticResource SqualrColorBlack}">
         <shell:Grid.RowDefinitions>
             <shell:RowDefinition Height="Auto" />
             <shell:RowDefinition />
@@ -32,10 +31,10 @@
             x:Name="titlebar"
             Grid.Row="0"
             Height="24"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            Background="{StaticResource SqualrColorGray20}">
             <shell:TextBlock
                 Padding="4"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                Foreground="{StaticResource SqualrColorWhite}"
                 Text="{Binding Title}" />
         </shell:Grid>
         <shell:ScrollViewer
@@ -49,7 +48,7 @@
                 </shell:Grid.ColumnDefinitions>
                 <shell:TextBlock
                     shell:Grid.ColumnSpan="2"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     Text="{Binding ChangeLog}"
                     TextWrapping="Wrap" />
             </shell:Grid>

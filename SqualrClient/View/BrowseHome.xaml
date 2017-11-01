@@ -28,7 +28,7 @@
     <Grid>
         <Grid>
             <Grid.Background>
-                <StaticResource ResourceKey="AvalonDock_Expression_BaseColor3" />
+                <StaticResource ResourceKey="SqualrColorBlack" />
             </Grid.Background>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -37,7 +37,7 @@
             </Grid.RowDefinitions>
             <Grid
                 Grid.Row="0"
-                Background="{StaticResource AvalonDock_Expression_BaseColor4}"
+                Background="{StaticResource SqualrColorGray20}"
                 Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToInvisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.Login}}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -106,9 +106,9 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Background="Transparent"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                            BorderBrush="{StaticResource SqualrColorWhite}"
                             DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                            Foreground="{StaticResource SqualrColorWhite}">
                             <MenuItem
                                 Width="24"
                                 Height="24"

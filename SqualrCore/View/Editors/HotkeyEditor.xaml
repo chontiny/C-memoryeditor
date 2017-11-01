@@ -14,7 +14,7 @@
     Height="112"
     d:DesignHeight="256"
     d:DesignWidth="256"
-    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+    BorderBrush="{StaticResource SqualrColorWhite}"
     BorderThickness="2"
     DataContext="{Binding HotkeyEditorViewModel, Source={StaticResource ViewModelLocator}}"
     WindowStartupLocation="CenterOwner"
@@ -24,7 +24,7 @@
         <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
     </shell:WindowChrome.WindowChrome>
 
-    <shell:Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <shell:Grid Background="{StaticResource SqualrColorBlack}">
         <shell:Grid.Resources>
             <converters:Int32ToHexConverter x:Key="Int32ToHexConverter" />
             <converters:HotkeyToStringConverter x:Key="HotkeyToStringConverter" />
@@ -38,8 +38,8 @@
             x:Name="titlebar"
             Grid.Row="0"
             Height="24"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
-            <shell:TextBlock Margin="4" Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+            Background="{StaticResource SqualrColorGray20}">
+            <shell:TextBlock Margin="4" Foreground="{StaticResource SqualrColorWhite}">
                 New Hotkey
             </shell:TextBlock>
         </shell:Grid>
@@ -50,11 +50,11 @@
             </shell:Grid.ColumnDefinitions>
             <shell:Border
                 Grid.Column="0"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                BorderBrush="{StaticResource SqualrColorWhite}"
                 BorderThickness="1">
                 <xctk:WatermarkTextBox
-                    Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    Background="{StaticResource SqualrColorBlack}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     IsReadOnly="True"
                     Text="{Binding ActiveHotkey, Mode=OneWay, Converter={StaticResource HotkeyToStringConverter}}"
                     Watermark="(Press any keys)" />

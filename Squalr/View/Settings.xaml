@@ -10,7 +10,7 @@
     x:ClassModifier="internal"
     DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
-    <TabControl Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <TabControl Background="{StaticResource SqualrColorBlack}">
         <TabControl.Resources>
             <Style TargetType="{x:Type TabItem}">
                 <Setter Property="BorderThickness" Value="0" />
@@ -18,12 +18,12 @@
                 <Setter Property="HeaderTemplate">
                     <Setter.Value>
                         <DataTemplate>
-                            <Border Background="{StaticResource AvalonDock_Expression_BaseColor4}" BorderThickness="0">
+                            <Border Background="{StaticResource SqualrColorGray20}" BorderThickness="0">
                                 <ContentPresenter>
                                     <ContentPresenter.Content>
                                         <TextBlock
                                             Margin="4,2,4,2"
-                                            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                            Foreground="{StaticResource SqualrColorWhite}"
                                             Text="{TemplateBinding Content}" />
                                     </ContentPresenter.Content>
                                 </ContentPresenter>
@@ -50,7 +50,7 @@
                     <GroupBox
                         Padding="4"
                         BorderThickness="1"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Foreground="{StaticResource SqualrColorWhite}"
                         Header="Required Protection Flags">
                         <StackPanel>
                             <WrapPanel>
@@ -75,7 +75,7 @@
                     <GroupBox
                         Padding="4"
                         BorderThickness="1"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Foreground="{StaticResource SqualrColorWhite}"
                         Header="Excluded Protection Flags">
                         <StackPanel>
                             <WrapPanel>
@@ -100,7 +100,7 @@
                     <GroupBox
                         Padding="4"
                         BorderThickness="1"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Foreground="{StaticResource SqualrColorWhite}"
                         Header="Memory Type">
                         <StackPanel>
                             <WrapPanel>
@@ -129,13 +129,13 @@
                     <GroupBox
                         Padding="4"
                         BorderThickness="1"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Foreground="{StaticResource SqualrColorWhite}"
                         Header="General">
                         <StackPanel>
                             <WrapPanel>
                                 <TextBlock
                                     Padding="0,0,4,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Alignment:" />
                                 <Border
                                     Margin="0,0,8,0"
@@ -151,14 +151,14 @@
                                 <RadioButton IsChecked="{Binding IsUserMode, Mode=TwoWay}" />
                                 <TextBlock
                                     Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Scan Usermode Memory" />
                             </WrapPanel>
                             <WrapPanel>
                                 <RadioButton IsChecked="{Binding IsNotUserMode, Mode=TwoWay}" />
                                 <TextBlock
                                     Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Scan Custom Range" />
                             </WrapPanel>
                             <Border
@@ -200,7 +200,7 @@
                     <TextBlock
                         Padding="8,0,0,0"
                         VerticalAlignment="Center"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Foreground="{StaticResource SqualrColorWhite}"
                         Text="Freeze Interval" />
                 </WrapPanel>
                 <WrapPanel Margin="0,4,0,4">
@@ -216,7 +216,7 @@
                     <TextBlock
                         Padding="8,0,0,0"
                         VerticalAlignment="Center"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Foreground="{StaticResource SqualrColorWhite}"
                         Text="Rescan Interval" />
                 </WrapPanel>
                 <WrapPanel Margin="0,4,0,4">
@@ -232,7 +232,7 @@
                     <TextBlock
                         Padding="8,0,0,0"
                         VerticalAlignment="Center"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Foreground="{StaticResource SqualrColorWhite}"
                         Text="Table Read Interval" />
                 </WrapPanel>
                 <WrapPanel Margin="0,4,0,4">
@@ -247,7 +247,7 @@
                     </Border>
                     <TextBlock
                         Padding="8,0,0,0"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Foreground="{StaticResource SqualrColorWhite}"
                         Text="Result Read Interval" />
                 </WrapPanel>
                 <WrapPanel Margin="0,4,0,4">
@@ -263,7 +263,7 @@
                     <TextBlock
                         Padding="8,0,0,0"
                         VerticalAlignment="Center"
-                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                        Foreground="{StaticResource SqualrColorWhite}"
                         Text="Input Correlator Timeout" />
                 </WrapPanel>
             </StackPanel>

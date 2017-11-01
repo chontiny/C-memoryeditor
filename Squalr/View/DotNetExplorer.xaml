@@ -15,7 +15,7 @@
     <x:Code>
         <![CDATA[ public DotNetExplorer() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -23,7 +23,7 @@
         <Border
             Grid.Row="0"
             Padding="8,4,8,4"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            Background="{StaticResource SqualrColorGray20}">
             <WrapPanel>
                 <Menu Background="Transparent">
                     <MenuItem Command="{Binding RefreshObjectsCommand}">
@@ -42,7 +42,7 @@
             Name="dotNetExplorerTreeView"
             Grid.Row="1"
             AllowDrop="True"
-            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+            Background="{StaticResource SqualrColorBlack}"
             BorderThickness="0"
             ItemsSource="{Binding DotNetObjects, Mode=OneWay}">
             <TreeView.ItemContainerStyle>
@@ -59,7 +59,7 @@
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter Property="BorderThickness" Value="2" />
-                            <Setter Property="BorderBrush" Value="{StaticResource AvalonDock_Expression_BaseColor15}" />
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrGradientBlue}" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -81,7 +81,7 @@
                                 Height="16"
                                 Margin="3,0"
                                 Source="{Binding Icon}" />
-                            <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding DotNetObject.Name}" />
+                            <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding DotNetObject.Name}" />
                         </WrapPanel>
                     </Grid>
                 </HierarchicalDataTemplate>

@@ -15,7 +15,7 @@
     <x:Code>
         <![CDATA[ public SnapshotManager() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid>
             <Grid.Resources>
                 <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
@@ -29,9 +29,9 @@
                 Grid.Row="0"
                 Padding="4"
                 Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                BorderBrush="{StaticResource SqualrColorWhite}"
                 DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                Foreground="{StaticResource SqualrColorWhite}">
                 <MenuItem Command="{Binding SnapshotManagerViewModel.ClearSnapshotsCommand}" ToolTip="New Scan">
                     <MenuItem.Header>
                         <Image
@@ -82,15 +82,15 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Grid.Column="0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor13}"
+                                    Foreground="{StaticResource SqualrColorGray40}"
                                     Text="{Binding Path=ScanMethod}" />
                                 <TextBlock
                                     Grid.Column="1"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor13}"
+                                    Foreground="{StaticResource SqualrColorGray40}"
                                     Text="{Binding Path=MemorySize}" />
                                 <TextBlock
                                     Grid.Column="2"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor13}"
+                                    Foreground="{StaticResource SqualrColorGray40}"
                                     Text="{Binding Path=TimeStamp}" />
                             </Grid>
                         </DataTemplate>
@@ -114,13 +114,13 @@
                                     <Grid.Resources>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Margin" Value="5,0" />
-                                            <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                            <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                             <Setter Property="FontWeight" Value="Bold" />
                                         </Style>
                                         <Style TargetType="Border">
                                             <Setter Property="BorderThickness" Value="0" />
                                             <Setter Property="Padding" Value="8,4,8,4" />
-                                            <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                            <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                         </Style>
                                     </Grid.Resources>
                                     <Border Grid.Column="0">
@@ -151,15 +151,15 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Grid.Column="0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=SnapshotName}" />
                                 <TextBlock
                                     Grid.Column="1"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=ByteCount, Converter={StaticResource ValueToMetricSize}}" />
                                 <TextBlock
                                     Grid.Column="2"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=TimeSinceLastUpdate}" />
                             </Grid>
                         </DataTemplate>
@@ -182,13 +182,13 @@
                                     <Grid.Resources>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Margin" Value="5,0" />
-                                            <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                            <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                             <Setter Property="FontWeight" Value="Bold" />
                                         </Style>
                                         <Style TargetType="Border">
                                             <Setter Property="BorderThickness" Value="0" />
                                             <Setter Property="Padding" Value="8,4,8,4" />
-                                            <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                            <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                         </Style>
                                     </Grid.Resources>
                                 </Grid>

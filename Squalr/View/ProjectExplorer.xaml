@@ -26,8 +26,8 @@
         <ContextMenu
             x:Key="RightClickMenu"
             Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+            BorderBrush="{StaticResource SqualrColorWhite}"
+            Foreground="{StaticResource SqualrColorWhite}"
             Style="{StaticResource DropDownContextMenu}">
             <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Add New Address" />
             <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
@@ -39,8 +39,8 @@
         <ContextMenu
             x:Key="ProjectItemRightClickMenu"
             Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-            Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+            BorderBrush="{StaticResource SqualrColorWhite}"
+            Foreground="{StaticResource SqualrColorWhite}"
             Style="{StaticResource DropDownContextMenu}">
             <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
             <Separator />
@@ -60,8 +60,8 @@
             <Menu
                 Padding="4"
                 Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                BorderBrush="{StaticResource SqualrColorWhite}"
+                Foreground="{StaticResource SqualrColorWhite}">
                 <MenuItem
                     BorderThickness="0"
                     Style="{StaticResource DropDownAutoClose}"
@@ -99,7 +99,7 @@
                                     Source="{x:Static content:Images.CollectValues}" />
                                 <TextBlock
                                     Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Add Address" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -117,7 +117,7 @@
                                     Source="{x:Static content:Images.Script}" />
                                 <TextBlock
                                     Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Add Script" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -135,7 +135,7 @@
                                     Source="{x:Static content:Images.Cpu}" />
                                 <TextBlock
                                     Padding="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Add Instruction" />
                             </WrapPanel>
                         </MenuItem.Header>
@@ -151,7 +151,7 @@
                 VerticalScrollBarVisibility="Auto">
                 <ListView
                     Name="ProjectExplorerListView"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                    Background="{StaticResource SqualrColorBlack}"
                     BorderThickness="0"
                     ContextMenu="{StaticResource RightClickMenu}"
                     ItemsSource="{Binding ProjectItems}"
@@ -212,14 +212,14 @@
                                 <TextBlock
                                     Grid.Column="2"
                                     Margin="4,0,0,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     IsHitTestVisible="False"
                                     Text="{Binding Path=Name}" />
                                 <TextBlock
                                     Grid.Column="3"
                                     Margin="4,0,4,0"
                                     HorizontalAlignment="Right"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     IsHitTestVisible="False"
                                     Text="{Binding Path=., Converter={StaticResource ProjectItemValueConverter}}" />
                             </Grid>

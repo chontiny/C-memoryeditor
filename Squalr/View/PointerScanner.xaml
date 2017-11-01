@@ -14,14 +14,14 @@
     <x:Code>
         <![CDATA[ public PointerScanner() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <WrapPanel Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray20}">
                 <Menu Padding="4" Background="Transparent">
                     <MenuItem Command="{Binding StartScanCommand}">
                         <MenuItem.Header>
@@ -43,7 +43,7 @@
             </WrapPanel>
             <TextBlock
                 Grid.Row="1"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                Foreground="{StaticResource SqualrColorWhite}"
                 Text="Feature in Development : )" />
         </Grid>
     </Grid>
