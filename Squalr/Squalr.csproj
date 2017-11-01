@@ -304,16 +304,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
-    <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetObjectViewModel.cs" />
-    <Compile Include="Source\Mvvm\Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\DataGridIndexConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\ListViewIndexConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
-    <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
     <Compile Include="Source\Prefilters\NullPrefilter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
@@ -339,8 +331,6 @@
     <Compile Include="Source\Scripting\ScriptManager.cs" />
     <Compile Include="Source\Scripting\Memory\IMemoryCore.cs" />
     <Compile Include="Source\Scripting\Memory\MemoryCore.cs" />
-    <Compile Include="Source\Mvvm\Converters\IntPtrToAddressConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
     <Compile Include="Source\Results\ScanResults\IScanResultsObserver.cs" />
     <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
     <Compile Include="Source\Results\ScanResults\ScanResultsViewModel.cs">

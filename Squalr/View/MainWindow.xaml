@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
     xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
-    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:coreView="clr-namespace:SqualrCore.View;assembly=SqualrCore"
     xmlns:docking="clr-namespace:SqualrCore.Source.Docking;assembly=SqualrCore"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
