@@ -57,7 +57,7 @@
             {
                 // Assemble and write bytes
 
-                this.NotifyPropertyChanged(nameof(this.AddressValue));
+                this.RaisePropertyChanged(nameof(this.AddressValue));
             }
         }
 
@@ -81,7 +81,7 @@
                 }
 
                 this.precedingBytes = value;
-                this.NotifyPropertyChanged(nameof(this.PrecedingBytes));
+                this.RaisePropertyChanged(nameof(this.PrecedingBytes));
             }
         }
 
@@ -109,7 +109,7 @@
                 this.instructionBytes = value;
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.InstructionBytes));
+                this.RaisePropertyChanged(nameof(this.InstructionBytes));
             }
         }
 
@@ -193,7 +193,7 @@
                 }
 
                 this.followingBytes = value;
-                this.NotifyPropertyChanged(nameof(this.FollowingBytes));
+                this.RaisePropertyChanged(nameof(this.FollowingBytes));
             }
         }
 
@@ -221,7 +221,7 @@
                 this.moduleName = value == null ? String.Empty : value;
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.ModuleName));
+                this.RaisePropertyChanged(nameof(this.ModuleName));
             }
         }
 
@@ -249,7 +249,7 @@
                 this.CalculatedAddress = value;
                 this.moduleOffset = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.ModuleOffset));
+                this.RaisePropertyChanged(nameof(this.ModuleOffset));
             }
         }
 

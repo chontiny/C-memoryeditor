@@ -444,9 +444,18 @@
             {
                 while (true)
                 {
+                    Boolean hasUpdate = false;
+
                     foreach (ProjectItem projectItem in this.ProjectItems.ToArray())
                     {
-                        projectItem.Update();
+                        hasUpdate |= projectItem.Update();
+                    }
+
+                    // This is a sidestep to a particular issue where we need to potentially perform RaisePropertyChanged for a {Binding Path=.} element, which is impossible.
+                    // We recreate the entire collection to force a re-render.
+                    if (hasUpdate)
+                    {
+                        this.ProjectItems = new ObservableCollection<ProjectItem>(this.ProjectItems);
                     }
 
                     Thread.Sleep(SettingsViewModel.GetInstance().TableReadInterval);

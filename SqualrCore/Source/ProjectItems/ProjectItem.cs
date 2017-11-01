@@ -105,7 +105,7 @@
 
                 this.name = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Name));
+                this.RaisePropertyChanged(nameof(this.Name));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -133,7 +133,7 @@
 
                 this.description = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Description));
+                this.RaisePropertyChanged(nameof(this.Description));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -159,7 +159,7 @@
 
                 this.guid = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.Guid));
+                this.RaisePropertyChanged(nameof(this.Guid));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -187,7 +187,7 @@
                 this.hotkey = value;
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.HotKey));
+                this.RaisePropertyChanged(nameof(this.HotKey));
                 // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
@@ -223,7 +223,7 @@
                         return;
                     }
 
-                    this.NotifyPropertyChanged(nameof(this.IsActivated));
+                    this.RaisePropertyChanged(nameof(this.IsActivated));
                     // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
                 }
             }
@@ -276,7 +276,8 @@
         /// <summary>
         /// Updates event for this project item.
         /// </summary>
-        public abstract void Update();
+        /// <returns>True if update was made, otherwise false.</returns>
+        public abstract Boolean Update();
 
         /// <summary>
         /// Clones the project item.
@@ -365,7 +366,7 @@
         /// Indicates that a given property in this project item has changed.
         /// </summary>
         /// <param name="propertyName">The name of the changed property.</param>
-        protected void NotifyPropertyChanged(String propertyName)
+        protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -378,7 +379,7 @@
             lock (this.ActivationLock)
             {
                 this.isActivated = false;
-                this.NotifyPropertyChanged(nameof(this.IsActivated));
+                this.RaisePropertyChanged(nameof(this.IsActivated));
             }
         }
 

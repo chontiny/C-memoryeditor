@@ -104,7 +104,7 @@
                 this.addressValue = null;
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.DataType));
+                this.RaisePropertyChanged(nameof(this.DataType));
             }
         }
 
@@ -125,7 +125,7 @@
             {
                 this.addressValue = value;
                 this.WriteValue(value);
-                this.NotifyPropertyChanged(nameof(this.AddressValue));
+                this.RaisePropertyChanged(nameof(this.AddressValue));
             }
         }
 
@@ -152,7 +152,7 @@
 
                 this.isValueHex = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.IsValueHex));
+                this.RaisePropertyChanged(nameof(this.IsValueHex));
             }
         }
 
@@ -177,14 +177,15 @@
                 }
 
                 this.calculatedAddress = value;
-                this.NotifyPropertyChanged(nameof(this.CalculatedAddress));
+                this.RaisePropertyChanged(nameof(this.CalculatedAddress));
             }
         }
 
         /// <summary>
         /// Update event for this project item. Resolves addresses and values.
         /// </summary>
-        public override void Update()
+        /// <returns>True if update was made, otherwise false.</returns>
+        public override Boolean Update()
         {
             this.CalculatedAddress = this.ResolveAddress();
 
@@ -201,8 +202,18 @@
             {
                 // Otherwise we read as normal (bypass value setter and set value directly to avoid a write-back to memory)
                 Boolean readSuccess;
+                Object oldValue = addressValue;
+
                 this.addressValue = EngineCore.GetInstance()?.OperatingSystem?.Read(this.DataType, this.CalculatedAddress, out readSuccess);
+
+                if (this.AddressValue?.ToString() != oldValue?.ToString())
+                {
+                    this.RaisePropertyChanged(nameof(this.AddressValue));
+                    return true;
+                }
             }
+
+            return false;
         }
 
         /// <summary>
