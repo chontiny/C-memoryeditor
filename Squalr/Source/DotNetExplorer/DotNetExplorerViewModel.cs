@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.DotNetExplorer
 {
     using Engine.AddressResolver.DotNet;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.VirtualMachines.DotNet;

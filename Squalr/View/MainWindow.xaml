@@ -517,7 +517,7 @@
             Grid.Row="4"
             Height="24"
             Padding="4"
-            Background="{StaticResource SqualrGradientBlue}"
+            Background="{StaticResource SqualrColorBlue}"
             DataContext="{Binding ActionSchedulerViewModel, Source={StaticResource ViewModelLocator}}">
             <shell:Grid>
                 <shell:ItemsControl HorizontalAlignment="Right" ItemsSource="{Binding Path=ActiveTasks}">

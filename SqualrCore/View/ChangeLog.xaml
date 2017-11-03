@@ -18,6 +18,9 @@
     WindowStartupLocation="CenterOwner"
     WindowStyle="None"
     mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public ChangeLog() { InitializeComponent(); }]]>
+    </x:Code>
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
     </shell:WindowChrome.WindowChrome>
@@ -60,7 +63,8 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
                 shell:Grid.Column="1"
-                Click="AcceptButtonClick">
+                Command="{Binding CloseWindowCommand, Mode=OneWay}"
+                CommandParameter="{Binding ElementName=SqualrChangeLog}">
                 <shell:TextBlock Text="Ok" />
             </shell:Button>
         </shell:Grid>

@@ -1,6 +1,6 @@
 ﻿namespace SqualrCore.Source.Docking
 {
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using System;
     using System.Windows.Input;
 

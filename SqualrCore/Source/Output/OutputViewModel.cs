@@ -1,7 +1,7 @@
 ﻿namespace SqualrCore.Source.Output
 {
     using Docking;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;

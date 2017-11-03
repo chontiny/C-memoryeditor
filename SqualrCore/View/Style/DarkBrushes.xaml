@@ -11,6 +11,8 @@
     <SolidColorBrush x:Key="SqualrColorGray35" Color="#595959" />
     <SolidColorBrush x:Key="SqualrColorGray74" Color="#BDBDBD" />
     <SolidColorBrush x:Key="SqualrColorGray40" Color="#666666" />
+    <SolidColorBrush x:Key="SqualrColorBlue" Color="#007ACC" />
+    <SolidColorBrush x:Key="SqualrColorOrange" Color="#CA5100" />
     <LinearGradientBrush x:Key="SqualrGradientBlue" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Offset="0" Color="#4D6082" />
         <GradientStop Offset="1" Color="#3D5277" />

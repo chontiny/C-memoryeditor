@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Editors.HotkeyEditor;
     using SqualrCore.Source.Engine.Input.HotKeys;

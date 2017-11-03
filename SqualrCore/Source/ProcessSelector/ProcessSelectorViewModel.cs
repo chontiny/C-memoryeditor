@@ -3,7 +3,7 @@
     using Docking;
     using Engine;
     using Engine.Processes;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Content;
     using System;
     using System.Collections.Generic;

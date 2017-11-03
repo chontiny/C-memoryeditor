@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Properties;
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Docking;

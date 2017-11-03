@@ -157,9 +157,6 @@
     <Compile Include="Source\ProjectItems\InstructionItem.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Source\Utils\NativeBrowser.cs" />
-    <Compile Include="View\ChangeLog.xaml.cs">
-      <DependentUpon>ChangeLog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>

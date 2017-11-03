@@ -1,7 +1,7 @@
 ﻿namespace SqualrCore.Source.Editors.ScriptEditor
 {
     using Docking;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Content.Templates;
     using System;
     using System.Threading;
