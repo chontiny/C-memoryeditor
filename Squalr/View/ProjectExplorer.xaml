@@ -25,7 +25,7 @@
         <converters:ProjectItemValueConverter x:Key="ProjectItemValueConverter" />
         <ContextMenu
             x:Key="RightClickMenu"
-            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+            Background="{StaticResource SqualrColorGray68}"
             BorderBrush="{StaticResource SqualrColorWhite}"
             Foreground="{StaticResource SqualrColorWhite}"
             Style="{StaticResource DropDownContextMenu}">
@@ -38,7 +38,7 @@
         </ContextMenu>
         <ContextMenu
             x:Key="ProjectItemRightClickMenu"
-            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+            Background="{StaticResource SqualrColorGray68}"
             BorderBrush="{StaticResource SqualrColorWhite}"
             Foreground="{StaticResource SqualrColorWhite}"
             Style="{StaticResource DropDownContextMenu}">
@@ -56,10 +56,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <WrapPanel Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor1}">
+        <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
             <Menu
                 Padding="4"
-                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                Background="{StaticResource SqualrColorGray68}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 Foreground="{StaticResource SqualrColorWhite}">
                 <MenuItem
@@ -87,8 +87,8 @@
                         </StackPanel>
                     </MenuItem.Header>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding AddNewAddressItemCommand}"
                         ToolTip="Add New Address">
                         <MenuItem.Header>
@@ -105,8 +105,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding AddNewScriptItemCommand}"
                         ToolTip="Add New Script">
                         <MenuItem.Header>
@@ -123,8 +123,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding AddNewInstructionItemCommand}"
                         ToolTip="Add New Instruction">
                         <MenuItem.Header>

@@ -22,10 +22,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor1}">
+        <Border Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
             <Menu
                 Padding="4"
-                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                Background="{StaticResource SqualrColorGray68}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 Foreground="{StaticResource SqualrColorWhite}">
                 <MenuItem VerticalAlignment="Center">
@@ -69,8 +69,8 @@
                         </StackPanel>
                     </MenuItem.Header>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeSByteCommand}"
                         ToolTip="1 Byte Signed Integer">
                         <MenuItem.Header>
@@ -88,8 +88,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeInt16Command}"
                         ToolTip="2 Byte Signed Integer">
                         <MenuItem.Header>
@@ -107,8 +107,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeInt32Command}"
                         ToolTip="4 Byte Signed Integer">
                         <MenuItem.Header>
@@ -126,8 +126,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeInt64Command}"
                         ToolTip="8 Byte Signed Integer">
                         <MenuItem.Header>
@@ -145,8 +145,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeByteCommand}"
                         ToolTip="1 Byte Unsigned Integer">
                         <MenuItem.Header>
@@ -164,8 +164,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeUInt16Command}"
                         ToolTip="2 Byte Unsigned Integer">
                         <MenuItem.Header>
@@ -183,8 +183,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeUInt32Command}"
                         ToolTip="4 Byte Unsigned Integer">
                         <MenuItem.Header>
@@ -202,8 +202,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeUInt64Command}"
                         ToolTip="8 Byte Unsigned Integer">
                         <MenuItem.Header>
@@ -221,8 +221,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeSingleCommand}"
                         ToolTip="Single Precision Floating Point Value">
                         <MenuItem.Header>
@@ -240,8 +240,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                        Background="{StaticResource SqualrColorGray68}"
+                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding ChangeTypeDoubleCommand}"
                         ToolTip="Double Precision Floating Point Value">
                         <MenuItem.Header>
@@ -341,7 +341,7 @@
         <Border
             Grid.Row="2"
             Padding="8,4,8,4"
-            Background="{StaticResource AvalonDock_Expression_BaseColor1}">
+            Background="{StaticResource SqualrColorGray68}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -406,7 +406,7 @@
         <Border
             Grid.Row="3"
             Padding="8,4,8,4"
-            Background="{StaticResource AvalonDock_Expression_BaseColor1}">
+            Background="{StaticResource SqualrColorGray68}">
             <WrapPanel HorizontalAlignment="Center">
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ResultSize}" />
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" - (Count: " />

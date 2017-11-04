@@ -200,7 +200,7 @@
 
             <Menu
                 Grid.Row="2"
-                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                Background="{StaticResource SqualrColorGray68}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                 Foreground="{StaticResource SqualrColorWhite}">

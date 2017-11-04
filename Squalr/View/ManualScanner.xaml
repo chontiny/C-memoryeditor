@@ -25,11 +25,11 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <WrapPanel Background="{StaticResource AvalonDock_Expression_BaseColor1}">
+            <WrapPanel Background="{StaticResource SqualrColorGray68}">
                 <Menu
                     Grid.Row="0"
                     Padding="4"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor1}"
+                    Background="{StaticResource SqualrColorGray68}"
                     BorderBrush="{StaticResource SqualrColorWhite}"
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                     Foreground="{StaticResource SqualrColorWhite}">
@@ -76,8 +76,8 @@
                             </StackPanel>
                         </MenuItem.Header>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectChangedCommand}"
                             ToolTip="Changed Value">
                             <MenuItem.Header>
@@ -94,8 +94,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectUnchangedCommand}"
                             ToolTip="Unchanged Value">
                             <MenuItem.Header>
@@ -112,8 +112,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectIncreasedCommand}"
                             ToolTip="Increased Value">
                             <MenuItem.Header>
@@ -130,8 +130,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectDecreasedCommand}"
                             ToolTip="Decreased Value">
                             <MenuItem.Header>
@@ -148,8 +148,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectEqualCommand}"
                             ToolTip="Equal to Value">
                             <MenuItem.Header>
@@ -166,8 +166,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectNotEqualCommand}"
                             ToolTip="Not Equal to Value">
                             <MenuItem.Header>
@@ -184,8 +184,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectIncreasedByXCommand}"
                             ToolTip="Increased by Value">
                             <MenuItem.Header>
@@ -202,8 +202,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectDecreasedByXCommand}"
                             ToolTip="Decreased by Value">
                             <MenuItem.Header>
@@ -220,8 +220,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectGreaterThanCommand}"
                             ToolTip="Greater Than Value">
                             <MenuItem.Header>
@@ -238,8 +238,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectGreaterThanOrEqualCommand}"
                             ToolTip="Greater Than or Equal to Value">
                             <MenuItem.Header>
@@ -256,8 +256,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectLessThanCommand}"
                             ToolTip="Less Than Value">
                             <MenuItem.Header>
@@ -274,8 +274,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectLessThanOrEqualCommand}"
                             ToolTip="Less Than or Equal to Value">
                             <MenuItem.Header>
@@ -292,8 +292,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectNotScientificNotationCommand}"
                             ToolTip="Exclude Scientific Notation Values">
                             <MenuItem.Header>

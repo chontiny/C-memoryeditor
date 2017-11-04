@@ -2,7 +2,7 @@
     x:Class="Squalr.View.Style.DarkBrushes"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <SolidColorBrush x:Key="AvalonDock_Expression_BaseColor1" Color="#444444" />
+    <SolidColorBrush x:Key="SqualrColorGray68" Color="#444444" />
     <SolidColorBrush x:Key="SqualrColorWhite" Color="White" />
     <SolidColorBrush x:Key="SqualrColorBlack" Color="Black" />
     <SolidColorBrush x:Key="SqualrColorGray20" Color="#333333" />

@@ -69,16 +69,7 @@
         private ScanResultsViewModel() : base("Scan Results")
         {
             this.ContentId = ScanResultsViewModel.ToolContentId;
-            this.ChangeTypeSByteCommand = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(SByte))), () => true);
-            this.ChangeTypeInt16Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Int16))), () => true);
-            this.ChangeTypeInt32Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Int32))), () => true);
-            this.ChangeTypeInt64Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Int64))), () => true);
-            this.ChangeTypeByteCommand = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Byte))), () => true);
-            this.ChangeTypeUInt16Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(UInt16))), () => true);
-            this.ChangeTypeUInt32Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(UInt32))), () => true);
-            this.ChangeTypeUInt64Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(UInt64))), () => true);
-            this.ChangeTypeSingleCommand = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Single))), () => true);
-            this.ChangeTypeDoubleCommand = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Double))), () => true);
+            this.ChangeTypeCommand = new RelayCommand<Type>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
             this.PreviousPageCommand = new RelayCommand(() => Task.Run(() => this.PreviousPage()), () => true);
@@ -96,54 +87,9 @@
         }
 
         /// <summary>
-        /// Gets the command to change the active data type to SByte.
+        /// Gets the command to change the active data type.
         /// </summary>
-        public ICommand ChangeTypeSByteCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to change the active data type to Int16.
-        /// </summary>
-        public ICommand ChangeTypeInt16Command { get; private set; }
-
-        /// <summary>
-        /// Gets the command to change the active data type to Int32.
-        /// </summary>
-        public ICommand ChangeTypeInt32Command { get; private set; }
-
-        /// <summary>
-        /// Gets the command to change the active data type to Int64.
-        /// </summary>
-        public ICommand ChangeTypeInt64Command { get; private set; }
-
-        /// <summary>
-        /// Gets the command to change the active data type to Byte.
-        /// </summary>
-        public ICommand ChangeTypeByteCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to change the active data type to UInt16.
-        /// </summary>
-        public ICommand ChangeTypeUInt16Command { get; private set; }
-
-        /// <summary>
-        /// Gets the command to change the active data type to UInt32.
-        /// </summary>
-        public ICommand ChangeTypeUInt32Command { get; private set; }
-
-        /// <summary>
-        /// Gets the command to change the active data type to UInt64.
-        /// </summary>
-        public ICommand ChangeTypeUInt64Command { get; private set; }
-
-        /// <summary>
-        /// Gets the command to change the active data type to Single.
-        /// </summary>
-        public ICommand ChangeTypeSingleCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to change the active data type to Double.
-        /// </summary>
-        public ICommand ChangeTypeDoubleCommand { get; private set; }
+        public ICommand ChangeTypeCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to go to the first page.
