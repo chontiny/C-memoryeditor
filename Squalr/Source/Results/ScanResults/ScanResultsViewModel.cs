@@ -7,10 +7,13 @@
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.PropertyViewer;
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -64,17 +67,24 @@
         private ObservableCollection<ScanResult> addresses;
 
         /// <summary>
+        /// The selected scan results.
+        /// </summary>
+        private IEnumerable<ScanResult> selectedScanResults;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="ScanResultsViewModel" /> class from being created.
         /// </summary>
         private ScanResultsViewModel() : base("Scan Results")
         {
             this.ContentId = ScanResultsViewModel.ToolContentId;
             this.ChangeTypeCommand = new RelayCommand<Type>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
+            this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<ScanResult>(), (selectedItems) => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
             this.PreviousPageCommand = new RelayCommand(() => Task.Run(() => this.PreviousPage()), () => true);
             this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
-            this.AddAddressCommand = new RelayCommand<ScanResult>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
+            this.AddScanResultCommand = new RelayCommand<ScanResult>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
+            this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
             this.ScanResultsObservers = new List<IScanResultsObserver>();
             this.ObserverLock = new Object();
             this.ActiveType = typeof(Int32);
@@ -90,6 +100,11 @@
         /// Gets the command to change the active data type.
         /// </summary>
         public ICommand ChangeTypeCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the command to select scan results.
+        /// </summary>
+        public ICommand SelectScanResultsCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to go to the first page.
@@ -112,9 +127,31 @@
         public ICommand NextPageCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select a target process.
+        /// Gets the command to add a scan result to the project explorer.
         /// </summary>
-        public ICommand AddAddressCommand { get; private set; }
+        public ICommand AddScanResultCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add all selected scan results to the project explorer.
+        /// </summary>
+        public ICommand AddScanResultsCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the selected scan results.
+        /// </summary>
+        public IEnumerable<ScanResult> SelectedScanResults
+        {
+            get
+            {
+                return this.selectedScanResults;
+            }
+
+            set
+            {
+                this.selectedScanResults = value;
+                PropertyViewerViewModel.GetInstance().SetTargetObjects(this.SelectedScanResults?.ToArray());
+            }
+        }
 
         /// <summary>
         /// Gets or sets the active scan results data type.
@@ -448,12 +485,29 @@
         }
 
         /// <summary>
-        /// Adds the given scan result address to the project explorer.
+        /// Adds the given scan result to the project explorer.
         /// </summary>
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
-        private void AddAddress(ScanResult scanResult)
+        private void AddScanResult(ScanResult scanResult)
         {
             ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, this.ActiveType);
+        }
+
+        /// <summary>
+        /// Adds the given scan results to the project explorer.
+        /// </summary>
+        /// <param name="scanResults">The scan results to add to the project explorer.</param>
+        private void AddScanResults(IEnumerable<ScanResult> scanResults)
+        {
+            if (scanResults == null)
+            {
+                return;
+            }
+
+            foreach (ScanResult scanResult in scanResults)
+            {
+                ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, this.ActiveType);
+            }
         }
 
         /// <summary>
