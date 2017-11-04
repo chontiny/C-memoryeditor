@@ -2,6 +2,7 @@
 {
     using ActionScheduler;
     using System;
+    using System.Threading;
 
     /// <summary>
     /// Task for the Process Selector.
@@ -32,10 +33,11 @@
         /// <summary>
         /// Called when the scheduled task is updated.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.RefreshAction();
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
     }
     //// End class

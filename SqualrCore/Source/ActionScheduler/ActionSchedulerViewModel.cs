@@ -102,6 +102,7 @@
                     return;
                 }
 
+                scheduledTask.ResetState();
                 this.Actions.AddLast(scheduledTask);
                 this.RaisePropertyChanged(nameof(this.ActiveTasks));
             }

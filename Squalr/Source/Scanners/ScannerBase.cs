@@ -3,6 +3,7 @@
     using Squalr.Properties;
     using SqualrCore.Source.ActionScheduler;
     using System;
+    using System.Threading;
 
     /// <summary>
     /// The base of all scanner classes.
@@ -65,11 +66,12 @@
         /// <summary>
         /// Called when the scan updates.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.ScanCount++;
 
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>

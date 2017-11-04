@@ -7,6 +7,7 @@
     using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal class ChangeCounterModel : ScannerBase
@@ -60,7 +61,11 @@
             base.OnBegin();
         }
 
-        protected unsafe override void OnUpdate()
+        /// <summary>
+        /// Called when the scan updates.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             Int32 processedPages = 0;
 
@@ -91,7 +96,7 @@
 
             this.UpdateScanCount?.Invoke();
 
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>

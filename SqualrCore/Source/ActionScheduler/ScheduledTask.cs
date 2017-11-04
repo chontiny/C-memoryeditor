@@ -4,6 +4,7 @@
     using System;
     using System.ComponentModel;
     using System.Threading;
+    using System.Threading.Tasks;
     using Utils.Extensions;
 
     /// <summary>
@@ -12,19 +13,19 @@
     public abstract class ScheduledTask : INotifyPropertyChanged
     {
         /// <summary>
-        /// The default update loop time.
-        /// </summary>
-        private const Int32 DefaultUpdateTime = 400;
-
-        /// <summary>
         /// The minimum progress.
         /// </summary>
-        private const Double MinimumProgress = 0.0;
+        public const Double MinimumProgress = 0.0;
 
         /// <summary>
         /// The maximum progress.
         /// </summary>
-        private const Double MaximumProgress = 100.0;
+        public const Double MaximumProgress = 100.0;
+
+        /// <summary>
+        /// The default update loop time.
+        /// </summary>
+        private const Int32 DefaultUpdateTime = 400;
 
         /// <summary>
         /// The default progress completion threshold.
@@ -168,7 +169,7 @@
         {
             get
             {
-                return !this.IsBusy && (this.HasUpdated || this.IsCanceled);
+                return !this.IsBusy && this.HasUpdated;
             }
         }
 
@@ -244,6 +245,11 @@
         private Boolean HasUpdated { get; set; }
 
         /// <summary>
+        /// Gets or sets a cancelation request for the update loop.
+        /// </summary>
+        private CancellationTokenSource CancelRequest { get; set; }
+
+        /// <summary>
         /// Gets or sets a lock for access to state information.
         /// </summary>
         private Object AccessLock { get; set; }
@@ -278,6 +284,8 @@
         public void Cancel()
         {
             this.IsCanceled = true;
+
+            this.CancelRequest?.Cancel();
         }
 
         /// <summary>
@@ -318,6 +326,19 @@
         }
 
         /// <summary>
+        /// Resets all state tracking variables.
+        /// </summary>
+        internal void ResetState()
+        {
+            this.Progress = 0.0;
+            this.IsCanceled = false;
+            this.HasStarted = false;
+            this.HasUpdated = false;
+            this.IsBusy = false;
+            this.IsTaskComplete = false;
+        }
+
+        /// <summary>
         /// A wrapper function for the start callback. This will call the start function and update required state information.
         /// </summary>
         internal void Begin()
@@ -350,7 +371,22 @@
                     throw new Exception(error);
                 }
 
-                this.OnUpdate();
+                this.CancelRequest = new CancellationTokenSource();
+
+                Task updateTask = Task.Run(() =>
+                {
+                    try
+                    {
+                        this.OnUpdate(this.CancelRequest.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Task cancelled: " + this.TaskName);
+                    }
+                }, this.CancelRequest.Token);
+
+                updateTask.Wait();
+
                 Thread.Sleep(this.UpdateInterval);
                 this.IsBusy = false;
             }
@@ -361,7 +397,10 @@
         /// </summary>
         internal void End()
         {
-            this.OnEnd();
+            if (!this.IsCanceled)
+            {
+                this.OnEnd();
+            }
 
             this.ResetState();
 
@@ -378,7 +417,8 @@
         /// <summary>
         /// Called when the scheduled task is updated.
         /// </summary>
-        protected virtual void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected virtual void OnUpdate(CancellationToken cancellationToken)
         {
         }
 
@@ -396,18 +436,6 @@
         protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
-        /// Resets all state tracking variables.
-        /// </summary>
-        private void ResetState()
-        {
-            this.IsCanceled = false;
-            this.HasStarted = false;
-            this.HasUpdated = false;
-            this.IsBusy = false;
-            this.IsTaskComplete = false;
         }
     }
     //// End class

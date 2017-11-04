@@ -44,7 +44,7 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="ShallowPointerPrefilter" /> class from being created.
         /// </summary>
-        private ShallowPointerPrefilter() : base("Prefilter", isRepeated: true, trackProgress: false)
+        private ShallowPointerPrefilter() : base("Prefilter", isRepeated: true, trackProgress: true)
         {
             this.PrefilteredSnapshot = new Snapshot();
             this.RegionLock = new Object();
@@ -123,12 +123,13 @@
         /// <summary>
         /// Updates the prefilter.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.ProcessPages();
             this.UpdateProgress();
 
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
 
         protected override void OnEnd()

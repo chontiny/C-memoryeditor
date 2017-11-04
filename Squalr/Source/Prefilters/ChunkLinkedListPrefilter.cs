@@ -171,7 +171,7 @@
         /// <summary>
         /// Updates the prefilter.
         /// </summary>
-        protected override void OnUpdate()
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.ProcessPages();
 
@@ -190,7 +190,7 @@
                 this.UpdateInterval = ChunkLinkedListPrefilter.RampUpRescanTime;
             }
 
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
 
         protected override void OnEnd()

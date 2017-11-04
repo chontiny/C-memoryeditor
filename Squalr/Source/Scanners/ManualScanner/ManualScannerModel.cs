@@ -8,6 +8,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -68,7 +69,8 @@
         /// <summary>
         /// Called when the scan updates.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             Int32 processedPages = 0;
             Boolean hasRelativeConstraint = this.ScanConstraintManager.HasRelativeConstraint();
@@ -93,6 +95,11 @@
             {
                 Boolean readSuccess;
 
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return;
+                }
+
                 region.ReadAllRegionMemory(out readSuccess, keepValues: true);
 
                 if (!readSuccess)
@@ -100,6 +107,8 @@
                     return;
                 }
             });
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             // Enforce each value constraint
             foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
@@ -113,6 +122,11 @@
                 {
                     // Ignore region if it requires current & previous values, but we cannot find them
                     if (hasRelativeConstraint && !region.CanCompare())
+                    {
+                        return;
+                    }
+
+                    if (cancellationToken.IsCancellationRequested)
                     {
                         return;
                     }
@@ -138,11 +152,14 @@
                 });
                 //// End foreach Region
 
+                cancellationToken.ThrowIfCancellationRequested();
+
                 this.Snapshot.DiscardInvalidRegions();
             }
             //// End foreach Constraint
 
-            base.OnUpdate();
+            this.UpdateProgress(ScheduledTask.MaximumProgress);
+            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>

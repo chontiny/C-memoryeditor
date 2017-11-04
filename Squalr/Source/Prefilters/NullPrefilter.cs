@@ -23,7 +23,6 @@
         /// </summary>
         private NullPrefilter() : base("Prefilter", isRepeated: true, trackProgress: true)
         {
-            this.UpdateProgress(100.0);
         }
 
         /// <summary>
@@ -71,9 +70,12 @@
         /// <summary>
         /// Updates the prefilter.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            base.OnUpdate();
+            this.UpdateProgress(ScheduledTask.MaximumProgress);
+
+            base.OnUpdate(cancellationToken);
         }
 
         protected override void OnEnd()

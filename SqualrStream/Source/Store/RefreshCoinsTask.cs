@@ -1,12 +1,13 @@
 ﻿namespace SqualrStream.Source.Store
 {
-    using SqualrStream.Properties;
-    using SqualrStream.Source.Api;
-    using SqualrStream.Source.Api.Models;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
+    using SqualrStream.Properties;
+    using SqualrStream.Source.Api;
+    using SqualrStream.Source.Api.Models;
     using System;
+    using System.Threading;
 
     /// <summary>
     /// Task to refresh the coin amount.
@@ -37,7 +38,8 @@
         /// <summary>
         /// Called when the scheduled task is updated.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             try
             {
@@ -57,7 +59,7 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error refreshing user", ex);
             }
 
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
     }
     //// End class

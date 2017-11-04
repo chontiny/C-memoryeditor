@@ -12,6 +12,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal class InputCorrelatorModel : ScannerBase, IObserver<KeyState>
@@ -97,7 +98,11 @@
             base.OnBegin();
         }
 
-        protected override void OnUpdate()
+        /// <summary>
+        /// Called when the scan updates.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             // Read memory to update previous and current values
             this.Snapshot.ReadAllMemory();
@@ -163,7 +168,7 @@
 
             this.UpdateScanCount?.Invoke();
 
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>

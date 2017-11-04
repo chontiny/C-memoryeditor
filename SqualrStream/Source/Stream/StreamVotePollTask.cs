@@ -2,6 +2,7 @@
 {
     using SqualrCore.Source.ActionScheduler;
     using System;
+    using System.Threading;
 
     /// <summary>
     /// Task to poll for the current cheat votes.
@@ -32,10 +33,11 @@
         /// <summary>
         /// Called when the scheduled task is updated.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.UpdateAction();
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
     }
     //// End class
