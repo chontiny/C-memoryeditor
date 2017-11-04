@@ -90,7 +90,7 @@
             // Read memory to get current values for each region
             Parallel.ForEach(
                 this.Snapshot.Cast<SnapshotRegion>(),
-                SettingsViewModel.GetInstance().ParallelSettingsFast,
+                SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                 (region) =>
             {
                 Boolean readSuccess;
@@ -117,7 +117,7 @@
 
                 Parallel.ForEach(
                     this.Snapshot.Cast<SnapshotRegion>(),
-                    SettingsViewModel.GetInstance().ParallelSettingsFast,
+                    SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                     (region) =>
                 {
                     // Ignore region if it requires current & previous values, but we cannot find them
