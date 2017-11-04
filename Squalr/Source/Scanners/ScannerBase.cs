@@ -59,8 +59,6 @@
         protected override void OnBegin()
         {
             this.ScanCount = 0;
-
-            base.OnBegin();
         }
 
         /// <summary>
@@ -70,8 +68,6 @@
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.ScanCount++;
-
-            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>
@@ -79,7 +75,6 @@
         /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
         }
     }
     //// End class

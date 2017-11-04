@@ -94,8 +94,6 @@
         protected override void OnBegin()
         {
             this.UpdateInterval = PointerCollector.RescanTime;
-
-            base.OnBegin();
         }
 
         /// <summary>
@@ -105,6 +103,13 @@
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.GatherPointers();
+        }
+
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
+        protected override void OnEnd()
+        {
         }
 
         /// <summary>

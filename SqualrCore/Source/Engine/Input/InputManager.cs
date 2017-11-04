@@ -88,8 +88,13 @@
             this.ControllerSubject.Update();
             this.KeyboardSubject.Update();
             this.MouseSubject.Update();
+        }
 
-            base.OnUpdate(cancellationToken);
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
+        protected override void OnEnd()
+        {
         }
     }
     //// End class

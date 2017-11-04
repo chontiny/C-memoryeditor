@@ -164,8 +164,6 @@
         protected override void OnBegin()
         {
             this.UpdateInterval = ChunkLinkedListPrefilter.RampUpRescanTime;
-
-            base.OnBegin();
         }
 
         /// <summary>
@@ -189,13 +187,13 @@
             {
                 this.UpdateInterval = ChunkLinkedListPrefilter.RampUpRescanTime;
             }
-
-            base.OnUpdate(cancellationToken);
         }
 
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
         }
 
         /// <summary>

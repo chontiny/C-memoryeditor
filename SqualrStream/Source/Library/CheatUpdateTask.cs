@@ -31,13 +31,26 @@
         private Action UpdateAction { get; set; }
 
         /// <summary>
+        /// Called when the scheduled task starts.
+        /// </summary>
+        protected override void OnBegin()
+        {
+        }
+
+        /// <summary>
         /// Called when the scheduled task is updated.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.UpdateAction();
-            base.OnUpdate(cancellationToken);
+        }
+
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
+        protected override void OnEnd()
+        {
         }
     }
     //// End class

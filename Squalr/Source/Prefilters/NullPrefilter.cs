@@ -60,11 +60,10 @@
         }
 
         /// <summary>
-        /// Starts the prefilter.
+        /// Called when the scheduled task starts.
         /// </summary>
         protected override void OnBegin()
         {
-            base.OnBegin();
         }
 
         /// <summary>
@@ -74,13 +73,13 @@
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.UpdateProgress(ScheduledTask.MaximumProgress);
-
-            base.OnUpdate(cancellationToken);
         }
 
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
         }
     }
     //// End class

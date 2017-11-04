@@ -134,8 +134,14 @@
             {
                 this.UpdateInterval = AddressResolver.ResolveInterval;
             }
+        }
 
-            base.OnUpdate(cancellationToken);
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
+        protected override void OnEnd()
+        {
+
         }
 
         /// <summary>

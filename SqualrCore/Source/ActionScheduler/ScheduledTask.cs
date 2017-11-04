@@ -410,24 +410,18 @@
         /// <summary>
         /// Called when the scheduled task starts.
         /// </summary>
-        protected virtual void OnBegin()
-        {
-        }
+        protected abstract void OnBegin();
 
         /// <summary>
         /// Called when the scheduled task is updated.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected virtual void OnUpdate(CancellationToken cancellationToken)
-        {
-        }
+        protected abstract void OnUpdate(CancellationToken cancellationToken);
 
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected virtual void OnEnd()
-        {
-        }
+        protected abstract void OnEnd();
 
         /// <summary>
         /// Indicates that a given property in this project item has changed.

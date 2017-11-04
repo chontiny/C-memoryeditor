@@ -101,8 +101,6 @@
         protected override void OnBegin()
         {
             this.UpdateInterval = DotNetObjectCollector.InitialPollingTime;
-
-            base.OnBegin();
         }
 
         /// <summary>
@@ -186,13 +184,13 @@
             catch
             {
             }
-
-            base.OnUpdate(cancellationToken);
         }
 
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
         }
 
         /// <summary>

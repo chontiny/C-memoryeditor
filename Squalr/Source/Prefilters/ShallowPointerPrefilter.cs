@@ -109,15 +109,13 @@
         }
 
         /// <summary>
-        /// Starts the prefilter.
+        /// Called when the prefilter starts.
         /// </summary>
         protected override void OnBegin()
         {
             PointerCollector.GetInstance().Start();
 
             this.UpdateInterval = ShallowPointerPrefilter.RescanTime;
-
-            base.OnBegin();
         }
 
         /// <summary>
@@ -128,13 +126,13 @@
         {
             this.ProcessPages();
             this.UpdateProgress();
-
-            base.OnUpdate(cancellationToken);
         }
 
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
         }
 
         /// <summary>
