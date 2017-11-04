@@ -29,7 +29,7 @@ namespace SqualrCore.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Decoupled cheat development and streamer tool\r\n- Misc bug fixes");
+            this.Write("- Fixes to scanning\r\n- Fixes to action schedulers\r\n- Fixes to results");
             return this.GenerationEnvironment.ToString();
         }
     }
