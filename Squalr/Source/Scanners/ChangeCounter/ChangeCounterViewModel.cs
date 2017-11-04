@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.ChangeCounter
 {
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
@@ -66,7 +66,7 @@
 
         private void StartScan()
         {
-            this.ChangeCounterModel.Schedule();
+            this.ChangeCounterModel.Start();
         }
 
         private void StopScan()

@@ -1,9 +1,10 @@
 ﻿namespace SqualrCore.Source.Output
 {
     using Docking;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -69,10 +70,12 @@
         /// </summary>
         private OutputViewModel() : base("Output")
         {
+            this.OutputMasks = new List<OutputMask>();
+            this.AccessLock = new Object();
+
             this.ContentId = OutputViewModel.ToolContentId;
             this.logText = new StringBuilder(OutputViewModel.LogCapacity);
             this.ClearOutputCommand = new RelayCommand(() => this.ClearOutput(), () => true);
-            this.AccessLock = new Object();
 
             Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
@@ -162,6 +165,11 @@
         }
 
         /// <summary>
+        /// Gets or sets the list of output masks to apply to all logged messages.
+        /// </summary>
+        private IList<OutputMask> OutputMasks { get; set; }
+
+        /// <summary>
         /// Gets or sets a lock for access to the output log.
         /// </summary>
         private Object AccessLock { get; set; }
@@ -192,6 +200,40 @@
         }
 
         /// <summary>
+        /// Adds a new output mask to the list of applied output masks.
+        /// </summary>
+        /// <param name="outputMask"></param>
+        public void AddOutputMask(OutputMask outputMask)
+        {
+            this.OutputMasks.Add(outputMask);
+        }
+
+        /// <summary>
+        /// Removes an output mask from the list of applied output masks.
+        /// </summary>
+        /// <param name="outputMask"></param>
+        public void RemoveOutputMask(OutputMask outputMask)
+        {
+            if (this.OutputMasks.Contains(outputMask))
+            {
+                this.OutputMasks.Remove(outputMask);
+            }
+        }
+
+        /// <summary>
+        /// Logs a message to output, filtering out sensitive text with a specific output mask.
+        /// </summary>
+        /// <param name="logLevel">The log level.</param>
+        /// <param name="outputMask">The output masking filter.</param>
+        public void Log(LogLevel logLevel, String message, String innerMessage, OutputMask outputMask)
+        {
+            message = outputMask.ApplyFilter(message);
+            innerMessage = outputMask.ApplyFilter(innerMessage);
+
+            this.Log(logLevel, message, innerMessage);
+        }
+
+        /// <summary>
         /// Logs a message to output.
         /// </summary>
         /// <param name="logLevel">The log level.</param>
@@ -211,6 +253,12 @@
             if (logLevel == LogLevel.Debug)
             {
                 return;
+            }
+
+            foreach (OutputMask outputMask in this.OutputMasks)
+            {
+                message = outputMask.ApplyFilter(message);
+                innerMessage = outputMask.ApplyFilter(innerMessage);
             }
 
             lock (this.AccessLock)

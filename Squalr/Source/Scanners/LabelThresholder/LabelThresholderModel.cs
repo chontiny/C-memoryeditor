@@ -6,6 +6,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal class LabelThresholderModel : ScannerBase, ISnapshotObserver
@@ -98,7 +99,7 @@
                 }
             }
 
-            this.Schedule();
+            this.Start();
         }
 
         public void ApplyThreshold()
@@ -167,7 +168,11 @@
             base.OnBegin();
         }
 
-        protected override void OnUpdate()
+        /// <summary>
+        /// Called when the scan updates.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             ConcurrentDictionary<Object, Int64> histogram = new ConcurrentDictionary<Object, Int64>();
             Int32 processedPages = 0;
@@ -212,7 +217,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                     //// End foreach element
                 });
@@ -223,7 +228,7 @@
             this.UpdateHistogram();
             this.Cancel();
 
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
 
         protected override void OnEnd()

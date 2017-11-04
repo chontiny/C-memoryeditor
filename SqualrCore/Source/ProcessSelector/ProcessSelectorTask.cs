@@ -2,6 +2,7 @@
 {
     using ActionScheduler;
     using System;
+    using System.Threading;
 
     /// <summary>
     /// Task for the Process Selector.
@@ -21,7 +22,7 @@
             this.RefreshAction = refreshAction;
             this.UpdateInterval = ProcessSelectorTask.RefreshInterval;
 
-            this.Schedule();
+            this.Start();
         }
 
         /// <summary>
@@ -30,12 +31,26 @@
         private Action RefreshAction { get; set; }
 
         /// <summary>
+        /// Called when the scheduled task starts.
+        /// </summary>
+        protected override void OnBegin()
+        {
+        }
+
+        /// <summary>
         /// Called when the scheduled task is updated.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.RefreshAction();
-            base.OnUpdate();
+        }
+
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
+        protected override void OnEnd()
+        {
         }
     }
     //// End class

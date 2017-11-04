@@ -11,7 +11,7 @@
     Height="96"
     d:DesignHeight="320"
     d:DesignWidth="128"
-    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+    BorderBrush="{StaticResource SqualrColorWhite}"
     BorderThickness="2"
     ContentRendered="SqualrValueEditorContentRendered"
     DataContext="{Binding ValueEditorViewModel, Source={StaticResource ViewModelLocator}}"
@@ -22,7 +22,7 @@
         <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
     </shell:WindowChrome.WindowChrome>
 
-    <shell:Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <shell:Grid Background="{StaticResource SqualrColorBlack}">
         <shell:Grid.RowDefinitions>
             <shell:RowDefinition Height="Auto" />
             <shell:RowDefinition />
@@ -33,13 +33,13 @@
             x:Name="titlebar"
             Grid.Row="0"
             Height="24"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            Background="{StaticResource SqualrColorGray20}">
             <shell:WrapPanel Margin="8,0,0,0" VerticalAlignment="Center">
                 <shell:TextBlock
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     Text="* "
                     Visibility="Collapsed" />
-                <shell:TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="Value Editor" />
+                <shell:TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Value Editor" />
             </shell:WrapPanel>
         </shell:Grid>
 

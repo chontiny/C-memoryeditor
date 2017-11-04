@@ -1,12 +1,14 @@
 ﻿namespace SqualrCore.Source.ChangeLog
 {
     using GalaSoft.MvvmLight;
+    using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Source.Output;
     using System;
     using System.Deployment.Application;
     using System.Reflection;
     using System.Threading;
     using System.Windows;
+    using System.Windows.Input;
 
     /// <summary>
     /// View model for the Change Log.
@@ -31,7 +33,14 @@
         private ChangeLogViewModel()
         {
             this.changeLog = new Content.ChangeLog().TransformText();
+
+            this.CloseWindowCommand = new RelayCommand<Window>(this.CloseWindow);
         }
+
+        /// <summary>
+        /// Gets a command to close the changelog window.
+        /// </summary>
+        public ICommand CloseWindowCommand { get; private set; }
 
         /// <summary>
         /// Gets the changelog text.
@@ -85,6 +94,15 @@
             View.ChangeLog changeLog = new View.ChangeLog();
             changeLog.Owner = Application.Current.MainWindow;
             changeLog.ShowDialog();
+        }
+
+        /// <summary>
+        /// Closes the changelog window.
+        /// </summary>
+        /// <param name="window">The changelog window.</param>
+        private void CloseWindow(Window window)
+        {
+            window?.Close();
         }
     }
     //// End class

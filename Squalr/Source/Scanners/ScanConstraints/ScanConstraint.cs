@@ -223,7 +223,7 @@
                     case ConstraintsEnum.LessThanOrEqual:
                         return Images.LessThanOrEqual;
                     case ConstraintsEnum.NotScientificNotation:
-                        return Images.ExponentialNotation;
+                        return Images.ENotation;
                     case ConstraintsEnum.Changed:
                         return Images.Changed;
                     case ConstraintsEnum.Unchanged:

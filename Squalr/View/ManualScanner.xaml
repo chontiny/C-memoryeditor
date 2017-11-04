@@ -2,7 +2,8 @@
     x:Class="Squalr.View.ManualScanner"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrManualScanner"
@@ -11,7 +12,7 @@
     x:ClassModifier="internal"
     DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
             <converters:IconConverter x:Key="IconConverter" />
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -24,20 +25,20 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <WrapPanel Background="{StaticResource AvalonDock_Expression_BaseColor1}">
+            <WrapPanel Background="{StaticResource SqualrColorGray68}">
                 <Menu
                     Grid.Row="0"
                     Padding="4"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    Background="{StaticResource SqualrColorGray68}"
+                    BorderBrush="{StaticResource SqualrColorWhite}"
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                    Foreground="{StaticResource SqualrColorWhite}">
                     <MenuItem Command="{Binding ManualScannerViewModel.StartScanCommand}" ToolTip="Start Scan">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrow.png" />
+                                Source="{x:Static content:Images.RightArrow}" />
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
@@ -46,7 +47,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/Cancel.png" />
+                                Source="{x:Static content:Images.Cancel}" />
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
@@ -75,8 +76,8 @@
                             </StackPanel>
                         </MenuItem.Header>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectChangedCommand}"
                             ToolTip="Changed Value">
                             <MenuItem.Header>
@@ -84,17 +85,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Changed.png" />
+                                        Source="{x:Static content:Images.Changed}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Changed" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectUnchangedCommand}"
                             ToolTip="Unchanged Value">
                             <MenuItem.Header>
@@ -102,17 +103,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Unchanged.png" />
+                                        Source="{x:Static content:Images.Unchanged}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Unchanged" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectIncreasedCommand}"
                             ToolTip="Increased Value">
                             <MenuItem.Header>
@@ -120,17 +121,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Increased.png" />
+                                        Source="{x:Static content:Images.Increased}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Increased" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectDecreasedCommand}"
                             ToolTip="Decreased Value">
                             <MenuItem.Header>
@@ -138,17 +139,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Decreased.png" />
+                                        Source="{x:Static content:Images.Decreased}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Decreased" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectEqualCommand}"
                             ToolTip="Equal to Value">
                             <MenuItem.Header>
@@ -156,17 +157,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/Equal.png" />
+                                        Source="{x:Static content:Images.Equal}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Equal" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectNotEqualCommand}"
                             ToolTip="Not Equal to Value">
                             <MenuItem.Header>
@@ -174,17 +175,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/NotEqual.png" />
+                                        Source="{x:Static content:Images.NotEqual}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Not Equal To" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectIncreasedByXCommand}"
                             ToolTip="Increased by Value">
                             <MenuItem.Header>
@@ -192,17 +193,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/PlusX.png" />
+                                        Source="{x:Static content:Images.PlusX}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Increased By" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectDecreasedByXCommand}"
                             ToolTip="Decreased by Value">
                             <MenuItem.Header>
@@ -210,17 +211,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/MinusX.png" />
+                                        Source="{x:Static content:Images.MinusX}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Decreased By" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectGreaterThanCommand}"
                             ToolTip="Greater Than Value">
                             <MenuItem.Header>
@@ -228,17 +229,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/GreaterThan.png" />
+                                        Source="{x:Static content:Images.GreaterThan}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Greater Than" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectGreaterThanOrEqualCommand}"
                             ToolTip="Greater Than or Equal to Value">
                             <MenuItem.Header>
@@ -246,17 +247,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/GreaterThanOrEqual.png" />
+                                        Source="{x:Static content:Images.GreaterThanOrEqual}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Greater Than Or Equal To" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectLessThanCommand}"
                             ToolTip="Less Than Value">
                             <MenuItem.Header>
@@ -264,17 +265,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/LessThan.png" />
+                                        Source="{x:Static content:Images.LessThan}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Less Than" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectLessThanOrEqualCommand}"
                             ToolTip="Less Than or Equal to Value">
                             <MenuItem.Header>
@@ -282,17 +283,17 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/LessThanOrEqual.png" />
+                                        Source="{x:Static content:Images.LessThanOrEqual}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Less Than Or Equal To" />
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectNotScientificNotationCommand}"
                             ToolTip="Exclude Scientific Notation Values">
                             <MenuItem.Header>
@@ -300,10 +301,10 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="pack://application:,,,/SqualrCore;component/Content/Images/ENotation.png" />
+                                        Source="{x:Static content:Images.ENotation}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="Not Scientific Notation" />
                                 </WrapPanel>
                             </MenuItem.Header>
@@ -315,7 +316,7 @@
                     Width="196"
                     Height="20"
                     Margin="4,0,0,0"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                    Background="{StaticResource SqualrColorGray20}" />
                 <Menu
                     VerticalAlignment="Center"
                     Background="Transparent"
@@ -325,7 +326,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/DownArrows.png" />
+                                Source="{x:Static content:Images.DownArrows}" />
                         </MenuItem.Header>
                     </MenuItem>
                 </Menu>
@@ -351,13 +352,13 @@
                                 <Grid.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                         <Setter Property="FontWeight" Value="Bold" />
                                     </Style>
                                     <Style TargetType="Border">
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                     </Style>
                                 </Grid.Resources>
                                 <Border Grid.Column="0">
@@ -411,11 +412,11 @@
                                         Source="{Binding Path=ConstraintImage}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="{Binding Path=ConstraintName}" />
                                 </WrapPanel>
                                 <WrapPanel Grid.Column="1">
-                                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding Path=ConstraintValue}" />
+                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding Path=ConstraintValue}" />
                                 </WrapPanel>
                             </Grid>
                         </DataTemplate>
@@ -453,7 +454,7 @@
                                     <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
                                 <WrapPanel Grid.Column="0">
-                                    <Menu Name="debug" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                                    <Menu Name="debug" Background="{StaticResource SqualrColorBlack}">
                                         <MenuItem
                                             Command="{Binding ElementName=SqualrManualScanner, Path=DataContext.RemoveConstraintCommand}"
                                             CommandParameter="{Binding .}"
@@ -462,7 +463,7 @@
                                                 <Image
                                                     Width="16"
                                                     Height="16"
-                                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/X.png" />
+                                                    Source="{x:Static content:Images.X}" />
                                             </MenuItem.Header>
                                         </MenuItem>
                                         <MenuItem
@@ -473,7 +474,7 @@
                                                 <Image
                                                     Width="16"
                                                     Height="16"
-                                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/MoveUp.png" />
+                                                    Source="{x:Static content:Images.MoveUp}" />
                                             </MenuItem.Header>
                                         </MenuItem>
                                     </Menu>
@@ -484,12 +485,12 @@
                                         Source="{Binding Path=ConstraintImage}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="{Binding Path=ConstraintName}" />
                                 </WrapPanel>
                                 <TextBlock
                                     Grid.Column="1"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=ConstraintValue}" />
                             </Grid>
                         </DataTemplate>

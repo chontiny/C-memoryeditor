@@ -2,7 +2,8 @@
     x:Class="Squalr.View.SnapshotManager"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrSnapshotManager"
@@ -14,7 +15,7 @@
     <x:Code>
         <![CDATA[ public SnapshotManager() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid>
             <Grid.Resources>
                 <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
@@ -27,16 +28,16 @@
             <Menu
                 Grid.Row="0"
                 Padding="4"
-                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                Background="{StaticResource SqualrColorGray68}"
+                BorderBrush="{StaticResource SqualrColorWhite}"
                 DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                Foreground="{StaticResource SqualrColorWhite}">
                 <MenuItem Command="{Binding SnapshotManagerViewModel.ClearSnapshotsCommand}" ToolTip="New Scan">
                     <MenuItem.Header>
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/New.png" />
+                            Source="{x:Static content:Images.New}" />
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Command="{Binding SnapshotManagerViewModel.UndoSnapshotCommand}" ToolTip="Undo">
@@ -44,7 +45,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Undo.png" />
+                            Source="{x:Static content:Images.Undo}" />
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Command="{Binding SnapshotManagerViewModel.RedoSnapshotCommand}" ToolTip="Redo">
@@ -52,7 +53,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Redo.png" />
+                            Source="{x:Static content:Images.Redo}" />
                     </MenuItem.Header>
                 </MenuItem>
                 <MenuItem Command="{Binding SnapshotManagerViewModel.ClearSnapshotsCommand}" ToolTip="Clear Scans">
@@ -60,7 +61,7 @@
                         <Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Cancel.png" />
+                            Source="{x:Static content:Images.Cancel}" />
                     </MenuItem.Header>
                 </MenuItem>
             </Menu>
@@ -81,15 +82,15 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Grid.Column="0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor13}"
+                                    Foreground="{StaticResource SqualrColorGray40}"
                                     Text="{Binding Path=ScanMethod}" />
                                 <TextBlock
                                     Grid.Column="1"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor13}"
+                                    Foreground="{StaticResource SqualrColorGray40}"
                                     Text="{Binding Path=MemorySize}" />
                                 <TextBlock
                                     Grid.Column="2"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor13}"
+                                    Foreground="{StaticResource SqualrColorGray40}"
                                     Text="{Binding Path=TimeStamp}" />
                             </Grid>
                         </DataTemplate>
@@ -113,13 +114,13 @@
                                     <Grid.Resources>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Margin" Value="5,0" />
-                                            <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                            <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                             <Setter Property="FontWeight" Value="Bold" />
                                         </Style>
                                         <Style TargetType="Border">
                                             <Setter Property="BorderThickness" Value="0" />
                                             <Setter Property="Padding" Value="8,4,8,4" />
-                                            <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                            <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                         </Style>
                                     </Grid.Resources>
                                     <Border Grid.Column="0">
@@ -150,15 +151,15 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Grid.Column="0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=SnapshotName}" />
                                 <TextBlock
                                     Grid.Column="1"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=ByteCount, Converter={StaticResource ValueToMetricSize}}" />
                                 <TextBlock
                                     Grid.Column="2"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=TimeSinceLastUpdate}" />
                             </Grid>
                         </DataTemplate>
@@ -181,13 +182,13 @@
                                     <Grid.Resources>
                                         <Style TargetType="TextBlock">
                                             <Setter Property="Margin" Value="5,0" />
-                                            <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                            <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                             <Setter Property="FontWeight" Value="Bold" />
                                         </Style>
                                         <Style TargetType="Border">
                                             <Setter Property="BorderThickness" Value="0" />
                                             <Setter Property="Padding" Value="8,4,8,4" />
-                                            <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                            <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                         </Style>
                                     </Grid.Resources>
                                 </Grid>

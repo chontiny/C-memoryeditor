@@ -1,11 +1,11 @@
 ﻿namespace Squalr.Source.Scanners.PointerScanner
 {
-    using ActionScheduler;
-    using BackgroundScans.Prefilters;
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Prefilters;
     using Squalr.Source.ProjectExplorer;
+    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
@@ -14,6 +14,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
@@ -203,7 +204,11 @@
             base.OnBegin();
         }
 
-        protected override void OnUpdate()
+        /// <summary>
+        /// Called when the scan updates.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             // Scan mode determines the action to make, such that the action always happens on this task thread
             switch (this.ScanMode)

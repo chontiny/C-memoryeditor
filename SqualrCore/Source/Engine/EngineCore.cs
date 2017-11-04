@@ -95,8 +95,8 @@
         /// </summary>
         private void StartBackgroundServices()
         {
-            DotNetObjectCollector.GetInstance().Schedule();
-            AddressResolver.GetInstance().Schedule();
+            DotNetObjectCollector.GetInstance().Start();
+            AddressResolver.GetInstance().Start();
             AnalyticsService.GetInstance().Start();
 
             AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");

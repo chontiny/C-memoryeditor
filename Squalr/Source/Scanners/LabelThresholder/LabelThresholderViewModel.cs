@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.LabelThresholder
 {
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using LiveCharts;
     using LiveCharts.Wpf;
     using SqualrCore.Source.Docking;

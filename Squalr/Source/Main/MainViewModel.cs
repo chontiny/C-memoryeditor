@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Main
 {
     using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Properties;
+    using Squalr.Source.Prefilters;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.Scanners.BackgroundScans.Prefilters;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using System;
@@ -113,7 +113,7 @@
         /// </summary>
         private void StartBackgroundServices()
         {
-            SnapshotPrefilterFactory.StartPrefilter(typeof(ChunkLinkedListPrefilter));
+            SnapshotPrefilterFactory.StartPrefilter(typeof(NullPrefilter));
         }
 
         /// <summary>

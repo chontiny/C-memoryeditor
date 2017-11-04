@@ -3,12 +3,14 @@
     using Controls;
     using Editors.ScriptEditor;
     using Scripting;
+    using SqualrCore.Content;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
+    using System.Windows.Media.Imaging;
     using Utils.TypeConverters;
 
     /// <summary>
@@ -103,6 +105,17 @@
         }
 
         /// <summary>
+        /// Gets the image associated with this project item.
+        /// </summary>
+        public override BitmapSource Icon
+        {
+            get
+            {
+                return Images.Script;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the script manager associated with this script.
         /// </summary>
         [Browsable(false)]
@@ -128,8 +141,10 @@
         /// <summary>
         /// Update event for this project item.
         /// </summary>
-        public override void Update()
+        /// <returns>True if update was made, otherwise false.</returns>
+        public override Boolean Update()
         {
+            return false;
         }
 
         /// <summary>

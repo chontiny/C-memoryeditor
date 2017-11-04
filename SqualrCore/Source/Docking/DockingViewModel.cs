@@ -103,7 +103,7 @@
             try
             {
                 // Attempt to load layout from resource name
-                using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resource))
+                using (Stream stream = Assembly.GetEntryAssembly().GetManifestResourceStream(resource))
                 {
                     if (stream != null)
                     {

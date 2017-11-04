@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Squalr</RootNamespace>
     <AssemblyName>Squalr</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -32,11 +32,11 @@
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr</ProductName>
     <PublisherName>Squalr</PublisherName>
-    <MinimumRequiredVersion>2.0.11.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.1.3.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.0.11.0</ApplicationVersion>
+    <ApplicationVersion>2.1.3.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -304,32 +304,23 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
-    <Compile Include="Source\Mvvm\Converters\BooleanConverter.cs" />
-    <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetObjectViewModel.cs" />
-    <Compile Include="Source\Mvvm\Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\DataGridIndexConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\ListViewIndexConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\ValueToMetricSize.cs" />
-    <Compile Include="Source\Mvvm\Converters\Int32ToHexConverter.cs" />
+    <Compile Include="Source\Prefilters\NullPrefilter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\PointerCollector.cs" />
+    <Compile Include="Source\Scanners\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ChunkLinkedListPrefilter.cs" />
+    <Compile Include="Source\Prefilters\ChunkLinkedListPrefilter.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
-    <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetExplorerViewModel.cs" />
     <Compile Include="Source\Scripting\Graphics\GraphicsCore.cs" />
     <Compile Include="Source\Scripting\Graphics\IGraphicsCore.cs" />
@@ -340,8 +331,6 @@
     <Compile Include="Source\Scripting\ScriptManager.cs" />
     <Compile Include="Source\Scripting\Memory\IMemoryCore.cs" />
     <Compile Include="Source\Scripting\Memory\MemoryCore.cs" />
-    <Compile Include="Source\Mvvm\Converters\IntPtrToAddressConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
     <Compile Include="Source\Results\ScanResults\IScanResultsObserver.cs" />
     <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
     <Compile Include="Source\Results\ScanResults\ScanResultsViewModel.cs">
@@ -363,15 +352,12 @@
     </Compile>
     <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
     <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ISnapshotPrefilter.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\ShallowPointerPrefilter.cs" />
-    <Compile Include="Source\Scanners\BackgroundScans\Prefilters\SnapshotPrefilterFactory.cs" />
+    <Compile Include="Source\Prefilters\ISnapshotPrefilter.cs" />
+    <Compile Include="Source\Prefilters\ShallowPointerPrefilter.cs" />
+    <Compile Include="Source\Prefilters\SnapshotPrefilterFactory.cs" />
     <Compile Include="Source\Snapshots\SnapshotManager.cs" />
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
-    <Compile Include="Source\ActionScheduler\ScheduledTask.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -607,14 +593,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <FileAssociation Include=".Hax">
-      <Visible>False</Visible>
-      <Description>Squalr Cheat File</Description>
-      <Progid>420</Progid>
-      <DefaultIcon>Content\Images\AppIcon.ico</DefaultIcon>
-    </FileAssociation>
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Content\DefaultLayout.xml" />
   </ItemGroup>

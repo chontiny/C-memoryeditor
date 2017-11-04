@@ -152,7 +152,7 @@
         public static extern Boolean ReadProcessMemory(IntPtr hProcess, IntPtr lpBaseAddress, [Out] Byte[] lpBuffer, Int32 dwSize, out Int32 lpNumberOfBytesRead);
 
         [DllImport("kernel32.dll")]
-        static extern bool VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, uint flNewProtect, out uint lpflOldProtect);
+        static extern Boolean VirtualProtectEx(IntPtr hProcess, IntPtr lpAddress, UIntPtr dwSize, UInt32 flNewProtect, out UInt32 lpflOldProtect);
 
         /// <summary>
         /// Reserves or commits a region of memory within the virtual address space of a specified process. The function initializes the memory it allocates to zero, unless MEM_RESET is used.
@@ -288,6 +288,9 @@
         /// </returns>
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern Int32 VirtualQueryEx(IntPtr hProcess, IntPtr lpAddress, out MemoryBasicInformation64 lpBuffer, Int32 dwLength);
+
+        [DllImport("ntdll.dll", SetLastError = true)]
+        public static extern Int32 NtQueryInformationProcess(IntPtr processHandle, ProcessInformationClass processInformationClass, ref ProcessBasicInformation processInformation, Int32 processInformationLength, out Int32 returnLength);
 
         /// <summary>
         /// Writes data to an area of memory in a specified process. The entire area to be written to must be accessible or the operation fails.

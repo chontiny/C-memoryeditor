@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Results.ScanResults;
-    using Scanners.BackgroundScans.Prefilters;
     using Squalr.Properties;
+    using Squalr.Source.Prefilters;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.OperatingSystems;
     using SqualrCore.Source.Utils.Extensions;

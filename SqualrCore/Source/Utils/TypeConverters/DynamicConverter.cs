@@ -24,7 +24,7 @@
             Type valueType = (value == null) ? null : value.GetType();
             Boolean isHex = false;
 
-            if (context.Instance.GetType().IsAssignableFrom(typeof(AddressItem)))
+            if (typeof(AddressItem).IsAssignableFrom(context?.Instance?.GetType()))
             {
                 isHex = (context.Instance as AddressItem).IsValueHex;
             }
@@ -49,13 +49,9 @@
             Type valueType = null;
             Boolean isHex = false;
 
-            if (context.Instance.GetType().IsAssignableFrom(typeof(AddressItem)))
+            if (typeof(AddressItem).IsAssignableFrom(context.Instance.GetType()))
             {
                 valueType = (context.Instance as AddressItem)?.DataType;
-            }
-
-            if (context.Instance.GetType().IsAssignableFrom(typeof(AddressItem)))
-            {
                 isHex = (context.Instance as AddressItem).IsValueHex;
             }
 

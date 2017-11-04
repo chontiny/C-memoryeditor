@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
         <ListView
             Grid.Row="0"
-            Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+            Background="{StaticResource SqualrColorBlack}"
             BorderThickness="0"
             ItemsSource="{Binding ProcessList}">
             <ListView.ItemContainerStyle>
@@ -51,7 +51,7 @@
                         <TextBlock
                             Grid.Column="1"
                             Margin="4,0,0,0"
-                            Foreground="{StaticResource AvalonDock_Expression_BaseColor12}"
+                            Foreground="{StaticResource SqualrColorWhite}"
                             Text="{Binding Path=ProcessName}" />
                     </Grid>
                 </DataTemplate>

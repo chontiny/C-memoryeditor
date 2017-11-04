@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.ValueCollector
 {
     using GalaSoft.MvvmLight;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -52,7 +52,7 @@
         /// </summary>
         private void CollectValues()
         {
-            this.ValueCollectorModel.Schedule();
+            this.ValueCollectorModel.Start();
         }
     }
     //// End class

@@ -2,6 +2,7 @@
     x:Class="SqualrCore.View.Editors.HotkeyEditor"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:content="clr-namespace:SqualrCore.Content"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,7 +14,7 @@
     Height="112"
     d:DesignHeight="256"
     d:DesignWidth="256"
-    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+    BorderBrush="{StaticResource SqualrColorWhite}"
     BorderThickness="2"
     DataContext="{Binding HotkeyEditorViewModel, Source={StaticResource ViewModelLocator}}"
     WindowStartupLocation="CenterOwner"
@@ -23,7 +24,7 @@
         <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
     </shell:WindowChrome.WindowChrome>
 
-    <shell:Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <shell:Grid Background="{StaticResource SqualrColorBlack}">
         <shell:Grid.Resources>
             <converters:Int32ToHexConverter x:Key="Int32ToHexConverter" />
             <converters:HotkeyToStringConverter x:Key="HotkeyToStringConverter" />
@@ -37,8 +38,8 @@
             x:Name="titlebar"
             Grid.Row="0"
             Height="24"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
-            <shell:TextBlock Margin="4" Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+            Background="{StaticResource SqualrColorGray20}">
+            <shell:TextBlock Margin="4" Foreground="{StaticResource SqualrColorWhite}">
                 New Hotkey
             </shell:TextBlock>
         </shell:Grid>
@@ -49,11 +50,11 @@
             </shell:Grid.ColumnDefinitions>
             <shell:Border
                 Grid.Column="0"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
+                BorderBrush="{StaticResource SqualrColorWhite}"
                 BorderThickness="1">
                 <xctk:WatermarkTextBox
-                    Background="{StaticResource AvalonDock_Expression_BaseColor3}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                    Background="{StaticResource SqualrColorBlack}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     IsReadOnly="True"
                     Text="{Binding ActiveHotkey, Mode=OneWay, Converter={StaticResource HotkeyToStringConverter}}"
                     Watermark="(Press any keys)" />
@@ -67,7 +68,7 @@
                     <shell:Image
                         Width="16"
                         Height="16"
-                        Source="pack://application:,,,/SqualrCore;component/Content/Icons/Cancel.png"
+                        Source="{x:Static content:Images.Cancel}"
                         ToolTip="Clear Current Input" />
                 </shell:Button>
             </shell:WrapPanel>

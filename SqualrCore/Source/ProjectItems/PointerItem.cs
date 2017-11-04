@@ -93,7 +93,7 @@
 
                 this.moduleName = value == null ? String.Empty : value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.ModuleName));
+                this.RaisePropertyChanged(nameof(this.ModuleName));
             }
         }
 
@@ -121,7 +121,7 @@
                 this.CalculatedAddress = value;
                 this.moduleOffset = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.ModuleOffset));
+                this.RaisePropertyChanged(nameof(this.ModuleOffset));
             }
         }
 
@@ -149,32 +149,17 @@
 
                 this.pointerOffsets = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.NotifyPropertyChanged(nameof(this.PointerOffsets));
+                this.RaisePropertyChanged(nameof(this.PointerOffsets));
             }
         }
 
         /// <summary>
         /// Update event for this project item. Resolves addresses and values.
         /// </summary>
-        public override void Update()
+        /// <returns>True if update was made, otherwise false.</returns>
+        public override Boolean Update()
         {
-            this.CalculatedAddress = this.ResolveAddress();
-
-            if (this.IsActivated)
-            {
-                // Freeze current value if this entry is activated
-                Object value = this.AddressValue;
-                if (value != null && value.GetType() == this.DataType)
-                {
-                    this.WriteValue(value);
-                }
-            }
-            else
-            {
-                // Otherwise we read as normal (bypass value setter and set value directly to avoid a write-back to memory)
-                Boolean readSuccess;
-                this.addressValue = EngineCore.GetInstance()?.OperatingSystem?.Read(this.DataType, this.CalculatedAddress, out readSuccess);
-            }
+            return base.Update();
         }
 
         /// <summary>

@@ -4,6 +4,7 @@
     using System;
     using System.ComponentModel;
     using System.Threading;
+    using System.Threading.Tasks;
     using Utils.Extensions;
 
     /// <summary>
@@ -12,19 +13,19 @@
     public abstract class ScheduledTask : INotifyPropertyChanged
     {
         /// <summary>
-        /// The default update loop time.
-        /// </summary>
-        private const Int32 DefaultUpdateTime = 400;
-
-        /// <summary>
         /// The minimum progress.
         /// </summary>
-        private const Double MinimumProgress = 0.0;
+        public const Double MinimumProgress = 0.0;
 
         /// <summary>
         /// The maximum progress.
         /// </summary>
-        private const Double MaximumProgress = 100.0;
+        public const Double MaximumProgress = 100.0;
+
+        /// <summary>
+        /// The default update loop time.
+        /// </summary>
+        private const Int32 DefaultUpdateTime = 400;
 
         /// <summary>
         /// The default progress completion threshold.
@@ -35,6 +36,21 @@
         /// The progress of this task.
         /// </summary>
         private Double progress;
+
+        /// <summary>
+        /// A value indicating whether the scheduled task was canceled.
+        /// </summary>
+        private Boolean isCanceled;
+
+        /// <summary>
+        /// A value indicating whether the scheduled task has completed in terms of progress, although not necessarily finalized.
+        /// </summary>
+        private Boolean isTaskComplete;
+
+        /// <summary>
+        /// A value indicating whether to track progress for the scheduled task.
+        /// </summary>
+        public Boolean trackProgress;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScheduledTask" /> class.
@@ -68,13 +84,12 @@
             Boolean trackProgress,
             DependencyBehavior dependencyBehavior)
         {
-            this.IsCanceled = false;
-            this.HasStarted = false;
+            this.ResetState();
             this.AccessLock = new Object();
 
             this.TaskName = taskName;
+            this.TrackProgress = trackProgress;
             this.IsRepeated = isRepeated;
-            this.IsTaskComplete = !trackProgress;
             this.DependencyBehavior = dependencyBehavior == null ? new DependencyBehavior() : dependencyBehavior;
 
             this.progress = 0.0;
@@ -103,14 +118,27 @@
         public Boolean IsRepeated { get; private set; }
 
         /// <summary>
+        /// Gets a value indicating whether to track progress for the scheduled task.
+        /// </summary>
+        public Boolean TrackProgress
+        {
+            get
+            {
+                return this.trackProgress;
+            }
+
+            private set
+            {
+                this.trackProgress = value;
+
+                this.RaisePropertyChanged(nameof(this.TrackProgress));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the name of this task.
         /// </summary>
         public String TaskName { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the scheduled task has completed. This is not in terms of progress, but instead indicates the task is entirely done.
-        /// </summary>
-        public Boolean IsTaskComplete { get; protected set; }
 
         /// <summary>
         /// Gets a value indicating whether the start callback function can be called.
@@ -141,7 +169,7 @@
         {
             get
             {
-                return !this.IsBusy && (this.HasUpdated || this.IsCanceled);
+                return !this.IsBusy && this.HasUpdated;
             }
         }
 
@@ -151,33 +179,36 @@
         public Boolean IsBusy { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether this task has been canceled.
+        /// Gets a value indicating whether the scheduled task was canceled.
         /// </summary>
-        public Boolean IsCanceled { get; private set; }
+        public Boolean IsCanceled
+        {
+            get
+            {
+                return this.isCanceled;
+            }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether this task has started.
-        /// </summary>
-        private Boolean HasStarted { get; set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this task has been updated.
-        /// </summary>
-        private Boolean HasUpdated { get; set; }
-
-        /// <summary>
-        /// Gets or sets a lock for access to state information.
-        /// </summary>
-        private Object AccessLock { get; set; }
+            private set
+            {
+                this.isCanceled = value;
+                this.RaisePropertyChanged(nameof(this.isCanceled));
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the scheduled task has completed in terms of progress, although not necessarily finalized.
         /// </summary>
-        public Boolean IsProgressComplete
+        public Boolean IsTaskComplete
         {
             get
             {
-                return this.Progress >= this.ProgressCompletionThreshold;
+                return this.isTaskComplete;
+            }
+
+            set
+            {
+                this.isTaskComplete = value;
+                this.RaisePropertyChanged(nameof(this.IsTaskComplete));
             }
         }
 
@@ -194,7 +225,7 @@
             private set
             {
                 this.progress = value;
-                this.NotifyPropertyChanged(nameof(this.Progress));
+                this.RaisePropertyChanged(nameof(this.Progress));
             }
         }
 
@@ -202,6 +233,26 @@
         /// Gets or sets the progress completion threshold. Progress higher this threshold will be considered complete.
         /// </summary>
         protected Double ProgressCompletionThreshold { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this task has started.
+        /// </summary>
+        private Boolean HasStarted { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this task has been updated.
+        /// </summary>
+        private Boolean HasUpdated { get; set; }
+
+        /// <summary>
+        /// Gets or sets a cancelation request for the update loop.
+        /// </summary>
+        private CancellationTokenSource CancelRequest { get; set; }
+
+        /// <summary>
+        /// Gets or sets a lock for access to state information.
+        /// </summary>
+        private Object AccessLock { get; set; }
 
         /// <summary>
         /// Initializes start state variables. Must be called before calling the start callback.
@@ -233,12 +284,64 @@
         public void Cancel()
         {
             this.IsCanceled = true;
+
+            this.CancelRequest?.Cancel();
+        }
+
+        /// <summary>
+        /// Starts the repeated task.
+        /// </summary>
+        public void Start()
+        {
+            ActionSchedulerViewModel.GetInstance().ScheduleAction(this);
+        }
+
+        /// <summary>
+        /// Updates the progress of this task.
+        /// </summary>
+        /// <param name="progress">The new progress.</param>
+        /// <param name="canFinalize">A value indicating whether the update can trigger a completion.</param>
+        public void UpdateProgress(Double progress, Boolean canFinalize = true)
+        {
+            this.Progress = progress.Clamp(ScheduledTask.MinimumProgress, ScheduledTask.MaximumProgress);
+
+            if (canFinalize)
+            {
+                if (this.Progress >= this.ProgressCompletionThreshold)
+                {
+                    this.IsTaskComplete = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Updates the progress of this task.
+        /// </summary>
+        /// <param name="subtotal">The current subtotal of an arbitrary progress goal.</param>
+        /// <param name="total">The progress goal total.</param>
+        /// <param name="canFinalize">A value indicating whether the update can trigger a completion.</param>
+        public void UpdateProgress(Int32 subtotal, Int32 total, Boolean canFinalize = true)
+        {
+            this.UpdateProgress(total <= 0 ? 0.0 : (((Double)subtotal / (Double)total) * ScheduledTask.MaximumProgress) + ScheduledTask.MinimumProgress, canFinalize);
+        }
+
+        /// <summary>
+        /// Resets all state tracking variables.
+        /// </summary>
+        internal void ResetState()
+        {
+            this.Progress = 0.0;
+            this.IsCanceled = false;
+            this.HasStarted = false;
+            this.HasUpdated = false;
+            this.IsBusy = false;
+            this.IsTaskComplete = false;
         }
 
         /// <summary>
         /// A wrapper function for the start callback. This will call the start function and update required state information.
         /// </summary>
-        public void Start()
+        internal void Begin()
         {
             lock (this.AccessLock)
             {
@@ -257,7 +360,7 @@
         /// <summary>
         /// A wrapper function for the update callback. This will call the update function and update required state information.
         /// </summary>
-        public void Update()
+        internal void Update()
         {
             lock (this.AccessLock)
             {
@@ -268,7 +371,22 @@
                     throw new Exception(error);
                 }
 
-                this.OnUpdate();
+                this.CancelRequest = new CancellationTokenSource();
+
+                Task updateTask = Task.Run(() =>
+                {
+                    try
+                    {
+                        this.OnUpdate(this.CancelRequest.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Task cancelled: " + this.TaskName);
+                    }
+                }, this.CancelRequest.Token);
+
+                updateTask.Wait();
+
                 Thread.Sleep(this.UpdateInterval);
                 this.IsBusy = false;
             }
@@ -277,64 +395,39 @@
         /// <summary>
         /// Called when the task is ending.
         /// </summary>
-        public void End()
+        internal void End()
         {
-            this.OnEnd();
-        }
+            if (!this.IsCanceled)
+            {
+                this.OnEnd();
+            }
 
-        /// <summary>
-        /// Starts the repeated task.
-        /// </summary>
-        public void Schedule()
-        {
-            ActionSchedulerViewModel.GetInstance().ScheduleAction(this);
-        }
+            this.ResetState();
 
-        /// <summary>
-        /// Updates the progress of this task.
-        /// </summary>
-        /// <param name="progress">The new progress.</param>
-        public void UpdateProgress(Double progress)
-        {
-            this.Progress = progress.Clamp(ScheduledTask.MinimumProgress, ScheduledTask.MaximumProgress);
-        }
-
-        /// <summary>
-        /// Updates the progress of this task.
-        /// </summary>
-        /// <param name="subtotal">The current subtotal of an arbitrary progress goal.</param>
-        /// <param name="total">The progress goal total.</param>
-        public void UpdateProgress(Int32 subtotal, Int32 total)
-        {
-            this.UpdateProgress(total <= 0 ? 0.0 : (((Double)subtotal / (Double)total) * ScheduledTask.MaximumProgress) + ScheduledTask.MinimumProgress);
+            this.IsTaskComplete = true;
         }
 
         /// <summary>
         /// Called when the scheduled task starts.
         /// </summary>
-        protected virtual void OnBegin()
-        {
-        }
+        protected abstract void OnBegin();
 
         /// <summary>
         /// Called when the scheduled task is updated.
         /// </summary>
-        protected virtual void OnUpdate()
-        {
-        }
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected abstract void OnUpdate(CancellationToken cancellationToken);
 
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected virtual void OnEnd()
-        {
-        }
+        protected abstract void OnEnd();
 
         /// <summary>
         /// Indicates that a given property in this project item has changed.
         /// </summary>
         /// <param name="propertyName">The name of the changed property.</param>
-        protected void NotifyPropertyChanged(String propertyName)
+        protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

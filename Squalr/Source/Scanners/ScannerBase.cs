@@ -1,8 +1,9 @@
 ﻿namespace Squalr.Source.Scanners
 {
-    using ActionScheduler;
     using Squalr.Properties;
+    using SqualrCore.Source.ActionScheduler;
     using System;
+    using System.Threading;
 
     /// <summary>
     /// The base of all scanner classes.
@@ -43,7 +44,7 @@
             private set
             {
                 this.scanCount = value;
-                this.NotifyPropertyChanged(nameof(this.ScanCount));
+                this.RaisePropertyChanged(nameof(this.ScanCount));
             }
         }
 
@@ -58,19 +59,15 @@
         protected override void OnBegin()
         {
             this.ScanCount = 0;
-            this.IsTaskComplete = false;
-
-            base.OnBegin();
         }
 
         /// <summary>
         /// Called when the scan updates.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.ScanCount++;
-
-            base.OnUpdate();
         }
 
         /// <summary>
@@ -78,9 +75,6 @@
         /// </summary>
         protected override void OnEnd()
         {
-            this.IsTaskComplete = true;
-
-            base.OnEnd();
         }
     }
     //// End class

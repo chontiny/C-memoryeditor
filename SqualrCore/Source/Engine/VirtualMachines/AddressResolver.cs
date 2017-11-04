@@ -119,7 +119,8 @@
         /// <summary>
         /// Polls the external process, gathering object information from the managed heap.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             Dictionary<String, DotNetObject> nameMap = new Dictionary<String, DotNetObject>();
             List<DotNetObject> objectTrees = DotNetObjectCollector.GetInstance().ObjectTrees;
@@ -133,6 +134,14 @@
             {
                 this.UpdateInterval = AddressResolver.ResolveInterval;
             }
+        }
+
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
+        protected override void OnEnd()
+        {
+
         }
 
         /// <summary>

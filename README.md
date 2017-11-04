@@ -39,6 +39,7 @@ Library | Description | Purpose
 --- | --- | ---
 [AsmJit](https://github.com/hypeartist/AsmJit) | x86/x64 Assembler | Replace FASM, improve scripting drastically
 [AsmJit](https://github.com/asmjit/asmjit) | x86/x64 Assembler | Original C++ project. May port/interop this if the above version does not work.
+[WpfHexEditorControl](https://github.com/abbaye/WpfHexEditorControl) | Hex Editor | Hex editor / Memory Hex Editor
 [Ninject](https://github.com/ninject/Ninject) | Dependency Injection Framework | Fixing my abuse of singletons
 [OpenTK](https://github.com/opentk/opentk) | OpenGL Wrapper | Graphics Injection
 [SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper | Graphics Injection (Currently using SharpDX just for input)

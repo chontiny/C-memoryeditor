@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.PointerScanner
 {
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
@@ -54,7 +54,7 @@
 
         private void StartScan()
         {
-            this.PointerScannerModel.Schedule();
+            this.PointerScannerModel.Start();
         }
 
         private void StopScan()

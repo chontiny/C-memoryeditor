@@ -1,9 +1,9 @@
 ﻿namespace SqualrCore.Source.Engine.VirtualMachines.DotNet
 {
     using ActionScheduler;
-    using SqualrProxy;
     using Processes;
     using Proxy;
+    using SqualrProxy;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -76,11 +76,9 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="DotNetObjectCollector" /> class from being created.
         /// </summary>
-        private DotNetObjectCollector() : base(".Net Object Collector", isRepeated: true, trackProgress: true)
+        private DotNetObjectCollector() : base(".Net Object Collector", isRepeated: true, trackProgress: false)
         {
-            // TODO: Marking as completed by default until we have a reasonable way to track the progress on this.
-            // This is challenging because we have this offloaded to the proxy service right now.
-            this.IsTaskComplete = true;
+            // TODO: Temporarily set trackProgress to false while this is in development
         }
 
         /// <summary>
@@ -103,14 +101,13 @@
         protected override void OnBegin()
         {
             this.UpdateInterval = DotNetObjectCollector.InitialPollingTime;
-
-            base.OnBegin();
         }
 
         /// <summary>
         /// Collects .Net objects in the external process.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.UpdateInterval = DotNetObjectCollector.PollingTime;
 
@@ -187,13 +184,13 @@
             catch
             {
             }
-
-            base.OnUpdate();
         }
 
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
         protected override void OnEnd()
         {
-            base.OnEnd();
         }
 
         /// <summary>

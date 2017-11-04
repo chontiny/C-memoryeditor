@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SqualrCore</RootNamespace>
     <AssemblyName>SqualrCore</AssemblyName>
-    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -30,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSScriptLibrary, Version=3.27.2.0, Culture=neutral, PublicKeyToken=70fcc3d18c749033, processorArchitecture=MSIL">
@@ -150,11 +151,12 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Source\Docking\DockingViewModel.cs" />
+    <Compile Include="Source\Engine\OperatingSystems\Windows\PEB\ManagedPeb.cs" />
+    <Compile Include="Source\Mvvm\Converters\ProjectItemValueConverter.cs" />
+    <Compile Include="Source\Output\OutputMask.cs" />
+    <Compile Include="Source\ProjectItems\InstructionItem.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Source\Utils\NativeBrowser.cs" />
-    <Compile Include="View\ChangeLog.xaml.cs">
-      <DependentUpon>ChangeLog.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
@@ -438,6 +440,9 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ChangeLog.cs</LastGenOutput>
     </Content>
+    <Resource Include="Content\Images\Squalr.png" />
+    <Resource Include="Content\Images\SqualrDev.png" />
+    <Resource Include="Content\Images\Cpu.png" />
     <Content Include="Content\Templates\CodeInjectionTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>
@@ -450,7 +455,6 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
     </Content>
-    <EmbeddedResource Include="Content\StreamerLayout.xml" />
     <Resource Include="Content\Images\X.png" />
     <Resource Include="Content\Images\UnknownValue.png" />
     <Resource Include="Content\Images\Union.png" />
@@ -517,7 +521,6 @@
     <Resource Include="Content\Images\BlueBlocks4.png" />
     <Resource Include="Content\Images\BlueBlocks2.png" />
     <Resource Include="Content\Images\BlueBlocks1.png" />
-    <EmbeddedResource Include="Content\DeveloperLayout.xml" />
     <Content Include="EasyHook32.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

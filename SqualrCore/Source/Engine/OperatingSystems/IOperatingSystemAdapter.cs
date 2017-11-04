@@ -71,16 +71,16 @@
         void DeallocateMemory(IntPtr address);
 
         /// <summary>
-        /// Gets the address of the stack in the opened process.
+        /// Gets the address of the stacks in the opened process.
         /// </summary>
-        /// <returns>A pointer to the stack of the opened process.</returns>
-        IntPtr GetStackAddress();
+        /// <returns>A pointer to the stacks of the opened process.</returns>
+        IEnumerable<NormalizedRegion> GetStackAddresses();
 
         /// <summary>
         /// Gets the addresses of the heaps in the opened process.
         /// </summary>
         /// <returns>A collection of pointers to all heaps in the opened process.</returns>
-        IEnumerable<IntPtr> GetHeapAddresses();
+        IEnumerable<NormalizedRegion> GetHeapAddresses();
 
         /// <summary>
         /// Determines if the operating system is 32 bit.

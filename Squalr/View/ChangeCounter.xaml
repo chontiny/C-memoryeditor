@@ -2,6 +2,7 @@
     x:Class="Squalr.View.ChangeCounter"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrChangeCounter"
@@ -13,20 +14,20 @@
     <x:Code>
         <![CDATA[ public ChangeCounter() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <WrapPanel Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray20}">
                 <Menu Padding="4" Background="Transparent">
                     <MenuItem Command="{Binding StartScanCommand}">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrow.png" />
+                                Source="{x:Static content:Images.RightArrow}" />
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem Command="{Binding StopScanCommand}">
@@ -34,15 +35,15 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/Stop.png" />
+                                Source="{x:Static content:Images.Stop}" />
                         </MenuItem.Header>
                     </MenuItem>
                 </Menu>
             </WrapPanel>
             <Border Grid.Row="1" Padding="8">
                 <WrapPanel>
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="Change Count: " />
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ScanCount}" />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Change Count: " />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ScanCount}" />
                 </WrapPanel>
             </Border>
         </Grid>

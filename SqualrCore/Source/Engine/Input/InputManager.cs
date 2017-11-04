@@ -5,6 +5,7 @@
     using Keyboard;
     using Mouse;
     using System;
+    using System.Threading;
 
     /// <summary>
     /// Manages all input devices and is responsible for updating them.
@@ -25,7 +26,7 @@
             this.KeyboardSubject = new KeyboardCapture();
             this.MouseSubject = new MouseCapture();
 
-            this.Schedule();
+            this.Start();
         }
 
         /// <summary>
@@ -81,11 +82,19 @@
         /// <summary>
         /// Updates the input capture devices, polling the system for changes on each device.
         /// </summary>
-        protected override void OnUpdate()
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             this.ControllerSubject.Update();
             this.KeyboardSubject.Update();
             this.MouseSubject.Update();
+        }
+
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
+        protected override void OnEnd()
+        {
         }
     }
     //// End class

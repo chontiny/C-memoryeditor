@@ -11,7 +11,6 @@
 
         }
 
-
         protected override IntPtr ResolveAddress()
         {
             throw new NotImplementedException();

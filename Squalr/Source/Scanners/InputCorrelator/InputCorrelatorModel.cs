@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
-    using ActionScheduler;
-    using BackgroundScans.Prefilters;
     using LabelThresholder;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Prefilters;
+    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using SqualrCore.Source.Engine.Input.Keyboard;
@@ -12,6 +12,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal class InputCorrelatorModel : ScannerBase, IObserver<KeyState>
@@ -97,7 +98,11 @@
             base.OnBegin();
         }
 
-        protected override void OnUpdate()
+        /// <summary>
+        /// Called when the scan updates.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             // Read memory to update previous and current values
             this.Snapshot.ReadAllMemory();
@@ -129,7 +134,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                 });
             }
@@ -156,14 +161,14 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                 });
             }
 
             this.UpdateScanCount?.Invoke();
 
-            base.OnUpdate();
+            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>

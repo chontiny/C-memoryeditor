@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.ManualScanner
 {
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using Results.ScanResults;
     using ScanConstraints;
     using SqualrCore.Source.Docking;
@@ -288,7 +288,7 @@
             allScanConstraints.AddConstraint(this.CurrentScanConstraint);
 
             ManualScannerModel.SetScanConstraintManager(allScanConstraints);
-            ManualScannerModel.Schedule();
+            ManualScannerModel.Start();
         }
 
         /// <summary>

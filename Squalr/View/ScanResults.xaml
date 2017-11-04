@@ -2,9 +2,12 @@
     x:Class="Squalr.View.ScanResults"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     x:Name="SqualrScanResults"
     d:DesignHeight="256"
     d:DesignWidth="512"
@@ -14,7 +17,7 @@
     <x:Code>
         <![CDATA[ public ScanResults() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
             <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
         </Grid.Resources>
@@ -24,248 +27,273 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Background="{StaticResource AvalonDock_Expression_BaseColor1}">
-            <Menu
-                Padding="4"
-                Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
-                <MenuItem VerticalAlignment="Center">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Increased.png"
-                            ToolTip="Add Selected Items" />
-                    </MenuItem.Header>
-                </MenuItem>
-                <MenuItem
-                    BorderThickness="0"
-                    Style="{StaticResource DropDownAutoClose}"
-                    ToolTip="Scan Type">
-                    <MenuItem.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <WrapPanel VerticalAlignment="Center">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="{Binding ActiveTypeImage}" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    VerticalAlignment="Center"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="{Binding ActiveTypeName}" />
-                            </WrapPanel>
-                            <Grid
-                                x:Name="arrowGlyph"
-                                Grid.Column="1"
-                                Margin="4,3,4,3"
-                                IsHitTestVisible="False">
-                                <Path
-                                    x:Name="Arrow"
-                                    Width="7"
-                                    Height="4"
-                                    Data="M 0,1 C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1 z"
-                                    Fill="White" />
-                            </Grid>
-                        </StackPanel>
-                    </MenuItem.Header>
+        <Border Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Menu
+                    Grid.Column="0"
+                    Padding="4"
+                    Background="{StaticResource SqualrColorGray68}"
+                    BorderBrush="{StaticResource SqualrColorWhite}"
+                    Foreground="{StaticResource SqualrColorWhite}">
                     <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeSByteCommand}"
-                        ToolTip="1 Byte Signed Integer">
+                        BorderThickness="0"
+                        Style="{StaticResource DropDownAutoClose}"
+                        ToolTip="Scan Type">
                         <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/BlueBlocks1.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="SByte" />
-                            </WrapPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <WrapPanel VerticalAlignment="Center">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{Binding ActiveTypeImage}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="{Binding ActiveTypeName}" />
+                                </WrapPanel>
+                                <Grid
+                                    x:Name="arrowGlyph"
+                                    Grid.Column="1"
+                                    Margin="4,3,4,3"
+                                    IsHitTestVisible="False">
+                                    <Path
+                                        x:Name="Arrow"
+                                        Width="7"
+                                        Height="4"
+                                        Data="M 0,1 C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1 z"
+                                        Fill="White" />
+                                </Grid>
+                            </StackPanel>
+                        </MenuItem.Header>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:SByte}"
+                            ToolTip="1 Byte Signed Integer">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.BlueBlocks1}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="SByte" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:Int16}"
+                            ToolTip="2 Byte Signed Integer">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.BlueBlocks2}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="Int16" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:Int32}"
+                            ToolTip="4 Byte Signed Integer">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.BlueBlocks4}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="Int32" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:Int64}"
+                            ToolTip="8 Byte Signed Integer">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.BlueBlocks8}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="Int64" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:Byte}"
+                            ToolTip="1 Byte Unsigned Integer">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.PurpleBlocks1}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="Byte" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:UInt16}"
+                            ToolTip="2 Byte Unsigned Integer">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.PurpleBlocks2}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="UInt16" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:UInt32}"
+                            ToolTip="4 Byte Unsigned Integer">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.PurpleBlocks4}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="UInt32" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:UInt64}"
+                            ToolTip="8 Byte Unsigned Integer">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.PurpleBlocks8}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="UInt64" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:Single}"
+                            ToolTip="Single Precision Floating Point Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.OrangeBlocks4}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="Single" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem
+                            Background="{StaticResource SqualrColorGray68}"
+                            BorderBrush="{StaticResource SqualrColorGray68}"
+                            Command="{Binding ChangeTypeCommand}"
+                            CommandParameter="{x:Type system:Double}"
+                            ToolTip="Double Precision Floating Point Value">
+                            <MenuItem.Header>
+                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.OrangeBlocks8}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Background="Transparent"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="Double" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+                <Menu
+                    Grid.Column="1"
+                    Padding="4"
+                    Background="{StaticResource SqualrColorGray68}"
+                    BorderBrush="{StaticResource SqualrColorWhite}"
+                    Foreground="{StaticResource SqualrColorWhite}">
+                    <MenuItem VerticalAlignment="Center" Command="{Binding AddScanResultsCommand}">
+                        <MenuItem.Header>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="{x:Static content:Images.Increased}"
+                                ToolTip="Add Selected Items" />
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeInt16Command}"
-                        ToolTip="2 Byte Signed Integer">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/BlueBlocks2.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Int16" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeInt32Command}"
-                        ToolTip="4 Byte Signed Integer">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/BlueBlocks4.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Int32" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeInt64Command}"
-                        ToolTip="8 Byte Signed Integer">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/BlueBlocks8.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Int64" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeByteCommand}"
-                        ToolTip="1 Byte Unsigned Integer">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/PurpleBlocks1.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Byte" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeUInt16Command}"
-                        ToolTip="2 Byte Unsigned Integer">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/PurpleBlocks2.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="UInt16" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeUInt32Command}"
-                        ToolTip="4 Byte Unsigned Integer">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/PurpleBlocks4.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="UInt32" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeUInt64Command}"
-                        ToolTip="8 Byte Unsigned Integer">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/PurpleBlocks8.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="UInt64" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeSingleCommand}"
-                        ToolTip="Single Precision Floating Point Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/OrangeBlocks4.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Single" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                        Command="{Binding ChangeTypeDoubleCommand}"
-                        ToolTip="Double Precision Floating Point Value">
-                        <MenuItem.Header>
-                            <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="pack://application:,,,/SqualrCore;component/Content/Images/OrangeBlocks8.png" />
-                                <TextBlock
-                                    Padding="4,0,0,0"
-                                    Background="Transparent"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="Double" />
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                </MenuItem>
-            </Menu>
+                </Menu>
+            </Grid>
         </Border>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ListView
-                Background="{StaticResource AvalonDock_Expression_BaseColor3}"
+                Name="ScanResultsListView"
+                Background="{StaticResource SqualrColorBlack}"
                 BorderThickness="0"
                 ItemsSource="{Binding Addresses}">
                 <ListView.Resources>
@@ -276,51 +304,55 @@
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     </Style>
                 </ListView.ItemContainerStyle>
+                <!--  Click and Selection events  -->
+                <intr:Interaction.Triggers>
+                    <intr:EventTrigger EventName="SelectionChanged">
+                        <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItems}" />
+                    </intr:EventTrigger>
+                    <intr:EventTrigger EventName="MouseDoubleClick">
+                        <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItem}" />
+                    </intr:EventTrigger>
+                </intr:Interaction.Triggers>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                             </Grid.ColumnDefinitions>
-                            <Grid.InputBindings>
-                                <MouseBinding
-                                    Command="{Binding DataContext.AddAddressCommand, ElementName=SqualrScanResults}"
-                                    CommandParameter="{Binding .}"
-                                    Gesture="LeftDoubleClick" />
-                            </Grid.InputBindings>
                             <TextBlock
                                 Grid.Column="0"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                Foreground="{StaticResource SqualrColorWhite}"
+                                IsHitTestVisible="False"
                                 Text="{Binding Path=ElementAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
                             <TextBlock
                                 Grid.Column="1"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                Foreground="{StaticResource SqualrColorWhite}"
+                                IsHitTestVisible="False"
                                 Text="{Binding Path=ElementValue}" />
                             <TextBlock
                                 Grid.Column="2"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                Foreground="{StaticResource SqualrColorWhite}"
+                                IsHitTestVisible="False"
                                 Text="{Binding Path=ElementPreviousValue}" />
                             <TextBlock
                                 Grid.Column="3"
-                                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                Foreground="{StaticResource SqualrColorWhite}"
+                                IsHitTestVisible="False"
                                 Text="{Binding Path=ElementLabel}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.Template>
                     <ControlTemplate>
-                        <Grid HorizontalAlignment="Left">
+                        <Grid HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Grid
-                                Grid.Row="0"
-                                Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
-                                VerticalAlignment="Center">
+                            <Grid Grid.Row="0" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition />
@@ -330,13 +362,13 @@
                                 <Grid.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                         <Setter Property="FontWeight" Value="Bold" />
                                     </Style>
                                     <Style TargetType="Border">
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                     </Style>
                                 </Grid.Resources>
                                 <Border Grid.Column="0">
@@ -361,7 +393,7 @@
         <Border
             Grid.Row="2"
             Padding="8,4,8,4"
-            Background="{StaticResource AvalonDock_Expression_BaseColor1}">
+            Background="{StaticResource SqualrColorGray68}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -374,7 +406,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/LeftArrows.png"
+                                Source="{x:Static content:Images.LeftArrows}"
                                 ToolTip="First Page" />
                         </MenuItem.Header>
                     </MenuItem>
@@ -383,16 +415,16 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/LeftArrow.png"
+                                Source="{x:Static content:Images.LeftArrow}"
                                 ToolTip="Previous Page" />
                         </MenuItem.Header>
                     </MenuItem>
                 </Menu>
                 <WrapPanel Grid.Column="1" HorizontalAlignment="Center">
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="Page: " />
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding CurrentPage}" />
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text=" of " />
-                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding PageCount}" />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Page: " />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding CurrentPage}" />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" of " />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding PageCount}" />
                 </WrapPanel>
                 <Menu
                     Grid.Column="2"
@@ -403,7 +435,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrow.png"
+                                Source="{x:Static content:Images.RightArrow}"
                                 ToolTip="Next Page" />
                         </MenuItem.Header>
                     </MenuItem>
@@ -412,7 +444,7 @@
                             <Image
                                 Width="16"
                                 Height="16"
-                                Source="pack://application:,,,/SqualrCore;component/Content/Images/RightArrows.png"
+                                Source="{x:Static content:Images.RightArrows}"
                                 ToolTip="Last Page" />
                         </MenuItem.Header>
                     </MenuItem>
@@ -422,19 +454,13 @@
         <Border
             Grid.Row="3"
             Padding="8,4,8,4"
-            Background="{StaticResource AvalonDock_Expression_BaseColor1}">
+            Background="{StaticResource SqualrColorGray68}">
             <WrapPanel HorizontalAlignment="Center">
-                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ByteCount, Converter={StaticResource ValueToMetricSize}}" />
-                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text=" - (Count: " />
-                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding ResultCount}" />
-                <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text=")" />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ByteCount, Converter={StaticResource ValueToMetricSize}}" />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" - (Count: " />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ResultCount}" />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=")" />
             </WrapPanel>
         </Border>
-        <DataGrid
-            x:Name="dataGrid"
-            Grid.Row="3"
-            Margin="166,133,0,-109"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top" />
     </Grid>
 </UserControl>

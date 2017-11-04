@@ -3,7 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
-    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:coreView="clr-namespace:SqualrCore.View;assembly=SqualrCore"
     xmlns:docking="clr-namespace:SqualrCore.Source.Docking;assembly=SqualrCore"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
@@ -57,7 +58,7 @@
         <shell:Grid
             x:Name="titlebar"
             Grid.Row="0"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            Background="{StaticResource SqualrColorGray20}">
             <shell:Grid.ColumnDefinitions>
                 <!--  Title Text Column  -->
                 <shell:ColumnDefinition />
@@ -79,30 +80,29 @@
                     Width="24"
                     Height="24"
                     Margin="4"
-                    Source="pack://application:,,,/Squalr;component/Content/Images/AppIcon.ico" />
-
+                    Source="{x:Static content:Images.SqualrDev}" />
                 <shell:TextBlock
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     Text="* "
                     Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <shell:TextBlock
                     Grid.Column="2"
                     VerticalAlignment="Center"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     Text="Squalr" />
                 <shell:TextBlock
                     Grid.Column="3"
                     VerticalAlignment="Center"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     Text=" - " />
                 <shell:TextBlock
                     Grid.Column="4"
                     VerticalAlignment="Center"
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor7}"
+                    Foreground="{StaticResource SqualrColorWhite}"
                     Text="{Binding ProjectExplorerViewModel.ProjectFilePath}" />
             </shell:Grid>
             <shell:Menu
@@ -119,7 +119,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Decreased.png" />
+                            Source="{x:Static content:Images.Decreased}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem
@@ -132,7 +132,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Maximize.png" />
+                            Source="{x:Static content:Images.Maximize}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem
@@ -145,7 +145,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/X.png" />
+                            Source="{x:Static content:Images.X}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
             </shell:Menu>
@@ -154,14 +154,14 @@
         <!--  Menu Bar  -->
         <shell:Grid Grid.Row="1">
             <shell:Menu
-                Background="{StaticResource AvalonDock_Expression_BaseColor4}"
-                BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
+                Background="{StaticResource SqualrColorGray20}"
+                BorderBrush="{StaticResource SqualrColorWhite}"
+                Foreground="{StaticResource SqualrColorWhite}">
                 <shell:Menu.Resources>
                     <shell:Style x:Key="menuItemStyle" TargetType="{x:Type MenuItem}">
-                        <shell:Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
-                        <shell:Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                        <shell:Setter Property="BorderBrush" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                        <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                        <shell:Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
+                        <shell:Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray20}" />
                         <shell:Setter Property="BorderThickness" Value="0" />
                     </shell:Style>
                 </shell:Menu.Resources>
@@ -312,7 +312,7 @@
         </shell:Grid>
 
         <!--  Button Menu Bar  -->
-        <shell:WrapPanel Grid.Row="2" Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+        <shell:WrapPanel Grid.Row="2" Background="{StaticResource SqualrColorGray20}">
             <shell:Menu
                 Padding="4"
                 Background="Transparent"
@@ -322,7 +322,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/SelectProcess.png" />
+                            Source="{x:Static content:Images.SelectProcess}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
@@ -331,7 +331,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Open.png" />
+                            Source="{x:Static content:Images.Open}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}" ToolTip="Save Project">
@@ -339,7 +339,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/Save.png" />
+                            Source="{x:Static content:Images.Save}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
@@ -348,7 +348,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/New.png" />
+                            Source="{x:Static content:Images.New}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:MenuItem Command="{Binding ValueCollectorViewModel.CollectValuesCommand}" ToolTip="Collect Values">
@@ -356,7 +356,7 @@
                         <shell:Image
                             Width="16"
                             Height="16"
-                            Source="pack://application:,,,/SqualrCore;component/Content/Images/CollectValues.png" />
+                            Source="{x:Static content:Images.CollectValues}" />
                     </shell:MenuItem.Header>
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
@@ -386,7 +386,7 @@
             x:Name="dockManager"
             Grid.Row="3"
             AnchorablesSource="{Binding DockingViewModel.Tools, Source={StaticResource ViewModelLocator}}"
-            Background="{StaticResource AvalonDock_Expression_BaseColor4}">
+            Background="{StaticResource SqualrColorGray20}">
             <!--  Theme  -->
             <avalonDock:DockingManager.Theme>
                 <avalonDock:DarkTheme />
@@ -516,19 +516,38 @@
         <shell:Border
             Grid.Row="4"
             Height="24"
-            Padding="4"
-            Background="{StaticResource AvalonDock_Expression_BaseColor15}"
+            Background="{StaticResource SqualrColorBlue}"
             DataContext="{Binding ActionSchedulerViewModel, Source={StaticResource ViewModelLocator}}">
             <shell:Grid>
                 <shell:ItemsControl HorizontalAlignment="Right" ItemsSource="{Binding Path=ActiveTasks}">
                     <shell:ItemsControl.ItemTemplate>
                         <shell:DataTemplate>
-                            <shell:WrapPanel>
+                            <shell:WrapPanel VerticalAlignment="Center" Visibility="{Binding Path=TrackProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <shell:TextBlock
                                     Padding="4,0,4,0"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=TaskName}" />
-                                <shell:ProgressBar Width="96" Value="{Binding Path=Progress, Mode=OneWay}" />
+                                <shell:Grid>
+                                    <shell:ProgressBar Width="96" Value="{Binding Path=Progress, Mode=OneWay}" />
+                                    <shell:TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource SqualrColorRed}"
+                                        Text="(Canceling)"
+                                        Visibility="{Binding Path=IsCanceled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </shell:Grid>
+                                <shell:Button
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    Command="{Binding ActionSchedulerViewModel.CancelTaskCommand, Source={StaticResource ViewModelLocator}}"
+                                    CommandParameter="{Binding .}"
+                                    ToolTip="Cancel Action">
+                                    <shell:Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.Cancel}" />
+                                </shell:Button>
                             </shell:WrapPanel>
                         </shell:DataTemplate>
                     </shell:ItemsControl.ItemTemplate>
