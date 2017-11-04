@@ -82,7 +82,7 @@
             {
                 if (!ApplicationDeployment.IsNetworkDeployed || !ApplicationDeployment.CurrentDeployment.IsFirstRun)
                 {
-                    //   return;
+                    return;
                 }
             }
             catch (Exception ex)

@@ -516,19 +516,39 @@
         <shell:Border
             Grid.Row="4"
             Height="24"
-            Padding="4"
             Background="{StaticResource SqualrColorBlue}"
             DataContext="{Binding ActionSchedulerViewModel, Source={StaticResource ViewModelLocator}}">
             <shell:Grid>
                 <shell:ItemsControl HorizontalAlignment="Right" ItemsSource="{Binding Path=ActiveTasks}">
                     <shell:ItemsControl.ItemTemplate>
                         <shell:DataTemplate>
-                            <shell:WrapPanel Visibility="{Binding Path=TrackProgress, Converter={StaticResource BooleanToHiddenConverter}}">
+                            <shell:WrapPanel VerticalAlignment="Center" Visibility="{Binding Path=TrackProgress, Converter={StaticResource BooleanToHiddenConverter}}">
+
                                 <shell:TextBlock
                                     Padding="4,0,4,0"
+                                    VerticalAlignment="Center"
                                     Foreground="{StaticResource SqualrColorWhite}"
                                     Text="{Binding Path=TaskName}" />
-                                <shell:ProgressBar Width="96" Value="{Binding Path=Progress, Mode=OneWay}" />
+                                <shell:Grid>
+                                    <shell:ProgressBar Width="96" Value="{Binding Path=Progress, Mode=OneWay}" />
+                                    <shell:TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Foreground="{StaticResource SqualrColorRed}"
+                                        Text="(Canceling)"
+                                        Visibility="{Binding Path=IsCanceled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                </shell:Grid>
+                                <shell:Button
+                                    VerticalAlignment="Center"
+                                    Background="Transparent"
+                                    Command="{Binding ActionSchedulerViewModel.CancelTaskCommand, Source={StaticResource ViewModelLocator}}"
+                                    CommandParameter="{Binding .}"
+                                    ToolTip="Cancel Action">
+                                    <shell:Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.Cancel}" />
+                                </shell:Button>
                             </shell:WrapPanel>
                         </shell:DataTemplate>
                     </shell:ItemsControl.ItemTemplate>

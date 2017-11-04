@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.ActionScheduler
 {
     using Docking;
+    using GalaSoft.MvvmLight.CommandWpf;
     using Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -8,6 +9,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using System.Windows.Input;
 
     /// <summary>
     /// Class to schedule tasks that are executed.
@@ -40,8 +42,12 @@
             this.AccessLock = new Object();
             this.Actions = new LinkedList<ScheduledTask>();
 
+            this.CancelTaskCommand = new RelayCommand<ScheduledTask>(task => this.CancelTask(task), (task) => true);
+
             this.Update();
         }
+
+        public ICommand CancelTaskCommand { get; private set; }
 
         /// <summary>
         /// Gets the tasks that are actively running.
@@ -164,6 +170,15 @@
                 }
                 while (true);
             });
+        }
+
+        /// <summary>
+        /// Cancels the given scheduled task.
+        /// </summary>
+        /// <param name="taskToCancel">The task to cancel.</param>
+        private void CancelTask(ScheduledTask taskToCancel)
+        {
+            this.Actions.Where(task => taskToCancel == task).ForEach(task => task.Cancel());
         }
 
         /// <summary>

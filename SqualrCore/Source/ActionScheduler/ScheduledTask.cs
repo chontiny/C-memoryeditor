@@ -37,6 +37,11 @@
         private Double progress;
 
         /// <summary>
+        /// A value indicating whether the scheduled task was canceled.
+        /// </summary>
+        private Boolean isCanceled;
+
+        /// <summary>
         /// A value indicating whether the scheduled task has completed in terms of progress, although not necessarily finalized.
         /// </summary>
         private Boolean isTaskComplete;
@@ -173,9 +178,21 @@
         public Boolean IsBusy { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether this task has been canceled.
+        /// Gets a value indicating whether the scheduled task was canceled.
         /// </summary>
-        public Boolean IsCanceled { get; private set; }
+        public Boolean IsCanceled
+        {
+            get
+            {
+                return this.isCanceled;
+            }
+
+            private set
+            {
+                this.isCanceled = value;
+                this.RaisePropertyChanged(nameof(this.isCanceled));
+            }
+        }
 
         /// <summary>
         /// Gets a value indicating whether the scheduled task has completed in terms of progress, although not necessarily finalized.
@@ -390,6 +407,7 @@
             this.HasStarted = false;
             this.HasUpdated = false;
             this.IsBusy = false;
+            this.IsTaskComplete = false;
         }
     }
     //// End class
