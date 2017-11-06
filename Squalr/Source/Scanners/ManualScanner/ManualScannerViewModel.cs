@@ -68,7 +68,7 @@
             this.EditConstraintCommand = new RelayCommand<ScanConstraint>((ScanConstraint) => this.EditConstraint(ScanConstraint), (ScanConstraint) => true);
             this.ClearConstraintsCommand = new RelayCommand(() => this.ClearConstraints(), () => true);
             this.CurrentScanConstraint = new ScanConstraint(ConstraintsEnum.Equal);
-            this.ManualScannerModel = new ManualScannerModel();
+            this.ManualScannerModel = new ManualScan();
             this.ScanConstraintManager = new ScanConstraintManager();
             this.ScanConstraintManager.SetElementType(typeof(Int32));
 
@@ -252,7 +252,7 @@
         /// <summary>
         /// Gets or sets the manual scanner model.
         /// </summary>
-        private ManualScannerModel ManualScannerModel { get; set; }
+        private ManualScan ManualScannerModel { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ManualScannerViewModel"/> class.

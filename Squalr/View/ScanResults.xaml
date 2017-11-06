@@ -414,11 +414,14 @@
             Background="{StaticResource SqualrColorGray68}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="196" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <Menu Grid.Column="0" Background="Transparent">
+                <Menu
+                    Grid.Column="0"
+                    HorizontalAlignment="Right"
+                    Background="Transparent">
                     <MenuItem Command="{Binding FirstPageCommand}">
                         <MenuItem.Header>
                             <Image
@@ -446,7 +449,7 @@
                 </WrapPanel>
                 <Menu
                     Grid.Column="2"
-                    HorizontalAlignment="Right"
+                    HorizontalAlignment="Left"
                     Background="Transparent">
                     <MenuItem Command="{Binding NextPageCommand}">
                         <MenuItem.Header>

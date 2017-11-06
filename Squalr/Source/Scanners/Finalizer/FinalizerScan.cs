@@ -1,32 +1,34 @@
-﻿namespace Squalr.Source.Scanners.ValueCollector
+﻿namespace Squalr.Source.Scanners.ManualScanner
 {
     using Snapshots;
     using Squalr.Properties;
     using Squalr.Source.Prefilters;
     using SqualrCore.Source.ActionScheduler;
     using System;
+    using System.Collections.Concurrent;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Collect values for the current snapshot, or a new one if none exists. The values are then assigned to a new snapshot.
+    /// A scanner to discard invalid regions
     /// </summary>
-    internal class ValueCollectorModel : ScannerBase
+    internal class FinalizerScan : ScannerBase
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValueCollectorModel" /> class.
+        /// Initializes a new instance of the <see cref="FinalizerScan" /> class.
         /// </summary>
-        public ValueCollectorModel() : base(
-            scannerName: "Value Collector",
+        public FinalizerScan(Snapshot snapshot) : base(
+            scannerName: "Finalizer",
             isRepeated: false,
             dependencyBehavior: new DependencyBehavior(dependencies: typeof(ISnapshotPrefilter)))
         {
+            this.Snapshot = snapshot;
             this.ProgressLock = new Object();
         }
 
         /// <summary>
-        /// Gets or sets the snapshot on which we perform the value collection.
+        /// Gets or sets the snapshot on which we perform the finalization.
         /// </summary>
         private Snapshot Snapshot { get; set; }
 
@@ -36,13 +38,10 @@
         private Object ProgressLock { get; set; }
 
         /// <summary>
-        /// Performs the value collection scan.
+        /// Called when the scan begins.
         /// </summary>
         protected override void OnBegin()
         {
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
-
-            base.OnBegin();
         }
 
         /// <summary>
@@ -51,14 +50,10 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            if (this.Snapshot == null)
-            {
-                return;
-            }
+            Int32 processedPages = 0;
+            ConcurrentBag<SnapshotRegion> validRegions = new ConcurrentBag<SnapshotRegion>();
 
-            Int32 processedRegions = 0;
-
-            // Read memory to get current values for each region
+            // Find the regions with valid bits set
             Parallel.ForEach(
                 this.Snapshot.Cast<SnapshotRegion>(),
                 SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
@@ -70,26 +65,32 @@
                         return;
                     }
 
-                    // Read the memory for this region
-                    region.ReadAllRegionMemory(keepValues: true, readSuccess: out _);
+                    // Find the regions with valid bits set
+                    foreach (SnapshotRegion validRegion in region.GetValidRegions())
+                    {
+                        validRegions.Add(validRegion);
+                    }
 
                     // Update progress
                     lock (this.ProgressLock)
                     {
-                        processedRegions++;
+                        processedPages++;
 
                         // Limit how often we update the progress
-                        if (processedRegions % 10 == 0)
+                        if (processedPages % 10 == 0)
                         {
-                            this.UpdateProgress(processedRegions, this.Snapshot.RegionCount, canFinalize: false);
+                            this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                         }
                     }
                 });
+            //// End foreach Region
 
+            // Exit if canceled
             cancellationToken.ThrowIfCancellationRequested();
 
-            this.UpdateProgress(ScheduledTask.MaximumProgress);
+            this.Snapshot = new Snapshot(validRegions, this.Snapshot.SnapshotName);
 
+            this.UpdateProgress(ScheduledTask.MaximumProgress);
             base.OnUpdate(cancellationToken);
         }
 
@@ -99,8 +100,7 @@
         protected override void OnEnd()
         {
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
-
-            this.Snapshot = null;
+            Snapshot = null;
 
             base.OnEnd();
         }
