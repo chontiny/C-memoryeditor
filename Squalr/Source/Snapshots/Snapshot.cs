@@ -169,18 +169,17 @@
         public void ExpandAllRegions(UInt64 expandSize)
         {
             this.SnapshotRegions?.ForEach(x => x.Expand(expandSize));
-            this.MaskRegions(SnapshotManager.GetInstance().CreateSnapshotFromSettings()?.GetSnapshotRegions());
+            this.Intersect(SnapshotManager.GetInstance().CreateSnapshotFromSettings());
         }
 
         /// <summary>
-        /// Reads all memory for every region contained in this snapshot.
+        /// Reads all memory for every region contained in this snapshot. TODO: This is not parallel, nor does it track progress.
         /// </summary>
         public void ReadAllMemory()
         {
-            Boolean readSuccess;
             this.TimeSinceLastUpdate = DateTime.Now;
-            this.MaskRegions(SnapshotManager.GetInstance().CreateSnapshotFromSettings()?.GetSnapshotRegions());
-            this.SnapshotRegions?.ForEach(x => x.ReadAllRegionMemory(out readSuccess, keepValues: true));
+            this.Intersect(SnapshotManager.GetInstance().CreateSnapshotFromSettings());
+            this.SnapshotRegions?.ForEach(x => x.ReadAllRegionMemory(keepValues: true, readSuccess: out _));
         }
 
         /// <summary>
@@ -293,17 +292,33 @@
             }
         }
 
+        private void Union(Snapshot otherSnapshot)
+        {
+            if (otherSnapshot == null)
+            {
+                return;
+            }
+
+            foreach (SnapshotRegion region in otherSnapshot)
+            {
+                this.SnapshotRegions.Add(region);
+            }
+
+            this.MergeAndSortRegions();
+        }
+
         /// <summary>
-        /// Masks the given memory regions against the given memory regions, keeping the common elements of the two in O(n).
+        /// Combines the given memory regions with the given memory regions, only keeping the common elements of the two in O(nlogn + n).
         /// </summary>
-        /// <param name="groundTruth">The snapshot regions to mask the target regions against.</param>
-        private void MaskRegions(IEnumerable<NormalizedRegion> groundTruth)
+        /// <param name="otherSnapshot">The snapshot regions to mask the target regions against.</param>
+        private void Intersect(Snapshot otherSnapshot)
         {
             List<SnapshotRegion> resultRegions = new List<SnapshotRegion>();
 
-            groundTruth = this.MergeAndSortRegions(groundTruth);
+            otherSnapshot.MergeAndSortRegions();
+            IEnumerable<NormalizedRegion> otherRegions = otherSnapshot.GetSnapshotRegions();
 
-            if (this.SnapshotRegions.IsNullOrEmpty() || groundTruth.IsNullOrEmpty())
+            if (this.SnapshotRegions.IsNullOrEmpty() || otherRegions.IsNullOrEmpty())
             {
                 this.SnapshotRegions = resultRegions;
                 return;
@@ -322,7 +337,7 @@
             }
 
             // Build masking region queue from snapshot
-            foreach (NormalizedRegion maskRegion in groundTruth.OrderBy(x => x.BaseAddress.ToUInt64()))
+            foreach (NormalizedRegion maskRegion in otherRegions.OrderBy(x => x.BaseAddress.ToUInt64()))
             {
                 groundTruthQueue.Enqueue(maskRegion);
             }
@@ -380,48 +395,14 @@
             this.SnapshotRegions = resultRegions;
         }
 
-        /// <summary>
-        /// Merges regions of a given set of normalized regions using a fast stack based algorithm O(nlogn + n).
-        /// </summary>
-        /// <param name="regions">The regions to merge and sort.</param>
-        /// <returns>The merged and sorted regions.</returns>
-        private IEnumerable<NormalizedRegion> MergeAndSortRegions(IEnumerable<NormalizedRegion> regions)
+        private void Except(Snapshot otherSnapshot)
         {
-            if (regions == null || regions.Count() <= 0)
-            {
-                return null;
-            }
+            throw new NotImplementedException();
+        }
 
-            // First, sort by start address
-            IList<NormalizedRegion> sortedRegions = regions.OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
-
-            // Create and initialize the stack with the first region
-            Stack<NormalizedRegion> combinedRegions = new Stack<NormalizedRegion>();
-            combinedRegions.Push(sortedRegions[0]);
-
-            // Build the remaining regions
-            for (Int32 index = combinedRegions.Count; index < sortedRegions.Count; index++)
-            {
-                NormalizedRegion top = combinedRegions.Peek();
-
-                if (top.EndAddress.ToUInt64() < sortedRegions[index].BaseAddress.ToUInt64())
-                {
-                    // If the interval does not overlap, put it on the top of the stack
-                    combinedRegions.Push(sortedRegions[index]);
-                }
-                else if (top.EndAddress.ToUInt64() == sortedRegions[index].BaseAddress.ToUInt64())
-                {
-                    // The regions are adjacent; merge them
-                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToUInt64();
-                }
-                else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
-                {
-                    // The regions overlap
-                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToUInt64();
-                }
-            }
-
-            return combinedRegions.ToList().OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
+        private void Subtract(Snapshot otherSnapshot)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

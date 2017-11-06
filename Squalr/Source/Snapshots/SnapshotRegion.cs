@@ -191,7 +191,7 @@
         /// <param name="readSuccess">Whether or not the read was successful.</param>
         /// <param name="keepValues">Whether or not to keep the values returned as current values.</param>
         /// <returns>The bytes read from memory.</returns>
-        public Byte[] ReadAllRegionMemory(out Boolean readSuccess, Boolean keepValues = true)
+        public Byte[] ReadAllRegionMemory(Boolean keepValues, out Boolean readSuccess)
         {
             this.TimeSinceLastRead = DateTime.Now;
 

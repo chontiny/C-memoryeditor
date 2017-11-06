@@ -80,11 +80,6 @@
         public ICommand ResetLayoutCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to reset the current docking layout to the default.
-        /// </summary>
-        public ICommand ResetLayoutDeveloperCommand { get; private set; }
-
-        /// <summary>
         /// Gets the command to open the change log.
         /// </summary>
         public ICommand DisplayChangeLogCommand { get; private set; }

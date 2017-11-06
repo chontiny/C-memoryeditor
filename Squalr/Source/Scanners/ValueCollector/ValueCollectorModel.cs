@@ -64,19 +64,12 @@
                 SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                 (region) =>
                 {
-                    Boolean readSuccess;
-
                     if (cancellationToken.IsCancellationRequested)
                     {
                         return;
                     }
 
-                    region.ReadAllRegionMemory(out readSuccess, keepValues: true);
-
-                    if (!readSuccess)
-                    {
-                        return;
-                    }
+                    region.ReadAllRegionMemory(keepValues: true, readSuccess: out _);
 
                     lock (this.ProgressLock)
                     {

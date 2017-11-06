@@ -60,6 +60,11 @@
         private List<ISnapshotObserver> SnapshotObservers { get; set; }
 
         /// <summary>
+        /// The size limit for snapshots to be saved in the snapshot history (1GB).
+        /// </summary>
+        private const UInt64 SizeLimit = 1UL << 30;
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="SnapshotManager"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -270,7 +275,14 @@
         {
             lock (this.AccessLock)
             {
+                // Remove null snapshot if exists
                 if (this.Snapshots.Count != 0 && this.Snapshots.Peek() == null)
+                {
+                    this.Snapshots.Pop();
+                }
+
+                // Do not keep large snapshots in the undo history
+                if (this.Snapshots.Count != 0 && this.Snapshots.Peek() != null && this.Snapshots.Peek().ByteCount > SnapshotManager.SizeLimit)
                 {
                     this.Snapshots.Pop();
                 }

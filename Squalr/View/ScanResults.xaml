@@ -39,6 +39,15 @@
                     Background="{StaticResource SqualrColorGray68}"
                     BorderBrush="{StaticResource SqualrColorWhite}"
                     Foreground="{StaticResource SqualrColorWhite}">
+                    <MenuItem Command="{Binding SnapshotManagerViewModel.ClearSnapshotsCommand, Source={StaticResource ViewModelLocator}}" ToolTip="New Scan">
+                        <MenuItem.Header>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="{x:Static content:Images.New}" />
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <Separator Style="{DynamicResource VerticalSeparator}" />
                     <MenuItem
                         BorderThickness="0"
                         Style="{StaticResource DropDownAutoClose}"
@@ -270,6 +279,15 @@
                                 </WrapPanel>
                             </MenuItem.Header>
                         </MenuItem>
+                    </MenuItem>
+                    <Separator Style="{DynamicResource VerticalSeparator}" />
+                    <MenuItem Command="{Binding ValueCollectorViewModel.CollectValuesCommand, Source={StaticResource ViewModelLocator}}" ToolTip="Collect Values">
+                        <MenuItem.Header>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="{x:Static content:Images.CollectValues}" />
+                        </MenuItem.Header>
                     </MenuItem>
                 </Menu>
                 <Menu
