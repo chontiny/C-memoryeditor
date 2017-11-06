@@ -162,7 +162,7 @@
                 region.Alignment = sizeof(Int32);
 
                 // Read current page data for chunk
-                region.ReadAllRegionMemory(keepValues: true, readSuccess: out success);
+                region.ReadAllMemory(keepValues: true, readSuccess: out success);
 
                 // Read failed; Deallocated page
                 if (!success)

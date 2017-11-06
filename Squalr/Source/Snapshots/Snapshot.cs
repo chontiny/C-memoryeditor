@@ -179,7 +179,7 @@
         {
             this.TimeSinceLastUpdate = DateTime.Now;
             this.Intersect(SnapshotManager.GetInstance().CreateSnapshotFromSettings());
-            this.SnapshotRegions?.ForEach(x => x.ReadAllRegionMemory(keepValues: true, readSuccess: out _));
+            this.SnapshotRegions?.ForEach(x => x.ReadAllMemory(keepValues: true, readSuccess: out _));
         }
 
         /// <summary>

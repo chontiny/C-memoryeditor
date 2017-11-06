@@ -2,7 +2,6 @@
 {
     using Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.Prefilters;
     using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Concurrent;
@@ -20,8 +19,7 @@
         /// </summary>
         public FinalizerScan(Snapshot snapshot) : base(
             scannerName: "Finalizer",
-            isRepeated: false,
-            dependencyBehavior: new DependencyBehavior(dependencies: typeof(ISnapshotPrefilter)))
+            isRepeated: false)
         {
             this.Snapshot = snapshot;
             this.ProgressLock = new Object();

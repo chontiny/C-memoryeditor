@@ -3,13 +3,11 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Properties;
-    using Squalr.Source.Prefilters;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
     using Xceed.Wpf.AvalonDock;
@@ -55,8 +53,6 @@
                 => DockingViewModel.GetInstance().LoadLayoutFromFile(dockingManager, MainViewModel.LayoutSaveFile, MainViewModel.DefaultLayoutResource), (dockingManager) => true);
             this.SaveLayoutCommand = new RelayCommand<DockingManager>((dockingManager)
                 => DockingViewModel.GetInstance().SaveLayout(dockingManager, MainViewModel.LayoutSaveFile), (dockingManager) => true);
-
-            Task.Run(() => this.StartBackgroundServices());
         }
 
         /// <summary>
@@ -101,14 +97,6 @@
         public static MainViewModel GetInstance()
         {
             return mainViewModelInstance.Value;
-        }
-
-        /// <summary>
-        /// Starts useful services that run in the background to assist in various operations.
-        /// </summary>
-        private void StartBackgroundServices()
-        {
-            SnapshotPrefilterFactory.StartPrefilter(typeof(NullPrefilter));
         }
 
         /// <summary>

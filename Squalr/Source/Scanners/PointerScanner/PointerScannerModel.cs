@@ -3,9 +3,7 @@
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.Prefilters;
     using Squalr.Source.ProjectExplorer;
-    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
@@ -35,8 +33,7 @@
 
         public PointerScannerModel() : base(
             scannerName: "Pointer Scanner",
-            isRepeated: false,
-            dependencyBehavior: new DependencyBehavior(dependencies: typeof(ISnapshotPrefilter)))
+            isRepeated: false)
         {
             this.IndexValueMap = new ConcurrentDictionary<Int32, String>();
             this.PointerPool = new ConcurrentDictionary<IntPtr, IntPtr>();

@@ -3,8 +3,6 @@
     using LabelThresholder;
     using Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.Prefilters;
-    using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Linq;
     using System.Threading;
@@ -14,8 +12,7 @@
     {
         public ChangeCounterModel(Action updateScanCount) : base(
             scannerName: "Change Counter",
-            isRepeated: true,
-            dependencyBehavior: new DependencyBehavior(dependencies: typeof(ISnapshotPrefilter)))
+            isRepeated: true)
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();

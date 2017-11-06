@@ -3,7 +3,6 @@
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.Prefilters;
     using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Generic;
@@ -21,8 +20,8 @@
         /// </summary>
         public ManualScan() : base(
             scannerName: "Manual Scan",
-            isRepeated: false,
-            dependencyBehavior: new DependencyBehavior(dependencies: typeof(ISnapshotPrefilter)))
+            isRepeated: false)
+        // dependencyBehavior: new DependencyBehavior(dependencies: typeof(ValueCollectorModel)))
         {
             this.ProgressLock = new Object();
         }
@@ -87,7 +86,7 @@
                         return;
                     }
 
-                    region.ReadAllRegionMemory(keepValues: true, readSuccess: out _);
+                    region.ReadAllMemory(keepValues: true, readSuccess: out _);
                 });
 
             // Determine if we need to increment both current and previous value pointers, or just current value pointers

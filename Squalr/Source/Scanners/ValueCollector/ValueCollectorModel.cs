@@ -2,7 +2,6 @@
 {
     using Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.Prefilters;
     using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Linq;
@@ -19,8 +18,7 @@
         /// </summary>
         public ValueCollectorModel() : base(
             scannerName: "Value Collector",
-            isRepeated: false,
-            dependencyBehavior: new DependencyBehavior(dependencies: typeof(ISnapshotPrefilter)))
+            isRepeated: false)
         {
             this.ProgressLock = new Object();
         }
@@ -71,7 +69,7 @@
                     }
 
                     // Read the memory for this region
-                    region.ReadAllRegionMemory(keepValues: true, readSuccess: out _);
+                    region.ReadAllMemory(keepValues: true, readSuccess: out _);
 
                     // Update progress
                     lock (this.ProgressLock)

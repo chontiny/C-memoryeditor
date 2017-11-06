@@ -118,7 +118,7 @@
                 {
                     if (createIfNone)
                     {
-                        return this.CreateSnapshotFromPrefilter();
+                        return Prefilter.GetInstance().GetPrefilteredSnapshot();
                     }
                     else
                     {
@@ -129,15 +129,6 @@
                 // Return the snapshot
                 return this.Snapshots.Peek();
             }
-        }
-
-        /// <summary>
-        /// Creates a new snapshot of memory in the target process. Will not read any memory.
-        /// </summary>
-        /// <returns>The snapshot of memory taken in the target process.</returns>
-        public Snapshot CreateSnapshotFromPrefilter()
-        {
-            return SnapshotPrefilterFactory.GetPrefilteredSnapshot();
         }
 
         public Snapshot CreateSnapshotFromUsermodeMemory()

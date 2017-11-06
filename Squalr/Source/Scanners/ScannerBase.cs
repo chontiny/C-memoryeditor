@@ -21,7 +21,7 @@
         /// <param name="scannerName">The name of this scanner.</param>
         /// <param name="isRepeated">A value indicating whether this scan is repeated.</param>
         /// <param name="dependencyBehavior">The object defining task dependencies.</param>
-        public ScannerBase(String scannerName, Boolean isRepeated, DependencyBehavior dependencyBehavior) : base(
+        public ScannerBase(String scannerName, Boolean isRepeated, DependencyBehavior dependencyBehavior = null) : base(
             taskName: scannerName,
             isRepeated: isRepeated,
             trackProgress: true,
