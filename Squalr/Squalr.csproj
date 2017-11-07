@@ -306,12 +306,15 @@
     </Compile>
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetObjectViewModel.cs" />
-    <Compile Include="Source\Prefilters\NullPrefilter.cs" />
+    <Compile Include="Source\Prefilters\HeapPrefilter.cs" />
+    <Compile Include="Source\Prefilters\SystemModulePrefilter.cs" />
+    <Compile Include="Source\Prefilters\Prefilter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
     <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
+    <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\PointerCollector.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerViewModel.cs" />
@@ -319,7 +322,6 @@
     <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
-    <Compile Include="Source\Prefilters\ChunkLinkedListPrefilter.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetExplorerViewModel.cs" />
     <Compile Include="Source\Scripting\Graphics\GraphicsCore.cs" />
@@ -343,7 +345,7 @@
     <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderViewModel.cs" />
     <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderModel.cs" />
     <Compile Include="Source\Scanners\ManualScanner\ManualScannerViewModel.cs" />
-    <Compile Include="Source\Scanners\ManualScanner\ManualScannerModel.cs" />
+    <Compile Include="Source\Scanners\ManualScanner\ManualScan.cs" />
     <Compile Include="Source\Scanners\PointerScanner\PointerScannerModel.cs" />
     <Compile Include="Source\Scanners\ScanConstraints\ScanConstraint.cs" />
     <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintManager.cs" />
@@ -354,7 +356,6 @@
     <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
     <Compile Include="Source\Prefilters\ISnapshotPrefilter.cs" />
     <Compile Include="Source\Prefilters\ShallowPointerPrefilter.cs" />
-    <Compile Include="Source\Prefilters\SnapshotPrefilterFactory.cs" />
     <Compile Include="Source\Snapshots\SnapshotManager.cs" />
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />

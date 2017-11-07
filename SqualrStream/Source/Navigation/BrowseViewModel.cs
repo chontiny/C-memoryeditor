@@ -1,6 +1,10 @@
 ﻿namespace SqualrStream.Source.Navigation
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Browser;
+    using SqualrCore.Source.Utils.Extensions;
     using SqualrStream.Properties;
     using SqualrStream.Source.Api;
     using SqualrStream.Source.Api.Models;
@@ -8,10 +12,6 @@
     using SqualrStream.Source.Library;
     using SqualrStream.Source.Store;
     using SqualrStream.Source.Stream;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Output;
-    using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Threading;

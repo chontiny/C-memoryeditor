@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{E46EFBA0-17F7-4565-8629-D3BF41C4BED7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>SqualrClient</RootNamespace>
-    <AssemblyName>SqualrClient</AssemblyName>
+    <RootNamespace>SqualrStream</RootNamespace>
+    <AssemblyName>SqualrStream</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

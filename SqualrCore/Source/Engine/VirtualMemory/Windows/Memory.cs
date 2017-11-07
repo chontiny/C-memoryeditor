@@ -1,7 +1,6 @@
-﻿namespace SqualrCore.Source.Engine.OperatingSystems.Windows
+﻿namespace SqualrCore.Source.Engine.VirtualMemory.Windows
 {
     using Native;
-    using Processes;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -150,27 +149,6 @@
                 // Allocate a memory page
                 return NativeMethods.VirtualAllocEx(processHandle, allocAddress, size, allocationFlags, protectionFlags);
             }
-        }
-
-        /// <summary>
-        /// Opens an existing local process object.
-        /// </summary>
-        /// <param name="accessFlags">The access level to the process object.</param>
-        /// <param name="process">The identifier of the local process to be opened.</param>
-        /// <returns>An open handle to the specified process.</returns>
-        public static IntPtr OpenProcess(ProcessAccessFlags accessFlags, NormalizedProcess process)
-        {
-            return NativeMethods.OpenProcess(accessFlags, false, process == null ? 0 : process.ProcessId);
-        }
-
-        /// <summary>
-        /// Closes an open object handle.
-        /// </summary>
-        /// <param name="handle">A valid handle to an open object.</param>
-        public static void CloseHandle(IntPtr handle)
-        {
-            // Close the handle
-            NativeMethods.CloseHandle(handle);
         }
 
         /// <summary>

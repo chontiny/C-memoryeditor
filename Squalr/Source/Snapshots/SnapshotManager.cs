@@ -4,7 +4,7 @@
     using Squalr.Properties;
     using Squalr.Source.Prefilters;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -60,6 +60,11 @@
         private List<ISnapshotObserver> SnapshotObservers { get; set; }
 
         /// <summary>
+        /// The size limit for snapshots to be saved in the snapshot history (1GB).
+        /// </summary>
+        private const UInt64 SizeLimit = 1UL << 30;
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="SnapshotManager"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -113,7 +118,7 @@
                 {
                     if (createIfNone)
                     {
-                        return this.CreateSnapshotFromPrefilter();
+                        return Prefilter.GetInstance().GetPrefilteredSnapshot();
                     }
                     else
                     {
@@ -126,15 +131,6 @@
             }
         }
 
-        /// <summary>
-        /// Creates a new snapshot of memory in the target process. Will not read any memory.
-        /// </summary>
-        /// <returns>The snapshot of memory taken in the target process.</returns>
-        public Snapshot CreateSnapshotFromPrefilter()
-        {
-            return SnapshotPrefilterFactory.GetPrefilteredSnapshot();
-        }
-
         public Snapshot CreateSnapshotFromUsermodeMemory()
         {
             MemoryProtectionEnum requiredPageFlags = 0;
@@ -142,10 +138,10 @@
             MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image | MemoryTypeEnum.Mapped;
 
             IntPtr startAddress = IntPtr.Zero;
-            IntPtr endAddress = EngineCore.GetInstance().OperatingSystem.GetUserModeRegion().EndAddress;
+            IntPtr endAddress = EngineCore.GetInstance().VirtualMemory.GetUserModeRegion().EndAddress;
 
             List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystem.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -175,7 +171,7 @@
             if (SettingsViewModel.GetInstance().IsUserMode)
             {
                 startAddress = IntPtr.Zero;
-                endAddress = EngineCore.GetInstance().OperatingSystem.GetUserModeRegion().EndAddress;
+                endAddress = EngineCore.GetInstance().VirtualMemory.GetUserModeRegion().EndAddress;
             }
             else
             {
@@ -184,7 +180,7 @@
             }
 
             List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystem.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -270,7 +266,14 @@
         {
             lock (this.AccessLock)
             {
+                // Remove null snapshot if exists
                 if (this.Snapshots.Count != 0 && this.Snapshots.Peek() == null)
+                {
+                    this.Snapshots.Pop();
+                }
+
+                // Do not keep large snapshots in the undo history
+                if (this.Snapshots.Count != 0 && this.Snapshots.Peek() != null && this.Snapshots.Peek().ByteCount > SnapshotManager.SizeLimit)
                 {
                     this.Snapshots.Pop();
                 }

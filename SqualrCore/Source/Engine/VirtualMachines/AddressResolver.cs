@@ -2,7 +2,7 @@
 {
     using ActionScheduler;
     using DotNet;
-    using OperatingSystems;
+    using VirtualMemory;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -63,7 +63,7 @@
             IntPtr result = IntPtr.Zero;
 
             identifier = identifier?.RemoveSuffixes(true, ".exe", ".dll");
-            IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().OperatingSystem.GetModules()
+            IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().VirtualMemory.GetModules()
                 .Select(x => x)?.Where(x => x.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));
 
             if (modules.Count() > 0)

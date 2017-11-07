@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Properties
 {
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -21,6 +21,21 @@
         /// </summary>
         private static Lazy<SettingsViewModel> settingsViewModelInstance = new Lazy<SettingsViewModel>(
                 () => { return new SettingsViewModel(); },
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
+        /// Settings that control the degree of parallelism for multithreaded tasks.
+        /// </summary>
+        private static Lazy<ParallelOptions> parallelSettingsFullCpu = new Lazy<ParallelOptions>(
+                () =>
+                {
+                    ParallelOptions parallelOptions = new ParallelOptions()
+                    {
+                        // Full throttle; all processors used
+                        MaxDegreeOfParallelism = Environment.ProcessorCount
+                    };
+                    return parallelOptions;
+                },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
@@ -65,7 +80,18 @@
         }
 
         /// <summary>
-        /// Gets the parallelism settings.
+        /// Gets the parallelism settings which use all CPUs available.
+        /// </summary>
+        public ParallelOptions ParallelSettingsFullCpu
+        {
+            get
+            {
+                return parallelSettingsFullCpu.Value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the parallelism settings which use most of the CPUs available.
         /// </summary>
         public ParallelOptions ParallelSettingsFast
         {
@@ -76,7 +102,7 @@
         }
 
         /// <summary>
-        /// Gets the parallelism settings.
+        /// Gets the parallelism settings which use some of the CPUs available.
         /// </summary>
         public ParallelOptions ParallelSettingsMedium
         {

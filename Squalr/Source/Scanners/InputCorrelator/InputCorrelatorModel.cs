@@ -3,8 +3,6 @@
     using LabelThresholder;
     using Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.Prefilters;
-    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using SqualrCore.Source.Engine.Input.Keyboard;
@@ -21,8 +19,7 @@
 
         public InputCorrelatorModel(Action updateScanCount) : base(
             scannerName: "Input Correlator",
-            isRepeated: true,
-            dependencyBehavior: new DependencyBehavior(dependencies: typeof(ISnapshotPrefilter)))
+            isRepeated: true)
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();

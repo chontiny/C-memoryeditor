@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Utils
+﻿namespace SqualrCore.Source.Utils.Browser
 {
     using System;
     using System.Diagnostics;

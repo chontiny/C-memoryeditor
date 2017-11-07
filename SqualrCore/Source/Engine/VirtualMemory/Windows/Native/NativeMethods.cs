@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Engine.OperatingSystems.Windows.Native
+﻿namespace SqualrCore.Source.Engine.VirtualMemory.Windows.Native
 {
     using System;
     using System.Runtime.InteropServices;
@@ -11,42 +11,6 @@
     /// </summary>
     internal static class NativeMethods
     {
-        /// <summary>
-        /// Extracts the icon from a running process
-        /// </summary>
-        /// <param name="hInst">Handle to the process</param>
-        /// <param name="lpszExeFileName">Executable file name</param>
-        /// <param name="nIconIndex">Index of the icon</param>
-        /// <returns>A handle to the icon in the target process</returns>
-        [DllImport("shell32.dll", SetLastError = true)]
-        public static extern IntPtr ExtractIcon(IntPtr hInst, String lpszExeFileName, Int32 nIconIndex);
-
-        /// <summary>
-        /// Determines whether the specified process is running under WOW64
-        /// </summary>
-        /// <param name="processHandle">A handle to the running process</param>
-        /// <param name="wow64Process">Whether or not the process is 64 bit</param>
-        /// <returns>
-        /// A pointer to a value that is set to TRUE if the process is running under WOW64.
-        /// If the process is running under 32-bit Windows, the value is set to FALSE.
-        /// If the process is a 64-bit application running under 64-bit Windows, the value is also set to FALSE.
-        /// </returns>
-        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern Boolean IsWow64Process([In] IntPtr processHandle, [Out, MarshalAs(UnmanagedType.Bool)] out Boolean wow64Process);
-
-        /// <summary>
-        /// Closes an open object handle.
-        /// </summary>
-        /// <param name="hObject">A valid handle to an open object.</param>
-        /// <returns>
-        /// If the function succeeds, the return value is nonzero. 
-        /// If the function fails, the return value is zero. To get extended error information, call <see cref="Marshal.GetLastWin32Error"/>.
-        /// </returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern Boolean CloseHandle(IntPtr hObject);
-
         /// <summary>
         /// Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count. 
         /// When the reference count reaches zero, the module is unloaded from the address space of the calling process and the handle is no longer valid.
@@ -79,20 +43,6 @@
         public static extern IntPtr GetProcAddress(IntPtr hModule, String procName);
 
         /// <summary>
-        /// Retrieves the process identifier of the specified process.
-        /// </summary>
-        /// <param name="hProcess">
-        /// A handle to the process. The handle must have the PROCESS_QUERY_INFORMATION or PROCESS_QUERY_LIMITED_INFORMATION access right. 
-        /// For more information, see Process Security and Access Rights.
-        /// </param>
-        /// <returns>
-        /// If the function succeeds, the return value is a process id to the specified handle. 
-        /// If the function fails, the return value is NULL. To get extended error information, call <see cref="Marshal.GetLastWin32Error"/>.
-        /// </returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern Int32 GetProcessId(IntPtr hProcess);
-
-        /// <summary>
         /// Loads the specified module into the address space of the calling process. The specified module may cause other modules to be loaded.
         /// </summary>
         /// <param name="lpFileName">
@@ -112,22 +62,6 @@
         /// </returns>
         [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
         public static extern IntPtr LoadLibrary(String lpFileName);
-
-        /// <summary>
-        /// Opens an existing local process object.
-        /// </summary>
-        /// <param name="dwDesiredAccess">
-        /// [Flags] he access to the process object. This access right is checked against the security descriptor for the process. This parameter can be one or more of the process access rights. 
-        /// If the caller has enabled the SeDebugPrivilege privilege, the requested access is granted regardless of the contents of the security descriptor.
-        /// </param>
-        /// <param name="bInheritHandle">If this value is TRUE, processes created by this process will inherit the handle. Otherwise, the processes do not inherit this handle.</param>
-        /// <param name="dwProcessId">The identifier of the local process to be opened.</param>
-        /// <returns>
-        /// If the function succeeds, the return value is an open handle to the specified process. 
-        /// If the function fails, the return value is NULL. To get extended error information, call <see cref="Marshal.GetLastWin32Error"/>.
-        /// </returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr OpenProcess(ProcessAccessFlags dwDesiredAccess, [MarshalAs(UnmanagedType.Bool)] Boolean bInheritHandle, Int32 dwProcessId);
 
         /// <summary>
         /// Reads data from an area of memory in a specified process. The entire area to be read must be accessible or the operation fails.

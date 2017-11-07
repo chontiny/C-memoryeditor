@@ -346,7 +346,7 @@
                 while (true)
                 {
                     Boolean readSuccess;
-                    this.Addresses.ForEach(x => x.ElementValue = EngineCore.GetInstance().OperatingSystem.Read(this.ActiveType, x.ElementAddress, out readSuccess).ToString());
+                    this.Addresses.ForEach(x => x.ElementValue = EngineCore.GetInstance().VirtualMemory.Read(this.ActiveType, x.ElementAddress, out readSuccess).ToString());
                     this.RaisePropertyChanged(nameof(this.Addresses));
                     Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);
                 }

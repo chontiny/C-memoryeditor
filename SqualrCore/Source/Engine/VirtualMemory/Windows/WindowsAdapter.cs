@@ -1,10 +1,10 @@
-﻿namespace SqualrCore.Source.Engine.OperatingSystems.Windows
+﻿namespace SqualrCore.Source.Engine.VirtualMemory.Windows
 {
     using Native;
     using Output;
     using Processes;
     using SqualrCore.Source.Analytics;
-    using SqualrCore.Source.Engine.OperatingSystems.Windows.PEB;
+    using SqualrCore.Source.Engine.VirtualMemory.Windows.PEB;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -20,7 +20,7 @@
     /// <summary>
     /// Class for memory editing a remote process.
     /// </summary>
-    internal class WindowsAdapter : IOperatingSystemAdapter
+    internal class WindowsAdapter : IVirtualMemoryAdapter
     {
         /// <summary>
         /// A reference to target process.
@@ -47,7 +47,6 @@
                 {
                     if (this.systemProcess?.HasExited == true)
                     {
-                        EngineCore.GetInstance().Processes.OpenProcess(null);
                         this.systemProcess = null;
                     }
                 }
@@ -65,7 +64,7 @@
         }
 
         /// <summary>
-        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcesses"/> component
+        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessAdapter"/> component
         /// of the <see cref="EngineCore"/> every time we need it, which would be cumbersome when doing hundreds of thousands of memory read/writes.
         /// </summary>
         /// <param name="process">The newly selected process.</param>
@@ -584,90 +583,6 @@
         }
 
         #endregion
-
-        /// <summary>
-        /// Determines if the operating system is 32 bit
-        /// </summary>
-        /// <returns>A boolean indicating if the OS is 32 bit or not</returns>
-        public Boolean IsOperatingSystem32Bit()
-        {
-            return !Environment.Is64BitOperatingSystem;
-        }
-
-        /// <summary>
-        /// Determines if the operating system is 64 bit
-        /// </summary>
-        /// <returns>A boolean indicating if the OS is 64 bit or not</returns>
-        public Boolean IsOperatingSystem64Bit()
-        {
-            return Environment.Is64BitOperatingSystem;
-        }
-
-        /// <summary>
-        /// Determines if this program is 32 bit
-        /// </summary>
-        /// <returns>A boolean indicating if this program is 32 bit or not</returns>
-        public Boolean IsSelf32Bit()
-        {
-            return !Environment.Is64BitProcess;
-        }
-
-        /// <summary>
-        /// Determines if this program is 64 bit
-        /// </summary>
-        /// <returns>A boolean indicating if this program is 64 bit or not</returns>
-        public Boolean IsSelf64Bit()
-        {
-            return Environment.Is64BitProcess;
-        }
-
-        /// <summary>
-        /// Determines if a process is 32 bit
-        /// </summary>
-        /// <param name="process">The process to check</param>
-        /// <returns>Returns true if the process is 32 bit, otherwise false</returns>
-        public Boolean IsProcess32Bit(NormalizedProcess process)
-        {
-            Boolean isWow64;
-
-            // First do the simple check if seeing if the OS is 32 bit, in which case the process wont be 64 bit
-            if (EngineCore.GetInstance().OperatingSystem.IsOperatingSystem32Bit())
-            {
-                return true;
-            }
-
-            // No process provided, assume 32 bit
-            if (process == null)
-            {
-                return true;
-            }
-
-            try
-            {
-                if (this.SystemProcess == null || !NativeMethods.IsWow64Process(this.SystemProcess.Handle, out isWow64))
-                {
-                    // Error, assume 32 bit
-                    return true;
-                }
-            }
-            catch
-            {
-                // Error, assume 32 bit
-                return true;
-            }
-
-            return isWow64;
-        }
-
-        /// <summary>
-        /// Determines if a process is 64 bit
-        /// </summary>
-        /// <param name="process">The process to check</param>
-        /// <returns>Returns true if the process is 64 bit, otherwise false</returns>
-        public Boolean IsProcess64Bit(NormalizedProcess process)
-        {
-            return !this.IsProcess32Bit(process);
-        }
     }
     //// End class
 }

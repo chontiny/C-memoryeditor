@@ -3,7 +3,6 @@
     using Architecture;
     using Graphics;
     using Input;
-    using OperatingSystems;
     using Processes;
     using SpeedManipulator;
     using SqualrCore.Source.Analytics;
@@ -14,6 +13,7 @@
     using System;
     using System.Threading;
     using Unrandomizer;
+    using VirtualMemory;
 
     /// <summary>
     /// Abstraction of the system, providing the ability to easily manipulate system internals regardless of the platform.
@@ -32,8 +32,8 @@
         /// </summary>
         private EngineCore()
         {
-            this.Processes = new ProcessAdapter();
-            this.OperatingSystem = OperatingSystemAdapterFactory.GetOperatingSystemAdapter();
+            this.Processes = ProcessAdapterFactory.GetProcessAdapter();
+            this.VirtualMemory = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter();
             this.Network = new Network();
             this.Architecture = ArchitectureFactory.GetArchitecture();
             this.Input = new InputManager();
@@ -44,12 +44,12 @@
         /// <summary>
         /// Gets an object that provides access to target process manipulations.
         /// </summary>
-        public IProcesses Processes { get; private set; }
+        public IProcessAdapter Processes { get; private set; }
 
         /// <summary>
         /// Gets an object that provides access to target memory manipulations.
         /// </summary>
-        public IOperatingSystemAdapter OperatingSystem { get; private set; }
+        public IVirtualMemoryAdapter VirtualMemory { get; private set; }
 
         /// <summary>
         /// Gets an object that provides access to the network access for a process.

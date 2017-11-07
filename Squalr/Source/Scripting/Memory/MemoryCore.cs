@@ -2,7 +2,7 @@
 {
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Architecture;
-    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
@@ -71,7 +71,7 @@
             moduleName = moduleName?.RemoveSuffixes(true, ".exe", ".dll");
 
             UInt64 address = 0;
-            foreach (NormalizedModule module in EngineCore.GetInstance().OperatingSystem.GetModules())
+            foreach (NormalizedModule module in EngineCore.GetInstance().VirtualMemory.GetModules())
             {
                 String targetModuleName = module?.Name?.RemoveSuffixes(true, ".exe", ".dll");
                 if (targetModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
@@ -136,7 +136,7 @@
             // Read original bytes at code cave jump
             Boolean readSuccess;
 
-            Byte[] originalBytes = EngineCore.GetInstance().OperatingSystem.ReadBytes(address.ToIntPtr(), injectedCodeSize + MemoryCore.Largestx86InstructionSize, out readSuccess);
+            Byte[] originalBytes = EngineCore.GetInstance().VirtualMemory.ReadBytes(address.ToIntPtr(), injectedCodeSize + MemoryCore.Largestx86InstructionSize, out readSuccess);
 
             if (!readSuccess || originalBytes == null || originalBytes.Length <= 0)
             {
@@ -177,7 +177,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = EngineCore.GetInstance().OperatingSystem.AllocateMemory(size).ToUInt64();
+            UInt64 address = EngineCore.GetInstance().VirtualMemory.AllocateMemory(size).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -193,7 +193,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = EngineCore.GetInstance().OperatingSystem.AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
+            UInt64 address = EngineCore.GetInstance().VirtualMemory.AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -211,7 +211,7 @@
             {
                 if (allocationAddress == address)
                 {
-                    EngineCore.GetInstance().OperatingSystem.DeallocateMemory(allocationAddress.ToIntPtr());
+                    EngineCore.GetInstance().VirtualMemory.DeallocateMemory(allocationAddress.ToIntPtr());
                     this.RemoteAllocations.Remove(allocationAddress);
                     break;
                 }
@@ -229,7 +229,7 @@
 
             foreach (UInt64 address in this.RemoteAllocations)
             {
-                EngineCore.GetInstance().OperatingSystem.DeallocateMemory(address.ToIntPtr());
+                EngineCore.GetInstance().VirtualMemory.DeallocateMemory(address.ToIntPtr());
             }
 
             this.RemoteAllocations.Clear();
@@ -338,7 +338,7 @@
             String noOps = (originalBytes.Length - assemblySize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - assemblySize)).TrimEnd(',');
 
             Byte[] injectionBytes = this.GetAssemblyBytes(assembly + "\n" + noOps, address);
-            EngineCore.GetInstance().OperatingSystem.WriteBytes(address.ToIntPtr(), injectionBytes);
+            EngineCore.GetInstance().VirtualMemory.WriteBytes(address.ToIntPtr(), injectionBytes);
 
             CodeCave codeCave = new CodeCave(address, 0, originalBytes);
             this.CodeCaves.Add(codeCave);
@@ -390,9 +390,9 @@
                     continue;
                 }
 
-                EngineCore.GetInstance().OperatingSystem.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
+                EngineCore.GetInstance().VirtualMemory.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
 
-                EngineCore.GetInstance().OperatingSystem.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                EngineCore.GetInstance().VirtualMemory.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
         }
 
@@ -405,7 +405,7 @@
 
             foreach (CodeCave codeCave in this.CodeCaves)
             {
-                EngineCore.GetInstance().OperatingSystem.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
+                EngineCore.GetInstance().VirtualMemory.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
 
                 // If remote allocation address is unset, then it was not allocated.
                 if (codeCave.RemoteAllocationAddress == 0)
@@ -413,7 +413,7 @@
                     continue;
                 }
 
-                EngineCore.GetInstance().OperatingSystem.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                EngineCore.GetInstance().VirtualMemory.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
 
             this.CodeCaves.Clear();
@@ -528,7 +528,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = EngineCore.GetInstance().OperatingSystem.SearchAob(bytes).ToUInt64();
+            UInt64 address = EngineCore.GetInstance().VirtualMemory.SearchAob(bytes).ToUInt64();
             return address;
         }
 
@@ -541,7 +541,7 @@
         {
             this.PrintDebugTag(pattern);
 
-            return EngineCore.GetInstance().OperatingSystem.SearchAob(pattern).ToUInt64();
+            return EngineCore.GetInstance().VirtualMemory.SearchAob(pattern).ToUInt64();
         }
 
         /// <summary>
@@ -552,7 +552,7 @@
         public UInt64[] SearchAllAob(String pattern)
         {
             this.PrintDebugTag(pattern);
-            List<IntPtr> aobResults = new List<IntPtr>(EngineCore.GetInstance().OperatingSystem.SearchllAob(pattern));
+            List<IntPtr> aobResults = new List<IntPtr>(EngineCore.GetInstance().VirtualMemory.SearchllAob(pattern));
             List<UInt64> convertedAobs = new List<UInt64>();
             aobResults.ForEach(x => convertedAobs.Add(x.ToUInt64()));
             return convertedAobs.ToArray();
@@ -562,7 +562,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 finalAddress = EngineCore.GetInstance().OperatingSystem.EvaluatePointer(address.ToIntPtr(), offsets).ToUInt64();
+            UInt64 finalAddress = EngineCore.GetInstance().VirtualMemory.EvaluatePointer(address.ToIntPtr(), offsets).ToUInt64();
             return finalAddress;
         }
 
@@ -577,7 +577,7 @@
             this.PrintDebugTag(address.ToString("x"));
 
             Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystem.Read<T>(address.ToIntPtr(), out readSuccess);
+            return EngineCore.GetInstance().VirtualMemory.Read<T>(address.ToIntPtr(), out readSuccess);
         }
 
         /// <summary>
@@ -591,7 +591,7 @@
             this.PrintDebugTag(address.ToString("x"), count.ToString());
 
             Boolean readSuccess;
-            return EngineCore.GetInstance().OperatingSystem.ReadBytes(address.ToIntPtr(), count, out readSuccess);
+            return EngineCore.GetInstance().VirtualMemory.ReadBytes(address.ToIntPtr(), count, out readSuccess);
         }
 
         /// <summary>
@@ -604,7 +604,7 @@
         {
             this.PrintDebugTag(address.ToString("x"), value.ToString());
 
-            EngineCore.GetInstance().OperatingSystem.Write<T>(address.ToIntPtr(), value);
+            EngineCore.GetInstance().VirtualMemory.Write<T>(address.ToIntPtr(), value);
         }
 
         /// <summary>
@@ -616,7 +616,7 @@
         {
             this.PrintDebugTag(address.ToString("x"));
 
-            EngineCore.GetInstance().OperatingSystem.WriteBytes(address.ToIntPtr(), values);
+            EngineCore.GetInstance().VirtualMemory.WriteBytes(address.ToIntPtr(), values);
         }
 
         /// <summary>

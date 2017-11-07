@@ -4,7 +4,7 @@
     using Scanners.ScanConstraints;
     using Squalr.Properties;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
@@ -191,12 +191,12 @@
         /// <param name="readSuccess">Whether or not the read was successful.</param>
         /// <param name="keepValues">Whether or not to keep the values returned as current values.</param>
         /// <returns>The bytes read from memory.</returns>
-        public Byte[] ReadAllRegionMemory(out Boolean readSuccess, Boolean keepValues = true)
+        public Byte[] ReadAllMemory(Boolean keepValues, out Boolean readSuccess)
         {
             this.TimeSinceLastRead = DateTime.Now;
 
             readSuccess = false;
-            Byte[] newCurrentValues = EngineCore.GetInstance().OperatingSystem.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
+            Byte[] newCurrentValues = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
 
             if (!readSuccess)
             {
