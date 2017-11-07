@@ -16,12 +16,18 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueCollectorModel" /> class.
         /// </summary>
-        public ValueCollectorModel() : base(
+        public ValueCollectorModel(Action<Snapshot> callback = null) : base(
             scannerName: "Value Collector",
             isRepeated: false)
         {
+            this.CallBack = callback;
             this.ProgressLock = new Object();
         }
+
+        /// <summary>
+        /// The callback to call with the collected snapshot. If none specified, the collected snapshot is set as the current results.
+        /// </summary>
+        private Action<Snapshot> CallBack;
 
         /// <summary>
         /// Gets or sets the snapshot on which we perform the value collection.
@@ -94,7 +100,14 @@
         /// </summary>
         protected override void OnEnd()
         {
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            if (this.CallBack == null)
+            {
+                SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            }
+            else
+            {
+                this.CallBack?.Invoke(this.Snapshot);
+            }
 
             this.Snapshot = null;
 

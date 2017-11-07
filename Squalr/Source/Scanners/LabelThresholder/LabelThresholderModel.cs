@@ -17,8 +17,7 @@
 
         public LabelThresholderModel(Action onUpdateHistogram) : base(
             scannerName: "Label Thresholder",
-            isRepeated: false,
-            dependencies: null)
+            isRepeated: false)
         {
             this.ItemLock = new Object();
             this.SnapshotLock = new Object();

@@ -33,13 +33,14 @@
 
         public PointerScannerModel() : base(
             scannerName: "Pointer Scanner",
-            isRepeated: false,
-            dependencies: PointerCollector.GetInstance())
+            isRepeated: false)
         {
             this.IndexValueMap = new ConcurrentDictionary<Int32, String>();
             this.PointerPool = new ConcurrentDictionary<IntPtr, IntPtr>();
             this.ConnectedPointers = new List<ConcurrentDictionary<IntPtr, IntPtr>>();
             this.ScanMode = ScanModeEnum.ReadValues;
+
+            this.Dependencies.Enqueue(PointerCollector.GetInstance());
         }
 
         private enum ScanModeEnum

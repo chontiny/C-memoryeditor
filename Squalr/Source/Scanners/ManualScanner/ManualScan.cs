@@ -21,10 +21,11 @@
         /// </summary>
         public ManualScan() : base(
             scannerName: "Manual Scan",
-            isRepeated: false,
-            dependencies: new ValueCollectorModel())
+            isRepeated: false)
         {
             this.ProgressLock = new Object();
+
+            this.Dependencies.Enqueue(new ValueCollectorModel(this.SetSnapshot));
         }
 
         /// <summary>
@@ -57,7 +58,7 @@
         protected override void OnBegin()
         {
             // Initialize snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
+            this.Snapshot = this.Snapshot?.Clone(this.ScannerName);
 
             if (this.Snapshot == null || this.ScanConstraintManager == null || this.ScanConstraintManager.Count() <= 0)
             {
@@ -149,6 +150,15 @@
             this.UpdateProgress(ScheduledTask.MaximumProgress);
 
             base.OnEnd();
+        }
+
+        /// <summary>
+        /// Sets the snapshot to scan.
+        /// </summary>
+        /// <param name="snapshot">The snapshot to scan.</param>
+        private void SetSnapshot(Snapshot snapshot)
+        {
+            this.Snapshot = snapshot;
         }
     }
     //// End class

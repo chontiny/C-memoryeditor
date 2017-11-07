@@ -60,22 +60,6 @@
         /// <param name="startAction">The start callback function.</param>
         /// <param name="updateAction">The update callback function.</param>
         /// <param name="endAction">The end callback function.</param>
-        /// <param name="taskName">The dependencies and dependency behavior of this task.</param>
-        /// <param name="isRepeated">Whether or not this task is repeated.</param>
-        /// <param name="trackProgress">Whether or not progress is tracked for this task.</param>
-        public ScheduledTask(
-            String taskName,
-            Boolean isRepeated,
-            Boolean trackProgress) : this(taskName, isRepeated, trackProgress, null)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ScheduledTask" /> class.
-        /// </summary>
-        /// <param name="startAction">The start callback function.</param>
-        /// <param name="updateAction">The update callback function.</param>
-        /// <param name="endAction">The end callback function.</param>
         /// <param name="taskName">The name of this task.</param>
         /// <param name="isRepeated">Whether or not this task is repeated.</param>
         /// <param name="trackProgress">Whether or not progress is tracked for this task.</param>
@@ -83,8 +67,7 @@
         public ScheduledTask(
             String taskName,
             Boolean isRepeated,
-            Boolean trackProgress,
-            params ScheduledTask[] dependencies)
+            Boolean trackProgress)
         {
             this.ResetState();
             this.AccessLock = new Object();
@@ -98,14 +81,6 @@
             this.ProgressCompletionThreshold = ScheduledTask.DefaultProgressCompletionThreshold;
 
             this.Dependencies = new Queue<ScheduledTask>();
-
-            if (dependencies != null)
-            {
-                foreach (ScheduledTask task in dependencies)
-                {
-                    this.Dependencies.Enqueue(task);
-                }
-            }
         }
 
         /// <summary>
