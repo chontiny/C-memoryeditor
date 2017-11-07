@@ -158,7 +158,7 @@
     <Compile Include="Source\Output\OutputMask.cs" />
     <Compile Include="Source\ProjectItems\InstructionItem.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Source\Utils\NativeBrowser.cs" />
+    <Compile Include="Source\Utils\Browser\NativeBrowser.cs" />
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
@@ -364,7 +364,7 @@
     <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\TextConverter.cs" />
-    <Compile Include="Source\Utils\WebBrowserHelper.cs" />
+    <Compile Include="Source\Utils\Browser\WebBrowserHelper.cs" />
     <Compile Include="View\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
     </Compile>
