@@ -30,10 +30,10 @@
         private PointerScannerViewModel() : base("Pointer Scanner")
         {
             this.ContentId = PointerScannerViewModel.ToolContentId;
-            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.PointerScanner.Start()), () => true);
-            this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.PointerScanner.Cancel()), () => true);
+            this.PointerRetracer = new PointerTreeBuilder(0x122840d0); // TODO: Remove temp debugging value
 
-            this.PointerScanner = new PointerRetracer(0x100579C); // TODO: Temp debugging value
+            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.PointerRetracer.Start()), () => true);
+            this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.PointerRetracer.Cancel()), () => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -42,7 +42,7 @@
 
         public ICommand StopScanCommand { get; private set; }
 
-        private PointerRetracer PointerScanner { get; set; }
+        private PointerTreeBuilder PointerRetracer { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ChangeCounterViewModel"/> class.

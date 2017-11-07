@@ -3,18 +3,15 @@
     using Snapshots;
     using Squalr.Properties;
     using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Class to collect all pointers in the running process.
+    /// Implements an algorithm which starts from the pointer destination, and works backwards finding each level of possible pointers.
     /// </summary>
     internal class PointerBackTracer : ScheduledTask
     {
@@ -24,47 +21,38 @@
         private const Int32 RescanTime = 256;
 
         /// <summary>
-        /// The rounding size for pointer destinations.
-        /// </summary>
-        private const Int32 PointerRadius = 1024;
-
-        private const Int32 MaxAdd = 4096;
-
-        /// <summary>
         /// Creates an instance of the <see cref="PointerBackTracer" /> class.
         /// </summary>
-        public PointerBackTracer(UInt64 targetAddress, Action<IList<Snapshot>> levelSnapshotsCallback) : base(
+        public PointerBackTracer(
+                UInt64 targetAddress,
+                Action<Stack<ConcurrentDictionary<UInt64, UInt64>>> levelPointersCallback) : base(
             taskName: "Pointer Back Tracer",
             isRepeated: false,
-            trackProgress: false)
+            trackProgress: true)
         {
             this.ProgressLock = new Object();
             this.TargetAddress = targetAddress;
 
-            this.MaxPointerLevel = 5;
-            this.MaxPointerOffset = 2048;
+            this.PointerDepth = 3;
+            this.PointerRadius = 1024;
+            this.LevelPointersCallback = levelPointersCallback;
 
-            // TODO: Improvement: Make a snapshot from base modules to determine if an address is contained in O(log(n)) instead of O(n)
-
-            this.Dependencies.Enqueue(new PointerCollector(this.SetSnapshot, this.SetPointerPool));
+            this.Dependencies.Enqueue(new PointerCollector(this.SetModulePointers, this.SetHeapPointers));
         }
 
-        /// <summary>
-        /// Gets or sets the current snapshot being parsed.
-        /// </summary>
-        private Snapshot Snapshot { get; set; }
+        private IDictionary<UInt64, UInt64> ModulePointers { get; set; }
 
-        private IDictionary<UInt64, UInt64> PointerPool { get; set; }
+        private IDictionary<UInt64, UInt64> HeapPointers { get; set; }
 
-        private IEnumerable<NormalizedModule> BaseModules { get; set; }
+        private UInt32 PointerDepth { get; set; }
 
-        private UInt32 MaxPointerLevel { get; set; }
-
-        private UInt64 MaxPointerOffset { get; set; }
+        private UInt64 PointerRadius { get; set; }
 
         private UInt64 TargetAddress { get; set; }
 
-        private List<Snapshot> LevelSnapshots { get; set; }
+        private Stack<ConcurrentDictionary<UInt64, UInt64>> LevelPointers { get; set; }
+
+        private Action<Stack<ConcurrentDictionary<UInt64, UInt64>>> LevelPointersCallback { get; set; }
 
         private Object ProgressLock { get; set; }
 
@@ -72,10 +60,7 @@
         {
             this.UpdateInterval = PointerBackTracer.RescanTime;
 
-            this.Snapshot = SnapshotManager.GetInstance().CreateSnapshotFromUsermodeMemory();
-            this.LevelSnapshots = new List<Snapshot>();
-
-            this.BaseModules = EngineCore.GetInstance().VirtualMemory.GetModules();
+            this.LevelPointers = new Stack<ConcurrentDictionary<UInt64, UInt64>>();
         }
 
         /// <summary>
@@ -85,36 +70,29 @@
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
             UInt64 processedPointers = 0;
-            Snapshot previousLevelSnapshot = new Snapshot();
-            SnapshotRegion region = new SnapshotRegion(this.TargetAddress.ToIntPtr(), 1);
 
-            region.Expand(PointerBackTracer.PointerRadius);
-            previousLevelSnapshot.AddSnapshotRegions(region);
+            // Create a snapshot only containing the destination
+            Snapshot destinationSnapshot = new Snapshot();
+            SnapshotRegion destinationRegion = new SnapshotRegion(this.TargetAddress.ToIntPtr(), 1);
+            destinationRegion.Expand(this.PointerRadius);
+            destinationSnapshot.AddSnapshotRegions(destinationRegion);
 
-            // Add the address we are looking for as the base
-            this.LevelSnapshots.Add(previousLevelSnapshot);
+            Snapshot previousLevelSnapshot = destinationSnapshot;
 
-            for (Int32 level = 1; level <= this.MaxPointerLevel; level++)
+            for (Int32 level = 1; level <= this.PointerDepth; level++)
             {
-                ConcurrentHashSet<UInt64> currentLevelPointers = new ConcurrentHashSet<UInt64>();
+                ConcurrentDictionary<UInt64, UInt64> currentLevelPointers = new ConcurrentDictionary<UInt64, UInt64>();
+                IDictionary<UInt64, UInt64> currentPointers = level == this.PointerDepth ? this.ModulePointers : this.HeapPointers;
 
                 Parallel.ForEach(
-                    this.PointerPool,
+                    currentPointers,
                     SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                     (pointer) =>
                 {
-                    // Ensure if this is a max level pointer that it is from an acceptable base address (ie static)
-                    if (level == MaxPointerLevel && !BaseModules.Any(module => module.ContainsAddress(pointer.Key)))
-                    {
-                        return;
-                    }
-
                     // Accept this pointer if it is points to the previous level snapshot
                     if (previousLevelSnapshot.ContainsAddress(pointer.Value))
                     {
-                        // TODO: Potentially round pointers here?
-
-                        currentLevelPointers.Add(pointer.Key);
+                        currentLevelPointers[pointer.Key] = pointer.Value;
                     }
 
                     lock (this.ProgressLock)
@@ -122,9 +100,9 @@
                         processedPointers++;
 
                         // Limit how often we update the progress
-                        if (processedPointers % 1000 == 0)
+                        if (processedPointers % 10000 == 0)
                         {
-                            this.UpdateProgress((processedPointers / this.MaxPointerLevel).ToInt32(), this.PointerPool.Count, canFinalize: false);
+                            this.UpdateProgress((processedPointers / this.PointerDepth).ToInt32(), this.HeapPointers.Count, canFinalize: false);
                         }
                     }
                 });
@@ -133,17 +111,17 @@
 
                 IList<SnapshotRegion> levelRegions = new List<SnapshotRegion>();
 
-                foreach (UInt64 pointer in currentLevelPointers)
+                foreach (KeyValuePair<UInt64, UInt64> pointer in currentLevelPointers)
                 {
-                    region = new SnapshotRegion(pointer.ToIntPtr(), PointerBackTracer.PointerRadius);
-                    region.Expand(PointerBackTracer.PointerRadius);
-                    levelRegions.Add(region);
+                    SnapshotRegion levelRegion = new SnapshotRegion(pointer.Key.ToIntPtr(), 1);
+                    levelRegion.Expand(this.PointerRadius);
+                    levelRegions.Add(levelRegion);
                 }
 
                 previousLevelSnapshot.AddSnapshotRegions(levelRegions);
 
                 // Add the pointers for this level to the global accepted list
-                this.LevelSnapshots.Add(previousLevelSnapshot);
+                this.LevelPointers.Push(currentLevelPointers);
             }
         }
 
@@ -152,21 +130,22 @@
         /// </summary>
         protected override void OnEnd()
         {
-            this.Snapshot = null;
-            this.PointerPool = null;
-            this.LevelSnapshots = null;
+            this.LevelPointersCallback?.Invoke(this.LevelPointers);
+
+            this.HeapPointers = null;
+            this.LevelPointers = null;
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
         }
 
-        private void SetSnapshot(Snapshot snapshot)
+        private void SetModulePointers(IDictionary<UInt64, UInt64> modulePointers)
         {
-            this.Snapshot = snapshot;
+            this.ModulePointers = modulePointers;
         }
 
-        private void SetPointerPool(IDictionary<UInt64, UInt64> pointerPool)
+        private void SetHeapPointers(IDictionary<UInt64, UInt64> heapPointers)
         {
-            this.PointerPool = pointerPool;
+            this.HeapPointers = heapPointers;
         }
     }
     //// End class

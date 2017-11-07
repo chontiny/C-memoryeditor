@@ -14,7 +14,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// Class to collect all pointers in the running process.
+    /// Collects all module and heap pointers in the running process.
     /// </summary>
     internal class PointerCollector : ScheduledTask
     {
@@ -26,14 +26,14 @@
         /// <summary>
         /// Creates an instance of the <see cref="PointerCollector" /> class.
         /// </summary>
-        public PointerCollector(Action<Snapshot> snapshotCallback = null, Action<IDictionary<UInt64, UInt64>> pointerPoolCallback = null) : base(
+        public PointerCollector(Action<IDictionary<UInt64, UInt64>> modulePointersCallback, Action<IDictionary<UInt64, UInt64>> heapPointersCallback) : base(
             taskName: "Pointer Collector",
             isRepeated: false,
-            trackProgress: false)
+            trackProgress: true)
         {
             this.ProgressLock = new Object();
-            this.SnapshotCallback = snapshotCallback;
-            this.PointerPoolCallback = pointerPoolCallback;
+            this.ModulePointersCallback = modulePointersCallback;
+            this.HeapPointersCallback = heapPointersCallback;
 
             this.Dependencies.Enqueue(new ValueCollectorModel(this.SetSnapshot));
         }
@@ -43,27 +43,37 @@
         /// </summary>
         private Snapshot Snapshot { get; set; }
 
-        private Action<Snapshot> SnapshotCallback;
+        private Action<IDictionary<UInt64, UInt64>> ModulePointersCallback;
 
-        private Action<IDictionary<UInt64, UInt64>> PointerPoolCallback;
+        private Action<IDictionary<UInt64, UInt64>> HeapPointersCallback;
 
         /// <summary>
         /// Gets or sets a lock object for updating scan progress.
         /// </summary>
         private Object ProgressLock { get; set; }
 
-        private ConcurrentDictionary<UInt64, UInt64> PointerPool { get; set; }
+        private Snapshot ModuleSnapshot { get; set; }
+
+        private ConcurrentDictionary<UInt64, UInt64> ModulePointers { get; set; }
+
+        private ConcurrentDictionary<UInt64, UInt64> HeapPointers { get; set; }
 
         protected override void OnBegin()
         {
-            this.PointerPool = new ConcurrentDictionary<UInt64, UInt64>();
+            this.ModulePointers = new ConcurrentDictionary<UInt64, UInt64>();
+            this.HeapPointers = new ConcurrentDictionary<UInt64, UInt64>();
 
             if (this.Snapshot == null)
             {
                 this.Cancel();
             }
 
-            this.Snapshot.UpdateSettings(activeType: EngineCore.GetInstance().Processes.IsOpenedProcess32Bit() ? typeof(UInt32) : typeof(UInt64), alignment: sizeof(Int32));
+            // Create the base snapshot from the loaded modules
+            IEnumerable<SnapshotRegion> regions = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new SnapshotRegion(region));
+            this.ModuleSnapshot = new Snapshot(regions);
+
+            Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
+            this.Snapshot.UpdateSettings(activeType: isProcess32Bit ? typeof(UInt32) : typeof(UInt64), alignment: isProcess32Bit ? sizeof(UInt32) : sizeof(UInt64));
         }
 
         /// <summary>
@@ -95,7 +105,7 @@
                             UInt32 value = unchecked((UInt32)element.GetCurrentValue());
 
                             // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
-                            if (value < UInt16.MaxValue || value % 4 != 0)
+                            if (value < UInt16.MaxValue || value % sizeof(UInt32) != 0)
                             {
                                 continue;
                             }
@@ -103,7 +113,14 @@
                             // Check if it is possible that this pointer is valid, if so keep it
                             if (this.Snapshot.ContainsAddress(value))
                             {
-                                this.PointerPool[element.BaseAddress.ToUInt64()] = value;
+                                if (this.ModuleSnapshot.ContainsAddress(value))
+                                {
+                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                }
+                                else
+                                {
+                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                }
                             }
                         }
                     }
@@ -114,8 +131,8 @@
                             SnapshotElementIterator element = enumerator.Current;
                             UInt64 value = unchecked((UInt64)element.GetCurrentValue());
 
-                            // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
-                            if (value < UInt16.MaxValue || value % 4 != 0)
+                            // Enforce 8-byte alignment of destination, and filter out small (invalid) pointers
+                            if (value < UInt16.MaxValue || value % sizeof(UInt64) != 0)
                             {
                                 continue;
                             }
@@ -123,7 +140,14 @@
                             // Check if it is possible that this pointer is valid, if so keep it
                             if (this.Snapshot.ContainsAddress(value))
                             {
-                                this.PointerPool[element.BaseAddress.ToUInt64()] = value;
+                                if (this.ModuleSnapshot.ContainsAddress(value))
+                                {
+                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                }
+                                else
+                                {
+                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                }
                             }
                         }
                     }
@@ -149,13 +173,14 @@
         /// </summary>
         protected override void OnEnd()
         {
-            this.SnapshotCallback?.Invoke(this.Snapshot);
-            this.PointerPoolCallback?.Invoke(this.PointerPool);
+            this.ModulePointersCallback?.Invoke(this.ModulePointers);
+            this.HeapPointersCallback?.Invoke(this.HeapPointers);
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
 
             this.Snapshot = null;
-            this.PointerPool = null;
+            this.ModulePointers = null;
+            this.HeapPointers = null;
         }
 
         /// <summary>
