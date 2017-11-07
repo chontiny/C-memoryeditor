@@ -1,11 +1,11 @@
 ﻿namespace Squalr.Source.Prefilters
 {
     using Snapshots;
-    using Squalr.Source.Scanners;
+    using Squalr.Source.Scanners.Pointers;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Engine.Processes;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;

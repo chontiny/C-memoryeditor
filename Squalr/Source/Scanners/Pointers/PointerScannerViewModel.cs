@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.PointerScanner
+﻿namespace Squalr.Source.Scanners.Pointers
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Source.Docking;

@@ -2,7 +2,9 @@
 {
     using SqualrCore.Source.Output;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Utils.Extensions;
@@ -64,7 +66,7 @@
         public ScheduledTask(
             String taskName,
             Boolean isRepeated,
-            Boolean trackProgress) : this(taskName, isRepeated, trackProgress, new DependencyBehavior())
+            Boolean trackProgress) : this(taskName, isRepeated, trackProgress, null)
         {
         }
 
@@ -82,7 +84,7 @@
             String taskName,
             Boolean isRepeated,
             Boolean trackProgress,
-            DependencyBehavior dependencyBehavior)
+            params ScheduledTask[] dependencies)
         {
             this.ResetState();
             this.AccessLock = new Object();
@@ -90,22 +92,26 @@
             this.TaskName = taskName;
             this.TrackProgress = trackProgress;
             this.IsRepeated = isRepeated;
-            this.DependencyBehavior = dependencyBehavior == null ? new DependencyBehavior() : dependencyBehavior;
 
             this.progress = 0.0;
 
             this.ProgressCompletionThreshold = ScheduledTask.DefaultProgressCompletionThreshold;
+
+            this.Dependencies = new Queue<ScheduledTask>();
+
+            if (dependencies != null)
+            {
+                foreach (ScheduledTask task in dependencies)
+                {
+                    this.Dependencies.Enqueue(task);
+                }
+            }
         }
 
         /// <summary>
         /// Occurs after a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Gets or sets the dependency behavior of this task.
-        /// </summary>
-        public DependencyBehavior DependencyBehavior { get; set; }
 
         /// <summary>
         /// Gets or sets the time to wait (in ms) before next update (and time to wait for cancelation).
@@ -230,6 +236,11 @@
         }
 
         /// <summary>
+        /// Gets or sets the tasks that this task depends on.
+        /// </summary>
+        public Queue<ScheduledTask> Dependencies { get; set; }
+
+        /// <summary>
         /// Gets or sets the progress completion threshold. Progress higher this threshold will be considered complete.
         /// </summary>
         protected Double ProgressCompletionThreshold { get; set; }
@@ -323,6 +334,15 @@
         public void UpdateProgress(Int32 subtotal, Int32 total, Boolean canFinalize = true)
         {
             this.UpdateProgress(total <= 0 ? 0.0 : (((Double)subtotal / (Double)total) * ScheduledTask.MaximumProgress) + ScheduledTask.MinimumProgress, canFinalize);
+        }
+
+        /// <summary>
+        /// Determines if all dependencies are resolved based on the provided list of completed dependencies.
+        /// </summary>
+        /// <returns>True if all dependencies are resolved, otherwise false.</returns>
+        internal Boolean AreDependenciesResolved()
+        {
+            return this.Dependencies.Count <= 0 || this.Dependencies.All(dependency => dependency.IsTaskComplete);
         }
 
         /// <summary>

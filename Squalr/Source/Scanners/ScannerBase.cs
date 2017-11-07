@@ -20,12 +20,24 @@
         /// </summary>
         /// <param name="scannerName">The name of this scanner.</param>
         /// <param name="isRepeated">A value indicating whether this scan is repeated.</param>
-        /// <param name="dependencyBehavior">The object defining task dependencies.</param>
-        public ScannerBase(String scannerName, Boolean isRepeated, DependencyBehavior dependencyBehavior = null) : base(
+        public ScannerBase(String scannerName, Boolean isRepeated) : this(
+            scannerName: scannerName,
+            isRepeated: isRepeated,
+            dependencies: null)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ScannerBase" /> class.
+        /// </summary>
+        /// <param name="scannerName">The name of this scanner.</param>
+        /// <param name="isRepeated">A value indicating whether this scan is repeated.</param>
+        /// <param name="dependencies">The object defining task dependencies.</param>
+        public ScannerBase(String scannerName, Boolean isRepeated, params ScheduledTask[] dependencies) : base(
             taskName: scannerName,
             isRepeated: isRepeated,
             trackProgress: true,
-            dependencyBehavior: dependencyBehavior)
+            dependencies: dependencies)
         {
             this.ScannerName = scannerName;
             this.UpdateInterval = SettingsViewModel.GetInstance().RescanInterval;

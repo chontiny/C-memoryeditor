@@ -3,6 +3,7 @@
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Scanners.ValueCollector;
     using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Generic;
@@ -20,8 +21,8 @@
         /// </summary>
         public ManualScan() : base(
             scannerName: "Manual Scan",
-            isRepeated: false)
-        // dependencyBehavior: new DependencyBehavior(dependencies: typeof(ValueCollectorModel)))
+            isRepeated: false,
+            dependencies: new ValueCollectorModel())
         {
             this.ProgressLock = new Object();
         }
@@ -74,32 +75,8 @@
             Int32 processedPages = 0;
             Boolean hasRelativeConstraint = this.ScanConstraintManager.HasRelativeConstraint();
 
-            // Read memory to get current values for each region
-            Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
-                SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
-                (region) =>
-                {
-                    // Check for canceled scan
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    region.ReadAllMemory(keepValues: true, readSuccess: out _);
-                });
-
             // Determine if we need to increment both current and previous value pointers, or just current value pointers
-            PointerIncrementMode pointerIncrementMode;
-
-            if (hasRelativeConstraint)
-            {
-                pointerIncrementMode = PointerIncrementMode.ValuesOnly;
-            }
-            else
-            {
-                pointerIncrementMode = PointerIncrementMode.CurrentOnly;
-            }
+            PointerIncrementMode pointerIncrementMode = hasRelativeConstraint ? PointerIncrementMode.ValuesOnly : PointerIncrementMode.CurrentOnly;
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -156,7 +133,6 @@
             }
             //// End foreach Constraint
 
-            this.UpdateProgress(ScheduledTask.MaximumProgress);
             base.OnUpdate(cancellationToken);
         }
 
@@ -169,6 +145,8 @@
             finalizer.Start();
 
             this.Snapshot = null;
+
+            this.UpdateProgress(ScheduledTask.MaximumProgress);
 
             base.OnEnd();
         }

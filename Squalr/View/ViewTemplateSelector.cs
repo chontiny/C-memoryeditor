@@ -7,7 +7,7 @@
     using Source.Scanners.InputCorrelator;
     using Source.Scanners.LabelThresholder;
     using Source.Scanners.ManualScanner;
-    using Source.Scanners.PointerScanner;
+    using Source.Scanners.Pointers;
     using Source.Snapshots;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;

@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners.PointerScanner
+﻿namespace Squalr.Source.Scanners.Pointers
 {
     using ScanConstraints;
     using Snapshots;
@@ -33,14 +33,13 @@
 
         public PointerScannerModel() : base(
             scannerName: "Pointer Scanner",
-            isRepeated: false)
+            isRepeated: false,
+            dependencies: PointerCollector.GetInstance())
         {
             this.IndexValueMap = new ConcurrentDictionary<Int32, String>();
             this.PointerPool = new ConcurrentDictionary<IntPtr, IntPtr>();
             this.ConnectedPointers = new List<ConcurrentDictionary<IntPtr, IntPtr>>();
             this.ScanMode = ScanModeEnum.ReadValues;
-
-            //// this.Begin();
         }
 
         private enum ScanModeEnum

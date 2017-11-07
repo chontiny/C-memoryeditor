@@ -86,8 +86,6 @@
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            this.UpdateProgress(ScheduledTask.MaximumProgress);
-
             base.OnUpdate(cancellationToken);
         }
 
@@ -99,6 +97,8 @@
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
 
             this.Snapshot = null;
+
+            this.UpdateProgress(ScheduledTask.MaximumProgress);
 
             base.OnEnd();
         }

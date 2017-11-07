@@ -173,10 +173,22 @@
                         Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
 
-                <!--  View Header  -->
+                <!--  Layout Header  -->
                 <shell:MenuItem
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Header="View"
+                    Header="Layout"
+                    Style="{StaticResource DropDown}">
+                    <shell:MenuItem
+                        Command="{Binding MainViewModel.ResetLayoutCommand}"
+                        CommandParameter="{Binding ., ElementName=dockManager}"
+                        Header="Reset Window Layout"
+                        Style="{StaticResource menuItemStyle}" />
+                </shell:MenuItem>
+
+                <!--  Windows Header  -->
+                <shell:MenuItem
+                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                    Header="Windows"
                     Style="{StaticResource DropDown}">
                     <shell:MenuItem
                         Header="Library"
@@ -217,18 +229,6 @@
                     <shell:MenuItem
                         Command="{Binding MainViewModel.LaunchDeveloperToolsAsAdminCommand}"
                         Header="Developer Tools (admin)"
-                        Style="{StaticResource menuItemStyle}" />
-                </shell:MenuItem>
-
-                <!--  Layout Header  -->
-                <shell:MenuItem
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Header="Layout"
-                    Style="{StaticResource DropDown}">
-                    <shell:MenuItem
-                        Command="{Binding MainViewModel.ResetLayoutCommand}"
-                        CommandParameter="{Binding ., ElementName=dockManager}"
-                        Header="Reset Window Layout"
                         Style="{StaticResource menuItemStyle}" />
                 </shell:MenuItem>
             </shell:Menu>

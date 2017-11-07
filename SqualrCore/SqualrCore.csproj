@@ -186,7 +186,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
-    <Compile Include="Source\ActionScheduler\DependencyBehavior.cs" />
     <Compile Include="Source\ActionScheduler\ScheduledTask.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
     <Compile Include="Source\ChangeLog\ChangeLogViewModel.cs" />

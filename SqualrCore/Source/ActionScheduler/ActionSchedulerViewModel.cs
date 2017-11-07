@@ -42,7 +42,7 @@
             this.AccessLock = new Object();
             this.Actions = new LinkedList<ScheduledTask>();
 
-            this.CancelTaskCommand = new RelayCommand<ScheduledTask>(task => this.CancelTask(task), (task) => true);
+            this.CancelTaskCommand = new RelayCommand<ScheduledTask>(task => task.Cancel(), (task) => true);
 
             this.Update();
         }
@@ -95,6 +95,11 @@
         {
             lock (this.AccessLock)
             {
+                foreach (ScheduledTask task in scheduledTask.Dependencies)
+                {
+                    this.ScheduleAction(task);
+                }
+
                 // Do not schedule actions of the same type
                 if (this.Actions.Select(x => x.GetType()).Any(x => x == scheduledTask.GetType()))
                 {
@@ -135,8 +140,7 @@
                         if (nextTask.CanStart)
                         {
                             // Check if dependencies are complete for this task to start
-                            if (nextTask.DependencyBehavior.IsDependencyRequiredForStart
-                                && !this.DependenciesResolved(nextTask))
+                            if (!nextTask.AreDependenciesResolved())
                             {
                                 continue;
                             }
@@ -148,8 +152,7 @@
                         else if (nextTask.CanUpdate)
                         {
                             // Check if dependencies are complete for this task to update
-                            if (nextTask.DependencyBehavior.IsDependencyRequiredForUpdate
-                                && !this.DependenciesResolved(nextTask))
+                            if (!nextTask.AreDependenciesResolved())
                             {
                                 continue;
                             }
@@ -171,29 +174,6 @@
                 }
                 while (true);
             });
-        }
-
-        /// <summary>
-        /// Cancels the given scheduled task.
-        /// </summary>
-        /// <param name="taskToCancel">The task to cancel.</param>
-        private void CancelTask(ScheduledTask taskToCancel)
-        {
-            this.Actions.Where(task => taskToCancel == task).ForEach(task => task.Cancel());
-        }
-
-        /// <summary>
-        /// Determines if the depencies are resolved for a given scheduled task.
-        /// </summary>
-        /// <param name="scheduledTask">The scheduled task.</param>
-        /// <returns>True if the dependencies are resolved, otherwise false.</returns>
-        private Boolean DependenciesResolved(ScheduledTask scheduledTask)
-        {
-            IEnumerable<Type> completedDependencies = this.Actions.Select(x => x)
-                .Where(x => x.IsTaskComplete)
-                .Select(x => x.GetType());
-
-            return scheduledTask.DependencyBehavior.AreDependenciesResolved(completedDependencies);
         }
     }
     //// End class

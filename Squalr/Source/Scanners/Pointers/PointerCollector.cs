@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners
+﻿namespace Squalr.Source.Scanners.Pointers
 {
     using Snapshots;
     using Squalr.Properties;
