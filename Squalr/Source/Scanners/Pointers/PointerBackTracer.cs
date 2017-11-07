@@ -2,10 +2,10 @@
 {
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Utils.Extensions;
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
@@ -25,42 +25,65 @@
         /// </summary>
         public PointerBackTracer(
                 UInt64 targetAddress,
-                Action<Stack<ConcurrentDictionary<UInt64, UInt64>>> levelPointersCallback) : base(
-            taskName: "Pointer Back Tracer",
+                UInt32 pointerDepth,
+                UInt32 pointerRadius,
+                Action<LevelPointers> levelPointersCallback) : base(
+            taskName: "Pointer Back Trace",
             isRepeated: false,
             trackProgress: true)
         {
             this.ProgressLock = new Object();
-            this.TargetAddress = targetAddress;
 
-            this.PointerDepth = 3;
-            this.PointerRadius = 1024;
+            this.TargetAddress = targetAddress;
+            this.PointerDepth = pointerDepth;
+            this.PointerRadius = pointerRadius;
             this.LevelPointersCallback = levelPointersCallback;
 
-            this.Dependencies.Enqueue(new PointerCollector(this.SetModulePointers, this.SetHeapPointers));
+            this.Dependencies.Enqueue(new PointerCollector(this.SetCollectedPointers));
         }
 
-        private IDictionary<UInt64, UInt64> ModulePointers { get; set; }
+        /// <summary>
+        /// Gets or sets the pointers residing in a module.
+        /// </summary>
+        private PointerPool ModulePointers { get; set; }
 
-        private IDictionary<UInt64, UInt64> HeapPointers { get; set; }
+        /// <summary>
+        /// Gets or sets the pointers residing in the heap.
+        /// </summary>
+        private PointerPool HeapPointers { get; set; }
 
+        /// <summary>
+        /// Gets or sets the pointer depth of the scan.
+        /// </summary>
         private UInt32 PointerDepth { get; set; }
 
-        private UInt64 PointerRadius { get; set; }
+        /// <summary>
+        /// Gets or sets the pointer radius of the scan.
+        /// </summary>
+        private UInt32 PointerRadius { get; set; }
 
+        /// <summary>
+        /// Gets or sets the target address of the pointer scan.
+        /// </summary>
         private UInt64 TargetAddress { get; set; }
 
-        private Stack<ConcurrentDictionary<UInt64, UInt64>> LevelPointers { get; set; }
+        private LevelPointers LevelPointers { get; set; }
 
-        private Action<Stack<ConcurrentDictionary<UInt64, UInt64>>> LevelPointersCallback { get; set; }
+        private Action<LevelPointers> LevelPointersCallback { get; set; }
 
+        /// <summary>
+        /// Gets or sets a lock object for updating scan progress.
+        /// </summary>
         private Object ProgressLock { get; set; }
 
+        /// <summary>
+        /// Called when the scheduled task starts.
+        /// </summary>
         protected override void OnBegin()
         {
             this.UpdateInterval = PointerBackTracer.RescanTime;
 
-            this.LevelPointers = new Stack<ConcurrentDictionary<UInt64, UInt64>>();
+            this.LevelPointers = new LevelPointers();
         }
 
         /// <summary>
@@ -73,16 +96,21 @@
 
             // Create a snapshot only containing the destination
             Snapshot destinationSnapshot = new Snapshot();
+            PointerPool targetPointers = new PointerPool();
             SnapshotRegion destinationRegion = new SnapshotRegion(this.TargetAddress.ToIntPtr(), 1);
             destinationRegion.Expand(this.PointerRadius);
             destinationSnapshot.AddSnapshotRegions(destinationRegion);
 
+            // Put the target address as the first level
+            targetPointers[this.TargetAddress] = 0;
+            this.LevelPointers.AddLevel(targetPointers);
+
             Snapshot previousLevelSnapshot = destinationSnapshot;
 
-            for (Int32 level = 1; level <= this.PointerDepth; level++)
+            for (Int32 level = 0; level <= this.PointerDepth; level++)
             {
-                ConcurrentDictionary<UInt64, UInt64> currentLevelPointers = new ConcurrentDictionary<UInt64, UInt64>();
-                IDictionary<UInt64, UInt64> currentPointers = level == this.PointerDepth ? this.ModulePointers : this.HeapPointers;
+                PointerPool currentLevelPointers = new PointerPool();
+                PointerPool currentPointers = level == this.PointerDepth ? this.ModulePointers : this.HeapPointers;
 
                 Parallel.ForEach(
                     currentPointers,
@@ -102,7 +130,7 @@
                         // Limit how often we update the progress
                         if (processedPointers % 10000 == 0)
                         {
-                            this.UpdateProgress((processedPointers / this.PointerDepth).ToInt32(), this.HeapPointers.Count, canFinalize: false);
+                            this.UpdateProgress((processedPointers / this.PointerDepth).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
                         }
                     }
                 });
@@ -121,7 +149,7 @@
                 previousLevelSnapshot.AddSnapshotRegions(levelRegions);
 
                 // Add the pointers for this level to the global accepted list
-                this.LevelPointers.Push(currentLevelPointers);
+                this.LevelPointers.AddLevel(currentLevelPointers);
             }
         }
 
@@ -138,13 +166,14 @@
             this.UpdateProgress(ScheduledTask.MaximumProgress);
         }
 
-        private void SetModulePointers(IDictionary<UInt64, UInt64> modulePointers)
+        /// <summary>
+        /// Callback function from the pointer collector to retrieve the collected pointers.
+        /// </summary>
+        /// <param name="modulePointers">The collected pointers residing in modules.</param>
+        /// <param name="heapPointers">The collected pointers residing in the heap.</param>
+        private void SetCollectedPointers(PointerPool modulePointers, PointerPool heapPointers)
         {
             this.ModulePointers = modulePointers;
-        }
-
-        private void SetHeapPointers(IDictionary<UInt64, UInt64> heapPointers)
-        {
             this.HeapPointers = heapPointers;
         }
     }

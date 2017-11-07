@@ -2,19 +2,20 @@
 {
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
 
-    internal class PointerBranch
+    internal class PointerRoot : IEnumerable<PointerBranch>
     {
-        public PointerBranch(Int32 offset)
+        public PointerRoot(UInt64 baseAddress)
         {
-            this.Offset = offset;
+            this.BaseAddress = baseAddress;
             this.Branches = new List<PointerBranch>();
         }
 
-        public Int32 Offset { get; set; }
+        public UInt64 BaseAddress { get; set; }
 
-        public IList<PointerBranch> Branches { get; set; }
+        private IList<PointerBranch> Branches { get; set; }
 
         public void AddOffsets(IEnumerable<Int32> offsets)
         {
@@ -27,6 +28,16 @@
             {
                 this.Branches.Add(new PointerBranch(offset));
             }
+        }
+
+        public IEnumerator<PointerBranch> GetEnumerator()
+        {
+            return this.Branches.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.Branches.GetEnumerator();
         }
     }
 }

@@ -316,11 +316,13 @@
     <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
     <Compile Include="Source\Scanners\Pointers\Discovered\PointerBranch.cs" />
-    <Compile Include="Source\Scanners\Pointers\Discovered\PointerTree.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerTreeBuilder.cs" />
+    <Compile Include="Source\Scanners\Pointers\Discovered\PointerRoot.cs" />
+    <Compile Include="Source\Scanners\Pointers\PointerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerBackTracer.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerScannerViewModel.cs" />
+    <Compile Include="Source\Scanners\Pointers\Structures\LevelPointers.cs" />
+    <Compile Include="Source\Scanners\Pointers\Structures\PointerPool.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
