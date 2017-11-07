@@ -346,7 +346,6 @@
     <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderModel.cs" />
     <Compile Include="Source\Scanners\ManualScanner\ManualScannerViewModel.cs" />
     <Compile Include="Source\Scanners\ManualScanner\ManualScan.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerScanner.cs" />
     <Compile Include="Source\Scanners\ScanConstraints\ScanConstraint.cs" />
     <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintManager.cs" />
     <Compile Include="Source\Scanners\ValueCollector\ValueCollectorViewModel.cs">

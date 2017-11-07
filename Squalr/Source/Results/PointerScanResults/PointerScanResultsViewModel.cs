@@ -359,6 +359,46 @@
         {
             ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, typeof(Int32));
         }
+
+
+        private void AddSelectionToTable()
+        {
+            /*
+            if (minIndex < 0)
+            {
+                minIndex = 0;
+            }
+
+            if (maxIndex > this.AcceptedPointers.Count)
+            {
+                maxIndex = this.AcceptedPointers.Count;
+            }
+
+            Int32 count = 0;
+
+            for (Int32 index = minIndex; index <= maxIndex; index++)
+            {
+                String pointerValue = String.Empty;
+                this.IndexValueMap.TryGetValue(index, out pointerValue);
+
+                PointerItem newPointer = new PointerItem(
+                    baseAddress: this.AcceptedPointers[index].Item1,
+                    elementType: this.ElementType,
+                    description: "New Pointer",
+                    moduleName: String.Empty,
+                    pointerOffsets: this.AcceptedPointers[index].Item2,
+                    isValueHex: false,
+                    value: pointerValue
+                );
+
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: newPointer);
+
+                if (++count >= PointerScanner.MaxAdd)
+                {
+                    break;
+                }
+            }*/
+        }
     }
     //// End class
 }

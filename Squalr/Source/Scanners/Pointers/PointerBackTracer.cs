@@ -5,9 +5,9 @@
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.VirtualMemory;
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
-    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -26,14 +26,14 @@
         /// <summary>
         /// The rounding size for pointer destinations.
         /// </summary>
-        private const Int32 ChunkSize = 1024;
+        private const Int32 PointerRadius = 1024;
 
         private const Int32 MaxAdd = 4096;
 
         /// <summary>
         /// Creates an instance of the <see cref="PointerBackTracer" /> class.
         /// </summary>
-        public PointerBackTracer(UInt64 targetAddress) : base(
+        public PointerBackTracer(UInt64 targetAddress, Action<IList<Snapshot>> levelSnapshotsCallback) : base(
             taskName: "Pointer Back Tracer",
             isRepeated: false,
             trackProgress: false)
@@ -58,13 +58,13 @@
 
         private IEnumerable<NormalizedModule> BaseModules { get; set; }
 
-        private Int32 MaxPointerLevel { get; set; }
+        private UInt32 MaxPointerLevel { get; set; }
 
         private UInt64 MaxPointerOffset { get; set; }
 
         private UInt64 TargetAddress { get; set; }
 
-        private List<ConcurrentDictionary<UInt64, UInt64>> ConnectedPointers { get; set; }
+        private List<Snapshot> LevelSnapshots { get; set; }
 
         private Object ProgressLock { get; set; }
 
@@ -73,7 +73,7 @@
             this.UpdateInterval = PointerBackTracer.RescanTime;
 
             this.Snapshot = SnapshotManager.GetInstance().CreateSnapshotFromUsermodeMemory();
-            this.ConnectedPointers = new List<ConcurrentDictionary<UInt64, UInt64>>();
+            this.LevelSnapshots = new List<Snapshot>();
 
             this.BaseModules = EngineCore.GetInstance().VirtualMemory.GetModules();
         }
@@ -84,21 +84,19 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            ConcurrentBag<SnapshotRegion> previousLevelRegions = new ConcurrentBag<SnapshotRegion>();
-            previousLevelRegions.Add(this.AddressToRegion(this.TargetAddress));
+            UInt64 processedPointers = 0;
+            Snapshot previousLevelSnapshot = new Snapshot();
+            SnapshotRegion region = new SnapshotRegion(this.TargetAddress.ToIntPtr(), 1);
 
-            this.ConnectedPointers.Clear();
-            this.SetAcceptedBases();
+            region.Expand(PointerBackTracer.PointerRadius);
+            previousLevelSnapshot.AddSnapshotRegions(region);
 
             // Add the address we are looking for as the base
-            this.ConnectedPointers.Add(new ConcurrentDictionary<UInt64, UInt64>());
-            this.ConnectedPointers.Last()[this.TargetAddress] = 0;
+            this.LevelSnapshots.Add(previousLevelSnapshot);
 
             for (Int32 level = 1; level <= this.MaxPointerLevel; level++)
             {
-                // Create snapshot from previous level regions to leverage the merging and sorting capabilities of a snapshot
-                Snapshot previousLevel = new Snapshot(previousLevelRegions);
-                ConcurrentDictionary<UInt64, UInt64> levelPointers = new ConcurrentDictionary<UInt64, UInt64>();
+                ConcurrentHashSet<UInt64> currentLevelPointers = new ConcurrentHashSet<UInt64>();
 
                 Parallel.ForEach(
                     this.PointerPool,
@@ -112,29 +110,41 @@
                     }
 
                     // Accept this pointer if it is points to the previous level snapshot
-                    if (previousLevel.ContainsAddress(pointer.Value))
+                    if (previousLevelSnapshot.ContainsAddress(pointer.Value))
                     {
-                        levelPointers[pointer.Key] = pointer.Value;
+                        // TODO: Potentially round pointers here?
+
+                        currentLevelPointers.Add(pointer.Key);
+                    }
+
+                    lock (this.ProgressLock)
+                    {
+                        processedPointers++;
+
+                        // Limit how often we update the progress
+                        if (processedPointers % 1000 == 0)
+                        {
+                            this.UpdateProgress((processedPointers / this.MaxPointerLevel).ToInt32(), this.PointerPool.Count, canFinalize: false);
+                        }
                     }
                 });
 
-                // Add the pointers for this level to the global accepted list
-                this.ConnectedPointers.Add(levelPointers);
+                previousLevelSnapshot = new Snapshot();
 
-                previousLevelRegions = new ConcurrentBag<SnapshotRegion>();
+                IList<SnapshotRegion> levelRegions = new List<SnapshotRegion>();
 
-                // Construct new target region list from this level of pointers
-                Parallel.ForEach(
-                    levelPointers,
-                    SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
-                    (pointer) =>
+                foreach (UInt64 pointer in currentLevelPointers)
                 {
-                    previousLevelRegions.Add(AddressToRegion(pointer.Key));
-                });
+                    region = new SnapshotRegion(pointer.ToIntPtr(), PointerBackTracer.PointerRadius);
+                    region.Expand(PointerBackTracer.PointerRadius);
+                    levelRegions.Add(region);
+                }
+
+                previousLevelSnapshot.AddSnapshotRegions(levelRegions);
+
+                // Add the pointers for this level to the global accepted list
+                this.LevelSnapshots.Add(previousLevelSnapshot);
             }
-
-            this.PointerPool.Clear();
-
         }
 
         /// <summary>
@@ -142,27 +152,11 @@
         /// </summary>
         protected override void OnEnd()
         {
-        }
+            this.Snapshot = null;
+            this.PointerPool = null;
+            this.LevelSnapshots = null;
 
-        private void SetAcceptedBases()
-        {
-            /*
-            this.PrintDebugTag();
-
-            IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().OperatingSystemAdapter.GetModules();
-            List<SnapshotRegionDeprecating> acceptedBaseRegions = new List<SnapshotRegionDeprecating>();
-
-            // Gather regions from every module as valid base addresses
-            modules.ForEach(x => acceptedBaseRegions.Add(new SnapshotRegionDeprecating<Null>(new NormalizedRegion(x.BaseAddress, x.RegionSize))));
-
-            // Convert regions into a snapshot
-            this.AcceptedBases = new SnapshotDeprecating<Null>(acceptedBaseRegions);
-            */
-        }
-
-        private SnapshotRegion AddressToRegion(UInt64 address)
-        {
-            return new SnapshotRegion(new NormalizedRegion(address.ToIntPtr().Subtract(this.MaxPointerOffset), this.MaxPointerOffset * 2));
+            this.UpdateProgress(ScheduledTask.MaximumProgress);
         }
 
         private void SetSnapshot(Snapshot snapshot)

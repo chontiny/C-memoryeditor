@@ -87,7 +87,7 @@
             // Exit if canceled
             cancellationToken.ThrowIfCancellationRequested();
 
-            this.Snapshot = new Snapshot(validRegions, this.Snapshot.SnapshotName);
+            this.Snapshot = new Snapshot(this.Snapshot.SnapshotName, validRegions);
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
         }

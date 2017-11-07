@@ -164,7 +164,7 @@
         public virtual void Expand(UInt64 expandSize)
         {
             this.BaseAddress = this.BaseAddress.Subtract(expandSize, wrapAround: false);
-            this.RegionSize += expandSize;
+            this.RegionSize += expandSize * 2;
         }
 
         /// <summary>

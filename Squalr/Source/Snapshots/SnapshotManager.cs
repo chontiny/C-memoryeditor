@@ -118,7 +118,9 @@
                 {
                     if (createIfNone)
                     {
-                        return Prefilter.GetInstance().GetPrefilteredSnapshot();
+                        Snapshot snapshot = Prefilter.GetInstance().GetPrefilteredSnapshot();
+                        snapshot.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
+                        return snapshot;
                     }
                     else
                     {
