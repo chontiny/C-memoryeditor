@@ -255,7 +255,7 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(Type activeType)
         {
-            this.GetActiveSnapshot(createIfNone: false)?.PropagateSettings();
+            this.GetActiveSnapshot(createIfNone: false)?.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
         }
 
         /// <summary>

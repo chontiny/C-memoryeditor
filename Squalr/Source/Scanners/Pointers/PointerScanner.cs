@@ -2,7 +2,6 @@
 {
     using ScanConstraints;
     using Snapshots;
-    using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.ProjectItems;
@@ -11,9 +10,7 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Trace-Retrace Algorithm:
@@ -27,11 +24,11 @@
     ///  3) Retrace pointers. We will not trace pointers with invalid bases. Loop from last level to first level:
     ///    - Compare pointer to all pointers in the previous level. Store offsets from current level to all pointers in previous level.
     /// </summary>
-    internal class PointerScannerModel : ScannerBase
+    internal class PointerScanner : ScannerBase
     {
         private const Int32 MaxAdd = 4096;
 
-        public PointerScannerModel() : base(
+        public PointerScanner() : base(
             scannerName: "Pointer Scanner",
             isRepeated: false)
         {
@@ -40,7 +37,7 @@
             this.ConnectedPointers = new List<ConcurrentDictionary<IntPtr, IntPtr>>();
             this.ScanMode = ScanModeEnum.ReadValues;
 
-            this.Dependencies.Enqueue(PointerCollector.GetInstance());
+            this.Dependencies.Enqueue(new PointerRetracer());
         }
 
         private enum ScanModeEnum
@@ -147,7 +144,7 @@
 
                 ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: newPointer);
 
-                if (++count >= PointerScannerModel.MaxAdd)
+                if (++count >= PointerScanner.MaxAdd)
                 {
                     break;
                 }
@@ -207,6 +204,8 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
+            return;
+
             // Scan mode determines the action to make, such that the action always happens on this task thread
             switch (this.ScanMode)
             {
@@ -236,7 +235,6 @@
                 case ScanModeEnum.Scan:
                     this.BuildPointerPool();
                     this.TracePointers();
-                    this.BuildPointers();
                     this.ScanMode = ScanModeEnum.ReadValues;
                     break;
                 case ScanModeEnum.Rescan:
@@ -311,151 +309,6 @@
         private void RescanValues()
         {
             this.PrintDebugTag();
-            /*
-            if (this.ScanConstraintManager == null || this.ScanConstraintManager.Count() <= 0)
-            {
-                return;
-            }
-
-            if (this.AcceptedPointers == null || this.AcceptedPointers.Count == 0)
-            {
-                return;
-            }
-
-            List<IntPtr> resolvedAddresses = new List<IntPtr>();
-            List<SnapshotRegionDeprecating> regions = new List<SnapshotRegionDeprecating>();
-
-            // Resolve addresses
-            foreach (Tuple<IntPtr, List<Int32>> fullPointer in this.AcceptedPointers)
-            {
-                resolvedAddresses.Add(this.ResolvePointer(fullPointer));
-            }
-
-            // Build regions from resolved address
-            foreach (IntPtr pointer in resolvedAddresses)
-            {
-                regions.Add(new SnapshotRegionDeprecating<Null>(pointer, Marshal.SizeOf(this.ScanConstraintManager.ElementType)));
-            }
-
-            // Create a snapshot from regions
-            SnapshotDeprecating<Null> pointerSnapshot = new SnapshotDeprecating<Null>(regions);
-
-            // Read the memory (collecting values)
-            pointerSnapshot.ReadAllSnapshotMemory();
-            pointerSnapshot.ElementType = this.ScanConstraintManager.ElementType;
-            this.Snapshot.Alignment = sizeof(Int32);
-            pointerSnapshot.MarkAllValid();
-
-            if (pointerSnapshot.GetRegionCount() <= 0)
-            {
-                this.AcceptedPointers = new List<Tuple<IntPtr, List<Int32>>>();
-                return;
-            }
-
-            // Note there are likely only a few regions that span <= 8 bytes, we do not need to parallelize this
-            foreach (SnapshotRegionDeprecating region in pointerSnapshot)
-            {
-                if (!region.HasValues())
-                {
-                    region.MarkAllInvalid();
-                    continue;
-                }
-
-                foreach (SnapshotElementDeprecating element in region)
-                {
-                    // Enforce each value constraint on the element
-                    foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
-                    {
-                        switch (scanConstraint.Constraint)
-                        {
-                            case ConstraintsEnum.Equal:
-                                if (!element.EqualToValue(scanConstraint.ConstraintValue))
-                                {
-                                    element.Valid = false;
-                                }
-
-                                break;
-                            case ConstraintsEnum.NotEqual:
-                                if (!element.NotEqualToValue(scanConstraint.ConstraintValue))
-                                {
-                                    element.Valid = false;
-                                }
-
-                                break;
-                            case ConstraintsEnum.GreaterThan:
-                                if (!element.GreaterThanValue(scanConstraint.ConstraintValue))
-                                {
-                                    element.Valid = false;
-                                }
-
-                                break;
-                            case ConstraintsEnum.GreaterThanOrEqual:
-                                if (!element.GreaterThanOrEqualToValue(scanConstraint.ConstraintValue))
-                                {
-                                    element.Valid = false;
-                                }
-
-                                break;
-                            case ConstraintsEnum.LessThan:
-                                if (!element.LessThanValue(scanConstraint.ConstraintValue))
-                                {
-                                    element.Valid = false;
-                                }
-
-                                break;
-                            case ConstraintsEnum.LessThanOrEqual:
-                                if (!element.LessThanOrEqualToValue(scanConstraint.ConstraintValue))
-                                {
-                                    element.Valid = false;
-                                }
-
-                                break;
-                            case ConstraintsEnum.NotScientificNotation:
-                                if (element.IsScientificNotation())
-                                {
-                                    element.Valid = false;
-                                }
-
-                                break;
-                            default:
-                                throw new Exception("Invalid Constraint");
-                        }
-                    }
-                    //// End foreach Constraint
-                }
-                //// End foreach Element
-            }
-            //// End foreach Region
-
-            pointerSnapshot.DiscardInvalidRegions();
-
-            List<Tuple<IntPtr, List<Int32>>> retainedPointers = new List<Tuple<IntPtr, List<Int32>>>();
-
-            if (pointerSnapshot.GetRegionCount() <= 0)
-            {
-                this.AcceptedPointers = retainedPointers;
-                return;
-            }
-
-            // Keep all remaining pointers
-            foreach (SnapshotRegionDeprecating region in pointerSnapshot)
-            {
-                foreach (SnapshotElementDeprecating element in region)
-                {
-                    for (Int32 addressIndex = 0; addressIndex < resolvedAddresses.Count; addressIndex++)
-                    {
-                        if (resolvedAddresses[addressIndex] != element.BaseAddress)
-                        {
-                            continue;
-                        }
-
-                        retainedPointers.Add(this.AcceptedPointers[addressIndex]);
-                    }
-                }
-            }
-
-            this.AcceptedPointers = retainedPointers;
-            */
         }
 
         private void SetAcceptedBases()
@@ -566,120 +419,6 @@
         private void TracePointers()
         {
             this.PrintDebugTag();
-            /*
-            ConcurrentBag<SnapshotRegionDeprecating> previousLevelRegions = new ConcurrentBag<SnapshotRegionDeprecating>();
-            previousLevelRegions.Add(this.AddressToRegion(this.TargetAddress));
-
-            this.ConnectedPointers.Clear();
-            this.SetAcceptedBases();
-
-            // Add the address we are looking for as the base
-            this.ConnectedPointers.Add(new ConcurrentDictionary<IntPtr, IntPtr>());
-            this.ConnectedPointers.Last()[this.TargetAddress] = IntPtr.Zero;
-
-            for (Int32 level = 1; level <= this.MaxPointerLevel; level++)
-            {
-                // Create snapshot from previous level regions to leverage the merging and sorting capabilities of a snapshot
-                SnapshotDeprecating previousLevel = new SnapshotDeprecating<Null>(previousLevelRegions);
-                ConcurrentDictionary<IntPtr, IntPtr> levelPointers = new ConcurrentDictionary<IntPtr, IntPtr>();
-
-                Parallel.ForEach(
-                    this.PointerPool,
-                    SettingsViewModel.GetInstance().ParallelSettings,
-                    (pointer) =>
-                {
-                    // Ensure if this is a max level pointer that it is from an acceptable base address (ie static)
-                    if (level == MaxPointerLevel && !AcceptedBases.ContainsAddress(pointer.Key))
-                    {
-                        return;
-                    }
-
-                    // Accept this pointer if it is points to the previous level snapshot
-                    if (previousLevel.ContainsAddress(pointer.Value))
-                    {
-                        levelPointers[pointer.Key] = pointer.Value;
-                    }
-                });
-
-                // Add the pointers for this level to the global accepted list
-                this.ConnectedPointers.Add(levelPointers);
-
-                previousLevelRegions = new ConcurrentBag<SnapshotRegionDeprecating>();
-
-                // Construct new target region list from this level of pointers
-                Parallel.ForEach(
-                    levelPointers,
-                    SettingsViewModel.GetInstance().ParallelSettings,
-                    (pointer) =>
-                {
-                    previousLevelRegions.Add(AddressToRegion(pointer.Key));
-                });
-            }
-
-            this.PointerPool.Clear();
-            */
-        }
-
-        private void BuildPointers()
-        {
-            this.PrintDebugTag();
-
-            ConcurrentBag<Tuple<IntPtr, List<Int32>>> discoveredPointers = new ConcurrentBag<Tuple<IntPtr, List<Int32>>>();
-
-            // Iterate incrementally towards the maximum, allowing for the discovery of all pointer levels
-            for (Int32 currentMaximum = 0; currentMaximum <= this.MaxPointerLevel; currentMaximum++)
-            {
-                Parallel.ForEach(
-                    this.ConnectedPointers[currentMaximum],
-                    SettingsViewModel.GetInstance().ParallelSettingsFast,
-                    (baseAddress) =>
-                {
-                    // Enforce static base constraint. Maxlevel pointers were already prefitlered, but not other levels.
-                    if (!this.AcceptedBases.ContainsAddress(baseAddress.Key.ToUInt64()))
-                    {
-                        return;
-                    }
-
-                    // Recursively build the pointers
-                    this.BuildPointers(discoveredPointers, currentMaximum, baseAddress.Key, baseAddress.Value, new List<Int32>());
-                });
-            }
-
-            this.AcceptedPointers = discoveredPointers.ToList();
-        }
-
-        private void BuildPointers(ConcurrentBag<Tuple<IntPtr, List<Int32>>> pointers, Int32 level, IntPtr baseAddress, IntPtr pointerDestination, List<Int32> offsets)
-        {
-            if (level == 0)
-            {
-                pointers.Add(new Tuple<IntPtr, List<Int32>>(baseAddress, offsets));
-                return;
-            }
-
-            Parallel.ForEach(
-                this.ConnectedPointers[level - 1],
-                SettingsViewModel.GetInstance().ParallelSettingsFast,
-                (target) =>
-            {
-                if (pointerDestination.ToUInt64() < target.Key.Subtract(this.MaxPointerOffset).ToUInt64())
-                {
-                    return;
-                }
-
-                if (pointerDestination.ToUInt64() > target.Key.Add(this.MaxPointerOffset).ToUInt64())
-                {
-                    return;
-                }
-
-                // Valid pointer, clone our current offset stack
-                List<Int32> newOffsets = new List<Int32>(offsets);
-
-                // Calculate the offset for this level
-                newOffsets.Add(unchecked((Int32)(target.Key.ToInt64() - pointerDestination.ToInt64())));
-
-                // Recurse
-                this.BuildPointers(pointers, level - 1, baseAddress, target.Value, newOffsets);
-            });
         }
     }
     //// End class

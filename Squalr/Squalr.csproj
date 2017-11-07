@@ -316,6 +316,9 @@
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
     <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
+    <Compile Include="Source\Scanners\Pointers\PointerRetracer.cs" />
+    <Compile Include="Source\Scanners\Pointers\PointerTracer.cs" />
+    <Compile Include="Source\Scanners\Pointers\PointerBackTracer.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerScannerViewModel.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />
@@ -346,7 +349,7 @@
     <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderModel.cs" />
     <Compile Include="Source\Scanners\ManualScanner\ManualScannerViewModel.cs" />
     <Compile Include="Source\Scanners\ManualScanner\ManualScan.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerScannerModel.cs" />
+    <Compile Include="Source\Scanners\Pointers\PointerScanner.cs" />
     <Compile Include="Source\Scanners\ScanConstraints\ScanConstraint.cs" />
     <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintManager.cs" />
     <Compile Include="Source\Scanners\ValueCollector\ValueCollectorViewModel.cs">

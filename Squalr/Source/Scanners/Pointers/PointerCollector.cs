@@ -2,10 +2,12 @@
 {
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Scanners.ValueCollector;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Utils.DataStructures;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -17,71 +19,45 @@
     internal class PointerCollector : ScheduledTask
     {
         /// <summary>
-        /// Time in milliseconds between scans.
-        /// </summary>
-        private const Int32 RescanTime = 256;
-
-        /// <summary>
-        /// Limit the number of bytes to read per iteration.
-        /// </summary>
-        private const UInt64 ByteLimit = 2 << 20; // 2 MB
-
-        /// <summary>
         /// The rounding size for pointer destinations.
         /// </summary>
-        private const Int32 ChunkSize = 1024;
+        private const Int32 PointerRoundingSize = 1024;
 
         /// <summary>
-        /// Gets or sets the number of regions processed by this prefilter.
+        /// Creates an instance of the <see cref="PointerCollector" /> class.
         /// </summary>
-        private Int64 processedCount;
-
-        /// <summary>
-        /// Singleton instance of the <see cref="PointerCollector"/> class.
-        /// </summary>
-        private static Lazy<PointerCollector> pointerCollectorInstance = new Lazy<PointerCollector>(
-            () => { return new PointerCollector(); },
-            LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
-        /// Prevents a default instance of the <see cref="PointerCollector" /> class from being created.
-        /// </summary>
-        private PointerCollector() : base(
+        public PointerCollector() : base(
             taskName: "Pointer Collector",
-            isRepeated: true,
+            isRepeated: false,
             trackProgress: false)
         {
-            this.AccessLock = new Object();
+            this.ProgressLock = new Object();
+
+            this.Dependencies.Enqueue(new ValueCollectorModel(this.SetSnapshot));
         }
 
         /// <summary>
         /// Gets or sets the current snapshot being parsed.
         /// </summary>
-        private Snapshot CurrentSnapshot { get; set; }
-
-        private Object AccessLock { get; set; }
-
-        private ConcurrentHashSet<UInt64> FoundPointerDestinations { get; set; }
-
-        public static PointerCollector GetInstance()
-        {
-            return PointerCollector.pointerCollectorInstance.Value;
-        }
+        private Snapshot Snapshot { get; set; }
 
         /// <summary>
-        /// Gets all found pointers in the external process.
+        /// Gets or sets a lock object for updating scan progress.
         /// </summary>
-        /// <returns>A set of all found pointers.</returns>
-        public IEnumerable<IntPtr> GetFoundPointerDestinations()
-        {
-            return null;
-        }
+        private Object ProgressLock { get; set; }
+
+        private ConcurrentDictionary<UInt64, UInt64> PointerPool { get; set; }
 
         protected override void OnBegin()
         {
-            this.UpdateInterval = PointerCollector.RescanTime;
+            this.PointerPool = new ConcurrentDictionary<UInt64, UInt64>();
 
-            this.CurrentSnapshot = SnapshotManager.GetInstance().CreateSnapshotFromUsermodeMemory();
+            if (this.Snapshot == null)
+            {
+                this.Cancel();
+            }
+
+            this.Snapshot.UpdateSettings(activeType: EngineCore.GetInstance().Processes.IsOpenedProcess32Bit() ? typeof(UInt32) : typeof(UInt64), alignment: sizeof(Int32));
         }
 
         /// <summary>
@@ -90,52 +66,22 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            // TODO: Somehow make pointer scanning dependent on value collector. This is weird because they use separate result lists.
-            this.CurrentSnapshot.ReadAllMemory();
+            Int32 processedRegions = 0;
 
-            List<SnapshotRegion> sortedRegions = new List<SnapshotRegion>(this.CurrentSnapshot.GetSnapshotRegions().OrderBy(x => x.GetTimeSinceLastRead()));
-
-            UInt64 total = 0;
-            Int32 regionCount = sortedRegions.TakeWhile(x =>
-            {
-                UInt64 previousTotal = total;
-                total += x.RegionSize;
-                return previousTotal == 0 || total < PointerCollector.ByteLimit;
-            }).Count();
+            Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
 
             // Process the allowed amount of chunks from the priority queue
-            Parallel.For(
-                0,
-                Math.Min(sortedRegions.Count, regionCount),
-                SettingsViewModel.GetInstance().ParallelSettingsMedium,
-                (index) =>
+            Parallel.ForEach(
+                this.Snapshot.Cast<SnapshotRegion>(),
+                SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
+                (region) =>
                 {
-                    Interlocked.Increment(ref this.processedCount);
-
-                    SnapshotRegion region = sortedRegions[index];
-                    Boolean success;
-
-                    // Set to type of a pointer
-                    region.ElementType = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit() ? typeof(UInt32) : typeof(UInt64);
-
-                    // Enforce 4-byte alignment of pointers
-                    region.Alignment = sizeof(Int32);
-
-                    // Read current page data for chunk
-                    region.ReadAllMemory(keepValues: true, readSuccess: out success);
-
-                    // Read failed; Deallocated page
-                    if (!success)
-                    {
-                        return;
-                    }
-
                     if (region.CurrentValues == null || region.CurrentValues.Length <= 0)
                     {
                         return;
                     }
 
-                    if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
+                    if (isProcess32Bit)
                     {
                         for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
                         {
@@ -149,10 +95,9 @@
                             }
 
                             // Check if it is possible that this pointer is valid, if so keep it
-                            if (this.CurrentSnapshot.ContainsAddress(value))
+                            if (this.Snapshot.ContainsAddress(value))
                             {
-                                value = value - value % PointerCollector.ChunkSize;
-                                this.FoundPointerDestinations.Add(value);
+                                this.PointerPool[element.BaseAddress.ToUInt64()] = value;
                             }
                         }
                     }
@@ -170,16 +115,26 @@
                             }
 
                             // Check if it is possible that this pointer is valid, if so keep it
-                            if (this.CurrentSnapshot.ContainsAddress(value))
+                            if (this.Snapshot.ContainsAddress(value))
                             {
-                                value = value - value % PointerCollector.ChunkSize;
-                                this.FoundPointerDestinations.Add(value);
+                                this.PointerPool[element.BaseAddress.ToUInt64()] = value;
                             }
                         }
                     }
 
                     // Clear the saved values, we do not need them now
                     region.SetCurrentValues(null);
+
+                    lock (this.ProgressLock)
+                    {
+                        processedRegions++;
+
+                        // Limit how often we update the progress
+                        if (processedRegions % 10 == 0)
+                        {
+                            this.UpdateProgress(processedRegions, this.Snapshot.RegionCount, canFinalize: false);
+                        }
+                    }
                 });
         }
 
@@ -188,6 +143,15 @@
         /// </summary>
         protected override void OnEnd()
         {
+        }
+
+        /// <summary>
+        /// Sets the snapshot to scan.
+        /// </summary>
+        /// <param name="snapshot">The snapshot to scan.</param>
+        private void SetSnapshot(Snapshot snapshot)
+        {
+            this.Snapshot = snapshot;
         }
     }
     //// End class

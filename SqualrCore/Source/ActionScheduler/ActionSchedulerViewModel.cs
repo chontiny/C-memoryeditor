@@ -95,11 +95,6 @@
         {
             lock (this.AccessLock)
             {
-                foreach (ScheduledTask task in scheduledTask.Dependencies)
-                {
-                    this.ScheduleAction(task);
-                }
-
                 // Do not schedule actions of the same type
                 if (this.Actions.Select(x => x.GetType()).Any(x => x == scheduledTask.GetType()))
                 {
@@ -110,6 +105,11 @@
                 scheduledTask.ResetState();
                 this.Actions.AddLast(scheduledTask);
                 this.RaisePropertyChanged(nameof(this.ActiveTasks));
+
+                foreach (ScheduledTask task in scheduledTask.Dependencies)
+                {
+                    this.ScheduleAction(task);
+                }
             }
         }
 
@@ -139,24 +139,12 @@
 
                         if (nextTask.CanStart)
                         {
-                            // Check if dependencies are complete for this task to start
-                            if (!nextTask.AreDependenciesResolved())
-                            {
-                                continue;
-                            }
-
                             // Start the task
                             nextTask.InitializeStart();
                             Task.Run(() => nextTask.Begin());
                         }
                         else if (nextTask.CanUpdate)
                         {
-                            // Check if dependencies are complete for this task to update
-                            if (!nextTask.AreDependenciesResolved())
-                            {
-                                continue;
-                            }
-
                             // Update the task
                             nextTask.InitializeUpdate();
                             Task.Run(() => nextTask.Update());
@@ -164,6 +152,7 @@
                         else if (nextTask.CanEnd)
                         {
                             // End the task
+                            nextTask.InitializeEnd();
                             Task.Run(() => nextTask.End());
 
                             // Permanently remove this task

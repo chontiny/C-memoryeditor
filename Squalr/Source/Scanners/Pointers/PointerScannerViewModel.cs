@@ -32,7 +32,7 @@
             this.ContentId = PointerScannerViewModel.ToolContentId;
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
-            this.PointerScannerModel = new PointerScannerModel();
+            this.PointerScannerModel = new PointerScanner();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -41,7 +41,7 @@
 
         public ICommand StopScanCommand { get; private set; }
 
-        private PointerScannerModel PointerScannerModel { get; set; }
+        private PointerScanner PointerScannerModel { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ChangeCounterViewModel"/> class.

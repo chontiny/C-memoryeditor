@@ -128,7 +128,7 @@
         {
             get
             {
-                return !this.IsCanceled && !this.HasStarted;
+                return !this.IsCanceled && !this.HasStarted && this.AreDependenciesResolved();
             }
         }
 
@@ -139,7 +139,7 @@
         {
             get
             {
-                return !this.IsCanceled && !this.IsBusy && (!this.HasUpdated || this.IsRepeated);
+                return !this.IsCanceled && !this.IsBusy && this.HasStarted && (!this.HasUpdated || this.IsRepeated);
             }
         }
 
@@ -265,6 +265,17 @@
         }
 
         /// <summary>
+        /// Initializes end state variables. Must be called before calling the end callback.
+        /// </summary>
+        public void InitializeEnd()
+        {
+            lock (this.AccessLock)
+            {
+                this.IsBusy = true;
+            }
+        }
+
+        /// <summary>
         /// Canels this task.
         /// </summary>
         public void Cancel()
@@ -309,15 +320,6 @@
         public void UpdateProgress(Int32 subtotal, Int32 total, Boolean canFinalize = true)
         {
             this.UpdateProgress(total <= 0 ? 0.0 : (((Double)subtotal / (Double)total) * ScheduledTask.MaximumProgress) + ScheduledTask.MinimumProgress, canFinalize);
-        }
-
-        /// <summary>
-        /// Determines if all dependencies are resolved based on the provided list of completed dependencies.
-        /// </summary>
-        /// <returns>True if all dependencies are resolved, otherwise false.</returns>
-        internal Boolean AreDependenciesResolved()
-        {
-            return this.Dependencies.Count <= 0 || this.Dependencies.All(dependency => dependency.IsTaskComplete);
         }
 
         /// <summary>
@@ -425,6 +427,15 @@
         protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Determines if all dependencies are resolved based on the provided list of completed dependencies.
+        /// </summary>
+        /// <returns>True if all dependencies are resolved, otherwise false.</returns>
+        private Boolean AreDependenciesResolved()
+        {
+            return this.Dependencies.Count <= 0 || this.Dependencies.All(dependency => dependency.IsTaskComplete);
         }
     }
     //// End class

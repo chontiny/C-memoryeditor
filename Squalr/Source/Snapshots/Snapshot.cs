@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Results.ScanResults;
     using Squalr.Properties;
+    using Squalr.Source.Results.ScanResults;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
@@ -126,15 +126,12 @@
         /// <summary>
         /// Updates the alignment and type settings of all snapshot regions.
         /// </summary>
-        public void PropagateSettings()
+        public void UpdateSettings(Type activeType, Int32 alignment)
         {
             if (this.SnapshotRegions == null)
             {
                 return;
             }
-
-            Type activeType = ScanResultsViewModel.GetInstance().ActiveType;
-            Int32 alignment = SettingsViewModel.GetInstance().Alignment;
 
             foreach (SnapshotRegion region in this)
             {
@@ -207,7 +204,7 @@
                 snapshotRegions?.ForEach(x => this.SnapshotRegions.Add(x));
             }
 
-            this.PropagateSettings();
+            this.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
             this.MergeAndSortRegions();
         }
 

@@ -63,7 +63,6 @@
             if (this.Snapshot == null || this.ScanConstraintManager == null || this.ScanConstraintManager.Count() <= 0)
             {
                 this.Cancel();
-                return;
             }
         }
 

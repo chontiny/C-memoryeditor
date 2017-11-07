@@ -1,14 +1,12 @@
 ﻿namespace Squalr.Source.Prefilters
 {
     using Snapshots;
-    using Squalr.Source.Scanners.Pointers;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Processes;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.DataStructures;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -49,8 +47,6 @@
             this.PrefilteredSnapshot = new Snapshot();
             this.RegionLock = new Object();
             this.processedCount = 0;
-
-            PointerCollector.GetInstance().Start();
         }
 
         /// <summary>
@@ -113,8 +109,6 @@
         /// </summary>
         protected override void OnBegin()
         {
-            PointerCollector.GetInstance().Start();
-
             this.UpdateInterval = ShallowPointerPrefilter.RescanTime;
         }
 
@@ -153,9 +147,9 @@
                 }
 
                 // Add pointer destinations
-                foreach (IntPtr pointerDestination in PointerCollector.GetInstance().GetFoundPointerDestinations())
+                // foreach (IntPtr pointerDestination in PointerBackTracer.GetInstance().GetFoundPointerDestinations())
                 {
-                    regions.Add(new SnapshotRegion(pointerDestination.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
+                    //  regions.Add(new SnapshotRegion(pointerDestination.Subtract(ShallowPointerPrefilter.PointerRadius), ShallowPointerPrefilter.PointerRadius * 2));
                 }
 
                 this.PrefilteredSnapshot.AddSnapshotRegions(regions);
