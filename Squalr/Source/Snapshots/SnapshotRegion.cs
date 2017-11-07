@@ -4,7 +4,7 @@
     using Scanners.ScanConstraints;
     using Squalr.Properties;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
@@ -196,7 +196,7 @@
             this.TimeSinceLastRead = DateTime.Now;
 
             readSuccess = false;
-            Byte[] newCurrentValues = EngineCore.GetInstance().OperatingSystem.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
+            Byte[] newCurrentValues = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
 
             if (!readSuccess)
             {

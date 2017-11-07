@@ -4,7 +4,7 @@
     using Squalr.Source.Scanners;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Engine.Processes;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.DataStructures;
@@ -147,7 +147,7 @@
                 List<SnapshotRegion> regions = new List<SnapshotRegion>();
 
                 // Add static bases
-                foreach (NormalizedModule normalizedModule in EngineCore.GetInstance().OperatingSystem.GetModules())
+                foreach (NormalizedModule normalizedModule in EngineCore.GetInstance().VirtualMemory.GetModules())
                 {
                     regions.Add(new SnapshotRegion(normalizedModule.BaseAddress, normalizedModule.RegionSize));
                 }

@@ -204,7 +204,7 @@
                 Boolean readSuccess;
                 Object oldValue = addressValue;
 
-                this.addressValue = EngineCore.GetInstance()?.OperatingSystem?.Read(this.DataType, this.CalculatedAddress, out readSuccess);
+                this.addressValue = EngineCore.GetInstance()?.VirtualMemory?.Read(this.DataType, this.CalculatedAddress, out readSuccess);
 
                 if (this.AddressValue?.ToString() != oldValue?.ToString())
                 {
@@ -233,7 +233,7 @@
                 return;
             }
 
-            EngineCore.GetInstance()?.OperatingSystem?.Write(this.DataType, this.CalculatedAddress, newValue);
+            EngineCore.GetInstance()?.VirtualMemory?.Write(this.DataType, this.CalculatedAddress, newValue);
         }
     }
     //// End class

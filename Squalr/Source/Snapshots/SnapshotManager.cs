@@ -4,7 +4,7 @@
     using Squalr.Properties;
     using Squalr.Source.Prefilters;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -138,10 +138,10 @@
             MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image | MemoryTypeEnum.Mapped;
 
             IntPtr startAddress = IntPtr.Zero;
-            IntPtr endAddress = EngineCore.GetInstance().OperatingSystem.GetUserModeRegion().EndAddress;
+            IntPtr endAddress = EngineCore.GetInstance().VirtualMemory.GetUserModeRegion().EndAddress;
 
             List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystem.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -171,7 +171,7 @@
             if (SettingsViewModel.GetInstance().IsUserMode)
             {
                 startAddress = IntPtr.Zero;
-                endAddress = EngineCore.GetInstance().OperatingSystem.GetUserModeRegion().EndAddress;
+                endAddress = EngineCore.GetInstance().VirtualMemory.GetUserModeRegion().EndAddress;
             }
             else
             {
@@ -180,7 +180,7 @@
             }
 
             List<SnapshotRegion> memoryRegions = new List<SnapshotRegion>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().OperatingSystem.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,

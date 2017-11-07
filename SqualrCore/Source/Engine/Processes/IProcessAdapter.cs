@@ -6,7 +6,7 @@
     /// <summary>
     /// An interface for an object that enumerates and selects processes running on the system.
     /// </summary>
-    public interface IProcesses
+    public interface IProcessAdapter
     {
         /// <summary>
         /// Subscribes the listener to process change events.
@@ -49,6 +49,44 @@
         /// </summary>
         /// <returns>Returns true if the opened process is 64 bit, otherwise false.</returns>
         Boolean IsOpenedProcess64Bit();
+
+        /// <summary>
+        /// Determines if this program is 32 bit.
+        /// </summary>
+        /// <returns>A boolean indicating if this program is 32 bit or not.</returns>
+        Boolean IsSelf32Bit();
+
+        /// <summary>
+        /// Determines if this program is 64 bit.
+        /// </summary>
+        /// <returns>A boolean indicating if this program is 64 bit or not.</returns>
+        Boolean IsSelf64Bit();
+
+        /// <summary>
+        /// Determines if a process is 32 bit.
+        /// </summary>
+        /// <param name="process">The process to check.</param>
+        /// <returns>Returns true if the process is 32 bit, otherwise false.</returns>
+        Boolean IsProcess32Bit(NormalizedProcess process);
+
+        /// <summary>
+        /// Determines if a process is 64 bit.
+        /// </summary>
+        /// <param name="process">The process to check.</param>
+        /// <returns>Returns true if the process is 64 bit, otherwise false.</returns>
+        Boolean IsProcess64Bit(NormalizedProcess process);
+
+        /// <summary>
+        /// Determines if the operating system is 32 bit.
+        /// </summary>
+        /// <returns>A boolean indicating if the OS is 32 bit or not.</returns>
+        Boolean IsOperatingSystem32Bit();
+
+        /// <summary>
+        /// Determines if the operating system is 64 bit.
+        /// </summary>
+        /// <returns>A boolean indicating if the OS is 64 bit or not.</returns>
+        Boolean IsOperatingSystem64Bit();
     }
     //// End interface
 }

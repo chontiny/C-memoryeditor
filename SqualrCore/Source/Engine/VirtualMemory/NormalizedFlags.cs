@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Engine.OperatingSystems
+﻿namespace SqualrCore.Source.Engine.VirtualMemory
 {
     using System;
 

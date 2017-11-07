@@ -227,7 +227,7 @@
                         IntPtr pointer = this.ResolvePointer(this.AcceptedPointers[index]);
 
                         Boolean successReading;
-                        String value = EngineCore.GetInstance().OperatingSystem.Read(this.ElementType, pointer, out successReading).ToString();
+                        String value = EngineCore.GetInstance().VirtualMemory.Read(this.ElementType, pointer, out successReading).ToString();
 
                         this.IndexValueMap[index] = value;
                     }
@@ -265,7 +265,7 @@
 
             foreach (Int32 offset in offsets)
             {
-                pointer = EngineCore.GetInstance().OperatingSystem.Read<IntPtr>(pointer, out successReading);
+                pointer = EngineCore.GetInstance().VirtualMemory.Read<IntPtr>(pointer, out successReading);
                 pointer = pointer.Add(offset);
 
                 if (!successReading)

@@ -2,7 +2,7 @@
 {
     using Results.ScanResults;
     using Squalr.Properties;
-    using SqualrCore.Source.Engine.OperatingSystems;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;

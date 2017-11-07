@@ -182,11 +182,11 @@
             {
                 if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
                 {
-                    pointer = EngineCore.GetInstance().OperatingSystem.Read<Int32>(pointer, out successReading).ToIntPtr();
+                    pointer = EngineCore.GetInstance().VirtualMemory.Read<Int32>(pointer, out successReading).ToIntPtr();
                 }
                 else
                 {
-                    pointer = EngineCore.GetInstance().OperatingSystem.Read<Int64>(pointer, out successReading).ToIntPtr();
+                    pointer = EngineCore.GetInstance().VirtualMemory.Read<Int64>(pointer, out successReading).ToIntPtr();
                 }
 
                 pointer = pointer.Add(offset);
