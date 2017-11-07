@@ -3,6 +3,7 @@
     using LabelThresholder;
     using Snapshots;
     using Squalr.Properties;
+    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using SqualrCore.Source.Engine.Input.Keyboard;
@@ -13,13 +14,19 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    internal class InputCorrelatorModel : ScannerBase, IObserver<KeyState>
+    internal class InputCorrelatorModel : ScheduledTask, IObserver<KeyState>
     {
         private List<Hotkey> hotKeys;
 
+        /// <summary>
+        /// The number of scans completed.
+        /// </summary>
+        private Int32 scanCount;
+
         public InputCorrelatorModel(Action updateScanCount) : base(
-            scannerName: "Input Correlator",
-            isRepeated: true)
+            taskName: "Input Correlator",
+            isRepeated: true,
+            trackProgress: true)
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();
@@ -52,6 +59,23 @@
 
         private Object ProgressLock { get; set; }
 
+        /// <summary>
+        /// Gets the number of scans that have been executed.
+        /// </summary>
+        public Int32 ScanCount
+        {
+            get
+            {
+                return this.scanCount;
+            }
+
+            private set
+            {
+                this.scanCount = value;
+                this.RaisePropertyChanged(nameof(this.ScanCount));
+            }
+        }
+
         public void OnNext(KeyState value)
         {
             if (value.PressedKeys.IsNullOrEmpty())
@@ -79,7 +103,7 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
+            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.TaskName);
             this.Snapshot.SetLabelType(typeof(Int16));
 
             if (this.Snapshot == null)
@@ -91,8 +115,6 @@
             // Initialize with no correlation
             this.Snapshot.SetElementLabels<Int16>(0);
             this.TimeOutIntervalMs = SettingsViewModel.GetInstance().InputCorrelatorTimeOutInterval;
-
-            base.OnBegin();
         }
 
         /// <summary>
@@ -164,8 +186,6 @@
             }
 
             this.UpdateScanCount?.Invoke();
-
-            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>
@@ -195,8 +215,6 @@
 
             this.CleanUp();
             LabelThresholderViewModel.GetInstance().OpenLabelThresholder();
-
-            base.OnEnd();
         }
 
         private void InitializeObjects()

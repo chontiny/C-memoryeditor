@@ -30,8 +30,8 @@
         private PointerScannerViewModel() : base("Pointer Scanner")
         {
             this.ContentId = PointerScannerViewModel.ToolContentId;
-            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
-            this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
+            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.PointerScannerModel.Start()), () => true);
+            this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.PointerScannerModel.Cancel()), () => true);
             this.PointerScannerModel = new PointerScanner();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
@@ -50,16 +50,6 @@
         public static PointerScannerViewModel GetInstance()
         {
             return inputCorrelatorViewModelInstance.Value;
-        }
-
-        private void StartScan()
-        {
-            this.PointerScannerModel.Start();
-        }
-
-        private void StopScan()
-        {
-            this.PointerScannerModel.Cancel();
         }
     }
     //// End class

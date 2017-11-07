@@ -3,6 +3,7 @@
     using ScanConstraints;
     using Snapshots;
     using Squalr.Source.ProjectExplorer;
+    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
@@ -24,20 +25,21 @@
     ///  3) Retrace pointers. We will not trace pointers with invalid bases. Loop from last level to first level:
     ///    - Compare pointer to all pointers in the previous level. Store offsets from current level to all pointers in previous level.
     /// </summary>
-    internal class PointerScanner : ScannerBase
+    internal class PointerScanner : ScheduledTask
     {
         private const Int32 MaxAdd = 4096;
 
-        public PointerScanner() : base(
-            scannerName: "Pointer Scanner",
-            isRepeated: false)
+        public PointerScanner(UInt64 targetAddress = 0x100579C) : base(
+            taskName: "Pointer Scanner",
+            isRepeated: false,
+            trackProgress: true)
         {
             this.IndexValueMap = new ConcurrentDictionary<Int32, String>();
             this.PointerPool = new ConcurrentDictionary<IntPtr, IntPtr>();
             this.ConnectedPointers = new List<ConcurrentDictionary<IntPtr, IntPtr>>();
             this.ScanMode = ScanModeEnum.ReadValues;
 
-            this.Dependencies.Enqueue(new PointerRetracer());
+            this.Dependencies.Enqueue(new PointerRetracer(targetAddress));
         }
 
         private enum ScanModeEnum
@@ -195,7 +197,6 @@
 
         protected override void OnBegin()
         {
-            base.OnBegin();
         }
 
         /// <summary>
@@ -210,27 +211,6 @@
             switch (this.ScanMode)
             {
                 case ScanModeEnum.ReadValues:
-
-                    for (Int32 index = this.StartReadIndex; index <= this.EndReadIndex; index++)
-                    {
-                        if (this.AcceptedPointers == null)
-                        {
-                            break;
-                        }
-
-                        if (index < 0 || index >= this.AcceptedPointers.Count)
-                        {
-                            continue;
-                        }
-
-                        IntPtr pointer = this.ResolvePointer(this.AcceptedPointers[index]);
-
-                        Boolean successReading;
-                        String value = EngineCore.GetInstance().VirtualMemory.Read(this.ElementType, pointer, out successReading).ToString();
-
-                        this.IndexValueMap[index] = value;
-                    }
-
                     break;
                 case ScanModeEnum.Scan:
                     this.BuildPointerPool();
@@ -246,7 +226,6 @@
 
         protected override void OnEnd()
         {
-            base.OnEnd();
         }
 
         private IntPtr ResolvePointer(Tuple<IntPtr, List<Int32>> fullPointer)
@@ -309,22 +288,6 @@
         private void RescanValues()
         {
             this.PrintDebugTag();
-        }
-
-        private void SetAcceptedBases()
-        {
-            /*
-            this.PrintDebugTag();
-
-            IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().OperatingSystemAdapter.GetModules();
-            List<SnapshotRegionDeprecating> acceptedBaseRegions = new List<SnapshotRegionDeprecating>();
-
-            // Gather regions from every module as valid base addresses
-            modules.ForEach(x => acceptedBaseRegions.Add(new SnapshotRegionDeprecating<Null>(new NormalizedRegion(x.BaseAddress, x.RegionSize))));
-
-            // Convert regions into a snapshot
-            this.AcceptedBases = new SnapshotDeprecating<Null>(acceptedBaseRegions);
-            */
         }
 
         private void BuildPointerPool()

@@ -26,12 +26,14 @@
         /// <summary>
         /// Creates an instance of the <see cref="PointerCollector" /> class.
         /// </summary>
-        public PointerCollector() : base(
+        public PointerCollector(Action<Snapshot> snapshotCallback = null, Action<IDictionary<UInt64, UInt64>> pointerPoolCallback = null) : base(
             taskName: "Pointer Collector",
             isRepeated: false,
             trackProgress: false)
         {
             this.ProgressLock = new Object();
+            this.SnapshotCallback = snapshotCallback;
+            this.PointerPoolCallback = pointerPoolCallback;
 
             this.Dependencies.Enqueue(new ValueCollectorModel(this.SetSnapshot));
         }
@@ -40,6 +42,10 @@
         /// Gets or sets the current snapshot being parsed.
         /// </summary>
         private Snapshot Snapshot { get; set; }
+
+        private Action<Snapshot> SnapshotCallback;
+
+        private Action<IDictionary<UInt64, UInt64>> PointerPoolCallback;
 
         /// <summary>
         /// Gets or sets a lock object for updating scan progress.
@@ -143,6 +149,13 @@
         /// </summary>
         protected override void OnEnd()
         {
+            this.SnapshotCallback?.Invoke(this.Snapshot);
+            this.PointerPoolCallback?.Invoke(this.PointerPool);
+
+            this.UpdateProgress(ScheduledTask.MaximumProgress);
+
+            this.Snapshot = null;
+            this.PointerPool = null;
         }
 
         /// <summary>

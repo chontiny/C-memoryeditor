@@ -12,14 +12,15 @@
     /// <summary>
     /// A scanner to discard invalid regions
     /// </summary>
-    internal class FinalizerScan : ScannerBase
+    internal class FinalizerScan : ScheduledTask
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FinalizerScan" /> class.
         /// </summary>
         public FinalizerScan(Snapshot snapshot) : base(
-            scannerName: "Finalizer",
-            isRepeated: false)
+            taskName: "Finalizer",
+            isRepeated: false,
+            trackProgress: true)
         {
             this.Snapshot = snapshot;
             this.ProgressLock = new Object();
@@ -89,7 +90,6 @@
             this.Snapshot = new Snapshot(validRegions, this.Snapshot.SnapshotName);
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
-            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>
@@ -99,8 +99,6 @@
         {
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
             Snapshot = null;
-
-            base.OnEnd();
         }
     }
     //// End class

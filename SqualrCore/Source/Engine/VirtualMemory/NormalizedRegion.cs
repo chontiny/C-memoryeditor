@@ -147,9 +147,9 @@
         /// </summary>
         /// <param name="address">The address for which to search.</param>
         /// <returns>True if the address is contained.</returns>
-        public virtual Boolean ContainsAddress(IntPtr address)
+        public virtual Boolean ContainsAddress(UInt64 address)
         {
-            if (address.ToUInt64() >= this.BaseAddress.ToUInt64() && address.ToUInt64() <= this.EndAddress.ToUInt64())
+            if (address >= this.BaseAddress.ToUInt64() && address <= this.EndAddress.ToUInt64())
             {
                 return true;
             }

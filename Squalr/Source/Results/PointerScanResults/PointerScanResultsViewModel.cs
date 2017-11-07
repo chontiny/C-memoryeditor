@@ -9,7 +9,6 @@
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Utils.Extensions;
     using System;
-    using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
@@ -76,7 +75,6 @@
             this.PreviousPageCommand = new RelayCommand(() => Task.Run(() => this.PreviousPage()), () => true);
             this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
             this.AddAddressCommand = new RelayCommand<PointerScanResult>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
-            this.PointerScanResultsObservers = new List<IPointerScanResultsObserver>();
             this.ObserverLock = new Object();
             this.ActiveType = typeof(Int32);
             this.addresses = new ObservableCollection<PointerScanResult>();
@@ -142,7 +140,6 @@
             set
             {
                 this.activeType = value;
-                this.NotifyObservers();
                 this.RaisePropertyChanged(nameof(this.ActiveType));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeName));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeImage));
@@ -274,48 +271,12 @@
         private Object ObserverLock { get; set; }
 
         /// <summary>
-        /// Gets or sets objects observing changes in the active snapshot.
-        /// </summary>
-        private List<IPointerScanResultsObserver> PointerScanResultsObservers { get; set; }
-
-        /// <summary>
         /// Gets a singleton instance of the <see cref="PointerScanResultsViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
         public static PointerScanResultsViewModel GetInstance()
         {
             return PointerScanResultsViewModel.pointerScanResultsViewModelInstance.Value;
-        }
-
-        /// <summary>
-        /// Subscribes the given object to changes in the active snapshot.
-        /// </summary>
-        /// <param name="snapshotObserver">The object to observe active snapshot changes.</param>
-        public void Subscribe(IPointerScanResultsObserver snapshotObserver)
-        {
-            lock (this.ObserverLock)
-            {
-                if (!this.PointerScanResultsObservers.Contains(snapshotObserver))
-                {
-                    this.PointerScanResultsObservers.Add(snapshotObserver);
-                    snapshotObserver.Update(this.ActiveType);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Unsubscribes the given object from changes in the active snapshot.
-        /// </summary>
-        /// <param name="snapshotObserver">The object to observe active snapshot changes.</param>
-        public void Unsubscribe(IPointerScanResultsObserver snapshotObserver)
-        {
-            lock (this.ObserverLock)
-            {
-                if (this.PointerScanResultsObservers.Contains(snapshotObserver))
-                {
-                    this.PointerScanResultsObservers.Remove(snapshotObserver);
-                }
-            }
         }
 
         /// <summary>
@@ -397,20 +358,6 @@
         private void AddAddress(PointerScanResult scanResult)
         {
             ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, typeof(Int32));
-        }
-
-        /// <summary>
-        /// Notify all observing objects of an active type change.
-        /// </summary>
-        private void NotifyObservers()
-        {
-            lock (this.ObserverLock)
-            {
-                foreach (IPointerScanResultsObserver observer in this.PointerScanResultsObservers)
-                {
-                    observer.Update(this.ActiveType);
-                }
-            }
         }
     }
     //// End class

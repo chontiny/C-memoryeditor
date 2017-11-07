@@ -11,14 +11,15 @@
     /// <summary>
     /// Collect values for the current snapshot, or a new one if none exists. The values are then assigned to a new snapshot.
     /// </summary>
-    internal class ValueCollectorModel : ScannerBase
+    internal class ValueCollectorModel : ScheduledTask
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueCollectorModel" /> class.
         /// </summary>
         public ValueCollectorModel(Action<Snapshot> callback = null) : base(
-            scannerName: "Value Collector",
-            isRepeated: false)
+            taskName: "Value Collector",
+            isRepeated: false,
+            trackProgress: true)
         {
             this.CallBack = callback;
             this.ProgressLock = new Object();
@@ -44,9 +45,7 @@
         /// </summary>
         protected override void OnBegin()
         {
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
-
-            base.OnBegin();
+            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.TaskName);
         }
 
         /// <summary>
@@ -91,8 +90,6 @@
                 });
 
             cancellationToken.ThrowIfCancellationRequested();
-
-            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>
@@ -112,8 +109,6 @@
             this.Snapshot = null;
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
-
-            base.OnEnd();
         }
     }
     //// End class

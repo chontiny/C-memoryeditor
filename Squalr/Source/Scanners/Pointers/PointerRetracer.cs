@@ -29,14 +29,14 @@
         /// <summary>
         /// Creates an instance of the <see cref="PointerRetracer" /> class.
         /// </summary>
-        public PointerRetracer() : base(
+        public PointerRetracer(UInt64 targetAddress) : base(
             taskName: "Pointer Retracer",
             isRepeated: false,
-            trackProgress: false)
+            trackProgress: true)
         {
             this.AccessLock = new Object();
 
-            this.Dependencies.Enqueue(new PointerBackTracer());
+            this.Dependencies.Enqueue(new PointerBackTracer(targetAddress));
         }
 
         /// <summary>

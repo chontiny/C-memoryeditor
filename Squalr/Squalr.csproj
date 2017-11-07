@@ -311,13 +311,11 @@
     <Compile Include="Source\Prefilters\Prefilter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
-    <Compile Include="Source\Results\PointerScanResults\IPointerScanResultsObserver.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
     <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerRetracer.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerTracer.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerBackTracer.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerScannerViewModel.cs" />
@@ -344,7 +342,6 @@
     <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterModel.cs" />
     <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterViewModel.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorViewModel.cs" />
-    <Compile Include="Source\Scanners\ScannerBase.cs" />
     <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderViewModel.cs" />
     <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderModel.cs" />
     <Compile Include="Source\Scanners\ManualScanner\ManualScannerViewModel.cs" />

@@ -14,14 +14,15 @@
     /// <summary>
     /// A memory scanning class for classic manual memory scanning techniques.
     /// </summary>
-    internal class ManualScan : ScannerBase
+    internal class ManualScan : ScheduledTask
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ManualScan" /> class.
         /// </summary>
         public ManualScan() : base(
-            scannerName: "Manual Scan",
-            isRepeated: false)
+            taskName: "Manual Scan",
+            isRepeated: false,
+            trackProgress: true)
         {
             this.ProgressLock = new Object();
 
@@ -58,7 +59,7 @@
         protected override void OnBegin()
         {
             // Initialize snapshot
-            this.Snapshot = this.Snapshot?.Clone(this.ScannerName);
+            this.Snapshot = this.Snapshot?.Clone(this.TaskName);
 
             if (this.Snapshot == null || this.ScanConstraintManager == null || this.ScanConstraintManager.Count() <= 0)
             {
@@ -132,8 +133,6 @@
                 cancellationToken.ThrowIfCancellationRequested();
             }
             //// End foreach Constraint
-
-            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>
@@ -147,8 +146,6 @@
             this.Snapshot = null;
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
-
-            base.OnEnd();
         }
 
         /// <summary>
