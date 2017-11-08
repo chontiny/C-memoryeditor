@@ -4,12 +4,12 @@
     using Disassembler;
 
     /// <summary>
-    /// A class containing an x86/64 assembler and disassembler
+    /// A class containing an x86/64 assembler and disassembler.
     /// </summary>
     internal class Architecture86_64 : IArchitecture
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Architecture86_64" /> class
+        /// Initializes a new instance of the <see cref="Architecture86_64" /> class.
         /// </summary>
         public Architecture86_64()
         {
@@ -18,28 +18,28 @@
         }
 
         /// <summary>
-        /// Gets an x86/x64 assembler
+        /// Gets an x86/x64 assembler.
         /// </summary>
         public IAssembler Assembler { get; private set; }
 
         /// <summary>
-        /// Gets an x86/x64 disassembler
+        /// Gets an x86/x64 disassembler.
         /// </summary>
         public IDisassembler Disassembler { get; private set; }
 
         /// <summary>
-        /// Gets an x86/x64 instruction assembler
+        /// Gets an x86/x64 instruction assembler.
         /// </summary>
-        /// <returns>An x86/x64 assembler</returns>
+        /// <returns>An x86/x64 assembler.</returns>
         public IAssembler GetAssembler()
         {
             return this.Assembler;
         }
 
         /// <summary>
-        /// Gets an x86/x64 instruction disassembler
+        /// Gets an x86/x64 instruction disassembler.
         /// </summary>
-        /// <returns>An x86/x64 disassembler</returns>
+        /// <returns>An x86/x64 disassembler.</returns>
         public IDisassembler GetDisassembler()
         {
             return this.Disassembler;

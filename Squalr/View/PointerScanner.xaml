@@ -20,7 +20,7 @@
             </Grid.RowDefinitions>
             <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
                 <Menu Padding="4" Background="Transparent">
-                    <MenuItem Command="{Binding StartScanCommand}" ToolTip="Start Pointer Scan">
+                    <MenuItem Command="{Binding StartScanCommand}" ToolTip="Start Pointer Scan/Rescan">
                         <MenuItem.Header>
                             <Image
                                 Width="16"

@@ -59,7 +59,7 @@
         /// <summary>
         /// The list of discovered pointers.
         /// </summary>
-        private DiscoveredPointers discoveredPointers;
+        private ScannedPointers discoveredPointers;
 
         /// <summary>
         /// The pointer read interval in milliseconds
@@ -281,7 +281,7 @@
         /// <summary>
         /// Gets or sets the list of discovered pointers.
         /// </summary>
-        private DiscoveredPointers DiscoveredPointers
+        public ScannedPointers DiscoveredPointers
         {
             get
             {
@@ -291,6 +291,10 @@
             set
             {
                 this.discoveredPointers = value;
+
+                this.ResultCount = discoveredPointers == null ? 0 : discoveredPointers.Count;
+                this.CurrentPage = 0;
+
                 this.RaisePropertyChanged(nameof(this.DiscoveredPointers));
             }
         }
@@ -302,17 +306,6 @@
         public static PointerScanResultsViewModel GetInstance()
         {
             return PointerScanResultsViewModel.pointerScanResultsViewModelInstance.Value;
-        }
-
-        /// <summary>
-        /// Sets the discovered pointers.
-        /// </summary>
-        /// <param name="discoveredPointers">The discovered pointers.</param>
-        public void SetDiscoveredPointers(DiscoveredPointers discoveredPointers)
-        {
-            this.DiscoveredPointers = discoveredPointers;
-            this.ResultCount = discoveredPointers == null ? 0 : discoveredPointers.Count;
-            this.CurrentPage = 0;
         }
 
         /// <summary>

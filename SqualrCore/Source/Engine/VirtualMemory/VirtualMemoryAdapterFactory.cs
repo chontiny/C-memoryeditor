@@ -18,7 +18,7 @@
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Gets an adapter to the virtual memory.
+        /// Gets an adapter to the virtual memory of another process.
         /// </summary>
         /// <returns>An adapter that provides access to the virtual memory of a process.</returns>
         public static IVirtualMemoryAdapter GetVirtualMemoryAdapter()

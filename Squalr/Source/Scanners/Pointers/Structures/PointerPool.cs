@@ -12,13 +12,22 @@
     /// </summary>
     internal class PointerPool : IEnumerable<KeyValuePair<UInt64, UInt64>>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PointerPool" /> class.
+        /// </summary>
         public PointerPool()
         {
             this.Pointers = new ConcurrentDictionary<UInt64, UInt64>();
         }
 
+        /// <summary>
+        /// Gets or sets the collection of pointers in this pool.
+        /// </summary>
         public ConcurrentDictionary<UInt64, UInt64> Pointers { get; set; }
 
+        /// <summary>
+        /// Gets the number of pointers in this pool.
+        /// </summary>
         public Int32 Count
         {
             get
@@ -27,18 +36,9 @@
             }
         }
 
-        public UInt64 this[UInt64 key]
-        {
-            get
-            {
-                return Pointers[key];
-            }
-            set
-            {
-                this.Pointers[key] = value;
-            }
-        }
-
+        /// <summary>
+        /// Gets the collection of pointer addresses in this pool.
+        /// </summary>
         public ICollection<UInt64> PointerAddresses
         {
             get
@@ -47,6 +47,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the collection of pointer destinations in this pool.
+        /// </summary>
         public ICollection<UInt64> PointerDestinations
         {
             get
@@ -55,27 +58,54 @@
             }
         }
 
-        public IEnumerator GetEnumerator()
+        /// <summary>
+        /// Indexer to allow the retrieval of the pointer destination given the pointer source.
+        /// </summary>
+        /// <param name="key">The pointer.</param>
+        /// <returns>Returns the pointer destination at the specified index.</returns>
+        public UInt64 this[UInt64 key]
         {
-            return ((IEnumerable)Pointers).GetEnumerator();
+            get
+            {
+                return this.Pointers[key];
+            }
+
+            set
+            {
+                this.Pointers[key] = value;
+            }
         }
 
+        /// <summary>
+        /// Returns an interator to the pointers in this collection.
+        /// </summary>
+        /// <returns>An interator to the pointers in this collection.</returns>
+        public IEnumerator GetEnumerator()
+        {
+            return ((IEnumerable)this.Pointers).GetEnumerator();
+        }
+
+        /// <summary>
+        /// Returns an interator to the pointers in this collection.
+        /// </summary>
+        /// <returns>An interator to the pointers in this collection.</returns>
         IEnumerator<KeyValuePair<UInt64, UInt64>> IEnumerable<KeyValuePair<UInt64, UInt64>>.GetEnumerator()
         {
-            return Pointers.GetEnumerator();
+            return this.Pointers.GetEnumerator();
         }
 
         /// <summary>
         /// Finds the offsets between a pointer and the pointers of this level.
         /// </summary>
-        /// <param name="previousPointerLevel"></param>
-        public IEnumerable<Int32> FindOffsets(UInt64 pointer, UInt32 pointerRadius)
+        /// <param name="pointerDestination">The pointer destination.</param>
+        /// <param name="pointerRadius">How far to search in each direction from the given pointer.</param>
+        /// <returns>The list of valid offsets from the destination pointer that point to a pointer in this pool.</returns>
+        public IEnumerable<Int32> FindOffsets(UInt64 pointerDestination, UInt32 pointerRadius)
         {
-            return this
-                .PointerAddresses
+            return this.PointerAddresses
                 .Select(x => x)
-                .Where(x => (x > pointer - pointerRadius) && (x < pointer + pointerRadius))
-                .Select(x => (x > pointer) ? (x - pointer).ToInt32() : -((pointer - x).ToInt32()));
+                .Where(x => (x > pointerDestination - pointerRadius) && (x < pointerDestination + pointerRadius))
+                .Select(x => x > pointerDestination ? (x - pointerDestination).ToInt32() : -(pointerDestination - x).ToInt32());
         }
     }
     //// End class

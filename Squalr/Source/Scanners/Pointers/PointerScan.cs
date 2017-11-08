@@ -89,7 +89,7 @@
         /// <summary>
         /// Gets or sets the discovered pointers from the pointer scan.
         /// </summary>
-        private DiscoveredPointers DiscoveredPointers { get; set; }
+        private ScannedPointers DiscoveredPointers { get; set; }
 
         /// <summary>
         /// Gets or sets a lock object for updating scan progress.
@@ -101,7 +101,7 @@
         /// </summary>
         protected override void OnBegin()
         {
-            this.DiscoveredPointers = new DiscoveredPointers();
+            this.DiscoveredPointers = new ScannedPointers();
 
             if (this.LevelPointers == null || this.LevelPointers.Count <= 0)
             {
@@ -174,7 +174,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            PointerScanResultsViewModel.GetInstance().SetDiscoveredPointers(this.DiscoveredPointers);
+            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.DiscoveredPointers;
 
             this.LevelPointers = null;
             this.DiscoveredPointers = null;

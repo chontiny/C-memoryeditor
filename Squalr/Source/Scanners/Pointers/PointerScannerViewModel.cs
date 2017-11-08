@@ -50,8 +50,8 @@
             this.SetAddressCommand = new RelayCommand<UInt64>((newValue) => this.TargetAddress = newValue, (newValue) => true);
             this.SetDepthCommand = new RelayCommand<UInt32>((newValue) => this.PointerDepth = newValue, (newValue) => true);
             this.SetPointerRadiusCommand = new RelayCommand<UInt32>((newValue) => this.PointerRadius = newValue, (newValue) => true);
-            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.PointerScan.Start()), () => true);
-            this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.PointerScan.Cancel()), () => true);
+            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
+            this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.CancelScan()), () => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -138,12 +138,33 @@
         private PointerScan PointerScan { get; set; }
 
         /// <summary>
+        /// Gets or sets the pointer rescan task.
+        /// </summary>
+        private PointerRescan PointerRescan { get; set; }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="ChangeCounterViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
         public static PointerScannerViewModel GetInstance()
         {
             return inputCorrelatorViewModelInstance.Value;
+        }
+
+        /// <summary>
+        /// Starts the pointer scan or rescan.
+        /// </summary>
+        private void StartScan()
+        {
+            this.PointerScan.Start();
+        }
+
+        /// <summary>
+        /// Cancels the pointer scan or rescan.
+        /// </summary>
+        private void CancelScan()
+        {
+            this.PointerScan.Cancel();
         }
     }
     //// End class
