@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.Utils
 {
     using System;
+    using System.Globalization;
 
     /// <summary>
     /// A static class used to check syntax for various values and types
@@ -107,6 +108,23 @@
                 value = value.Substring(1);
             }
 
+            // Remove negative sign from signed integer types, as TryParse methods do not handle negative hex values
+            switch (Type.GetTypeCode(valueType))
+            {
+                case TypeCode.Byte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                    if (value.StartsWith("-"))
+                    {
+                        value = value.Substring(1);
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+
             switch (Type.GetTypeCode(valueType))
             {
                 case TypeCode.Byte:
@@ -140,13 +158,13 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsByte(String value, Boolean isHex = false)
+        private static Boolean IsByte(String value, Boolean isHex = false)
         {
             Byte temp;
 
             if (isHex)
             {
-                return Byte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out temp);
+                return Byte.TryParse(value, NumberStyles.HexNumber, null, out temp);
             }
             else
             {
@@ -160,13 +178,13 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsSByte(String value, Boolean isHex = false)
+        private static Boolean IsSByte(String value, Boolean isHex = false)
         {
             SByte temp;
 
             if (isHex)
             {
-                return SByte.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out temp);
+                return SByte.TryParse(value, NumberStyles.HexNumber, null, out temp);
             }
             else
             {
@@ -180,13 +198,13 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsInt16(String value, Boolean isHex = false)
+        private static Boolean IsInt16(String value, Boolean isHex = false)
         {
             Int16 temp;
 
             if (isHex)
             {
-                return Int16.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out temp);
+                return Int16.TryParse(value, NumberStyles.HexNumber, null, out temp);
             }
             else
             {
@@ -200,13 +218,13 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsUInt16(String value, Boolean isHex = false)
+        private static Boolean IsUInt16(String value, Boolean isHex = false)
         {
             UInt16 temp;
 
             if (isHex)
             {
-                return UInt16.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out temp);
+                return UInt16.TryParse(value, NumberStyles.HexNumber, null, out temp);
             }
             else
             {
@@ -220,13 +238,13 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsInt32(String value, Boolean isHex = false)
+        private static Boolean IsInt32(String value, Boolean isHex = false)
         {
             Int32 temp;
 
             if (isHex)
             {
-                return Int32.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out temp);
+                return Int32.TryParse(value, NumberStyles.HexNumber, null, out temp);
             }
             else
             {
@@ -240,13 +258,13 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsUInt32(String value, Boolean isHex = false)
+        private static Boolean IsUInt32(String value, Boolean isHex = false)
         {
             UInt32 temp;
 
             if (isHex)
             {
-                return UInt32.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out temp);
+                return UInt32.TryParse(value, NumberStyles.HexNumber, null, out temp);
             }
             else
             {
@@ -260,13 +278,13 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsInt64(String value, Boolean isHex = false)
+        private static Boolean IsInt64(String value, Boolean isHex = false)
         {
             Int64 temp;
 
             if (isHex)
             {
-                return Int64.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out temp);
+                return Int64.TryParse(value, NumberStyles.HexNumber, null, out temp);
             }
             else
             {
@@ -280,13 +298,13 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsUInt64(String value, Boolean isHex = false)
+        private static Boolean IsUInt64(String value, Boolean isHex = false)
         {
             UInt64 temp;
 
             if (isHex)
             {
-                return UInt64.TryParse(value, System.Globalization.NumberStyles.HexNumber, null, out temp);
+                return UInt64.TryParse(value, NumberStyles.HexNumber, null, out temp);
             }
             else
             {
@@ -300,7 +318,7 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsSingle(String value, Boolean isHex = false)
+        private static Boolean IsSingle(String value, Boolean isHex = false)
         {
             Single temp;
 
@@ -320,7 +338,7 @@
         /// <param name="value">The value as a string</param>
         /// <param name="isHex">Whether or not the value is encoded in hex</param>
         /// <returns>A boolean indicating if the value could be parsed</returns>
-        public static Boolean IsDouble(String value, Boolean isHex = false)
+        private static Boolean IsDouble(String value, Boolean isHex = false)
         {
             Double temp;
 

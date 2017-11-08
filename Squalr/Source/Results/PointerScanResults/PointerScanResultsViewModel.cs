@@ -8,6 +8,7 @@
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
     using System.Linq;
@@ -66,12 +67,20 @@
         private const Int32 PointerReadIntervalMs = 1600;
 
         /// <summary>
+        /// The selected scan results.
+        /// </summary>
+        private IEnumerable<PointerItem> selectedScanResults;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="PointerScanResultsViewModel" /> class from being created.
         /// </summary>
         private PointerScanResultsViewModel() : base("Pointer Scan Results")
         {
             this.ContentId = PointerScanResultsViewModel.ToolContentId;
 
+            this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<PointerItem>(), (selectedItems) => true);
+            this.AddScanResultCommand = new RelayCommand<PointerItem>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
+            this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
             this.ChangeTypeCommand = new RelayCommand<Type>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
@@ -86,6 +95,21 @@
 
             this.UpdateScanResults();
         }
+
+        /// <summary>
+        /// Gets or sets the command to select scan results.
+        /// </summary>
+        public ICommand SelectScanResultsCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add a scan result to the project explorer.
+        /// </summary>
+        public ICommand AddScanResultCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add all selected scan results to the project explorer.
+        /// </summary>
+        public ICommand AddScanResultsCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to change the active data type.
@@ -116,6 +140,22 @@
         /// Gets the command to select a target process.
         /// </summary>
         public ICommand AddAddressCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the selected scan results.
+        /// </summary>
+        public IEnumerable<PointerItem> SelectedScanResults
+        {
+            get
+            {
+                return this.selectedScanResults;
+            }
+
+            set
+            {
+                this.selectedScanResults = value;
+            }
+        }
 
         public Type ActiveType
         {
@@ -273,6 +313,29 @@
             this.DiscoveredPointers = discoveredPointers;
             this.ResultCount = discoveredPointers == null ? 0 : discoveredPointers.Count;
             this.CurrentPage = 0;
+        }
+
+        /// <summary>
+        /// Adds the given scan result to the project explorer.
+        /// </summary>
+        /// <param name="scanResult">The scan result to add to the project explorer.</param>
+        private void AddScanResult(PointerItem scanResult)
+        {
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResult);
+        }
+
+        /// <summary>
+        /// Adds the given scan results to the project explorer.
+        /// </summary>
+        /// <param name="scanResults">The scan results to add to the project explorer.</param>
+        private void AddScanResults(IEnumerable<PointerItem> scanResults)
+        {
+            if (scanResults == null)
+            {
+                return;
+            }
+
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResults.ToArray());
         }
 
         /// <summary>

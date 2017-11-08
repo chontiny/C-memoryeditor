@@ -100,7 +100,7 @@
 
             Snapshot previousLevelSnapshot = destinationSnapshot;
 
-            for (Int32 level = 0; level <= this.PointerDepth; level++)
+            for (Int32 level = 1; level <= this.PointerDepth; level++)
             {
                 PointerPool currentLevelPointers = new PointerPool();
                 PointerPool currentPointers = level == this.PointerDepth ? this.ModulePointers : this.HeapPointers;

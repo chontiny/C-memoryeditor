@@ -2,8 +2,10 @@
 {
     using SqualrCore.Source.Utils;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Globalization;
+    using System.Linq;
     using System.Windows.Data;
 
     /// <summary>
@@ -26,23 +28,16 @@
                 return String.Empty;
             }
 
-            if (value is IEnumerable<Int32>)
+            if (value.GetType().GetInterfaces().Contains(typeof(IEnumerable)))
             {
-                String result = String.Empty;
+                IEnumerable<Object> trueValue = (value as IEnumerable).Cast<Object>();
 
-                foreach (Int32 offset in (value as IEnumerable<Int32>))
+                if (trueValue.Count() <= 0)
                 {
-                    if (offset < 0)
-                    {
-                        result += "-" + Conversions.ToHex<Int32>(-offset, formatAsAddress: false) + ", ";
-                    }
-                    else
-                    {
-                        result += Conversions.ToHex<Int32>(offset, formatAsAddress: false) + ", ";
-                    }
+                    return "(None)";
                 }
 
-                return result.TrimEnd(',', ' ');
+                return String.Join(", ", trueValue.Select(x => Conversions.ParsePrimitiveAsHexString(x.GetType(), x, signHex: true)));
             }
 
             return String.Empty;

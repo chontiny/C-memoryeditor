@@ -7,7 +7,6 @@
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.PropertyViewer;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -150,7 +149,6 @@
             set
             {
                 this.selectedScanResults = value;
-                PropertyViewerViewModel.GetInstance().SetTargetObjects(this.SelectedScanResults?.ToArray());
             }
         }
 

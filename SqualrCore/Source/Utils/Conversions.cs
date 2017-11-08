@@ -71,10 +71,11 @@
         /// </summary>
         /// <param name="valueType">The data type of the value.</param>
         /// <param name="value">The raw value.</param>
+        /// <param name="signHex">Whether to sign the hex value for signed interger types.</param>
         /// <returns>The converted hex string.</returns>
-        public static String ParsePrimitiveAsHexString(Type valueType, Object value)
+        public static String ParsePrimitiveAsHexString(Type valueType, Object value, Boolean signHex = false)
         {
-            return ParsePrimitiveStringAsHexString(valueType, value?.ToString());
+            return ParsePrimitiveStringAsHexString(valueType, value?.ToString(), signHex);
         }
 
         /// <summary>
@@ -82,8 +83,9 @@
         /// </summary>
         /// <param name="valueType">The value type.</param>
         /// <param name="value">The hex string to parse.</param>
+        /// <param name="signHex">Whether to sign the hex value for signed interger types.</param>
         /// <returns>The converted value from the hex.</returns>
-        public static String ParsePrimitiveStringAsHexString(Type valueType, String value)
+        public static String ParsePrimitiveStringAsHexString(Type valueType, String value, Boolean signHex = false)
         {
             Object realValue = ParsePrimitiveStringAsPrimitive(valueType, value);
 
@@ -91,15 +93,15 @@
             {
                 case TypeCode.Byte:
                 case TypeCode.Char:
-                    return ((Byte)realValue).ToString("X");
+                    return (signHex && (Byte)realValue < 0) ? ("-" + (-(Byte)realValue).ToString("X")) : ((Byte)realValue).ToString("X");
                 case TypeCode.SByte:
                     return ((SByte)realValue).ToString("X");
                 case TypeCode.Int16:
-                    return ((Int16)realValue).ToString("X");
+                    return (signHex && (Int16)realValue < 0) ? ("-" + (-(Int16)realValue).ToString("X")) : ((Int16)realValue).ToString("X");
                 case TypeCode.Int32:
-                    return ((Int32)realValue).ToString("X");
+                    return (signHex && (Int32)realValue < 0) ? ("-" + (-(Int32)realValue).ToString("X")) : ((Int32)realValue).ToString("X");
                 case TypeCode.Int64:
-                    return ((Int64)realValue).ToString("X");
+                    return (signHex && (Int64)realValue < 0) ? ("-" + (-(Int64)realValue).ToString("X")) : ((Int64)realValue).ToString("X");
                 case TypeCode.UInt16:
                     return ((UInt16)realValue).ToString("X");
                 case TypeCode.UInt32:
@@ -131,7 +133,33 @@
         /// <returns>The converted value from the dec.</returns>
         public static String ParseHexStringAsPrimitiveString(Type valueType, String value)
         {
+            Boolean signedHex = false;
+
+            switch (Type.GetTypeCode(valueType))
+            {
+                case TypeCode.Byte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                    if (value.StartsWith("-"))
+                    {
+                        value = value.Substring(1);
+                        signedHex = true;
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+
             UInt64 realValue = Conversions.AddressToValue(value);
+            String result = String.Empty;
+
+            // Negate the parsed value if the hex string is signed
+            if (signedHex)
+            {
+                realValue = (-realValue.ToInt64()).ToUInt64();
+            }
 
             switch (Type.GetTypeCode(valueType))
             {

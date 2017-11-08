@@ -25,7 +25,7 @@
                 return String.Empty;
             }
 
-            return Conversions.ParsePrimitiveAsHexString(value.GetType(), value);
+            return Conversions.ParsePrimitiveAsHexString(value.GetType(), value, signHex: true);
         }
 
         /// <summary>
