@@ -93,10 +93,6 @@
             IEnumerable<SnapshotRegion> regions = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new SnapshotRegion(region));
             Snapshot moduleSnapshot = new Snapshot(regions);
 
-            // TODO: This is a hacky way of finding the first non-PEB region of memory to set a lower bound, which improves pointer collection speed
-            // Something a little cleaner would be ideal.
-            UInt64 pointerMinumum = Math.Max(UInt16.MaxValue, this.Snapshot.GetSnapshotRegions().Skip(1).First().BaseAddress.ToUInt64());
-
             // Process the allowed amount of chunks from the priority queue
             Parallel.ForEach(
                 this.Snapshot.Cast<SnapshotRegion>(),
@@ -116,7 +112,7 @@
                             UInt32 value = unchecked((UInt32)element.GetCurrentValue());
 
                             // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
-                            if (value < pointerMinumum || value % sizeof(UInt32) != 0)
+                            if (value < UInt16.MaxValue || value % sizeof(UInt32) != 0)
                             {
                                 continue;
                             }
@@ -143,7 +139,7 @@
                             UInt64 value = unchecked((UInt64)element.GetCurrentValue());
 
                             // Enforce 8-byte alignment of destination, and filter out small (invalid) pointers
-                            if (value < pointerMinumum || value % sizeof(UInt64) != 0)
+                            if (value < UInt16.MaxValue || value % sizeof(UInt64) != 0)
                             {
                                 continue;
                             }

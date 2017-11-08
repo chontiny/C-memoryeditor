@@ -2,9 +2,10 @@
 {
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
 
-    internal class PointerBranch
+    internal class PointerBranch : IEnumerable<PointerBranch>
     {
         public PointerBranch(Int32 offset)
         {
@@ -27,6 +28,16 @@
             {
                 this.Branches.Add(new PointerBranch(offset));
             }
+        }
+
+        public IEnumerator<PointerBranch> GetEnumerator()
+        {
+            return Branches.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Branches.GetEnumerator();
         }
     }
 }

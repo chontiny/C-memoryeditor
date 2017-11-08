@@ -3,7 +3,6 @@
     using Squalr.Source.Scanners.Pointers.Discovered;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -75,58 +74,57 @@
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
             IList<PointerRoot> pointerRoots = new List<PointerRoot>();
-            PointerPool previousPointers = this.LevelPointers.ModulePointers;
 
             cancellationToken.ThrowIfCancellationRequested();
 
             // Collect pointer roots
-            foreach (KeyValuePair<UInt64, UInt64> modulePointer in this.LevelPointers.ModulePointers)
+            foreach (UInt64 modulePointer in this.LevelPointers.ModulePointerPool.PointerAddresses)
             {
-                pointerRoots.Add(new PointerRoot(modulePointer.Key));
+                pointerRoots.Add(new PointerRoot(modulePointer));
             }
 
-            foreach (PointerPool currentPointers in this.LevelPointers.HeapPointerLevels)
+            // Build out pointer paths via a DFS
+            foreach (PointerRoot pointerRoot in pointerRoots)
             {
-                // Build branches for this level
-                foreach (PointerRoot pointerRoot in pointerRoots)
+                PointerPool nextLevel = this.LevelPointers.HeapPointerPools.First();
+                UInt64 pointerDestination = this.LevelPointers.ModulePointerPool[pointerRoot.BaseAddress];
+
+                pointerRoot.AddOffsets(nextLevel.FindOffsets(pointerDestination, this.PointerRadius));
+
+                // Recurse on the branches
+                if (this.LevelPointers.HeapPointerPools.Count() > 1)
                 {
-                    // First iteration (starting from modules)
-                    if (previousPointers == this.LevelPointers.ModulePointers)
+                    foreach (PointerBranch branch in pointerRoot)
                     {
-                        UInt64 pointerDestination = previousPointers[pointerRoot.BaseAddress];
-
-                        IEnumerable<Int32> offsets = currentPointers
-                            .PointerAddresses
-                            .Select(x => x)
-                            .Where(x => (x > pointerDestination - this.PointerRadius) && (x < pointerDestination + this.PointerRadius))
-                            .Select(x => (x > pointerDestination) ? (x - pointerDestination).ToInt32() : -((pointerDestination - x).ToInt32()));
-
-                        pointerRoot.AddOffsets(offsets);
-                    }
-                    else
-                    {
-                        // Now iterate the branches
-                        foreach (PointerBranch pointerBranch in pointerRoot)
-                        {
-                            UInt64 moduleBase = this.LevelPointers.ModulePointers[pointerRoot.BaseAddress];
-                            UInt64 pointerDestination =
-                                (pointerBranch.Offset < 0
-                                ? previousPointers[moduleBase - unchecked((UInt32)(-pointerBranch.Offset))]
-                                : previousPointers[moduleBase + unchecked((UInt32)(pointerBranch.Offset))]);
-
-                            IEnumerable<Int32> offsets = currentPointers
-                                .PointerAddresses
-                                .Select(x => x)
-                                .Where(x => (x > pointerDestination - this.PointerRadius) && (x < pointerDestination + this.PointerRadius))
-                                .Select(x => (x > pointerDestination) ? (x - pointerDestination).ToInt32() : -((pointerDestination - x).ToInt32()));
-
-                            pointerBranch.AddOffsets(offsets);
-                        }
+                        this.BuildPointerPaths(this.ApplyOffset(pointerDestination, branch.Offset), branch, 0);
                     }
                 }
-
-                previousPointers = currentPointers;
             }
+        }
+
+        private void BuildPointerPaths(UInt64 currentPointer, PointerBranch pointerBranch, Int32 levelIndex)
+        {
+            PointerPool currentLevel = this.LevelPointers.HeapPointerPools.ElementAt(levelIndex);
+            PointerPool nextLevel = this.LevelPointers.HeapPointerPools.ElementAt(levelIndex + 1);
+            UInt64 pointerDestination = currentLevel[currentPointer];
+
+            pointerBranch.AddOffsets(nextLevel.FindOffsets(pointerDestination, this.PointerRadius));
+
+            // Stop recursing if no more levels
+            if (levelIndex + 1 >= this.LevelPointers.HeapPointerPools.Count() - 1)
+            {
+                return;
+            }
+
+            foreach (PointerBranch branch in pointerBranch)
+            {
+                this.BuildPointerPaths(this.ApplyOffset(pointerDestination, branch.Offset), branch, levelIndex + 1);
+            }
+        }
+
+        private UInt64 ApplyOffset(UInt64 address, Int32 offset)
+        {
+            return (offset < 0 ? address - unchecked((UInt32)(-offset)) : address + unchecked((UInt32)(offset)));
         }
 
         /// <summary>

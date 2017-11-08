@@ -96,12 +96,12 @@
 
             // Create a snapshot only containing the destination
             Snapshot destinationSnapshot = new Snapshot();
-            PointerPool targetPointers = new PointerPool();
             SnapshotRegion destinationRegion = new SnapshotRegion(this.TargetAddress.ToIntPtr(), 1);
             destinationRegion.Expand(this.PointerRadius);
             destinationSnapshot.AddSnapshotRegions(destinationRegion);
 
             // Put the target address as the first level
+            PointerPool targetPointers = new PointerPool();
             targetPointers[this.TargetAddress] = 0;
             this.LevelPointers.AddLevel(targetPointers);
 

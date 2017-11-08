@@ -8,33 +8,36 @@
     {
         public LevelPointers()
         {
-            this.Pointers = new List<PointerPool>();
+            this.PointerPools = new List<PointerPool>();
         }
 
-        public IList<PointerPool> Pointers { get; set; }
+        public IList<PointerPool> PointerPools { get; set; }
 
-        public PointerPool ModulePointers
+        public PointerPool ModulePointerPool
         {
             get
             {
-                return this.Pointers.Last();
+                return this.PointerPools.First();
             }
         }
 
-        public PointerPool DestinationPointer
+        public PointerPool DestinationPointerPool
         {
             get
             {
-                return this.Pointers.First();
+                return this.PointerPools.Last();
             }
         }
 
-        public IEnumerable<PointerPool> HeapPointerLevels
+        /// <summary>
+        /// Gets the heap pointer pools. This includes the destination pool (although technically it may not be in the heap).
+        /// </summary>
+        public IEnumerable<PointerPool> HeapPointerPools
         {
             get
             {
-                // Take all pointer pools, excluding the module pointers and destination pointer
-                return this.Pointers.Skip(1).Take(this.Pointers.Count - 2);
+                // Take all pointer pools, excluding the module pointers
+                return this.PointerPools.Skip(1).Take(this.PointerPools.Count - 1);
             }
         }
 
@@ -42,22 +45,13 @@
         {
             get
             {
-                return this.Pointers.Count;
+                return this.PointerPools.Count;
             }
         }
 
         public void AddLevel(PointerPool level)
         {
-            this.Pointers.Add(level);
-        }
-
-        /// <summary>
-        /// Finds the offsets between all pointers of a previous level, and the pointers of this level.
-        /// </summary>
-        /// <param name="previousPointerLevel"></param>
-        public void FindOffsets(PointerPool previousPointerLevel)
-        {
-
+            this.PointerPools.Insert(0, level);
         }
     }
     //// End class

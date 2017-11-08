@@ -1,9 +1,11 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// A class that contains a collection of pointers.
@@ -61,6 +63,19 @@
         IEnumerator<KeyValuePair<UInt64, UInt64>> IEnumerable<KeyValuePair<UInt64, UInt64>>.GetEnumerator()
         {
             return Pointers.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Finds the offsets between a pointer and the pointers of this level.
+        /// </summary>
+        /// <param name="previousPointerLevel"></param>
+        public IEnumerable<Int32> FindOffsets(UInt64 pointer, UInt32 pointerRadius)
+        {
+            return this
+                .PointerAddresses
+                .Select(x => x)
+                .Where(x => (x > pointer - pointerRadius) && (x < pointer + pointerRadius))
+                .Select(x => (x > pointer) ? (x - pointer).ToInt32() : -((pointer - x).ToInt32()));
         }
     }
     //// End class
