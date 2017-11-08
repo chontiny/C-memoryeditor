@@ -23,10 +23,10 @@
         {
             this.ProgressLock = new Object();
 
+            this.PointerBackTracer = new PointerBackTracer(this.SetLevelPointers);
+
             this.PointerDepth = 1;
             this.PointerRadius = 1024;
-
-            this.PointerBackTracer = new PointerBackTracer(this.PointerDepth, this.PointerRadius, this.SetLevelPointers);
 
             this.Dependencies.Enqueue(PointerBackTracer);
         }
@@ -37,16 +37,6 @@
         /// Gets or sets the collection of pointers at each depth.
         /// </summary>
         private LevelPointers LevelPointers { get; set; }
-
-        /// <summary>
-        /// Gets or sets the pointer depth of the scan.
-        /// </summary>
-        private UInt32 PointerDepth { get; set; }
-
-        /// <summary>
-        /// Gets or sets the pointer radius of the scan.
-        /// </summary>
-        private UInt32 PointerRadius { get; set; }
 
         /// <summary>
         /// Gets or sets the target address of the pointer scan.
@@ -61,6 +51,38 @@
             set
             {
                 this.PointerBackTracer.TargetAddress = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the pointer depth of the scan.
+        /// </summary>
+        public UInt32 PointerDepth
+        {
+            get
+            {
+                return this.PointerBackTracer.PointerDepth;
+            }
+
+            set
+            {
+                this.PointerBackTracer.PointerDepth = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the pointer radius of the scan.
+        /// </summary>
+        public UInt32 PointerRadius
+        {
+            get
+            {
+                return this.PointerBackTracer.PointerRadius;
+            }
+
+            set
+            {
+                this.PointerBackTracer.PointerRadius = value;
             }
         }
 

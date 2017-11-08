@@ -23,18 +23,13 @@
         /// <summary>
         /// Creates an instance of the <see cref="PointerBackTracer" /> class.
         /// </summary>
-        public PointerBackTracer(
-                UInt32 pointerDepth,
-                UInt32 pointerRadius,
-                Action<LevelPointers> levelPointersCallback) : base(
+        public PointerBackTracer(Action<LevelPointers> levelPointersCallback) : base(
             taskName: "Pointer Back Trace",
             isRepeated: false,
             trackProgress: true)
         {
             this.ProgressLock = new Object();
 
-            this.PointerDepth = pointerDepth;
-            this.PointerRadius = pointerRadius;
             this.LevelPointersCallback = levelPointersCallback;
 
             this.Dependencies.Enqueue(new PointerCollector(this.SetCollectedPointers));
@@ -53,12 +48,12 @@
         /// <summary>
         /// Gets or sets the pointer depth of the scan.
         /// </summary>
-        private UInt32 PointerDepth { get; set; }
+        public UInt32 PointerDepth { get; set; }
 
         /// <summary>
         /// Gets or sets the pointer radius of the scan.
         /// </summary>
-        private UInt32 PointerRadius { get; set; }
+        public UInt32 PointerRadius { get; set; }
 
         /// <summary>
         /// Gets or sets the target address of the pointer scan.
