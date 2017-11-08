@@ -1,5 +1,7 @@
 ﻿namespace SqualrCore.Source.Utils
 {
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Runtime.InteropServices;
 
@@ -40,7 +42,16 @@
                     return Single.Parse(value);
                 case TypeCode.Double:
                     return Double.Parse(value);
-                default: return null;
+                default:
+                    switch (valueType)
+                    {
+                        case Type _ when valueType == typeof(IntPtr):
+                            return EngineCore.GetInstance().Processes.IsSelf32Bit() ? new IntPtr(Int32.Parse(value)) : new IntPtr(Int64.Parse(value));
+                        case Type _ when valueType == typeof(UIntPtr):
+                            return EngineCore.GetInstance().Processes.IsSelf32Bit() ? new UIntPtr(UInt32.Parse(value)) : new UIntPtr(UInt64.Parse(value));
+                        default:
+                            return null;
+                    }
             }
         }
 
@@ -99,7 +110,16 @@
                     return BitConverter.ToUInt32(BitConverter.GetBytes((Single)realValue), 0).ToString("X");
                 case TypeCode.Double:
                     return BitConverter.ToUInt64(BitConverter.GetBytes((Double)realValue), 0).ToString("X");
-                default: return null;
+                default:
+                    switch (valueType)
+                    {
+                        case Type _ when valueType == typeof(IntPtr):
+                            return ((IntPtr)realValue).ToString("X");
+                        case Type _ when valueType == typeof(UIntPtr):
+                            return ((UIntPtr)realValue).ToIntPtr().ToString("X");
+                        default:
+                            return null;
+                    }
             }
         }
 
@@ -137,7 +157,16 @@
                     return BitConverter.ToSingle(BitConverter.GetBytes(unchecked((UInt32)realValue)), 0).ToString();
                 case TypeCode.Double:
                     return BitConverter.ToDouble(BitConverter.GetBytes(realValue), 0).ToString();
-                default: return null;
+                default:
+                    switch (valueType)
+                    {
+                        case Type _ when valueType == typeof(IntPtr):
+                            return ((IntPtr)realValue).ToString();
+                        case Type _ when valueType == typeof(UIntPtr):
+                            return ((UIntPtr)realValue).ToIntPtr().ToString();
+                        default:
+                            return null;
+                    }
             }
         }
 
@@ -146,8 +175,8 @@
         /// </summary>
         /// <typeparam name="T">The data type of the value being converted.</typeparam>
         /// <param name="value">The value to convert.</param>
-        /// <param name="formatAsAddress">Whether or not to use a zero padded address format.</param>
-        /// <param name="includePrefix">Whether or not to include the '0x' hex prefix.</param>
+        /// <param name="formatAsAddress">Whether to use a zero padded address format.</param>
+        /// <param name="includePrefix">Whether to include the '0x' hex prefix.</param>
         /// <returns>The value converted to hex.</returns>
         public static String ToHex<T>(T value, Boolean formatAsAddress = true, Boolean includePrefix = false)
         {

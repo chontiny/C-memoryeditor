@@ -26,7 +26,6 @@
 
     <shell:Grid Background="{StaticResource SqualrColorBlack}">
         <shell:Grid.Resources>
-            <converters:Int32ToHexConverter x:Key="Int32ToHexConverter" />
             <converters:HotkeyToStringConverter x:Key="HotkeyToStringConverter" />
         </shell:Grid.Resources>
         <shell:Grid.RowDefinitions>

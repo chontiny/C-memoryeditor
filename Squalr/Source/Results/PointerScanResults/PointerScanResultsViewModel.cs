@@ -1,15 +1,16 @@
 ﻿namespace Squalr.Source.Results.PointerScanResults
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections.Generic;
     using System.Collections.ObjectModel;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -52,12 +53,17 @@
         /// <summary>
         /// The addresses on the current page.
         /// </summary>
-        private ObservableCollection<PointerScanResult> addresses;
+        private ObservableCollection<PointerItem> addresses;
 
         /// <summary>
         /// The list of discovered pointers.
         /// </summary>
         private DiscoveredPointers discoveredPointers;
+
+        /// <summary>
+        /// The pointer read interval in milliseconds
+        /// </summary>
+        private const Int32 PointerReadIntervalMs = 1600;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="PointerScanResultsViewModel" /> class from being created.
@@ -71,10 +77,10 @@
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
             this.PreviousPageCommand = new RelayCommand(() => Task.Run(() => this.PreviousPage()), () => true);
             this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
-            this.AddAddressCommand = new RelayCommand<PointerScanResult>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
+            this.AddAddressCommand = new RelayCommand<PointerItem>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
 
             this.ActiveType = typeof(Int32);
-            this.addresses = new ObservableCollection<PointerScanResult>();
+            this.addresses = new ObservableCollection<PointerItem>();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
@@ -215,13 +221,20 @@
         }
 
         /// <summary>
-        /// Gets the address elements.
+        /// Gets or sets the address elements.
         /// </summary>
-        public ObservableCollection<PointerScanResult> Addresses
+        public ObservableCollection<PointerItem> Addresses
         {
             get
             {
                 return this.addresses;
+            }
+
+            set
+            {
+                this.addresses = value;
+
+                this.RaisePropertyChanged(nameof(this.Addresses));
             }
         }
 
@@ -267,15 +280,28 @@
         /// </summary>
         private void LoadPointerScanResults()
         {
-            ObservableCollection<PointerScanResult> newAddresses = new ObservableCollection<PointerScanResult>();
+            IList<PointerItem> newAddresses = new List<PointerItem>();
 
-            foreach (PointerRoot pointerRoot in DiscoveredPointers.PointerRoots)
+            UInt64 count = this.DiscoveredPointers.Count;
+            UInt64 startIndex = Math.Min(PointerScanResultsViewModel.PageSize * this.CurrentPage, count);
+            UInt64 endIndex = Math.Min((PointerScanResultsViewModel.PageSize * this.CurrentPage) + PointerScanResultsViewModel.PageSize, count);
+
+            for (UInt64 index = startIndex; index < endIndex; index++)
             {
-                newAddresses.Add(new PointerScanResult(pointerRoot.BaseAddress.ToIntPtr(), "TODO"));
+                PointerItem pointerItem = this.DiscoveredPointers[index];
+
+                if (pointerItem != null)
+                {
+                    newAddresses.Add(pointerItem);
+                }
             }
 
-            this.addresses = newAddresses;
-            this.RaisePropertyChanged(nameof(this.Addresses));
+            this.Addresses = new ObservableCollection<PointerItem>(newAddresses);
+
+            // Ensure results are visible
+            this.IsVisible = true;
+            this.IsSelected = true;
+            this.IsActive = true;
         }
 
         /// <summary>
@@ -287,9 +313,21 @@
             {
                 while (true)
                 {
-                    // TODO: 
+                    Boolean hasUpdate = false;
 
-                    Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);
+                    foreach (PointerItem pointer in this.Addresses.ToArray())
+                    {
+                        hasUpdate |= pointer.Update();
+                    }
+
+                    // This is a sidestep to a particular issue where we need to potentially perform RaisePropertyChanged for a {Binding Path=.} element, which is impossible.
+                    // We recreate the entire collection to force a re-render.
+                    if (hasUpdate)
+                    {
+                        this.Addresses = new ObservableCollection<PointerItem>(this.Addresses);
+                    }
+
+                    Thread.Sleep(PointerScanResultsViewModel.PointerReadIntervalMs);
                 }
             });
         }
@@ -335,9 +373,9 @@
         /// Adds the given scan result address to the project explorer.
         /// </summary>
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
-        private void AddAddress(PointerScanResult scanResult)
+        private void AddAddress(PointerItem scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.BaseAddress, typeof(Int32));
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResult);
         }
 
 

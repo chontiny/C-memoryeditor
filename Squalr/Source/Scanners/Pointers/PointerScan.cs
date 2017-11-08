@@ -101,6 +101,8 @@
                 this.DiscoveredPointers.AddPointerRoot(new PointerRoot(modulePointer));
             }
 
+            this.DiscoveredPointers.Sort();
+
             // Build out pointer paths via a DFS
             foreach (PointerRoot pointerRoot in this.DiscoveredPointers.PointerRoots)
             {

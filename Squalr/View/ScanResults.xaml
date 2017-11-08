@@ -19,6 +19,7 @@
     </x:Code>
     <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
+            <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
             <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -314,9 +315,6 @@
                 Background="{StaticResource SqualrColorBlack}"
                 BorderThickness="0"
                 ItemsSource="{Binding Addresses}">
-                <ListView.Resources>
-                    <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
-                </ListView.Resources>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />

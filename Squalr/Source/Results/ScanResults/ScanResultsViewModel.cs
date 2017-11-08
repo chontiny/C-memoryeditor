@@ -401,6 +401,11 @@
 
             this.addresses = newAddresses;
             this.RaisePropertyChanged(nameof(this.Addresses));
+
+            // Ensure results are visible
+            this.IsVisible = true;
+            this.IsSelected = true;
+            this.IsActive = true;
         }
 
         /// <summary>

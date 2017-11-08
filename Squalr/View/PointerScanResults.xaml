@@ -16,6 +16,11 @@
     <x:Code>
         <![CDATA[ public PointerScanResults() { InitializeComponent(); }]]>
     </x:Code>
+    <UserControl.Resources>
+        <converters:ProjectItemValueConverter x:Key="ProjectItemValueConverter" />
+        <converters:OffsetsToStringConverter x:Key="OffsetsToStringConverter" />
+        <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
+    </UserControl.Resources>
     <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -268,9 +273,6 @@
                 Background="{StaticResource SqualrColorBlack}"
                 BorderThickness="0"
                 ItemsSource="{Binding Addresses}">
-                <ListView.Resources>
-                    <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
-                </ListView.Resources>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -297,17 +299,17 @@
                                 Grid.Column="0"
                                 Foreground="{StaticResource SqualrColorWhite}"
                                 IsHitTestVisible="False"
-                                Text="{Binding Path=ElementValue, Converter={StaticResource IntPtrToAddressConverter}}" />
+                                Text="{Binding Path=., Converter={StaticResource ProjectItemValueConverter}}" />
                             <TextBlock
                                 Grid.Column="1"
                                 Foreground="{StaticResource SqualrColorWhite}"
                                 IsHitTestVisible="False"
-                                Text="{Binding Path=BaseAddress}" />
+                                Text="{Binding Path=ModuleOffset, Converter={StaticResource IntPtrToAddressConverter}}" />
                             <TextBlock
                                 Grid.Column="2"
                                 Foreground="{StaticResource SqualrColorWhite}"
                                 IsHitTestVisible="False"
-                                Text="{Binding Path=Offsets}" />
+                                Text="{Binding Path=PointerOffsets, Converter={StaticResource OffsetsToStringConverter}}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>

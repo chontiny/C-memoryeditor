@@ -311,7 +311,6 @@
     <Compile Include="Source\Prefilters\Prefilter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
-    <Compile Include="Source\Results\PointerScanResults\PointerScanResult.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
     <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
@@ -379,30 +378,6 @@
     <Compile Include="Source\Main\MainViewModel.cs">
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
-    <Page Include="View\Loaders\SpinnerApple.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Loaders\SpinnerCogs.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Loaders\SpinnerDotCircle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Loaders\SpinnerPiston.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Loaders\SpinnerSwirl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Loaders\Tail.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\PointerScanner.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

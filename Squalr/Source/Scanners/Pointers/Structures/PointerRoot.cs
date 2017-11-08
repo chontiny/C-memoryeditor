@@ -30,11 +30,6 @@
             }
         }
 
-        public IEnumerator<PointerBranch> IterateLeaves()
-        {
-            return this.Branches.GetEnumerator();
-        }
-
         public IEnumerator<PointerBranch> GetEnumerator()
         {
             return this.Branches.GetEnumerator();

@@ -8,7 +8,7 @@
     /// <summary>
     /// Converts an Int32 value to a hexedecimal value.
     /// </summary>
-    public class Int32ToHexConverter : IValueConverter
+    public class IntToHexConverter : IValueConverter
     {
         /// <summary>
         /// Converts an Int32 to a Hex string.
@@ -25,12 +25,7 @@
                 return String.Empty;
             }
 
-            if (value is Int32)
-            {
-                return Conversions.ParsePrimitiveAsHexString(typeof(Int32), value);
-            }
-
-            return String.Empty;
+            return Conversions.ParsePrimitiveAsHexString(value.GetType(), value);
         }
 
         /// <summary>
@@ -43,20 +38,7 @@
         /// <returns>An Int32. If conversion cannot take place, returns 0.</returns>
         public Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
-            if (value == null)
-            {
-                return 0;
-            }
-
-            if (value is String)
-            {
-                if (CheckSyntax.CanParseHex(typeof(Int32), value.ToString()))
-                {
-                    return Conversions.ParseHexStringAsPrimitive(typeof(Int32), value.ToString());
-                }
-            }
-
-            return 0;
+            throw new NotImplementedException();
         }
     }
     //// End class
