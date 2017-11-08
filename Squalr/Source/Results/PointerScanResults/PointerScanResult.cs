@@ -9,9 +9,9 @@
     internal class PointerScanResult : INotifyPropertyChanged
     {
         /// <summary>
-        /// The address of the scan result.
+        /// The abase address of the pointer scan result.
         /// </summary>
-        private IntPtr elementAddress;
+        private IntPtr baseAddress;
 
         /// <summary>
         /// The value of the scan result.
@@ -19,28 +19,19 @@
         private String elementValue;
 
         /// <summary>
-        /// The previous value of the scan result.
+        /// The offsets of the pointer scan result.
         /// </summary>
-        private String previousElementValue;
-
-        /// <summary>
-        /// The label of the scan result.
-        /// </summary>
-        private String elementLabel;
+        private String offsets;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PointerScanResult" /> class.
         /// </summary>
-        /// <param name="elementAddress">The memory address.</param>
-        /// <param name="elementValue">The current scan value.</param>
-        /// <param name="elementPreviousValue">The previous scan value.</param>
-        /// <param name="elementLabel">The label of this result.</param>
-        public PointerScanResult(IntPtr elementAddress, String elementValue, String elementPreviousValue, String elementLabel)
+        /// <param name="baseAddress">The base address.</param>
+        /// <param name="offsets">The current scan offsets.</param>
+        public PointerScanResult(IntPtr baseAddress, String offsets)
         {
-            this.ElementAddress = elementAddress;
-            this.ElementPreviousValue = elementPreviousValue;
-            this.ElementValue = elementValue;
-            this.ElementLabel = elementLabel;
+            this.BaseAddress = baseAddress;
+            this.Offsets = offsets;
         }
 
         /// <summary>
@@ -49,19 +40,20 @@
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Gets or sets the address of the scan result.
+        /// Gets or sets the base address of the pointer scan result.
         /// </summary>
-        public IntPtr ElementAddress
+        public IntPtr BaseAddress
         {
             get
             {
-                return this.elementAddress;
+                return this.baseAddress;
             }
 
             set
             {
-                this.elementAddress = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ElementAddress)));
+                this.baseAddress = value;
+
+                this.RaisePropertyChanged(nameof(this.BaseAddress));
             }
         }
 
@@ -78,42 +70,36 @@
             set
             {
                 this.elementValue = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ElementValue)));
+
+                this.RaisePropertyChanged(nameof(this.ElementValue));
             }
         }
 
         /// <summary>
-        /// Gets or sets the previous value of the scan result.
+        /// Gets or sets the value of the pointer scan result.
         /// </summary>
-        public String ElementPreviousValue
+        public String Offsets
         {
             get
             {
-                return this.previousElementValue;
+                return this.offsets;
             }
 
             set
             {
-                this.previousElementValue = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ElementPreviousValue)));
+                this.offsets = value;
+
+                this.RaisePropertyChanged(nameof(this.Offsets));
             }
         }
 
         /// <summary>
-        /// Gets or sets the label of the scan result.
+        /// Indicates that a given property in this project item has changed.
         /// </summary>
-        public String ElementLabel
+        /// <param name="propertyName">The name of the changed property.</param>
+        protected void RaisePropertyChanged(String propertyName)
         {
-            get
-            {
-                return this.elementLabel;
-            }
-
-            set
-            {
-                this.elementLabel = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ElementLabel)));
-            }
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
     //// End class

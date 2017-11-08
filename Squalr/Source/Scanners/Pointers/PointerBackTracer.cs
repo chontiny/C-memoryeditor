@@ -24,7 +24,6 @@
         /// Creates an instance of the <see cref="PointerBackTracer" /> class.
         /// </summary>
         public PointerBackTracer(
-                UInt64 targetAddress,
                 UInt32 pointerDepth,
                 UInt32 pointerRadius,
                 Action<LevelPointers> levelPointersCallback) : base(
@@ -34,7 +33,6 @@
         {
             this.ProgressLock = new Object();
 
-            this.TargetAddress = targetAddress;
             this.PointerDepth = pointerDepth;
             this.PointerRadius = pointerRadius;
             this.LevelPointersCallback = levelPointersCallback;
@@ -65,7 +63,7 @@
         /// <summary>
         /// Gets or sets the target address of the pointer scan.
         /// </summary>
-        private UInt64 TargetAddress { get; set; }
+        public UInt64 TargetAddress { get; set; }
 
         private LevelPointers LevelPointers { get; set; }
 

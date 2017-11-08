@@ -315,8 +315,9 @@
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
     <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
-    <Compile Include="Source\Scanners\Pointers\Discovered\PointerBranch.cs" />
-    <Compile Include="Source\Scanners\Pointers\Discovered\PointerRoot.cs" />
+    <Compile Include="Source\Scanners\Pointers\Structures\DiscoveredPointers.cs" />
+    <Compile Include="Source\Scanners\Pointers\Structures\PointerBranch.cs" />
+    <Compile Include="Source\Scanners\Pointers\Structures\PointerRoot.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerBackTracer.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
@@ -362,6 +363,9 @@
     <Compile Include="Source\Snapshots\SnapshotManager.cs" />
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
+    <Compile Include="View\PointerScanner.xaml.cs">
+      <DependentUpon>PointerScanner.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
@@ -403,13 +407,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\PointerScanResults.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\InputCorrelator.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\PointerScanResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
     <Page Include="View\ProjectExplorer.xaml">
       <Generator>MSBuild:Compile</Generator>

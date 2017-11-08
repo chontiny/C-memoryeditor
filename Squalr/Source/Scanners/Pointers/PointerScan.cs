@@ -1,10 +1,9 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
-    using Squalr.Source.Scanners.Pointers.Discovered;
+    using Squalr.Source.Results.PointerScanResults;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.ActionScheduler;
     using System;
-    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
 
@@ -17,19 +16,22 @@
         /// Creates an instance of the <see cref="PointerScan" /> class.
         /// </summary>
         /// <param name="targetAddress">The target address of the poitner scan.</param>
-        public PointerScan(UInt64 targetAddress) : base(
+        public PointerScan() : base(
             taskName: "Pointer Scan",
             isRepeated: false,
             trackProgress: true)
         {
             this.ProgressLock = new Object();
 
-            this.TargetAddress = targetAddress;
             this.PointerDepth = 1;
             this.PointerRadius = 1024;
 
-            this.Dependencies.Enqueue(new PointerBackTracer(targetAddress, this.PointerDepth, this.PointerRadius, this.SetLevelPointers));
+            this.PointerBackTracer = new PointerBackTracer(this.PointerDepth, this.PointerRadius, this.SetLevelPointers);
+
+            this.Dependencies.Enqueue(PointerBackTracer);
         }
+
+        private PointerBackTracer PointerBackTracer { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of pointers at each depth.
@@ -49,7 +51,23 @@
         /// <summary>
         /// Gets or sets the target address of the pointer scan.
         /// </summary>
-        private UInt64 TargetAddress { get; set; }
+        public UInt64 TargetAddress
+        {
+            get
+            {
+                return this.PointerBackTracer.TargetAddress;
+            }
+
+            set
+            {
+                this.PointerBackTracer.TargetAddress = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the discovered pointers from the pointer scan.
+        /// </summary>
+        private DiscoveredPointers DiscoveredPointers { get; set; }
 
         /// <summary>
         /// Gets or sets a lock object for updating scan progress.
@@ -61,6 +79,8 @@
         /// </summary>
         protected override void OnBegin()
         {
+            this.DiscoveredPointers = new DiscoveredPointers();
+
             if (this.LevelPointers == null || this.LevelPointers.Count <= 0)
             {
                 this.Cancel();
@@ -73,18 +93,16 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            IList<PointerRoot> pointerRoots = new List<PointerRoot>();
-
             cancellationToken.ThrowIfCancellationRequested();
 
             // Collect pointer roots
             foreach (UInt64 modulePointer in this.LevelPointers.ModulePointerPool.PointerAddresses)
             {
-                pointerRoots.Add(new PointerRoot(modulePointer));
+                this.DiscoveredPointers.AddPointerRoot(new PointerRoot(modulePointer));
             }
 
             // Build out pointer paths via a DFS
-            foreach (PointerRoot pointerRoot in pointerRoots)
+            foreach (PointerRoot pointerRoot in this.DiscoveredPointers.PointerRoots)
             {
                 PointerPool nextLevel = this.LevelPointers.HeapPointerPools.First();
                 UInt64 pointerDestination = this.LevelPointers.ModulePointerPool[pointerRoot.BaseAddress];
@@ -132,12 +150,15 @@
         /// </summary>
         protected override void OnEnd()
         {
+            PointerScanResultsViewModel.GetInstance().SetDiscoveredPointers(this.DiscoveredPointers);
+
             this.LevelPointers = null;
+            this.DiscoveredPointers = null;
         }
 
-        private void SetLevelPointers(LevelPointers levelSnapshots)
+        private void SetLevelPointers(LevelPointers levelPointers)
         {
-            this.LevelPointers = levelSnapshots;
+            this.LevelPointers = levelPointers;
         }
     }
     //// End class

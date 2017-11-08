@@ -1,12 +1,12 @@
 ﻿namespace Squalr.Source.Results.PointerScanResults
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Snapshots;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.ObjectModel;
@@ -16,9 +16,9 @@
     using System.Windows.Media.Imaging;
 
     /// <summary>
-    /// View model for the Process Selector.
+    /// View model for the pointer scan results.
     /// </summary>
-    internal class PointerScanResultsViewModel : ToolViewModel, ISnapshotObserver
+    internal class PointerScanResultsViewModel : ToolViewModel
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
@@ -55,55 +55,36 @@
         private ObservableCollection<PointerScanResult> addresses;
 
         /// <summary>
+        /// The list of discovered pointers.
+        /// </summary>
+        private DiscoveredPointers discoveredPointers;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="PointerScanResultsViewModel" /> class from being created.
         /// </summary>
         private PointerScanResultsViewModel() : base("Pointer Scan Results")
         {
             this.ContentId = PointerScanResultsViewModel.ToolContentId;
-            this.ChangeTypeSByteCommand = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(SByte))), () => true);
-            this.ChangeTypeInt16Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Int16))), () => true);
-            this.ChangeTypeInt32Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Int32))), () => true);
-            this.ChangeTypeInt64Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Int64))), () => true);
-            this.ChangeTypeByteCommand = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Byte))), () => true);
-            this.ChangeTypeUInt16Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(UInt16))), () => true);
-            this.ChangeTypeUInt32Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(UInt32))), () => true);
-            this.ChangeTypeUInt64Command = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(UInt64))), () => true);
-            this.ChangeTypeSingleCommand = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Single))), () => true);
-            this.ChangeTypeDoubleCommand = new RelayCommand(() => Task.Run(() => this.ChangeType(typeof(Double))), () => true);
+
+            this.ChangeTypeCommand = new RelayCommand<Type>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
             this.PreviousPageCommand = new RelayCommand(() => Task.Run(() => this.PreviousPage()), () => true);
             this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
             this.AddAddressCommand = new RelayCommand<PointerScanResult>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
-            this.ObserverLock = new Object();
+
             this.ActiveType = typeof(Int32);
             this.addresses = new ObservableCollection<PointerScanResult>();
 
-            SnapshotManager.GetInstance().Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
             this.UpdateScanResults();
         }
 
-        public ICommand ChangeTypeSByteCommand { get; private set; }
-
-        public ICommand ChangeTypeInt16Command { get; private set; }
-
-        public ICommand ChangeTypeInt32Command { get; private set; }
-
-        public ICommand ChangeTypeInt64Command { get; private set; }
-
-        public ICommand ChangeTypeByteCommand { get; private set; }
-
-        public ICommand ChangeTypeUInt16Command { get; private set; }
-
-        public ICommand ChangeTypeUInt32Command { get; private set; }
-
-        public ICommand ChangeTypeUInt64Command { get; private set; }
-
-        public ICommand ChangeTypeSingleCommand { get; private set; }
-
-        public ICommand ChangeTypeDoubleCommand { get; private set; }
+        /// <summary>
+        /// Gets the command to change the active data type.
+        /// </summary>
+        public ICommand ChangeTypeCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to go to the first page.
@@ -150,31 +131,7 @@
         {
             get
             {
-                switch (Type.GetTypeCode(this.ActiveType))
-                {
-                    case TypeCode.SByte:
-                        return "SByte";
-                    case TypeCode.Int16:
-                        return "Int16";
-                    case TypeCode.Int32:
-                        return "Int32";
-                    case TypeCode.Int64:
-                        return "Int64";
-                    case TypeCode.Byte:
-                        return "Byte";
-                    case TypeCode.UInt16:
-                        return "UInt16";
-                    case TypeCode.UInt32:
-                        return "UInt32";
-                    case TypeCode.UInt64:
-                        return "UInt64";
-                    case TypeCode.Single:
-                        return "Single";
-                    case TypeCode.Double:
-                        return "Double";
-                    default:
-                        return "Invalid Type";
-                }
+                return Conversions.TypeToName(this.ActiveType);
             }
         }
 
@@ -268,7 +225,22 @@
             }
         }
 
-        private Object ObserverLock { get; set; }
+        /// <summary>
+        /// Gets or sets the list of discovered pointers.
+        /// </summary>
+        private DiscoveredPointers DiscoveredPointers
+        {
+            get
+            {
+                return this.discoveredPointers;
+            }
+
+            set
+            {
+                this.discoveredPointers = value;
+                this.RaisePropertyChanged(nameof(this.DiscoveredPointers));
+            }
+        }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="PointerScanResultsViewModel"/> class.
@@ -280,12 +252,13 @@
         }
 
         /// <summary>
-        /// Recieves an update of the active snapshot.
+        /// Sets the discovered pointers.
         /// </summary>
-        /// <param name="snapshot">The active snapshot.</param>
-        public void Update(Snapshot snapshot)
+        /// <param name="discoveredPointers">The discovered pointers.</param>
+        public void SetDiscoveredPointers(DiscoveredPointers discoveredPointers)
         {
-            this.ResultCount = snapshot == null ? 0UL : snapshot.ElementCount;
+            this.DiscoveredPointers = discoveredPointers;
+            this.ResultCount = discoveredPointers == null ? 0 : discoveredPointers.Count;
             this.CurrentPage = 0;
         }
 
@@ -294,6 +267,14 @@
         /// </summary>
         private void LoadPointerScanResults()
         {
+            ObservableCollection<PointerScanResult> newAddresses = new ObservableCollection<PointerScanResult>();
+
+            foreach (PointerRoot pointerRoot in DiscoveredPointers.PointerRoots)
+            {
+                newAddresses.Add(new PointerScanResult(pointerRoot.BaseAddress.ToIntPtr(), "TODO"));
+            }
+
+            this.addresses = newAddresses;
             this.RaisePropertyChanged(nameof(this.Addresses));
         }
 
@@ -306,9 +287,8 @@
             {
                 while (true)
                 {
-                    Boolean readSuccess;
-                    this.Addresses.ForEach(x => x.ElementValue = EngineCore.GetInstance().VirtualMemory.Read(this.ActiveType, x.ElementAddress, out readSuccess).ToString());
-                    this.RaisePropertyChanged(nameof(this.Addresses));
+                    // TODO: 
+
                     Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);
                 }
             });
@@ -357,7 +337,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddAddress(PointerScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, typeof(Int32));
+            ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.BaseAddress, typeof(Int32));
         }
 
 

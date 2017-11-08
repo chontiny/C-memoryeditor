@@ -30,8 +30,9 @@
         private PointerScannerViewModel() : base("Pointer Scanner")
         {
             this.ContentId = PointerScannerViewModel.ToolContentId;
-            this.PointerScan = new PointerScan(0x122840d0); // TODO: Remove temp debugging value
+            this.PointerScan = new PointerScan();
 
+            this.SetAddressCommand = new RelayCommand<UInt64>((newValue) => this.TargetAddress = newValue, (newValue) => true);
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.PointerScan.Start()), () => true);
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.PointerScan.Cancel()), () => true);
 
@@ -47,6 +48,28 @@
         /// Gets a command to stop the pointer scan.
         /// </summary>
         public ICommand StopScanCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to set the active search value.
+        /// </summary>
+        public ICommand SetAddressCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the target scan address.
+        /// </summary>
+        public UInt64 TargetAddress
+        {
+            get
+            {
+                return this.PointerScan.TargetAddress;
+            }
+
+            set
+            {
+                this.PointerScan.TargetAddress = value;
+                this.RaisePropertyChanged(nameof(this.TargetAddress));
+            }
+        }
 
         /// <summary>
         /// Gets or sets the pointer scan task.

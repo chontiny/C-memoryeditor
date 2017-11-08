@@ -384,6 +384,40 @@
                     throw new ArgumentException("Invalid type provided");
             }
         }
+
+        /// <summary>
+        /// Gets the name of the specified type
+        /// </summary>
+        /// <param name="type">The type from which to get the name.</param>
+        /// <returns>The name of the type.</returns>
+        public static String TypeToName(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return "SByte";
+                case TypeCode.Int16:
+                    return "Int16";
+                case TypeCode.Int32:
+                    return "Int32";
+                case TypeCode.Int64:
+                    return "Int64";
+                case TypeCode.Byte:
+                    return "Byte";
+                case TypeCode.UInt16:
+                    return "UInt16";
+                case TypeCode.UInt32:
+                    return "UInt32";
+                case TypeCode.UInt64:
+                    return "UInt64";
+                case TypeCode.Single:
+                    return "Single";
+                case TypeCode.Double:
+                    return "Double";
+                default:
+                    return "Unknown Type";
+            }
+        }
     }
     //// End class
 }

@@ -1,26 +1,29 @@
 ﻿namespace Squalr.View
 {
     using Source.Results.ScanResults;
-    using Squalr.Source.Scanners.ManualScanner;
+    using Squalr.Source.Scanners.Pointers;
     using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Utils;
     using System;
     using System.Threading.Tasks;
     using System.Windows.Controls;
 
     /// <summary>
-    /// Interaction logic for ManualScanner.xaml.
+    /// Interaction logic for PointerScanner.xaml.
     /// </summary>
-    internal partial class ManualScanner : UserControl, IScanResultsObserver
+    internal partial class PointerScanner : UserControl, IScanResultsObserver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ManualScanner"/> class.
         /// </summary>
-        public ManualScanner()
+        public PointerScanner()
         {
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
             this.ValueHexDecBox = new HexDecTextBox();
+            this.ValueHexDecBox.IsHex = true;
+            this.ValueHexDecBox.ElementType = typeof(UInt64);
             this.ValueHexDecBox.TextChanged += this.ValueUpdated;
             this.valueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
 
@@ -30,11 +33,11 @@
         /// <summary>
         /// Gets the view model associated with this view.
         /// </summary>
-        public ManualScannerViewModel ManualScannerViewModel
+        public PointerScannerViewModel PointerScannerViewModel
         {
             get
             {
-                return this.DataContext as ManualScannerViewModel;
+                return this.DataContext as PointerScannerViewModel;
             }
         }
 
@@ -59,7 +62,8 @@
         /// <param name="e">Event args.</param>
         private void ValueUpdated(Object sender, EventArgs e)
         {
-            this.ManualScannerViewModel.UpdateActiveValueCommand.Execute(this.ValueHexDecBox.GetValue());
+            Object value = this.ValueHexDecBox.GetValue();
+            this.PointerScannerViewModel.SetAddressCommand.Execute(value == null ? 0 : Conversions.ParsePrimitiveStringAsPrimitive(typeof(UInt64), value.ToString()));
         }
     }
     //// End class

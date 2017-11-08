@@ -6,14 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrPointerScanner"
-    d:DesignHeight="256"
-    d:DesignWidth="256"
+    d:DesignHeight="320"
+    d:DesignWidth="320"
     x:ClassModifier="internal"
     DataContext="{Binding PointerScannerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
-    <x:Code>
-        <![CDATA[ public PointerScanner() { InitializeComponent(); }]]>
-    </x:Code>
     <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid>
             <Grid.RowDefinitions>
@@ -21,9 +18,9 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray20}">
+            <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
                 <Menu Padding="4" Background="Transparent">
-                    <MenuItem Command="{Binding StartScanCommand}">
+                    <MenuItem Command="{Binding StartScanCommand}" ToolTip="Start Pointer Scan">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -31,20 +28,14 @@
                                 Source="{x:Static content:Images.RightArrow}" />
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Command="{Binding StopScanCommand}">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="{x:Static content:Images.Stop}" />
-                        </MenuItem.Header>
-                    </MenuItem>
                 </Menu>
+                <Grid
+                    x:Name="valueHexDecBox"
+                    Width="196"
+                    Height="20"
+                    Margin="4,0,0,0"
+                    Background="{StaticResource SqualrColorGray20}" />
             </WrapPanel>
-            <TextBlock
-                Grid.Row="1"
-                Foreground="{StaticResource SqualrColorWhite}"
-                Text="Feature in Development : )" />
         </Grid>
     </Grid>
 </UserControl>

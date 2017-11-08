@@ -1,21 +1,21 @@
-﻿namespace Squalr.Source.Scanners.Pointers.Discovered
+﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
 
-    internal class PointerRoot : IEnumerable<PointerBranch>
+    internal class PointerBranch : IEnumerable<PointerBranch>
     {
-        public PointerRoot(UInt64 baseAddress)
+        public PointerBranch(Int32 offset)
         {
-            this.BaseAddress = baseAddress;
+            this.Offset = offset;
             this.Branches = new List<PointerBranch>();
         }
 
-        public UInt64 BaseAddress { get; set; }
+        public Int32 Offset { get; set; }
 
-        private IList<PointerBranch> Branches { get; set; }
+        public IList<PointerBranch> Branches { get; set; }
 
         public void AddOffsets(IEnumerable<Int32> offsets)
         {
@@ -30,19 +30,14 @@
             }
         }
 
-        public IEnumerator<PointerBranch> IterateLeaves()
-        {
-            return this.Branches.GetEnumerator();
-        }
-
         public IEnumerator<PointerBranch> GetEnumerator()
         {
-            return this.Branches.GetEnumerator();
+            return Branches.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return this.Branches.GetEnumerator();
+            return Branches.GetEnumerator();
         }
     }
 }

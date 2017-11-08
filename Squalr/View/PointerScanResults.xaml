@@ -5,6 +5,7 @@
     xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrPointerScanResults"
     d:DesignHeight="256"
@@ -263,6 +264,7 @@
         </Border>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ListView
+                Name="ScanResultsListView"
                 Background="{StaticResource SqualrColorBlack}"
                 BorderThickness="0"
                 ItemsSource="{Binding Addresses}">
@@ -274,9 +276,18 @@
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     </Style>
                 </ListView.ItemContainerStyle>
+                <!--  Click and Selection events  -->
+                <intr:Interaction.Triggers>
+                    <intr:EventTrigger EventName="SelectionChanged">
+                        <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItems}" />
+                    </intr:EventTrigger>
+                    <intr:EventTrigger EventName="MouseDoubleClick">
+                        <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItem}" />
+                    </intr:EventTrigger>
+                </intr:Interaction.Triggers>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition />
                                 <ColumnDefinition />
@@ -285,26 +296,29 @@
                             <TextBlock
                                 Grid.Column="0"
                                 Foreground="{StaticResource SqualrColorWhite}"
-                                Text="{Binding Path=ElementAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=ElementValue, Converter={StaticResource IntPtrToAddressConverter}}" />
                             <TextBlock
                                 Grid.Column="1"
                                 Foreground="{StaticResource SqualrColorWhite}"
-                                Text="{Binding Path=ElementValue}" />
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=BaseAddress}" />
                             <TextBlock
                                 Grid.Column="2"
                                 Foreground="{StaticResource SqualrColorWhite}"
-                                Text="{Binding Path=ElementPreviousValue}" />
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=Offsets}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.Template>
                     <ControlTemplate>
-                        <Grid HorizontalAlignment="Left">
+                        <Grid HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}">
+                            <Grid Grid.Row="0" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition />
                                     <ColumnDefinition />
@@ -344,14 +358,14 @@
             Background="{StaticResource SqualrColorGray68}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="196" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Menu
                     Grid.Column="0"
-                    Background="Transparent"
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}">
+                    HorizontalAlignment="Right"
+                    Background="Transparent">
                     <MenuItem Command="{Binding FirstPageCommand}">
                         <MenuItem.Header>
                             <Image
@@ -379,9 +393,8 @@
                 </WrapPanel>
                 <Menu
                     Grid.Column="2"
-                    HorizontalAlignment="Right"
-                    Background="Transparent"
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}">
+                    HorizontalAlignment="Left"
+                    Background="Transparent">
                     <MenuItem Command="{Binding NextPageCommand}">
                         <MenuItem.Header>
                             <Image
@@ -408,10 +421,8 @@
             Padding="8,4,8,4"
             Background="{StaticResource SqualrColorGray68}">
             <WrapPanel HorizontalAlignment="Center">
-                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ResultSize}" />
-                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" - (Count: " />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Count: " />
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ResultCount}" />
-                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=")" />
             </WrapPanel>
         </Border>
     </Grid>
