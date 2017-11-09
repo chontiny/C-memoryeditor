@@ -31,6 +31,9 @@
             this.Dependencies.Enqueue(PointerBackTracer);
         }
 
+        /// <summary>
+        /// Gets or sets the pointer back tracer task.
+        /// </summary>
         private PointerBackTracer PointerBackTracer { get; set; }
 
         /// <summary>
@@ -128,13 +131,13 @@
             // Build out pointer paths via a DFS
             foreach (PointerRoot pointerRoot in this.DiscoveredPointers.PointerRoots)
             {
-                PointerPool nextLevel = this.LevelPointers.HeapPointerPools.First();
+                PointerPool nextLevel = this.LevelPointers.NonStaticPointerPools.First();
                 UInt64 pointerDestination = this.LevelPointers.ModulePointerPool[pointerRoot.BaseAddress];
 
                 pointerRoot.AddOffsets(nextLevel.FindOffsets(pointerDestination, this.PointerRadius));
 
                 // Recurse on the branches
-                if (this.LevelPointers.HeapPointerPools.Count() > 1)
+                if (this.LevelPointers.NonStaticPointerPools.Count() > 1)
                 {
                     foreach (PointerBranch branch in pointerRoot)
                     {
@@ -146,14 +149,14 @@
 
         private void BuildPointerPaths(UInt64 currentPointer, PointerBranch pointerBranch, Int32 levelIndex)
         {
-            PointerPool currentLevel = this.LevelPointers.HeapPointerPools.ElementAt(levelIndex);
-            PointerPool nextLevel = this.LevelPointers.HeapPointerPools.ElementAt(levelIndex + 1);
+            PointerPool currentLevel = this.LevelPointers.NonStaticPointerPools.ElementAt(levelIndex);
+            PointerPool nextLevel = this.LevelPointers.NonStaticPointerPools.ElementAt(levelIndex + 1);
             UInt64 pointerDestination = currentLevel[currentPointer];
 
             pointerBranch.AddOffsets(nextLevel.FindOffsets(pointerDestination, this.PointerRadius));
 
             // Stop recursing if no more levels
-            if (levelIndex + 1 >= this.LevelPointers.HeapPointerPools.Count() - 1)
+            if (levelIndex + 1 >= this.LevelPointers.NonStaticPointerPools.Count() - 1)
             {
                 return;
             }

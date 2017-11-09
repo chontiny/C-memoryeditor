@@ -305,6 +305,7 @@
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                                 <ColumnDefinition />
+                                <ColumnDefinition />
                             </Grid.ColumnDefinitions>
                             <TextBlock
                                 Grid.Column="0"
@@ -315,9 +316,14 @@
                                 Grid.Column="1"
                                 Foreground="{StaticResource SqualrColorWhite}"
                                 IsHitTestVisible="False"
-                                Text="{Binding Path=ModuleOffset, Converter={StaticResource IntPtrToAddressConverter}}" />
+                                Text="{Binding Path=CalculatedAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
                             <TextBlock
                                 Grid.Column="2"
+                                Foreground="{StaticResource SqualrColorWhite}"
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=ModuleOffset, Converter={StaticResource IntPtrToAddressConverter}}" />
+                            <TextBlock
+                                Grid.Column="3"
                                 Foreground="{StaticResource SqualrColorWhite}"
                                 IsHitTestVisible="False"
                                 Text="{Binding Path=PointerOffsets, Converter={StaticResource OffsetsToStringConverter}}" />
@@ -333,6 +339,7 @@
                             </Grid.RowDefinitions>
                             <Grid Grid.Row="0" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
                                     <ColumnDefinition />
                                     <ColumnDefinition />
                                     <ColumnDefinition />
@@ -353,9 +360,12 @@
                                     <TextBlock>Value</TextBlock>
                                 </Border>
                                 <Border Grid.Column="1">
-                                    <TextBlock>Base Address</TextBlock>
+                                    <TextBlock>Calculated Address</TextBlock>
                                 </Border>
                                 <Border Grid.Column="2">
+                                    <TextBlock>Base Address</TextBlock>
+                                </Border>
+                                <Border Grid.Column="3">
                                     <TextBlock>Offsets</TextBlock>
                                 </Border>
                             </Grid>

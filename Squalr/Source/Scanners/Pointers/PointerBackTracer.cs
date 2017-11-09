@@ -88,25 +88,21 @@
             UInt64 processedPointers = 0;
 
             // Create a snapshot only containing the destination
-            Snapshot destinationSnapshot = new Snapshot();
-            SnapshotRegion destinationRegion = new SnapshotRegion(this.TargetAddress.ToIntPtr(), 1);
+            SnapshotRegion destinationRegion = new SnapshotRegion(baseAddress: this.TargetAddress.ToIntPtr(), regionSize: 1);
             destinationRegion.Expand(this.PointerRadius);
-            destinationSnapshot.AddSnapshotRegions(destinationRegion);
 
-            // Put the target address as the first level
-            PointerPool targetPointers = new PointerPool();
-            targetPointers[this.TargetAddress] = 0;
-            this.LevelPointers.AddLevel(targetPointers);
+            // Start with the previous level as the destination (as this is a back-tracing algorithm, we work backwards from the destination)
+            Snapshot previousLevelSnapshot = new Snapshot(destinationRegion);
 
-            Snapshot previousLevelSnapshot = destinationSnapshot;
-
-            for (Int32 level = 1; level <= this.PointerDepth; level++)
+            // Find all pointers that point to the previous level
+            for (Int32 level = 0; level < this.PointerDepth; level++)
             {
+                Boolean isModuleLevel = level == this.PointerDepth - 1;
                 PointerPool currentLevelPointers = new PointerPool();
-                PointerPool currentPointers = level == this.PointerDepth ? this.ModulePointers : this.HeapPointers;
 
+                // Iterate all of the heap or module pointers
                 Parallel.ForEach(
-                    currentPointers,
+                    isModuleLevel ? this.ModulePointers : this.HeapPointers,
                     SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                     (pointer) =>
                 {
@@ -116,6 +112,7 @@
                         currentLevelPointers[pointer.Key] = pointer.Value;
                     }
 
+                    // Update scan progress
                     lock (this.ProgressLock)
                     {
                         processedPointers++;
@@ -128,22 +125,22 @@
                     }
                 });
 
-                previousLevelSnapshot = new Snapshot();
+                // Create a snapshot from this level of pointers
+                previousLevelSnapshot = currentLevelPointers.ToSnapshot(this.PointerRadius);
 
-                IList<SnapshotRegion> levelRegions = new List<SnapshotRegion>();
-
-                foreach (KeyValuePair<UInt64, UInt64> pointer in currentLevelPointers)
+                // Add the pointer pool to the level structure
+                if (isModuleLevel)
                 {
-                    SnapshotRegion levelRegion = new SnapshotRegion(pointer.Key.ToIntPtr(), 1);
-                    levelRegion.Expand(this.PointerRadius);
-                    levelRegions.Add(levelRegion);
+                    this.LevelPointers.ModulePointerPool = currentLevelPointers;
                 }
-
-                previousLevelSnapshot.AddSnapshotRegions(levelRegions);
-
-                // Add the pointers for this level to the global accepted list
-                this.LevelPointers.AddLevel(currentLevelPointers);
+                else
+                {
+                    this.LevelPointers.AddHeapPointerPool(currentLevelPointers);
+                }
             }
+
+            // Add the destination pointer pool
+            this.LevelPointers.DestinationPointerPool = new PointerPool(new KeyValuePair<UInt64, UInt64>(this.TargetAddress, 0));
         }
 
         /// <summary>

@@ -3,6 +3,8 @@
     using Squalr.Source.Results.PointerScanResults;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Threading;
 
@@ -31,7 +33,7 @@
         /// <summary>
         /// Gets or sets the discovered pointers from the pointer scan.
         /// </summary>
-        private ScannedPointers DiscoveredPointers { get; set; }
+        private IDiscoveredPointers DiscoveredPointers { get; set; }
 
         /// <summary>
         /// Gets or sets a lock object for updating scan progress.
@@ -53,6 +55,19 @@
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            ValidatedPointers validatedPointers = new ValidatedPointers();
+
+            // Enumerate all discovered pointers and determine if they have a valid target address
+            foreach (PointerItem pointerItem in this.DiscoveredPointers)
+            {
+                if (pointerItem.CalculatedAddress.ToUInt64() == this.TargetAddress)
+                {
+                    validatedPointers.Pointers.Add(pointerItem);
+                }
+            }
+
+            this.DiscoveredPointers = validatedPointers;
         }
 
         /// <summary>

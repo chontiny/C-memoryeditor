@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
+    using Squalr.Source.Snapshots;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
@@ -18,6 +19,15 @@
         public PointerPool()
         {
             this.Pointers = new ConcurrentDictionary<UInt64, UInt64>();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PointerPool" /> class.
+        /// </summary>
+        /// <param name="pointers">The initial pointers</param>
+        public PointerPool(params KeyValuePair<UInt64, UInt64>[] pointers)
+        {
+            this.Pointers = new ConcurrentDictionary<UInt64, UInt64>(pointers);
         }
 
         /// <summary>
@@ -74,6 +84,24 @@
             {
                 this.Pointers[key] = value;
             }
+        }
+
+        public Snapshot ToSnapshot(UInt64 pointerRadius)
+        {
+            Snapshot pointerPoolSnapshot = new Snapshot();
+
+            IList<SnapshotRegion> levelRegions = new List<SnapshotRegion>();
+
+            foreach (KeyValuePair<UInt64, UInt64> pointer in this)
+            {
+                SnapshotRegion levelRegion = new SnapshotRegion(pointer.Key.ToIntPtr(), 1);
+                levelRegion.Expand(pointerRadius);
+                levelRegions.Add(levelRegion);
+            }
+
+            pointerPoolSnapshot.AddSnapshotRegions(levelRegions);
+
+            return pointerPoolSnapshot;
         }
 
         /// <summary>

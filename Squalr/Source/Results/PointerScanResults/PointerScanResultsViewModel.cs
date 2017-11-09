@@ -39,6 +39,9 @@
                 () => { return new PointerScanResultsViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
+        /// <summary>
+        /// The result display type.
+        /// </summary>
         private Type activeType;
 
         /// <summary>
@@ -59,7 +62,7 @@
         /// <summary>
         /// The list of discovered pointers.
         /// </summary>
-        private ScannedPointers discoveredPointers;
+        private IDiscoveredPointers discoveredPointers;
 
         /// <summary>
         /// The pointer read interval in milliseconds
@@ -281,7 +284,7 @@
         /// <summary>
         /// Gets or sets the list of discovered pointers.
         /// </summary>
-        public ScannedPointers DiscoveredPointers
+        public IDiscoveredPointers DiscoveredPointers
         {
             get
             {

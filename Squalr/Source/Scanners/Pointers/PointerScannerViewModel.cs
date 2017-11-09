@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Source.Results.PointerScanResults;
     using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
@@ -45,13 +46,14 @@
         private PointerScannerViewModel() : base("Pointer Scanner")
         {
             this.ContentId = PointerScannerViewModel.ToolContentId;
+
             this.PointerScan = new PointerScan();
+            this.PointerRescan = new PointerRescan();
 
             this.SetAddressCommand = new RelayCommand<UInt64>((newValue) => this.TargetAddress = newValue, (newValue) => true);
             this.SetDepthCommand = new RelayCommand<UInt32>((newValue) => this.PointerDepth = newValue, (newValue) => true);
             this.SetPointerRadiusCommand = new RelayCommand<UInt32>((newValue) => this.PointerRadius = newValue, (newValue) => true);
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
-            this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.CancelScan()), () => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -60,11 +62,6 @@
         /// Gets a command to start the pointer scan.
         /// </summary>
         public ICommand StartScanCommand { get; private set; }
-
-        /// <summary>
-        /// Gets a command to stop the pointer scan.
-        /// </summary>
-        public ICommand StopScanCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to set the active search value.
@@ -156,15 +153,14 @@
         /// </summary>
         private void StartScan()
         {
-            this.PointerScan.Start();
-        }
-
-        /// <summary>
-        /// Cancels the pointer scan or rescan.
-        /// </summary>
-        private void CancelScan()
-        {
-            this.PointerScan.Cancel();
+            if (PointerScanResultsViewModel.GetInstance().ResultCount <= 0)
+            {
+                this.PointerScan.Start();
+            }
+            else
+            {
+                this.PointerRescan.Start();
+            }
         }
     }
     //// End class

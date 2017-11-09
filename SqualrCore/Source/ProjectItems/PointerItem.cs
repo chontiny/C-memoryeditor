@@ -189,13 +189,13 @@
                     pointer = EngineCore.GetInstance().VirtualMemory.Read<Int64>(pointer, out successReading).ToIntPtr();
                 }
 
-                pointer = pointer.Add(offset);
-
                 if (pointer == IntPtr.Zero || !successReading)
                 {
                     pointer = IntPtr.Zero;
                     break;
                 }
+
+                pointer = pointer.Add(offset);
             }
 
             return pointer;
