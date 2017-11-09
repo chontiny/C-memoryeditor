@@ -61,7 +61,8 @@
             set
             {
                 this.elementAddress = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ElementAddress)));
+
+                this.RaisePropertyChanged(nameof(this.ElementAddress));
             }
         }
 
@@ -78,7 +79,8 @@
             set
             {
                 this.elementValue = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ElementValue)));
+
+                this.RaisePropertyChanged(nameof(this.ElementValue));
             }
         }
 
@@ -95,7 +97,8 @@
             set
             {
                 this.previousElementValue = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ElementPreviousValue)));
+
+                this.RaisePropertyChanged(nameof(this.ElementPreviousValue));
             }
         }
 
@@ -112,8 +115,18 @@
             set
             {
                 this.elementLabel = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ElementLabel)));
+
+                this.RaisePropertyChanged(nameof(this.ElementLabel));
             }
+        }
+
+        /// <summary>
+        /// Indicates that a given property in this project item has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the changed property.</param>
+        protected void RaisePropertyChanged(String propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
     //// End class

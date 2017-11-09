@@ -1,5 +1,7 @@
 ﻿namespace SqualrCore.Source.Utils
 {
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Runtime.InteropServices;
 
@@ -40,7 +42,16 @@
                     return Single.Parse(value);
                 case TypeCode.Double:
                     return Double.Parse(value);
-                default: return null;
+                default:
+                    switch (valueType)
+                    {
+                        case Type _ when valueType == typeof(IntPtr):
+                            return EngineCore.GetInstance().Processes.IsSelf32Bit() ? new IntPtr(Int32.Parse(value)) : new IntPtr(Int64.Parse(value));
+                        case Type _ when valueType == typeof(UIntPtr):
+                            return EngineCore.GetInstance().Processes.IsSelf32Bit() ? new UIntPtr(UInt32.Parse(value)) : new UIntPtr(UInt64.Parse(value));
+                        default:
+                            return null;
+                    }
             }
         }
 
@@ -60,10 +71,11 @@
         /// </summary>
         /// <param name="valueType">The data type of the value.</param>
         /// <param name="value">The raw value.</param>
+        /// <param name="signHex">Whether to sign the hex value for signed interger types.</param>
         /// <returns>The converted hex string.</returns>
-        public static String ParsePrimitiveAsHexString(Type valueType, Object value)
+        public static String ParsePrimitiveAsHexString(Type valueType, Object value, Boolean signHex = false)
         {
-            return ParsePrimitiveStringAsHexString(valueType, value?.ToString());
+            return ParsePrimitiveStringAsHexString(valueType, value?.ToString(), signHex);
         }
 
         /// <summary>
@@ -71,8 +83,9 @@
         /// </summary>
         /// <param name="valueType">The value type.</param>
         /// <param name="value">The hex string to parse.</param>
+        /// <param name="signHex">Whether to sign the hex value for signed interger types.</param>
         /// <returns>The converted value from the hex.</returns>
-        public static String ParsePrimitiveStringAsHexString(Type valueType, String value)
+        public static String ParsePrimitiveStringAsHexString(Type valueType, String value, Boolean signHex = false)
         {
             Object realValue = ParsePrimitiveStringAsPrimitive(valueType, value);
 
@@ -80,15 +93,15 @@
             {
                 case TypeCode.Byte:
                 case TypeCode.Char:
-                    return ((Byte)realValue).ToString("X");
+                    return (signHex && (Byte)realValue < 0) ? ("-" + (-(Byte)realValue).ToString("X")) : ((Byte)realValue).ToString("X");
                 case TypeCode.SByte:
                     return ((SByte)realValue).ToString("X");
                 case TypeCode.Int16:
-                    return ((Int16)realValue).ToString("X");
+                    return (signHex && (Int16)realValue < 0) ? ("-" + (-(Int16)realValue).ToString("X")) : ((Int16)realValue).ToString("X");
                 case TypeCode.Int32:
-                    return ((Int32)realValue).ToString("X");
+                    return (signHex && (Int32)realValue < 0) ? ("-" + (-(Int32)realValue).ToString("X")) : ((Int32)realValue).ToString("X");
                 case TypeCode.Int64:
-                    return ((Int64)realValue).ToString("X");
+                    return (signHex && (Int64)realValue < 0) ? ("-" + (-(Int64)realValue).ToString("X")) : ((Int64)realValue).ToString("X");
                 case TypeCode.UInt16:
                     return ((UInt16)realValue).ToString("X");
                 case TypeCode.UInt32:
@@ -99,7 +112,16 @@
                     return BitConverter.ToUInt32(BitConverter.GetBytes((Single)realValue), 0).ToString("X");
                 case TypeCode.Double:
                     return BitConverter.ToUInt64(BitConverter.GetBytes((Double)realValue), 0).ToString("X");
-                default: return null;
+                default:
+                    switch (valueType)
+                    {
+                        case Type _ when valueType == typeof(IntPtr):
+                            return ((IntPtr)realValue).ToString("X");
+                        case Type _ when valueType == typeof(UIntPtr):
+                            return ((UIntPtr)realValue).ToIntPtr().ToString("X");
+                        default:
+                            return null;
+                    }
             }
         }
 
@@ -111,7 +133,33 @@
         /// <returns>The converted value from the dec.</returns>
         public static String ParseHexStringAsPrimitiveString(Type valueType, String value)
         {
+            Boolean signedHex = false;
+
+            switch (Type.GetTypeCode(valueType))
+            {
+                case TypeCode.Byte:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                    if (value.StartsWith("-"))
+                    {
+                        value = value.Substring(1);
+                        signedHex = true;
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+
             UInt64 realValue = Conversions.AddressToValue(value);
+            String result = String.Empty;
+
+            // Negate the parsed value if the hex string is signed
+            if (signedHex)
+            {
+                realValue = (-realValue.ToInt64()).ToUInt64();
+            }
 
             switch (Type.GetTypeCode(valueType))
             {
@@ -137,7 +185,16 @@
                     return BitConverter.ToSingle(BitConverter.GetBytes(unchecked((UInt32)realValue)), 0).ToString();
                 case TypeCode.Double:
                     return BitConverter.ToDouble(BitConverter.GetBytes(realValue), 0).ToString();
-                default: return null;
+                default:
+                    switch (valueType)
+                    {
+                        case Type _ when valueType == typeof(IntPtr):
+                            return ((IntPtr)realValue).ToString();
+                        case Type _ when valueType == typeof(UIntPtr):
+                            return ((UIntPtr)realValue).ToIntPtr().ToString();
+                        default:
+                            return null;
+                    }
             }
         }
 
@@ -146,8 +203,8 @@
         /// </summary>
         /// <typeparam name="T">The data type of the value being converted.</typeparam>
         /// <param name="value">The value to convert.</param>
-        /// <param name="formatAsAddress">Whether or not to use a zero padded address format.</param>
-        /// <param name="includePrefix">Whether or not to include the '0x' hex prefix.</param>
+        /// <param name="formatAsAddress">Whether to use a zero padded address format.</param>
+        /// <param name="includePrefix">Whether to include the '0x' hex prefix.</param>
         /// <returns>The value converted to hex.</returns>
         public static String ToHex<T>(T value, Boolean formatAsAddress = true, Boolean includePrefix = false)
         {
@@ -382,6 +439,40 @@
                     return (T)(Object)BitConverter.ToUInt64(byteArray, 0);
                 default:
                     throw new ArgumentException("Invalid type provided");
+            }
+        }
+
+        /// <summary>
+        /// Gets the name of the specified type
+        /// </summary>
+        /// <param name="type">The type from which to get the name.</param>
+        /// <returns>The name of the type.</returns>
+        public static String TypeToName(Type type)
+        {
+            switch (Type.GetTypeCode(type))
+            {
+                case TypeCode.SByte:
+                    return "SByte";
+                case TypeCode.Int16:
+                    return "Int16";
+                case TypeCode.Int32:
+                    return "Int32";
+                case TypeCode.Int64:
+                    return "Int64";
+                case TypeCode.Byte:
+                    return "Byte";
+                case TypeCode.UInt16:
+                    return "UInt16";
+                case TypeCode.UInt32:
+                    return "UInt32";
+                case TypeCode.UInt64:
+                    return "UInt64";
+                case TypeCode.Single:
+                    return "Single";
+                case TypeCode.Double:
+                    return "Double";
+                default:
+                    return "Unknown Type";
             }
         }
     }

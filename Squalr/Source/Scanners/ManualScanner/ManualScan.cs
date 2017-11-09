@@ -3,6 +3,7 @@
     using ScanConstraints;
     using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Scanners.ValueCollector;
     using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Generic;
@@ -13,17 +14,19 @@
     /// <summary>
     /// A memory scanning class for classic manual memory scanning techniques.
     /// </summary>
-    internal class ManualScan : ScannerBase
+    internal class ManualScan : ScheduledTask
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ManualScan" /> class.
         /// </summary>
         public ManualScan() : base(
-            scannerName: "Manual Scan",
-            isRepeated: false)
-        // dependencyBehavior: new DependencyBehavior(dependencies: typeof(ValueCollectorModel)))
+            taskName: "Manual Scan",
+            isRepeated: false,
+            trackProgress: true)
         {
             this.ProgressLock = new Object();
+
+            this.Dependencies.Enqueue(new ValueCollectorModel(this.SetSnapshot));
         }
 
         /// <summary>
@@ -56,12 +59,11 @@
         protected override void OnBegin()
         {
             // Initialize snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
+            this.Snapshot = this.Snapshot?.Clone(this.TaskName);
 
             if (this.Snapshot == null || this.ScanConstraintManager == null || this.ScanConstraintManager.Count() <= 0)
             {
                 this.Cancel();
-                return;
             }
         }
 
@@ -74,32 +76,8 @@
             Int32 processedPages = 0;
             Boolean hasRelativeConstraint = this.ScanConstraintManager.HasRelativeConstraint();
 
-            // Read memory to get current values for each region
-            Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
-                SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
-                (region) =>
-                {
-                    // Check for canceled scan
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
-                    region.ReadAllMemory(keepValues: true, readSuccess: out _);
-                });
-
             // Determine if we need to increment both current and previous value pointers, or just current value pointers
-            PointerIncrementMode pointerIncrementMode;
-
-            if (hasRelativeConstraint)
-            {
-                pointerIncrementMode = PointerIncrementMode.ValuesOnly;
-            }
-            else
-            {
-                pointerIncrementMode = PointerIncrementMode.CurrentOnly;
-            }
+            PointerIncrementMode pointerIncrementMode = hasRelativeConstraint ? PointerIncrementMode.ValuesOnly : PointerIncrementMode.CurrentOnly;
 
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -155,9 +133,6 @@
                 cancellationToken.ThrowIfCancellationRequested();
             }
             //// End foreach Constraint
-
-            this.UpdateProgress(ScheduledTask.MaximumProgress);
-            base.OnUpdate(cancellationToken);
         }
 
         /// <summary>
@@ -170,7 +145,16 @@
 
             this.Snapshot = null;
 
-            base.OnEnd();
+            this.UpdateProgress(ScheduledTask.MaximumProgress);
+        }
+
+        /// <summary>
+        /// Sets the snapshot to scan.
+        /// </summary>
+        /// <param name="snapshot">The snapshot to scan.</param>
+        private void SetSnapshot(Snapshot snapshot)
+        {
+            this.Snapshot = snapshot;
         }
     }
     //// End class

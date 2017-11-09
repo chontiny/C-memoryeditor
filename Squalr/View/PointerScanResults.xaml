@@ -5,6 +5,7 @@
     xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrPointerScanResults"
     d:DesignHeight="256"
@@ -15,6 +16,11 @@
     <x:Code>
         <![CDATA[ public PointerScanResults() { InitializeComponent(); }]]>
     </x:Code>
+    <UserControl.Resources>
+        <converters:ProjectItemValueConverter x:Key="ProjectItemValueConverter" />
+        <converters:OffsetsToStringConverter x:Key="OffsetsToStringConverter" />
+        <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
+    </UserControl.Resources>
     <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -22,21 +28,16 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
+        <Grid Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
             <Menu
                 Padding="4"
                 Background="{StaticResource SqualrColorGray68}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 Foreground="{StaticResource SqualrColorWhite}">
-                <MenuItem VerticalAlignment="Center">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="{x:Static content:Images.Increased}"
-                            ToolTip="Add Selected Items" />
-                    </MenuItem.Header>
-                </MenuItem>
                 <MenuItem
                     BorderThickness="0"
                     Style="{StaticResource DropDownAutoClose}"
@@ -260,24 +261,48 @@
                     </MenuItem>
                 </MenuItem>
             </Menu>
-        </Border>
+            <Menu
+                Grid.Column="1"
+                Padding="4"
+                Background="{StaticResource SqualrColorGray68}"
+                BorderBrush="{StaticResource SqualrColorWhite}"
+                Foreground="{StaticResource SqualrColorWhite}">
+                <MenuItem VerticalAlignment="Center" Command="{Binding AddScanResultsCommand}">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="{x:Static content:Images.Increased}"
+                            ToolTip="Add Selected Items" />
+                    </MenuItem.Header>
+                </MenuItem>
+            </Menu>
+        </Grid>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <ListView
+                Name="ScanResultsListView"
                 Background="{StaticResource SqualrColorBlack}"
                 BorderThickness="0"
                 ItemsSource="{Binding Addresses}">
-                <ListView.Resources>
-                    <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
-                </ListView.Resources>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     </Style>
                 </ListView.ItemContainerStyle>
+                <!--  Click and Selection events  -->
+                <intr:Interaction.Triggers>
+                    <intr:EventTrigger EventName="SelectionChanged">
+                        <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItems}" />
+                    </intr:EventTrigger>
+                    <intr:EventTrigger EventName="MouseDoubleClick">
+                        <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItem}" />
+                    </intr:EventTrigger>
+                </intr:Interaction.Triggers>
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition />
                                 <ColumnDefinition />
                                 <ColumnDefinition />
                                 <ColumnDefinition />
@@ -285,27 +310,36 @@
                             <TextBlock
                                 Grid.Column="0"
                                 Foreground="{StaticResource SqualrColorWhite}"
-                                Text="{Binding Path=ElementAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=., Converter={StaticResource ProjectItemValueConverter}}" />
                             <TextBlock
                                 Grid.Column="1"
                                 Foreground="{StaticResource SqualrColorWhite}"
-                                Text="{Binding Path=ElementValue}" />
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=CalculatedAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
                             <TextBlock
                                 Grid.Column="2"
                                 Foreground="{StaticResource SqualrColorWhite}"
-                                Text="{Binding Path=ElementPreviousValue}" />
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=ModuleOffset, Converter={StaticResource IntPtrToAddressConverter}}" />
+                            <TextBlock
+                                Grid.Column="3"
+                                Foreground="{StaticResource SqualrColorWhite}"
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=PointerOffsets, Converter={StaticResource OffsetsToStringConverter}}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
                 <ListView.Template>
                     <ControlTemplate>
-                        <Grid HorizontalAlignment="Left">
+                        <Grid HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Width="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}">
+                            <Grid Grid.Row="0" VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
                                     <ColumnDefinition />
                                     <ColumnDefinition />
                                     <ColumnDefinition />
@@ -326,9 +360,12 @@
                                     <TextBlock>Value</TextBlock>
                                 </Border>
                                 <Border Grid.Column="1">
-                                    <TextBlock>Base Address</TextBlock>
+                                    <TextBlock>Calculated Address</TextBlock>
                                 </Border>
                                 <Border Grid.Column="2">
+                                    <TextBlock>Base Address</TextBlock>
+                                </Border>
+                                <Border Grid.Column="3">
                                     <TextBlock>Offsets</TextBlock>
                                 </Border>
                             </Grid>
@@ -344,15 +381,15 @@
             Background="{StaticResource SqualrColorGray68}">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="196" />
+                    <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <Menu
                     Grid.Column="0"
-                    Background="Transparent"
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}">
-                    <MenuItem Command="{Binding FirstPageCommand}">
+                    HorizontalAlignment="Right"
+                    Background="Transparent">
+                    <MenuItem Command="{Binding FirstPageCommand}" ToolTip="First Page">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -361,7 +398,7 @@
                                 ToolTip="First Page" />
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Command="{Binding PreviousPageCommand}">
+                    <MenuItem Command="{Binding PreviousPageCommand}" ToolTip="Previous Page">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -379,10 +416,9 @@
                 </WrapPanel>
                 <Menu
                     Grid.Column="2"
-                    HorizontalAlignment="Right"
-                    Background="Transparent"
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}">
-                    <MenuItem Command="{Binding NextPageCommand}">
+                    HorizontalAlignment="Left"
+                    Background="Transparent">
+                    <MenuItem Command="{Binding NextPageCommand}" ToolTip="Next Page">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -391,7 +427,7 @@
                                 ToolTip="Next Page" />
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Command="{Binding LastPageCommand}">
+                    <MenuItem Command="{Binding LastPageCommand}" ToolTip="Last Page">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -408,10 +444,8 @@
             Padding="8,4,8,4"
             Background="{StaticResource SqualrColorGray68}">
             <WrapPanel HorizontalAlignment="Center">
-                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ResultSize}" />
-                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" - (Count: " />
+                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Count: " />
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ResultCount}" />
-                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=")" />
             </WrapPanel>
         </Border>
     </Grid>

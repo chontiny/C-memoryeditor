@@ -36,7 +36,7 @@
                     return "(None)";
                 }
 
-                return String.Join(", ", trueValue.Select(x => Conversions.ParsePrimitiveStringAsHexString(typeof(UInt64), x.ToString())));
+                return String.Join(", ", trueValue.Select(x => Conversions.ParsePrimitiveAsHexString(x.GetType(), x, signHex: true)));
             }
 
             return base.ConvertTo(context, culture, value, destinationType);

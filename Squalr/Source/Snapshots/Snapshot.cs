@@ -1,7 +1,5 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Results.ScanResults;
-    using Squalr.Properties;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
@@ -30,8 +28,33 @@
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
         /// </summary>
         /// <param name="snapshotRegions">The regions with which to initialize this snapshot.</param>
+        public Snapshot(params SnapshotRegion[] snapshotRegions) : this(null, snapshotRegions)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Snapshot" /> class.
+        /// </summary>
+        /// <param name="snapshotRegions">The regions with which to initialize this snapshot.</param>
+        public Snapshot(IEnumerable<SnapshotRegion> snapshotRegions) : this(null, snapshotRegions)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Snapshot" /> class.
+        /// </summary>
+        /// <param name="snapshotRegions">The regions with which to initialize this snapshot.</param>
         /// <param name="snapshotName">The snapshot generation method name.</param>
-        public Snapshot(IEnumerable<SnapshotRegion> snapshotRegions, String snapshotName = null) : this(snapshotName)
+        public Snapshot(String snapshotName, IEnumerable<SnapshotRegion> snapshotRegions) : this(snapshotName, snapshotRegions?.ToArray())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Snapshot" /> class.
+        /// </summary>
+        /// <param name="snapshotRegions">The regions with which to initialize this snapshot.</param>
+        /// <param name="snapshotName">The snapshot generation method name.</param>
+        public Snapshot(String snapshotName = null, params SnapshotRegion[] snapshotRegions) : this(snapshotName)
         {
             this.AddSnapshotRegions(snapshotRegions);
         }
@@ -126,15 +149,12 @@
         /// <summary>
         /// Updates the alignment and type settings of all snapshot regions.
         /// </summary>
-        public void PropagateSettings()
+        public void UpdateSettings(Type activeType, Int32 alignment)
         {
             if (this.SnapshotRegions == null)
             {
                 return;
             }
-
-            Type activeType = ScanResultsViewModel.GetInstance().ActiveType;
-            Int32 alignment = SettingsViewModel.GetInstance().Alignment;
 
             foreach (SnapshotRegion region in this)
             {
@@ -198,6 +218,15 @@
         /// <param name="snapshotRegions">The snapshot regions to add.</param>
         public void AddSnapshotRegions(IEnumerable<SnapshotRegion> snapshotRegions)
         {
+            this.AddSnapshotRegions(snapshotRegions?.ToArray());
+        }
+
+        /// <summary>
+        /// Adds snapshot regions to the regions contained in this snapshot. Will automatically merge and sort regions.
+        /// </summary>
+        /// <param name="snapshotRegions">The snapshot regions to add.</param>
+        public void AddSnapshotRegions(params SnapshotRegion[] snapshotRegions)
+        {
             if (this.SnapshotRegions == null)
             {
                 this.SnapshotRegions = snapshotRegions.ToList();
@@ -207,7 +236,6 @@
                 snapshotRegions?.ForEach(x => this.SnapshotRegions.Add(x));
             }
 
-            this.PropagateSettings();
             this.MergeAndSortRegions();
         }
 
@@ -236,7 +264,7 @@
         /// <returns>The shallow cloned snapshot.</returns>
         public Snapshot Clone(String newSnapshotName = null)
         {
-            return new Snapshot(this.SnapshotRegions, newSnapshotName);
+            return new Snapshot(newSnapshotName, this.SnapshotRegions);
         }
 
         /// <summary>

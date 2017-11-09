@@ -3,16 +3,23 @@
     using LabelThresholder;
     using Snapshots;
     using Squalr.Properties;
+    using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
-    internal class ChangeCounterModel : ScannerBase
+    internal class ChangeCounterModel : ScheduledTask
     {
+        /// <summary>
+        /// The number of scans completed.
+        /// </summary>
+        private Int32 scanCount;
+
         public ChangeCounterModel(Action updateScanCount) : base(
-            scannerName: "Change Counter",
-            isRepeated: true)
+            taskName: "Change Counter",
+            isRepeated: true,
+            trackProgress: true)
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();
@@ -31,6 +38,23 @@
 
         private Action UpdateScanCount { get; set; }
 
+        /// <summary>
+        /// Gets the number of scans that have been executed.
+        /// </summary>
+        public Int32 ScanCount
+        {
+            get
+            {
+                return this.scanCount;
+            }
+
+            private set
+            {
+                this.scanCount = value;
+                this.RaisePropertyChanged(nameof(this.ScanCount));
+            }
+        }
+
         public void SetMinChanges(UInt16 minChanges)
         {
             this.MinChanges = minChanges;
@@ -44,7 +68,7 @@
         protected override void OnBegin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
+            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.TaskName);
             this.Snapshot.SetLabelType(typeof(UInt16));
 
             if (this.Snapshot == null)
@@ -55,7 +79,7 @@
             // Initialize change counts to zero
             this.Snapshot.SetElementLabels<UInt16>(0);
 
-            base.OnBegin();
+            this.ScanCount = 0;
         }
 
         /// <summary>
@@ -91,9 +115,9 @@
                 }
             });
 
-            this.UpdateScanCount?.Invoke();
+            this.ScanCount++;
 
-            base.OnUpdate(cancellationToken);
+            this.UpdateScanCount?.Invoke();
         }
 
         /// <summary>
@@ -104,8 +128,6 @@
             SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
             LabelThresholderViewModel.GetInstance().OpenLabelThresholder();
             this.Snapshot = null;
-
-            base.OnEnd();
         }
     }
     //// End class

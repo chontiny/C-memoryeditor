@@ -1,6 +1,8 @@
 ﻿namespace Squalr.View
 {
     using Source.Results.ScanResults;
+    using Squalr.Source.Scanners.ManualScanner;
+    using SqualrCore.Source.Controls;
     using System;
     using System.Threading.Tasks;
     using System.Windows.Controls;
@@ -18,17 +20,28 @@
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
-            this.ValueHexDecBox = new SqualrCore.Source.Controls.HexDecTextBox();
+            this.ValueHexDecBox = new HexDecTextBox();
             this.ValueHexDecBox.TextChanged += this.ValueUpdated;
-            this.valueHexDecBox.Children.Add(SqualrCore.Source.Controls.WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
+            this.valueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
         }
 
         /// <summary>
+        /// Gets the view model associated with this view.
+        /// </summary>
+        public ManualScannerViewModel ManualScannerViewModel
+        {
+            get
+            {
+                return this.DataContext as ManualScannerViewModel;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the value hex dec box used to display the current value being edited.
         /// </summary>
-        private SqualrCore.Source.Controls.HexDecTextBox ValueHexDecBox { get; set; }
+        private HexDecTextBox ValueHexDecBox { get; set; }
 
         /// <summary>
         /// Updates the active type.
@@ -46,7 +59,7 @@
         /// <param name="e">Event args.</param>
         private void ValueUpdated(Object sender, EventArgs e)
         {
-            Source.Scanners.ManualScanner.ManualScannerViewModel.GetInstance().UpdateActiveValueCommand.Execute(this.ValueHexDecBox.GetValue());
+            this.ManualScannerViewModel.UpdateActiveValueCommand.Execute(this.ValueHexDecBox.GetValue());
         }
     }
     //// End class

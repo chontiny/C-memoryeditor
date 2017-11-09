@@ -3,14 +3,14 @@
     using System;
 
     /// <summary>
-    /// A factory that returns an object for assembling and disassembling instructions based on the system architecture
+    /// A factory that returns an object for assembling and disassembling instructions based on the system architecture.
     /// </summary>
     internal static class ArchitectureFactory
     {
         /// <summary>
-        /// Gets an object for assembling and disassembling instructions
+        /// Gets an object for assembling and disassembling instructions on the current platform.
         /// </summary>
-        /// <returns>Returns an object for assembling and disassembling instructions based on the system architecture</returns>
+        /// <returns>Returns an object for assembling and disassembling instructions based on the system architecture.</returns>
         public static IArchitecture GetArchitecture()
         {
             // For now, x86/64 is all that is supported. If this changes, we will need to determine the architecture here

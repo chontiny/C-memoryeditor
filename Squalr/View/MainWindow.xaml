@@ -206,10 +206,22 @@
                             Style="{StaticResource menuItemStyle}" />
                     </shell:MenuItem>
 
-                    <!--  View Header  -->
+                    <!--  Layout Header  -->
                     <shell:MenuItem
                         DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                        Header="View"
+                        Header="Layout"
+                        Style="{StaticResource DropDown}">
+                        <shell:MenuItem
+                            Command="{Binding MainViewModel.ResetLayoutCommand}"
+                            CommandParameter="{Binding ., ElementName=dockManager}"
+                            Header="Reset Layout"
+                            Style="{StaticResource menuItemStyle}" />
+                    </shell:MenuItem>
+
+                    <!--  Windows Header  -->
+                    <shell:MenuItem
+                        DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                        Header="Windows"
                         Style="{StaticResource DropDown}">
                         <shell:MenuItem
                             Header="Process Selector"
@@ -231,25 +243,6 @@
                             IsCheckable="True"
                             IsChecked="{Binding OutputViewModel.IsVisible, Mode=TwoWay}"
                             Style="{StaticResource menuItemStyle}" />
-                    </shell:MenuItem>
-
-                    <!--  Layout Header  -->
-                    <shell:MenuItem
-                        DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                        Header="Layout"
-                        Style="{StaticResource DropDown}">
-                        <shell:MenuItem
-                            Command="{Binding MainViewModel.ResetLayoutCommand}"
-                            CommandParameter="{Binding ., ElementName=dockManager}"
-                            Header="Reset Layout"
-                            Style="{StaticResource menuItemStyle}" />
-                    </shell:MenuItem>
-
-                    <!--  Tools Header  -->
-                    <shell:MenuItem
-                        DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                        Header="Tools"
-                        Style="{StaticResource DropDown}">
                         <shell:MenuItem
                             Header="Scan Results"
                             IsCheckable="True"

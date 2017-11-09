@@ -42,7 +42,7 @@
             this.AccessLock = new Object();
             this.Actions = new LinkedList<ScheduledTask>();
 
-            this.CancelTaskCommand = new RelayCommand<ScheduledTask>(task => this.CancelTask(task), (task) => true);
+            this.CancelTaskCommand = new RelayCommand<ScheduledTask>(task => task.Cancel(), (task) => true);
 
             this.Update();
         }
@@ -105,6 +105,11 @@
                 scheduledTask.ResetState();
                 this.Actions.AddLast(scheduledTask);
                 this.RaisePropertyChanged(nameof(this.ActiveTasks));
+
+                foreach (ScheduledTask task in scheduledTask.Dependencies)
+                {
+                    this.ScheduleAction(task);
+                }
             }
         }
 
@@ -134,26 +139,12 @@
 
                         if (nextTask.CanStart)
                         {
-                            // Check if dependencies are complete for this task to start
-                            if (nextTask.DependencyBehavior.IsDependencyRequiredForStart
-                                && !this.DependenciesResolved(nextTask))
-                            {
-                                continue;
-                            }
-
                             // Start the task
                             nextTask.InitializeStart();
                             Task.Run(() => nextTask.Begin());
                         }
                         else if (nextTask.CanUpdate)
                         {
-                            // Check if dependencies are complete for this task to update
-                            if (nextTask.DependencyBehavior.IsDependencyRequiredForUpdate
-                                && !this.DependenciesResolved(nextTask))
-                            {
-                                continue;
-                            }
-
                             // Update the task
                             nextTask.InitializeUpdate();
                             Task.Run(() => nextTask.Update());
@@ -161,6 +152,7 @@
                         else if (nextTask.CanEnd)
                         {
                             // End the task
+                            nextTask.InitializeEnd();
                             Task.Run(() => nextTask.End());
 
                             // Permanently remove this task
@@ -171,29 +163,6 @@
                 }
                 while (true);
             });
-        }
-
-        /// <summary>
-        /// Cancels the given scheduled task.
-        /// </summary>
-        /// <param name="taskToCancel">The task to cancel.</param>
-        private void CancelTask(ScheduledTask taskToCancel)
-        {
-            this.Actions.Where(task => taskToCancel == task).ForEach(task => task.Cancel());
-        }
-
-        /// <summary>
-        /// Determines if the depencies are resolved for a given scheduled task.
-        /// </summary>
-        /// <param name="scheduledTask">The scheduled task.</param>
-        /// <returns>True if the dependencies are resolved, otherwise false.</returns>
-        private Boolean DependenciesResolved(ScheduledTask scheduledTask)
-        {
-            IEnumerable<Type> completedDependencies = this.Actions.Select(x => x)
-                .Where(x => x.IsTaskComplete)
-                .Select(x => x.GetType());
-
-            return scheduledTask.DependencyBehavior.AreDependenciesResolved(completedDependencies);
         }
     }
     //// End class

@@ -118,7 +118,9 @@
                 {
                     if (createIfNone)
                     {
-                        return Prefilter.GetInstance().GetPrefilteredSnapshot();
+                        Snapshot snapshot = Prefilter.GetInstance().GetPrefilteredSnapshot();
+                        snapshot.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
+                        return snapshot;
                     }
                     else
                     {
@@ -255,7 +257,7 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(Type activeType)
         {
-            this.GetActiveSnapshot(createIfNone: false)?.PropagateSettings();
+            this.GetActiveSnapshot(createIfNone: false)?.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
         }
 
         /// <summary>

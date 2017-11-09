@@ -19,6 +19,7 @@
     </x:Code>
     <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
+            <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
             <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
         </Grid.Resources>
         <Grid.RowDefinitions>
@@ -314,9 +315,6 @@
                 Background="{StaticResource SqualrColorBlack}"
                 BorderThickness="0"
                 ItemsSource="{Binding Addresses}">
-                <ListView.Resources>
-                    <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
-                </ListView.Resources>
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -422,7 +420,7 @@
                     Grid.Column="0"
                     HorizontalAlignment="Right"
                     Background="Transparent">
-                    <MenuItem Command="{Binding FirstPageCommand}">
+                    <MenuItem Command="{Binding FirstPageCommand}" ToolTip="First Page">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -431,7 +429,7 @@
                                 ToolTip="First Page" />
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Command="{Binding PreviousPageCommand}">
+                    <MenuItem Command="{Binding PreviousPageCommand}" ToolTip="Previous Page">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -451,7 +449,7 @@
                     Grid.Column="2"
                     HorizontalAlignment="Left"
                     Background="Transparent">
-                    <MenuItem Command="{Binding NextPageCommand}">
+                    <MenuItem Command="{Binding NextPageCommand}" ToolTip="Next Page">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -460,7 +458,7 @@
                                 ToolTip="Next Page" />
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Command="{Binding LastPageCommand}">
+                    <MenuItem Command="{Binding LastPageCommand}" ToolTip="Last Page">
                         <MenuItem.Header>
                             <Image
                                 Width="16"

@@ -2,6 +2,7 @@
 {
     using Snapshots;
     using Squalr.Properties;
+    using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -9,16 +10,17 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    internal class LabelThresholderModel : ScannerBase, ISnapshotObserver
+    internal class LabelThresholderModel : ScheduledTask, ISnapshotObserver
     {
         private Double upperThreshold;
 
         private Double lowerThreshold;
 
         public LabelThresholderModel(Action onUpdateHistogram) : base(
-            scannerName: "Label Thresholder",
+            taskName: "Label Thresholder",
             isRepeated: false,
-            dependencyBehavior: null)
+            trackProgress: true
+            )
         {
             this.ItemLock = new Object();
             this.SnapshotLock = new Object();
@@ -165,7 +167,6 @@
 
         protected override void OnBegin()
         {
-            base.OnBegin();
         }
 
         /// <summary>
@@ -227,13 +228,10 @@
             this.Histogram = new SortedList<Object, Int64>(histogram);
             this.UpdateHistogram();
             this.Cancel();
-
-            base.OnUpdate(cancellationToken);
         }
 
         protected override void OnEnd()
         {
-            base.OnEnd();
         }
 
         private void UpdateHistogram(Boolean forceUpdate = false)

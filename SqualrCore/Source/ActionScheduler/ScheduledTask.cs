@@ -2,7 +2,9 @@
 {
     using SqualrCore.Source.Output;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using Utils.Extensions;
@@ -58,22 +60,6 @@
         /// <param name="startAction">The start callback function.</param>
         /// <param name="updateAction">The update callback function.</param>
         /// <param name="endAction">The end callback function.</param>
-        /// <param name="taskName">The dependencies and dependency behavior of this task.</param>
-        /// <param name="isRepeated">Whether or not this task is repeated.</param>
-        /// <param name="trackProgress">Whether or not progress is tracked for this task.</param>
-        public ScheduledTask(
-            String taskName,
-            Boolean isRepeated,
-            Boolean trackProgress) : this(taskName, isRepeated, trackProgress, new DependencyBehavior())
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ScheduledTask" /> class.
-        /// </summary>
-        /// <param name="startAction">The start callback function.</param>
-        /// <param name="updateAction">The update callback function.</param>
-        /// <param name="endAction">The end callback function.</param>
         /// <param name="taskName">The name of this task.</param>
         /// <param name="isRepeated">Whether or not this task is repeated.</param>
         /// <param name="trackProgress">Whether or not progress is tracked for this task.</param>
@@ -81,8 +67,7 @@
         public ScheduledTask(
             String taskName,
             Boolean isRepeated,
-            Boolean trackProgress,
-            DependencyBehavior dependencyBehavior)
+            Boolean trackProgress)
         {
             this.ResetState();
             this.AccessLock = new Object();
@@ -90,22 +75,18 @@
             this.TaskName = taskName;
             this.TrackProgress = trackProgress;
             this.IsRepeated = isRepeated;
-            this.DependencyBehavior = dependencyBehavior == null ? new DependencyBehavior() : dependencyBehavior;
 
             this.progress = 0.0;
 
             this.ProgressCompletionThreshold = ScheduledTask.DefaultProgressCompletionThreshold;
+
+            this.Dependencies = new Queue<ScheduledTask>();
         }
 
         /// <summary>
         /// Occurs after a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Gets or sets the dependency behavior of this task.
-        /// </summary>
-        public DependencyBehavior DependencyBehavior { get; set; }
 
         /// <summary>
         /// Gets or sets the time to wait (in ms) before next update (and time to wait for cancelation).
@@ -147,7 +128,7 @@
         {
             get
             {
-                return !this.IsCanceled && !this.HasStarted;
+                return !this.IsCanceled && !this.HasStarted && this.AreDependenciesResolved();
             }
         }
 
@@ -158,7 +139,7 @@
         {
             get
             {
-                return !this.IsCanceled && !this.IsBusy && (!this.HasUpdated || this.IsRepeated);
+                return !this.IsCanceled && !this.IsBusy && this.HasStarted && (!this.HasUpdated || this.IsRepeated);
             }
         }
 
@@ -230,6 +211,11 @@
         }
 
         /// <summary>
+        /// Gets or sets the tasks that this task depends on.
+        /// </summary>
+        public Queue<ScheduledTask> Dependencies { get; set; }
+
+        /// <summary>
         /// Gets or sets the progress completion threshold. Progress higher this threshold will be considered complete.
         /// </summary>
         protected Double ProgressCompletionThreshold { get; set; }
@@ -274,6 +260,17 @@
             lock (this.AccessLock)
             {
                 this.HasUpdated = true;
+                this.IsBusy = true;
+            }
+        }
+
+        /// <summary>
+        /// Initializes end state variables. Must be called before calling the end callback.
+        /// </summary>
+        public void InitializeEnd()
+        {
+            lock (this.AccessLock)
+            {
                 this.IsBusy = true;
             }
         }
@@ -430,6 +427,15 @@
         protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Determines if all dependencies are resolved based on the provided list of completed dependencies.
+        /// </summary>
+        /// <returns>True if all dependencies are resolved, otherwise false.</returns>
+        private Boolean AreDependenciesResolved()
+        {
+            return this.Dependencies.Count <= 0 || this.Dependencies.All(dependency => dependency.IsTaskComplete);
         }
     }
     //// End class

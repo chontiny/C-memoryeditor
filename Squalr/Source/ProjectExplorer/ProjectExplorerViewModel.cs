@@ -257,7 +257,7 @@
             // Check if the address is within a module, adding it as module format if so
             foreach (NormalizedModule module in EngineCore.GetInstance().VirtualMemory.GetModules())
             {
-                if (module.ContainsAddress(baseAddress))
+                if (module.ContainsAddress(baseAddress.ToUInt64()))
                 {
                     this.AddNewProjectItems(
                         addToSelected: true,

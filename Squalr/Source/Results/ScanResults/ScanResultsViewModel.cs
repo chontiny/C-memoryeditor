@@ -7,7 +7,7 @@
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.PropertyViewer;
+    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
@@ -20,7 +20,7 @@
     using System.Windows.Media.Imaging;
 
     /// <summary>
-    /// View model for the Process Selector.
+    /// View model for the scan results.
     /// </summary>
     internal class ScanResultsViewModel : ToolViewModel, ISnapshotObserver
     {
@@ -149,7 +149,6 @@
             set
             {
                 this.selectedScanResults = value;
-                PropertyViewerViewModel.GetInstance().SetTargetObjects(this.SelectedScanResults?.ToArray());
             }
         }
 
@@ -180,31 +179,7 @@
         {
             get
             {
-                switch (Type.GetTypeCode(this.ActiveType))
-                {
-                    case TypeCode.SByte:
-                        return "SByte";
-                    case TypeCode.Int16:
-                        return "Int16";
-                    case TypeCode.Int32:
-                        return "Int32";
-                    case TypeCode.Int64:
-                        return "Int64";
-                    case TypeCode.Byte:
-                        return "Byte";
-                    case TypeCode.UInt16:
-                        return "UInt16";
-                    case TypeCode.UInt32:
-                        return "UInt32";
-                    case TypeCode.UInt64:
-                        return "UInt64";
-                    case TypeCode.Single:
-                        return "Single";
-                    case TypeCode.Double:
-                        return "Double";
-                    default:
-                        return "Invalid Type";
-                }
+                return Conversions.TypeToName(this.ActiveType);
             }
         }
 
@@ -424,6 +399,11 @@
 
             this.addresses = newAddresses;
             this.RaisePropertyChanged(nameof(this.Addresses));
+
+            // Ensure results are visible
+            this.IsVisible = true;
+            this.IsSelected = true;
+            this.IsActive = true;
         }
 
         /// <summary>
@@ -438,6 +418,7 @@
                     Boolean readSuccess;
                     this.Addresses.ForEach(x => x.ElementValue = EngineCore.GetInstance().VirtualMemory.Read(this.ActiveType, x.ElementAddress, out readSuccess).ToString());
                     this.RaisePropertyChanged(nameof(this.Addresses));
+
                     Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);
                 }
             });

@@ -84,7 +84,7 @@
             RowHeaderWidth="0"
             SelectionChanged="DataGridSelectionChanged">
             <shell:DataGrid.Resources>
-                <converters:Int32ToHexConverter x:Key="Int32ToHexConverter" />
+                <converters:IntToHexConverter x:Key="IntToHexConverter" />
                 <converters:DataGridIndexConverter x:Key="DataGridIndexConverter" />
             </shell:DataGrid.Resources>
             <shell:DataGrid.ColumnHeaderStyle>
@@ -110,7 +110,7 @@
             <shell:DataGrid.Columns>
                 <shell:DataGridTextColumn Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridCell}}, Converter={StaticResource DataGridIndexConverter}, Mode=OneWay}" Header="Offset" />
                 <shell:DataGridTextColumn Binding="{Binding Path=Value}" Header="Decimal" />
-                <shell:DataGridTextColumn Binding="{Binding Path=Value, Converter={StaticResource Int32ToHexConverter}}" Header="Hexadecimal" />
+                <shell:DataGridTextColumn Binding="{Binding Path=Value, Converter={StaticResource IntToHexConverter}}" Header="Hexadecimal" />
             </shell:DataGrid.Columns>
         </shell:DataGrid>
         <shell:Grid Grid.Row="3" Margin="8">

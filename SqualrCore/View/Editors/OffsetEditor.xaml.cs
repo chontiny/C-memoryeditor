@@ -23,7 +23,7 @@
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
-            this.OffsetHexDecBox = new HexDecTextBox();
+            this.OffsetHexDecBox = new HexDecTextBox(typeof(Int32));
             this.OffsetHexDecBox.IsHex = true;
             this.OffsetHexDecBox.TextChanged += this.ValueUpdated;
             this.offsetHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.OffsetHexDecBox));
