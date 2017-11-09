@@ -52,18 +52,14 @@
         /// <summary>
         /// A value indicating whether to track progress for the scheduled task.
         /// </summary>
-        public Boolean trackProgress;
+        private Boolean trackProgress;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScheduledTask" /> class.
         /// </summary>
-        /// <param name="startAction">The start callback function.</param>
-        /// <param name="updateAction">The update callback function.</param>
-        /// <param name="endAction">The end callback function.</param>
         /// <param name="taskName">The name of this task.</param>
         /// <param name="isRepeated">Whether or not this task is repeated.</param>
         /// <param name="trackProgress">Whether or not progress is tracked for this task.</param>
-        /// <param name="dependencyBehavior">The dependencies and dependency behavior of this task.</param>
         public ScheduledTask(
             String taskName,
             Boolean isRepeated,
@@ -177,7 +173,7 @@
         }
 
         /// <summary>
-        /// Gets a value indicating whether the scheduled task has completed in terms of progress, although not necessarily finalized.
+        /// Gets or sets a value indicating whether the scheduled task has completed in terms of progress, although not necessarily finalized.
         /// </summary>
         public Boolean IsTaskComplete
         {
@@ -370,7 +366,8 @@
 
                 this.CancelRequest = new CancellationTokenSource();
 
-                Task updateTask = Task.Run(() =>
+                Task updateTask = Task.Run(
+                () =>
                 {
                     try
                     {
@@ -380,7 +377,8 @@
                     {
                         OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Task cancelled: " + this.TaskName);
                     }
-                }, this.CancelRequest.Token);
+                },
+                this.CancelRequest.Token);
 
                 updateTask.Wait();
 

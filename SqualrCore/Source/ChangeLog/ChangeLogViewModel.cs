@@ -16,11 +16,6 @@
     public class ChangeLogViewModel : ViewModelBase
     {
         /// <summary>
-        /// The changelog text.
-        /// </summary>
-        private String changeLog;
-
-        /// <summary>
         /// Singleton instance of the <see cref="ChangeLogViewModel"/> class.
         /// </summary>
         private static Lazy<ChangeLogViewModel> changeLogViewModelInstance = new Lazy<ChangeLogViewModel>(
@@ -28,7 +23,12 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="ChangeLogViewModel" /> class.
+        /// The changelog text.
+        /// </summary>
+        private String changeLog;
+
+        /// <summary>
+        /// Prevents a default instance of the <see cref="ChangeLogViewModel" /> class from being created.
         /// </summary>
         private ChangeLogViewModel()
         {

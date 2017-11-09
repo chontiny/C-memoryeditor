@@ -5,20 +5,21 @@
 
     public class Unsubscriber<T> : IDisposable
     {
-        private HashSet<IObserver<T>> observers;
-        private IObserver<T> observer;
-
         internal Unsubscriber(HashSet<IObserver<T>> observers, IObserver<T> observer)
         {
-            this.observers = observers;
-            this.observer = observer;
+            this.Observers = observers;
+            this.Observer = observer;
         }
+
+        private HashSet<IObserver<T>> Observers { get; set; }
+
+        private IObserver<T> Observer { get; set; }
 
         public void Dispose()
         {
-            if (observers.Contains(observer))
+            if (Observers.Contains(this.Observer))
             {
-                observers.Remove(observer);
+                Observers.Remove(this.Observer);
             }
         }
     }

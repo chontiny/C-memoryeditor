@@ -23,7 +23,7 @@
         /// <summary>
         /// Copies the source binary to the decoded instructions. When true this option increases the memory required for each decoded instruction.
         /// </summary>
-        public readonly bool CopyBinaryToInstruction = false;
+        public readonly Boolean CopyBinaryToInstruction = false;
 
         /// <summary>
         /// Which vendor instructions to support for disassembly. Options are AMD, Intel or Any.
@@ -63,7 +63,7 @@
         /// <param name="address">The address of the first byte of code. This value is used to resolve relative addresses into absolute addresses while disassembling.</param>
         /// <param name="copyBinaryToInstruction">Keeps a copy of the binary code for the instruction. This will increase the memory usage for each instruction. This is necessary if planning on using the <see cref="Translators.Translator.IncludeBinary"/> option.</param>
         /// <param name="vendor">What vendor instructions to support during disassembly, default is Any. Other options are AMD or Intel.</param>
-        public Disassembler(Byte[] code, ArchitectureMode architecture, ulong address = 0x0, bool copyBinaryToInstruction = true, Vendor vendor = Vendor.Any)
+        public Disassembler(Byte[] code, ArchitectureMode architecture, UInt64 address = 0x0, Boolean copyBinaryToInstruction = true, Vendor vendor = Vendor.Any)
         {
             this.code = code;
             this.Architecture = architecture;
@@ -91,7 +91,7 @@
         /// <param name="address">The address of the first byte of code. This value is used to resolve relative addresses into absolute addresses while disassembling.</param>
         /// <param name="copyBinaryToInstruction">Keeps a copy of the binary code for the instruction. This will increase the memory usage for each instruction. This is necessary if planning on using the <see cref="Translators.Translator.IncludeBinary"/> option.</param>
         /// <param name="vendor">What vendors to support for disassembly, default is Any. Other options are AMD or Intel.</param>
-        public Disassembler(IntPtr codePtr, int codeLength, ArchitectureMode architecture, ulong address = 0x0, bool copyBinaryToInstruction = false, Vendor vendor = Vendor.Any)
+        public Disassembler(IntPtr codePtr, Int32 codeLength, ArchitectureMode architecture, UInt64 address = 0x0, Boolean copyBinaryToInstruction = false, Vendor vendor = Vendor.Any)
             : this(null, architecture, address, copyBinaryToInstruction, vendor)
         {
             if (codePtr == IntPtr.Zero)

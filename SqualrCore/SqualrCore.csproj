@@ -236,7 +236,9 @@
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\Translator.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\BitOps.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Decode.cs" />
-    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\OpTable.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\OpTable.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\RegClass.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\syn.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\SynIntel.cs" />
@@ -359,7 +361,6 @@
     <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DataTypeConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DynamicConverter.cs" />
-    <Compile Include="Source\Utils\TypeConverters\EnumDescriptionConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\HotKeyConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />

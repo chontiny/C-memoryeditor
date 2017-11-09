@@ -10,18 +10,14 @@
     using System.Windows.Documents;
     using System.Windows.Media;
 
+    /// <summary>
+    /// Class to allow the text in a rich text box text to be updated as part of a two way binding.
+    /// </summary>
     public class RichTextBoxHelper : DependencyObject
     {
-        public static String GetDocumentRTF(DependencyObject obj)
-        {
-            return (String)obj.GetValue(DocumentRTFProperty);
-        }
-
-        public static void SetDocumentRTF(DependencyObject obj, String value)
-        {
-            obj.SetValue(DocumentRTFProperty, value);
-        }
-
+        /// <summary>
+        /// Specifies the two way binding for a rich text box.
+        /// </summary>
         public static readonly DependencyProperty DocumentRTFProperty = DependencyProperty.RegisterAttached(
             "DocumentRTF",
             typeof(String),
@@ -44,7 +40,7 @@
                     richTextBox.Document = doc;
 
                     // Bind the hyperlink click events to the output view model handler
-                    // Note: This violates the decoupling of this class from other classes, but it will be permitted for now
+                    // Note: This violates the decoupling of this class from other classes by explicitly referencing OutputViewModel, but it will be permitted for now
                     foreach (Block block in richTextBox.Document.Blocks.ToArray())
                     {
                         if (!(block is Paragraph))
@@ -80,6 +76,26 @@
                     };
                 }
             });
+
+        /// <summary>
+        /// Gets the full RTF text of the given object.
+        /// </summary>
+        /// <param name="dependencyObject">The richtextbox dependency object.</param>
+        /// <returns>The full RTF text of the given object.</returns>
+        public static String GetDocumentRTF(DependencyObject dependencyObject)
+        {
+            return (String)dependencyObject.GetValue(RichTextBoxHelper.DocumentRTFProperty);
+        }
+
+        /// <summary>
+        /// Sets the full RTF text of the given object.
+        /// </summary>
+        /// <param name="dependencyObject">The richtextbox dependency object.</param>
+        /// <param name="value">The new text.</param>
+        public static void SetDocumentRTF(DependencyObject dependencyObject, String value)
+        {
+            dependencyObject.SetValue(RichTextBoxHelper.DocumentRTFProperty, value);
+        }
     }
     //// End class
 }

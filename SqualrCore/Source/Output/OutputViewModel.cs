@@ -63,7 +63,7 @@
         /// <summary>
         /// The current inner message text.
         /// </summary>
-        public String innerMessageText;
+        private String innerMessageText;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="OutputViewModel" /> class from being created.
@@ -186,9 +186,9 @@
         /// <summary>
         /// Event fired when the user clicks on log text with an inner message.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void LinkRequestNavigate(Object sender, RequestNavigateEventArgs e)
+        /// <param name="sender">The sending object.</param>
+        /// <param name="args">The navigation args.</param>
+        public void LinkRequestNavigate(Object sender, RequestNavigateEventArgs args)
         {
             Hyperlink hyperlink = sender as Hyperlink;
 
@@ -202,7 +202,7 @@
         /// <summary>
         /// Adds a new output mask to the list of applied output masks.
         /// </summary>
-        /// <param name="outputMask"></param>
+        /// <param name="outputMask">The output mask to add.</param>
         public void AddOutputMask(OutputMask outputMask)
         {
             this.OutputMasks.Add(outputMask);
@@ -211,7 +211,7 @@
         /// <summary>
         /// Removes an output mask from the list of applied output masks.
         /// </summary>
-        /// <param name="outputMask"></param>
+        /// <param name="outputMask">The output mask to remove.</param>
         public void RemoveOutputMask(OutputMask outputMask)
         {
             if (this.OutputMasks.Contains(outputMask))
@@ -224,6 +224,8 @@
         /// Logs a message to output, filtering out sensitive text with a specific output mask.
         /// </summary>
         /// <param name="logLevel">The log level.</param>
+        /// <param name="message">The log message.</param>
+        /// <param name="innerMessage">The log inner message.</param>
         /// <param name="outputMask">The output masking filter.</param>
         public void Log(LogLevel logLevel, String message, String innerMessage, OutputMask outputMask)
         {
@@ -238,6 +240,7 @@
         /// </summary>
         /// <param name="logLevel">The log level.</param>
         /// <param name="message">The log message.</param>
+        /// <param name="exception">An exception to be shown as the log inner message.</param>
         public void Log(LogLevel logLevel, String message, Exception exception)
         {
             this.Log(logLevel, message, exception?.ToString());
@@ -248,6 +251,7 @@
         /// </summary>
         /// <param name="logLevel">The log level.</param>
         /// <param name="message">The log message.</param>
+        /// <param name="innerMessage">The log inner message.</param>
         public void Log(LogLevel logLevel, String message, String innerMessage = null)
         {
             if (logLevel == LogLevel.Debug)
@@ -280,14 +284,19 @@
             this.RaisePropertyChanged(nameof(this.LogText));
         }
 
+        /// <summary>
+        /// Formats a message for display in a rich textbox.
+        /// </summary>
+        /// <param name="message">The message to display.</param>
+        /// <param name="innerMessage">The tooltip, if applicable.</param>
+        /// <returns>The rich textbox formatted message.</returns>
         private String FormatAsRtf(String message, String innerMessage)
         {
-
             String result = String.Empty;
 
+            // Creating a dummy rich textbox requires doing so on an STA thread for some reason
             Thread thread = new Thread(() =>
             {
-
                 RichTextBox textBox = new RichTextBox();
                 textBox.IsDocumentEnabled = true;
                 textBox.IsReadOnly = true;
@@ -321,6 +330,12 @@
             return result;
         }
 
+        /// <summary>
+        /// Creates a tooltip for use in a rich textbox.
+        /// </summary>
+        /// <param name="message">The display message.</param>
+        /// <param name="innerMessage">The tooltip message.</param>
+        /// <returns>The tooltip object.</returns>
         private Paragraph AddToolTip(String message, String innerMessage)
         {
             Hyperlink link = new Hyperlink();

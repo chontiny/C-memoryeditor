@@ -21,52 +21,57 @@
         /// <summary>
         /// The template for the Change Counter.
         /// </summary>
-        public DataTemplate changeCounterViewTemplate;
+        private DataTemplate changeCounterViewTemplate;
 
         /// <summary>
         /// The template for the Input Correlator.
         /// </summary>
-        public DataTemplate inputCorrelatorViewTemplate;
+        private DataTemplate inputCorrelatorViewTemplate;
 
         /// <summary>
         /// The template for the Label Thresholder.
         /// </summary>
-        public DataTemplate labelThresholderViewTemplate;
+        private DataTemplate labelThresholderViewTemplate;
 
         /// <summary>
         /// The template for the Manual Scanner.
         /// </summary>
-        public DataTemplate manualScannerViewTemplate;
+        private DataTemplate manualScannerViewTemplate;
 
         /// <summary>
         /// The template for the Pointer Scanner.
         /// </summary>
-        public DataTemplate pointerScannerViewTemplate;
+        private DataTemplate pointerScannerViewTemplate;
 
         /// <summary>
         /// The template for the Snapshot Manager.
         /// </summary>
-        public DataTemplate snapshotManagerViewTemplate;
+        private DataTemplate snapshotManagerViewTemplate;
 
         /// <summary>
         /// The template for the Scan Results.
         /// </summary>
-        public DataTemplate scanResultsViewTemplate;
+        private DataTemplate scanResultsViewTemplate;
 
         /// <summary>
         /// The template for the Pointer Scan Results.
         /// </summary>
-        public DataTemplate pointerScanResultsViewTemplate;
+        private DataTemplate pointerScanResultsViewTemplate;
 
         /// <summary>
         /// The template for the .Net Explorer.
         /// </summary>
-        public DataTemplate dotNetExplorerViewTemplate;
+        private DataTemplate dotNetExplorerViewTemplate;
 
         /// <summary>
         /// The template for the Project Explorer.
         /// </summary>
-        public DataTemplate projectExplorerViewTemplate;
+        private DataTemplate projectExplorerViewTemplate;
+
+        /// <summary>
+        /// The template for the Settings.
+        /// </summary>
+        private DataTemplate settingsViewTemplate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.

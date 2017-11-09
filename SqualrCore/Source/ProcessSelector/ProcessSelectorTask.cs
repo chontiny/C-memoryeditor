@@ -17,6 +17,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ProcessSelectorTask" /> class.
         /// </summary>
+        /// <param name="refreshAction">The callback process refresh list action.</param>
         public ProcessSelectorTask(Action refreshAction) : base(taskName: "Process Selector", isRepeated: true, trackProgress: false)
         {
             this.RefreshAction = refreshAction;
@@ -26,7 +27,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the refresh action.
+        /// Gets or sets the callback process list refresh action.
         /// </summary>
         private Action RefreshAction { get; set; }
 

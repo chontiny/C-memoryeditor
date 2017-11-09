@@ -79,7 +79,7 @@
             u.AsmBufferFill = 0;
 
             // Move program counter by bytes decoded
-            u.Pc += (uint)u.InputCtr;
+            u.Pc += (UInt32)u.InputCtr;
 
             // Return number of bytes disassembled
             return u.InputCtr;
@@ -643,7 +643,7 @@
         /// <param name="u">TODO u.</param>
         /// <param name="size">TODO size.</param>
         /// <param name="op">TODO op.</param>
-        private void DecodeMemoryDisplacement(ref Ud u, int size, ref UdOperand op)
+        private void DecodeMemoryDisplacement(ref Ud u, Int32 size, ref UdOperand op)
         {
             switch (size)
             {

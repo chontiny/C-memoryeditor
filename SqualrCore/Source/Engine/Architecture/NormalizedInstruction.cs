@@ -11,6 +11,7 @@
         /// Initializes a new instance of the <see cref="NormalizedInstruction" /> class.
         /// </summary>
         /// <param name="instruction">The instruction string.</param>
+        /// <param name="bytes">The bytes of the instruction.</param>
         /// <param name="size">The instruction size.</param>
         public NormalizedInstruction(String instruction, Byte[] bytes, Int32 size)
         {
@@ -34,6 +35,6 @@
         /// </summary>
         public Int32 Size { get; private set; }
     }
-    /// End class
+    //// End class
 }
-/// End namespace
+//// End namespace
