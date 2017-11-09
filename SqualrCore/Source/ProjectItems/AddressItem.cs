@@ -182,7 +182,7 @@
         }
 
         /// <summary>
-        /// Gets or sets the old value used for notifying value updates.
+        /// Gets or sets the old value used for determining value updates.
         /// </summary>
         private Object OldValue { get; set; }
 
@@ -192,6 +192,7 @@
         /// <returns>True if update was made, otherwise false.</returns>
         public override Boolean Update()
         {
+            Boolean hasUpdate = false;
             this.CalculatedAddress = this.ResolveAddress();
 
             if (this.IsActivated)
@@ -213,13 +214,13 @@
                 if (this.AddressValue?.ToString() != this.OldValue?.ToString())
                 {
                     this.RaisePropertyChanged(nameof(this.AddressValue));
-                    return true;
+                    hasUpdate = true;
                 }
 
                 this.OldValue = addressValue;
             }
 
-            return false;
+            return hasUpdate;
         }
 
         /// <summary>

@@ -38,7 +38,15 @@
         /// <returns>An Int32. If conversion cannot take place, returns 0.</returns>
         public Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if (value != null)
+            {
+                if (CheckSyntax.CanParseHex(targetType, value.ToString()))
+                {
+                    return Conversions.ParseHexStringAsPrimitive(targetType, value.ToString());
+                }
+            }
+
+            return 0;
         }
     }
     //// End class
