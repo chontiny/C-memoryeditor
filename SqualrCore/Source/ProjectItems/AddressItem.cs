@@ -182,6 +182,11 @@
         }
 
         /// <summary>
+        /// Gets or sets the old value used for notifying value updates.
+        /// </summary>
+        private Object OldValue { get; set; }
+
+        /// <summary>
         /// Update event for this project item. Resolves addresses and values.
         /// </summary>
         /// <returns>True if update was made, otherwise false.</returns>
@@ -202,15 +207,16 @@
             {
                 // Otherwise we read as normal (bypass value setter and set value directly to avoid a write-back to memory)
                 Boolean readSuccess;
-                Object oldValue = addressValue;
 
                 this.addressValue = EngineCore.GetInstance()?.VirtualMemory?.Read(this.DataType, this.CalculatedAddress, out readSuccess);
 
-                if (this.AddressValue?.ToString() != oldValue?.ToString())
+                if (this.AddressValue?.ToString() != this.OldValue?.ToString())
                 {
                     this.RaisePropertyChanged(nameof(this.AddressValue));
                     return true;
                 }
+
+                this.OldValue = addressValue;
             }
 
             return false;

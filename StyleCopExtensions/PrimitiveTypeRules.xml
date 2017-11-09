@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<SourceAnalyzer Name="Primitive Type Rules">
+  <Description>
+    Rules which ensure that the code is well-formatted and readable.
+  </Description>
+  <Rules>
+    <Rule Name="PrimitiveTypeRules" CheckId="IS6969">
+      <Context>Use the system type '{0}' or '{1}' rather than '{2}'.</Context>
+      <Description>Enforces the use of the system types rather than their aliases.</Description>
+    </Rule>
+  </Rules>
+</SourceAnalyzer>
