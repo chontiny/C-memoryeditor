@@ -92,7 +92,7 @@
         /// <summary>
         /// Gets or sets the discovered pointers from the pointer scan.
         /// </summary>
-        private ScannedPointers DiscoveredPointers { get; set; }
+        private ScannedPointers ScannedPointers { get; set; }
 
         /// <summary>
         /// Gets or sets a lock object for updating scan progress.
@@ -104,7 +104,7 @@
         /// </summary>
         protected override void OnBegin()
         {
-            this.DiscoveredPointers = new ScannedPointers();
+            this.ScannedPointers = new ScannedPointers();
 
             if (this.LevelPointers == null || this.LevelPointers.Count <= 0)
             {
@@ -119,18 +119,21 @@
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            Int32 processedPointerRoots = 0;
 
             // Collect pointer roots
             foreach (UInt64 modulePointer in this.LevelPointers.ModulePointerPool.PointerAddresses)
             {
-                this.DiscoveredPointers.AddPointerRoot(new PointerRoot(modulePointer));
+                this.ScannedPointers.AddPointerRoot(new PointerRoot(modulePointer));
             }
 
-            this.DiscoveredPointers.Sort();
+            this.ScannedPointers.Sort();
 
             // Build out pointer paths via a DFS
-            foreach (PointerRoot pointerRoot in this.DiscoveredPointers.PointerRoots)
+            foreach (PointerRoot pointerRoot in this.ScannedPointers.PointerRoots)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 PointerPool nextLevel = this.LevelPointers.NonStaticPointerPools.First();
                 UInt64 pointerDestination = this.LevelPointers.ModulePointerPool[pointerRoot.BaseAddress];
 
@@ -144,7 +147,21 @@
                         this.BuildPointerPaths(this.ApplyOffset(pointerDestination, branch.Offset), branch, 0);
                     }
                 }
+
+                // Update scan progress
+                lock (this.ProgressLock)
+                {
+                    processedPointerRoots++;
+
+                    // Limit how often we update the progress
+                    if (processedPointerRoots % 10 == 0)
+                    {
+                        this.UpdateProgress(processedPointerRoots, this.ScannedPointers.PointerRoots.Count, canFinalize: false);
+                    }
+                }
             }
+
+            this.ScannedPointers.BuildCount();
         }
 
         private void BuildPointerPaths(UInt64 currentPointer, PointerBranch pointerBranch, Int32 levelIndex)
@@ -177,10 +194,10 @@
         /// </summary>
         protected override void OnEnd()
         {
-            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.DiscoveredPointers;
+            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.ScannedPointers;
 
             this.LevelPointers = null;
-            this.DiscoveredPointers = null;
+            this.ScannedPointers = null;
         }
 
         private void SetLevelPointers(LevelPointers levelPointers)

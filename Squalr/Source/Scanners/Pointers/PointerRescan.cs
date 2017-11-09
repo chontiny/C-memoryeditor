@@ -57,6 +57,7 @@
             cancellationToken.ThrowIfCancellationRequested();
 
             ValidatedPointers validatedPointers = new ValidatedPointers();
+            Int32 processedPointers = 0;
 
             // Enumerate all discovered pointers and determine if they have a valid target address
             foreach (PointerItem pointerItem in this.DiscoveredPointers)
@@ -64,6 +65,18 @@
                 if (pointerItem.CalculatedAddress.ToUInt64() == this.TargetAddress)
                 {
                     validatedPointers.Pointers.Add(pointerItem);
+                }
+
+                // Update scan progress
+                lock (this.ProgressLock)
+                {
+                    processedPointers++;
+
+                    // Limit how often we update the progress
+                    if (processedPointers % 1000 == 0)
+                    {
+                        this.UpdateProgress(processedPointers, this.DiscoveredPointers.Count.ToInt32(), canFinalize: false);
+                    }
                 }
             }
 

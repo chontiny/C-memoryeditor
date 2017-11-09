@@ -38,6 +38,14 @@
                 Background="{StaticResource SqualrColorGray68}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 Foreground="{StaticResource SqualrColorWhite}">
+                <MenuItem Command="{Binding NewPointerScanCommand}" ToolTip="New Scan">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="{x:Static content:Images.New}" />
+                    </MenuItem.Header>
+                </MenuItem>
                 <MenuItem
                     BorderThickness="0"
                     Style="{StaticResource DropDownAutoClose}"

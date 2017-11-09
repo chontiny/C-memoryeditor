@@ -12,11 +12,17 @@
     internal class ScannedPointers : IDiscoveredPointers
     {
         /// <summary>
+        /// The number of discovered pointers.
+        /// </summary>
+        private UInt64 count;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ScannedPointers" /> class.
         /// </summary>
         public ScannedPointers()
         {
             this.PointerRoots = new List<PointerRoot>();
+            this.count = 0;
         }
 
         /// <summary>
@@ -31,7 +37,7 @@
         {
             get
             {
-                return this.CountLeaves();
+                return this.count;
             }
         }
 
@@ -66,6 +72,14 @@
         public void Sort()
         {
             this.PointerRoots = new List<PointerRoot>(this.PointerRoots.OrderBy(root => root.BaseAddress));
+        }
+
+        /// <summary>
+        /// Updates the number of total pointers.
+        /// </summary>
+        public void BuildCount()
+        {
+            this.count = this.CountLeaves();
         }
 
         /// <summary>

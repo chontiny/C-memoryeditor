@@ -85,6 +85,7 @@
             this.AddScanResultCommand = new RelayCommand<PointerItem>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
             this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
             this.ChangeTypeCommand = new RelayCommand<Type>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
+            this.NewPointerScanCommand = new RelayCommand(() => Task.Run(() => this.DiscoveredPointers = null), () => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
             this.PreviousPageCommand = new RelayCommand(() => Task.Run(() => this.PreviousPage()), () => true);
@@ -118,6 +119,11 @@
         /// Gets the command to change the active data type.
         /// </summary>
         public ICommand ChangeTypeCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to clear the pointer scan results.
+        /// </summary>
+        public ICommand NewPointerScanCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to go to the first page.
@@ -341,7 +347,7 @@
         {
             IList<PointerItem> newAddresses = new List<PointerItem>();
 
-            UInt64 count = this.DiscoveredPointers.Count;
+            UInt64 count = this.DiscoveredPointers == null ? 0 : this.DiscoveredPointers.Count;
             UInt64 startIndex = Math.Min(PointerScanResultsViewModel.PageSize * this.CurrentPage, count);
             UInt64 endIndex = Math.Min((PointerScanResultsViewModel.PageSize * this.CurrentPage) + PointerScanResultsViewModel.PageSize, count);
 

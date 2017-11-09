@@ -162,6 +162,7 @@
                     // Clear the saved values, we do not need them now
                     region.SetCurrentValues(null);
 
+                    // Update scan progress
                     lock (this.ProgressLock)
                     {
                         processedRegions++;
