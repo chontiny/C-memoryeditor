@@ -29,7 +29,8 @@ namespace SqualrCore.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Fixes to scanning\r\n- Fixes to action schedulers\r\n- Fixes to results");
+            this.Write("- Added pointer scanner feature. It can still use some work, but it is a good fun" +
+                    "ctional first version.");
             return this.GenerationEnvironment.ToString();
         }
     }
