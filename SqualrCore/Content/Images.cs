@@ -161,6 +161,16 @@
         public static readonly BitmapImage LessThanOrEqual = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "LessThanOrEqual.png"));
 
         /// <summary>
+        /// Image for the letter P.
+        /// </summary>
+        public static readonly BitmapImage LetterP = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "LetterP.png"));
+
+        /// <summary>
+        /// Image for the letter S.
+        /// </summary>
+        public static readonly BitmapImage LetterS = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "LetterS.png"));
+
+        /// <summary>
         /// Image for a mathematical AND.
         /// </summary>
         public static readonly BitmapImage LogicalAnd = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "LogicalAnd.png"));

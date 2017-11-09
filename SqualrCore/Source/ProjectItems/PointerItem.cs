@@ -4,12 +4,14 @@
     using Editors.OffsetEditor;
     using Engine;
     using Engine.VirtualMachines;
+    using SqualrCore.Content;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Linq;
     using System.Runtime.Serialization;
+    using System.Windows.Media.Imaging;
     using Utils.Extensions;
     using Utils.TypeConverters;
 
@@ -94,6 +96,7 @@
                 this.moduleName = value == null ? String.Empty : value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.ModuleName));
+                this.RaisePropertyChanged(nameof(this.Icon));
             }
         }
 
@@ -150,6 +153,28 @@
                 this.pointerOffsets = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.PointerOffsets));
+                this.RaisePropertyChanged(nameof(this.Icon));
+            }
+        }
+
+        /// <summary>
+        /// Gets the image associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        public override BitmapSource Icon
+        {
+            get
+            {
+                if (!this.PointerOffsets.IsNullOrEmpty())
+                {
+                    return Images.LetterP;
+                }
+                else if (!this.ModuleName.IsNullOrEmpty())
+                {
+                    return Images.LetterS;
+                }
+
+                return Images.CollectValues;
             }
         }
 
