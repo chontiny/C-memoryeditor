@@ -1,15 +1,14 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
-    using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectItems;
     using System;
     using System.Collections;
     using System.Collections.Generic;
 
     /// <summary>
-    /// An abstract class for accessing the discovered pointers from a pointer scan or rescan
+    /// An abstract class for accessing the discovered pointers from a pointer scan or rescan.
     /// </summary>
-    internal abstract class IDiscoveredPointers : IEnumerable<PointerItem>
+    internal abstract class DiscoveredPointers : IEnumerable<PointerItem>
     {
         /// <summary>
         /// Gets the number of discovered pointers.
@@ -17,18 +16,12 @@
         public abstract UInt64 Count { get; }
 
         /// <summary>
-        /// Indexer to allow the retrieval of the element at the specified index.
+        /// Gets the pointers between the specified indicies.
         /// </summary>
-        /// <param name="index">The index of the pointer.</param>
-        /// <returns>Returns the pointer at the specified index.</returns>
-        public virtual PointerItem this[UInt64 index]
-        {
-            get
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Invalid discovered pointer index");
-                return null;
-            }
-        }
+        /// <param name="startIndex">The start index.</param>
+        /// <param name="endIndex">The end index.</param>
+        /// <returns>The pointers between the specified indicies.</returns>
+        public abstract IEnumerable<PointerItem> GetPointers(UInt64 startIndex, UInt64 endIndex);
 
         /// <summary>
         /// Gets the enumerator for the discovered pointers.

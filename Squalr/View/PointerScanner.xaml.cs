@@ -41,7 +41,6 @@
             this.pointerRescanAddressHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRescanAddressHexDecBox));
 
             this.PointerRescanValueHexDecBox = new HexDecTextBox();
-            this.PointerRescanValueHexDecBox.IsHex = true;
             this.PointerRescanValueHexDecBox.TextChanged += this.PointerRescanValueUpdated;
             this.pointerRescanValueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRescanValueHexDecBox));
         }

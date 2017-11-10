@@ -33,7 +33,7 @@
         /// <summary>
         /// Gets or sets the discovered pointers from the pointer scan.
         /// </summary>
-        private IDiscoveredPointers DiscoveredPointers { get; set; }
+        private DiscoveredPointers DiscoveredPointers { get; set; }
 
         /// <summary>
         /// Gets or sets a lock object for updating scan progress.

@@ -9,7 +9,7 @@
     /// <summary>
     /// A class to contain the discovered pointers from a pointer scan.
     /// </summary>
-    internal class ScannedPointers : IDiscoveredPointers
+    internal class ScannedPointers : DiscoveredPointers
     {
         /// <summary>
         /// The number of discovered pointers.
@@ -42,27 +42,21 @@
         }
 
         /// <summary>
-        /// Indexer to allow the retrieval of the element at the specified index.
+        /// Gets the pointers between the specified indicies.
         /// </summary>
-        /// <param name="index">The index of the pointer.</param>
-        /// <returns>Returns the pointer at the specified index.</returns>
-        public override PointerItem this[UInt64 index]
+        /// <param name="startIndex">The start index.</param>
+        /// <param name="endIndex">The end index.</param>
+        /// <returns>The pointers between the specified indicies.</returns>
+        public override IEnumerable<PointerItem> GetPointers(UInt64 startIndex, UInt64 endIndex)
         {
-            get
-            {
-                foreach (PointerItem pointer in this)
-                {
-                    if (index > 0)
-                    {
-                        index--;
-                    }
-                    else
-                    {
-                        return pointer;
-                    }
-                }
+            IEnumerator<PointerItem> enumerator = this.EnumeratePointers(startIndex, endIndex);
 
-                return base[index];
+            while (enumerator.MoveNext())
+            {
+                if (enumerator.Current != null)
+                {
+                    yield return enumerator.Current;
+                }
             }
         }
 
@@ -97,13 +91,25 @@
         /// <returns>The enumerator for the discovered pointers.</returns>
         public override IEnumerator<PointerItem> GetEnumerator()
         {
+            return this.EnumeratePointers();
+        }
+
+        /// <summary>
+        /// Gets the enumerator for the discovered pointers.
+        /// </summary>
+        /// <param name="startIndex">The index at which to return non-null values.</param>
+        /// <returns>The enumerator for the discovered pointers.</returns>
+        private IEnumerator<PointerItem> EnumeratePointers(UInt64? startIndex = null, UInt64? endIndex = null)
+        {
+            SelectionIndicies indicies = new SelectionIndicies(startIndex, endIndex);
+
             foreach (PointerRoot root in this.PointerRoots)
             {
                 foreach (PointerBranch branch in root)
                 {
                     Stack<Int32> offsets = new Stack<Int32>();
 
-                    foreach (PointerItem pointerItem in this.EnumerateBranches(root.BaseAddress, offsets, branch))
+                    foreach (PointerItem pointerItem in this.EnumerateBranches(root.BaseAddress, offsets, branch, indicies))
                     {
                         yield return pointerItem;
                     }
@@ -117,14 +123,32 @@
         /// <param name="baseAddress">The current base address.</param>
         /// <param name="offsets">The offsets leading to this branch.</param>
         /// <param name="branch">The current branch.</param>
+        /// <param name="startIndex">The index at which to return non-null values.</param>
+        /// <param name="endIndex">The index at which to stop enumerating.</param>
         /// <returns>The full pointer path to the branch.</returns>
-        private IEnumerable<PointerItem> EnumerateBranches(UInt64 baseAddress, Stack<Int32> offsets, PointerBranch branch)
+        private IEnumerable<PointerItem> EnumerateBranches(UInt64 baseAddress, Stack<Int32> offsets, PointerBranch branch, SelectionIndicies selectionIndicies)
         {
             offsets.Push(branch.Offset);
 
+            // End index reached
+            if (selectionIndicies.Finished)
+            {
+                yield break;
+            }
+
             if (branch.Branches.Count <= 0)
             {
-                PointerItem pointerItem = new PointerItem(baseAddress.ToIntPtr(), typeof(Int32), "New Pointer", null, offsets.ToArray().Reverse());
+                PointerItem pointerItem;
+
+                // Only create pointer items when in the range of the selection indicies. This is an optimization to prevent creating unneeded objects.
+                if (selectionIndicies.IterateNext())
+                {
+                    pointerItem = new PointerItem(baseAddress.ToIntPtr(), typeof(Int32), "New Pointer", null, offsets.ToArray().Reverse());
+                }
+                else
+                {
+                    pointerItem = null;
+                }
 
                 yield return pointerItem;
             }
@@ -132,7 +156,7 @@
             {
                 foreach (PointerBranch childBranch in branch)
                 {
-                    foreach (PointerItem pointerItem in this.EnumerateBranches(baseAddress, offsets, childBranch))
+                    foreach (PointerItem pointerItem in this.EnumerateBranches(baseAddress, offsets, childBranch, selectionIndicies))
                     {
                         yield return pointerItem;
                     }
@@ -154,7 +178,7 @@
             {
                 foreach (PointerBranch branch in root)
                 {
-                    count = this.CountLeaves(count, branch);
+                    this.CountLeaves(ref count, branch);
                 }
             }
 
@@ -167,20 +191,74 @@
         /// <param name="count">The count so far.</param>
         /// <param name="branch">The current pointer tree branch.</param>
         /// <returns>The count updated with the number of leaves from this branch.</returns>
-        private UInt64 CountLeaves(UInt64 count, PointerBranch branch)
+        private void CountLeaves(ref UInt64 count, PointerBranch branch)
         {
             if (branch.Branches.Count <= 0)
             {
-                return count + 1;
+                count = count + 1;
             }
             else
             {
                 foreach (PointerBranch childBranch in branch)
                 {
-                    count = this.CountLeaves(count, childBranch);
+                    this.CountLeaves(ref count, childBranch);
+                }
+            }
+        }
+
+        private class SelectionIndicies
+        {
+            public SelectionIndicies(UInt64? startIndex, UInt64? endIndex)
+            {
+                // Ensure valid indicies
+                if (startIndex != null)
+                {
+                    if (endIndex == null || endIndex < startIndex)
+                    {
+                        endIndex = startIndex;
+                    }
                 }
 
-                return count;
+                this.StartIndex = startIndex;
+                this.EndIndex = endIndex;
+
+                this.HasIndicies = this.StartIndex != null;
+            }
+
+            public UInt64? StartIndex { get; private set; }
+
+            public UInt64? EndIndex { get; private set; }
+
+            public Boolean HasIndicies { get; set; }
+
+            public Boolean Finished
+            {
+                get
+                {
+                    return this.HasIndicies && this.EndIndex <= 0;
+                }
+            }
+
+            public Boolean IterateNext()
+            {
+                if (!this.HasIndicies)
+                {
+                    return true;
+                }
+
+                Boolean result = this.StartIndex == 0 && !this.Finished;
+
+                if (this.StartIndex > 0)
+                {
+                    this.StartIndex--;
+                }
+
+                if (this.EndIndex > 0)
+                {
+                    this.EndIndex--;
+                }
+
+                return result;
             }
         }
     }

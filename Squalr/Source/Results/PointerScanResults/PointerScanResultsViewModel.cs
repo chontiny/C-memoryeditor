@@ -62,7 +62,7 @@
         /// <summary>
         /// The list of discovered pointers.
         /// </summary>
-        private IDiscoveredPointers discoveredPointers;
+        private DiscoveredPointers discoveredPointers;
 
         /// <summary>
         /// The pointer read interval in milliseconds
@@ -290,7 +290,7 @@
         /// <summary>
         /// Gets or sets the list of discovered pointers.
         /// </summary>
-        public IDiscoveredPointers DiscoveredPointers
+        public DiscoveredPointers DiscoveredPointers
         {
             get
             {
@@ -392,17 +392,14 @@
             UInt64 startIndex = Math.Min(PointerScanResultsViewModel.PageSize * this.CurrentPage, count);
             UInt64 endIndex = Math.Min((PointerScanResultsViewModel.PageSize * this.CurrentPage) + PointerScanResultsViewModel.PageSize, count);
 
-            for (UInt64 index = startIndex; index < endIndex; index++)
+            if (this.DiscoveredPointers != null)
             {
-                PointerItem pointerItem = this.DiscoveredPointers[index];
-
-                if (pointerItem != null)
-                {
-                    newAddresses.Add(pointerItem);
-                }
+                this.Addresses = new ObservableCollection<PointerItem>(this.DiscoveredPointers.GetPointers(startIndex, endIndex));
             }
-
-            this.Addresses = new ObservableCollection<PointerItem>(newAddresses);
+            else
+            {
+                this.Addresses = new ObservableCollection<PointerItem>();
+            }
 
             // Ensure results are visible
             this.IsVisible = true;

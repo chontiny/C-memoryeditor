@@ -313,7 +313,7 @@
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerValueRescan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerRescan.cs" />
-    <Compile Include="Source\Scanners\Pointers\Structures\IDiscoveredPointers.cs" />
+    <Compile Include="Source\Scanners\Pointers\Structures\DiscoveredPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\ValidatedPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\ScannedPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\PointerBranch.cs" />
