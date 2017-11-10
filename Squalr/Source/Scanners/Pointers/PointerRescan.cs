@@ -64,6 +64,11 @@
             {
                 pointerItem.Update();
 
+                // TODO: This is not particularly sustainable/performant. This will fall apart for floats/doubles where we want nearly-equal values (ie 3.4444 and 3.4443)
+                // Ideally we want something similar to how we do scans with the SnapShotElementIterator with the call to Compare().
+                // One solution would be to create a snapshot from all of the discovered pointers so that we could leverage the SnapshotElementIterator compare functions,
+                // But this creates the technical challenge of associating the pointer item with an element in the snapshot.
+                // Also, we need to update the data type of these pointer items to match the current pointer scan results data times.
                 if (pointerItem.CalculatedAddress.ToUInt64() == this.TargetAddress)
                 {
                     validatedPointers.Pointers.Add(pointerItem);

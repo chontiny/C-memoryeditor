@@ -77,6 +77,8 @@
         private ScanResultsViewModel() : base("Scan Results")
         {
             this.ContentId = ScanResultsViewModel.ToolContentId;
+            this.ObserverLock = new Object();
+
             this.ChangeTypeCommand = new RelayCommand<Type>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
             this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<ScanResult>(), (selectedItems) => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
@@ -85,8 +87,8 @@
             this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
             this.AddScanResultCommand = new RelayCommand<ScanResult>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
             this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
+
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
-            this.ObserverLock = new Object();
             this.ActiveType = typeof(Int32);
             this.addresses = new ObservableCollection<ScanResult>();
 

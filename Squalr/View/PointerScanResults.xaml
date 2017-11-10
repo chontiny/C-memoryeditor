@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
     x:Name="SqualrPointerScanResults"
     d:DesignHeight="256"
     d:DesignWidth="512"
@@ -46,6 +47,7 @@
                             Source="{x:Static content:Images.New}" />
                     </MenuItem.Header>
                 </MenuItem>
+                <Separator Style="{DynamicResource VerticalSeparator}" />
                 <MenuItem
                     BorderThickness="0"
                     Style="{StaticResource DropDownAutoClose}"
@@ -80,7 +82,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeSByteCommand}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:SByte}"
                         ToolTip="1 Byte Signed Integer">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -99,7 +102,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeInt16Command}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:Int16}"
                         ToolTip="2 Byte Signed Integer">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -118,7 +122,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeInt32Command}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:Int32}"
                         ToolTip="4 Byte Signed Integer">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -137,7 +142,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeInt64Command}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:Int64}"
                         ToolTip="8 Byte Signed Integer">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -156,7 +162,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeByteCommand}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:Byte}"
                         ToolTip="1 Byte Unsigned Integer">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -175,7 +182,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeUInt16Command}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:UInt16}"
                         ToolTip="2 Byte Unsigned Integer">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -194,7 +202,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeUInt32Command}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:UInt32}"
                         ToolTip="4 Byte Unsigned Integer">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -213,7 +222,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeUInt64Command}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:UInt64}"
                         ToolTip="8 Byte Unsigned Integer">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -232,7 +242,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeSingleCommand}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:Single}"
                         ToolTip="Single Precision Floating Point Value">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -251,7 +262,8 @@
                     <MenuItem
                         Background="{StaticResource SqualrColorGray68}"
                         BorderBrush="{StaticResource SqualrColorGray68}"
-                        Command="{Binding ChangeTypeDoubleCommand}"
+                        Command="{Binding ChangeTypeCommand}"
+                        CommandParameter="{x:Type system:Double}"
                         ToolTip="Double Precision Floating Point Value">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -291,7 +303,7 @@
                 Name="ScanResultsListView"
                 Background="{StaticResource SqualrColorBlack}"
                 BorderThickness="0"
-                ItemsSource="{Binding Addresses}">
+                ItemsSource="{Binding Pointers}">
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -322,7 +334,7 @@
                                 Text="{Binding Path=., Converter={StaticResource ProjectItemValueConverter}}" />
                             <TextBlock
                                 Grid.Column="1"
-                                Foreground="{StaticResource SqualrColorWhite}"
+                                Foreground="{StaticResource SqualrColorGray74}"
                                 IsHitTestVisible="False"
                                 Text="{Binding Path=CalculatedAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
                             <TextBlock
@@ -332,7 +344,7 @@
                                 Text="{Binding Path=ModuleOffset, Converter={StaticResource IntPtrToAddressConverter}}" />
                             <TextBlock
                                 Grid.Column="3"
-                                Foreground="{StaticResource SqualrColorWhite}"
+                                Foreground="{StaticResource SqualrColorGray74}"
                                 IsHitTestVisible="False"
                                 Text="{Binding Path=PointerOffsets, Converter={StaticResource OffsetsToStringConverter}}" />
                         </Grid>
@@ -365,16 +377,16 @@
                                     </Style>
                                 </Grid.Resources>
                                 <Border Grid.Column="0">
-                                    <TextBlock>Value</TextBlock>
+                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}">Value</TextBlock>
                                 </Border>
                                 <Border Grid.Column="1">
-                                    <TextBlock>Calculated Address</TextBlock>
+                                    <TextBlock Foreground="{StaticResource SqualrColorGray74}">Calculated Address</TextBlock>
                                 </Border>
                                 <Border Grid.Column="2">
-                                    <TextBlock>Base Address</TextBlock>
+                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}">Base Address</TextBlock>
                                 </Border>
                                 <Border Grid.Column="3">
-                                    <TextBlock>Offsets</TextBlock>
+                                    <TextBlock Foreground="{StaticResource SqualrColorGray74}">Offsets</TextBlock>
                                 </Border>
                             </Grid>
                             <ItemsPresenter Grid.Row="1" />

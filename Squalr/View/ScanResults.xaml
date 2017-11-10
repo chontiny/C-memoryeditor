@@ -345,7 +345,7 @@
                                 Text="{Binding Path=ElementAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
                             <TextBlock
                                 Grid.Column="1"
-                                Foreground="{StaticResource SqualrColorWhite}"
+                                Foreground="{StaticResource SqualrColorGray74}"
                                 IsHitTestVisible="False"
                                 Text="{Binding Path=ElementValue}" />
                             <TextBlock
@@ -355,7 +355,7 @@
                                 Text="{Binding Path=ElementPreviousValue}" />
                             <TextBlock
                                 Grid.Column="3"
-                                Foreground="{StaticResource SqualrColorWhite}"
+                                Foreground="{StaticResource SqualrColorGray74}"
                                 IsHitTestVisible="False"
                                 Text="{Binding Path=ElementLabel}" />
                         </Grid>
@@ -388,16 +388,16 @@
                                     </Style>
                                 </Grid.Resources>
                                 <Border Grid.Column="0">
-                                    <TextBlock>Address</TextBlock>
+                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}">Address</TextBlock>
                                 </Border>
                                 <Border Grid.Column="1">
-                                    <TextBlock>Value</TextBlock>
+                                    <TextBlock Foreground="{StaticResource SqualrColorGray74}">Value</TextBlock>
                                 </Border>
                                 <Border Grid.Column="2">
-                                    <TextBlock>Previous</TextBlock>
+                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}">Previous</TextBlock>
                                 </Border>
                                 <Border Grid.Column="3">
-                                    <TextBlock>Label</TextBlock>
+                                    <TextBlock Foreground="{StaticResource SqualrColorGray74}">Label</TextBlock>
                                 </Border>
                             </Grid>
                             <ItemsPresenter Grid.Row="1" />

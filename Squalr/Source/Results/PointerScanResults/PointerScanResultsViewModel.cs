@@ -7,6 +7,7 @@
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -80,6 +81,7 @@
         private PointerScanResultsViewModel() : base("Pointer Scan Results")
         {
             this.ContentId = PointerScanResultsViewModel.ToolContentId;
+            this.ObserverLock = new Object();
 
             this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<PointerItem>(), (selectedItems) => true);
             this.AddScanResultCommand = new RelayCommand<PointerItem>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
@@ -92,6 +94,7 @@
             this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
             this.AddAddressCommand = new RelayCommand<PointerItem>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
 
+            this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = typeof(Int32);
             this.addresses = new ObservableCollection<PointerItem>();
 
@@ -176,6 +179,11 @@
             set
             {
                 this.activeType = value;
+
+                // Update data type of pointers
+                this.Pointers?.ToArray().ForEach(pointer => pointer.DataType = this.ActiveType);
+
+                this.NotifyObservers();
                 this.RaisePropertyChanged(nameof(this.ActiveType));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeName));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeImage));
@@ -272,7 +280,7 @@
         /// <summary>
         /// Gets or sets the address elements.
         /// </summary>
-        public ObservableCollection<PointerItem> Addresses
+        public ObservableCollection<PointerItem> Pointers
         {
             get
             {
@@ -283,7 +291,7 @@
             {
                 this.addresses = value;
 
-                this.RaisePropertyChanged(nameof(this.Addresses));
+                this.RaisePropertyChanged(nameof(this.Pointers));
             }
         }
 
@@ -386,19 +394,20 @@
         /// </summary>
         private void LoadPointerScanResults()
         {
-            IList<PointerItem> newAddresses = new List<PointerItem>();
-
             UInt64 count = this.DiscoveredPointers == null ? 0 : this.DiscoveredPointers.Count;
             UInt64 startIndex = Math.Min(PointerScanResultsViewModel.PageSize * this.CurrentPage, count);
             UInt64 endIndex = Math.Min((PointerScanResultsViewModel.PageSize * this.CurrentPage) + PointerScanResultsViewModel.PageSize, count);
 
             if (this.DiscoveredPointers != null)
             {
-                this.Addresses = new ObservableCollection<PointerItem>(this.DiscoveredPointers.GetPointers(startIndex, endIndex));
+                IEnumerable<PointerItem> newPointers = this.DiscoveredPointers.GetPointers(startIndex, endIndex);
+                newPointers.ForEach(x => x.DataType = this.ActiveType);
+
+                this.Pointers = new ObservableCollection<PointerItem>(newPointers);
             }
             else
             {
-                this.Addresses = new ObservableCollection<PointerItem>();
+                this.Pointers = new ObservableCollection<PointerItem>();
             }
 
             // Ensure results are visible
@@ -418,7 +427,7 @@
                 {
                     Boolean hasUpdate = false;
 
-                    foreach (PointerItem pointer in this.Addresses.ToArray())
+                    foreach (PointerItem pointer in this.Pointers.ToArray())
                     {
                         hasUpdate |= pointer.Update();
                     }
@@ -427,7 +436,7 @@
                     // We recreate the entire collection to force a re-render.
                     if (hasUpdate)
                     {
-                        this.Addresses = new ObservableCollection<PointerItem>(this.Addresses);
+                        this.Pointers = new ObservableCollection<PointerItem>(this.Pointers);
                     }
 
                     Thread.Sleep(PointerScanResultsViewModel.PointerReadIntervalMs);
@@ -435,6 +444,10 @@
             });
         }
 
+        /// <summary>
+        /// Changes the active scan pointer results type.
+        /// </summary>
+        /// <param name="newType">The new pointer scan results type.</param>
         private void ChangeType(Type newType)
         {
             this.ActiveType = newType;
@@ -481,44 +494,18 @@
             ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResult);
         }
 
-
-        private void AddSelectionToTable()
+        /// <summary>
+        /// Notify all observing objects of an active type change.
+        /// </summary>
+        private void NotifyObservers()
         {
-            /*
-            if (minIndex < 0)
+            lock (this.ObserverLock)
             {
-                minIndex = 0;
-            }
-
-            if (maxIndex > this.AcceptedPointers.Count)
-            {
-                maxIndex = this.AcceptedPointers.Count;
-            }
-
-            Int32 count = 0;
-
-            for (Int32 index = minIndex; index <= maxIndex; index++)
-            {
-                String pointerValue = String.Empty;
-                this.IndexValueMap.TryGetValue(index, out pointerValue);
-
-                PointerItem newPointer = new PointerItem(
-                    baseAddress: this.AcceptedPointers[index].Item1,
-                    elementType: this.ElementType,
-                    description: "New Pointer",
-                    moduleName: String.Empty,
-                    pointerOffsets: this.AcceptedPointers[index].Item2,
-                    isValueHex: false,
-                    value: pointerValue
-                );
-
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: newPointer);
-
-                if (++count >= PointerScanner.MaxAdd)
+                foreach (IResultDataTypeObserver observer in this.ScanResultsObservers)
                 {
-                    break;
+                    observer.Update(this.ActiveType);
                 }
-            }*/
+            }
         }
     }
     //// End class

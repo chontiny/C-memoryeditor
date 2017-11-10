@@ -1,16 +1,19 @@
 ﻿namespace Squalr.View
 {
+    using Squalr.Source.Results;
+    using Squalr.Source.Results.PointerScanResults;
     using Squalr.Source.Scanners.Pointers;
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Threading.Tasks;
     using System.Windows.Controls;
 
     /// <summary>
     /// Interaction logic for PointerScanner.xaml.
     /// </summary>
-    internal partial class PointerScanner : UserControl
+    internal partial class PointerScanner : UserControl, IResultDataTypeObserver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ManualScanner"/> class.
@@ -43,6 +46,8 @@
             this.PointerRescanValueHexDecBox = new HexDecTextBox();
             this.PointerRescanValueHexDecBox.TextChanged += this.PointerRescanValueUpdated;
             this.pointerRescanValueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRescanValueHexDecBox));
+
+            Task.Run(() => PointerScanResultsViewModel.GetInstance().Subscribe(this));
         }
 
         /// <summary>
@@ -80,6 +85,15 @@
         /// Gets or sets the value hex dec box used to display the current pointer radius being edited.
         /// </summary>
         private HexDecTextBox PointerRadiusHexDecBox { get; set; }
+
+        /// <summary>
+        /// Updates the active type.
+        /// </summary>
+        /// <param name="activeType">The new active type.</param>
+        public void Update(Type activeType)
+        {
+            this.PointerRescanValueHexDecBox.ElementType = activeType;
+        }
 
         /// <summary>
         /// Invoked when the current value is changed, and informs the viewmodel.
