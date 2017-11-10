@@ -1,6 +1,7 @@
 ﻿namespace Squalr.View
 {
     using Source.Results.ScanResults;
+    using Squalr.Source.Results;
     using Squalr.Source.Scanners.ManualScanner;
     using SqualrCore.Source.Controls;
     using System;
@@ -10,7 +11,7 @@
     /// <summary>
     /// Interaction logic for ManualScanner.xaml.
     /// </summary>
-    internal partial class ManualScanner : UserControl, IScanResultsObserver
+    internal partial class ManualScanner : UserControl, IResultDataTypeObserver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ManualScanner"/> class.

@@ -85,7 +85,7 @@
             this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
             this.AddScanResultCommand = new RelayCommand<ScanResult>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
             this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
-            this.ScanResultsObservers = new List<IScanResultsObserver>();
+            this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ObserverLock = new Object();
             this.ActiveType = typeof(Int32);
             this.addresses = new ObservableCollection<ScanResult>();
@@ -299,9 +299,9 @@
         private Object ObserverLock { get; set; }
 
         /// <summary>
-        /// Gets or sets objects observing changes in the active snapshot.
+        /// Gets or sets objects observing changes in the scan results data type.
         /// </summary>
-        private List<IScanResultsObserver> ScanResultsObservers { get; set; }
+        private List<IResultDataTypeObserver> ScanResultsObservers { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ScanResultsViewModel"/> class.
@@ -313,10 +313,10 @@
         }
 
         /// <summary>
-        /// Subscribes the given object to changes in the active snapshot.
+        /// Subscribes the given object to changes in the scan results data type.
         /// </summary>
-        /// <param name="snapshotObserver">The object to observe active snapshot changes.</param>
-        public void Subscribe(IScanResultsObserver snapshotObserver)
+        /// <param name="snapshotObserver">The object to observe scan results data type changes.</param>
+        public void Subscribe(IResultDataTypeObserver snapshotObserver)
         {
             lock (this.ObserverLock)
             {
@@ -329,10 +329,10 @@
         }
 
         /// <summary>
-        /// Unsubscribes the given object from changes in the active snapshot.
+        /// Unsubscribes the given object from changes in the scan results data type.
         /// </summary>
-        /// <param name="snapshotObserver">The object to observe active snapshot changes.</param>
-        public void Unsubscribe(IScanResultsObserver snapshotObserver)
+        /// <param name="snapshotObserver">The object to observe scan results data type changes.</param>
+        public void Unsubscribe(IResultDataTypeObserver snapshotObserver)
         {
             lock (this.ObserverLock)
             {
@@ -498,7 +498,7 @@
         {
             lock (this.ObserverLock)
             {
-                foreach (IScanResultsObserver observer in this.ScanResultsObservers)
+                foreach (IResultDataTypeObserver observer in this.ScanResultsObservers)
                 {
                     observer.Update(this.ActiveType);
                 }

@@ -3,6 +3,7 @@
     using Results.ScanResults;
     using Squalr.Properties;
     using Squalr.Source.Prefilters;
+    using Squalr.Source.Results;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
@@ -13,7 +14,7 @@
     /// <summary>
     /// Manages snapshots of memory taken from the target process.
     /// </summary>
-    internal class SnapshotManager : IScanResultsObserver
+    internal class SnapshotManager : IResultDataTypeObserver
     {
         /// <summary>
         /// Singleton instance of Snapshot Manager.

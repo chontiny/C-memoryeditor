@@ -16,11 +16,26 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Padding="4,0,4,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource SqualrColorWhite}"
+                    Text="Address" />
+                <Grid
+                    x:Name="pointerScanAddressHexDecBox"
+                    Width="196"
+                    Height="20"
+                    Margin="4,0,0,0"
+                    Background="{StaticResource SqualrColorGray20}" />
                 <Menu Padding="4" Background="Transparent">
-                    <MenuItem Command="{Binding StartScanCommand}" ToolTip="Start Pointer Scan/Rescan">
+                    <MenuItem Command="{Binding StartScanCommand}" ToolTip="Start Pointer Scan">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -29,12 +44,6 @@
                         </MenuItem.Header>
                     </MenuItem>
                 </Menu>
-                <Grid
-                    x:Name="valueHexDecBox"
-                    Width="196"
-                    Height="20"
-                    Margin="4,0,0,0"
-                    Background="{StaticResource SqualrColorGray20}" />
             </WrapPanel>
             <WrapPanel Grid.Row="1" Margin="8">
                 <Border
@@ -66,6 +75,81 @@
                     Foreground="{StaticResource SqualrColorWhite}"
                     Text="Pointer Radius" />
             </WrapPanel>
+            <GroupBox
+                Grid.Row="3"
+                Padding="4"
+                Foreground="{StaticResource SqualrColorWhite}"
+                Header="Rescan">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Padding="0,0,4,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource SqualrColorWhite}"
+                        Text="Address" />
+                    <WrapPanel
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Background="Transparent">
+                        <Grid
+                            x:Name="pointerRescanAddressHexDecBox"
+                            Width="196"
+                            Height="20"
+                            Margin="4,0,0,0"
+                            Background="{StaticResource SqualrColorGray20}" />
+                        <Menu Padding="4" Background="Transparent">
+                            <MenuItem Command="{Binding StartPointerRescanCommand}" ToolTip="Start Pointer Address Rescan">
+                                <MenuItem.Header>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.RightArrow}" />
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </Menu>
+                    </WrapPanel>
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Padding="0,0,4,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource SqualrColorWhite}"
+                        Text="Value" />
+                    <WrapPanel
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Background="Transparent">
+                        <Grid
+                            x:Name="pointerRescanValueHexDecBox"
+                            Width="196"
+                            Height="20"
+                            Margin="4,0,0,0"
+                            Background="{StaticResource SqualrColorGray20}" />
+                        <Menu Padding="4" Background="Transparent">
+                            <MenuItem Command="{Binding StartPointerValueRescanCommand}" ToolTip="Start Pointer Value Rescan">
+                                <MenuItem.Header>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.RightArrow}" />
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </Menu>
+                    </WrapPanel>
+                </Grid>
+            </GroupBox>
+
         </Grid>
     </Grid>
 </UserControl>

@@ -9,16 +9,16 @@
     using System.Threading;
 
     /// <summary>
-    /// Enumerates existing discovered pointers to produce a set of validated discovered pointers.
+    /// Enumerates existing discovered pointers to produce a set of validated discovered pointers based on their values.
     /// </summary>
-    internal class PointerRescan : ScheduledTask
+    internal class PointerValueRescan : ScheduledTask
     {
         /// <summary>
-        /// Creates an instance of the <see cref="PointerScan" /> class.
+        /// Creates an instance of the <see cref="PointerValueRescan" /> class.
         /// </summary>
         /// <param name="targetAddress">The target address of the poitner scan.</param>
-        public PointerRescan() : base(
-            taskName: "Pointer Rescan",
+        public PointerValueRescan() : base(
+            taskName: "Pointer Value Rescan",
             isRepeated: false,
             trackProgress: true)
         {
@@ -28,7 +28,7 @@
         /// <summary>
         /// Gets or sets the target address of the pointer scan.
         /// </summary>
-        public UInt64 TargetAddress { get; set; }
+        public Object Value { get; set; }
 
         /// <summary>
         /// Gets or sets the discovered pointers from the pointer scan.
@@ -58,13 +58,14 @@
 
             ValidatedPointers validatedPointers = new ValidatedPointers();
             Int32 processedPointers = 0;
+            String valueString = this.Value?.ToString() ?? String.Empty;
 
             // Enumerate all discovered pointers and determine if they have a valid target address
             foreach (PointerItem pointerItem in this.DiscoveredPointers)
             {
                 pointerItem.Update();
 
-                if (pointerItem.CalculatedAddress.ToUInt64() == this.TargetAddress)
+                if (pointerItem.AddressValue?.ToString() == valueString)
                 {
                     validatedPointers.Pointers.Add(pointerItem);
                 }
