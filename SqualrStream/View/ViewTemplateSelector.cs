@@ -39,6 +39,11 @@
         public DataTemplate streamIconEditorViewTemplate;
 
         /// <summary>
+        /// The template for the Settings.
+        /// </summary>
+        private DataTemplate settingsViewTemplate;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
         /// </summary>
         public ViewTemplateSelector() : base()

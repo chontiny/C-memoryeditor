@@ -5,4 +5,4 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="SqualrCore" #>
-- Added pointer scanner feature. It can still use some work, but it is a good functional first version.
+- Significant fixes to pointer scanning
