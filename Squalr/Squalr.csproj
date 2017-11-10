@@ -324,6 +324,7 @@
     <Compile Include="Source\Scanners\Pointers\PointerScannerViewModel.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\LevelPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\PointerPool.cs" />
+    <Compile Include="Source\Snapshots\SnapshotRetrievalMode.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />

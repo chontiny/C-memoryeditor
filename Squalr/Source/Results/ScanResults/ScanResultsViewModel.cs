@@ -359,7 +359,7 @@
         /// </summary>
         private void LoadScanResults()
         {
-            Snapshot snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: false);
+            Snapshot snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot);
             ObservableCollection<ScanResult> newAddresses = new ObservableCollection<ScanResult>();
 
             if (snapshot == null)
