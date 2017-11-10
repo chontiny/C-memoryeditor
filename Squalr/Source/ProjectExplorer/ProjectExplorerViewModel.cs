@@ -6,8 +6,6 @@
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Editors.ScriptEditor;
     using SqualrCore.Source.Editors.ValueEditor;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.PropertyViewer;
@@ -245,36 +243,6 @@
         public void DisableAllProjectItems()
         {
             this.ProjectItems?.ForEach(item => item.IsActivated = false);
-        }
-
-        /// <summary>
-        /// Adds a specific address to the project explorer.
-        /// </summary>
-        /// <param name="baseAddress">The address.</param>
-        /// <param name="elementType">The value type.</param>
-        public void AddSpecificAddressItem(IntPtr baseAddress, Type elementType)
-        {
-            // Check if the address is within a module, adding it as module format if so
-            foreach (NormalizedModule module in EngineCore.GetInstance().VirtualMemory.GetModules())
-            {
-                if (module.ContainsAddress(baseAddress.ToUInt64()))
-                {
-                    this.AddNewProjectItems(
-                        addToSelected: true,
-                        projectItems: new PointerItem(
-                            baseAddress: baseAddress.Subtract(module.BaseAddress),
-                            elementType: elementType,
-                            moduleName: module.Name));
-
-                    return;
-                }
-            }
-
-            this.AddNewProjectItems(
-                addToSelected: true,
-                projectItems: new PointerItem(
-                    baseAddress: baseAddress,
-                    elementType: elementType));
         }
 
         /// <summary>

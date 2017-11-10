@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
+    using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -143,7 +144,9 @@
                 // Only create pointer items when in the range of the selection indicies. This is an optimization to prevent creating unneeded objects.
                 if (pointerIndicies.IterateNext())
                 {
-                    pointerItem = new PointerItem(baseAddress.ToIntPtr(), typeof(Int32), "New Pointer", null, offsets.ToArray().Reverse());
+                    String moduleName;
+                    UInt64 address = AddressResolver.GetInstance().AddressToModule(baseAddress, out moduleName);
+                    pointerItem = new PointerItem(address.ToIntPtr(), typeof(Int32), "New Pointer", moduleName, offsets.ToArray().Reverse());
                 }
                 else
                 {

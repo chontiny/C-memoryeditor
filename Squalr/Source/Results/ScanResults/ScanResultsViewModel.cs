@@ -7,6 +7,8 @@
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.VirtualMachines;
+    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -473,7 +475,11 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddScanResult(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, this.ActiveType);
+            String moduleName;
+            UInt64 address = AddressResolver.GetInstance().AddressToModule(scanResult.ElementAddress.ToUInt64(), out moduleName);
+
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems:
+                new PointerItem(baseAddress: address.ToIntPtr(), elementType: this.ActiveType, moduleName: moduleName));
         }
 
         /// <summary>
@@ -489,7 +495,7 @@
 
             foreach (ScanResult scanResult in scanResults)
             {
-                ProjectExplorerViewModel.GetInstance().AddSpecificAddressItem(scanResult.ElementAddress, this.ActiveType);
+                this.AddScanResult(scanResult);
             }
         }
 
