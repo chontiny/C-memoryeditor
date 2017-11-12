@@ -1,7 +1,6 @@
 ﻿namespace Squalr.View
 {
     using Squalr.Source.Results;
-    using Squalr.Source.Results.PointerScanResults;
     using Squalr.Source.Scanners.Pointers;
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Utils;

@@ -104,7 +104,6 @@
                 <shell:Style TargetType="{x:Type DataGridCell}">
                     <shell:Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
                     <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-
                 </shell:Style>
             </shell:DataGrid.CellStyle>
             <shell:DataGrid.Columns>

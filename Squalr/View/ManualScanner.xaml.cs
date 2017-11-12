@@ -1,6 +1,5 @@
 ﻿namespace Squalr.View
 {
-    using Source.Results.ScanResults;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ManualScanner;
     using SqualrCore.Source.Controls;

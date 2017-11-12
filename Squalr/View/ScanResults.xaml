@@ -310,101 +310,69 @@
             </Grid>
         </Border>
         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <ListView
-                Name="ScanResultsListView"
+            <DataGrid
+                Name="ScanResultsDataGrid"
+                Grid.Row="2"
+                AutoGenerateColumns="False"
                 Background="{StaticResource SqualrColorBlack}"
-                BorderThickness="0"
-                ItemsSource="{Binding Addresses}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
+                CanUserAddRows="False"
+                ColumnWidth="*"
+                HeadersVisibility="Column"
+                ItemsSource="{Binding Path=Addresses}"
+                RowHeaderWidth="0">
                 <!--  Click and Selection events  -->
                 <intr:Interaction.Triggers>
                     <intr:EventTrigger EventName="SelectionChanged">
-                        <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItems}" />
+                        <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItems}" />
                     </intr:EventTrigger>
                     <intr:EventTrigger EventName="MouseDoubleClick">
-                        <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItem}" />
+                        <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItem}" />
                     </intr:EventTrigger>
                 </intr:Interaction.Triggers>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid HorizontalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                Grid.Column="0"
-                                Foreground="{StaticResource SqualrColorWhite}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=ElementAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
-                            <TextBlock
-                                Grid.Column="1"
-                                Foreground="{StaticResource SqualrColorGray74}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=ElementValue}" />
-                            <TextBlock
-                                Grid.Column="2"
-                                Foreground="{StaticResource SqualrColorWhite}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=ElementPreviousValue}" />
-                            <TextBlock
-                                Grid.Column="3"
-                                Foreground="{StaticResource SqualrColorGray74}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=ElementLabel}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.Template>
-                    <ControlTemplate>
-                        <Grid HorizontalAlignment="Stretch">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
-                                    </Style>
-                                </Grid.Resources>
-                                <Border Grid.Column="0">
-                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}">Address</TextBlock>
-                                </Border>
-                                <Border Grid.Column="1">
-                                    <TextBlock Foreground="{StaticResource SqualrColorGray74}">Value</TextBlock>
-                                </Border>
-                                <Border Grid.Column="2">
-                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}">Previous</TextBlock>
-                                </Border>
-                                <Border Grid.Column="3">
-                                    <TextBlock Foreground="{StaticResource SqualrColorGray74}">Label</TextBlock>
-                                </Border>
-                            </Grid>
-                            <ItemsPresenter Grid.Row="1" />
-                        </Grid>
-                    </ControlTemplate>
-                </ListView.Template>
-            </ListView>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Style>
+                    <Style TargetType="{x:Type DataGrid}">
+                        <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    </Style>
+                </DataGrid.Style>
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="SizeToCells"
+                        MinWidth="64"
+                        Binding="{Binding Path=ElementAddress, Converter={StaticResource IntPtrToAddressConverter}}"
+                        Header="Address"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        MinWidth="96"
+                        Binding="{Binding Path=ElementValue}"
+                        Header="Value" />
+                    <DataGridTextColumn
+                        Width="SizeToCells"
+                        MinWidth="96"
+                        Binding="{Binding Path=ElementPreviousValue}"
+                        Header="Previous Value"
+                        IsReadOnly="True" />
+                    <DataGridTextColumn
+                        Width="SizeToCells"
+                        MinWidth="64"
+                        Binding="{Binding Path=ElementLabel}"
+                        Header="Label"
+                        IsReadOnly="True" />
+                </DataGrid.Columns>
+            </DataGrid>
         </ScrollViewer>
         <Border
             Grid.Row="2"

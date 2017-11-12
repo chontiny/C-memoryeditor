@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Results.ScanResults;
     using Squalr.Properties;
     using Squalr.Source.Prefilters;
     using Squalr.Source.Results;

@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Results.PointerScanResults
+﻿namespace Squalr.Source.Results
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Source.ProjectExplorer;
