@@ -19,6 +19,7 @@
     </x:Code>
     <UserControl.Resources>
         <converters:ProjectItemValueConverter x:Key="ProjectItemValueConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:OffsetsToStringConverter x:Key="OffsetsToStringConverter" />
         <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
     </UserControl.Resources>
@@ -337,11 +338,21 @@
                                 Foreground="{StaticResource SqualrColorGray74}"
                                 IsHitTestVisible="False"
                                 Text="{Binding Path=CalculatedAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
-                            <TextBlock
-                                Grid.Column="2"
-                                Foreground="{StaticResource SqualrColorWhite}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=ModuleOffset, Converter={StaticResource IntPtrToAddressConverter}}" />
+                            <WrapPanel Grid.Column="2" IsHitTestVisible="False">
+                                <TextBlock
+                                    Foreground="{StaticResource SqualrColorWhite}"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding Path=ModuleName}" />
+                                <TextBlock
+                                    Foreground="{StaticResource SqualrColorWhite}"
+                                    IsHitTestVisible="False"
+                                    Text=" + "
+                                    Visibility="{Binding Path=IsStatic, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <TextBlock
+                                    Foreground="{StaticResource SqualrColorWhite}"
+                                    IsHitTestVisible="False"
+                                    Text="{Binding Path=ModuleOffset, Converter={StaticResource IntPtrToAddressConverter}}" />
+                            </WrapPanel>
                             <TextBlock
                                 Grid.Column="3"
                                 Foreground="{StaticResource SqualrColorGray74}"
@@ -380,7 +391,7 @@
                                     <TextBlock Foreground="{StaticResource SqualrColorWhite}">Value</TextBlock>
                                 </Border>
                                 <Border Grid.Column="1">
-                                    <TextBlock Foreground="{StaticResource SqualrColorGray74}">Calculated Address</TextBlock>
+                                    <TextBlock Foreground="{StaticResource SqualrColorGray74}">Address</TextBlock>
                                 </Border>
                                 <Border Grid.Column="2">
                                     <TextBlock Foreground="{StaticResource SqualrColorWhite}">Base Address</TextBlock>

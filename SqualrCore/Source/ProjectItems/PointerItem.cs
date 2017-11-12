@@ -96,6 +96,7 @@
                 this.moduleName = value == null ? String.Empty : value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.ModuleName));
+                this.RaisePropertyChanged(nameof(this.IsStatic));
                 this.RaisePropertyChanged(nameof(this.Icon));
             }
         }
@@ -153,6 +154,7 @@
                 this.pointerOffsets = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.PointerOffsets));
+                this.RaisePropertyChanged(nameof(this.IsPointer));
                 this.RaisePropertyChanged(nameof(this.Icon));
             }
         }
@@ -165,16 +167,38 @@
         {
             get
             {
-                if (!this.PointerOffsets.IsNullOrEmpty())
+                if (this.IsPointer)
                 {
                     return Images.LetterP;
                 }
-                else if (!this.ModuleName.IsNullOrEmpty())
+                else if (this.IsStatic)
                 {
                     return Images.LetterS;
                 }
 
                 return Images.CollectValues;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating if this pointer/address is static.
+        /// </summary>
+        public Boolean IsStatic
+        {
+            get
+            {
+                return !this.ModuleName.IsNullOrEmpty();
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating if this object is a true pointer and not just an address.
+        /// </summary>
+        public Boolean IsPointer
+        {
+            get
+            {
+                return !this.PointerOffsets.IsNullOrEmpty();
             }
         }
 

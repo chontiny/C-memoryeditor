@@ -309,6 +309,8 @@
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
     <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
+    <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
+    <Compile Include="Source\Results\ScanResults\ScanResultsViewModel.cs" />
     <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerValueRescan.cs" />
@@ -341,10 +343,6 @@
     <Compile Include="Source\Scripting\Memory\IMemoryCore.cs" />
     <Compile Include="Source\Scripting\Memory\MemoryCore.cs" />
     <Compile Include="Source\Results\IResultDataTypeObserver.cs" />
-    <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
-    <Compile Include="Source\Results\ScanResults\ScanResultsViewModel.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
     <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterModel.cs" />
     <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterViewModel.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorViewModel.cs" />
