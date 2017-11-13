@@ -141,95 +141,72 @@
                 Background="{StaticResource SqualrColorGray20}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 Foreground="{StaticResource SqualrColorWhite}">
-                <shell:Menu.Resources>
-                    <shell:Style x:Key="menuItemStyle" TargetType="{x:Type MenuItem}">
-                        <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-                        <shell:Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
-                        <shell:Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray20}" />
-                        <shell:Setter Property="BorderThickness" Value="0" />
-                    </shell:Style>
-                </shell:Menu.Resources>
                 <!--  File Header  -->
-                <shell:MenuItem
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Header="File"
-                    Style="{StaticResource DropDown}">
+                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="File">
                     <shell:MenuItem
                         Command="{Binding MainViewModel.CloseCommand}"
                         CommandParameter="{Binding ElementName=SqualrStreamWindow}"
                         Header="Exit"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                 </shell:MenuItem>
 
                 <!--  Edit Header  -->
-                <shell:MenuItem
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Header="Edit"
-                    Style="{StaticResource DropDown}">
+                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Edit">
                     <shell:MenuItem
                         Header="Settings"
                         IsCheckable="True"
                         IsChecked="{Binding SettingsViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                 </shell:MenuItem>
 
                 <!--  Layout Header  -->
-                <shell:MenuItem
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Header="Layout"
-                    Style="{StaticResource DropDown}">
+                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Layout">
                     <shell:MenuItem
                         Command="{Binding MainViewModel.ResetLayoutCommand}"
                         CommandParameter="{Binding ., ElementName=dockManager}"
                         Header="Reset Window Layout"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                 </shell:MenuItem>
 
                 <!--  Windows Header  -->
-                <shell:MenuItem
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Header="Windows"
-                    Style="{StaticResource DropDown}">
+                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Windows">
                     <shell:MenuItem
                         Header="Library"
                         IsCheckable="True"
                         IsChecked="{Binding LibraryViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                     <shell:MenuItem
                         Header="Browse"
                         IsCheckable="True"
                         IsChecked="{Binding BrowseViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                     <shell:MenuItem
                         Header="Process Selector"
                         IsCheckable="True"
                         IsChecked="{Binding ProcessSelectorViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                     <shell:MenuItem
                         Header="Property Viewer"
                         IsCheckable="True"
                         IsChecked="{Binding PropertyViewerViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                     <shell:MenuItem
                         Header="Output"
                         IsCheckable="True"
                         IsChecked="{Binding OutputViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                 </shell:MenuItem>
 
                 <!--  View Header  -->
-                <shell:MenuItem
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Header="Developer"
-                    Style="{StaticResource DropDown}">
+                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Developer">
                     <shell:MenuItem
                         Command="{Binding MainViewModel.LaunchDeveloperToolsCommand}"
                         Header="Developer Tools"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                     <shell:MenuItem
                         Command="{Binding MainViewModel.LaunchDeveloperToolsAsAdminCommand}"
                         Header="Developer Tools (admin)"
-                        Style="{StaticResource menuItemStyle}" />
+                        Style="{Binding}" />
                 </shell:MenuItem>
             </shell:Menu>
         </shell:Grid>
@@ -250,7 +227,6 @@
                 </shell:MenuItem>
                 <shell:Separator Style="{DynamicResource VerticalSeparator}" />
             </shell:Menu>
-            <!--  -Text="{Binding ProcessSelectorViewModel.ProcessName}"  -->
             <shell:ComboBox
                 Width="196"
                 Height="24"
