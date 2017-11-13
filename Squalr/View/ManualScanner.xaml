@@ -311,12 +311,15 @@
                         </MenuItem>
                     </MenuItem>
                 </Menu>
-                <Grid
-                    x:Name="valueHexDecBox"
-                    Width="196"
+                <Border
                     Height="20"
-                    Margin="4,0,0,0"
-                    Background="{StaticResource SqualrColorGray20}" />
+                    Background="{StaticResource SqualrColorGray20}"
+                    BorderThickness="0">
+                    <Grid
+                        x:Name="valueHexDecBox"
+                        Width="196"
+                        Height="16" />
+                </Border>
                 <Menu
                     VerticalAlignment="Center"
                     Background="Transparent"

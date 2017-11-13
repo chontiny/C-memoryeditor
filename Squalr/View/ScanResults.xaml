@@ -309,81 +309,112 @@
                 </Menu>
             </Grid>
         </Border>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <DataGrid
-                Name="ScanResultsDataGrid"
-                Grid.Row="2"
-                AutoGenerateColumns="False"
-                Background="{StaticResource SqualrColorBlack}"
-                CanUserAddRows="False"
-                ColumnWidth="*"
-                HeadersVisibility="Column"
-                ItemsSource="{Binding Path=Addresses}"
-                RowHeaderWidth="0">
-                <!--  Click and Selection events  -->
-                <intr:Interaction.Triggers>
-                    <intr:EventTrigger EventName="SelectionChanged">
-                        <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItems}" />
-                    </intr:EventTrigger>
-                    <intr:EventTrigger EventName="MouseDoubleClick">
-                        <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItem}" />
-                    </intr:EventTrigger>
-                </intr:Interaction.Triggers>
-                <DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
-                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-                        <Setter Property="HorizontalAlignment" Value="Stretch" />
-                    </Style>
-                </DataGrid.ColumnHeaderStyle>
-                <DataGrid.Style>
-                    <Style TargetType="{x:Type DataGrid}">
-                        <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
-                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-                    </Style>
-                </DataGrid.Style>
-                <DataGrid.CellStyle>
-                    <Style TargetType="{x:Type DataGridCell}">
-                        <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
-                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-                    </Style>
-                </DataGrid.CellStyle>
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn
-                        MinWidth="16"
-                        MaxWidth="16"
-                        IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Image Source="{Binding Path=Icon}" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTextColumn
-                        Width="SizeToCells"
-                        MinWidth="64"
-                        Binding="{Binding Path=AddressSpecifier}"
-                        Header="Address"
-                        IsReadOnly="True" />
-                    <DataGridTextColumn
-                        MinWidth="96"
-                        Binding="{Binding Path=AddressValue}"
-                        Header="Value" />
-                    <DataGridTextColumn
-                        Width="SizeToCells"
-                        MinWidth="96"
-                        Binding="{Binding Path=PreviousValue}"
-                        Header="Previous Value"
-                        IsReadOnly="True" />
-                    <DataGridTextColumn
-                        Width="SizeToCells"
-                        MinWidth="64"
-                        Binding="{Binding Path=Label}"
-                        Header="Label"
-                        IsReadOnly="True" />
-                </DataGrid.Columns>
-            </DataGrid>
-        </ScrollViewer>
+        <DataGrid
+            Name="ScanResultsDataGrid"
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            Background="{StaticResource SqualrColorBlack}"
+            CanUserAddRows="False"
+            ColumnWidth="*"
+            HeadersVisibility="Column"
+            ItemsSource="{Binding Path=Addresses}"
+            RowHeaderWidth="0"
+            SelectionMode="Extended"
+            SelectionUnit="FullRow">
+            <!--  Click and Selection events  -->
+            <intr:Interaction.Triggers>
+                <intr:EventTrigger EventName="SelectionChanged">
+                    <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItems}" />
+                </intr:EventTrigger>
+                <intr:EventTrigger EventName="MouseDoubleClick">
+                    <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItem}" />
+                </intr:EventTrigger>
+            </intr:Interaction.Triggers>
+            <DataGrid.Resources>
+                <Style x:Key="NoFocus" TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray24}" />
+                    <Setter Property="IsManipulationEnabled" Value="False" />
+                    <Setter Property="IsTabStop" Value="False" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Style>
+                <Style TargetType="{x:Type DataGrid}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                </Style>
+            </DataGrid.Style>
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray74}" />
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn
+                    MinWidth="16"
+                    MaxWidth="16"
+                    CellStyle="{StaticResource NoFocus}"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Path=Icon}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="64"
+                    Binding="{Binding Path=AddressSpecifier}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Address"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    MinWidth="96"
+                    Binding="{Binding Path=AddressValue}"
+                    Header="Value" />
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="96"
+                    Binding="{Binding Path=PreviousValue}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Previous Value"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="64"
+                    Binding="{Binding Path=Label}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Label"
+                    IsReadOnly="True" />
+            </DataGrid.Columns>
+            <DataGrid.ItemTemplate>
+                <DataTemplate>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </DataTemplate>
+            </DataGrid.ItemTemplate>
+        </DataGrid>
         <Border
             Grid.Row="2"
             Padding="8,4,8,4"

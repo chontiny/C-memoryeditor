@@ -138,13 +138,11 @@
                                     Foreground="{StaticResource SqualrColorWhite}"
                                     Text="Alignment:" />
                                 <Border
+                                    Height="18"
                                     Margin="0,0,8,0"
                                     BorderBrush="White"
                                     BorderThickness="1">
-                                    <Grid
-                                        x:Name="alignment"
-                                        Width="64"
-                                        Height="18" />
+                                    <Grid x:Name="alignment" Width="64" />
                                 </Border>
                             </WrapPanel>
                             <WrapPanel>

@@ -2,6 +2,7 @@
 {
     using Controls;
     using Engine;
+    using SqualrCore.Source.Output;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;
@@ -123,6 +124,17 @@
 
             set
             {
+                if (value is String)
+                {
+                    if (!CheckSyntax.CanParseValue(this.dataType, value as String))
+                    {
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error setting new value: " + (value as String));
+                        return;
+                    }
+
+                    value = Conversions.ParsePrimitiveStringAsPrimitive(this.DataType, value as String);
+                }
+
                 this.addressValue = value;
                 this.WriteValue(value);
                 this.RaisePropertyChanged(nameof(this.AddressValue));

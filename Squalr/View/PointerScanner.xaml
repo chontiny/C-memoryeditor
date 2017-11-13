@@ -15,68 +15,83 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Padding="4,0,4,0"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Foreground="{StaticResource SqualrColorWhite}"
-                    Text="Address" />
-                <Grid
-                    x:Name="pointerScanAddressHexDecBox"
-                    Width="196"
-                    Height="20"
-                    Margin="4,0,0,0"
-                    Background="{StaticResource SqualrColorGray20}" />
-                <Menu Padding="4" Background="Transparent">
-                    <MenuItem Command="{Binding StartScanCommand}" ToolTip="Start Pointer Scan">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="{x:Static content:Images.RightArrow}" />
-                        </MenuItem.Header>
-                    </MenuItem>
-                </Menu>
-            </WrapPanel>
-            <WrapPanel Grid.Row="1" Margin="8">
-                <Border
-                    Margin="0,0,8,0"
-                    BorderBrush="White"
-                    BorderThickness="1">
-                    <Grid
-                        x:Name="depthHexDecBox"
-                        Width="64"
-                        Height="18" />
-                </Border>
-                <TextBlock
-                    Padding="0,0,4,0"
-                    Foreground="{StaticResource SqualrColorWhite}"
-                    Text="Depth" />
-            </WrapPanel>
-            <WrapPanel Grid.Row="2" Margin="8">
-                <Border
-                    Margin="0,0,8,0"
-                    BorderBrush="White"
-                    BorderThickness="1">
-                    <Grid
-                        x:Name="pointerRadiusHexDecBox"
-                        Width="64"
-                        Height="18" />
-                </Border>
-                <TextBlock
-                    Padding="0,0,4,0"
-                    Foreground="{StaticResource SqualrColorWhite}"
-                    Text="Pointer Radius" />
-            </WrapPanel>
             <GroupBox
-                Grid.Row="3"
+                Grid.Row="0"
+                Padding="4"
+                Foreground="{StaticResource SqualrColorWhite}"
+                Header="Scan">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+                    <WrapPanel Grid.Row="0" Background="Transparent">
+                        <TextBlock
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Padding="4,0,4,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Foreground="{StaticResource SqualrColorWhite}"
+                            Text="Address" />
+                        <Border
+                            Height="20"
+                            Background="{StaticResource SqualrColorGray20}"
+                            BorderThickness="0">
+                            <Grid
+                                x:Name="pointerScanAddressHexDecBox"
+                                Width="196"
+                                Height="16" />
+                        </Border>
+                        <Menu Padding="4" Background="Transparent">
+                            <MenuItem Command="{Binding StartScanCommand}" ToolTip="Start Pointer Scan">
+                                <MenuItem.Header>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.RightArrow}" />
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </Menu>
+                    </WrapPanel>
+                    <WrapPanel Grid.Row="1" Margin="8">
+                        <Border
+                            Margin="0,0,8,0"
+                            BorderBrush="White"
+                            BorderThickness="1">
+                            <Grid
+                                x:Name="depthHexDecBox"
+                                Width="64"
+                                Height="16" />
+                        </Border>
+                        <TextBlock
+                            Padding="0,0,4,0"
+                            Foreground="{StaticResource SqualrColorWhite}"
+                            Text="Depth" />
+                    </WrapPanel>
+                    <WrapPanel Grid.Row="2" Margin="8">
+                        <Border
+                            Margin="0,0,8,0"
+                            BorderBrush="White"
+                            BorderThickness="1">
+                            <Grid
+                                x:Name="pointerRadiusHexDecBox"
+                                Width="64"
+                                Height="16" />
+                        </Border>
+                        <TextBlock
+                            Padding="0,0,4,0"
+                            Foreground="{StaticResource SqualrColorWhite}"
+                            Text="Pointer Radius" />
+                    </WrapPanel>
+                </Grid>
+            </GroupBox>
+            <GroupBox
+                Grid.Row="1"
                 Padding="4"
                 Foreground="{StaticResource SqualrColorWhite}"
                 Header="Rescan">
@@ -101,12 +116,15 @@
                         Grid.Row="0"
                         Grid.Column="1"
                         Background="Transparent">
-                        <Grid
-                            x:Name="pointerRescanAddressHexDecBox"
-                            Width="196"
+                        <Border
                             Height="20"
-                            Margin="4,0,0,0"
-                            Background="{StaticResource SqualrColorGray20}" />
+                            Background="{StaticResource SqualrColorGray20}"
+                            BorderThickness="0">
+                            <Grid
+                                x:Name="pointerRescanAddressHexDecBox"
+                                Width="196"
+                                Height="16" />
+                        </Border>
                         <Menu Padding="4" Background="Transparent">
                             <MenuItem Command="{Binding StartPointerRescanCommand}" ToolTip="Start Pointer Address Rescan">
                                 <MenuItem.Header>
@@ -130,12 +148,15 @@
                         Grid.Row="1"
                         Grid.Column="1"
                         Background="Transparent">
-                        <Grid
-                            x:Name="pointerRescanValueHexDecBox"
-                            Width="196"
+                        <Border
                             Height="20"
-                            Margin="4,0,0,0"
-                            Background="{StaticResource SqualrColorGray20}" />
+                            Background="{StaticResource SqualrColorGray20}"
+                            BorderThickness="0">
+                            <Grid
+                                x:Name="pointerRescanValueHexDecBox"
+                                Width="196"
+                                Height="16" />
+                        </Border>
                         <Menu Padding="4" Background="Transparent">
                             <MenuItem Command="{Binding StartPointerValueRescanCommand}" ToolTip="Start Pointer Value Rescan">
                                 <MenuItem.Header>
@@ -149,7 +170,6 @@
                     </WrapPanel>
                 </Grid>
             </GroupBox>
-
         </Grid>
     </Grid>
 </UserControl>

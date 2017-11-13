@@ -58,6 +58,10 @@
             this.ContextMenu = this.RightClickMenu;
             this.TextChanged += this.HexDecTextChanged;
 
+            // Allows for shortcuts to be used (ie ctrl + A)
+            Application.EnableVisualStyles();
+            this.ShortcutsEnabled = true;
+
             this.ElementType = elementType;
         }
 
