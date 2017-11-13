@@ -6,6 +6,7 @@
     <Style x:Key="{x:Type Separator}" TargetType="{x:Type Separator}">
         <Setter Property="Height" Value="1" />
         <Setter Property="Background" Value="{StaticResource SqualrColorBlue}" />
+        <Setter Property="Opacity" Value="0.75" />
         <Setter Property="BorderThickness" Value="1" />
     </Style>
 
@@ -14,7 +15,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Separator}">
-                    <Grid Height="1" Background="{StaticResource SqualrColorBlue}" />
+                    <Grid
+                        Height="1"
+                        Background="{StaticResource SqualrColorBlue}"
+                        Opacity="0.75" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -27,7 +31,8 @@
                     <Grid
                         Width="1"
                         Margin="6,0,6,0"
-                        Background="{StaticResource SqualrColorBlue}" />
+                        Background="{StaticResource SqualrColorBlue}"
+                        Opacity="0.75" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

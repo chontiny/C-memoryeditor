@@ -318,7 +318,6 @@
                     </shell:MenuItem>
                     <shell:Separator Style="{DynamicResource VerticalSeparator}" />
                 </shell:Menu>
-                <!--  -Text="{Binding ProcessSelectorViewModel.ProcessName}"  -->
                 <shell:ComboBox
                     Width="196"
                     Height="24"
