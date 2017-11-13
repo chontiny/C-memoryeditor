@@ -349,26 +349,36 @@
                     </Style>
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
+                    <DataGridTemplateColumn
+                        MinWidth="16"
+                        MaxWidth="16"
+                        IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Path=Icon}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn
                         Width="SizeToCells"
                         MinWidth="64"
-                        Binding="{Binding Path=ElementAddress, Converter={StaticResource IntPtrToAddressConverter}}"
+                        Binding="{Binding Path=AddressSpecifier}"
                         Header="Address"
                         IsReadOnly="True" />
                     <DataGridTextColumn
                         MinWidth="96"
-                        Binding="{Binding Path=ElementValue}"
+                        Binding="{Binding Path=AddressValue}"
                         Header="Value" />
                     <DataGridTextColumn
                         Width="SizeToCells"
                         MinWidth="96"
-                        Binding="{Binding Path=ElementPreviousValue}"
+                        Binding="{Binding Path=PreviousValue}"
                         Header="Previous Value"
                         IsReadOnly="True" />
                     <DataGridTextColumn
                         Width="SizeToCells"
                         MinWidth="64"
-                        Binding="{Binding Path=ElementLabel}"
+                        Binding="{Binding Path=Label}"
                         Header="Label"
                         IsReadOnly="True" />
                 </DataGrid.Columns>

@@ -339,6 +339,16 @@
                     </Style>
                 </DataGrid.CellStyle>
                 <DataGrid.Columns>
+                    <DataGridTemplateColumn
+                        MinWidth="16"
+                        MaxWidth="16"
+                        IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Path=Icon}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
                     <DataGridTextColumn
                         MinWidth="64"
                         Binding="{Binding Path=., Converter={StaticResource ProjectItemValueConverter}}"
@@ -346,14 +356,8 @@
                     <DataGridTextColumn
                         Width="SizeToCells"
                         MinWidth="96"
-                        Binding="{Binding Path=CalculatedAddress, Converter={StaticResource IntPtrToAddressConverter}}"
+                        Binding="{Binding Path=AddressSpecifier}"
                         Header="Address"
-                        IsReadOnly="True" />
-                    <DataGridTextColumn
-                        Width="SizeToCells"
-                        MinWidth="96"
-                        Binding="{Binding Path=ModuleOffset, Converter={StaticResource IntPtrToAddressConverter}}"
-                        Header="Base Address"
                         IsReadOnly="True" />
                     <DataGridTextColumn
                         Width="SizeToCells"

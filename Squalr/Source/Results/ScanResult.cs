@@ -1,122 +1,74 @@
 ﻿namespace Squalr.Source.Results
 {
+    using SqualrCore.Source.ProjectItems;
     using System;
     using System.ComponentModel;
 
     /// <summary>
     /// A scan result object that can be displayed to the user and added to the project explorer.
     /// </summary>
-    internal class ScanResult : INotifyPropertyChanged
+    internal class ScanResult : PointerItem, INotifyPropertyChanged
     {
-        /// <summary>
-        /// The address of the scan result.
-        /// </summary>
-        private IntPtr elementAddress;
-
-        /// <summary>
-        /// The value of the scan result.
-        /// </summary>
-        private String elementValue;
-
         /// <summary>
         /// The previous value of the scan result.
         /// </summary>
-        private String previousElementValue;
+        private String previousValue;
 
         /// <summary>
         /// The label of the scan result.
         /// </summary>
-        private String elementLabel;
+        private String label;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScanResult" /> class.
         /// </summary>
-        /// <param name="elementAddress">The memory address.</param>
-        /// <param name="elementValue">The current scan value.</param>
-        /// <param name="elementPreviousValue">The previous scan value.</param>
-        /// <param name="elementLabel">The label of this result.</param>
-        public ScanResult(IntPtr elementAddress, String elementValue, String elementPreviousValue, String elementLabel)
+        /// <param name="baseAddress">The base address. This will be added as an offset from the resolved base identifier.</param>
+        /// <param name="dataType">The data type of the value at this address.</param>
+        /// <param name="value">The initial value of this result.</param>
+        /// <param name="previousValue">The previous scan value.</param>
+        /// <param name="label">The label of this result.</param>
+        public ScanResult(String moduleName, IntPtr baseAddress, Type dataType, String value, String previousValue, String label) : base(baseAddress, dataType, moduleName: moduleName, value: value)
         {
-            this.ElementAddress = elementAddress;
-            this.ElementPreviousValue = elementPreviousValue;
-            this.ElementValue = elementValue;
-            this.ElementLabel = elementLabel;
+            this.PreviousValue = previousValue;
+            this.Label = label;
         }
 
         /// <summary>
         /// Occurs after a property value changes.
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Gets or sets the address of the scan result.
-        /// </summary>
-        public IntPtr ElementAddress
-        {
-            get
-            {
-                return this.elementAddress;
-            }
-
-            set
-            {
-                this.elementAddress = value;
-
-                this.RaisePropertyChanged(nameof(this.ElementAddress));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the value of the scan result.
-        /// </summary>
-        public String ElementValue
-        {
-            get
-            {
-                return this.elementValue;
-            }
-
-            set
-            {
-                this.elementValue = value;
-
-                this.RaisePropertyChanged(nameof(this.ElementValue));
-            }
-        }
+        public new event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Gets or sets the previous value of the scan result.
         /// </summary>
-        public String ElementPreviousValue
+        public String PreviousValue
         {
             get
             {
-                return this.previousElementValue;
+                return this.previousValue;
             }
 
             set
             {
-                this.previousElementValue = value;
-
-                this.RaisePropertyChanged(nameof(this.ElementPreviousValue));
+                this.previousValue = value;
+                this.RaisePropertyChanged(nameof(this.PreviousValue));
             }
         }
 
         /// <summary>
         /// Gets or sets the label of the scan result.
         /// </summary>
-        public String ElementLabel
+        public String Label
         {
             get
             {
-                return this.elementLabel;
+                return this.label;
             }
 
             set
             {
-                this.elementLabel = value;
-
-                this.RaisePropertyChanged(nameof(this.ElementLabel));
+                this.label = value;
+                this.RaisePropertyChanged(nameof(this.Label));
             }
         }
 
@@ -124,7 +76,7 @@
         /// Indicates that a given property in this project item has changed.
         /// </summary>
         /// <param name="propertyName">The name of the changed property.</param>
-        protected void RaisePropertyChanged(String propertyName)
+        protected new void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

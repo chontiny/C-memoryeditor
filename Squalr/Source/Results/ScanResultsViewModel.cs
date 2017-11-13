@@ -6,7 +6,6 @@
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
@@ -295,6 +294,12 @@
             {
                 return this.addresses;
             }
+
+            set
+            {
+                this.addresses = value;
+                this.RaisePropertyChanged(nameof(this.Addresses));
+            }
         }
 
         /// <summary>
@@ -398,7 +403,10 @@
                     previousValue = element.GetPreviousValue().ToString();
                 }
 
-                newAddresses.Add(new ScanResult(element.BaseAddress, currentValue, previousValue, label));
+                String moduleName;
+                UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);
+
+                newAddresses.Add(new ScanResult(moduleName, address.ToIntPtr(), this.ActiveType, currentValue, previousValue, label));
             }
 
             this.addresses = newAddresses;
@@ -419,9 +427,19 @@
             {
                 while (true)
                 {
-                    Boolean readSuccess;
-                    this.Addresses.ForEach(x => x.ElementValue = EngineCore.GetInstance().VirtualMemory.Read(this.ActiveType, x.ElementAddress, out readSuccess).ToString());
-                    this.RaisePropertyChanged(nameof(this.Addresses));
+                    Boolean hasUpdate = false;
+
+                    foreach (PointerItem pointer in this.Addresses.ToArray())
+                    {
+                        hasUpdate |= pointer.Update();
+                    }
+
+                    // This is a sidestep to a particular issue where we need to potentially perform RaisePropertyChanged for a {Binding Path=.} element, which is impossible.
+                    // We recreate the entire collection to force a re-render.
+                    if (hasUpdate)
+                    {
+                        this.Addresses = new ObservableCollection<ScanResult>(this.Addresses);
+                    }
 
                     Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);
                 }
@@ -475,11 +493,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddScanResult(ScanResult scanResult)
         {
-            String moduleName;
-            UInt64 address = AddressResolver.GetInstance().AddressToModule(scanResult.ElementAddress.ToUInt64(), out moduleName);
-
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems:
-                new PointerItem(baseAddress: address.ToIntPtr(), elementType: this.ActiveType, moduleName: moduleName));
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult);
         }
 
         /// <summary>
@@ -493,10 +507,7 @@
                 return;
             }
 
-            foreach (ScanResult scanResult in scanResults)
-            {
-                this.AddScanResult(scanResult);
-            }
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResults?.ToArray());
         }
 
         /// <summary>
