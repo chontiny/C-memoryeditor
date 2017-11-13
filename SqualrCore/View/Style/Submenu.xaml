@@ -1,9 +1,15 @@
 ﻿<ResourceDictionary
-    x:Class="Squalr.View.Style.CheckBoxes"
+    x:Class="Squalr.View.Style.Submenu"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}" TargetType="{x:Type MenuItem}">
-        <Border Name="Border">
+        <Border
+            Name="Border"
+            Margin="0"
+            Padding="0"
+            Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
+            BorderThickness="0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="Icon" />
@@ -50,6 +56,7 @@
                     Grid.Column="2"
                     Margin="5,2,0,2"
                     DockPanel.Dock="Right"
+                    Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
                     Text="{TemplateBinding InputGestureText}" />
             </Grid>
         </Border>

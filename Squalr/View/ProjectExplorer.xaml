@@ -27,8 +27,7 @@
             x:Key="RightClickMenu"
             Background="{StaticResource SqualrColorGray68}"
             BorderBrush="{StaticResource SqualrColorWhite}"
-            Foreground="{StaticResource SqualrColorWhite}"
-            Style="{StaticResource DropDownContextMenu}">
+            Foreground="{StaticResource SqualrColorWhite}">
             <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Add New Address" />
             <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
             <Separator />
@@ -40,8 +39,7 @@
             x:Key="ProjectItemRightClickMenu"
             Background="{StaticResource SqualrColorGray68}"
             BorderBrush="{StaticResource SqualrColorWhite}"
-            Foreground="{StaticResource SqualrColorWhite}"
-            Style="{StaticResource DropDownContextMenu}">
+            Foreground="{StaticResource SqualrColorWhite}">
             <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
             <Separator />
             <MenuItem Command="{Binding ProjectExplorerViewModel.DeleteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Delete Selection" />
