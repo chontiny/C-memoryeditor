@@ -50,25 +50,20 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
-                    <MenuItem
-                        BorderThickness="0"
-                        Style="{StaticResource DropDownAutoClose}"
-                        ToolTip="Scan Type">
+                    <MenuItem BorderThickness="0" ToolTip="Scan Type">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
-                                <WrapPanel VerticalAlignment="Center">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="{Binding ActiveTypeImage}" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        VerticalAlignment="Center"
-                                        Foreground="{StaticResource SqualrColorWhite}"
-                                        Text="{Binding ActiveTypeName}" />
-                                </WrapPanel>
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Source="{Binding ActiveTypeImage}" />
+                                <TextBlock
+                                    Padding="4,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource SqualrColorWhite}"
+                                    Text="{Binding ActiveTypeName}" />
                                 <Grid
-                                    x:Name="arrowGlyph"
+                                    x:Name="ArrowGlyph"
                                     Grid.Column="1"
                                     Margin="4,3,4,3"
                                     IsHitTestVisible="False">
@@ -82,10 +77,9 @@
                             </StackPanel>
                         </MenuItem.Header>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:SByte}"
+                            Style="{Binding}"
                             ToolTip="1 Byte Signed Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -102,10 +96,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Int16}"
+                            Style="{Binding}"
                             ToolTip="2 Byte Signed Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -122,10 +115,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Int32}"
+                            Style="{Binding}"
                             ToolTip="4 Byte Signed Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -142,10 +134,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Int64}"
+                            Style="{Binding}"
                             ToolTip="8 Byte Signed Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -162,10 +153,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Byte}"
+                            Style="{Binding}"
                             ToolTip="1 Byte Unsigned Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -182,10 +172,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:UInt16}"
+                            Style="{Binding}"
                             ToolTip="2 Byte Unsigned Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -202,10 +191,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:UInt32}"
+                            Style="{Binding}"
                             ToolTip="4 Byte Unsigned Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -222,10 +210,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:UInt64}"
+                            Style="{Binding}"
                             ToolTip="8 Byte Unsigned Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -242,10 +229,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Single}"
+                            Style="{Binding}"
                             ToolTip="Single Precision Floating Point Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -262,10 +248,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Double}"
+                            Style="{Binding}"
                             ToolTip="Double Precision Floating Point Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">

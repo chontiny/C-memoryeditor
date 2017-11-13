@@ -53,7 +53,6 @@
                     <Separator Style="{DynamicResource VerticalSeparator}" />
                     <MenuItem
                         BorderThickness="0"
-                        Style="{StaticResource DropDownAutoClose}"
                         ToolTip="Scan Constraints">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">

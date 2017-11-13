@@ -2,9 +2,8 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/DarkBrushes.xaml" />
 
+        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/ComboBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/ContextMenu.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/DropDownAutoClose.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/FlatComboBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/MenuItem.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/ScrollViewer.xaml" />
         <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/Separator.xaml" />

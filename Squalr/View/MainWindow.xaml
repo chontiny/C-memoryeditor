@@ -322,17 +322,27 @@
                 <shell:ComboBox
                     Width="196"
                     Height="24"
+                    Background="{StaticResource SqualrColorGray20}"
                     ItemsSource="{Binding ProcessSelectorViewModel.WindowedProcessList, Source={StaticResource ViewModelLocator}}"
                     SelectedItem="{Binding ProcessSelectorViewModel.SelectedProcess, Source={StaticResource ViewModelLocator}, Mode=TwoWay}">
                     <shell:ComboBox.ItemTemplate>
                         <shell:DataTemplate>
-                            <shell:StackPanel Orientation="Horizontal">
+                            <shell:Grid>
+                                <shell:Grid.ColumnDefinitions>
+                                    <shell:ColumnDefinition Width="Auto" />
+                                    <shell:ColumnDefinition />
+                                </shell:Grid.ColumnDefinitions>
                                 <shell:Image
+                                    Grid.Column="0"
                                     Width="16"
                                     Height="16"
+                                    Margin="0,0,6,0"
                                     Source="{Binding Path=Icon, Converter={StaticResource IconConverter}}" />
-                                <shell:TextBlock Margin="6,0,0,0" Text="{Binding Path=ProcessName}" />
-                            </shell:StackPanel>
+                                <shell:TextBlock
+                                    Grid.Column="1"
+                                    Foreground="{StaticResource SqualrColorWhite}"
+                                    Text="{Binding Path=ProcessName}" />
+                            </shell:Grid>
                         </shell:DataTemplate>
                     </shell:ComboBox.ItemTemplate>
                 </shell:ComboBox>
