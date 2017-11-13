@@ -1,15 +1,15 @@
 ﻿namespace SqualrStream.Source.Stream
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using SqualrCore.Content;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Extensions;
     using SqualrStream.Properties;
     using SqualrStream.Source.Api;
     using SqualrStream.Source.Api.Models;
     using SqualrStream.Source.Library;
     using SqualrStream.Source.Navigation;
-    using SqualrCore.Content;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Output;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -39,11 +39,6 @@
         /// Indicates whether a Stream connection is open.
         /// </summary>
         private Boolean isConnected;
-
-        /// <summary>
-        /// A value indicating if the connection status is loading
-        /// </summary>
-        public Boolean isConnectionStatusLoading;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="StreamConfigViewModel" /> class from being created.

@@ -369,48 +369,29 @@
         private void LoadScanResults()
         {
             Snapshot snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot);
-            ObservableCollection<ScanResult> newAddresses = new ObservableCollection<ScanResult>();
+            IList<ScanResult> newAddresses = new List<ScanResult>();
 
-            if (snapshot == null)
+            if (snapshot != null)
             {
-                this.addresses = newAddresses;
-                this.RaisePropertyChanged(nameof(this.Addresses));
-                return;
+                UInt64 startIndex = Math.Min(ScanResultsViewModel.PageSize * this.CurrentPage, snapshot.ElementCount);
+                UInt64 endIndex = Math.Min((ScanResultsViewModel.PageSize * this.CurrentPage) + ScanResultsViewModel.PageSize, snapshot.ElementCount);
+
+                for (UInt64 index = startIndex; index < endIndex; index++)
+                {
+                    SnapshotElementIterator element = snapshot[index];
+
+                    String label = element.GetElementLabel() != null ? element.GetElementLabel().ToString() : String.Empty;
+                    String currentValue = element.HasCurrentValue() ? element.GetCurrentValue().ToString() : String.Empty;
+                    String previousValue = element.HasPreviousValue() ? element.GetPreviousValue().ToString() : String.Empty;
+
+                    String moduleName;
+                    UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);
+
+                    newAddresses.Add(new ScanResult(moduleName, address.ToIntPtr(), this.ActiveType, currentValue, previousValue, label));
+                }
             }
 
-            UInt64 startIndex = Math.Min(ScanResultsViewModel.PageSize * this.CurrentPage, snapshot.ElementCount);
-            UInt64 endIndex = Math.Min((ScanResultsViewModel.PageSize * this.CurrentPage) + ScanResultsViewModel.PageSize, snapshot.ElementCount);
-
-            for (UInt64 index = startIndex; index < endIndex; index++)
-            {
-                SnapshotElementIterator element = snapshot[index];
-                String label = String.Empty;
-
-                if (element.GetElementLabel() != null)
-                {
-                    label = element.GetElementLabel().ToString();
-                }
-
-                String currentValue = String.Empty;
-                if (element.HasCurrentValue())
-                {
-                    currentValue = element.GetCurrentValue().ToString();
-                }
-
-                String previousValue = String.Empty;
-                if (element.HasPreviousValue())
-                {
-                    previousValue = element.GetPreviousValue().ToString();
-                }
-
-                String moduleName;
-                UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);
-
-                newAddresses.Add(new ScanResult(moduleName, address.ToIntPtr(), this.ActiveType, currentValue, previousValue, label));
-            }
-
-            this.addresses = newAddresses;
-            this.RaisePropertyChanged(nameof(this.Addresses));
+            this.Addresses = new ObservableCollection<ScanResult>(newAddresses);
 
             // Ensure results are visible
             this.IsVisible = true;

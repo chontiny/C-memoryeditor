@@ -154,6 +154,7 @@
     <Compile Include="Source\Engine\Processes\Windows\Native\NativeMethods.cs" />
     <Compile Include="Source\Engine\Processes\Windows\WindowsAdapter.cs" />
     <Compile Include="Source\Engine\VirtualMemory\Windows\PEB\ManagedPeb.cs" />
+    <Compile Include="Source\Mvvm\AttachedBehaviors\ScrollToTopBehavior.cs" />
     <Compile Include="Source\Mvvm\Converters\OffsetsToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemValueConverter.cs" />
     <Compile Include="Source\Output\OutputMask.cs" />
