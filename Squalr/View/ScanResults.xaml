@@ -2,6 +2,7 @@
     x:Class="Squalr.View.ScanResults"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:SqualrCore.Source.Mvvm.AttachedBehaviors;assembly=SqualrCore"
     xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -49,25 +50,20 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
-                    <MenuItem
-                        BorderThickness="0"
-                        Style="{StaticResource DropDownAutoClose}"
-                        ToolTip="Scan Type">
+                    <MenuItem BorderThickness="0" ToolTip="Scan Type">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
-                                <WrapPanel VerticalAlignment="Center">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="{Binding ActiveTypeImage}" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        VerticalAlignment="Center"
-                                        Foreground="{StaticResource SqualrColorWhite}"
-                                        Text="{Binding ActiveTypeName}" />
-                                </WrapPanel>
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Source="{Binding ActiveTypeImage}" />
+                                <TextBlock
+                                    Padding="4,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource SqualrColorWhite}"
+                                    Text="{Binding ActiveTypeName}" />
                                 <Grid
-                                    x:Name="arrowGlyph"
+                                    x:Name="ArrowGlyph"
                                     Grid.Column="1"
                                     Margin="4,3,4,3"
                                     IsHitTestVisible="False">
@@ -81,10 +77,9 @@
                             </StackPanel>
                         </MenuItem.Header>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:SByte}"
+                            Style="{Binding}"
                             ToolTip="1 Byte Signed Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -101,10 +96,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Int16}"
+                            Style="{Binding}"
                             ToolTip="2 Byte Signed Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -121,10 +115,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Int32}"
+                            Style="{Binding}"
                             ToolTip="4 Byte Signed Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -141,10 +134,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Int64}"
+                            Style="{Binding}"
                             ToolTip="8 Byte Signed Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -161,10 +153,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Byte}"
+                            Style="{Binding}"
                             ToolTip="1 Byte Unsigned Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -181,10 +172,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:UInt16}"
+                            Style="{Binding}"
                             ToolTip="2 Byte Unsigned Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -201,10 +191,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:UInt32}"
+                            Style="{Binding}"
                             ToolTip="4 Byte Unsigned Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -221,10 +210,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:UInt64}"
+                            Style="{Binding}"
                             ToolTip="8 Byte Unsigned Integer">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -241,10 +229,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Single}"
+                            Style="{Binding}"
                             ToolTip="Single Precision Floating Point Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -261,10 +248,9 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ChangeTypeCommand}"
                             CommandParameter="{x:Type system:Double}"
+                            Style="{Binding}"
                             ToolTip="Double Precision Floating Point Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -309,103 +295,113 @@
                 </Menu>
             </Grid>
         </Border>
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-            <ListView
-                Name="ScanResultsListView"
-                Background="{StaticResource SqualrColorBlack}"
-                BorderThickness="0"
-                ItemsSource="{Binding Addresses}">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <!--  Click and Selection events  -->
-                <intr:Interaction.Triggers>
-                    <intr:EventTrigger EventName="SelectionChanged">
-                        <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItems}" />
-                    </intr:EventTrigger>
-                    <intr:EventTrigger EventName="MouseDoubleClick">
-                        <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsListView, Path=SelectedItem}" />
-                    </intr:EventTrigger>
-                </intr:Interaction.Triggers>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <Grid HorizontalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock
-                                Grid.Column="0"
-                                Foreground="{StaticResource SqualrColorWhite}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=ElementAddress, Converter={StaticResource IntPtrToAddressConverter}}" />
-                            <TextBlock
-                                Grid.Column="1"
-                                Foreground="{StaticResource SqualrColorWhite}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=ElementValue}" />
-                            <TextBlock
-                                Grid.Column="2"
-                                Foreground="{StaticResource SqualrColorWhite}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=ElementPreviousValue}" />
-                            <TextBlock
-                                Grid.Column="3"
-                                Foreground="{StaticResource SqualrColorWhite}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=ElementLabel}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-                <ListView.Template>
-                    <ControlTemplate>
-                        <Grid HorizontalAlignment="Stretch">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid Grid.Row="0" VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <Grid.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
-                                    </Style>
-                                </Grid.Resources>
-                                <Border Grid.Column="0">
-                                    <TextBlock>Address</TextBlock>
-                                </Border>
-                                <Border Grid.Column="1">
-                                    <TextBlock>Value</TextBlock>
-                                </Border>
-                                <Border Grid.Column="2">
-                                    <TextBlock>Previous</TextBlock>
-                                </Border>
-                                <Border Grid.Column="3">
-                                    <TextBlock>Label</TextBlock>
-                                </Border>
-                            </Grid>
-                            <ItemsPresenter Grid.Row="1" />
-                        </Grid>
-                    </ControlTemplate>
-                </ListView.Template>
-            </ListView>
-        </ScrollViewer>
+        <DataGrid
+            Name="ScanResultsDataGrid"
+            Grid.Row="1"
+            behaviors:ScrollToTopBehavior.ScrollToTop="True"
+            AutoGenerateColumns="False"
+            Background="{StaticResource SqualrColorBlack}"
+            CanUserAddRows="False"
+            ColumnWidth="*"
+            HeadersVisibility="Column"
+            ItemsSource="{Binding Path=Addresses}"
+            RowHeaderWidth="0"
+            SelectionMode="Extended"
+            SelectionUnit="FullRow">
+            <!--  Click and Selection events  -->
+            <intr:Interaction.Triggers>
+                <intr:EventTrigger EventName="SelectionChanged">
+                    <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItems}" />
+                </intr:EventTrigger>
+                <intr:EventTrigger EventName="MouseDoubleClick">
+                    <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItem}" />
+                </intr:EventTrigger>
+            </intr:Interaction.Triggers>
+            <DataGrid.Resources>
+                <Style x:Key="NoFocus" TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray24}" />
+                    <Setter Property="IsManipulationEnabled" Value="False" />
+                    <Setter Property="IsTabStop" Value="False" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Style>
+                <Style TargetType="{x:Type DataGrid}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                </Style>
+            </DataGrid.Style>
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray74}" />
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn
+                    MinWidth="16"
+                    MaxWidth="16"
+                    CellStyle="{StaticResource NoFocus}"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Image Source="{Binding Path=Icon}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="64"
+                    Binding="{Binding Path=AddressSpecifier}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Address"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    MinWidth="96"
+                    Binding="{Binding Path=AddressValue}"
+                    Header="Value" />
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="96"
+                    Binding="{Binding Path=PreviousValue}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Previous Value"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="64"
+                    Binding="{Binding Path=Label}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Label"
+                    IsReadOnly="True" />
+            </DataGrid.Columns>
+            <DataGrid.ItemTemplate>
+                <DataTemplate>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </DataTemplate>
+            </DataGrid.ItemTemplate>
+        </DataGrid>
         <Border
             Grid.Row="2"
             Padding="8,4,8,4"

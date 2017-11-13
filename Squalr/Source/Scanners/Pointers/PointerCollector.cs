@@ -34,7 +34,7 @@
             this.ProgressLock = new Object();
             this.CollectedPointersCallback = collectedPointersCallback;
 
-            this.Dependencies.Enqueue(new ValueCollectorModel(this.SetSnapshot));
+            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotRetrievalMode.FromUserModeMemory, this.SetSnapshot));
         }
 
         /// <summary>
@@ -162,6 +162,7 @@
                     // Clear the saved values, we do not need them now
                     region.SetCurrentValues(null);
 
+                    // Update scan progress
                     lock (this.ProgressLock)
                     {
                         processedRegions++;

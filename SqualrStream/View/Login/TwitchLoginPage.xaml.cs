@@ -84,7 +84,7 @@
             catch (Exception ex)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error handling web request", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.TwitchLogin, ex);
+                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.StreamClient, ex);
             }
         }
 

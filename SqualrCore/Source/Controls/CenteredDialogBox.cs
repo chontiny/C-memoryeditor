@@ -1,7 +1,9 @@
 ﻿namespace SqualrCore.Source.Controls
 {
     using System;
+    using System.Diagnostics;
     using System.Drawing;
+    using System.Linq;
     using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Interop;
@@ -107,8 +109,14 @@
 
             if (ownerPtr != null)
             {
-                // Note, while AppDomain.GetCurrentThreadId() is deprecated, the suggested replacement is not valid, thus we will continue to use this
-                windowHook = CenteredDialogBox.SetWindowsHookEx(WH_CALLWNDPROCRET, hookProc, IntPtr.Zero, AppDomain.GetCurrentThreadId());
+                ProcessThread processThread = Process.GetCurrentProcess().Threads
+                    .OfType<ProcessThread>()
+                    .SingleOrDefault(thread => thread.ThreadState == ThreadState.Running);
+
+                if (processThread != null)
+                {
+                    windowHook = CenteredDialogBox.SetWindowsHookEx(WH_CALLWNDPROCRET, hookProc, IntPtr.Zero, processThread.Id);
+                }
             }
         }
 

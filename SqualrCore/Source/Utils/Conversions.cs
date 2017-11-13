@@ -429,6 +429,8 @@
                     return (T)(Object)BitConverter.ToInt32(byteArray, 0);
                 case TypeCode.Int64:
                     return (T)(Object)BitConverter.ToInt64(byteArray, 0);
+                case TypeCode.SByte:
+                    return (T)(Object)unchecked((SByte)byteArray[0]);
                 case TypeCode.Single:
                     return (T)(Object)BitConverter.ToSingle(byteArray, 0);
                 case TypeCode.UInt16:

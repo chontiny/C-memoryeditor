@@ -4,11 +4,12 @@
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// A class to contain the discovered pointers from a pointer rescan.
     /// </summary>
-    internal class ValidatedPointers : IDiscoveredPointers
+    internal class ValidatedPointers : DiscoveredPointers
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidatedPointers" /> class.
@@ -35,21 +36,14 @@
         }
 
         /// <summary>
-        /// Indexer to allow the retrieval of the element at the specified index.
+        /// Gets the pointers between the specified indicies.
         /// </summary>
-        /// <param name="index">The index of the pointer.</param>
-        /// <returns>Returns the pointer at the specified index.</returns>
-        public override PointerItem this[UInt64 index]
+        /// <param name="startIndex">The start index.</param>
+        /// <param name="endIndex">The end index.</param>
+        /// <returns>The pointers between the specified indicies.</returns>
+        public override IEnumerable<PointerItem> GetPointers(UInt64 startIndex, UInt64 endIndex)
         {
-            get
-            {
-                if (unchecked((Int32)index) < this.Pointers.Count)
-                {
-                    return this.Pointers[unchecked((Int32)index)];
-                }
-
-                return base[index];
-            }
+            return this.Pointers.Skip(startIndex.ToInt32()).Take((endIndex - startIndex).ToInt32());
         }
 
         /// <summary>

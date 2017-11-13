@@ -1,10 +1,11 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Results.ScanResults;
     using Squalr.Properties;
     using Squalr.Source.Prefilters;
+    using Squalr.Source.Results;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.VirtualMemory;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -13,7 +14,7 @@
     /// <summary>
     /// Manages snapshots of memory taken from the target process.
     /// </summary>
-    internal class SnapshotManager : IScanResultsObserver
+    internal class SnapshotManager : IResultDataTypeObserver
     {
         /// <summary>
         /// Singleton instance of Snapshot Manager.
@@ -84,7 +85,7 @@
                 if (!this.SnapshotObservers.Contains(snapshotObserver))
                 {
                     this.SnapshotObservers.Add(snapshotObserver);
-                    snapshotObserver.Update(this.GetActiveSnapshot(createIfNone: false));
+                    snapshotObserver.Update(this.GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot));
                 }
             }
         }
@@ -105,27 +106,45 @@
         }
 
         /// <summary>
-        /// Returns the memory regions associated with the current snapshot. If none exist, a query will be done.
+        /// Gets a snapshot based on the provided mode. Will not read any memory.
         /// </summary>
-        /// <param name="createIfNone">Creates a snapshot if none exists.</param>
+        /// <param name="snapshotCreationMode">The method of snapshot retrieval.</param>
+        /// <returns>The collected snapshot.</returns>
+        public Snapshot GetSnapshot(SnapshotRetrievalMode snapshotCreationMode)
+        {
+            switch (snapshotCreationMode)
+            {
+                case SnapshotRetrievalMode.FromActiveSnapshot:
+                    return this.GetActiveSnapshot();
+                case SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter:
+                    return this.GetActiveSnapshotCreateIfNone();
+                case SnapshotRetrievalMode.FromSettings:
+                    return this.CreateSnapshotFromSettings();
+                case SnapshotRetrievalMode.FromUserModeMemory:
+                    return this.CreateSnapshotFromUsermodeMemory();
+                case SnapshotRetrievalMode.FromHeap:
+                    throw new NotImplementedException();
+                case SnapshotRetrievalMode.FromStack:
+                    throw new NotImplementedException();
+                default:
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unknown snapshot retrieval mode");
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns the memory regions associated with the current snapshot. If none exist, a query will be done. Will not read any memory.
+        /// </summary>
         /// <returns>The current active snapshot of memory in the target process.</returns>
-        public Snapshot GetActiveSnapshot(Boolean createIfNone = true)
+        private Snapshot GetActiveSnapshotCreateIfNone()
         {
             lock (this.AccessLock)
             {
-                // Take a snapshot if there are none, or the current one is empty
                 if (this.Snapshots.Count == 0 || this.Snapshots.Peek() == null || this.Snapshots.Peek().ElementCount == 0)
                 {
-                    if (createIfNone)
-                    {
-                        Snapshot snapshot = Prefilter.GetInstance().GetPrefilteredSnapshot();
-                        snapshot.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
-                        return snapshot;
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    Snapshot snapshot = Prefilter.GetInstance().GetPrefilteredSnapshot();
+                    snapshot.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
+                    return snapshot;
                 }
 
                 // Return the snapshot
@@ -133,7 +152,30 @@
             }
         }
 
-        public Snapshot CreateSnapshotFromUsermodeMemory()
+        /// <summary>
+        /// Returns the memory regions associated with the current snapshot. If none exist, a query will be done. Will not read any memory.
+        /// </summary>
+        /// <returns>The current active snapshot of memory in the target process.</returns>
+        private Snapshot GetActiveSnapshot()
+        {
+            lock (this.AccessLock)
+            {
+                // Take a snapshot if there are none, or the current one is empty
+                if (this.Snapshots.Count == 0 || this.Snapshots.Peek() == null || this.Snapshots.Peek().ElementCount == 0)
+                {
+                    return null;
+                }
+
+                // Return the snapshot
+                return this.Snapshots.Peek();
+            }
+        }
+
+        /// <summary>
+        /// Creates a snapshot from all usermode memory. Will not read any memory.
+        /// </summary>
+        /// <returns>A snapshot created from usermode memory.</returns>
+        private Snapshot CreateSnapshotFromUsermodeMemory()
         {
             MemoryProtectionEnum requiredPageFlags = 0;
             MemoryProtectionEnum excludedPageFlags = 0;
@@ -162,7 +204,7 @@
         /// Creates a new snapshot of memory in the target process. Will not read any memory.
         /// </summary>
         /// <returns>The snapshot of memory taken in the target process.</returns>
-        public Snapshot CreateSnapshotFromSettings()
+        private Snapshot CreateSnapshotFromSettings()
         {
             MemoryProtectionEnum requiredPageFlags = SettingsViewModel.GetInstance().GetRequiredProtectionSettings();
             MemoryProtectionEnum excludedPageFlags = SettingsViewModel.GetInstance().GetExcludedProtectionSettings();
@@ -257,7 +299,7 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(Type activeType)
         {
-            this.GetActiveSnapshot(createIfNone: false)?.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
+            this.GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot)?.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
         }
 
         /// <summary>
@@ -293,7 +335,8 @@
         {
             lock (this.ObserverLock)
             {
-                Snapshot activeSnapshot = this.GetActiveSnapshot(createIfNone: false);
+                Snapshot activeSnapshot = this.GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot);
+
                 foreach (ISnapshotObserver observer in this.SnapshotObservers)
                 {
                     observer.Update(activeSnapshot);

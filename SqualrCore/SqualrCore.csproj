@@ -154,6 +154,7 @@
     <Compile Include="Source\Engine\Processes\Windows\Native\NativeMethods.cs" />
     <Compile Include="Source\Engine\Processes\Windows\WindowsAdapter.cs" />
     <Compile Include="Source\Engine\VirtualMemory\Windows\PEB\ManagedPeb.cs" />
+    <Compile Include="Source\Mvvm\AttachedBehaviors\ScrollToTopBehavior.cs" />
     <Compile Include="Source\Mvvm\Converters\OffsetsToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemValueConverter.cs" />
     <Compile Include="Source\Output\OutputMask.cs" />
@@ -236,7 +237,9 @@
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Translators\Translator.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\BitOps.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\Decode.cs" />
-    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\OpTable.cs" />
+    <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\OpTable.cs">
+      <ExcludeFromStyleCop>True</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\RegClass.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\syn.cs" />
     <Compile Include="Source\Engine\Architecture\Disassembler\SharpDisasm\Udis86\SynIntel.cs" />
@@ -359,7 +362,6 @@
     <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DataTypeConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DynamicConverter.cs" />
-    <Compile Include="Source\Utils\TypeConverters\EnumDescriptionConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\HotKeyConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
@@ -442,9 +444,11 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ChangeLog.cs</LastGenOutput>
     </Content>
+    <Resource Include="Content\Images\LetterP.png" />
     <Resource Include="Content\Images\Squalr.png" />
     <Resource Include="Content\Images\SqualrDev.png" />
     <Resource Include="Content\Images\Cpu.png" />
+    <Resource Include="Content\Images\LetterS.png" />
     <Content Include="Content\Templates\CodeInjectionTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>
@@ -580,27 +584,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Loaders\SpinnerApple.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\Loaders\SpinnerCogs.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Loaders\SpinnerDotCircle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Loaders\SpinnerPiston.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Loaders\SpinnerSwirl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Loaders\Tail.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -620,7 +604,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Style\CheckBoxes.xaml">
+    <Page Include="View\Style\Separator.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Style\Submenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -628,19 +616,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Style\DropDown.xaml">
+    <Page Include="View\Style\MenuItem.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Style\DropDownAutoClose.xaml">
+    <Page Include="View\Style\ContextMenu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Style\DropDownContextMenu.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Style\FlatComboBox.xaml">
+    <Page Include="View\Style\ComboBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -649,10 +633,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Style\TextBoxPlaceHolder.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Style\VerticalSeparator.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -26,7 +26,7 @@
         {
             this.ProgressLock = new Object();
 
-            this.Dependencies.Enqueue(new ValueCollectorModel(this.SetSnapshot));
+            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, this.SetSnapshot));
         }
 
         /// <summary>

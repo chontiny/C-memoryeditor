@@ -1,11 +1,11 @@
-﻿namespace Squalr.Source.Results.ScanResults
+﻿namespace Squalr.Source.Results
 {
     using System;
 
     /// <summary>
     /// Interface for a class which listens for changes in the active data type.
     /// </summary>
-    internal interface IScanResultsObserver
+    internal interface IResultDataTypeObserver
     {
         /// <summary>
         /// Recieves an update of the active type in the results.

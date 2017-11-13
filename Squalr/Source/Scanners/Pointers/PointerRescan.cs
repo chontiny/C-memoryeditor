@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
-    using Squalr.Source.Results.PointerScanResults;
+    using Squalr.Source.Results;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.ProjectItems;
@@ -33,7 +33,7 @@
         /// <summary>
         /// Gets or sets the discovered pointers from the pointer scan.
         /// </summary>
-        private IDiscoveredPointers DiscoveredPointers { get; set; }
+        private DiscoveredPointers DiscoveredPointers { get; set; }
 
         /// <summary>
         /// Gets or sets a lock object for updating scan progress.
@@ -57,13 +57,33 @@
             cancellationToken.ThrowIfCancellationRequested();
 
             ValidatedPointers validatedPointers = new ValidatedPointers();
+            Int32 processedPointers = 0;
 
             // Enumerate all discovered pointers and determine if they have a valid target address
             foreach (PointerItem pointerItem in this.DiscoveredPointers)
             {
+                pointerItem.Update();
+
+                // TODO: This is not particularly sustainable/performant. This will fall apart for floats/doubles where we want nearly-equal values (ie 3.4444 and 3.4443)
+                // Ideally we want something similar to how we do scans with the SnapShotElementIterator with the call to Compare().
+                // One solution would be to create a snapshot from all of the discovered pointers so that we could leverage the SnapshotElementIterator compare functions,
+                // But this creates the technical challenge of associating the pointer item with an element in the snapshot.
+                // Also, we need to update the data type of these pointer items to match the current pointer scan results data times.
                 if (pointerItem.CalculatedAddress.ToUInt64() == this.TargetAddress)
                 {
                     validatedPointers.Pointers.Add(pointerItem);
+                }
+
+                // Update scan progress
+                lock (this.ProgressLock)
+                {
+                    processedPointers++;
+
+                    // Limit how often we update the progress
+                    if (processedPointers % 1000 == 0)
+                    {
+                        this.UpdateProgress(processedPointers, this.DiscoveredPointers.Count.ToInt32(), canFinalize: false);
+                    }
                 }
             }
 

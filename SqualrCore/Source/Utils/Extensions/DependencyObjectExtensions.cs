@@ -58,6 +58,30 @@
                 current = VisualTreeHelper.GetParent(current);
             }
         }
+
+        public static T GetVisualChild<T>(this DependencyObject parent) where T : Visual
+        {
+            T child = default(T);
+            Int32 numVisuals = VisualTreeHelper.GetChildrenCount(parent);
+
+            for (Int32 index = 0; index < numVisuals; index++)
+            {
+                Visual visual = (Visual)VisualTreeHelper.GetChild(parent, index);
+                child = visual as T;
+
+                if (child == null)
+                {
+                    child = GetVisualChild<T>(visual);
+                }
+
+                if (child != null)
+                {
+                    break;
+                }
+            }
+
+            return child;
+        }
     }
     //// End class
 }

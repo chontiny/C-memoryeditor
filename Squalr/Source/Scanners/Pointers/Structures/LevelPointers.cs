@@ -9,8 +9,6 @@
     /// </summary>
     internal class LevelPointers
     {
-        private PointerPool modulePointerPool;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="LevelPointers" /> class.
         /// </summary>

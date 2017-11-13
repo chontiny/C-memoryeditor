@@ -2,12 +2,12 @@
 {
     using ActionScheduler;
     using DotNet;
-    using VirtualMemory;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using Utils.Extensions;
+    using VirtualMemory;
 
     /// <summary>
     /// Singleton class to resolve the address of managed objects in an external process.
@@ -54,6 +54,24 @@
         }
 
         /// <summary>
+        /// Converts an address to a module and an address offset.
+        /// </summary>
+        /// <param name="address">The original address.</param>
+        /// <param name="moduleName">The module name containing this address, if there is one. Otherwise, empty string.</param>
+        /// <returns>The module name and address offset. If not contained by a module, the original address is returned.</returns>
+        public UInt64 AddressToModule(UInt64 address, out String moduleName)
+        {
+            NormalizedModule containingModule = EngineCore.GetInstance().VirtualMemory.GetModules()
+                .Select(module => module)
+                .Where(module => module.ContainsAddress(address))
+                .FirstOrDefault();
+
+            moduleName = containingModule?.Name ?? String.Empty;
+
+            return containingModule == null ? address : address - containingModule.BaseAddress.ToUInt64();
+        }
+
+        /// <summary>
         /// Determines the base address of a module given a module name.
         /// </summary>
         /// <param name="identifier">The module identifier, or name.</param>
@@ -64,7 +82,8 @@
 
             identifier = identifier?.RemoveSuffixes(true, ".exe", ".dll");
             IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().VirtualMemory.GetModules()
-                .Select(x => x)?.Where(x => x.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));
+                ?.Select(module => module)
+                ?.Where(module => module.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));
 
             if (modules.Count() > 0)
             {

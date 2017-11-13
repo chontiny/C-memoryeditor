@@ -4,12 +4,15 @@
     using Editors.OffsetEditor;
     using Engine;
     using Engine.VirtualMachines;
+    using SqualrCore.Content;
+    using SqualrCore.Source.Utils;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
     using System.Linq;
     using System.Runtime.Serialization;
+    using System.Windows.Media.Imaging;
     using Utils.Extensions;
     using Utils.TypeConverters;
 
@@ -48,7 +51,7 @@
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
         /// </summary>
         /// <param name="baseAddress">The base address. This will be added as an offset from the resolved base identifier.</param>
-        /// <param name="elementType">The data type of the value at this address.</param>
+        /// <param name="dataType">The data type of the value at this address.</param>
         /// <param name="description">The description of this address.</param>
         /// <param name="resolveType">The identifier type for this address item.</param>
         /// <param name="moduleName">The identifier for the base address of this object.</param>
@@ -57,13 +60,13 @@
         /// <param name="value">The value at this address. If none provided, it will be figured out later. Used here to allow immediate view updates upon creation.</param>
         public PointerItem(
             IntPtr baseAddress,
-            Type elementType,
+            Type dataType,
             String description = "New Address",
             String moduleName = null,
             IEnumerable<Int32> pointerOffsets = null,
             Boolean isValueHex = false,
             String value = null)
-            : base(elementType, description, isValueHex, value)
+            : base(dataType, description, isValueHex, value)
         {
             // Bypass setters to avoid running setter code
             this.moduleOffset = baseAddress;
@@ -94,6 +97,9 @@
                 this.moduleName = value == null ? String.Empty : value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.ModuleName));
+                this.RaisePropertyChanged(nameof(this.IsStatic));
+                this.RaisePropertyChanged(nameof(this.AddressSpecifier));
+                this.RaisePropertyChanged(nameof(this.Icon));
             }
         }
 
@@ -122,6 +128,7 @@
                 this.moduleOffset = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.ModuleOffset));
+                this.RaisePropertyChanged(nameof(this.AddressSpecifier));
             }
         }
 
@@ -150,6 +157,81 @@
                 this.pointerOffsets = value;
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.PointerOffsets));
+                this.RaisePropertyChanged(nameof(this.IsPointer));
+                this.RaisePropertyChanged(nameof(this.AddressSpecifier));
+                this.RaisePropertyChanged(nameof(this.Icon));
+            }
+        }
+
+        /// <summary>
+        /// Gets the image associated with this project item.
+        /// </summary>
+        [Browsable(false)]
+        public override BitmapSource Icon
+        {
+            get
+            {
+                if (this.IsPointer)
+                {
+                    return Images.LetterP;
+                }
+                else if (this.IsStatic)
+                {
+                    return Images.LetterS;
+                }
+
+                return Images.CollectValues;
+            }
+        }
+
+        /// <summary>
+        /// Gets the address specifier for this address. If a static address, this is 'ModuleName + offset', otherwise this is an address string.
+        /// </summary>
+        public String AddressSpecifier
+        {
+            get
+            {
+                if (this.IsStatic)
+                {
+                    if (this.ModuleOffset.ToUInt64() >= 0)
+                    {
+                        return this.ModuleName + " + " + Conversions.ToHex(this.ModuleOffset, formatAsAddress: false);
+                    }
+                    else
+                    {
+                        return this.ModuleName + " - " + Conversions.ParsePrimitiveAsHexString(typeof(IntPtr), this.ModuleOffset, signHex: true).TrimStart('-');
+                    }
+                }
+                else if (this.IsPointer)
+                {
+                    return Conversions.ToHex(this.CalculatedAddress);
+                }
+                else
+                {
+                    return Conversions.ToHex(this.ModuleOffset);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating if this pointer/address is static.
+        /// </summary>
+        public Boolean IsStatic
+        {
+            get
+            {
+                return !this.ModuleName.IsNullOrEmpty();
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating if this object is a true pointer and not just an address.
+        /// </summary>
+        public Boolean IsPointer
+        {
+            get
+            {
+                return !this.PointerOffsets.IsNullOrEmpty();
             }
         }
 

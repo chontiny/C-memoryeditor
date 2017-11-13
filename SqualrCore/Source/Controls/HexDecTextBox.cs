@@ -38,7 +38,7 @@
         /// <param name="elementType">The value type being edited.</param>
         public HexDecTextBox(Type elementType)
         {
-            this.BorderStyle = BorderStyle.FixedSingle;
+            this.BorderStyle = BorderStyle.None;
             this.BackColor = DarkBrushes.BaseColor4;
 
             this.DecimalMenuItem = new MenuItem("Decimal");
@@ -57,6 +57,10 @@
 
             this.ContextMenu = this.RightClickMenu;
             this.TextChanged += this.HexDecTextChanged;
+
+            // Allows for shortcuts to be used (ie ctrl + A)
+            Application.EnableVisualStyles();
+            this.ShortcutsEnabled = true;
 
             this.ElementType = elementType;
         }

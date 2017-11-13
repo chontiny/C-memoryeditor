@@ -10,8 +10,10 @@
     [ValueConversion(typeof(Boolean), typeof(Visibility))]
     public class BooleanToVisibilityConverter : BooleanConverter<Visibility>
     {
-        public BooleanToVisibilityConverter() :
-            base(Visibility.Visible, Visibility.Collapsed)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BooleanToVisibilityConverter" /> class.
+        /// </summary>
+        public BooleanToVisibilityConverter() : base(Visibility.Visible, Visibility.Collapsed)
         {
         }
     }

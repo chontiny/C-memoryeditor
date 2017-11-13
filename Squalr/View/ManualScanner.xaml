@@ -51,10 +51,7 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
-                    <MenuItem
-                        BorderThickness="0"
-                        Style="{StaticResource DropDownAutoClose}"
-                        ToolTip="Scan Constraints">
+                    <MenuItem BorderThickness="0" ToolTip="Scan Constraints">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <Image
@@ -76,9 +73,8 @@
                             </StackPanel>
                         </MenuItem.Header>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectChangedCommand}"
+                            Style="{Binding}"
                             ToolTip="Changed Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -94,9 +90,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectUnchangedCommand}"
+                            Style="{Binding}"
                             ToolTip="Unchanged Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -112,9 +107,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectIncreasedCommand}"
+                            Style="{Binding}"
                             ToolTip="Increased Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -130,9 +124,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectDecreasedCommand}"
+                            Style="{Binding}"
                             ToolTip="Decreased Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -148,9 +141,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectEqualCommand}"
+                            Style="{Binding}"
                             ToolTip="Equal to Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -166,9 +158,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectNotEqualCommand}"
+                            Style="{Binding}"
                             ToolTip="Not Equal to Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -184,9 +175,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectIncreasedByXCommand}"
+                            Style="{Binding}"
                             ToolTip="Increased by Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -202,9 +192,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectDecreasedByXCommand}"
+                            Style="{Binding}"
                             ToolTip="Decreased by Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -220,9 +209,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectGreaterThanCommand}"
+                            Style="{Binding}"
                             ToolTip="Greater Than Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -238,9 +226,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectGreaterThanOrEqualCommand}"
+                            Style="{Binding}"
                             ToolTip="Greater Than or Equal to Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -256,9 +243,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectLessThanCommand}"
+                            Style="{Binding}"
                             ToolTip="Less Than Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -274,9 +260,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectLessThanOrEqualCommand}"
+                            Style="{Binding}"
                             ToolTip="Less Than or Equal to Value">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -292,9 +277,8 @@
                             </MenuItem.Header>
                         </MenuItem>
                         <MenuItem
-                            Background="{StaticResource SqualrColorGray68}"
-                            BorderBrush="{StaticResource SqualrColorGray68}"
                             Command="{Binding ManualScannerViewModel.SelectNotScientificNotationCommand}"
+                            Style="{Binding}"
                             ToolTip="Exclude Scientific Notation Values">
                             <MenuItem.Header>
                                 <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -311,12 +295,15 @@
                         </MenuItem>
                     </MenuItem>
                 </Menu>
-                <Grid
-                    x:Name="valueHexDecBox"
-                    Width="196"
+                <Border
                     Height="20"
-                    Margin="4,0,0,0"
-                    Background="{StaticResource SqualrColorGray20}" />
+                    Background="{StaticResource SqualrColorGray20}"
+                    BorderThickness="0">
+                    <Grid
+                        x:Name="valueHexDecBox"
+                        Width="196"
+                        Height="16" />
+                </Border>
                 <Menu
                     VerticalAlignment="Center"
                     Background="Transparent"

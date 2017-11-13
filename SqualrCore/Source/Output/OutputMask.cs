@@ -9,8 +9,10 @@
     public class OutputMask
     {
         /// <summary>
-        /// Creates an instance of the <see cref="OutputMask" /> class.
+        /// Initializes a new instance of the <see cref="OutputMask" /> class.
         /// </summary>
+        /// <param name="filterRegex">The regular expression used to filter output text.</param>
+        /// <param name="replacementText">The text that replaces the redacted text.</param>
         public OutputMask(String filterRegex, String replacementText = "{{REDACTED}}")
         {
             this.ReplacementText = replacementText;
@@ -19,12 +21,12 @@
         }
 
         /// <summary>
-        /// The text that replaces redacted text.
+        /// Gets or sets the text that replaces redacted text.
         /// </summary>
         private String ReplacementText { get; set; }
 
         /// <summary>
-        /// The regular expression used to filter output text.
+        /// Gets or sets the regular expression used to filter output text.
         /// </summary>
         private Regex FilterRegex { get; set; }
 

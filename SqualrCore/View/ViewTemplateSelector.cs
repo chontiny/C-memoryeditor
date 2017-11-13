@@ -19,42 +19,37 @@
         /// <summary>
         /// The template for the Process Selector.
         /// </summary>
-        public DataTemplate processSelectorViewTemplate;
+        private DataTemplate processSelectorViewTemplate;
 
         /// <summary>
         /// The template for the Property Viewer.
         /// </summary>
-        public DataTemplate propertyViewerViewTemplate;
-
-        /// <summary>
-        /// The template for the Settings.
-        /// </summary>
-        public DataTemplate settingsViewTemplate;
+        private DataTemplate propertyViewerViewTemplate;
 
         /// <summary>
         /// The template for the Output.
         /// </summary>
-        public DataTemplate outputViewTemplate;
+        private DataTemplate outputViewTemplate;
 
         /// <summary>
         /// The template for the Offset Editor.
         /// </summary>
-        public DataTemplate offsetEditorViewTemplate;
+        private DataTemplate offsetEditorViewTemplate;
 
         /// <summary>
         /// The template for the Script Editor.
         /// </summary>
-        public DataTemplate scriptEditorViewTemplate;
+        private DataTemplate scriptEditorViewTemplate;
 
         /// <summary>
         /// The template for the Text Editor.
         /// </summary>
-        public DataTemplate textEditorViewTemplate;
+        private DataTemplate textEditorViewTemplate;
 
         /// <summary>
         /// The template for the Hotkey Editor.
         /// </summary>
-        public DataTemplate hotkeyEditorViewTemplate;
+        private DataTemplate hotkeyEditorViewTemplate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
@@ -189,9 +184,9 @@
         public DataTemplate DataTemplateErrorViewTemplate { get; set; }
 
         /// <summary>
-        /// Contains the mapping for all data templates.
+        /// Gets or sets the mapping for all data templates.
         /// </summary>
-        protected Dictionary<Type, DataTemplate> DataTemplates;
+        protected Dictionary<Type, DataTemplate> DataTemplates { get; set; }
 
         /// <summary>
         /// Returns the required template to display the given view model.

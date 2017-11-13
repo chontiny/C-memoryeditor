@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Source.Results.PointerScanResults;
+    using Squalr.Source.Results;
     using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
@@ -49,11 +49,16 @@
 
             this.PointerScan = new PointerScan();
             this.PointerRescan = new PointerRescan();
+            this.PointerValueRescan = new PointerValueRescan();
 
-            this.SetAddressCommand = new RelayCommand<UInt64>((newValue) => this.TargetAddress = newValue, (newValue) => true);
+            this.SetPointerScanAddressCommand = new RelayCommand<UInt64>((newValue) => this.TargetAddress = newValue, (newValue) => true);
+            this.SetPointerRescanAddressCommand = new RelayCommand<UInt64>((newValue) => this.RescanAddress = newValue, (newValue) => true);
+            this.SetPointerRescanValueCommand = new RelayCommand<Object>((newValue) => this.RescanValue = newValue, (newValue) => true);
             this.SetDepthCommand = new RelayCommand<UInt32>((newValue) => this.PointerDepth = newValue, (newValue) => true);
             this.SetPointerRadiusCommand = new RelayCommand<UInt32>((newValue) => this.PointerRadius = newValue, (newValue) => true);
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
+            this.StartPointerRescanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerRescan()), () => true);
+            this.StartPointerValueRescanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerValueRescan()), () => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -64,9 +69,29 @@
         public ICommand StartScanCommand { get; private set; }
 
         /// <summary>
-        /// Gets a command to set the active search value.
+        /// Gets a command to start the pointer rescan.
         /// </summary>
-        public ICommand SetAddressCommand { get; private set; }
+        public ICommand StartPointerRescanCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to start the pointer value rescan.
+        /// </summary>
+        public ICommand StartPointerValueRescanCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to set the pointer scan address.
+        /// </summary>
+        public ICommand SetPointerScanAddressCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to set the pointer rescan address.
+        /// </summary>
+        public ICommand SetPointerRescanAddressCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to set the pointer rescan value.
+        /// </summary>
+        public ICommand SetPointerRescanValueCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to set the scan depth.
@@ -92,6 +117,40 @@
             {
                 this.PointerScan.TargetAddress = value;
                 this.RaisePropertyChanged(nameof(this.TargetAddress));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the target rescan address.
+        /// </summary>
+        public UInt64 RescanAddress
+        {
+            get
+            {
+                return this.PointerRescan.TargetAddress;
+            }
+
+            set
+            {
+                this.PointerRescan.TargetAddress = value;
+                this.RaisePropertyChanged(nameof(this.PointerRescan));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the target rescan value.
+        /// </summary>
+        public Object RescanValue
+        {
+            get
+            {
+                return this.PointerValueRescan.Value;
+            }
+
+            set
+            {
+                this.PointerValueRescan.Value = value;
+                this.RaisePropertyChanged(nameof(this.RescanValue));
             }
         }
 
@@ -140,6 +199,11 @@
         private PointerRescan PointerRescan { get; set; }
 
         /// <summary>
+        /// Gets or sets the pointer value rescan task.
+        /// </summary>
+        private PointerValueRescan PointerValueRescan { get; set; }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="ChangeCounterViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -149,18 +213,33 @@
         }
 
         /// <summary>
-        /// Starts the pointer scan or rescan.
+        /// Starts the pointer scan.
         /// </summary>
         private void StartScan()
         {
+            this.PointerScan.Start();
             if (PointerScanResultsViewModel.GetInstance().ResultCount <= 0)
             {
-                this.PointerScan.Start();
             }
             else
             {
-                this.PointerRescan.Start();
             }
+        }
+
+        /// <summary>
+        /// Starts the pointer address rescan.
+        /// </summary>
+        private void StartPointerRescan()
+        {
+            this.PointerRescan.Start();
+        }
+
+        /// <summary>
+        /// Starts the pointer value rescan.
+        /// </summary>
+        private void StartPointerValueRescan()
+        {
+            this.PointerValueRescan.Start();
         }
     }
     //// End class

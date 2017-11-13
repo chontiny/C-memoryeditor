@@ -25,27 +25,6 @@
         /// </summary>
         private const String AnalyticsServiceCategory = "DesktopClient";
 
-        public enum AnalyticsAction
-        {
-            [Description("General")]
-            General,
-
-            [Description("Cheat Browser")]
-            CheatBrowser,
-
-            [Description("Twitch Login")]
-            TwitchLogin,
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private AnalyticsService()
-        {
-        }
-
-        private AnalyticsSession Session { get; set; }
-
         /// <summary>
         /// Singleton instance of the <see cref="AnalyticsService" /> class.
         /// </summary>
@@ -53,6 +32,40 @@
                 () => { return new AnalyticsService(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
+        /// <summary>
+        /// Prevents a default instance of the <see cref="AnalyticsService" /> class from being created.
+        /// </summary>
+        private AnalyticsService()
+        {
+        }
+
+        /// <summary>
+        /// An enumeration of analytics actions.
+        /// </summary>
+        public enum AnalyticsAction
+        {
+            /// <summary>
+            /// A general action.
+            /// </summary>
+            [Description("General")]
+            General,
+
+            /// <summary>
+            /// An action from the stream client.
+            /// </summary>
+            [Description("Stream Client")]
+            StreamClient,
+        }
+
+        /// <summary>
+        /// Gets or sets the analytics session.
+        /// </summary>
+        private AnalyticsSession Session { get; set; }
+
+        /// <summary>
+        /// Gets a singleton instance of the <see cref="AnalyticsService"/> class.
+        /// </summary>
+        /// <returns>A singleton instance of the class.</returns>
         public static AnalyticsService GetInstance()
         {
             return AnalyticsService.analyticsServiceInstance.Value;
@@ -67,10 +80,10 @@
         }
 
         /// <summary>
-        /// Sends an analytics event with an empty value.
+        /// Sends an analytics event with a runtime exception.
         /// </summary>
         /// <param name="action">The analytics action.</param>
-        /// <param name="label">>The analytics label.</param>
+        /// <param name="ex">The exception.</param>
         public void SendEvent(AnalyticsAction action, Exception ex)
         {
             this.SendEvent(action, "Error", ex?.ToString());

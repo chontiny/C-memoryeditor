@@ -2,8 +2,7 @@
 {
     using Source.DotNetExplorer;
     using Source.Main;
-    using Source.Results.PointerScanResults;
-    using Source.Results.ScanResults;
+    using Source.Results;
     using Source.Scanners.ChangeCounter;
     using Source.Scanners.InputCorrelator;
     using Source.Scanners.LabelThresholder;

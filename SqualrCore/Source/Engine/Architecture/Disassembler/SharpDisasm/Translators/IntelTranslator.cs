@@ -160,7 +160,7 @@
                     this.UdSynPrintImm(insn, op);
                     break;
                 case UdType.UD_OP_JIMM:
-                    this.Ud_syn_print_addr(insn, (long)Ud_syn_rel_target(insn, op));
+                    this.Ud_syn_print_addr(insn, (Int64)Ud_syn_rel_target(insn, op));
                     break;
                 case UdType.UD_OP_PTR:
                     switch (op.Size)

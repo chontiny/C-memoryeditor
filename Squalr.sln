@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
+# Blend for Visual Studio 15
 VisualStudioVersion = 15.0.26403.7
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fasm.NET", "Fasm\Fasm.NET\Fasm.NET.vcxproj", "{2DAC1A31-EF28-499A-B67A-963B5343D778}"
@@ -46,6 +46,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqualrStream", "SqualrStream\SqualrStream.csproj", "{E46EFBA0-17F7-4565-8629-D3BF41C4BED7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SqualrCore", "SqualrCore\SqualrCore.csproj", "{78010AA2-1ECC-4CF6-87D0-C27578E79698}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StyleCopExtensions", "StyleCopExtensions\StyleCopExtensions.csproj", "{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -315,6 +317,22 @@ Global
 		{78010AA2-1ECC-4CF6-87D0-C27578E79698}.Release|x64.Build.0 = Release|Any CPU
 		{78010AA2-1ECC-4CF6-87D0-C27578E79698}.Release|x86.ActiveCfg = Release|Any CPU
 		{78010AA2-1ECC-4CF6-87D0-C27578E79698}.Release|x86.Build.0 = Release|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Debug|x64.Build.0 = Debug|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Debug|x86.Build.0 = Debug|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Release|x64.ActiveCfg = Release|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Release|x64.Build.0 = Release|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Release|x86.ActiveCfg = Release|Any CPU
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -339,6 +357,7 @@ Global
 		{E9576568-5640-4883-AA5D-0BB2F6853E18} = {2652D5B8-A3F7-4CC4-8CC8-E374567FB28E}
 		{E46EFBA0-17F7-4565-8629-D3BF41C4BED7} = {B9D21C46-8963-4377-AEAD-A891F3D618A9}
 		{78010AA2-1ECC-4CF6-87D0-C27578E79698} = {B9D21C46-8963-4377-AEAD-A891F3D618A9}
+		{5D0E3EBA-C09C-4B19-9E35-D2515F004FB5} = {54E430C9-0906-45E3-A082-6D0E815D3214}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = GeckoFxTest\GeckoFxTest.csproj

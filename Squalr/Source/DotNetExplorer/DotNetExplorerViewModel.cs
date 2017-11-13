@@ -109,8 +109,7 @@
             DotNetItem dotnetItem = new DotNetItem(
                 dotNetObject.Name,
                 dotNetObject.ElementType == typeof(Boolean) ? typeof(Byte) : dotNetObject.ElementType,
-                dotNetObject.GetFullName()
-                );
+                dotNetObject.GetFullName());
 
             ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, dotnetItem);
         }

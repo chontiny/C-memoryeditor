@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary
     x:Class="Squalr.View.Style.PlaceHolder"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:Squalr.View.Style">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
     <Style
         x:Key="PlaceHolder"
         BasedOn="{StaticResource {x:Type TextBox}}"

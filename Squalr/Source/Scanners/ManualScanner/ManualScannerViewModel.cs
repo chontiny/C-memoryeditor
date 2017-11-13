@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners.ManualScanner
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Results.ScanResults;
-    using ScanConstraints;
+    using Squalr.Source.Results;
+    using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Docking;
     using System;
     using System.Collections.ObjectModel;
@@ -14,7 +14,7 @@
     /// <summary>
     /// View model for the Manual Scanner.
     /// </summary>
-    internal class ManualScannerViewModel : ToolViewModel, IScanResultsObserver
+    internal class ManualScannerViewModel : ToolViewModel, IResultDataTypeObserver
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.

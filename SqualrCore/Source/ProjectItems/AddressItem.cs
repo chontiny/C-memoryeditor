@@ -2,6 +2,7 @@
 {
     using Controls;
     using Engine;
+    using SqualrCore.Source.Output;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;
@@ -123,6 +124,17 @@
 
             set
             {
+                if (value is String)
+                {
+                    if (!CheckSyntax.CanParseValue(this.dataType, value as String))
+                    {
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error setting new value: " + (value as String));
+                        return;
+                    }
+
+                    value = Conversions.ParsePrimitiveStringAsPrimitive(this.DataType, value as String);
+                }
+
                 this.addressValue = value;
                 this.WriteValue(value);
                 this.RaisePropertyChanged(nameof(this.AddressValue));
@@ -182,11 +194,17 @@
         }
 
         /// <summary>
+        /// Gets or sets the old value used for determining value updates.
+        /// </summary>
+        private Object OldValue { get; set; }
+
+        /// <summary>
         /// Update event for this project item. Resolves addresses and values.
         /// </summary>
         /// <returns>True if update was made, otherwise false.</returns>
         public override Boolean Update()
         {
+            Boolean hasUpdate = false;
             this.CalculatedAddress = this.ResolveAddress();
 
             if (this.IsActivated)
@@ -202,18 +220,19 @@
             {
                 // Otherwise we read as normal (bypass value setter and set value directly to avoid a write-back to memory)
                 Boolean readSuccess;
-                Object oldValue = addressValue;
 
                 this.addressValue = EngineCore.GetInstance()?.VirtualMemory?.Read(this.DataType, this.CalculatedAddress, out readSuccess);
 
-                if (this.AddressValue?.ToString() != oldValue?.ToString())
+                if (this.AddressValue?.ToString() != this.OldValue?.ToString())
                 {
                     this.RaisePropertyChanged(nameof(this.AddressValue));
-                    return true;
+                    hasUpdate = true;
                 }
+
+                this.OldValue = addressValue;
             }
 
-            return false;
+            return hasUpdate;
         }
 
         /// <summary>

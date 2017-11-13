@@ -32,11 +32,11 @@
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr</ProductName>
     <PublisherName>Squalr</PublisherName>
-    <MinimumRequiredVersion>2.1.4.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.1.5.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.1.4.0</ApplicationVersion>
+    <ApplicationVersion>2.1.5.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -188,9 +188,6 @@
     <Reference Include="SharpDX.XInput, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.XInput.4.0.1\lib\net45\SharpDX.XInput.dll</HintPath>
     </Reference>
-    <Reference Include="StyleCop, Version=5.0.0.0, Culture=neutral, PublicKeyToken=f904653c63bc2738, processorArchitecture=MSIL">
-      <HintPath>..\packages\StyleCop.5.0.0\lib\net40\StyleCop.dll</HintPath>
-    </Reference>
     <Reference Include="Svg, Version=2.2.1.39233, Culture=neutral, PublicKeyToken=12a0bac221edeae2, processorArchitecture=MSIL">
       <HintPath>..\packages\Svg.2.3.0\lib\net35\Svg.dll</HintPath>
     </Reference>
@@ -311,11 +308,14 @@
     <Compile Include="Source\Prefilters\Prefilter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
-    <Compile Include="Source\Results\PointerScanResults\PointerScanResultsViewModel.cs" />
+    <Compile Include="Source\Results\PointerScanResultsViewModel.cs" />
+    <Compile Include="Source\Results\ScanResult.cs" />
+    <Compile Include="Source\Results\ScanResultsViewModel.cs" />
     <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
+    <Compile Include="Source\Scanners\Pointers\PointerValueRescan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerRescan.cs" />
-    <Compile Include="Source\Scanners\Pointers\Structures\IDiscoveredPointers.cs" />
+    <Compile Include="Source\Scanners\Pointers\Structures\DiscoveredPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\ValidatedPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\ScannedPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\PointerBranch.cs" />
@@ -326,6 +326,7 @@
     <Compile Include="Source\Scanners\Pointers\PointerScannerViewModel.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\LevelPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\PointerPool.cs" />
+    <Compile Include="Source\Snapshots\SnapshotRetrievalMode.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
@@ -341,11 +342,7 @@
     <Compile Include="Source\Scripting\ScriptManager.cs" />
     <Compile Include="Source\Scripting\Memory\IMemoryCore.cs" />
     <Compile Include="Source\Scripting\Memory\MemoryCore.cs" />
-    <Compile Include="Source\Results\ScanResults\IScanResultsObserver.cs" />
-    <Compile Include="Source\Results\ScanResults\ScanResult.cs" />
-    <Compile Include="Source\Results\ScanResults\ScanResultsViewModel.cs">
-      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
-    </Compile>
+    <Compile Include="Source\Results\IResultDataTypeObserver.cs" />
     <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterModel.cs" />
     <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterViewModel.cs" />
     <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorViewModel.cs" />
@@ -397,30 +394,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Style\CheckBoxes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Style\DropDownContextMenu.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Style\ScrollViewer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Style\DropDown.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Style\FlatComboBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Style\DarkBrushes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\ScanResults.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -452,18 +425,6 @@
     <Page Include="View\ChangeCounter.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Style\DropDownAutoClose.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\Style\TextBoxPlaceHolder.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Style\VerticalSeparator.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -506,7 +467,6 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Settings.StyleCop" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

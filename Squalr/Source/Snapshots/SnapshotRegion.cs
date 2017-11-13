@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Results.ScanResults;
-    using Scanners.ScanConstraints;
     using Squalr.Properties;
+    using Squalr.Source.Results;
+    using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;

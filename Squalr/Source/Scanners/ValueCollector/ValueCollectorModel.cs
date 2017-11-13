@@ -16,19 +16,25 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueCollectorModel" /> class.
         /// </summary>
-        public ValueCollectorModel(Action<Snapshot> callback = null) : base(
+        public ValueCollectorModel(SnapshotRetrievalMode snapshotRetrievalMode = SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, Action<Snapshot> callback = null) : base(
             taskName: "Value Collector",
             isRepeated: false,
             trackProgress: true)
         {
+            this.SnapshotRetrievalMode = snapshotRetrievalMode;
             this.CallBack = callback;
             this.ProgressLock = new Object();
         }
 
         /// <summary>
-        /// The callback to call with the collected snapshot. If none specified, the collected snapshot is set as the current results.
+        /// Gets or sets the callback to call with the collected snapshot. If none specified, the collected snapshot is set as the current results.
         /// </summary>
-        private Action<Snapshot> CallBack;
+        private Action<Snapshot> CallBack { get; set; }
+
+        /// <summary>
+        /// Gets or sets the method of snapshot retrieval.
+        /// </summary>
+        private SnapshotRetrievalMode SnapshotRetrievalMode { get; set; }
 
         /// <summary>
         /// Gets or sets the snapshot on which we perform the value collection.
@@ -45,7 +51,7 @@
         /// </summary>
         protected override void OnBegin()
         {
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.TaskName);
+            this.Snapshot = SnapshotManager.GetInstance().GetSnapshot(this.SnapshotRetrievalMode)?.Clone(this.TaskName);
         }
 
         /// <summary>

@@ -71,7 +71,7 @@
         public ICommand SelectProcessCommand { get; private set; }
 
         /// <summary>
-        /// Gets the processes running on the machine.
+        /// Gets or sets the list of processes running on the machine.
         /// </summary>
         public IEnumerable<NormalizedProcess> ProcessList
         {

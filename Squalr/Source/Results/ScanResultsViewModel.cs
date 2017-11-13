@@ -1,12 +1,15 @@
-﻿namespace Squalr.Source.Results.PointerScanResults
+﻿namespace Squalr.Source.Results
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Snapshots;
+    using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Content;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -18,14 +21,14 @@
     using System.Windows.Media.Imaging;
 
     /// <summary>
-    /// View model for the pointer scan results.
+    /// View model for the scan results.
     /// </summary>
-    internal class PointerScanResultsViewModel : ToolViewModel
+    internal class ScanResultsViewModel : ToolViewModel, ISnapshotObserver
     {
         /// <summary>
         /// The content id for the docking library associated with this view model.
         /// </summary>
-        public const String ToolContentId = nameof(PointerScanResultsViewModel);
+        public const String ToolContentId = nameof(ScanResultsViewModel);
 
         /// <summary>
         /// The number of elements to display on each page.
@@ -33,14 +36,14 @@
         private const Int32 PageSize = 64;
 
         /// <summary>
-        /// Singleton instance of the <see cref="PointerScanResultsViewModel" /> class.
+        /// Singleton instance of the <see cref="ScanResultsViewModel" /> class.
         /// </summary>
-        private static Lazy<PointerScanResultsViewModel> pointerScanResultsViewModelInstance = new Lazy<PointerScanResultsViewModel>(
-                () => { return new PointerScanResultsViewModel(); },
+        private static Lazy<ScanResultsViewModel> scanResultsViewModelInstance = new Lazy<ScanResultsViewModel>(
+                () => { return new ScanResultsViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// The result display type.
+        /// The active data type for the scan results.
         /// </summary>
         private Type activeType;
 
@@ -55,69 +58,56 @@
         private UInt64 addressCount;
 
         /// <summary>
+        /// The total number of bytes in memory.
+        /// </summary>
+        private UInt64 byteCount;
+
+        /// <summary>
         /// The addresses on the current page.
         /// </summary>
-        private ObservableCollection<PointerItem> addresses;
-
-        /// <summary>
-        /// The list of discovered pointers.
-        /// </summary>
-        private IDiscoveredPointers discoveredPointers;
-
-        /// <summary>
-        /// The pointer read interval in milliseconds
-        /// </summary>
-        private const Int32 PointerReadIntervalMs = 1600;
+        private ObservableCollection<ScanResult> addresses;
 
         /// <summary>
         /// The selected scan results.
         /// </summary>
-        private IEnumerable<PointerItem> selectedScanResults;
+        private IEnumerable<ScanResult> selectedScanResults;
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="PointerScanResultsViewModel" /> class from being created.
+        /// Prevents a default instance of the <see cref="ScanResultsViewModel" /> class from being created.
         /// </summary>
-        private PointerScanResultsViewModel() : base("Pointer Scan Results")
+        private ScanResultsViewModel() : base("Scan Results")
         {
-            this.ContentId = PointerScanResultsViewModel.ToolContentId;
+            this.ContentId = ScanResultsViewModel.ToolContentId;
+            this.ObserverLock = new Object();
 
-            this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<PointerItem>(), (selectedItems) => true);
-            this.AddScanResultCommand = new RelayCommand<PointerItem>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
-            this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
             this.ChangeTypeCommand = new RelayCommand<Type>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
+            this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<ScanResult>(), (selectedItems) => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
             this.PreviousPageCommand = new RelayCommand(() => Task.Run(() => this.PreviousPage()), () => true);
             this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
-            this.AddAddressCommand = new RelayCommand<PointerItem>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
+            this.AddScanResultCommand = new RelayCommand<ScanResult>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
+            this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
 
+            this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = typeof(Int32);
-            this.addresses = new ObservableCollection<PointerItem>();
+            this.addresses = new ObservableCollection<ScanResult>();
 
+            SnapshotManager.GetInstance().Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
             this.UpdateScanResults();
         }
 
         /// <summary>
-        /// Gets or sets the command to select scan results.
-        /// </summary>
-        public ICommand SelectScanResultsCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to add a scan result to the project explorer.
-        /// </summary>
-        public ICommand AddScanResultCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to add all selected scan results to the project explorer.
-        /// </summary>
-        public ICommand AddScanResultsCommand { get; private set; }
-
-        /// <summary>
         /// Gets the command to change the active data type.
         /// </summary>
         public ICommand ChangeTypeCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the command to select scan results.
+        /// </summary>
+        public ICommand SelectScanResultsCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to go to the first page.
@@ -140,14 +130,19 @@
         public ICommand NextPageCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select a target process.
+        /// Gets the command to add a scan result to the project explorer.
         /// </summary>
-        public ICommand AddAddressCommand { get; private set; }
+        public ICommand AddScanResultCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add all selected scan results to the project explorer.
+        /// </summary>
+        public ICommand AddScanResultsCommand { get; private set; }
 
         /// <summary>
         /// Gets or sets the selected scan results.
         /// </summary>
-        public IEnumerable<PointerItem> SelectedScanResults
+        public IEnumerable<ScanResult> SelectedScanResults
         {
             get
             {
@@ -160,6 +155,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the active scan results data type.
+        /// </summary>
         public Type ActiveType
         {
             get
@@ -170,12 +168,16 @@
             set
             {
                 this.activeType = value;
+                this.NotifyObservers();
                 this.RaisePropertyChanged(nameof(this.ActiveType));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeName));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeImage));
             }
         }
 
+        /// <summary>
+        /// Gets the name associated with the active data type.
+        /// </summary>
         public String ActiveTypeName
         {
             get
@@ -184,6 +186,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the image associated with the active data type.
+        /// </summary>
         public BitmapSource ActiveTypeImage
         {
             get
@@ -229,7 +234,7 @@
             set
             {
                 this.currentPage = value;
-                this.LoadPointerScanResults();
+                this.LoadScanResults();
                 this.RaisePropertyChanged(nameof(this.CurrentPage));
             }
         }
@@ -241,7 +246,24 @@
         {
             get
             {
-                return this.ResultCount / PointerScanResultsViewModel.PageSize;
+                return this.ResultCount == 0 ? 0 : (this.ResultCount - 1) / ScanResultsViewModel.PageSize;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the total number of bytes found.
+        /// </summary>
+        public UInt64 ByteCount
+        {
+            get
+            {
+                return this.byteCount;
+            }
+
+            set
+            {
+                this.byteCount = value;
+                this.RaisePropertyChanged(nameof(this.ByteCount));
             }
         }
 
@@ -264,9 +286,9 @@
         }
 
         /// <summary>
-        /// Gets or sets the address elements.
+        /// Gets the address elements.
         /// </summary>
-        public ObservableCollection<PointerItem> Addresses
+        public ObservableCollection<ScanResult> Addresses
         {
             get
             {
@@ -276,86 +298,100 @@
             set
             {
                 this.addresses = value;
-
                 this.RaisePropertyChanged(nameof(this.Addresses));
             }
         }
 
         /// <summary>
-        /// Gets or sets the list of discovered pointers.
+        /// Gets or sets the lock for accessing observers.
         /// </summary>
-        public IDiscoveredPointers DiscoveredPointers
-        {
-            get
-            {
-                return this.discoveredPointers;
-            }
-
-            set
-            {
-                this.discoveredPointers = value;
-
-                this.ResultCount = discoveredPointers == null ? 0 : discoveredPointers.Count;
-                this.CurrentPage = 0;
-
-                this.RaisePropertyChanged(nameof(this.DiscoveredPointers));
-            }
-        }
+        private Object ObserverLock { get; set; }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="PointerScanResultsViewModel"/> class.
+        /// Gets or sets objects observing changes in the scan results data type.
+        /// </summary>
+        private List<IResultDataTypeObserver> ScanResultsObservers { get; set; }
+
+        /// <summary>
+        /// Gets a singleton instance of the <see cref="ScanResultsViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
-        public static PointerScanResultsViewModel GetInstance()
+        public static ScanResultsViewModel GetInstance()
         {
-            return PointerScanResultsViewModel.pointerScanResultsViewModelInstance.Value;
+            return ScanResultsViewModel.scanResultsViewModelInstance.Value;
         }
 
         /// <summary>
-        /// Adds the given scan result to the project explorer.
+        /// Subscribes the given object to changes in the scan results data type.
         /// </summary>
-        /// <param name="scanResult">The scan result to add to the project explorer.</param>
-        private void AddScanResult(PointerItem scanResult)
+        /// <param name="snapshotObserver">The object to observe scan results data type changes.</param>
+        public void Subscribe(IResultDataTypeObserver snapshotObserver)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResult);
-        }
-
-        /// <summary>
-        /// Adds the given scan results to the project explorer.
-        /// </summary>
-        /// <param name="scanResults">The scan results to add to the project explorer.</param>
-        private void AddScanResults(IEnumerable<PointerItem> scanResults)
-        {
-            if (scanResults == null)
+            lock (this.ObserverLock)
             {
-                return;
+                if (!this.ScanResultsObservers.Contains(snapshotObserver))
+                {
+                    this.ScanResultsObservers.Add(snapshotObserver);
+                    snapshotObserver.Update(this.ActiveType);
+                }
             }
+        }
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResults.ToArray());
+        /// <summary>
+        /// Unsubscribes the given object from changes in the scan results data type.
+        /// </summary>
+        /// <param name="snapshotObserver">The object to observe scan results data type changes.</param>
+        public void Unsubscribe(IResultDataTypeObserver snapshotObserver)
+        {
+            lock (this.ObserverLock)
+            {
+                if (this.ScanResultsObservers.Contains(snapshotObserver))
+                {
+                    this.ScanResultsObservers.Remove(snapshotObserver);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Recieves an update of the active snapshot.
+        /// </summary>
+        /// <param name="snapshot">The active snapshot.</param>
+        public void Update(Snapshot snapshot)
+        {
+            this.ResultCount = snapshot == null ? 0 : snapshot.ElementCount;
+            this.ByteCount = snapshot == null ? 0 : snapshot.ByteCount;
+            this.CurrentPage = 0;
         }
 
         /// <summary>
         /// Loads the results for the current page.
         /// </summary>
-        private void LoadPointerScanResults()
+        private void LoadScanResults()
         {
-            IList<PointerItem> newAddresses = new List<PointerItem>();
+            Snapshot snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot);
+            IList<ScanResult> newAddresses = new List<ScanResult>();
 
-            UInt64 count = this.DiscoveredPointers.Count;
-            UInt64 startIndex = Math.Min(PointerScanResultsViewModel.PageSize * this.CurrentPage, count);
-            UInt64 endIndex = Math.Min((PointerScanResultsViewModel.PageSize * this.CurrentPage) + PointerScanResultsViewModel.PageSize, count);
-
-            for (UInt64 index = startIndex; index < endIndex; index++)
+            if (snapshot != null)
             {
-                PointerItem pointerItem = this.DiscoveredPointers[index];
+                UInt64 startIndex = Math.Min(ScanResultsViewModel.PageSize * this.CurrentPage, snapshot.ElementCount);
+                UInt64 endIndex = Math.Min((ScanResultsViewModel.PageSize * this.CurrentPage) + ScanResultsViewModel.PageSize, snapshot.ElementCount);
 
-                if (pointerItem != null)
+                for (UInt64 index = startIndex; index < endIndex; index++)
                 {
-                    newAddresses.Add(pointerItem);
+                    SnapshotElementIterator element = snapshot[index];
+
+                    String label = element.GetElementLabel() != null ? element.GetElementLabel().ToString() : String.Empty;
+                    String currentValue = element.HasCurrentValue() ? element.GetCurrentValue().ToString() : String.Empty;
+                    String previousValue = element.HasPreviousValue() ? element.GetPreviousValue().ToString() : String.Empty;
+
+                    String moduleName;
+                    UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);
+
+                    newAddresses.Add(new ScanResult(moduleName, address.ToIntPtr(), this.ActiveType, currentValue, previousValue, label));
                 }
             }
 
-            this.Addresses = new ObservableCollection<PointerItem>(newAddresses);
+            this.Addresses = new ObservableCollection<ScanResult>(newAddresses);
 
             // Ensure results are visible
             this.IsVisible = true;
@@ -383,14 +419,18 @@
                     // We recreate the entire collection to force a re-render.
                     if (hasUpdate)
                     {
-                        this.Addresses = new ObservableCollection<PointerItem>(this.Addresses);
+                        this.Addresses = new ObservableCollection<ScanResult>(this.Addresses);
                     }
 
-                    Thread.Sleep(PointerScanResultsViewModel.PointerReadIntervalMs);
+                    Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);
                 }
             });
         }
 
+        /// <summary>
+        /// Changes the active scan results type.
+        /// </summary>
+        /// <param name="newType">The new scan results type.</param>
         private void ChangeType(Type newType)
         {
             this.ActiveType = newType;
@@ -417,7 +457,7 @@
         /// </summary>
         private void PreviousPage()
         {
-            this.CurrentPage = this.CurrentPage == 0 ? this.CurrentPage : this.CurrentPage - 1;
+            this.CurrentPage = (this.CurrentPage - 1).Clamp(0UL, this.PageCount);
         }
 
         /// <summary>
@@ -425,56 +465,44 @@
         /// </summary>
         private void NextPage()
         {
-            this.CurrentPage = this.CurrentPage >= this.PageCount ? this.CurrentPage : this.CurrentPage + 1;
+            this.CurrentPage = (this.CurrentPage + 1).Clamp(0UL, this.PageCount);
         }
 
         /// <summary>
-        /// Adds the given scan result address to the project explorer.
+        /// Adds the given scan result to the project explorer.
         /// </summary>
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
-        private void AddAddress(PointerItem scanResult)
+        private void AddScanResult(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResult);
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult);
         }
 
-
-        private void AddSelectionToTable()
+        /// <summary>
+        /// Adds the given scan results to the project explorer.
+        /// </summary>
+        /// <param name="scanResults">The scan results to add to the project explorer.</param>
+        private void AddScanResults(IEnumerable<ScanResult> scanResults)
         {
-            /*
-            if (minIndex < 0)
+            if (scanResults == null)
             {
-                minIndex = 0;
+                return;
             }
 
-            if (maxIndex > this.AcceptedPointers.Count)
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResults?.ToArray());
+        }
+
+        /// <summary>
+        /// Notify all observing objects of an active type change.
+        /// </summary>
+        private void NotifyObservers()
+        {
+            lock (this.ObserverLock)
             {
-                maxIndex = this.AcceptedPointers.Count;
-            }
-
-            Int32 count = 0;
-
-            for (Int32 index = minIndex; index <= maxIndex; index++)
-            {
-                String pointerValue = String.Empty;
-                this.IndexValueMap.TryGetValue(index, out pointerValue);
-
-                PointerItem newPointer = new PointerItem(
-                    baseAddress: this.AcceptedPointers[index].Item1,
-                    elementType: this.ElementType,
-                    description: "New Pointer",
-                    moduleName: String.Empty,
-                    pointerOffsets: this.AcceptedPointers[index].Item2,
-                    isValueHex: false,
-                    value: pointerValue
-                );
-
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: newPointer);
-
-                if (++count >= PointerScanner.MaxAdd)
+                foreach (IResultDataTypeObserver observer in this.ScanResultsObservers)
                 {
-                    break;
+                    observer.Update(this.ActiveType);
                 }
-            }*/
+            }
         }
     }
     //// End class

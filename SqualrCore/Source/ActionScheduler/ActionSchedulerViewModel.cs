@@ -47,6 +47,9 @@
             this.Update();
         }
 
+        /// <summary>
+        /// Gets a command to cancel a running task.
+        /// </summary>
         public ICommand CancelTaskCommand { get; private set; }
 
         /// <summary>
@@ -61,11 +64,6 @@
         }
 
         /// <summary>
-        /// Gets or sets a lock for access to scheduled tasks.
-        /// </summary>
-        private Object AccessLock { get; set; }
-
-        /// <summary>
         /// Gets or sets actions being scheduled.
         /// </summary>
         public LinkedList<ScheduledTask> Actions { get; set; }
@@ -74,6 +72,11 @@
         /// Gets or sets the next action being scheduled.
         /// </summary>
         private LinkedListNode<ScheduledTask> NextAction { get; set; }
+
+        /// <summary>
+        /// Gets or sets a lock for access to scheduled tasks.
+        /// </summary>
+        private Object AccessLock { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ActionSchedulerViewModel"/> class.
@@ -88,9 +91,6 @@
         /// Schedules a given task.
         /// </summary>
         /// <param name="scheduledTask">The task to be scheduled.</param>
-        /// <param name="startAction">The start callback function.</param>
-        /// <param name="updateAction">The update callback function.</param>
-        /// <param name="endAction">The end callback function.</param>
         public void ScheduleAction(ScheduledTask scheduledTask)
         {
             lock (this.AccessLock)

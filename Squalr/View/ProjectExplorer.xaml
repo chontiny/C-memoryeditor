@@ -27,8 +27,7 @@
             x:Key="RightClickMenu"
             Background="{StaticResource SqualrColorGray68}"
             BorderBrush="{StaticResource SqualrColorWhite}"
-            Foreground="{StaticResource SqualrColorWhite}"
-            Style="{StaticResource DropDownContextMenu}">
+            Foreground="{StaticResource SqualrColorWhite}">
             <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Add New Address" />
             <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
             <Separator />
@@ -40,8 +39,7 @@
             x:Key="ProjectItemRightClickMenu"
             Background="{StaticResource SqualrColorGray68}"
             BorderBrush="{StaticResource SqualrColorWhite}"
-            Foreground="{StaticResource SqualrColorWhite}"
-            Style="{StaticResource DropDownContextMenu}">
+            Foreground="{StaticResource SqualrColorWhite}">
             <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
             <Separator />
             <MenuItem Command="{Binding ProjectExplorerViewModel.DeleteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Delete Selection" />
@@ -62,10 +60,7 @@
                 Background="{StaticResource SqualrColorGray68}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 Foreground="{StaticResource SqualrColorWhite}">
-                <MenuItem
-                    BorderThickness="0"
-                    Style="{StaticResource DropDownAutoClose}"
-                    ToolTip="Add New Item">
+                <MenuItem BorderThickness="0" ToolTip="Add New Item">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <Image
@@ -87,9 +82,8 @@
                         </StackPanel>
                     </MenuItem.Header>
                     <MenuItem
-                        Background="{StaticResource SqualrColorGray68}"
-                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding AddNewAddressItemCommand}"
+                        Style="{Binding}"
                         ToolTip="Add New Address">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -105,9 +99,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource SqualrColorGray68}"
-                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding AddNewScriptItemCommand}"
+                        Style="{Binding}"
                         ToolTip="Add New Script">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
@@ -123,9 +116,8 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <MenuItem
-                        Background="{StaticResource SqualrColorGray68}"
-                        BorderBrush="{StaticResource SqualrColorGray68}"
                         Command="{Binding AddNewInstructionItemCommand}"
+                        Style="{Binding}"
                         ToolTip="Add New Instruction">
                         <MenuItem.Header>
                             <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
