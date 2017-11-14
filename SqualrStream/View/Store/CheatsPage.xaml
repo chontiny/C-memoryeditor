@@ -200,7 +200,7 @@
 
             <Menu
                 Grid.Row="2"
-                Background="{StaticResource SqualrColorGray68}"
+                Background="{StaticResource SqualrColorGray27}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                 Foreground="{StaticResource SqualrColorWhite}">

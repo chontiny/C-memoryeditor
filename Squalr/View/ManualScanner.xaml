@@ -25,11 +25,11 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <WrapPanel Background="{StaticResource SqualrColorGray68}">
+            <WrapPanel Background="{StaticResource SqualrColorGray27}">
                 <Menu
                     Grid.Row="0"
                     Padding="4"
-                    Background="{StaticResource SqualrColorGray68}"
+                    Background="{StaticResource SqualrColorGray27}"
                     BorderBrush="{StaticResource SqualrColorWhite}"
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                     Foreground="{StaticResource SqualrColorWhite}">

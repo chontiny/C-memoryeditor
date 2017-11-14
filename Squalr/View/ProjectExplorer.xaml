@@ -25,7 +25,7 @@
         <converters:ProjectItemValueConverter x:Key="ProjectItemValueConverter" />
         <ContextMenu
             x:Key="RightClickMenu"
-            Background="{StaticResource SqualrColorGray68}"
+            Background="{StaticResource SqualrColorGray27}"
             BorderBrush="{StaticResource SqualrColorWhite}"
             Foreground="{StaticResource SqualrColorWhite}">
             <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Add New Address" />
@@ -37,7 +37,7 @@
         </ContextMenu>
         <ContextMenu
             x:Key="ProjectItemRightClickMenu"
-            Background="{StaticResource SqualrColorGray68}"
+            Background="{StaticResource SqualrColorGray27}"
             BorderBrush="{StaticResource SqualrColorWhite}"
             Foreground="{StaticResource SqualrColorWhite}">
             <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
@@ -54,10 +54,10 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
+        <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray27}">
             <Menu
                 Padding="4"
-                Background="{StaticResource SqualrColorGray68}"
+                Background="{StaticResource SqualrColorGray27}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 Foreground="{StaticResource SqualrColorWhite}">
                 <MenuItem BorderThickness="0" ToolTip="Add New Item">

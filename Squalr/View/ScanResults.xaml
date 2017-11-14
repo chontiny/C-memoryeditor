@@ -29,7 +29,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Background="{StaticResource SqualrColorGray68}">
+        <Border Grid.Row="0" Background="{StaticResource SqualrColorGray27}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -38,7 +38,7 @@
                 <Menu
                     Grid.Column="0"
                     Padding="4"
-                    Background="{StaticResource SqualrColorGray68}"
+                    Background="{StaticResource SqualrColorGray27}"
                     BorderBrush="{StaticResource SqualrColorWhite}"
                     Foreground="{StaticResource SqualrColorWhite}">
                     <MenuItem Command="{Binding SnapshotManagerViewModel.ClearSnapshotsCommand, Source={StaticResource ViewModelLocator}}" ToolTip="New Scan">
@@ -280,7 +280,7 @@
                 <Menu
                     Grid.Column="1"
                     Padding="4"
-                    Background="{StaticResource SqualrColorGray68}"
+                    Background="{StaticResource SqualrColorGray27}"
                     BorderBrush="{StaticResource SqualrColorWhite}"
                     Foreground="{StaticResource SqualrColorWhite}">
                     <MenuItem VerticalAlignment="Center" Command="{Binding AddScanResultsCommand}">
@@ -405,7 +405,7 @@
         <Border
             Grid.Row="2"
             Padding="8,4,8,4"
-            Background="{StaticResource SqualrColorGray68}">
+            Background="{StaticResource SqualrColorGray27}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -469,7 +469,7 @@
         <Border
             Grid.Row="3"
             Padding="8,4,8,4"
-            Background="{StaticResource SqualrColorGray68}">
+            Background="{StaticResource SqualrColorGray27}">
             <WrapPanel HorizontalAlignment="Center">
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ByteCount, Converter={StaticResource ValueToMetricSize}}" />
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" - (Count: " />
