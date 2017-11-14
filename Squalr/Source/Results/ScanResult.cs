@@ -41,6 +41,7 @@
         /// <summary>
         /// Gets or sets the previous value of the scan result.
         /// </summary>
+        [Browsable(false)]
         public String PreviousValue
         {
             get
@@ -58,6 +59,7 @@
         /// <summary>
         /// Gets or sets the label of the scan result.
         /// </summary>
+        [Browsable(false)]
         public String Label
         {
             get

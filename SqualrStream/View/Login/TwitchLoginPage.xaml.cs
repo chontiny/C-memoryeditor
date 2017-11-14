@@ -1,4 +1,4 @@
-﻿namespace SqualrStream.View.Browse.Login
+﻿namespace SqualrStream.View.Login
 {
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Output;

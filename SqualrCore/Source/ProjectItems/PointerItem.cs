@@ -187,6 +187,7 @@
         /// <summary>
         /// Gets the address specifier for this address. If a static address, this is 'ModuleName + offset', otherwise this is an address string.
         /// </summary>
+        [Browsable(false)]
         public String AddressSpecifier
         {
             get
@@ -216,6 +217,7 @@
         /// <summary>
         /// Gets a value indicating if this pointer/address is static.
         /// </summary>
+        [Browsable(false)]
         public Boolean IsStatic
         {
             get
@@ -227,6 +229,7 @@
         /// <summary>
         /// Gets a value indicating if this object is a true pointer and not just an address.
         /// </summary>
+        [Browsable(false)]
         public Boolean IsPointer
         {
             get

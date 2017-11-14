@@ -5,7 +5,7 @@
     using SqualrStream.Source.Api;
     using SqualrStream.Source.Api.Models;
     using SqualrStream.Source.Navigation;
-    using SqualrStream.View.Browse.Login;
+    using SqualrStream.View.Login;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using System;
