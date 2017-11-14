@@ -6,9 +6,12 @@
     using ICSharpCode.AvalonEdit.Highlighting;
     using ICSharpCode.AvalonEdit.Highlighting.Xshd;
     using Source.Editors.ScriptEditor;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Reflection;
     using System.Windows;
     using System.Windows.Input;
@@ -23,7 +26,7 @@
         /// <summary>
         /// The resource file for C# script highlighting rules.
         /// </summary>
-        private const String ScriptSyntaxHighlightingResource = "SqualrCore.Content.CSharp.xshd";
+        private const String ScriptSyntaxHighlightingResource = "CSharp.xshd";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptEditor" /> class.
@@ -78,7 +81,16 @@
         /// </summary>
         private void LoadHightLightRules()
         {
-            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(ScriptEditor.ScriptSyntaxHighlightingResource))
+            String highlightingResource = Assembly.GetExecutingAssembly().GetManifestResourceNames()
+                .SingleOrDefault(resourceName => resourceName.EndsWith(ScriptEditor.ScriptSyntaxHighlightingResource));
+
+            if (highlightingResource.IsNullOrEmpty())
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to load code highlighting rules. Scripts will be affected");
+                return;
+            }
+
+            using (Stream stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(highlightingResource))
             {
                 if (stream != null)
                 {

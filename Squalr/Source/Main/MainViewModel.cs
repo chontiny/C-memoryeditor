@@ -21,7 +21,7 @@
         /// <summary>
         /// Default layout file for browsing cheats.
         /// </summary>
-        private const String DefaultLayoutResource = "Squalr.Content.DefaultLayout.xml";
+        private const String DefaultLayoutResource = "DefaultLayout.xml";
 
         /// <summary>
         /// The save file for the docking layout.
