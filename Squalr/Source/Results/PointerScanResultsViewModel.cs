@@ -3,7 +3,6 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.Scanners.Pointers.Structures;
-    using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
@@ -16,7 +15,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using System.Windows.Media.Imaging;
 
     /// <summary>
     /// View model for the pointer scan results.
@@ -169,6 +167,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the active scan results data type.
+        /// </summary>
         public Type ActiveType
         {
             get
@@ -186,47 +187,17 @@
                 this.NotifyObservers();
                 this.RaisePropertyChanged(nameof(this.ActiveType));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeName));
-                this.RaisePropertyChanged(nameof(this.ActiveTypeImage));
             }
         }
 
+        /// <summary>
+        /// Gets the name associated with the active data type.
+        /// </summary>
         public String ActiveTypeName
         {
             get
             {
                 return Conversions.TypeToName(this.ActiveType);
-            }
-        }
-
-        public BitmapSource ActiveTypeImage
-        {
-            get
-            {
-                switch (Type.GetTypeCode(this.ActiveType))
-                {
-                    case TypeCode.SByte:
-                        return Images.BlueBlocks1;
-                    case TypeCode.Int16:
-                        return Images.BlueBlocks2;
-                    case TypeCode.Int32:
-                        return Images.BlueBlocks4;
-                    case TypeCode.Int64:
-                        return Images.BlueBlocks8;
-                    case TypeCode.Byte:
-                        return Images.PurpleBlocks1;
-                    case TypeCode.UInt16:
-                        return Images.PurpleBlocks2;
-                    case TypeCode.UInt32:
-                        return Images.PurpleBlocks4;
-                    case TypeCode.UInt64:
-                        return Images.PurpleBlocks8;
-                    case TypeCode.Single:
-                        return Images.OrangeBlocks4;
-                    case TypeCode.Double:
-                        return Images.OrangeBlocks8;
-                    default:
-                        return null;
-                }
             }
         }
 
@@ -245,6 +216,54 @@
                 this.currentPage = value;
                 this.LoadPointerScanResults();
                 this.RaisePropertyChanged(nameof(this.CurrentPage));
+                this.RaisePropertyChanged(nameof(this.CanNavigateFirst));
+                this.RaisePropertyChanged(nameof(this.CanNavigatePrevious));
+                this.RaisePropertyChanged(nameof(this.CanNavigateNext));
+                this.RaisePropertyChanged(nameof(this.CanNavigateLast));
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether first page navigation is available.
+        /// </summary>
+        public Boolean CanNavigateFirst
+        {
+            get
+            {
+                return this.PageCount > 0 && this.CurrentPage > 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether next page navigation is available.
+        /// </summary>
+        public Boolean CanNavigateNext
+        {
+            get
+            {
+                return this.CurrentPage < this.PageCount;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether previous page navigation is available.
+        /// </summary>
+        public Boolean CanNavigatePrevious
+        {
+            get
+            {
+                return this.CurrentPage > 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether last page navigation is available.
+        /// </summary>
+        public Boolean CanNavigateLast
+        {
+            get
+            {
+                return this.PageCount > 0 && this.CurrentPage != this.PageCount;
             }
         }
 

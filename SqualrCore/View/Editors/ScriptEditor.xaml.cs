@@ -23,7 +23,7 @@
         /// <summary>
         /// The resource file for C# script highlighting rules.
         /// </summary>
-        private const String ScriptSyntaxHighlightingResource = "Squalr.Content.CSharp.xshd";
+        private const String ScriptSyntaxHighlightingResource = "SqualrCore.Content.CSharp.xshd";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptEditor" /> class.

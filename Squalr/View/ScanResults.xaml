@@ -22,6 +22,11 @@
         <Grid.Resources>
             <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
             <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
+            <converters:BooleanToVisibilityConverter
+                x:Key="BooleanToHiddenConverter"
+                False="Hidden"
+                True="Visible" />
+            <converters:DataTypeToIconConverter x:Key="DataTypeToIconConverter" />
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -56,7 +61,7 @@
                                 <Image
                                     Width="16"
                                     Height="16"
-                                    Source="{Binding ActiveTypeImage}" />
+                                    Source="{Binding ActiveType, Converter={StaticResource DataTypeToIconConverter}}" />
                                 <TextBlock
                                     Padding="4,0,0,0"
                                     VerticalAlignment="Center"
@@ -86,7 +91,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.BlueBlocks1}" />
+                                        Source="{Binding ConverterParameter={x:Type system:SByte}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -105,7 +110,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.BlueBlocks2}" />
+                                        Source="{Binding ConverterParameter={x:Type system:Int16}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -124,7 +129,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.BlueBlocks4}" />
+                                        Source="{Binding ConverterParameter={x:Type system:Int32}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -143,7 +148,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.BlueBlocks8}" />
+                                        Source="{Binding ConverterParameter={x:Type system:Int64}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -162,7 +167,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.PurpleBlocks1}" />
+                                        Source="{Binding ConverterParameter={x:Type system:Byte}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -181,7 +186,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.PurpleBlocks2}" />
+                                        Source="{Binding ConverterParameter={x:Type system:UInt16}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -200,7 +205,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.PurpleBlocks4}" />
+                                        Source="{Binding ConverterParameter={x:Type system:UInt32}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -219,7 +224,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.PurpleBlocks8}" />
+                                        Source="{Binding ConverterParameter={x:Type system:UInt64}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -238,7 +243,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.OrangeBlocks4}" />
+                                        Source="{Binding ConverterParameter={x:Type system:Single}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -257,7 +262,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{x:Static content:Images.OrangeBlocks8}" />
+                                        Source="{Binding ConverterParameter={x:Type system:Double}, Converter={StaticResource DataTypeToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Background="Transparent"
@@ -404,7 +409,6 @@
         </DataGrid>
         <Border
             Grid.Row="2"
-            Padding="8,4,8,4"
             Background="{StaticResource SqualrColorGray27}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -416,7 +420,10 @@
                     Grid.Column="0"
                     HorizontalAlignment="Right"
                     Background="Transparent">
-                    <MenuItem Command="{Binding FirstPageCommand}" ToolTip="First Page">
+                    <MenuItem
+                        Command="{Binding FirstPageCommand}"
+                        ToolTip="First Page"
+                        Visibility="{Binding CanNavigateFirst, Converter={StaticResource BooleanToHiddenConverter}}">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -425,7 +432,10 @@
                                 ToolTip="First Page" />
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Command="{Binding PreviousPageCommand}" ToolTip="Previous Page">
+                    <MenuItem
+                        Command="{Binding PreviousPageCommand}"
+                        ToolTip="Previous Page"
+                        Visibility="{Binding CanNavigatePrevious, Converter={StaticResource BooleanToHiddenConverter}}">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -445,7 +455,10 @@
                     Grid.Column="2"
                     HorizontalAlignment="Left"
                     Background="Transparent">
-                    <MenuItem Command="{Binding NextPageCommand}" ToolTip="Next Page">
+                    <MenuItem
+                        Command="{Binding NextPageCommand}"
+                        ToolTip="Next Page"
+                        Visibility="{Binding CanNavigateNext, Converter={StaticResource BooleanToHiddenConverter}}">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -454,7 +467,10 @@
                                 ToolTip="Next Page" />
                         </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Command="{Binding LastPageCommand}" ToolTip="Last Page">
+                    <MenuItem
+                        Command="{Binding LastPageCommand}"
+                        ToolTip="Last Page"
+                        Visibility="{Binding CanNavigateLast, Converter={StaticResource BooleanToHiddenConverter}}">
                         <MenuItem.Header>
                             <Image
                                 Width="16"
@@ -468,7 +484,6 @@
         </Border>
         <Border
             Grid.Row="3"
-            Padding="8,4,8,4"
             Background="{StaticResource SqualrColorGray27}">
             <WrapPanel HorizontalAlignment="Center">
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ByteCount, Converter={StaticResource ValueToMetricSize}}" />
