@@ -14,11 +14,11 @@ You can find more documentation on the [Wiki](https://github.com/Squalr/Squalr/w
 Reference | Description 
 --- | ---
 [XAML Formatter](https://marketplace.visualstudio.com/items?itemName=TeamXavalon.XAMLStyler) | XAML should be run through this formatter
-[StyleCop](https://github.com/StyleCop/StyleCop) | StyleCop to enforce code conventions. Included as NuGet. Note that we deviate on some standard conventions. We use the full type name for variables (ex Int32 rather than int). The reasoning is that this is a memory editor, so we prefer to use the type name that is most explicit to avoid coding mistakes.
+[StyleCop](https://marketplace.visualstudio.com/items?itemName=ChrisDahlberg.StyleCop) | StyleCop to enforce code conventions. Note that we deviate on some standard conventions. We use the full type name for variables (ex Int32 rather than int). The reasoning is that this is a memory editor, so we prefer to use the type name that is most explicit to avoid coding mistakes.
 
 ## Build
 
-In order to compile Squalr, you should only need **Visual Studio 2017**. Here are the important 3rd party libraries that this project uses:
+In order to compile Squalr, you should only need **Visual Studio 2017**. This should be up to date, we frequently update Squalr to use the latest version of the .NET framework. Here are the important 3rd party libraries that this project uses:
 
 Library | Description 
 --- | ---
@@ -38,9 +38,10 @@ Intending to Use (Eventually):
 Library | Description | Purpose
 --- | --- | ---
 [AsmJit](https://github.com/hypeartist/AsmJit) | x86/x64 Assembler | Replace FASM, improve scripting drastically
-[AsmJit](https://github.com/asmjit/asmjit) | x86/x64 Assembler | Original C++ project. May port/interop this if the above version does not work.
+[AsmJit](https://github.com/asmjit/asmjit) | x86/x64 Assembler | Original C++ project. May port/interop this if the above version does not work (Neither may fully work, and something custom may be needed)
 [WpfHexEditorControl](https://github.com/abbaye/WpfHexEditorControl) | Hex Editor | Hex editor / Memory Hex Editor
-[Ninject](https://github.com/ninject/Ninject) | Dependency Injection Framework | Fixing my abuse of singletons
+[Ninject](https://github.com/ninject/Ninject) | Dependency Injection Framework | (Option #1) Fixing my abuse of singletons
+[AutoFac](https://github.com/autofac/Autofac) | Dependency Injection Framework | (Option #2) Fixing my abuse of singletons
 [OpenTK](https://github.com/opentk/opentk) | OpenGL Wrapper | Graphics Injection
 [SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper | Graphics Injection (Currently using SharpDX just for input)
 [SharpPCap](https://github.com/chmorgan/sharppcap) | Packet Capture | Packet Editor
