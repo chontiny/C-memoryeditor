@@ -71,7 +71,7 @@
 
         private void StopScan()
         {
-            this.ChangeCounterModel.Cancel();
+            this.ChangeCounterModel.Stop();
         }
     }
     //// End class

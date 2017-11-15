@@ -135,7 +135,7 @@
         {
             get
             {
-                return !this.IsCanceled && !this.IsBusy && this.HasStarted && (!this.HasUpdated || this.IsRepeated);
+                return !this.IsCanceled && this.HasStarted && !this.HasUpdated && !this.IsBusy;
             }
         }
 
@@ -146,7 +146,7 @@
         {
             get
             {
-                return !this.IsBusy && this.HasUpdated;
+                return this.HasUpdated && !this.IsBusy;
             }
         }
 
@@ -255,7 +255,11 @@
         {
             lock (this.AccessLock)
             {
-                this.HasUpdated = true;
+                if (!this.IsRepeated)
+                {
+                    this.HasUpdated = true;
+                }
+
                 this.IsBusy = true;
             }
         }
@@ -287,6 +291,17 @@
         public void Start()
         {
             ActionSchedulerViewModel.GetInstance().ScheduleAction(this);
+        }
+
+        /// <summary>
+        /// Ends the repeated task update loop if this task is a repeating task.
+        /// </summary>
+        public void EndUpdateLoop()
+        {
+            if (this.IsRepeated)
+            {
+                this.HasUpdated = true;
+            }
         }
 
         /// <summary>

@@ -114,8 +114,8 @@
                 }
             }
 
-            Object lowerValue = this.Histogram.Keys[this.LowerIndex];
-            Object upperValue = this.Histogram.Keys[this.UpperIndex];
+            dynamic lowerValue = this.Histogram.Keys[this.LowerIndex];
+            dynamic upperValue = this.Histogram.Keys[this.UpperIndex];
 
             lock (this.SnapshotLock)
             {
@@ -227,7 +227,6 @@
 
             this.Histogram = new SortedList<Object, Int64>(histogram);
             this.UpdateHistogram();
-            this.Cancel();
         }
 
         protected override void OnEnd()

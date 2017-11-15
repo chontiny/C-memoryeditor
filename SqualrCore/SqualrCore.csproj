@@ -399,14 +399,6 @@
       <Project>{2dac1a31-ef28-499a-b67a-963b5343d778}</Project>
       <Name>Fasm.NET</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LiveCharts\Core\LiveCharts.csproj">
-      <Project>{d447642c-a85f-4ab0-96d9-c66cff91aada}</Project>
-      <Name>LiveCharts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LiveCharts\WpfView\WpfCharts.csproj">
-      <Project>{4d253423-ae05-47f6-a59d-9162ec0bb1f2}</Project>
-      <Name>WpfCharts</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Microsoft.Diagnostics.Runtime\Microsoft.Diagnostics.Runtime.csproj">
       <Project>{a82126ca-23aa-41f1-8586-a5938d44d0a7}</Project>
       <Name>Microsoft.Diagnostics.Runtime</Name>

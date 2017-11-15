@@ -197,6 +197,7 @@
         public void OpenLabelThresholder()
         {
             this.IsVisible = true;
+            this.IsSelected = true;
             this.IsActive = true;
         }
 
