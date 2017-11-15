@@ -4,9 +4,9 @@
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Editors.HotkeyEditor;
     using SqualrCore.Source.Engine.Input.HotKeys;
+    using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -51,11 +51,11 @@
 
         public ICommand RemoveHotkeyCommand { get; private set; }
 
-        public ObservableCollection<Hotkey> Hotkeys
+        public FullyObservableCollection<Hotkey> Hotkeys
         {
             get
             {
-                return new ObservableCollection<Hotkey>(this.InputCorrelatorModel.HotKeys == null ? new List<Hotkey>() : this.InputCorrelatorModel.HotKeys);
+                return new FullyObservableCollection<Hotkey>(this.InputCorrelatorModel.HotKeys == null ? new List<Hotkey>() : this.InputCorrelatorModel.HotKeys);
             }
         }
 

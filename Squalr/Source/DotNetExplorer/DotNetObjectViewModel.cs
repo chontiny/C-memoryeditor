@@ -3,7 +3,7 @@
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Engine.VirtualMachines.DotNet;
     using SqualrCore.Source.PropertyViewer;
-    using System.Collections.ObjectModel;
+    using SqualrCore.Source.Utils.DataStructures;
     using System.Linq;
     using System.Windows.Media.Imaging;
 
@@ -20,7 +20,7 @@
         /// <summary>
         /// The children view models under this object.
         /// </summary>
-        private ObservableCollection<TreeViewItemViewModel> children;
+        private FullyObservableCollection<TreeViewItemViewModel> children;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DotNetObjectViewModel" /> class.
@@ -30,14 +30,14 @@
         public DotNetObjectViewModel(DotNetObject dotNetObject, TreeViewItemViewModel parent = null) : base(parent)
         {
             this.dotNetObject = dotNetObject;
-            this.children = new ObservableCollection<TreeViewItemViewModel>(this.DotNetObject.Children.Select(x => new DotNetObjectViewModel(x)));
+            this.children = new FullyObservableCollection<TreeViewItemViewModel>(this.DotNetObject.Children.Select(x => new DotNetObjectViewModel(x)));
             this.RaisePropertyChanged(nameof(this.Children));
         }
 
         /// <summary>
         /// Gets the children view models under this object.
         /// </summary>
-        public override ObservableCollection<TreeViewItemViewModel> Children
+        public override FullyObservableCollection<TreeViewItemViewModel> Children
         {
             get
             {

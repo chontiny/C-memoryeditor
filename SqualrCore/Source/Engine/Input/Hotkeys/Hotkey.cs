@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.Engine.Input.HotKeys
 {
     using System;
+    using System.ComponentModel;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@
     [KnownType(typeof(KeyboardHotkey))]
     [KnownType(typeof(MouseHotkey))]
     [DataContract]
-    public abstract class Hotkey : IDisposable
+    public abstract class Hotkey : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Hotkey" /> class.
@@ -36,6 +37,8 @@
         /// Gets or sets the minimum delay between hotkey activations.
         /// </summary>
         protected Int32 ActivationDelay { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public abstract void Dispose();
 

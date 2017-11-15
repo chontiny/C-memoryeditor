@@ -6,12 +6,13 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
 
     /// <summary>
     /// Defines a snapshot of memory in an external process.
     /// </summary>
-    internal class Snapshot : IEnumerable
+    internal class Snapshot : INotifyPropertyChanged, IEnumerable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
@@ -136,6 +137,8 @@
                 return null;
             }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Sets the data type of the labels contained in this snapshot.

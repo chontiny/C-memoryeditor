@@ -3,9 +3,9 @@
     using Source.Controls;
     using Source.Editors.ScriptEditor;
     using Source.Mvvm;
+    using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Windows;
 
@@ -27,7 +27,7 @@
             this.OffsetHexDecBox.IsHex = true;
             this.OffsetHexDecBox.TextChanged += this.ValueUpdated;
             this.offsetHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.OffsetHexDecBox));
-            this.OffsetEditorViewModel.Offsets = offsets == null ? null : new ObservableCollection<PrimitiveBinding<Int32>>(offsets.Select(x => new PrimitiveBinding<Int32>(x)));
+            this.OffsetEditorViewModel.Offsets = offsets == null ? null : new FullyObservableCollection<PrimitiveBinding<Int32>>(offsets.Select(x => new PrimitiveBinding<Int32>(x)));
         }
 
         /// <summary>
