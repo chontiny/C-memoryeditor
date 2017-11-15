@@ -60,20 +60,20 @@
             Type dataType,
             String description = "New Address",
             Boolean isValueHex = false,
-            String value = null)
+            Object value = null)
             : base(description)
         {
             // Bypass setters to avoid running setter code
             this.dataType = dataType;
             this.isValueHex = isValueHex;
 
-            if (!this.isValueHex && CheckSyntax.CanParseValue(dataType, value))
+            if (!this.isValueHex && CheckSyntax.CanParseValue(dataType, value?.ToString()))
             {
-                this.addressValue = Conversions.ParsePrimitiveStringAsPrimitive(dataType, value);
+                this.addressValue = value;
             }
-            else if (this.isValueHex && CheckSyntax.CanParseHex(dataType, value))
+            else if (this.isValueHex && CheckSyntax.CanParseHex(dataType, value?.ToString()))
             {
-                this.addressValue = Conversions.ParseHexStringAsPrimitiveString(dataType, value);
+                this.addressValue = value;
             }
         }
 

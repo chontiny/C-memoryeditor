@@ -65,7 +65,7 @@
             String moduleName = null,
             IEnumerable<Int32> pointerOffsets = null,
             Boolean isValueHex = false,
-            String value = null)
+            Object value = null)
             : base(dataType, description, isValueHex, value)
         {
             // Bypass setters to avoid running setter code

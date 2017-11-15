@@ -12,7 +12,7 @@
         /// <summary>
         /// The previous value of the scan result.
         /// </summary>
-        private String previousValue;
+        private Object previousValue;
 
         /// <summary>
         /// The label of the scan result.
@@ -27,7 +27,7 @@
         /// <param name="value">The initial value of this result.</param>
         /// <param name="previousValue">The previous scan value.</param>
         /// <param name="label">The label of this result.</param>
-        public ScanResult(String moduleName, IntPtr baseAddress, Type dataType, String value, String previousValue, String label) : base(baseAddress, dataType, moduleName: moduleName, value: value)
+        public ScanResult(String moduleName, IntPtr baseAddress, Type dataType, Object value, Object previousValue, String label) : base(baseAddress, dataType, moduleName: moduleName, value: value)
         {
             this.PreviousValue = previousValue;
             this.Label = label;
@@ -42,7 +42,7 @@
         /// Gets or sets the previous value of the scan result.
         /// </summary>
         [Browsable(false)]
-        public String PreviousValue
+        public Object PreviousValue
         {
             get
             {

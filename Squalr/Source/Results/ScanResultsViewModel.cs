@@ -166,6 +166,10 @@
             set
             {
                 this.activeType = value;
+
+                // Update data type of addresses
+                this.Addresses?.ToArray().ForEach(address => address.DataType = this.ActiveType);
+
                 this.NotifyObservers();
                 this.RaisePropertyChanged(nameof(this.ActiveType));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeName));
@@ -391,8 +395,8 @@
                     SnapshotElementIterator element = snapshot[index];
 
                     String label = element.GetElementLabel() != null ? element.GetElementLabel().ToString() : String.Empty;
-                    String currentValue = element.HasCurrentValue() ? element.GetCurrentValue().ToString() : String.Empty;
-                    String previousValue = element.HasPreviousValue() ? element.GetPreviousValue().ToString() : String.Empty;
+                    Object currentValue = element.HasCurrentValue() ? element.GetCurrentValue() : null;
+                    Object previousValue = element.HasPreviousValue() ? element.GetPreviousValue() : null;
 
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);
