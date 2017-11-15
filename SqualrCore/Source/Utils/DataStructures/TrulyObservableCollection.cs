@@ -7,67 +7,158 @@
     using System.ComponentModel;
 
     /// <summary>
-    /// A collection of items for which changes are observed. Fixes the poor implementation of ObservableCollection in the .NET framework.
+    /// A collection of items for which property change events are observed. Fixes the poor .NET platform ObservableCollection implementation.
     /// </summary>
-    /// <typeparam name="T">The type of the items in the collection</typeparam>
-    public sealed class TrulyObservableCollection<T> : ObservableCollection<T> where T : INotifyPropertyChanged
+    /// <typeparam name="T">The type of the items contained in this collection.</typeparam>
+    public class FullyObservableCollection<T> : ObservableCollection<T> where T : INotifyPropertyChanged
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrulyObservableCollection{T}" /> class.
+        /// Initializes a new instance of the <see cref="FullyObservableCollection{T}" /> class.
         /// </summary>
-        public TrulyObservableCollection()
+        public FullyObservableCollection() : base()
         {
-            this.CollectionChanged += this.FullObservableCollectionCollectionChanged;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TrulyObservableCollection{T}" /> class.
+        /// Initializes a new instance of the <see cref="FullyObservableCollection{T}" /> class.
         /// </summary>
         /// <param name="items">The initial items in the observable collection.</param>
-        public TrulyObservableCollection(IEnumerable<T> items) : this()
+        public FullyObservableCollection(List<T> items) : base(items)
         {
-            foreach (T item in items)
+            this.ObserveAll();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FullyObservableCollection{T}" /> class.
+        /// </summary>
+        /// <param name="items">The initial items in the observable collection.</param>
+        public FullyObservableCollection(IEnumerable<T> items) : base(items)
+        {
+            this.ObserveAll();
+        }
+
+        /// <summary>
+        /// Occurs when a property is changed within an item.
+        /// </summary>
+        public event EventHandler<ItemPropertyChangedEventArgs> ItemPropertyChanged;
+
+        /// <summary>
+        /// Registers or unregisters items from observer events.
+        /// </summary>
+        /// <param name="e">The event args.</param>
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Replace)
             {
-                this.Add(item);
+                foreach (T item in e.OldItems)
+                {
+                    item.PropertyChanged -= ChildPropertyChanged;
+                }
+            }
+
+            if (e.Action == NotifyCollectionChangedAction.Add || e.Action == NotifyCollectionChangedAction.Replace)
+            {
+                foreach (T item in e.NewItems)
+                {
+                    item.PropertyChanged += ChildPropertyChanged;
+                }
+            }
+
+            base.OnCollectionChanged(e);
+        }
+
+        /// <summary>
+        /// Event fired when an item property is changed.
+        /// </summary>
+        /// <param name="e">The event args.</param>
+        protected void OnItemPropertyChanged(ItemPropertyChangedEventArgs e)
+        {
+            this.ItemPropertyChanged?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Event fired when an item property is changed.
+        /// </summary>
+        /// <param name="index">The item index.</param>
+        /// <param name="e">The event args.</param>
+        protected void OnItemPropertyChanged(Int32 index, PropertyChangedEventArgs e)
+        {
+            this.OnItemPropertyChanged(new ItemPropertyChangedEventArgs(index, e));
+        }
+
+        /// <summary>
+        /// Removes all items from this collection, and stops observing them.
+        /// </summary>
+        protected override void ClearItems()
+        {
+            foreach (T item in Items)
+            {
+                item.PropertyChanged -= ChildPropertyChanged;
+            }
+
+            base.ClearItems();
+        }
+
+        /// <summary>
+        /// Observes changes in all items in the collection.
+        /// </summary>
+        private void ObserveAll()
+        {
+            foreach (T item in Items)
+            {
+                item.PropertyChanged += ChildPropertyChanged;
             }
         }
 
         /// <summary>
-        /// Notifies observers that the collection changed. Called when an item property changes.
+        /// Event fired when property changed notifier event raised in a child item.
         /// </summary>
         /// <param name="sender">The sending object.</param>
-        /// <param name="propertyChangedEventArgs">The event args.</param>
-        private void ItemPropertyChanged(Object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        /// <param name="e">The event args.</param>
+        private void ChildPropertyChanged(Object sender, PropertyChangedEventArgs e)
         {
-            Dispatcher.Run(() =>
+            T typedSender = (T)sender;
+            Int32 index = Items.IndexOf(typedSender);
+
+            if (index < 0)
             {
-                NotifyCollectionChangedEventArgs args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Replace, sender, sender, IndexOf((T)sender));
-                this.OnCollectionChanged(args);
-            });
+                throw new ArgumentException("Received property notification from item not in collection");
+            }
+
+            this.OnItemPropertyChanged(index, e);
         }
 
         /// <summary>
-        /// Registers a callback function with all items in this collection, such that we can later notify observers that this collection has changed.
+        /// Provides data for the <see cref="FullyObservableCollection{T}.ItemPropertyChanged"/> event.
         /// </summary>
-        /// <param name="sender">The sending object.</param>
-        /// <param name="collectionChangedEventArgs">The event args.</param>
-        private void FullObservableCollectionCollectionChanged(Object sender, NotifyCollectionChangedEventArgs collectionChangedEventArgs)
+        public class ItemPropertyChangedEventArgs : PropertyChangedEventArgs
         {
-            if (collectionChangedEventArgs.NewItems != null)
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ItemPropertyChangedEventArgs"/> class.
+            /// </summary>
+            /// <param name="index">The index in the collection of changed item.</param>
+            /// <param name="name">The name of the property that changed.</param>
+            public ItemPropertyChangedEventArgs(Int32 index, String name) : base(name)
             {
-                foreach (Object item in collectionChangedEventArgs.NewItems)
-                {
-                    ((INotifyPropertyChanged)item).PropertyChanged += this.ItemPropertyChanged;
-                }
+                CollectionIndex = index;
             }
 
-            if (collectionChangedEventArgs.OldItems != null)
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ItemPropertyChangedEventArgs"/> class.
+            /// </summary>
+            /// <param name="index">The index.</param>
+            /// <param name="args">The <see cref="PropertyChangedEventArgs"/> instance containing the event data.</param>
+            public ItemPropertyChangedEventArgs(Int32 index, PropertyChangedEventArgs args) : this(index, args.PropertyName)
             {
-                foreach (Object item in collectionChangedEventArgs.OldItems)
-                {
-                    ((INotifyPropertyChanged)item).PropertyChanged -= this.ItemPropertyChanged;
-                }
             }
+
+            /// <summary>
+            /// Gets the index in the collection for which the property change has occurred.
+            /// </summary>
+            /// <value>
+            /// Index in parent collection.
+            /// </value>
+            public Int32 CollectionIndex { get; }
         }
     }
     //// End class

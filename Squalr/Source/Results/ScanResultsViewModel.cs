@@ -62,7 +62,7 @@
         /// <summary>
         /// The addresses on the current page.
         /// </summary>
-        private TrulyObservableCollection<ScanResult> addresses;
+        private FullyObservableCollection<ScanResult> addresses;
 
         /// <summary>
         /// The selected scan results.
@@ -88,7 +88,7 @@
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = typeof(Int32);
-            this.addresses = new TrulyObservableCollection<ScanResult>();
+            this.addresses = new FullyObservableCollection<ScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
@@ -301,7 +301,7 @@
         /// <summary>
         /// Gets the address elements.
         /// </summary>
-        public TrulyObservableCollection<ScanResult> Addresses
+        public FullyObservableCollection<ScanResult> Addresses
         {
             get
             {
@@ -404,7 +404,7 @@
                 }
             }
 
-            this.Addresses = new TrulyObservableCollection<ScanResult>(newAddresses);
+            this.Addresses = new FullyObservableCollection<ScanResult>(newAddresses);
 
             // Ensure results are visible
             this.IsVisible = true;

@@ -55,7 +55,7 @@
         /// <summary>
         /// The project root which contains all project items.
         /// </summary>
-        private TrulyObservableCollection<ProjectItem> projectItems;
+        private FullyObservableCollection<ProjectItem> projectItems;
 
         /// <summary>
         /// The selected project item.
@@ -87,7 +87,7 @@
             this.CopySelectionCommand = new RelayCommand(() => this.CopySelection(), () => true);
             this.PasteSelectionCommand = new RelayCommand(() => this.PasteSelection(), () => true);
             this.CutSelectionCommand = new RelayCommand(() => this.CutSelection(), () => true);
-            this.ProjectItems = new TrulyObservableCollection<ProjectItem>();
+            this.ProjectItems = new FullyObservableCollection<ProjectItem>();
             this.Update();
 
             Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
@@ -176,7 +176,7 @@
         /// <summary>
         /// Gets the root that contains all project items.
         /// </summary>
-        public TrulyObservableCollection<ProjectItem> ProjectItems
+        public FullyObservableCollection<ProjectItem> ProjectItems
         {
             get
             {
@@ -246,7 +246,7 @@
                 return;
             }
 
-            this.ProjectItems = new TrulyObservableCollection<ProjectItem>(this.ProjectItems.Concat(projectItems));
+            this.ProjectItems = new FullyObservableCollection<ProjectItem>(this.ProjectItems.Concat(projectItems));
 
             this.RaisePropertyChanged(nameof(this.ProjectItems));
         }

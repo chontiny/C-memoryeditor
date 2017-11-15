@@ -11,7 +11,6 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -57,7 +56,7 @@
         /// <summary>
         /// The addresses on the current page.
         /// </summary>
-        private TrulyObservableCollection<PointerItem> addresses;
+        private FullyObservableCollection<PointerItem> addresses;
 
         /// <summary>
         /// The list of discovered pointers.
@@ -95,7 +94,7 @@
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = typeof(Int32);
-            this.addresses = new TrulyObservableCollection<PointerItem>();
+            this.addresses = new FullyObservableCollection<PointerItem>();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
@@ -300,7 +299,7 @@
         /// <summary>
         /// Gets or sets the address elements.
         /// </summary>
-        public TrulyObservableCollection<PointerItem> Pointers
+        public FullyObservableCollection<PointerItem> Pointers
         {
             get
             {
@@ -423,11 +422,11 @@
                 IEnumerable<PointerItem> newPointers = this.DiscoveredPointers.GetPointers(startIndex, endIndex);
                 newPointers.ForEach(x => x.DataType = this.ActiveType);
 
-                this.Pointers = new TrulyObservableCollection<PointerItem>(newPointers);
+                this.Pointers = new FullyObservableCollection<PointerItem>(newPointers);
             }
             else
             {
-                this.Pointers = new TrulyObservableCollection<PointerItem>();
+                this.Pointers = new FullyObservableCollection<PointerItem>();
             }
 
             // Ensure results are visible

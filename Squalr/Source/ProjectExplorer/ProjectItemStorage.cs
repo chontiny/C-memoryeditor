@@ -104,7 +104,7 @@
                 return;
             }
 
-            ProjectExplorerViewModel.GetInstance().ProjectItems = new TrulyObservableCollection<ProjectItem>();
+            ProjectExplorerViewModel.GetInstance().ProjectItems = new FullyObservableCollection<ProjectItem>();
             this.ProjectFilePath = openFileDialog.FileName;
 
             // Open the project file
@@ -119,7 +119,7 @@
                 using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
-                    ProjectExplorerViewModel.GetInstance().ProjectItems = new TrulyObservableCollection<ProjectItem>(serializer.ReadObject(fileStream) as ProjectItem[]);
+                    ProjectExplorerViewModel.GetInstance().ProjectItems = new FullyObservableCollection<ProjectItem>(serializer.ReadObject(fileStream) as ProjectItem[]);
                     this.HasUnsavedChanges = false;
                 }
             }
