@@ -22,7 +22,6 @@
             x:Key="BooleanToHiddenConverter"
             False="Hidden"
             True="Visible" />
-        <converters:ProjectItemValueConverter x:Key="ProjectItemValueConverter" />
         <ContextMenu
             x:Key="RightClickMenu"
             Background="{StaticResource SqualrColorGray27}"
@@ -213,7 +212,7 @@
                                     HorizontalAlignment="Right"
                                     Foreground="{StaticResource SqualrColorWhite}"
                                     IsHitTestVisible="False"
-                                    Text="{Binding Path=., Converter={StaticResource ProjectItemValueConverter}}" />
+                                    Text="{Binding Path=DisplayValue}" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

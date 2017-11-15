@@ -10,11 +10,11 @@
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.PropertyViewer;
     using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -55,7 +55,7 @@
         /// <summary>
         /// The project root which contains all project items.
         /// </summary>
-        private ObservableCollection<ProjectItem> projectItems;
+        private TrulyObservableCollection<ProjectItem> projectItems;
 
         /// <summary>
         /// The selected project item.
@@ -87,7 +87,7 @@
             this.CopySelectionCommand = new RelayCommand(() => this.CopySelection(), () => true);
             this.PasteSelectionCommand = new RelayCommand(() => this.PasteSelection(), () => true);
             this.CutSelectionCommand = new RelayCommand(() => this.CutSelection(), () => true);
-            this.ProjectItems = new ObservableCollection<ProjectItem>();
+            this.ProjectItems = new TrulyObservableCollection<ProjectItem>();
             this.Update();
 
             Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
@@ -176,7 +176,7 @@
         /// <summary>
         /// Gets the root that contains all project items.
         /// </summary>
-        public ObservableCollection<ProjectItem> ProjectItems
+        public TrulyObservableCollection<ProjectItem> ProjectItems
         {
             get
             {
@@ -187,17 +187,6 @@
             {
                 this.projectItems = value;
                 this.RaisePropertyChanged(nameof(this.ProjectItems));
-            }
-        }
-
-        /// <summary>
-        /// Gets project items that can be bound to a hotkey.
-        /// </summary>
-        public ObservableCollection<ProjectItem> BindableProjectItems
-        {
-            get
-            {
-                return new ObservableCollection<ProjectItem>(this.projectItems);
             }
         }
 
@@ -257,7 +246,7 @@
                 return;
             }
 
-            this.ProjectItems = new ObservableCollection<ProjectItem>(this.ProjectItems.Concat(projectItems));
+            this.ProjectItems = new TrulyObservableCollection<ProjectItem>(this.ProjectItems.Concat(projectItems));
 
             this.RaisePropertyChanged(nameof(this.ProjectItems));
         }
@@ -412,18 +401,9 @@
             {
                 while (true)
                 {
-                    Boolean hasUpdate = false;
-
                     foreach (ProjectItem projectItem in this.ProjectItems.ToArray())
                     {
-                        hasUpdate |= projectItem.Update();
-                    }
-
-                    // This is a sidestep to a particular issue where we need to potentially perform RaisePropertyChanged for a {Binding Path=.} element, which is impossible.
-                    // We recreate the entire collection to force a re-render.
-                    if (hasUpdate)
-                    {
-                        this.ProjectItems = new ObservableCollection<ProjectItem>(this.ProjectItems);
+                        projectItem.Update();
                     }
 
                     Thread.Sleep(SettingsViewModel.GetInstance().TableReadInterval);

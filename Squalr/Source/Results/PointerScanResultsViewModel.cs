@@ -6,6 +6,7 @@
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
@@ -56,7 +57,7 @@
         /// <summary>
         /// The addresses on the current page.
         /// </summary>
-        private ObservableCollection<PointerItem> addresses;
+        private TrulyObservableCollection<PointerItem> addresses;
 
         /// <summary>
         /// The list of discovered pointers.
@@ -94,7 +95,7 @@
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = typeof(Int32);
-            this.addresses = new ObservableCollection<PointerItem>();
+            this.addresses = new TrulyObservableCollection<PointerItem>();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
@@ -299,7 +300,7 @@
         /// <summary>
         /// Gets or sets the address elements.
         /// </summary>
-        public ObservableCollection<PointerItem> Pointers
+        public TrulyObservableCollection<PointerItem> Pointers
         {
             get
             {
@@ -422,11 +423,11 @@
                 IEnumerable<PointerItem> newPointers = this.DiscoveredPointers.GetPointers(startIndex, endIndex);
                 newPointers.ForEach(x => x.DataType = this.ActiveType);
 
-                this.Pointers = new ObservableCollection<PointerItem>(newPointers);
+                this.Pointers = new TrulyObservableCollection<PointerItem>(newPointers);
             }
             else
             {
-                this.Pointers = new ObservableCollection<PointerItem>();
+                this.Pointers = new TrulyObservableCollection<PointerItem>();
             }
 
             // Ensure results are visible
@@ -444,18 +445,9 @@
             {
                 while (true)
                 {
-                    Boolean hasUpdate = false;
-
                     foreach (PointerItem pointer in this.Pointers.ToArray())
                     {
-                        hasUpdate |= pointer.Update();
-                    }
-
-                    // This is a sidestep to a particular issue where we need to potentially perform RaisePropertyChanged for a {Binding Path=.} element, which is impossible.
-                    // We recreate the entire collection to force a re-render.
-                    if (hasUpdate)
-                    {
-                        this.Pointers = new ObservableCollection<PointerItem>(this.Pointers);
+                        pointer.Update();
                     }
 
                     Thread.Sleep(PointerScanResultsViewModel.PointerReadIntervalMs);

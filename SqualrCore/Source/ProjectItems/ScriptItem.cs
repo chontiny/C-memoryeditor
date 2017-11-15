@@ -141,10 +141,8 @@
         /// <summary>
         /// Update event for this project item.
         /// </summary>
-        /// <returns>True if update was made, otherwise false.</returns>
-        public override Boolean Update()
+        public override void Update()
         {
-            return false;
         }
 
         /// <summary>

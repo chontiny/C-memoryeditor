@@ -239,15 +239,6 @@
         }
 
         /// <summary>
-        /// Update event for this project item. Resolves addresses and values.
-        /// </summary>
-        /// <returns>True if update was made, otherwise false.</returns>
-        public override Boolean Update()
-        {
-            return base.Update();
-        }
-
-        /// <summary>
         /// Resolves the address of an address, pointer, or managed object.
         /// </summary>
         /// <returns>The base address of this object.</returns>

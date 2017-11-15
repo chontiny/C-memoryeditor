@@ -4,12 +4,12 @@
     using LiveCharts;
     using LiveCharts.Wpf;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Utils;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
 
@@ -230,7 +230,7 @@
             this.KeptValues = new ChartValues<Int64>(histogramKept.Values.Select(x => (Int64)Math.Log(x)));
             this.FilteredValues = new ChartValues<Int64>(histogramFiltered.Values.Select(x => (Int64)Math.Log(x)));
 
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Dispatcher.Run(() =>
             {
                 if (this.SeriesCollection == null)
                 {

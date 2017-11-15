@@ -407,9 +407,7 @@
                 </DataTemplate>
             </DataGrid.ItemTemplate>
         </DataGrid>
-        <Border
-            Grid.Row="2"
-            Background="{StaticResource SqualrColorGray27}">
+        <Border Grid.Row="2" Background="{StaticResource SqualrColorGray27}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -482,9 +480,7 @@
                 </Menu>
             </Grid>
         </Border>
-        <Border
-            Grid.Row="3"
-            Background="{StaticResource SqualrColorGray27}">
+        <Border Grid.Row="3" Background="{StaticResource SqualrColorGray27}">
             <WrapPanel HorizontalAlignment="Center">
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ByteCount, Converter={StaticResource ValueToMetricSize}}" />
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" - (Count: " />

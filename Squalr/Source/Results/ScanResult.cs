@@ -7,7 +7,7 @@
     /// <summary>
     /// A scan result object that can be displayed to the user and added to the project explorer.
     /// </summary>
-    internal class ScanResult : PointerItem, INotifyPropertyChanged
+    internal class ScanResult : PointerItem
     {
         /// <summary>
         /// The previous value of the scan result.
@@ -32,11 +32,6 @@
             this.PreviousValue = previousValue;
             this.Label = label;
         }
-
-        /// <summary>
-        /// Occurs after a property value changes.
-        /// </summary>
-        public new event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Gets or sets the previous value of the scan result.
@@ -72,15 +67,6 @@
                 this.label = value;
                 this.RaisePropertyChanged(nameof(this.Label));
             }
-        }
-
-        /// <summary>
-        /// Indicates that a given property in this project item has changed.
-        /// </summary>
-        /// <param name="propertyName">The name of the changed property.</param>
-        protected new void RaisePropertyChanged(String propertyName)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
     //// End class

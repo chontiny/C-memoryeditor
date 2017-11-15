@@ -138,6 +138,7 @@
                 this.addressValue = value;
                 this.WriteValue(value);
                 this.RaisePropertyChanged(nameof(this.AddressValue));
+                this.RaisePropertyChanged(nameof(this.DisplayValue));
             }
         }
 
@@ -194,23 +195,22 @@
         }
 
         /// <summary>
-        /// Gets or sets the old value used for determining value updates.
+        /// Gets the display value for this project item, which is the address value.
         /// </summary>
-        private Object OldValue { get; set; }
+        public override String DisplayValue { get { return this.AddressValue?.ToString() ?? String.Empty; } }
 
         /// <summary>
         /// Update event for this project item. Resolves addresses and values.
         /// </summary>
-        /// <returns>True if update was made, otherwise false.</returns>
-        public override Boolean Update()
+        public override void Update()
         {
-            Boolean hasUpdate = false;
             this.CalculatedAddress = this.ResolveAddress();
 
             if (this.IsActivated)
             {
                 // Freeze current value if this entry is activated
                 Object value = this.AddressValue;
+
                 if (value != null && value.GetType() == this.DataType)
                 {
                     this.WriteValue(value);
@@ -218,21 +218,11 @@
             }
             else
             {
-                // Otherwise we read as normal (bypass value setter and set value directly to avoid a write-back to memory)
-                Boolean readSuccess;
-
-                this.addressValue = EngineCore.GetInstance()?.VirtualMemory?.Read(this.DataType, this.CalculatedAddress, out readSuccess);
-
-                if (this.AddressValue?.ToString() != this.OldValue?.ToString())
-                {
-                    this.RaisePropertyChanged(nameof(this.AddressValue));
-                    hasUpdate = true;
-                }
-
-                this.OldValue = addressValue;
+                // Otherwise we read as normal (bypass assigning setter and set value directly to avoid a write-back to memory)
+                this.addressValue = EngineCore.GetInstance()?.VirtualMemory?.Read(this.DataType, this.CalculatedAddress, out _);
+                this.RaisePropertyChanged(nameof(this.AddressValue));
+                this.RaisePropertyChanged(nameof(this.DisplayValue));
             }
-
-            return hasUpdate;
         }
 
         /// <summary>

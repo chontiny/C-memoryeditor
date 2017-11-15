@@ -6,13 +6,12 @@
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.VirtualMachines;
-    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -63,7 +62,7 @@
         /// <summary>
         /// The addresses on the current page.
         /// </summary>
-        private ObservableCollection<ScanResult> addresses;
+        private TrulyObservableCollection<ScanResult> addresses;
 
         /// <summary>
         /// The selected scan results.
@@ -89,7 +88,7 @@
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = typeof(Int32);
-            this.addresses = new ObservableCollection<ScanResult>();
+            this.addresses = new TrulyObservableCollection<ScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
@@ -302,7 +301,7 @@
         /// <summary>
         /// Gets the address elements.
         /// </summary>
-        public ObservableCollection<ScanResult> Addresses
+        public TrulyObservableCollection<ScanResult> Addresses
         {
             get
             {
@@ -405,7 +404,7 @@
                 }
             }
 
-            this.Addresses = new ObservableCollection<ScanResult>(newAddresses);
+            this.Addresses = new TrulyObservableCollection<ScanResult>(newAddresses);
 
             // Ensure results are visible
             this.IsVisible = true;
@@ -422,18 +421,9 @@
             {
                 while (true)
                 {
-                    Boolean hasUpdate = false;
-
-                    foreach (PointerItem pointer in this.Addresses.ToArray())
+                    foreach (ScanResult address in this.Addresses.ToArray())
                     {
-                        hasUpdate |= pointer.Update();
-                    }
-
-                    // This is a sidestep to a particular issue where we need to potentially perform RaisePropertyChanged for a {Binding Path=.} element, which is impossible.
-                    // We recreate the entire collection to force a re-render.
-                    if (hasUpdate)
-                    {
-                        this.Addresses = new ObservableCollection<ScanResult>(this.Addresses);
+                        address.Update();
                     }
 
                     Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);

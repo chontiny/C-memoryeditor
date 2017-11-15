@@ -18,7 +18,6 @@
         <![CDATA[ public PointerScanResults() { InitializeComponent(); }]]>
     </x:Code>
     <UserControl.Resources>
-        <converters:ProjectItemValueConverter x:Key="ProjectItemValueConverter" />
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:OffsetsToStringConverter x:Key="OffsetsToStringConverter" />
         <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
@@ -362,7 +361,7 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn
                     MinWidth="64"
-                    Binding="{Binding Path=., Converter={StaticResource ProjectItemValueConverter}}"
+                    Binding="{Binding Path=DisplayValue}"
                     Header="Value" />
                 <DataGridTextColumn
                     Width="SizeToCells"

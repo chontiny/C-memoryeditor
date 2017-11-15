@@ -6,10 +6,10 @@
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.IO;
     using System.Linq;
     using System.Runtime.Serialization.Json;
@@ -104,7 +104,7 @@
                 return;
             }
 
-            ProjectExplorerViewModel.GetInstance().ProjectItems = new ObservableCollection<ProjectItem>();
+            ProjectExplorerViewModel.GetInstance().ProjectItems = new TrulyObservableCollection<ProjectItem>();
             this.ProjectFilePath = openFileDialog.FileName;
 
             // Open the project file
@@ -119,7 +119,7 @@
                 using (FileStream fileStream = new FileStream(this.ProjectFilePath, FileMode.Open, FileAccess.Read))
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
-                    ProjectExplorerViewModel.GetInstance().ProjectItems = new ObservableCollection<ProjectItem>(serializer.ReadObject(fileStream) as ProjectItem[]);
+                    ProjectExplorerViewModel.GetInstance().ProjectItems = new TrulyObservableCollection<ProjectItem>(serializer.ReadObject(fileStream) as ProjectItem[]);
                     this.HasUnsavedChanges = false;
                 }
             }
