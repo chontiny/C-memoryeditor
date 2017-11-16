@@ -11,8 +11,9 @@
             <Border
                 Name="SubItemTemplateRoot"
                 Padding="4,2,4,2"
+                Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
                 BorderThickness="1">
-                <Grid>
+                <Grid Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" SharedSizeGroup="Icon" />
                         <ColumnDefinition Width="*" />
@@ -75,8 +76,8 @@
                 <Setter TargetName="EmptyCheck" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsHighlighted" Value="true">
-                <Setter TargetName="SubItemTemplateRoot" Property="Background" Value="#3D26A0DA" />
-                <Setter TargetName="SubItemTemplateRoot" Property="BorderBrush" Value="#FF26A0DA" />
+                <Setter TargetName="SubItemTemplateRoot" Property="Background" Value="{StaticResource SqualrColorHighlight}" />
+                <Setter TargetName="SubItemTemplateRoot" Property="BorderBrush" Value="{StaticResource SqualrColorHighlightBorder}" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Foreground" Value="#0f3c5a" />

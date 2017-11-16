@@ -56,8 +56,8 @@
                                 <Border
                                     x:Name="SubMenuBorder"
                                     Padding="0"
-                                    Background="#FFF0F0F0"
-                                    BorderBrush="#FF999999"
+                                    Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
+                                    BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
                                     BorderThickness="1">
                                     <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,                      TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                         <Grid RenderOptions.ClearTypeHint="Enabled">
@@ -102,8 +102,8 @@
                             <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="TemplateRoot" Property="Background" Value="#3D26A0DA" />
-                            <Setter TargetName="TemplateRoot" Property="BorderBrush" Value="#FF26A0DA" />
+                            <Setter TargetName="TemplateRoot" Property="Background" Value="{StaticResource SqualrColorHighlight}" />
+                            <Setter TargetName="TemplateRoot" Property="BorderBrush" Value="{StaticResource SqualrColorHighlightBorder}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter TargetName="TemplateRoot" Property="TextElement.Foreground" Value="#FF707070" />
