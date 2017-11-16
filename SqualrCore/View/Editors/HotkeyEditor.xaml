@@ -51,12 +51,13 @@
                 Grid.Column="0"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 BorderThickness="1">
-                <xctk:WatermarkTextBox
+                <shell:TextBox
                     Background="{StaticResource SqualrColorBlack}"
                     Foreground="{StaticResource SqualrColorWhite}"
                     IsReadOnly="True"
-                    Text="{Binding ActiveHotkey, Mode=OneWay, Converter={StaticResource HotkeyToStringConverter}}"
-                    Watermark="(Press any keys)" />
+                    Style="{StaticResource PlaceHolder}"
+                    Tag="(Press any keys)"
+                    Text="{Binding ActiveHotkey, Mode=OneWay, Converter={StaticResource HotkeyToStringConverter}}" />
             </shell:Border>
             <shell:WrapPanel
                 Grid.Column="1"

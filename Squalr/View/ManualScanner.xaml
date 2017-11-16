@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrManualScanner"
     d:DesignHeight="256"
-    d:DesignWidth="384"
+    d:DesignWidth="420"
     x:ClassModifier="internal"
     DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">

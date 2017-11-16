@@ -424,10 +424,6 @@
       <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
       <Name>SqualrProxy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
-      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
-      <Name>WpfToolkit</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>
       <Name>Xceed.Wpf.AvalonDock</Name>
