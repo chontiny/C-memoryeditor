@@ -490,10 +490,6 @@
       <Project>{78010aa2-1ecc-4cf6-87d0-c27578e79698}</Project>
       <Name>SqualrCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Deploy\Deploy.csproj">
-      <Project>{8b2579c2-faa1-4cc7-a48e-2b6d4901c503}</Project>
-      <Name>Deploy</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Microsoft.Diagnostics.Runtime\Microsoft.Diagnostics.Runtime.csproj">
       <Project>{A82126CA-23AA-41F1-8586-A5938D44D0A7}</Project>
       <Name>Microsoft.Diagnostics.Runtime</Name>
