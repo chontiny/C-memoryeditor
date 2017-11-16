@@ -5,9 +5,9 @@
 
     <Style x:Key="{x:Type Separator}" TargetType="{x:Type Separator}">
         <Setter Property="Height" Value="1" />
-        <Setter Property="Background" Value="{StaticResource SqualrColorBlue}" />
-        <Setter Property="Opacity" Value="0.75" />
+        <Setter Property="Background" Value="{StaticResource SqualrColorHighlightBorder}" />
         <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Opacity" Value="0.75" />
     </Style>
 
     <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="{x:Type Separator}">
@@ -17,7 +17,7 @@
                 <ControlTemplate TargetType="{x:Type Separator}">
                     <Grid
                         Height="1"
-                        Background="{StaticResource SqualrColorBlue}"
+                        Background="{StaticResource SqualrColorHighlightBorder}"
                         Opacity="0.75" />
                 </ControlTemplate>
             </Setter.Value>
@@ -30,8 +30,8 @@
                 <ControlTemplate TargetType="{x:Type Separator}">
                     <Grid
                         Width="1"
-                        Margin="6,0,6,0"
-                        Background="{StaticResource SqualrColorBlue}"
+                        Margin="4,0,4,0"
+                        Background="{StaticResource SqualrColorHighlightBorder}"
                         Opacity="0.75" />
                 </ControlTemplate>
             </Setter.Value>

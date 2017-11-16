@@ -1,8 +1,8 @@
 ﻿namespace SqualrCore.Source.Controls
 {
     using GalaSoft.MvvmLight;
+    using SqualrCore.Source.Utils.DataStructures;
     using System;
-    using System.Collections.ObjectModel;
 
     /// <summary>
     /// Base class for all ViewModel classes displayed by TreeViewItems.  
@@ -18,7 +18,7 @@
         /// <summary>
         /// Root items in the collection.
         /// </summary>
-        private readonly ObservableCollection<TreeViewItemViewModel> children;
+        private readonly FullyObservableCollection<TreeViewItemViewModel> children;
 
         /// <summary>
         /// The parent tree view of this node.
@@ -43,7 +43,7 @@
         protected TreeViewItemViewModel(TreeViewItemViewModel parent, Boolean lazyLoadChildren = false)
         {
             this.parent = parent;
-            this.children = new ObservableCollection<TreeViewItemViewModel>();
+            this.children = new FullyObservableCollection<TreeViewItemViewModel>();
 
             if (lazyLoadChildren)
             {
@@ -72,7 +72,7 @@
         /// <summary>
         /// Gets the logical child items of this object.
         /// </summary>
-        public virtual ObservableCollection<TreeViewItemViewModel> Children
+        public virtual FullyObservableCollection<TreeViewItemViewModel> Children
         {
             get
             {

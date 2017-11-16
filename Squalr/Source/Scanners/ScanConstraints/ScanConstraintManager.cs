@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Scanners.ScanConstraints
 {
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
-    using System.Collections.ObjectModel;
     using System.Linq;
 
     /// <summary>
@@ -16,13 +16,13 @@
         /// </summary>
         public ScanConstraintManager()
         {
-            this.ValueConstraints = new ObservableCollection<ScanConstraint>();
+            this.ValueConstraints = new FullyObservableCollection<ScanConstraint>();
         }
 
         /// <summary>
         /// Gets the collection of constraints.
         /// </summary>
-        public ObservableCollection<ScanConstraint> ValueConstraints { get; private set; }
+        public FullyObservableCollection<ScanConstraint> ValueConstraints { get; private set; }
 
         /// <summary>
         /// Gets the element type of this constraint manager.
@@ -78,7 +78,7 @@
                 {
                     if (elementType != typeof(Single) && elementType != typeof(Double))
                     {
-                        this.ValueConstraints = new ObservableCollection<ScanConstraint>(this.ValueConstraints.Where(x => x != scanConstraint));
+                        this.ValueConstraints = new FullyObservableCollection<ScanConstraint>(this.ValueConstraints.Where(x => x != scanConstraint));
                         continue;
                     }
                 }

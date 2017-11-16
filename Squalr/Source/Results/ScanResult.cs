@@ -7,12 +7,12 @@
     /// <summary>
     /// A scan result object that can be displayed to the user and added to the project explorer.
     /// </summary>
-    internal class ScanResult : PointerItem, INotifyPropertyChanged
+    internal class ScanResult : PointerItem
     {
         /// <summary>
         /// The previous value of the scan result.
         /// </summary>
-        private String previousValue;
+        private Object previousValue;
 
         /// <summary>
         /// The label of the scan result.
@@ -27,21 +27,17 @@
         /// <param name="value">The initial value of this result.</param>
         /// <param name="previousValue">The previous scan value.</param>
         /// <param name="label">The label of this result.</param>
-        public ScanResult(String moduleName, IntPtr baseAddress, Type dataType, String value, String previousValue, String label) : base(baseAddress, dataType, moduleName: moduleName, value: value)
+        public ScanResult(String moduleName, IntPtr baseAddress, Type dataType, Object value, Object previousValue, String label) : base(baseAddress, dataType, moduleName: moduleName, value: value)
         {
             this.PreviousValue = previousValue;
             this.Label = label;
         }
 
         /// <summary>
-        /// Occurs after a property value changes.
-        /// </summary>
-        public new event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
         /// Gets or sets the previous value of the scan result.
         /// </summary>
-        public String PreviousValue
+        [Browsable(false)]
+        public Object PreviousValue
         {
             get
             {
@@ -58,6 +54,7 @@
         /// <summary>
         /// Gets or sets the label of the scan result.
         /// </summary>
+        [Browsable(false)]
         public String Label
         {
             get
@@ -70,15 +67,6 @@
                 this.label = value;
                 this.RaisePropertyChanged(nameof(this.Label));
             }
-        }
-
-        /// <summary>
-        /// Indicates that a given property in this project item has changed.
-        /// </summary>
-        /// <param name="propertyName">The name of the changed property.</param>
-        protected new void RaisePropertyChanged(String propertyName)
-        {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
     //// End class

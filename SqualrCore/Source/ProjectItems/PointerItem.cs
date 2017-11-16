@@ -65,7 +65,7 @@
             String moduleName = null,
             IEnumerable<Int32> pointerOffsets = null,
             Boolean isValueHex = false,
-            String value = null)
+            Object value = null)
             : base(dataType, description, isValueHex, value)
         {
             // Bypass setters to avoid running setter code
@@ -187,6 +187,7 @@
         /// <summary>
         /// Gets the address specifier for this address. If a static address, this is 'ModuleName + offset', otherwise this is an address string.
         /// </summary>
+        [Browsable(false)]
         public String AddressSpecifier
         {
             get
@@ -216,6 +217,7 @@
         /// <summary>
         /// Gets a value indicating if this pointer/address is static.
         /// </summary>
+        [Browsable(false)]
         public Boolean IsStatic
         {
             get
@@ -227,21 +229,13 @@
         /// <summary>
         /// Gets a value indicating if this object is a true pointer and not just an address.
         /// </summary>
+        [Browsable(false)]
         public Boolean IsPointer
         {
             get
             {
                 return !this.PointerOffsets.IsNullOrEmpty();
             }
-        }
-
-        /// <summary>
-        /// Update event for this project item. Resolves addresses and values.
-        /// </summary>
-        /// <returns>True if update was made, otherwise false.</returns>
-        public override Boolean Update()
-        {
-            return base.Update();
         }
 
         /// <summary>

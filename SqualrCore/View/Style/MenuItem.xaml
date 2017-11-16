@@ -8,7 +8,8 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type MenuItem}">
                     <Border
-                        x:Name="templateRoot"
+                        x:Name="TemplateRoot"
+                        Padding="4,1,4,1"
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
@@ -55,8 +56,8 @@
                                 <Border
                                     x:Name="SubMenuBorder"
                                     Padding="0"
-                                    Background="#FFF0F0F0"
-                                    BorderBrush="#FF999999"
+                                    Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
+                                    BorderBrush="{Binding Path=BorderBrush, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
                                     BorderThickness="1">
                                     <ScrollViewer x:Name="SubMenuScrollViewer" Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,                      TypeInTargetAssembly={x:Type FrameworkElement}}}">
                                         <Grid RenderOptions.ClearTypeHint="Enabled">
@@ -78,6 +79,7 @@
                                                 Fill="#FFD7D7D7" />
                                             <ItemsPresenter
                                                 x:Name="ItemsPresenter"
+                                                VerticalAlignment="Center"
                                                 Grid.IsSharedSizeScope="True"
                                                 KeyboardNavigation.DirectionalNavigation="Cycle"
                                                 KeyboardNavigation.TabNavigation="Cycle"
@@ -100,11 +102,11 @@
                             <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
                         </Trigger>
                         <Trigger Property="IsHighlighted" Value="True">
-                            <Setter TargetName="templateRoot" Property="Background" Value="#3D26A0DA" />
-                            <Setter TargetName="templateRoot" Property="BorderBrush" Value="#FF26A0DA" />
+                            <Setter TargetName="TemplateRoot" Property="Background" Value="{StaticResource SqualrColorHighlight}" />
+                            <Setter TargetName="TemplateRoot" Property="BorderBrush" Value="{StaticResource SqualrColorHighlightBorder}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter TargetName="templateRoot" Property="TextElement.Foreground" Value="#FF707070" />
+                            <Setter TargetName="TemplateRoot" Property="TextElement.Foreground" Value="#FF707070" />
                             <Setter TargetName="GlyphPanel" Property="Fill" Value="#FF707070" />
                         </Trigger>
                         <Trigger SourceName="SubMenuScrollViewer" Property="CanContentScroll" Value="False">

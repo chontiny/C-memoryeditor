@@ -50,25 +50,17 @@
             Background="{StaticResource SqualrColorGray20}"
             BorderBrush="{StaticResource SqualrColorWhite}"
             Foreground="{StaticResource SqualrColorWhite}">
-            <shell:Menu.Resources>
-                <shell:Style x:Key="menuItemStyle" TargetType="{x:Type MenuItem}">
-                    <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-                    <shell:Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
-                    <shell:Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray20}" />
-                    <shell:Setter Property="BorderThickness" Value="0" />
-                </shell:Style>
-            </shell:Menu.Resources>
             <!--  File Header  -->
-            <shell:MenuItem Header="File" Style="{StaticResource DropDown}">
+            <shell:MenuItem Header="File">
                 <shell:MenuItem
                     Command="{Binding SaveCommand}"
                     Header="Save"
-                    Style="{StaticResource menuItemStyle}"
+                    Style="{Binding}"
                     Visibility="Collapsed" />
                 <shell:MenuItem
                     Click="ExitFileMenuItemClick"
                     Header="Exit"
-                    Style="{StaticResource menuItemStyle}" />
+                    Style="{Binding}" />
             </shell:MenuItem>
         </shell:Menu>
 

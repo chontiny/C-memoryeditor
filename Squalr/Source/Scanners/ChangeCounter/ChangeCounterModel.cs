@@ -5,6 +5,7 @@
     using Squalr.Properties;
     using SqualrCore.Source.ActionScheduler;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -26,19 +27,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the snapshot being labeled with change counts.
-        /// </summary>
-        private Snapshot Snapshot { get; set; }
-
-        private UInt16 MinChanges { get; set; }
-
-        private UInt16 MaxChanges { get; set; }
-
-        private Object ProgressLock { get; set; }
-
-        private Action UpdateScanCount { get; set; }
-
-        /// <summary>
         /// Gets the number of scans that have been executed.
         /// </summary>
         public Int32 ScanCount
@@ -55,6 +43,19 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the snapshot being labeled with change counts.
+        /// </summary>
+        private Snapshot Snapshot { get; set; }
+
+        private UInt16 MinChanges { get; set; }
+
+        private UInt16 MaxChanges { get; set; }
+
+        private Object ProgressLock { get; set; }
+
+        private Action UpdateScanCount { get; set; }
+
         public void SetMinChanges(UInt16 minChanges)
         {
             this.MinChanges = minChanges;
@@ -63,6 +64,11 @@
         public void SetMaxChanges(UInt16 maxChanges)
         {
             this.MaxChanges = maxChanges;
+        }
+
+        public void Stop()
+        {
+            this.EndUpdateLoop();
         }
 
         protected override void OnBegin()
@@ -103,11 +109,18 @@
                     return;
                 }
 
-                foreach (SnapshotElementIterator element in region)
+                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.AllPointers); enumerator.MoveNext();)
                 {
-                    element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
+                    SnapshotElementIterator element = enumerator.Current;
+
+                    // Perform the comparison based on the current scan constraint
+                    if (element.Compare())
+                    {
+                        element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
+                    }
                 }
 
+                // Update progress
                 lock (this.ProgressLock)
                 {
                     processedPages++;

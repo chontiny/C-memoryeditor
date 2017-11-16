@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrManualScanner"
     d:DesignHeight="256"
-    d:DesignWidth="384"
+    d:DesignWidth="420"
     x:ClassModifier="internal"
     DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
@@ -25,11 +25,11 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <WrapPanel Background="{StaticResource SqualrColorGray68}">
+            <WrapPanel Background="{StaticResource SqualrColorGray27}">
                 <Menu
                     Grid.Row="0"
                     Padding="4"
-                    Background="{StaticResource SqualrColorGray68}"
+                    Background="{StaticResource SqualrColorGray27}"
                     BorderBrush="{StaticResource SqualrColorWhite}"
                     DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                     Foreground="{StaticResource SqualrColorWhite}">
@@ -51,7 +51,7 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
-                    <MenuItem BorderThickness="0" ToolTip="Scan Constraints">
+                    <MenuItem ToolTip="Scan Constraints">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <Image

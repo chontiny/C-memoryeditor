@@ -1,15 +1,15 @@
 ﻿namespace SqualrStream.Source.Store
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrStream.Properties;
     using SqualrStream.Source.Api;
     using SqualrStream.Source.Api.Models;
     using SqualrStream.Source.Library;
     using SqualrStream.Source.Navigation;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Output;
     using System;
-    using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -34,12 +34,12 @@
         /// <summary>
         /// The list of cheats in the store for the selected game.
         /// </summary>
-        private ObservableCollection<Cheat> lockedCheatList;
+        private FullyObservableCollection<Cheat> lockedCheatList;
 
         /// <summary>
         /// The list of purchased or owned cheats for the selected game.
         /// </summary>
-        private ObservableCollection<Cheat> unlockedCheatList;
+        private FullyObservableCollection<Cheat> unlockedCheatList;
 
         /// <summary>
         /// A value indicating whether the cheat list is loading.
@@ -53,8 +53,8 @@
         {
             this.ContentId = StoreViewModel.ToolContentId;
 
-            this.LockedCheatList = new ObservableCollection<Cheat>();
-            this.UnlockedCheatList = new ObservableCollection<Cheat>();
+            this.LockedCheatList = new FullyObservableCollection<Cheat>();
+            this.UnlockedCheatList = new FullyObservableCollection<Cheat>();
 
             this.UnlockCheatCommand = new RelayCommand<Cheat>((cheat) => this.UnlockCheat(cheat), (cheat) => true);
 
@@ -69,7 +69,7 @@
         /// <summary>
         /// Gets or sets the list of cheats in the store for the selected game.
         /// </summary>
-        public ObservableCollection<Cheat> LockedCheatList
+        public FullyObservableCollection<Cheat> LockedCheatList
         {
             get
             {
@@ -86,7 +86,7 @@
         /// <summary>
         /// Gets or sets the list of cheats in the store for the selected game.
         /// </summary>
-        public ObservableCollection<Cheat> UnlockedCheatList
+        public FullyObservableCollection<Cheat> UnlockedCheatList
         {
             get
             {
@@ -160,8 +160,8 @@
                     // Select new game
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     StoreCheats storeCheats = SqualrApi.GetStoreCheats(accessTokens.AccessToken, game.GameId);
-                    this.LockedCheatList = new ObservableCollection<Cheat>(storeCheats.LockedCheats);
-                    this.UnlockedCheatList = new ObservableCollection<Cheat>(storeCheats.UnlockedCheats);
+                    this.LockedCheatList = new FullyObservableCollection<Cheat>(storeCheats.LockedCheats);
+                    this.UnlockedCheatList = new FullyObservableCollection<Cheat>(storeCheats.UnlockedCheats);
                 }
                 catch (Exception ex)
                 {

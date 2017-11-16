@@ -6,14 +6,18 @@
     <SolidColorBrush x:Key="SqualrColorBlack" Color="Black" />
     <SolidColorBrush x:Key="SqualrColorGray20" Color="#333333" />
     <SolidColorBrush x:Key="SqualrColorGray24" Color="#3D3D3D" />
+    <SolidColorBrush x:Key="SqualrColorGray27" Color="#444444" />
     <SolidColorBrush x:Key="SqualrColorGray29" Color="#4A4A4A" />
     <SolidColorBrush x:Key="SqualrColorGray35" Color="#595959" />
     <SolidColorBrush x:Key="SqualrColorGray40" Color="#666666" />
-    <SolidColorBrush x:Key="SqualrColorGray68" Color="#444444" />
     <SolidColorBrush x:Key="SqualrColorGray74" Color="#BDBDBD" />
     <SolidColorBrush x:Key="SqualrColorBlue" Color="#007ACC" />
     <SolidColorBrush x:Key="SqualrColorRed" Color="#FFBB0000" />
     <SolidColorBrush x:Key="SqualrColorOrange" Color="#CA5100" />
+
+    <SolidColorBrush x:Key="SqualrColorHighlight" Color="#3D26A0DA" />
+    <SolidColorBrush x:Key="SqualrColorHighlightBorder" Color="#FF26A0DA" />
+
     <LinearGradientBrush x:Key="SqualrGradientBlue" StartPoint="0,0" EndPoint="0,1">
         <GradientStop Offset="0" Color="#4D6082" />
         <GradientStop Offset="1" Color="#3D5277" />

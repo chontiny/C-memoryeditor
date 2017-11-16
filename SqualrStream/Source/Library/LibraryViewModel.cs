@@ -1,19 +1,19 @@
 ﻿namespace SqualrStream.Source.Library
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.PropertyViewer;
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrStream.Properties;
     using SqualrStream.Source.Api;
     using SqualrStream.Source.Api.Models;
     using SqualrStream.Source.Navigation;
     using SqualrStream.Source.Store;
     using SqualrStream.Source.Stream;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Output;
-    using SqualrCore.Source.PropertyViewer;
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -45,17 +45,17 @@
         /// <summary>
         /// The list of libraries.
         /// </summary>
-        private ObservableCollection<Library> libraries;
+        private FullyObservableCollection<Library> libraries;
 
         /// <summary>
         /// The list of cheats available to the library.
         /// </summary>
-        private ObservableCollection<Cheat> cheatsAvailable;
+        private FullyObservableCollection<Cheat> cheatsAvailable;
 
         /// <summary>
         /// The list of cheats in the library.
         /// </summary>
-        private ObservableCollection<Cheat> cheatsInLibrary;
+        private FullyObservableCollection<Cheat> cheatsInLibrary;
 
         /// <summary>
         /// The selected game.
@@ -93,9 +93,9 @@
         private LibraryViewModel() : base("Library")
         {
             this.ContentId = LibraryViewModel.ToolContentId;
-            this.Libraries = new ObservableCollection<Library>();
-            this.CheatsAvailable = new ObservableCollection<Cheat>();
-            this.CheatsInLibrary = new ObservableCollection<Cheat>();
+            this.Libraries = new FullyObservableCollection<Library>();
+            this.CheatsAvailable = new FullyObservableCollection<Cheat>();
+            this.CheatsInLibrary = new FullyObservableCollection<Cheat>();
 
             this.SelectCheatCommand = new RelayCommand<Cheat>((cheat) => this.SelectCheat(cheat), (cheat) => true);
             this.SelectGameCommand = new RelayCommand<Game>((game) => this.SelectGame(game), (game) => true);
@@ -352,7 +352,7 @@
         /// <summary>
         /// Gets or sets the list of libraries.
         /// </summary>
-        public ObservableCollection<Library> Libraries
+        public FullyObservableCollection<Library> Libraries
         {
             get
             {
@@ -369,7 +369,7 @@
         /// <summary>
         /// Gets or sets the list of cheats available to the library.
         /// </summary>
-        public ObservableCollection<Cheat> CheatsAvailable
+        public FullyObservableCollection<Cheat> CheatsAvailable
         {
             get
             {
@@ -386,7 +386,7 @@
         /// <summary>
         /// Gets or sets the  list of cheats in the library.
         /// </summary>
-        public ObservableCollection<Cheat> CheatsInLibrary
+        public FullyObservableCollection<Cheat> CheatsInLibrary
         {
             get
             {
@@ -550,7 +550,7 @@
                     AccessTokens accessTokens = SettingsViewModel.GetInstance().AccessTokens;
                     IEnumerable<Library> libraries = SqualrApi.GetLibraries(accessTokens.AccessToken, game.GameId);
 
-                    this.Libraries = new ObservableCollection<Library>(libraries);
+                    this.Libraries = new FullyObservableCollection<Library>(libraries);
                     this.RaisePropertyChanged(nameof(this.Libraries));
 
                     this.SelectedGame = game;
@@ -594,8 +594,8 @@
                     SqualrApi.SetActiveLibrary(accessTokens.AccessToken, library.LibraryId);
 
                     this.ActiveLibrary = library;
-                    this.CheatsAvailable = new ObservableCollection<Cheat>(libraryCheats.CheatsAvailable);
-                    this.CheatsInLibrary = new ObservableCollection<Cheat>(libraryCheats.CheatsInLibrary);
+                    this.CheatsAvailable = new FullyObservableCollection<Cheat>(libraryCheats.CheatsAvailable);
+                    this.CheatsInLibrary = new FullyObservableCollection<Cheat>(libraryCheats.CheatsInLibrary);
                     this.RaisePropertyChanged(nameof(this.CheatsAvailable));
                     this.RaisePropertyChanged(nameof(this.CheatsInLibrary));
                 }

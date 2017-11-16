@@ -151,14 +151,17 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Source\Docking\DockingViewModel.cs" />
+    <Compile Include="Source\Docking\WindowHostViewModel.cs" />
     <Compile Include="Source\Engine\Processes\Windows\Native\NativeMethods.cs" />
     <Compile Include="Source\Engine\Processes\Windows\WindowsAdapter.cs" />
     <Compile Include="Source\Engine\VirtualMemory\Windows\PEB\ManagedPeb.cs" />
     <Compile Include="Source\Mvvm\AttachedBehaviors\ScrollToTopBehavior.cs" />
+    <Compile Include="Source\Mvvm\Converters\DataTypeToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\OffsetsToStringConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\ProjectItemValueConverter.cs" />
     <Compile Include="Source\Output\OutputMask.cs" />
     <Compile Include="Source\ProjectItems\InstructionItem.cs" />
+    <Compile Include="Source\Utils\DataStructures\TrulyObservableCollection.cs" />
+    <Compile Include="Source\Utils\Dispatcher.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Source\Utils\Browser\NativeBrowser.cs" />
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
@@ -398,14 +401,6 @@
       <Project>{2dac1a31-ef28-499a-b67a-963b5343d778}</Project>
       <Name>Fasm.NET</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LiveCharts\Core\LiveCharts.csproj">
-      <Project>{d447642c-a85f-4ab0-96d9-c66cff91aada}</Project>
-      <Name>LiveCharts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LiveCharts\WpfView\WpfCharts.csproj">
-      <Project>{4d253423-ae05-47f6-a59d-9162ec0bb1f2}</Project>
-      <Name>WpfCharts</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Microsoft.Diagnostics.Runtime\Microsoft.Diagnostics.Runtime.csproj">
       <Project>{a82126ca-23aa-41f1-8586-a5938d44d0a7}</Project>
       <Name>Microsoft.Diagnostics.Runtime</Name>
@@ -429,10 +424,6 @@
     <ProjectReference Include="..\SqualrProxy\SqualrProxy.csproj">
       <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
       <Name>SqualrProxy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
-      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
-      <Name>WpfToolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>

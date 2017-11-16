@@ -3,9 +3,9 @@
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Source.Mvvm;
+    using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -36,7 +36,7 @@
             this.RemoveOffsetCommand = new RelayCommand(() => Task.Run(() => this.RemoveSelectedOffset()), () => true);
             this.UpdateActiveValueCommand = new RelayCommand<Int32>((offset) => Task.Run(() => this.UpdateActiveValue(offset)), (offset) => true);
             this.AccessLock = new Object();
-            this.Offsets = new ObservableCollection<PrimitiveBinding<Int32>>();
+            this.Offsets = new FullyObservableCollection<PrimitiveBinding<Int32>>();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@
         /// <summary>
         /// Gets or sets the collection of offsets.
         /// </summary>
-        public ObservableCollection<PrimitiveBinding<Int32>> Offsets
+        public FullyObservableCollection<PrimitiveBinding<Int32>> Offsets
         {
             get
             {
@@ -68,7 +68,7 @@
                         this.offsets = new List<PrimitiveBinding<Int32>>();
                     }
 
-                    return new ObservableCollection<PrimitiveBinding<Int32>>(this.offsets);
+                    return new FullyObservableCollection<PrimitiveBinding<Int32>>(this.offsets);
                 }
             }
 

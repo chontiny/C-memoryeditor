@@ -3,13 +3,12 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
-    xmlns:browseView="clr-namespace:SqualrStream.View.Browse"
     xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:coreView="clr-namespace:SqualrCore.View;assembly=SqualrCore"
     xmlns:docking="clr-namespace:SqualrCore.Source.Docking;assembly=SqualrCore"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
-    xmlns:libraryView="clr-namespace:SqualrStream.View.Browse.Library"
+    xmlns:libraryView="clr-namespace:SqualrStream.View.Library"
     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:view="clr-namespace:SqualrStream.View"
     x:Name="SqualrStreamWindow"
@@ -69,10 +68,8 @@
                 <shell:ColumnDefinition />
                 <!--  Buttons  -->
                 <shell:ColumnDefinition Width="Auto" />
-
             </shell:Grid.ColumnDefinitions>
             <shell:Grid Grid.Column="0">
-
                 <shell:Grid.ColumnDefinitions>
                     <shell:ColumnDefinition Width="Auto" />
                     <shell:ColumnDefinition Width="Auto" />
@@ -196,18 +193,6 @@
                         IsChecked="{Binding OutputViewModel.IsVisible, Mode=TwoWay}"
                         Style="{Binding}" />
                 </shell:MenuItem>
-
-                <!--  View Header  -->
-                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Developer">
-                    <shell:MenuItem
-                        Command="{Binding MainViewModel.LaunchDeveloperToolsCommand}"
-                        Header="Developer Tools"
-                        Style="{Binding}" />
-                    <shell:MenuItem
-                        Command="{Binding MainViewModel.LaunchDeveloperToolsAsAdminCommand}"
-                        Header="Developer Tools (admin)"
-                        Style="{Binding}" />
-                </shell:MenuItem>
             </shell:Menu>
         </shell:Grid>
 
@@ -269,7 +254,7 @@
                     <!--  Browse  -->
                     <view:ViewTemplateSelector.BrowseViewTemplate>
                         <shell:DataTemplate>
-                            <browseView:BrowseHome />
+                            <view:BrowseHome />
                         </shell:DataTemplate>
                     </view:ViewTemplateSelector.BrowseViewTemplate>
                     <!--  Library  -->

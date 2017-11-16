@@ -4,21 +4,18 @@
     using Snapshots;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
-    using SqualrCore.Content;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.VirtualMachines;
-    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using System.Windows.Media.Imaging;
 
     /// <summary>
     /// View model for the scan results.
@@ -65,7 +62,7 @@
         /// <summary>
         /// The addresses on the current page.
         /// </summary>
-        private ObservableCollection<ScanResult> addresses;
+        private FullyObservableCollection<ScanResult> addresses;
 
         /// <summary>
         /// The selected scan results.
@@ -91,7 +88,7 @@
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = typeof(Int32);
-            this.addresses = new ObservableCollection<ScanResult>();
+            this.addresses = new FullyObservableCollection<ScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
@@ -168,10 +165,13 @@
             set
             {
                 this.activeType = value;
+
+                // Update data type of addresses
+                this.Addresses?.ToArray().ForEach(address => address.DataType = this.ActiveType);
+
                 this.NotifyObservers();
                 this.RaisePropertyChanged(nameof(this.ActiveType));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeName));
-                this.RaisePropertyChanged(nameof(this.ActiveTypeImage));
             }
         }
 
@@ -183,41 +183,6 @@
             get
             {
                 return Conversions.TypeToName(this.ActiveType);
-            }
-        }
-
-        /// <summary>
-        /// Gets the image associated with the active data type.
-        /// </summary>
-        public BitmapSource ActiveTypeImage
-        {
-            get
-            {
-                switch (Type.GetTypeCode(this.ActiveType))
-                {
-                    case TypeCode.SByte:
-                        return Images.BlueBlocks1;
-                    case TypeCode.Int16:
-                        return Images.BlueBlocks2;
-                    case TypeCode.Int32:
-                        return Images.BlueBlocks4;
-                    case TypeCode.Int64:
-                        return Images.BlueBlocks8;
-                    case TypeCode.Byte:
-                        return Images.PurpleBlocks1;
-                    case TypeCode.UInt16:
-                        return Images.PurpleBlocks2;
-                    case TypeCode.UInt32:
-                        return Images.PurpleBlocks4;
-                    case TypeCode.UInt64:
-                        return Images.PurpleBlocks8;
-                    case TypeCode.Single:
-                        return Images.OrangeBlocks4;
-                    case TypeCode.Double:
-                        return Images.OrangeBlocks8;
-                    default:
-                        return null;
-                }
             }
         }
 
@@ -236,6 +201,54 @@
                 this.currentPage = value;
                 this.LoadScanResults();
                 this.RaisePropertyChanged(nameof(this.CurrentPage));
+                this.RaisePropertyChanged(nameof(this.CanNavigateFirst));
+                this.RaisePropertyChanged(nameof(this.CanNavigatePrevious));
+                this.RaisePropertyChanged(nameof(this.CanNavigateNext));
+                this.RaisePropertyChanged(nameof(this.CanNavigateLast));
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether first page navigation is available.
+        /// </summary>
+        public Boolean CanNavigateFirst
+        {
+            get
+            {
+                return this.PageCount > 0 && this.CurrentPage > 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether next page navigation is available.
+        /// </summary>
+        public Boolean CanNavigateNext
+        {
+            get
+            {
+                return this.CurrentPage < this.PageCount;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether previous page navigation is available.
+        /// </summary>
+        public Boolean CanNavigatePrevious
+        {
+            get
+            {
+                return this.CurrentPage > 0;
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether last page navigation is available.
+        /// </summary>
+        public Boolean CanNavigateLast
+        {
+            get
+            {
+                return this.PageCount > 0 && this.CurrentPage != this.PageCount;
             }
         }
 
@@ -288,7 +301,7 @@
         /// <summary>
         /// Gets the address elements.
         /// </summary>
-        public ObservableCollection<ScanResult> Addresses
+        public FullyObservableCollection<ScanResult> Addresses
         {
             get
             {
@@ -381,8 +394,8 @@
                     SnapshotElementIterator element = snapshot[index];
 
                     String label = element.GetElementLabel() != null ? element.GetElementLabel().ToString() : String.Empty;
-                    String currentValue = element.HasCurrentValue() ? element.GetCurrentValue().ToString() : String.Empty;
-                    String previousValue = element.HasPreviousValue() ? element.GetPreviousValue().ToString() : String.Empty;
+                    Object currentValue = element.HasCurrentValue() ? element.GetCurrentValue() : null;
+                    Object previousValue = element.HasPreviousValue() ? element.GetPreviousValue() : null;
 
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);
@@ -391,7 +404,7 @@
                 }
             }
 
-            this.Addresses = new ObservableCollection<ScanResult>(newAddresses);
+            this.Addresses = new FullyObservableCollection<ScanResult>(newAddresses);
 
             // Ensure results are visible
             this.IsVisible = true;
@@ -408,18 +421,9 @@
             {
                 while (true)
                 {
-                    Boolean hasUpdate = false;
-
-                    foreach (PointerItem pointer in this.Addresses.ToArray())
+                    foreach (ScanResult address in this.Addresses.ToArray())
                     {
-                        hasUpdate |= pointer.Update();
-                    }
-
-                    // This is a sidestep to a particular issue where we need to potentially perform RaisePropertyChanged for a {Binding Path=.} element, which is impossible.
-                    // We recreate the entire collection to force a re-render.
-                    if (hasUpdate)
-                    {
-                        this.Addresses = new ObservableCollection<ScanResult>(this.Addresses);
+                        address.Update();
                     }
 
                     Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);

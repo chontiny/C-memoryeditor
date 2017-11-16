@@ -4,8 +4,8 @@
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Utils.DataStructures;
     using System;
-    using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -174,7 +174,7 @@
         /// <summary>
         /// Gets the current set of scan constraints added to the manager.
         /// </summary>
-        public ObservableCollection<ScanConstraint> Constraints
+        public FullyObservableCollection<ScanConstraint> Constraints
         {
             get
             {
@@ -202,11 +202,11 @@
         /// <summary>
         /// Gets the current scan constraint, wrapped as a collection for easier display.
         /// </summary>
-        public ObservableCollection<ScanConstraint> ActiveScanConstraint
+        public FullyObservableCollection<ScanConstraint> ActiveScanConstraint
         {
             get
             {
-                return new ObservableCollection<ScanConstraint>(new ScanConstraint[] { this.CurrentScanConstraint });
+                return new FullyObservableCollection<ScanConstraint>(new ScanConstraint[] { this.CurrentScanConstraint });
             }
         }
 

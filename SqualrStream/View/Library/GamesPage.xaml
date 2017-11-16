@@ -1,5 +1,5 @@
 ﻿<UserControl
-    x:Class="SqualrStream.View.Browse.Library.GamesPage"
+    x:Class="SqualrStream.View.Library.GamesPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"

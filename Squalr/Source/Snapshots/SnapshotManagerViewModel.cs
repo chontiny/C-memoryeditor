@@ -2,8 +2,8 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Utils.DataStructures;
     using System;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -60,22 +60,22 @@
         /// <summary>
         /// Gets the snapshots taken during this scan session.
         /// </summary>
-        public ObservableCollection<Snapshot> Snapshots
+        public FullyObservableCollection<Snapshot> Snapshots
         {
             get
             {
-                return new ObservableCollection<Snapshot>(SnapshotManager.GetInstance().Snapshots);
+                return new FullyObservableCollection<Snapshot>(SnapshotManager.GetInstance().Snapshots);
             }
         }
 
         /// <summary>
         /// Gets the snapshots deleted during this scan session.
         /// </summary>
-        public ObservableCollection<Snapshot> DeletedSnapshots
+        public FullyObservableCollection<Snapshot> DeletedSnapshots
         {
             get
             {
-                return new ObservableCollection<Snapshot>(SnapshotManager.GetInstance().DeletedSnapshots.Reverse());
+                return new FullyObservableCollection<Snapshot>(SnapshotManager.GetInstance().DeletedSnapshots.Reverse());
             }
         }
 

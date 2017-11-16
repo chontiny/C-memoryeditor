@@ -151,6 +151,12 @@
     <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
       <HintPath>..\packages\AvalonEdit.5.0.3\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
     </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.2.0.0\lib\netstandard1.3\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
@@ -280,6 +286,12 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="Xceed.Wpf.DataGrid, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.2.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.2.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -478,18 +490,6 @@
       <Project>{78010aa2-1ecc-4cf6-87d0-c27578e79698}</Project>
       <Name>SqualrCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Deploy\Deploy.csproj">
-      <Project>{8b2579c2-faa1-4cc7-a48e-2b6d4901c503}</Project>
-      <Name>Deploy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LiveCharts\Core\LiveCharts.csproj">
-      <Project>{d447642c-a85f-4ab0-96d9-c66cff91aada}</Project>
-      <Name>LiveCharts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LiveCharts\WpfView\WpfCharts.csproj">
-      <Project>{4D253423-AE05-47F6-A59D-9162EC0BB1F2}</Project>
-      <Name>WpfCharts</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Microsoft.Diagnostics.Runtime\Microsoft.Diagnostics.Runtime.csproj">
       <Project>{A82126CA-23AA-41F1-8586-A5938D44D0A7}</Project>
       <Name>Microsoft.Diagnostics.Runtime</Name>
@@ -513,10 +513,6 @@
     <ProjectReference Include="..\SqualrProxy\SqualrProxy.csproj">
       <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
       <Name>SqualrProxy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WpfToolkit\WpfToolkit.csproj">
-      <Project>{72e591d6-8f83-4d8c-8f67-9c325e623234}</Project>
-      <Name>WpfToolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>

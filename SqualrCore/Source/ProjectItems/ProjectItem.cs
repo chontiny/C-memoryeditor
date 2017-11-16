@@ -242,6 +242,11 @@
         }
 
         /// <summary>
+        /// Gets the display value to represent this project item.
+        /// </summary>
+        public virtual String DisplayValue { get { return String.Empty; } }
+
+        /// <summary>
         /// Gets the image associated with this project item.
         /// </summary>
         [Browsable(false)]
@@ -276,8 +281,7 @@
         /// <summary>
         /// Updates event for this project item.
         /// </summary>
-        /// <returns>True if update was made, otherwise false.</returns>
-        public abstract Boolean Update();
+        public abstract void Update();
 
         /// <summary>
         /// Clones the project item.
