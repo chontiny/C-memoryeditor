@@ -151,6 +151,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Source\Docking\DockingViewModel.cs" />
+    <Compile Include="Source\Docking\WindowHostViewModel.cs" />
     <Compile Include="Source\Engine\Processes\Windows\Native\NativeMethods.cs" />
     <Compile Include="Source\Engine\Processes\Windows\WindowsAdapter.cs" />
     <Compile Include="Source\Engine\VirtualMemory\Windows\PEB\ManagedPeb.cs" />

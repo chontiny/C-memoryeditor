@@ -68,10 +68,8 @@
                 <shell:ColumnDefinition />
                 <!--  Buttons  -->
                 <shell:ColumnDefinition Width="Auto" />
-
             </shell:Grid.ColumnDefinitions>
             <shell:Grid Grid.Column="0">
-
                 <shell:Grid.ColumnDefinitions>
                     <shell:ColumnDefinition Width="Auto" />
                     <shell:ColumnDefinition Width="Auto" />
@@ -193,18 +191,6 @@
                         Header="Output"
                         IsCheckable="True"
                         IsChecked="{Binding OutputViewModel.IsVisible, Mode=TwoWay}"
-                        Style="{Binding}" />
-                </shell:MenuItem>
-
-                <!--  View Header  -->
-                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Developer">
-                    <shell:MenuItem
-                        Command="{Binding MainViewModel.LaunchDeveloperToolsCommand}"
-                        Header="Developer Tools"
-                        Style="{Binding}" />
-                    <shell:MenuItem
-                        Command="{Binding MainViewModel.LaunchDeveloperToolsAsAdminCommand}"
-                        Header="Developer Tools (admin)"
                         Style="{Binding}" />
                 </shell:MenuItem>
             </shell:Menu>
