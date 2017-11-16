@@ -102,7 +102,7 @@
         /// <param name="resource">Resource to load the layout from. This is optional.</param>
         public void LoadLayoutFromResource(DockingManager dockManager, String resource)
         {
-            String layoutResource = Assembly.GetExecutingAssembly().GetManifestResourceNames()
+            String layoutResource = Assembly.GetEntryAssembly().GetManifestResourceNames()
                 .SingleOrDefault(resourceName => resourceName.EndsWith(resource));
 
             if (layoutResource.IsNullOrEmpty())
@@ -114,7 +114,7 @@
             try
             {
                 // Attempt to load layout from resource name
-                using (Stream stream = Assembly.GetEntryAssembly().GetManifestResourceStream(resource))
+                using (Stream stream = Assembly.GetEntryAssembly().GetManifestResourceStream(layoutResource))
                 {
                     if (stream != null)
                     {
