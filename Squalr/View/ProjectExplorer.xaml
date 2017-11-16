@@ -59,7 +59,7 @@
                 Background="{StaticResource SqualrColorGray27}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 Foreground="{StaticResource SqualrColorWhite}">
-                <MenuItem BorderThickness="0" ToolTip="Add New Item">
+                <MenuItem ToolTip="Add New Item">
                     <MenuItem.Header>
                         <StackPanel Orientation="Horizontal">
                             <Image

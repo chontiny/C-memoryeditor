@@ -55,7 +55,7 @@
                         </MenuItem.Header>
                     </MenuItem>
                     <Separator Style="{DynamicResource VerticalSeparator}" />
-                    <MenuItem BorderThickness="0" ToolTip="Scan Type">
+                    <MenuItem ToolTip="Scan Type">
                         <MenuItem.Header>
                             <StackPanel Orientation="Horizontal">
                                 <Image

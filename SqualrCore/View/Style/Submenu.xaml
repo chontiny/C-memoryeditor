@@ -5,60 +5,64 @@
 
     <ControlTemplate x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}" TargetType="{x:Type MenuItem}">
         <Border
-            Name="Border"
-            Padding="3,0,3,0"
             Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
             BorderThickness="0"
             SnapsToDevicePixels="True">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" SharedSizeGroup="Icon" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut" />
-                    <ColumnDefinition Width="13" />
-                </Grid.ColumnDefinitions>
-                <ContentPresenter
-                    Name="Icon"
-                    Margin="6,0,6,0"
-                    VerticalAlignment="Center"
-                    ContentSource="Icon" />
-                <Border
-                    Name="EmptyCheck"
-                    Width="26"
-                    Height="13"
-                    Visibility="Collapsed" />
-                <Border
-                    Name="Check"
-                    Width="13"
-                    Height="13"
-                    Margin="6,0,6,0"
-                    Background="Black"
-                    BorderBrush="#0087d2"
-                    BorderThickness="1"
-                    Visibility="Collapsed">
-                    <Path
-                        Name="CheckMark"
-                        Width="7"
-                        Height="7"
-                        Data="M 0 0 L 7 7 M 0 7 L 7 0"
-                        SnapsToDevicePixels="False"
-                        Stroke="#0087d2"
-                        StrokeThickness="2"
-                        Visibility="Hidden" />
-                </Border>
-                <ContentPresenter
-                    Name="HeaderHost"
-                    Grid.Column="1"
-                    ContentSource="Header"
-                    RecognizesAccessKey="True" />
-                <TextBlock
-                    x:Name="InputGestureText"
-                    Grid.Column="2"
-                    Margin="5,2,0,2"
-                    DockPanel.Dock="Right"
-                    Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
-                    Text="{TemplateBinding InputGestureText}" />
-            </Grid>
+            <Border
+                Name="SubItemTemplateRoot"
+                Padding="4,2,4,2"
+                BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Icon" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" SharedSizeGroup="Shortcut" />
+                    </Grid.ColumnDefinitions>
+                    <ContentPresenter
+                        Name="Icon"
+                        VerticalAlignment="Center"
+                        ContentSource="Icon" />
+                    <Border
+                        Name="EmptyCheck"
+                        Width="26"
+                        Height="13"
+                        VerticalAlignment="Center"
+                        Visibility="Collapsed" />
+                    <Border
+                        Name="Check"
+                        Width="13"
+                        Height="13"
+                        Margin="0,0,4,0"
+                        VerticalAlignment="Center"
+                        Background="Black"
+                        BorderBrush="#0087d2"
+                        BorderThickness="1"
+                        Visibility="Collapsed">
+                        <Path
+                            Name="CheckMark"
+                            Width="7"
+                            Height="7"
+                            Data="M 0 0 L 7 7 M 0 7 L 7 0"
+                            SnapsToDevicePixels="False"
+                            Stroke="#0087d2"
+                            StrokeThickness="2"
+                            Visibility="Hidden" />
+                    </Border>
+                    <ContentPresenter
+                        Name="HeaderHost"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        ContentSource="Header"
+                        RecognizesAccessKey="True" />
+                    <TextBlock
+                        x:Name="InputGestureText"
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        DockPanel.Dock="Right"
+                        Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}"
+                        Text="{TemplateBinding InputGestureText}" />
+                </Grid>
+            </Border>
         </Border>
         <ControlTemplate.Triggers>
             <Trigger Property="IsChecked" Value="true">
@@ -71,7 +75,8 @@
                 <Setter TargetName="EmptyCheck" Property="Visibility" Value="Visible" />
             </Trigger>
             <Trigger Property="IsHighlighted" Value="true">
-                <Setter TargetName="Border" Property="Background" Value="#5082a4" />
+                <Setter TargetName="SubItemTemplateRoot" Property="Background" Value="#3D26A0DA" />
+                <Setter TargetName="SubItemTemplateRoot" Property="BorderBrush" Value="#FF26A0DA" />
             </Trigger>
             <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Foreground" Value="#0f3c5a" />
