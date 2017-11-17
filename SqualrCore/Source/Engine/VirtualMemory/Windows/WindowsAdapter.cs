@@ -96,40 +96,40 @@
         /// <param name="address">The address where the value is read</param>
         /// <param name="success">Whether or not the read succeeded</param>
         /// <returns>A value.</returns>
-        public Object Read(Type valueType, IntPtr address, out Boolean success)
+        public Object Read(DataType valueType, IntPtr address, out Boolean success)
         {
             Object value;
 
-            switch (Type.GetTypeCode(valueType))
+            switch (valueType)
             {
-                case TypeCode.Byte:
+                case DataType type when type == typeof(Byte):
                     value = this.Read<Byte>(address, out success);
                     break;
-                case TypeCode.SByte:
+                case DataType type when type == typeof(SByte):
                     value = this.Read<SByte>(address, out success);
                     break;
-                case TypeCode.Int16:
+                case DataType type when type == typeof(Int16):
                     value = this.Read<Int16>(address, out success);
                     break;
-                case TypeCode.Int32:
+                case DataType type when type == typeof(Int32):
                     value = this.Read<Int32>(address, out success);
                     break;
-                case TypeCode.Int64:
+                case DataType type when type == typeof(Int64):
                     value = this.Read<Int64>(address, out success);
                     break;
-                case TypeCode.UInt16:
+                case DataType type when type == typeof(UInt16):
                     value = this.Read<UInt16>(address, out success);
                     break;
-                case TypeCode.UInt32:
+                case DataType type when type == typeof(UInt32):
                     value = this.Read<UInt32>(address, out success);
                     break;
-                case TypeCode.UInt64:
+                case DataType type when type == typeof(UInt64):
                     value = this.Read<UInt64>(address, out success);
                     break;
-                case TypeCode.Single:
+                case DataType type when type == typeof(Single):
                     value = this.Read<Single>(address, out success);
                     break;
-                case TypeCode.Double:
+                case DataType type when type == typeof(Double):
                     value = this.Read<Double>(address, out success);
                     break;
                 default:
@@ -155,7 +155,7 @@
         /// <returns>A value.</returns>
         public T Read<T>(IntPtr address, out Boolean success)
         {
-            Byte[] byteArray = this.ReadBytes(address, Conversions.GetTypeSize<T>(), out success);
+            Byte[] byteArray = this.ReadBytes(address, Conversions.GetTypeSize(typeof(T)), out success);
             return Conversions.BytesToObject<T>(byteArray);
         }
 
@@ -200,43 +200,50 @@
         /// <param name="elementType">The data type to write</param>
         /// <param name="address">The address to write to</param>
         /// <param name="value">The value to write</param>
-        public void Write(Type elementType, IntPtr address, Object value)
+        public void Write(DataType elementType, IntPtr address, Object value)
         {
-            switch (Type.GetTypeCode(elementType))
+            Byte[] bytes;
+
+            switch (elementType)
             {
-                case TypeCode.Byte:
-                    this.Write<Byte>(address, (Byte)value);
+                case DataType type when type == typeof(Byte) || type == typeof(Boolean):
+                    bytes = BitConverter.GetBytes((Byte)value);
                     break;
-                case TypeCode.SByte:
-                    this.Write<SByte>(address, (SByte)value);
+                case DataType type when type == typeof(SByte):
+                    bytes = BitConverter.GetBytes((SByte)value);
                     break;
-                case TypeCode.Int16:
-                    this.Write<Int16>(address, (Int16)value);
+                case DataType type when type == typeof(Char):
+                    bytes = Encoding.UTF8.GetBytes(new Char[] { (Char)value });
                     break;
-                case TypeCode.Int32:
-                    this.Write<Int32>(address, (Int32)value);
+                case DataType type when type == typeof(Int16):
+                    bytes = BitConverter.GetBytes((Int16)value);
                     break;
-                case TypeCode.Int64:
-                    this.Write<Int64>(address, (Int64)value);
+                case DataType type when type == typeof(Int32):
+                    bytes = BitConverter.GetBytes((Int32)value);
                     break;
-                case TypeCode.UInt16:
-                    this.Write<UInt16>(address, (UInt16)value);
+                case DataType type when type == typeof(Int64):
+                    bytes = BitConverter.GetBytes((Int64)value);
                     break;
-                case TypeCode.UInt32:
-                    this.Write<UInt32>(address, (UInt32)value);
+                case DataType type when type == typeof(UInt16):
+                    bytes = BitConverter.GetBytes((UInt16)value);
                     break;
-                case TypeCode.UInt64:
-                    this.Write<UInt64>(address, (UInt64)value);
+                case DataType type when type == typeof(UInt32):
+                    bytes = BitConverter.GetBytes((UInt32)value);
                     break;
-                case TypeCode.Single:
-                    this.Write<Single>(address, (Single)value);
+                case DataType type when type == typeof(UInt64):
+                    bytes = BitConverter.GetBytes((UInt64)value);
                     break;
-                case TypeCode.Double:
-                    this.Write<Double>(address, (Double)value);
+                case DataType type when type == typeof(Single):
+                    bytes = BitConverter.GetBytes((Single)value);
+                    break;
+                case DataType type when type == typeof(Double):
+                    bytes = BitConverter.GetBytes((Double)value);
                     break;
                 default:
                     throw new ArgumentException("Invalid type provided");
             }
+
+            this.WriteBytes(address, bytes);
         }
 
         /// <summary>
@@ -247,48 +254,7 @@
         /// <param name="value">The value to write.</param>
         public void Write<T>(IntPtr address, T value)
         {
-            Byte[] bytes;
-            switch (Type.GetTypeCode(typeof(T)))
-            {
-                case TypeCode.Boolean:
-                case TypeCode.Byte:
-                    bytes = BitConverter.GetBytes((Byte)(Object)value);
-                    break;
-                case TypeCode.SByte:
-                    bytes = BitConverter.GetBytes((SByte)(Object)value);
-                    break;
-                case TypeCode.Char:
-                    bytes = Encoding.UTF8.GetBytes(new Char[] { (Char)(Object)value });
-                    break;
-                case TypeCode.Double:
-                    bytes = BitConverter.GetBytes((Double)(Object)value);
-                    break;
-                case TypeCode.Int16:
-                    bytes = BitConverter.GetBytes((Int16)(Object)value);
-                    break;
-                case TypeCode.Int32:
-                    bytes = BitConverter.GetBytes((Int32)(Object)value);
-                    break;
-                case TypeCode.Int64:
-                    bytes = BitConverter.GetBytes((Int64)(Object)value);
-                    break;
-                case TypeCode.Single:
-                    bytes = BitConverter.GetBytes((Single)(Object)value);
-                    break;
-                case TypeCode.UInt16:
-                    bytes = BitConverter.GetBytes((UInt16)(Object)value);
-                    break;
-                case TypeCode.UInt32:
-                    bytes = BitConverter.GetBytes((UInt32)(Object)value);
-                    break;
-                case TypeCode.UInt64:
-                    bytes = BitConverter.GetBytes((UInt64)(Object)value);
-                    break;
-                default:
-                    throw new ArgumentException("Invalid type provided");
-            }
-
-            this.WriteBytes(address, bytes);
+            this.Write(typeof(T), address, (Object)value);
         }
 
         /// <summary>

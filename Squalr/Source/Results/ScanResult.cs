@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Results
 {
     using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.Utils;
     using System;
     using System.ComponentModel;
 
@@ -27,7 +28,7 @@
         /// <param name="value">The initial value of this result.</param>
         /// <param name="previousValue">The previous scan value.</param>
         /// <param name="label">The label of this result.</param>
-        public ScanResult(String moduleName, IntPtr baseAddress, Type dataType, Object value, Object previousValue, String label) : base(baseAddress, dataType, moduleName: moduleName, value: value)
+        public ScanResult(String moduleName, IntPtr baseAddress, DataType dataType, Object value, Object previousValue, String label) : base(baseAddress, dataType, moduleName: moduleName, value: value)
         {
             this.PreviousValue = previousValue;
             this.Label = label;

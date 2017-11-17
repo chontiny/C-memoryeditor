@@ -89,7 +89,7 @@
         /// Updates the active type.
         /// </summary>
         /// <param name="activeType">The new active type.</param>
-        public void Update(Type activeType)
+        public void Update(DataType activeType)
         {
             this.PointerRescanValueHexDecBox.ElementType = activeType;
         }

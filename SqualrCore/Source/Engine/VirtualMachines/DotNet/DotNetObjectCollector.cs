@@ -10,7 +10,6 @@
     using System.Linq;
     using System.Reflection;
     using System.Threading;
-    using Utils;
     using Utils.Extensions;
 
     /// <summary>
@@ -134,7 +133,7 @@
                 foreach (UInt64 rootRef in proxyService.GetRoots())
                 {
                     String rootName = proxyService.GetRootName(rootRef);
-                    Type rootType = Conversions.TypeCodeToType((TypeCode)proxyService.GetRootType(rootRef));
+                    Type rootType = this.TypeCodeToType((TypeCode)proxyService.GetRootType(rootRef));
 
                     if (rootRef == 0 || rootName == null)
                     {
@@ -211,7 +210,7 @@
                 DotNetObject childObject = new DotNetObject(
                     parent,
                     parent.ObjectReference.ToIntPtr().Add(proxyService.GetFieldOffset(fieldRef)).ToUInt64(),
-                    Conversions.TypeCodeToType((TypeCode)proxyService.GetFieldType(fieldRef)),
+                    this.TypeCodeToType((TypeCode)proxyService.GetFieldType(fieldRef)),
                     proxyService.GetFieldName(fieldRef));
                 parent.Children.Add(childObject);
             }
@@ -226,7 +225,7 @@
 
                 visited.Add(childObjectRef);
 
-                Type type = Conversions.TypeCodeToType((TypeCode)proxyService.GetObjectType(childObjectRef));
+                Type type = this.TypeCodeToType((TypeCode)proxyService.GetObjectType(childObjectRef));
 
                 if (type == null || excludedNameSpaces.Any(X => type.Name.StartsWith(X, StringComparison.OrdinalIgnoreCase)))
                 {
@@ -239,6 +238,61 @@
             }
 
             parent.Children.Sort();
+        }
+
+        /// <summary>
+        /// Gets the type from the given type code.
+        /// </summary>
+        /// <param name="typeCode">The type code.</param>
+        /// <returns>Returns the data type, or null if the conversion is not possible.</returns>
+        private Type TypeCodeToType(TypeCode? typeCode)
+        {
+            if (typeCode == null)
+            {
+                return null;
+            }
+
+            switch (typeCode)
+            {
+                case TypeCode.Boolean:
+                    return typeof(Boolean);
+                case TypeCode.Byte:
+                    return typeof(Byte);
+                case TypeCode.Char:
+                    return typeof(Char);
+                case TypeCode.DateTime:
+                    return typeof(DateTime);
+                case TypeCode.DBNull:
+                    return typeof(DBNull);
+                case TypeCode.Decimal:
+                    return typeof(Decimal);
+                case TypeCode.Double:
+                    return typeof(Double);
+                case TypeCode.Int16:
+                    return typeof(Int16);
+                case TypeCode.Int32:
+                    return typeof(Int32);
+                case TypeCode.Int64:
+                    return typeof(Int64);
+                case TypeCode.Object:
+                    return typeof(Object);
+                case TypeCode.SByte:
+                    return typeof(SByte);
+                case TypeCode.Single:
+                    return typeof(Single);
+                case TypeCode.String:
+                    return typeof(String);
+                case TypeCode.UInt16:
+                    return typeof(UInt16);
+                case TypeCode.UInt32:
+                    return typeof(UInt32);
+                case TypeCode.UInt64:
+                    return typeof(UInt64);
+                default:
+                    break;
+            }
+
+            return null;
         }
     }
     //// End class

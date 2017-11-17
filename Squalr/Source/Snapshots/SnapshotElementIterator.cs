@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Scanners.ScanConstraints;
+    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Runtime.CompilerServices;
@@ -215,9 +216,9 @@
         }
 
         /// <summary>
-        /// Gets or sets the type code associated with the data type of this element.
+        /// Gets or sets the data type of this element.
         /// </summary>
-        private TypeCode CurrentTypeCode { get; set; }
+        private DataType DataType { get; set; }
 
         /// <summary>
         /// Sets the valid bit of this element.
@@ -305,7 +306,7 @@
         private unsafe void InitializePointers(Int32 index = 0)
         {
             this.CurrentLabelIndex = index;
-            this.CurrentTypeCode = Type.GetTypeCode(this.Parent.ElementType);
+            this.DataType = this.Parent.ElementType;
 
             if (this.Parent.CurrentValues != null && this.Parent.CurrentValues.Length > 0)
             {
@@ -337,9 +338,9 @@
         /// </summary>
         private unsafe void SetConstraintFunctions()
         {
-            switch (this.CurrentTypeCode)
+            switch (this.DataType)
             {
-                case TypeCode.Byte:
+                case DataType type when type == typeof(Byte):
                     this.Changed = () => { return *this.CurrentValuePointer != *this.PreviousValuePointer; };
                     this.Unchanged = () => { return *this.CurrentValuePointer == *this.PreviousValuePointer; };
                     this.Increased = () => { return *this.CurrentValuePointer > *this.PreviousValuePointer; };
@@ -354,7 +355,7 @@
                     this.DecreasedByValue = (value) => { return *this.CurrentValuePointer == unchecked(*this.PreviousValuePointer - (Byte)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case TypeCode.SByte:
+                case DataType type when type == typeof(SByte):
                     this.Changed = () => { return *(SByte*)this.CurrentValuePointer != *(SByte*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(SByte*)this.CurrentValuePointer == *(SByte*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(SByte*)this.CurrentValuePointer > *(SByte*)this.PreviousValuePointer; };
@@ -369,7 +370,7 @@
                     this.DecreasedByValue = (value) => { return *(SByte*)this.CurrentValuePointer == unchecked(*(SByte*)this.PreviousValuePointer - (SByte)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case TypeCode.Int16:
+                case DataType type when type == typeof(Int16):
                     this.Changed = () => { return *(Int16*)this.CurrentValuePointer != *(Int16*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(Int16*)this.CurrentValuePointer == *(Int16*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(Int16*)this.CurrentValuePointer > *(Int16*)this.PreviousValuePointer; };
@@ -384,7 +385,7 @@
                     this.DecreasedByValue = (value) => { return *(Int16*)this.CurrentValuePointer == unchecked(*(Int16*)this.PreviousValuePointer - (Int16)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case TypeCode.Int32:
+                case DataType type when type == typeof(Int32):
                     this.Changed = () => { return *(Int32*)this.CurrentValuePointer != *(Int32*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(Int32*)this.CurrentValuePointer == *(Int32*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(Int32*)this.CurrentValuePointer > *(Int32*)this.PreviousValuePointer; };
@@ -399,7 +400,7 @@
                     this.DecreasedByValue = (value) => { return *(Int32*)this.CurrentValuePointer == unchecked(*(Int32*)this.PreviousValuePointer - (Int32)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case TypeCode.Int64:
+                case DataType type when type == typeof(Int64):
                     this.Changed = () => { return *(Int64*)this.CurrentValuePointer != *(Int64*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(Int64*)this.CurrentValuePointer == *(Int64*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(Int64*)this.CurrentValuePointer > *(Int64*)this.PreviousValuePointer; };
@@ -414,7 +415,7 @@
                     this.DecreasedByValue = (value) => { return *(Int64*)this.CurrentValuePointer == unchecked(*(Int64*)this.PreviousValuePointer - (Int64)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case TypeCode.UInt16:
+                case DataType type when type == typeof(UInt16):
                     this.Changed = () => { return *(UInt16*)this.CurrentValuePointer != *(UInt16*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(UInt16*)this.CurrentValuePointer == *(UInt16*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(UInt16*)this.CurrentValuePointer > *(UInt16*)this.PreviousValuePointer; };
@@ -429,7 +430,7 @@
                     this.DecreasedByValue = (value) => { return *(UInt16*)this.CurrentValuePointer == unchecked(*(UInt16*)this.PreviousValuePointer - (UInt16)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case TypeCode.UInt32:
+                case DataType type when type == typeof(UInt32):
                     this.Changed = () => { return *(UInt32*)this.CurrentValuePointer != *(UInt32*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(UInt32*)this.CurrentValuePointer == *(UInt32*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(UInt32*)this.CurrentValuePointer > *(UInt32*)this.PreviousValuePointer; };
@@ -444,7 +445,7 @@
                     this.DecreasedByValue = (value) => { return *(UInt32*)this.CurrentValuePointer == unchecked(*(UInt32*)this.PreviousValuePointer - (UInt32)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case TypeCode.UInt64:
+                case DataType type when type == typeof(UInt64):
                     this.Changed = () => { return *(UInt64*)this.CurrentValuePointer != *(UInt64*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(UInt64*)this.CurrentValuePointer == *(UInt64*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(UInt64*)this.CurrentValuePointer > *(UInt64*)this.PreviousValuePointer; };
@@ -459,7 +460,7 @@
                     this.DecreasedByValue = (value) => { return *(UInt64*)this.CurrentValuePointer == unchecked(*(UInt64*)this.PreviousValuePointer - (UInt64)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case TypeCode.Single:
+                case DataType type when type == typeof(Single):
                     this.Changed = () => { return !(*(Single*)this.CurrentValuePointer).AlmostEquals(*(Single*)this.PreviousValuePointer); };
                     this.Unchanged = () => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(*(Single*)this.PreviousValuePointer); };
                     this.Increased = () => { return *(Single*)this.CurrentValuePointer > *(Single*)this.PreviousValuePointer; };
@@ -474,7 +475,7 @@
                     this.DecreasedByValue = (value) => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Single*)this.PreviousValuePointer - (Single)value)); };
                     this.IsScientificNotation = () => { return (*this.CurrentValuePointer).ToString().Contains("E"); };
                     break;
-                case TypeCode.Double:
+                case DataType type when type == typeof(Double):
                     this.Changed = () => { return !(*(Double*)this.CurrentValuePointer).AlmostEquals(*(Double*)this.PreviousValuePointer); };
                     this.Unchanged = () => { return (*(Double*)this.CurrentValuePointer).AlmostEquals(*(Double*)this.PreviousValuePointer); };
                     this.Increased = () => { return *(Double*)this.CurrentValuePointer > *(Double*)this.PreviousValuePointer; };
@@ -643,27 +644,27 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private unsafe Object LoadValue(Byte* array)
         {
-            switch (this.CurrentTypeCode)
+            switch (this.DataType)
             {
-                case TypeCode.Byte:
+                case DataType type when type == typeof(Byte):
                     return *array;
-                case TypeCode.SByte:
+                case DataType type when type == typeof(SByte):
                     return *(SByte*)array;
-                case TypeCode.Int16:
+                case DataType type when type == typeof(Int16):
                     return *(Int16*)array;
-                case TypeCode.Int32:
+                case DataType type when type == typeof(Int32):
                     return *(Int32*)array;
-                case TypeCode.Int64:
+                case DataType type when type == typeof(Int64):
                     return *(Int64*)array;
-                case TypeCode.UInt16:
+                case DataType type when type == typeof(UInt16):
                     return *(UInt16*)array;
-                case TypeCode.UInt32:
+                case DataType type when type == typeof(UInt32):
                     return *(UInt32*)array;
-                case TypeCode.UInt64:
+                case DataType type when type == typeof(UInt64):
                     return *(UInt64*)array;
-                case TypeCode.Single:
+                case DataType type when type == typeof(Single):
                     return *(Single*)array;
-                case TypeCode.Double:
+                case DataType type when type == typeof(Double):
                     return *(Double*)array;
                 default:
                     throw new ArgumentException();

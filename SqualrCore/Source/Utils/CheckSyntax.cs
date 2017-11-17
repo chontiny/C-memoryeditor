@@ -49,34 +49,34 @@
         /// <param name="valueType">The type of the given value</param>
         /// <param name="value">The value to be parsed</param>
         /// <returns>A boolean indicating if the value is parseable</returns>
-        public static Boolean CanParseValue(Type valueType, String value)
+        public static Boolean CanParseValue(DataType valueType, String value)
         {
-            if (valueType == null)
+            if (valueType == (DataType)null)
             {
                 return false;
             }
 
-            switch (Type.GetTypeCode(valueType))
+            switch (valueType)
             {
-                case TypeCode.Byte:
+                case DataType type when type == typeof(Byte):
                     return CheckSyntax.IsByte(value);
-                case TypeCode.SByte:
+                case DataType type when type == typeof(SByte):
                     return CheckSyntax.IsSByte(value);
-                case TypeCode.Int16:
+                case DataType type when type == typeof(Int16):
                     return CheckSyntax.IsInt16(value);
-                case TypeCode.Int32:
+                case DataType type when type == typeof(Int32):
                     return CheckSyntax.IsInt32(value);
-                case TypeCode.Int64:
+                case DataType type when type == typeof(Int64):
                     return CheckSyntax.IsInt64(value);
-                case TypeCode.UInt16:
+                case DataType type when type == typeof(UInt16):
                     return CheckSyntax.IsUInt16(value);
-                case TypeCode.UInt32:
+                case DataType type when type == typeof(UInt32):
                     return CheckSyntax.IsUInt32(value);
-                case TypeCode.UInt64:
+                case DataType type when type == typeof(UInt64):
                     return CheckSyntax.IsUInt64(value);
-                case TypeCode.Single:
+                case DataType type when type == typeof(Single):
                     return CheckSyntax.IsSingle(value);
-                case TypeCode.Double:
+                case DataType type when type == typeof(Double):
                     return CheckSyntax.IsDouble(value);
                 default:
                     return false;
@@ -89,7 +89,7 @@
         /// <param name="valueType">The type of the given value</param>
         /// <param name="value">The value to be parsed</param>
         /// <returns>A boolean indicating if the value is parseable as hex</returns>
-        public static Boolean CanParseHex(Type valueType, String value)
+        public static Boolean CanParseHex(DataType valueType, String value)
         {
             if (value == null)
             {
@@ -109,12 +109,9 @@
             }
 
             // Remove negative sign from signed integer types, as TryParse methods do not handle negative hex values
-            switch (Type.GetTypeCode(valueType))
+            switch (valueType)
             {
-                case TypeCode.Byte:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
+                case DataType type when type == typeof(Byte) || type == typeof(Int16) || type == typeof(Int32) || type == typeof(Int64):
                     if (value.StartsWith("-"))
                     {
                         value = value.Substring(1);
@@ -125,27 +122,27 @@
                     break;
             }
 
-            switch (Type.GetTypeCode(valueType))
+            switch (valueType)
             {
-                case TypeCode.Byte:
+                case DataType type when type == typeof(Byte):
                     return IsByte(value, true);
-                case TypeCode.SByte:
+                case DataType type when type == typeof(SByte):
                     return IsSByte(value, true);
-                case TypeCode.Int16:
+                case DataType type when type == typeof(Int16):
                     return IsInt16(value, true);
-                case TypeCode.Int32:
+                case DataType type when type == typeof(Int32):
                     return IsInt32(value, true);
-                case TypeCode.Int64:
+                case DataType type when type == typeof(Int64):
                     return IsInt64(value, true);
-                case TypeCode.UInt16:
+                case DataType type when type == typeof(UInt16):
                     return IsUInt16(value, true);
-                case TypeCode.UInt32:
+                case DataType type when type == typeof(UInt32):
                     return IsUInt32(value, true);
-                case TypeCode.UInt64:
+                case DataType type when type == typeof(UInt64):
                     return IsUInt64(value, true);
-                case TypeCode.Single:
+                case DataType type when type == typeof(Single):
                     return IsSingle(value, true);
-                case TypeCode.Double:
+                case DataType type when type == typeof(Double):
                     return IsDouble(value, true);
                 default:
                     return false;

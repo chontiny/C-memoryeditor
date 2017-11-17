@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.Engine.VirtualMemory
 {
     using Processes;
+    using SqualrCore.Source.Utils;
     using System;
     using System.Collections.Generic;
 
@@ -112,7 +113,7 @@
         /// <param name="address">The address to read from.</param>
         /// <param name="success">Whether or not the read succeeded.</param>
         /// <returns>The value read from memory.</returns>
-        Object Read(Type elementType, IntPtr address, out Boolean success);
+        Object Read(DataType elementType, IntPtr address, out Boolean success);
 
         /// <summary>
         /// Reads a value from the opened processes memory.
@@ -138,7 +139,7 @@
         /// <param name="elementType">The data type to write.</param>
         /// <param name="address">The address to write to.</param>
         /// <param name="value">The value to write.</param>
-        void Write(Type elementType, IntPtr address, Object value);
+        void Write(DataType elementType, IntPtr address, Object value);
 
         /// <summary>
         /// Writes a value to memory in the opened process.

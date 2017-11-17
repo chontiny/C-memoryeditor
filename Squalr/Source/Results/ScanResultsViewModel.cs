@@ -155,7 +155,7 @@
         /// <summary>
         /// Gets or sets the active scan results data type.
         /// </summary>
-        public Type ActiveType
+        public DataType ActiveType
         {
             get
             {
@@ -182,7 +182,7 @@
         {
             get
             {
-                return Conversions.TypeToName(this.ActiveType);
+                return Conversions.DataTypeToName(this.ActiveType);
             }
         }
 
@@ -435,7 +435,7 @@
         /// Changes the active scan results type.
         /// </summary>
         /// <param name="newType">The new scan results type.</param>
-        private void ChangeType(Type newType)
+        private void ChangeType(DataType newType)
         {
             this.ActiveType = newType;
         }

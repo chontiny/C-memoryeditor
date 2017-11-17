@@ -57,7 +57,7 @@
         /// <param name="isValueHex">A value indicating whether the value at this address should be displayed as hex.</param>
         /// <param name="value">The value at this address. If none provided, it will be figured out later. Used here to allow immediate view updates upon creation.</param>
         public AddressItem(
-            Type dataType,
+            DataType dataType,
             String description = "New Address",
             Boolean isValueHex = false,
             Object value = null)
@@ -197,9 +197,7 @@
         /// <summary>
         /// Gets the display value for this project item, which is the address value.
         /// </summary>
-        [Browsable(true)]
-        [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether the value is displayed as hexedecimal")]
+        [Browsable(false)]
         public override String DisplayValue { get { return this.AddressValue?.ToString() ?? String.Empty; } }
 
         /// <summary>

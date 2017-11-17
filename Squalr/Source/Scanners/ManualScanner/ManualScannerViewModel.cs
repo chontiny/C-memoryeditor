@@ -4,6 +4,7 @@
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Threading;
@@ -267,7 +268,7 @@
         /// Updates the active type.
         /// </summary>
         /// <param name="activeType">The new active type.</param>
-        public void Update(Type activeType)
+        public void Update(DataType activeType)
         {
             // Create a temporary manager to update our current constraint
             ScanConstraintManager manager = new ScanConstraintManager();

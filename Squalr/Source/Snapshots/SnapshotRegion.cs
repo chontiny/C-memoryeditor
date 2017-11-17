@@ -72,7 +72,7 @@
         /// <summary>
         /// Gets or sets the data type of the elements of this region.
         /// </summary>
-        public Type ElementType { get; set; }
+        public DataType ElementType { get; set; }
 
         /// <summary>
         /// Gets or sets the data type of the labels of this region.
@@ -306,27 +306,27 @@
         private Int32 GetElementSize()
         {
             // Switch on type code. Could also do Marshal.SizeOf(DataType), but it is slower
-            switch (Type.GetTypeCode(this.ElementType))
+            switch (this.ElementType)
             {
-                case TypeCode.Byte:
+                case DataType type when type == typeof(Byte):
                     return sizeof(Byte);
-                case TypeCode.SByte:
+                case DataType type when type == typeof(SByte):
                     return sizeof(SByte);
-                case TypeCode.Int16:
+                case DataType type when type == typeof(Int16):
                     return sizeof(Int16);
-                case TypeCode.Int32:
+                case DataType type when type == typeof(Int32):
                     return sizeof(Int32);
-                case TypeCode.Int64:
+                case DataType type when type == typeof(Int64):
                     return sizeof(Int64);
-                case TypeCode.UInt16:
+                case DataType type when type == typeof(UInt16):
                     return sizeof(UInt16);
-                case TypeCode.UInt32:
+                case DataType type when type == typeof(UInt32):
                     return sizeof(UInt32);
-                case TypeCode.UInt64:
+                case DataType type when type == typeof(UInt64):
                     return sizeof(UInt64);
-                case TypeCode.Single:
+                case DataType type when type == typeof(Single):
                     return sizeof(Single);
-                case TypeCode.Double:
+                case DataType type when type == typeof(Double):
                     return sizeof(Double);
                 default:
                     OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Invalid element type");
