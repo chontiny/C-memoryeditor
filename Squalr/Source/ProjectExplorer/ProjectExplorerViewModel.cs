@@ -293,7 +293,7 @@
                 AddressItem addressItem = projectItem as AddressItem;
                 dynamic result = valueEditor.EditValue(null, null, addressItem);
 
-                if (CheckSyntax.CanParseValue(addressItem.DataType, result?.ToString()))
+                if (SyntaxChecker.CanParseValue(addressItem.DataType, result?.ToString()))
                 {
                     addressItem.AddressValue = result;
                 }

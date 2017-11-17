@@ -3,6 +3,7 @@
     using Controls;
     using Engine;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;
@@ -67,11 +68,11 @@
             this.dataType = dataType;
             this.isValueHex = isValueHex;
 
-            if (!this.isValueHex && CheckSyntax.CanParseValue(dataType, value?.ToString()))
+            if (!this.isValueHex && SyntaxChecker.CanParseValue(dataType, value?.ToString()))
             {
                 this.addressValue = value;
             }
-            else if (this.isValueHex && CheckSyntax.CanParseHex(dataType, value?.ToString()))
+            else if (this.isValueHex && SyntaxChecker.CanParseHex(dataType, value?.ToString()))
             {
                 this.addressValue = value;
             }
@@ -126,7 +127,7 @@
             {
                 if (value is String)
                 {
-                    if (!CheckSyntax.CanParseValue(this.dataType, value as String))
+                    if (!SyntaxChecker.CanParseValue(this.dataType, value as String))
                     {
                         OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error setting new value: " + (value as String));
                         return;

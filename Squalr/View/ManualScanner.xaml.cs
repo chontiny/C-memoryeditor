@@ -3,7 +3,7 @@
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ManualScanner;
     using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Threading.Tasks;
     using System.Windows.Controls;

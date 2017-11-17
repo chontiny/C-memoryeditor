@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Results
 {
     using SqualrCore.Source.ProjectItems;
-    using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.ComponentModel;
 

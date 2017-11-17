@@ -8,6 +8,7 @@
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Collections;
     using System.Collections.Generic;

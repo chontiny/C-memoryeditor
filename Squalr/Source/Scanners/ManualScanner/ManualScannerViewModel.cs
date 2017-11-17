@@ -4,8 +4,8 @@
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.DataStructures;
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

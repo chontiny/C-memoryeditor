@@ -212,7 +212,7 @@
         {
             String valueString = value?.ToString();
 
-            if (!CheckSyntax.CanParseValue(this.ElementType, valueString))
+            if (!SyntaxChecker.CanParseValue(this.ElementType, valueString))
             {
                 return;
             }
@@ -243,7 +243,7 @@
         {
             if (this.IsHex)
             {
-                if (CheckSyntax.CanParseHex(this.ElementType, this.Text))
+                if (SyntaxChecker.CanParseHex(this.ElementType, this.Text))
                 {
                     this.IsTextValid = true;
                     return;
@@ -251,7 +251,7 @@
             }
             else
             {
-                if (CheckSyntax.CanParseValue(this.ElementType, this.Text))
+                if (SyntaxChecker.CanParseValue(this.ElementType, this.Text))
                 {
                     this.IsTextValid = true;
                     return;
@@ -312,7 +312,7 @@
         /// <param name="e">Event args.</param>
         private void ConvertToHexMenuItemClick(Object sender, EventArgs e)
         {
-            if (CheckSyntax.CanParseValue(this.ElementType, this.Text))
+            if (SyntaxChecker.CanParseValue(this.ElementType, this.Text))
             {
                 this.Text = Conversions.ParsePrimitiveStringAsHexString(this.ElementType, this.Text);
             }
@@ -327,7 +327,7 @@
         /// <param name="e">Event args.</param>
         private void ConvertToDecMenuItemClick(Object sender, EventArgs e)
         {
-            if (CheckSyntax.CanParseHex(this.ElementType, this.Text))
+            if (SyntaxChecker.CanParseHex(this.ElementType, this.Text))
             {
                 this.Text = Conversions.ParseHexStringAsPrimitiveString(this.ElementType, this.Text);
             }

@@ -5,6 +5,7 @@
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Threading.Tasks;
     using System.Windows.Controls;

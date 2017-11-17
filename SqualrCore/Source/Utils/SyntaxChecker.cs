@@ -1,19 +1,20 @@
 ﻿namespace SqualrCore.Source.Utils
 {
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Globalization;
 
     /// <summary>
-    /// A static class used to check syntax for various values and types
+    /// A static class used to check syntax for various values and types.
     /// </summary>
-    public static class CheckSyntax
+    public static class SyntaxChecker
     {
         /// <summary>
-        /// Checks if the provided string is a valid address
+        /// Checks if the provided string is a valid address.
         /// </summary>
-        /// <param name="address">The address as a hex string</param>
-        /// <param name="mustBe32Bit">Whether or not the address must strictly be containable in 32 bits</param>
-        /// <returns>A boolean indicating if the address is parseable</returns>
+        /// <param name="address">The address as a hex string.</param>
+        /// <param name="mustBe32Bit">Whether or not the address must strictly be containable in 32 bits.</param>
+        /// <returns>A boolean indicating if the address is parseable.</returns>
         public static Boolean CanParseAddress(String address, Boolean mustBe32Bit = false)
         {
             if (address == null)
@@ -44,52 +45,52 @@
         }
 
         /// <summary>
-        /// Determines if a value of the given type can be parsed from the given string
+        /// Determines if a value of the given type can be parsed from the given string.
         /// </summary>
-        /// <param name="valueType">The type of the given value</param>
-        /// <param name="value">The value to be parsed</param>
-        /// <returns>A boolean indicating if the value is parseable</returns>
-        public static Boolean CanParseValue(DataType valueType, String value)
+        /// <param name="dataType">The type of the given value.</param>
+        /// <param name="value">The value to be parsed.</param>
+        /// <returns>A boolean indicating if the value is parseable.</returns>
+        public static Boolean CanParseValue(DataType dataType, String value)
         {
-            if (valueType == (DataType)null)
+            if (dataType == (DataType)null)
             {
                 return false;
             }
 
-            switch (valueType)
+            switch (dataType)
             {
                 case DataType type when type == typeof(Byte):
-                    return CheckSyntax.IsByte(value);
+                    return SyntaxChecker.IsByte(value);
                 case DataType type when type == typeof(SByte):
-                    return CheckSyntax.IsSByte(value);
+                    return SyntaxChecker.IsSByte(value);
                 case DataType type when type == typeof(Int16):
-                    return CheckSyntax.IsInt16(value);
+                    return SyntaxChecker.IsInt16(value);
                 case DataType type when type == typeof(Int32):
-                    return CheckSyntax.IsInt32(value);
+                    return SyntaxChecker.IsInt32(value);
                 case DataType type when type == typeof(Int64):
-                    return CheckSyntax.IsInt64(value);
+                    return SyntaxChecker.IsInt64(value);
                 case DataType type when type == typeof(UInt16):
-                    return CheckSyntax.IsUInt16(value);
+                    return SyntaxChecker.IsUInt16(value);
                 case DataType type when type == typeof(UInt32):
-                    return CheckSyntax.IsUInt32(value);
+                    return SyntaxChecker.IsUInt32(value);
                 case DataType type when type == typeof(UInt64):
-                    return CheckSyntax.IsUInt64(value);
+                    return SyntaxChecker.IsUInt64(value);
                 case DataType type when type == typeof(Single):
-                    return CheckSyntax.IsSingle(value);
+                    return SyntaxChecker.IsSingle(value);
                 case DataType type when type == typeof(Double):
-                    return CheckSyntax.IsDouble(value);
+                    return SyntaxChecker.IsDouble(value);
                 default:
                     return false;
             }
         }
 
         /// <summary>
-        /// Determines if a hex value can be parsed from the given string
+        /// Determines if a hex value can be parsed from the given string.
         /// </summary>
-        /// <param name="valueType">The type of the given value</param>
-        /// <param name="value">The value to be parsed</param>
-        /// <returns>A boolean indicating if the value is parseable as hex</returns>
-        public static Boolean CanParseHex(DataType valueType, String value)
+        /// <param name="dataType">The type of the given value.</param>
+        /// <param name="value">The value to be parsed.</param>
+        /// <returns>A boolean indicating if the value is parseable as hex.</returns>
+        public static Boolean CanParseHex(DataType dataType, String value)
         {
             if (value == null)
             {
@@ -109,7 +110,7 @@
             }
 
             // Remove negative sign from signed integer types, as TryParse methods do not handle negative hex values
-            switch (valueType)
+            switch (dataType)
             {
                 case DataType type when type == typeof(Byte) || type == typeof(Int16) || type == typeof(Int32) || type == typeof(Int64):
                     if (value.StartsWith("-"))
@@ -122,7 +123,7 @@
                     break;
             }
 
-            switch (valueType)
+            switch (dataType)
             {
                 case DataType type when type == typeof(Byte):
                     return IsByte(value, true);
@@ -150,11 +151,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a byte
+        /// Determines if the given string can be parsed as a byte.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsByte(String value, Boolean isHex = false)
         {
             Byte temp;
@@ -170,11 +171,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a signed byte
+        /// Determines if the given string can be parsed as a signed byte.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsSByte(String value, Boolean isHex = false)
         {
             SByte temp;
@@ -190,11 +191,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a 16 bit integer
+        /// Determines if the given string can be parsed as a 16 bit integer.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsInt16(String value, Boolean isHex = false)
         {
             Int16 temp;
@@ -210,11 +211,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a 16 bit signed integer
+        /// Determines if the given string can be parsed as a 16 bit signed integer.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsUInt16(String value, Boolean isHex = false)
         {
             UInt16 temp;
@@ -230,11 +231,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a 32 bit integer
+        /// Determines if the given string can be parsed as a 32 bit integer.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsInt32(String value, Boolean isHex = false)
         {
             Int32 temp;
@@ -250,11 +251,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a 32 bit signed integer
+        /// Determines if the given string can be parsed as a 32 bit signed integer.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsUInt32(String value, Boolean isHex = false)
         {
             UInt32 temp;
@@ -270,11 +271,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a 64 bit integer
+        /// Determines if the given string can be parsed as a 64 bit integer.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsInt64(String value, Boolean isHex = false)
         {
             Int64 temp;
@@ -290,11 +291,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a 64 bit signed integer
+        /// Determines if the given string can be parsed as a 64 bit signed integer.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsUInt64(String value, Boolean isHex = false)
         {
             UInt64 temp;
@@ -310,11 +311,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a single precision floating point number
+        /// Determines if the given string can be parsed as a single precision floating point number.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsSingle(String value, Boolean isHex = false)
         {
             Single temp;
@@ -330,11 +331,11 @@
         }
 
         /// <summary>
-        /// Determines if the given string can be parsed as a double precision floating point number
+        /// Determines if the given string can be parsed as a double precision floating point number.
         /// </summary>
-        /// <param name="value">The value as a string</param>
-        /// <param name="isHex">Whether or not the value is encoded in hex</param>
-        /// <returns>A boolean indicating if the value could be parsed</returns>
+        /// <param name="value">The value as a string.</param>
+        /// <param name="isHex">Whether or not the value is encoded in hex.</param>
+        /// <returns>A boolean indicating if the value could be parsed.</returns>
         private static Boolean IsDouble(String value, Boolean isHex = false)
         {
             Double temp;

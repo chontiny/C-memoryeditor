@@ -2,6 +2,7 @@
 {
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Utils.Extensions;
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Runtime.InteropServices;
 
@@ -340,6 +341,8 @@
         {
             switch (dataType)
             {
+                case DataType type when type == typeof(Boolean):
+                    return "Boolean";
                 case DataType type when type == typeof(Byte):
                     return "Byte";
                 case DataType type when type == typeof(Char):

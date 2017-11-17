@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Scanners.ScanConstraints;
-    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;

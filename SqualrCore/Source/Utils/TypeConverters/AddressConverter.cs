@@ -20,7 +20,7 @@
         /// <returns>The converted value.</returns>
         public override Object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, Object value, Type destinationType)
         {
-            if (CheckSyntax.CanParseValue(typeof(UInt64), value?.ToString()))
+            if (SyntaxChecker.CanParseValue(typeof(UInt64), value?.ToString()))
             {
                 return Conversions.ToHex(Conversions.ParsePrimitiveStringAsPrimitive(typeof(UInt64), value?.ToString()), formatAsAddress: true, includePrefix: false);
             }
@@ -37,7 +37,7 @@
         /// <returns>The converted value.</returns>
         public override Object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)
         {
-            if (CheckSyntax.CanParseAddress(value?.ToString()))
+            if (SyntaxChecker.CanParseAddress(value?.ToString()))
             {
                 return Conversions.AddressToValue(value?.ToString()).ToIntPtr();
             }

@@ -5,6 +5,7 @@
     using Processes;
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Engine.VirtualMemory.Windows.PEB;
+    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -92,15 +93,15 @@
         /// <summary>
         /// Reads the value of a specified type in the remote process
         /// </summary>
-        /// <param name="valueType">Type of value being read</param>
+        /// <param name="dataType">Type of value being read</param>
         /// <param name="address">The address where the value is read</param>
         /// <param name="success">Whether or not the read succeeded</param>
         /// <returns>A value.</returns>
-        public Object Read(DataType valueType, IntPtr address, out Boolean success)
+        public Object Read(DataType dataType, IntPtr address, out Boolean success)
         {
             Object value;
 
-            switch (valueType)
+            switch (dataType)
             {
                 case DataType type when type == typeof(Byte):
                     value = this.Read<Byte>(address, out success);

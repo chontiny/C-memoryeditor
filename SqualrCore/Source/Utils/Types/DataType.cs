@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Utils
+﻿namespace SqualrCore.Source.Utils.Types
 {
     using System;
     using System.Runtime.Serialization;
