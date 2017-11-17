@@ -1,12 +1,15 @@
 ﻿namespace Squalr.Source.Main
 {
+    using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
+    using SqualrCore.Source.ChangeLog;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
     using System;
     using System.Threading;
     using System.Windows;
+    using System.Windows.Input;
 
     /// <summary>
     /// Main view model.
@@ -26,7 +29,14 @@
         private MainViewModel() : base()
         {
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr developer tools started");
+
+            this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(new Content.ChangeLog().TransformText()), () => true);
         }
+
+        /// <summary>
+        /// Gets the command to open the change log.
+        /// </summary>
+        public ICommand DisplayChangeLogCommand { get; private set; }
 
         /// <summary>
         /// Default layout file for browsing cheats.

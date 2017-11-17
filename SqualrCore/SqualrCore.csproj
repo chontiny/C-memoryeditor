@@ -129,11 +129,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\ChangeLog.cs">
-      <DependentUpon>ChangeLog.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Content\Images.cs" />
     <Compile Include="Content\Templates\CodeInjectionTemplate.cs">
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
@@ -431,10 +426,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\ChangeLog.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ChangeLog.cs</LastGenOutput>
-    </Content>
     <Resource Include="Content\Images\LetterP.png" />
     <Resource Include="Content\Images\Squalr.png" />
     <Resource Include="Content\Images\SqualrDev.png" />
