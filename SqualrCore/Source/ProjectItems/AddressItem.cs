@@ -197,6 +197,9 @@
         /// <summary>
         /// Gets the display value for this project item, which is the address value.
         /// </summary>
+        [Browsable(true)]
+        [RefreshProperties(RefreshProperties.All)]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether the value is displayed as hexedecimal")]
         public override String DisplayValue { get { return this.AddressValue?.ToString() ?? String.Empty; } }
 
         /// <summary>

@@ -3,6 +3,7 @@
     using ActionScheduler;
     using Processes;
     using Proxy;
+    using SqualrCore.Source.Output;
     using SqualrProxy;
     using System;
     using System.Collections.Generic;
@@ -174,15 +175,17 @@
 
                         this.RecursiveBuild(proxyService, visited, rootObject, rootRef);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error building .NET objects", ex);
                     }
                 }
 
                 this.ObjectTrees = objectTrees;
             }
-            catch
+            catch (Exception ex)
             {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error collecting .NET objects", ex);
             }
         }
 
