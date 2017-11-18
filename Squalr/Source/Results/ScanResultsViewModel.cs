@@ -396,8 +396,8 @@
                     SnapshotElementIterator element = snapshot[index];
 
                     String label = element.GetElementLabel() != null ? element.GetElementLabel().ToString() : String.Empty;
-                    Object currentValue = element.HasCurrentValue() ? element.GetCurrentValue() : null;
-                    Object previousValue = element.HasPreviousValue() ? element.GetPreviousValue() : null;
+                    Object currentValue = element.HasCurrentValue() ? element.LoadCurrentValue() : null;
+                    Object previousValue = element.HasPreviousValue() ? element.LoadPreviousValue() : null;
 
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);

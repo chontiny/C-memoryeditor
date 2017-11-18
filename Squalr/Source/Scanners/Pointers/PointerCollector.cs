@@ -113,7 +113,7 @@
                         for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
                         {
                             SnapshotElementIterator element = enumerator.Current;
-                            UInt32 value = unchecked((UInt32)element.GetCurrentValue());
+                            UInt32 value = unchecked((UInt32)element.LoadCurrentValue());
 
                             // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
                             if (value < UInt16.MaxValue || value % sizeof(UInt32) != 0)
@@ -140,7 +140,7 @@
                         for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
                         {
                             SnapshotElementIterator element = enumerator.Current;
-                            UInt64 value = unchecked((UInt64)element.GetCurrentValue());
+                            UInt64 value = unchecked((UInt64)element.LoadCurrentValue());
 
                             // Enforce 8-byte alignment of destination, and filter out small (invalid) pointers
                             if (value < UInt16.MaxValue || value % sizeof(UInt64) != 0)
