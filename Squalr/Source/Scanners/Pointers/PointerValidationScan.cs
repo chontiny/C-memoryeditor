@@ -9,26 +9,21 @@
     using System.Threading;
 
     /// <summary>
-    /// Enumerates existing discovered pointers to produce a set of validated discovered pointers based on their values.
+    /// Enumerates existing discovered pointers to produce a set of validated discovered pointers.
     /// </summary>
-    internal class PointerValueRescan : ScheduledTask
+    internal class PointerValidationScan : ScheduledTask
     {
         /// <summary>
-        /// Creates an instance of the <see cref="PointerValueRescan" /> class.
+        /// Creates an instance of the <see cref="PointerValidationScan" /> class.
         /// </summary>
         /// <param name="targetAddress">The target address of the poitner scan.</param>
-        public PointerValueRescan() : base(
-            taskName: "Pointer Value Rescan",
+        public PointerValidationScan() : base(
+            taskName: "Pointer Validation",
             isRepeated: false,
             trackProgress: true)
         {
             this.ProgressLock = new Object();
         }
-
-        /// <summary>
-        /// Gets or sets the target address of the pointer scan.
-        /// </summary>
-        public Object Value { get; set; }
 
         /// <summary>
         /// Gets or sets the discovered pointers from the pointer scan.
@@ -58,19 +53,13 @@
 
             ValidatedPointers validatedPointers = new ValidatedPointers();
             Int32 processedPointers = 0;
-            String valueString = this.Value?.ToString() ?? String.Empty;
 
             // Enumerate all discovered pointers and determine if they have a valid target address
             foreach (PointerItem pointerItem in this.DiscoveredPointers)
             {
                 pointerItem.Update();
 
-                // TODO: This is not particularly sustainable/performant. This will fall apart for floats/doubles where we want nearly-equal values (ie 3.4444 and 3.4443)
-                // Ideally we want something similar to how we do scans with the SnapShotElementIterator with the call to Compare().
-                // One solution would be to create a snapshot from all of the discovered pointers so that we could leverage the SnapshotElementIterator compare functions,
-                // But this creates the technical challenge of associating the pointer item with an element in the snapshot.
-                // Also, we need to update the data type of these pointer items to match the current pointer scan results data times.
-                if (pointerItem.AddressValue?.ToString() == valueString)
+                if (pointerItem.CalculatedAddress != IntPtr.Zero)
                 {
                     validatedPointers.Pointers.Add(pointerItem);
                 }

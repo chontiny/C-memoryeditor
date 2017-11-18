@@ -57,7 +57,7 @@
         /// <summary>
         /// The addresses on the current page.
         /// </summary>
-        private FullyObservableCollection<PointerItem> addresses;
+        private FullyObservableCollection<PointerItem> pointers;
 
         /// <summary>
         /// The list of discovered pointers.
@@ -95,7 +95,7 @@
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = DataTypes.Int32;
-            this.addresses = new FullyObservableCollection<PointerItem>();
+            this.pointers = new FullyObservableCollection<PointerItem>();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
@@ -304,12 +304,12 @@
         {
             get
             {
-                return this.addresses;
+                return this.pointers;
             }
 
             set
             {
-                this.addresses = value;
+                this.pointers = value;
 
                 this.RaisePropertyChanged(nameof(this.Pointers));
             }

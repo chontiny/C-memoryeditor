@@ -120,7 +120,7 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>C1A711EAE328CAEA08DA8ACE57DFE7AA5D129D11</ManifestCertificateThumbprint>
@@ -329,6 +329,7 @@
     <Compile Include="Source\Results\ScanResultsViewModel.cs" />
     <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
+    <Compile Include="Source\Scanners\Pointers\PointerValidationScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerValueRescan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerRescan.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\DiscoveredPointers.cs" />
