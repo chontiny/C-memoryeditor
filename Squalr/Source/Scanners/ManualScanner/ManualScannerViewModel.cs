@@ -207,7 +207,18 @@
         {
             get
             {
-                return new FullyObservableCollection<ScanConstraint>(new ScanConstraint[] { this.CurrentScanConstraint });
+                return new FullyObservableCollection<ScanConstraint>() { this.CurrentScanConstraint };
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating if the current scan constraint requires a value.
+        /// </summary>
+        public Boolean IsActiveScanConstraintValued
+        {
+            get
+            {
+                return this.CurrentScanConstraint?.IsValuedConstraint() ?? true;
             }
         }
 
@@ -225,17 +236,6 @@
             {
                 this.currentScanConstraint = value;
                 this.UpdateAllProperties();
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether or not no constraints have been added.
-        /// </summary>
-        public Boolean HasNoConstraints
-        {
-            get
-            {
-                return this.ScanConstraintManager.ValueConstraints.Count <= 0;
             }
         }
 
@@ -360,7 +360,7 @@
             this.RaisePropertyChanged(nameof(this.CurrentScanConstraint));
             this.RaisePropertyChanged(nameof(this.ScanConstraintImage));
             this.RaisePropertyChanged(nameof(this.ActiveScanConstraint));
-            this.RaisePropertyChanged(nameof(this.HasNoConstraints));
+            this.RaisePropertyChanged(nameof(this.IsActiveScanConstraintValued));
         }
     }
     //// End class
