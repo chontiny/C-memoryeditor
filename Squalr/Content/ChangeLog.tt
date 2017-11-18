@@ -5,4 +5,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="SqualrCore" #>
-- Changelog updates (ironically)
+- Fixes to project saving
+- Allowing offsets to be entered directly into property viewer.

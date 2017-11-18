@@ -29,7 +29,8 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Changelog updates (ironically)");
+            this.Write("- Fixes to project saving\r\n- Allowing offsets to be entered directly into propert" +
+                    "y viewer.");
             return this.GenerationEnvironment.ToString();
         }
     }
