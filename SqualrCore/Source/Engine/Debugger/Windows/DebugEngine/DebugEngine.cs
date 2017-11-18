@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Engine.Debugger
+﻿namespace SqualrCore.Source.Engine.Debugger.Windows.DebugEngine
 {
     using DbgEng;
     using SqualrCore.Source.Engine.Processes;
@@ -7,9 +7,9 @@
     using System.Diagnostics;
     using System.Threading.Tasks;
 
-    internal class WindowsDebugger : IDebugger, IProcessObserver
+    internal class DebugEngine : IDebugger, IProcessObserver
     {
-        public WindowsDebugger()
+        public DebugEngine()
         {
             Task.Run(() => EngineCore.GetInstance().Processes.Subscribe(this));
         }

@@ -1,5 +1,6 @@
 ﻿namespace SqualrCore.Source.Engine.Debugger
 {
+    using SqualrCore.Source.Engine.Debugger.Windows.DebugEngine;
     using SqualrCore.Source.Output;
     using System;
     using System.Threading;
@@ -10,10 +11,10 @@
     internal class DebuggerFactory
     {
         /// <summary>
-        /// Singleton instance of the <see cref="WindowsDebugger"/> class
+        /// Singleton instance of the <see cref="DebugEngine"/> class
         /// </summary>
-        private static Lazy<WindowsDebugger> windowsDebuggerInstance = new Lazy<WindowsDebugger>(
-            () => { return new WindowsDebugger(); },
+        private static Lazy<DebugEngine> windowsDebuggerInstance = new Lazy<DebugEngine>(
+            () => { return new DebugEngine(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>

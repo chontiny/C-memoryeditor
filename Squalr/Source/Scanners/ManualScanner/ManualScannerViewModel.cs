@@ -18,11 +18,6 @@
     internal class ManualScannerViewModel : ToolViewModel, IResultDataTypeObserver
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ManualScannerViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="ManualScannerViewModel" /> class.
         /// </summary>
         private static Lazy<ManualScannerViewModel> manualScannerViewModelInstance = new Lazy<ManualScannerViewModel>(
@@ -44,7 +39,6 @@
         /// </summary>
         private ManualScannerViewModel() : base("Manual Scanner")
         {
-            this.ContentId = ManualScannerViewModel.ToolContentId;
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
 
             // Note: Not async to avoid updates slower than the perception threshold

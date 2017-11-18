@@ -11,11 +11,6 @@
     internal class PacketEditorViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(PacketEditorViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="PacketEditorViewModel" /> class.
         /// </summary>
         private static Lazy<PacketEditorViewModel> packetEditorViewModelInstance = new Lazy<PacketEditorViewModel>(
@@ -27,8 +22,6 @@
         /// </summary>
         private PacketEditorViewModel() : base("Packet Editor")
         {
-            this.ContentId = PacketEditorViewModel.ToolContentId;
-
             Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 

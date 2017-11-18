@@ -13,11 +13,6 @@
     internal class ChangeCounterViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ChangeCounterViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="ChangeCounterViewModel" /> class.
         /// </summary>
         private static Lazy<ChangeCounterViewModel> changeCounterViewModelInstance = new Lazy<ChangeCounterViewModel>(
@@ -29,7 +24,6 @@
         /// </summary>
         private ChangeCounterViewModel() : base("Change Counter")
         {
-            this.ContentId = ChangeCounterViewModel.ToolContentId;
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
             this.ChangeCounterModel = new ChangeCounterModel(this.ScanCountUpdated);

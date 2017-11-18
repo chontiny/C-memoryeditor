@@ -1,13 +1,13 @@
 ﻿namespace SqualrStream.Source.Browse.TwitchLogin
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Output;
     using SqualrStream.Properties;
     using SqualrStream.Source.Api;
     using SqualrStream.Source.Api.Models;
     using SqualrStream.Source.Navigation;
     using SqualrStream.View.Login;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Output;
     using System;
     using System.Threading;
     using System.Windows;
@@ -19,11 +19,6 @@
     /// </summary>
     internal class TwitchLoginViewModel : ToolViewModel, INavigable
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(TwitchLoginViewModel);
-
         /// <summary>
         /// The url for the twitch login.
         /// </summary>
@@ -46,8 +41,6 @@
         /// </summary>
         private TwitchLoginViewModel() : base("Twitch Login")
         {
-            this.ContentId = TwitchLoginViewModel.ToolContentId;
-
             // Note: Cannot be async, navigation must take place on the same thread as GUI
             this.DisplayTwitchLoginCommand = new RelayCommand(() => this.DisplayTwitchLogin(), () => true);
             this.NavigateHomeCommand = new RelayCommand<WebBrowser>((browser) => this.NavigateHome(browser), (browser) => true);

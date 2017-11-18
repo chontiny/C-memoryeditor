@@ -1,10 +1,10 @@
 ﻿namespace SqualrStream.Source.Editors.StreamIconEditor
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using SqualrStream.Source.Api;
-    using SqualrStream.Source.Api.Models;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
+    using SqualrStream.Source.Api;
+    using SqualrStream.Source.Api.Models;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -17,11 +17,6 @@
     /// </summary>
     public class StreamIconEditorViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(StreamIconEditorViewModel);
-
         /// <summary>
         /// The path to the stream icons.
         /// </summary>
@@ -54,7 +49,6 @@
         /// </summary>
         private StreamIconEditorViewModel() : base("Stream Icon Editor")
         {
-            this.ContentId = StreamIconEditorViewModel.ToolContentId;
             this.SetIconCommand = new RelayCommand<StreamIcon>((streamIcon) => this.UpdateStreamIconPath(streamIcon), (streamIcon) => true);
             this.SelectIconCommand = new RelayCommand<StreamIcon>((streamIcon) => this.ChangeSelectedIcon(streamIcon), (streamIcon) => true);
 

@@ -26,11 +26,6 @@
     internal class LibraryViewModel : ToolViewModel, INavigable
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(LibraryViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="StoreViewModel" /> class.
         /// </summary>
         private static Lazy<LibraryViewModel> libraryViewModelInstance = new Lazy<LibraryViewModel>(
@@ -92,7 +87,6 @@
         /// </summary>
         private LibraryViewModel() : base("Library")
         {
-            this.ContentId = LibraryViewModel.ToolContentId;
             this.Libraries = new FullyObservableCollection<Library>();
             this.CheatsAvailable = new FullyObservableCollection<Cheat>();
             this.CheatsInLibrary = new FullyObservableCollection<Cheat>();

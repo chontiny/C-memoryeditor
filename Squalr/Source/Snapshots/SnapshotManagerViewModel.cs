@@ -15,11 +15,6 @@
     internal class SnapshotManagerViewModel : ToolViewModel, ISnapshotObserver
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(SnapshotManagerViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="SnapshotManagerViewModel"/> class.
         /// </summary>
         private static Lazy<SnapshotManagerViewModel> snapshotManagerViewModelInstance = new Lazy<SnapshotManagerViewModel>(
@@ -31,8 +26,6 @@
         /// </summary>
         private SnapshotManagerViewModel() : base("Snapshot Manager")
         {
-            this.ContentId = SnapshotManagerViewModel.ToolContentId;
-
             // Note: Not async to avoid updates slower than the perception threshold
             this.ClearSnapshotsCommand = new RelayCommand(() => this.ClearSnapshots(), () => true);
             this.UndoSnapshotCommand = new RelayCommand(() => this.UndoSnapshot(), () => true);

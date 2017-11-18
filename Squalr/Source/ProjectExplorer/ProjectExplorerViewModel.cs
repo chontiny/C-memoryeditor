@@ -26,11 +26,6 @@
     public class ProjectExplorerViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ProjectExplorerViewModel);
-
-        /// <summary>
         /// The filter to use for saving and loading project filters.
         /// </summary>
         public const String ProjectExtensionFilter = "Cheat File (*.Hax)|*.hax|All files (*.*)|*.*";
@@ -67,7 +62,6 @@
         /// </summary>
         private ProjectExplorerViewModel() : base("Project Explorer")
         {
-            this.ContentId = ProjectExplorerViewModel.ToolContentId;
             this.ObserverLock = new Object();
             this.ProjectItemStorage = new ProjectItemStorage();
 

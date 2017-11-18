@@ -11,11 +11,6 @@
     public class ValueEditorViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ValueEditorViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="ValueEditorViewModel" /> class.
         /// </summary>
         private static Lazy<ValueEditorViewModel> valueEditorViewModelInstance = new Lazy<ValueEditorViewModel>(
@@ -27,8 +22,6 @@
         /// </summary>
         public ValueEditorViewModel() : base("Value Editor")
         {
-            this.ContentId = ValueEditorViewModel.ToolContentId;
-
             Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 

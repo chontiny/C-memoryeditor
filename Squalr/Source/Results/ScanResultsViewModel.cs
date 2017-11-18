@@ -25,11 +25,6 @@
     internal class ScanResultsViewModel : ToolViewModel, ISnapshotObserver
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ScanResultsViewModel);
-
-        /// <summary>
         /// The number of elements to display on each page.
         /// </summary>
         private const Int32 PageSize = 64;
@@ -76,7 +71,6 @@
         /// </summary>
         private ScanResultsViewModel() : base("Scan Results")
         {
-            this.ContentId = ScanResultsViewModel.ToolContentId;
             this.ObserverLock = new Object();
 
             this.ChangeTypeCommand = new RelayCommand<DataType>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);

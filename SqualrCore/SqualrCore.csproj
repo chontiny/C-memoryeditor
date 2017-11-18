@@ -175,7 +175,7 @@
     <Compile Include="Source\Docking\WindowHostViewModel.cs" />
     <Compile Include="Source\Engine\Debugger\DebuggerFactory.cs" />
     <Compile Include="Source\Engine\Debugger\IDebugger.cs" />
-    <Compile Include="Source\Engine\Debugger\WindowsDebugger.cs" />
+    <Compile Include="Source\Engine\Debugger\Windows\DebugEngine\DebugEngine.cs" />
     <Compile Include="Source\Engine\Processes\Windows\Native\NativeMethods.cs" />
     <Compile Include="Source\Engine\Processes\Windows\WindowsAdapter.cs" />
     <Compile Include="Source\Engine\VirtualMemory\Windows\PEB\ManagedPeb.cs" />

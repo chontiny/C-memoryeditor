@@ -15,11 +15,6 @@
         private String title = null;
 
         /// <summary>
-        /// The content id associated with the pane.
-        /// </summary>
-        private String contentId = null;
-
-        /// <summary>
         /// Flag indicating whether or not the pane is selected.
         /// </summary>
         private Boolean isSelected = false;
@@ -62,22 +57,13 @@
         public ImageSource IconSource { get; protected set; }
 
         /// <summary>
-        /// Gets or sets the content id associated with the pane.
+        /// Gets the content id associated with the pane.
         /// </summary>
         public String ContentId
         {
             get
             {
-                return this.contentId;
-            }
-
-            set
-            {
-                if (this.contentId != value)
-                {
-                    this.contentId = value;
-                    this.RaisePropertyChanged(nameof(this.ContentId));
-                }
+                return this.GetType().Name;
             }
         }
 

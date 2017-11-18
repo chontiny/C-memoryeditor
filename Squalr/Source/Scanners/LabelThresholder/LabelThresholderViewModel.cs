@@ -19,11 +19,6 @@
     internal class LabelThresholderViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(LabelThresholderViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="LabelThresholderViewModel" /> class.
         /// </summary>
         private static Lazy<LabelThresholderViewModel> labelThresholderViewModelInstance = new Lazy<LabelThresholderViewModel>(
@@ -55,7 +50,6 @@
         /// </summary>
         private LabelThresholderViewModel() : base("Label Thresholder")
         {
-            this.ContentId = LabelThresholderViewModel.ToolContentId;
             this.LabelThresholderModel = new LabelThresholderModel(this.OnUpdateHistogram);
             this.LowerThreshold = 0;
             this.UpperThreshold = 100;

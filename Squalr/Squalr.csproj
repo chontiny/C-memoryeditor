@@ -317,6 +317,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Include="Source\Debugger\DebuggerViewModel.cs" />
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Prefilters\HeapPrefilter.cs" />

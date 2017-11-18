@@ -17,11 +17,6 @@
     public class ActionSchedulerViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ActionSchedulerViewModel);
-
-        /// <summary>
         /// The interval between scheduler calls, in milliseconds.
         /// </summary>
         private const Int32 SchedulerInterval = 16;
@@ -38,7 +33,6 @@
         /// </summary>
         private ActionSchedulerViewModel() : base("Action Scheduler")
         {
-            this.ContentId = ActionSchedulerViewModel.ToolContentId;
             this.AccessLock = new Object();
             this.Actions = new LinkedList<ScheduledTask>();
 

@@ -23,11 +23,6 @@
     internal class PointerScanResultsViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(PointerScanResultsViewModel);
-
-        /// <summary>
         /// The number of elements to display on each page.
         /// </summary>
         private const Int32 PageSize = 64;
@@ -79,7 +74,6 @@
         /// </summary>
         private PointerScanResultsViewModel() : base("Pointer Scan Results")
         {
-            this.ContentId = PointerScanResultsViewModel.ToolContentId;
             this.ObserverLock = new Object();
 
             this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<PointerItem>(), (selectedItems) => true);

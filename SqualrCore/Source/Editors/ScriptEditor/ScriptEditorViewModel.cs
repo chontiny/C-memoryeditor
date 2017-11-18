@@ -14,11 +14,6 @@
     public class ScriptEditorViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ScriptEditorViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="ScriptEditorViewModel" /> class.
         /// </summary>
         private static Lazy<ScriptEditorViewModel> scriptEditorViewModelInstance = new Lazy<ScriptEditorViewModel>(
@@ -30,7 +25,6 @@
         /// </summary>
         private ScriptEditorViewModel() : base("Script Editor")
         {
-            this.ContentId = ScriptEditorViewModel.ToolContentId;
             this.UpdateScriptCommand = new RelayCommand<String>((script) => this.UpdateScript(script), (script) => true);
             this.SaveScriptCommand = new RelayCommand<String>((script) => this.SaveScript(script), (script) => true);
 

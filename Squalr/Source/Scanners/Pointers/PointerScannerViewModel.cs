@@ -14,11 +14,6 @@
     internal class PointerScannerViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(PointerScannerViewModel);
-
-        /// <summary>
         /// Gets the default pointer scan depth.
         /// </summary>
         public const Int32 DefaultPointerScanDepth = 3;
@@ -45,8 +40,6 @@
         /// </summary>
         private PointerScannerViewModel() : base("Pointer Scanner")
         {
-            this.ContentId = PointerScannerViewModel.ToolContentId;
-
             this.PointerScan = new PointerScan();
             this.PointerRescan = new PointerRescan();
             this.PointerValueRescan = new PointerValueRescan();

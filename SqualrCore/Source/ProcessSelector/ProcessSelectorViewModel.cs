@@ -19,11 +19,6 @@
     public class ProcessSelectorViewModel : ToolViewModel, IProcessObserver
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ProcessSelectorViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="ProcessSelectorViewModel" /> class.
         /// </summary>
         private static Lazy<ProcessSelectorViewModel> processSelectorViewModelInstance = new Lazy<ProcessSelectorViewModel>(
@@ -45,7 +40,6 @@
         /// </summary>
         private ProcessSelectorViewModel() : base("Process Selector")
         {
-            this.ContentId = ProcessSelectorViewModel.ToolContentId;
             this.IconSource = Images.SelectProcess;
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<NormalizedProcess>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);

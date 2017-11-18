@@ -12,11 +12,6 @@
     internal class SettingsViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(SettingsViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
         private static Lazy<SettingsViewModel> settingsViewModelInstance = new Lazy<SettingsViewModel>(
@@ -73,8 +68,6 @@
         /// </summary>
         private SettingsViewModel() : base("Settings")
         {
-            this.ContentId = SettingsViewModel.ToolContentId;
-
             // Subscribe async to avoid a deadlock situation
             Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
