@@ -115,19 +115,20 @@
 
             set
             {
-                Boolean detached = false;
+                Boolean selectedDetatchProcess = value == this.DetachProcess;
 
-                // Set process to null if selecting the detach option
-                if (value == this.DetachProcess)
+                if (selectedDetatchProcess)
                 {
                     value = null;
-                    detached = true;
                 }
 
-                EngineCore.GetInstance().Processes.OpenProcess(value);
-                this.RaisePropertyChanged(nameof(this.SelectedProcess));
+                if (value != this.SelectedProcess)
+                {
+                    EngineCore.GetInstance().Processes.OpenProcess(value);
+                    this.RaisePropertyChanged(nameof(this.SelectedProcess));
+                }
 
-                if (detached)
+                if (selectedDetatchProcess)
                 {
                     this.RaisePropertyChanged(nameof(this.WindowedProcessList));
                 }
@@ -180,6 +181,8 @@
         {
             // Raise event to update process name in the view
             this.RaisePropertyChanged(nameof(this.ProcessName));
+
+            this.RefreshProcessList();
         }
 
         /// <summary>
