@@ -65,6 +65,11 @@
             {
                 return this.PointerItem.DisplayValue;
             }
+
+            set
+            {
+                this.PointerItem.DisplayValue = value;
+            }
         }
 
         /// <summary>

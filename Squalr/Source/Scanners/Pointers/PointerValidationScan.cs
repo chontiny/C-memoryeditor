@@ -2,6 +2,7 @@
 {
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.Pointers.Structures;
+    using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;
@@ -54,12 +55,14 @@
             ValidatedPointers validatedPointers = new ValidatedPointers();
             Int32 processedPointers = 0;
 
+            Snapshot snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromUserModeMemory);
+
             // Enumerate all discovered pointers and determine if they have a valid target address
             foreach (PointerItem pointerItem in this.DiscoveredPointers)
             {
                 pointerItem.Update();
 
-                if (pointerItem.CalculatedAddress != IntPtr.Zero)
+                if (pointerItem.CalculatedAddress != IntPtr.Zero && snapshot.ContainsAddress(pointerItem.CalculatedAddress.ToUInt64()))
                 {
                     validatedPointers.Pointers.Add(pointerItem);
                 }

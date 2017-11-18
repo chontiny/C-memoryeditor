@@ -70,7 +70,7 @@
                 // One solution would be to create a snapshot from all of the discovered pointers so that we could leverage the SnapshotElementIterator compare functions,
                 // But this creates the technical challenge of associating the pointer item with an element in the snapshot.
                 // Also, we need to update the data type of these pointer items to match the current pointer scan results data times.
-                if (pointerItem.AddressValue?.ToString() == valueString)
+                if (pointerItem.AddressValue?.Equals(this.Value) ?? false)
                 {
                     validatedPointers.Pointers.Add(pointerItem);
                 }
