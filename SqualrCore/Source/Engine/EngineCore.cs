@@ -6,6 +6,7 @@
     using Processes;
     using SpeedManipulator;
     using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.Engine.Debugger;
     using SqualrCore.Source.Engine.Networks;
     using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.Engine.VirtualMachines.DotNet;
@@ -34,6 +35,7 @@
         {
             this.Processes = ProcessAdapterFactory.GetProcessAdapter();
             this.VirtualMemory = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter();
+            this.Debugger = DebuggerFactory.GetDebugger();
             this.Network = new Network();
             this.Architecture = ArchitectureFactory.GetArchitecture();
             this.Input = new InputManager();
@@ -50,6 +52,11 @@
         /// Gets an object that provides access to target memory manipulations.
         /// </summary>
         public IVirtualMemoryAdapter VirtualMemory { get; private set; }
+
+        /// <summary>
+        /// Gets an object that enables debugging of a process.
+        /// </summary>
+        public IDebugger Debugger { get; private set; }
 
         /// <summary>
         /// Gets an object that provides access to the network access for a process.
