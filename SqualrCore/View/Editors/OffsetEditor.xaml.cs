@@ -3,6 +3,7 @@
     using Source.Controls;
     using Source.Editors.ScriptEditor;
     using Source.Mvvm;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
@@ -23,7 +24,7 @@
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
-            this.OffsetHexDecBox = new HexDecTextBox(typeof(Int32));
+            this.OffsetHexDecBox = new HexDecTextBox(DataTypes.Int32);
             this.OffsetHexDecBox.IsHex = true;
             this.OffsetHexDecBox.TextChanged += this.ValueUpdated;
             this.offsetHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.OffsetHexDecBox));

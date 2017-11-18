@@ -1,5 +1,6 @@
 ﻿namespace SqualrCore.Source.Mvvm.Converters
 {
+    using SqualrCore.Source.Engine.Types;
     using System;
     using System.Globalization;
     using System.Windows.Data;
@@ -27,7 +28,7 @@
             // Note: UInt64s run out around EB
             String[] suffix = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
 
-            UInt64 realByteCount = (UInt64)System.Convert.ChangeType(value, typeof(UInt64));
+            UInt64 realByteCount = (UInt64)System.Convert.ChangeType(value, DataTypes.UInt64);
 
             if (realByteCount == 0)
             {

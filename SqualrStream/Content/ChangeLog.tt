@@ -4,5 +4,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="SqualrCore" #>
-- Significant fixes to pointer scanning
+<#@ import namespace="SqualrStream" #>
+- Changelog updates (ironically)

@@ -35,7 +35,8 @@
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr started");
             OutputViewModel.GetInstance().AddOutputMask(new OutputMask(MainViewModel.AccessTokenRegex, "access_token={{REDACTED}}"));
 
-            this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(), () => true);
+
+            this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(new Content.ChangeLog().TransformText()), () => true);
         }
 
         /// <summary>

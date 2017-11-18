@@ -4,6 +4,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMachines.DotNet;
     using SqualrCore.Source.ProjectItems;
     using System;
@@ -108,7 +109,7 @@
             DotNetObject dotNetObject = dotNetObjectViewModel.DotNetObject;
             DotNetItem dotnetItem = new DotNetItem(
                 dotNetObject.Name,
-                dotNetObject.ElementType == typeof(Boolean) ? typeof(Byte) : dotNetObject.ElementType,
+                dotNetObject.ElementType == DataTypes.Boolean ? DataTypes.Byte : dotNetObject.ElementType,
                 dotNetObject.GetFullName());
 
             ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, dotnetItem);

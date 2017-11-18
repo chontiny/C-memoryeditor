@@ -7,19 +7,19 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace SqualrCore.Content
+namespace SqualrStream.Content
 {
     using System.Linq;
     using System.Text;
     using System.Collections.Generic;
-    using SqualrCore;
+    using SqualrStream;
     using System;
     
     /// <summary>
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\SqualrCore\Content\ChangeLog.tt"
+    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\SqualrStream\Content\ChangeLog.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "15.0.0.0")]
     public partial class ChangeLog : ChangeLogBase
     {
@@ -29,7 +29,7 @@ namespace SqualrCore.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Significant fixes to pointer scanning");
+            this.Write("- Changelog updates (ironically)");
             return this.GenerationEnvironment.ToString();
         }
     }

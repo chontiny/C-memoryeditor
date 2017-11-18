@@ -39,6 +39,9 @@
         <intr:EventTrigger EventName="Unloaded">
             <intr:InvokeCommandAction Command="{Binding SaveLayoutCommand}" CommandParameter="{Binding ., ElementName=dockManager}" />
         </intr:EventTrigger>
+        <intr:EventTrigger EventName="ContentRendered">
+            <intr:InvokeCommandAction Command="{Binding DisplayChangeLogCommand}" />
+        </intr:EventTrigger>
     </intr:Interaction.Triggers>
     <shell:Border BorderBrush="{StaticResource SqualrColorBlue}" BorderThickness="1">
         <shell:Grid>

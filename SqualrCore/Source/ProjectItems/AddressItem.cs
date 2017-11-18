@@ -2,6 +2,7 @@
 {
     using Controls;
     using Engine;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Output;
     using System;
     using System.ComponentModel;
@@ -42,7 +43,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
         /// </summary>
-        public AddressItem() : this(typeof(Int32), "New Address")
+        public AddressItem() : this(DataTypes.Int32, "New Address")
         {
         }
 
@@ -57,7 +58,7 @@
         /// <param name="isValueHex">A value indicating whether the value at this address should be displayed as hex.</param>
         /// <param name="value">The value at this address. If none provided, it will be figured out later. Used here to allow immediate view updates upon creation.</param>
         public AddressItem(
-            Type dataType,
+            DataType dataType,
             String description = "New Address",
             Boolean isValueHex = false,
             Object value = null)
@@ -67,11 +68,11 @@
             this.dataType = dataType;
             this.isValueHex = isValueHex;
 
-            if (!this.isValueHex && CheckSyntax.CanParseValue(dataType, value?.ToString()))
+            if (!this.isValueHex && SyntaxChecker.CanParseValue(dataType, value?.ToString()))
             {
                 this.addressValue = value;
             }
-            else if (this.isValueHex && CheckSyntax.CanParseHex(dataType, value?.ToString()))
+            else if (this.isValueHex && SyntaxChecker.CanParseHex(dataType, value?.ToString()))
             {
                 this.addressValue = value;
             }
@@ -126,7 +127,7 @@
             {
                 if (value is String)
                 {
-                    if (!CheckSyntax.CanParseValue(this.dataType, value as String))
+                    if (!SyntaxChecker.CanParseValue(this.dataType, value as String))
                     {
                         OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error setting new value: " + (value as String));
                         return;
@@ -197,6 +198,7 @@
         /// <summary>
         /// Gets the display value for this project item, which is the address value.
         /// </summary>
+        [Browsable(false)]
         public override String DisplayValue { get { return this.AddressValue?.ToString() ?? String.Empty; } }
 
         /// <summary>

@@ -2,7 +2,9 @@
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-Official web site: [squalr.com](https://www.squalr.com)
+[Squalr Official Website](https://www.squalr.com)
+
+Join us on our [Discord Channel](https://discord.gg/Pq2msTx)
 
 **Squalr** is Memory Editing software that allows users to create and share cheats in their windows desktop games. This includes memory scanning, pointers, x86/x64 assembly injection, and so on.
 

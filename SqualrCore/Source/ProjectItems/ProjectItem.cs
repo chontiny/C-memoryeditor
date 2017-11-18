@@ -287,7 +287,7 @@
         /// Clones the project item.
         /// </summary>
         /// <returns>The clone of the project item.</returns>
-        public ProjectItem Clone()
+        public virtual ProjectItem Clone()
         {
             Byte[] serializedProjectItem;
             DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem));

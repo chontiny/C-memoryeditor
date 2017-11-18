@@ -129,11 +129,6 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\ChangeLog.cs">
-      <DependentUpon>ChangeLog.tt</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <Compile Include="Content\Images.cs" />
     <Compile Include="Content\Templates\CodeInjectionTemplate.cs">
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
@@ -335,13 +330,13 @@
     <Compile Include="Source\Scripting\Memory\MemoryCore.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\Scripting\ScriptManager.cs" />
-    <Compile Include="Source\Utils\CheckSyntax.cs" />
+    <Compile Include="Source\Utils\SyntaxChecker.cs" />
     <Compile Include="Source\Utils\Compression.cs" />
     <Compile Include="Source\Utils\Conversions.cs" />
     <Compile Include="Source\Utils\DataStructures\BiDictionary.cs" />
     <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs" />
     <Compile Include="Source\Utils\DataStructures\TTLCache.cs" />
-    <Compile Include="Source\Utils\DataType.cs" />
+    <Compile Include="Source\Engine\Types\DataType.cs" />
     <Compile Include="Source\Utils\Extensions\ArrayExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
@@ -356,11 +351,10 @@
     <Compile Include="Source\Utils\Extensions\PrimitiveExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\SingleExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\StringExtensions.cs" />
-    <Compile Include="Source\Utils\Hashing.cs" />
     <Compile Include="Source\Utils\ImageUtils.cs" />
     <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
     <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
-    <Compile Include="Source\Utils\PrimitiveTypes.cs" />
+    <Compile Include="Source\Engine\Types\DataTypes.cs" />
     <Compile Include="Source\Utils\StaticRandom.cs" />
     <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DataTypeConverter.cs" />
@@ -431,10 +425,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\ChangeLog.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ChangeLog.cs</LastGenOutput>
-    </Content>
     <Resource Include="Content\Images\LetterP.png" />
     <Resource Include="Content\Images\Squalr.png" />
     <Resource Include="Content\Images\SqualrDev.png" />
@@ -547,10 +537,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
     <Page Include="View\ChangeLog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

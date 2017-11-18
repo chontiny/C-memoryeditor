@@ -15,7 +15,7 @@
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <PublishUrl>F:\Users\Zachary\Documents\Visual Studio 2017\Projects\SqualrSite\public\release\</PublishUrl>
+    <PublishUrl>F:\Users\Zachary\Documents\Visual Studio 2017\Projects\SqualrSite\public\release\streamer\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -25,16 +25,16 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>true</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://www.squalr.com/release/</InstallUrl>
+    <InstallUrl>https://www.squalr.com/release/streamer/</InstallUrl>
     <SupportUrl>https://www.squalr.com/</SupportUrl>
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr</ProductName>
     <PublisherName>Squalr</PublisherName>
-    <MinimumRequiredVersion>2.1.5.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.1.6.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.1.5.0</ApplicationVersion>
+    <ApplicationVersion>2.1.6.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -142,6 +142,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Content\ChangeLog.cs">
+      <DependentUpon>ChangeLog.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Properties\SettingsViewModel.cs" />
     <Compile Include="Source\Api\Exceptions\NotFoundException.cs" />
     <Compile Include="Source\Api\Exceptions\ResponseStatusException.cs" />
@@ -291,10 +296,6 @@
       <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
       <Name>SqualrProxy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Squalr\Squalr.csproj">
-      <Project>{bcc372dd-2823-459d-9594-c16e777ad292}</Project>
-      <Name>Squalr</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>
       <Name>Xceed.Wpf.AvalonDock</Name>
@@ -319,12 +320,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <FileAssociation Include=".hax">
-      <Visible>False</Visible>
-      <Description>Squalr Cheat File</Description>
-      <Progid>420</Progid>
-      <DefaultIcon>Content\Images\AppIcon.ico</DefaultIcon>
-    </FileAssociation>
+    <Content Include="Content\ChangeLog.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ChangeLog.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

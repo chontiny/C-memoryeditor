@@ -4,6 +4,7 @@
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Threading;
@@ -48,29 +49,29 @@
 
             // Note: Not async to avoid updates slower than the perception threshold
             this.UpdateActiveValueCommand = new RelayCommand<Object>((newValue) => this.UpdateActiveValue(newValue), (newValue) => true);
-            this.SelectChangedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.Changed), () => true);
-            this.SelectDecreasedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.Decreased), () => true);
-            this.SelectDecreasedByXCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.DecreasedByX), () => true);
-            this.SelectEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.Equal), () => true);
-            this.SelectGreaterThanCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.GreaterThan), () => true);
-            this.SelectGreaterThanOrEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.GreaterThanOrEqual), () => true);
-            this.SelectIncreasedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.Increased), () => true);
-            this.SelectIncreasedByXCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.IncreasedByX), () => true);
-            this.SelectLessThanCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.LessThan), () => true);
-            this.SelectLessThanOrEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.LessThanOrEqual), () => true);
-            this.SelectNotEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.NotEqual), () => true);
-            this.SelectNotScientificNotationCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.NotScientificNotation), () => true);
-            this.SelectUnchangedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ConstraintsEnum.Unchanged), () => true);
+            this.SelectChangedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.Changed), () => true);
+            this.SelectDecreasedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.Decreased), () => true);
+            this.SelectDecreasedByXCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.DecreasedByX), () => true);
+            this.SelectEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.Equal), () => true);
+            this.SelectGreaterThanCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.GreaterThan), () => true);
+            this.SelectGreaterThanOrEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.GreaterThanOrEqual), () => true);
+            this.SelectIncreasedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.Increased), () => true);
+            this.SelectIncreasedByXCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.IncreasedByX), () => true);
+            this.SelectLessThanCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.LessThan), () => true);
+            this.SelectLessThanOrEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.LessThanOrEqual), () => true);
+            this.SelectNotEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.NotEqual), () => true);
+            this.SelectNotScientificNotationCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.NotScientificNotation), () => true);
+            this.SelectUnchangedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.Unchanged), () => true);
 
             // Note: Constraint modifying commands cannot be async since they modify the observable collection, which must be done on the same thread as the GUI
             this.AddCurrentConstraintCommand = new RelayCommand(() => this.AddCurrentConstraint(), () => true);
             this.RemoveConstraintCommand = new RelayCommand<ScanConstraint>((ScanConstraint) => this.RemoveConstraint(ScanConstraint), (ScanConstraint) => true);
             this.EditConstraintCommand = new RelayCommand<ScanConstraint>((ScanConstraint) => this.EditConstraint(ScanConstraint), (ScanConstraint) => true);
             this.ClearConstraintsCommand = new RelayCommand(() => this.ClearConstraints(), () => true);
-            this.CurrentScanConstraint = new ScanConstraint(ConstraintsEnum.Equal);
+            this.CurrentScanConstraint = new ScanConstraint(ScanConstraint.ConstraintType.Equal);
             this.ManualScannerModel = new ManualScan();
             this.ScanConstraintManager = new ScanConstraintManager();
-            this.ScanConstraintManager.SetElementType(typeof(Int32));
+            this.ScanConstraintManager.SetElementType(DataTypes.Int32);
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
             Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
@@ -107,67 +108,67 @@
         public ICommand ClearConstraintsCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.Changed"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.Changed"/> constraint.
         /// </summary>
         public ICommand SelectChangedCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.Decreased"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.Decreased"/> constraint.
         /// </summary>
         public ICommand SelectDecreasedCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.DecreasedByX"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.DecreasedByX"/> constraint.
         /// </summary>
         public ICommand SelectDecreasedByXCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.Equal"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.Equal"/> constraint.
         /// </summary>
         public ICommand SelectEqualCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.GreaterThan"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.GreaterThan"/> constraint.
         /// </summary>
         public ICommand SelectGreaterThanCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.GreaterThanOrEqual"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.GreaterThanOrEqual"/> constraint.
         /// </summary>
         public ICommand SelectGreaterThanOrEqualCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.Increased"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.Increased"/> constraint.
         /// </summary>
         public ICommand SelectIncreasedCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.IncreasedByX"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.IncreasedByX"/> constraint.
         /// </summary>
         public ICommand SelectIncreasedByXCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.LessThan"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.LessThan"/> constraint.
         /// </summary>
         public ICommand SelectLessThanCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.LessThanOrEqual"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.LessThanOrEqual"/> constraint.
         /// </summary>
         public ICommand SelectLessThanOrEqualCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.NotEqual"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.NotEqual"/> constraint.
         /// </summary>
         public ICommand SelectNotEqualCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.NotScientificNotation"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.NotScientificNotation"/> constraint.
         /// </summary>
         public ICommand SelectNotScientificNotationCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintsEnum.Unchanged"/> constraint.
+        /// Gets the command to select the <see cref="ConstraintType.Unchanged"/> constraint.
         /// </summary>
         public ICommand SelectUnchangedCommand { get; private set; }
 
@@ -267,7 +268,7 @@
         /// Updates the active type.
         /// </summary>
         /// <param name="activeType">The new active type.</param>
-        public void Update(Type activeType)
+        public void Update(DataType activeType)
         {
             // Create a temporary manager to update our current constraint
             ScanConstraintManager manager = new ScanConstraintManager();
@@ -345,7 +346,7 @@
         /// Changes the current scan constraint.
         /// </summary>
         /// <param name="constraint">The new scan constraint.</param>
-        private void ChangeScanConstraintSelection(ConstraintsEnum constraint)
+        private void ChangeScanConstraintSelection(ScanConstraint.ConstraintType constraint)
         {
             this.CurrentScanConstraint.Constraint = constraint;
             this.UpdateAllProperties();

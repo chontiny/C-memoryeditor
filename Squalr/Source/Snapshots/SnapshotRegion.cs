@@ -4,8 +4,8 @@
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -15,7 +15,7 @@
     /// <summary>
     /// Defines a region of memory in an external process.
     /// </summary>
-    public class SnapshotRegion : NormalizedRegion, IEnumerable
+    internal class SnapshotRegion : NormalizedRegion, IEnumerable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
@@ -72,12 +72,12 @@
         /// <summary>
         /// Gets or sets the data type of the elements of this region.
         /// </summary>
-        public Type ElementType { get; set; }
+        public DataType ElementType { get; set; }
 
         /// <summary>
         /// Gets or sets the data type of the labels of this region.
         /// </summary>
-        public Type LabelType { get; set; }
+        public DataType LabelType { get; set; }
 
         /// <summary>
         /// Gets the most recently read values.
@@ -219,7 +219,7 @@
         public IEnumerable<SnapshotRegion> GetValidRegions()
         {
             List<SnapshotRegion> validRegions = new List<SnapshotRegion>();
-            Int32 elementSize = this.GetElementSize();
+            Int32 elementSize = Conversions.SizeOf(this.ElementType);
 
             if (this.ValidBits == null)
             {
@@ -246,7 +246,7 @@
                 SnapshotRegion subRegion = new SnapshotRegion(this.BaseAddress + startIndex, validRegionSize.ToUInt64());
 
                 // Ensure region size is worth keeping. This can happen if we grab a misaligned segment
-                if (subRegion.RegionSize < Conversions.GetTypeSize(this.ElementType).ToUInt64())
+                if (subRegion.RegionSize < Conversions.SizeOf(this.ElementType).ToUInt64())
                 {
                     continue;
                 }
@@ -273,7 +273,7 @@
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator<SnapshotElementIterator> IterateElements(
             PointerIncrementMode pointerIncrementMode,
-            ConstraintsEnum compareActionConstraint = ConstraintsEnum.Changed,
+            ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
             Object compareActionValue = null)
         {
             UInt64 elementCount = this.ElementCount;
@@ -297,41 +297,6 @@
         public IEnumerator GetEnumerator()
         {
             return this.IterateElements(PointerIncrementMode.AllPointers);
-        }
-
-        /// <summary>
-        /// Gets the element size of the current data type.
-        /// </summary>
-        /// <returns>The element size of the current data type.</returns>
-        private Int32 GetElementSize()
-        {
-            // Switch on type code. Could also do Marshal.SizeOf(DataType), but it is slower
-            switch (Type.GetTypeCode(this.ElementType))
-            {
-                case TypeCode.Byte:
-                    return sizeof(Byte);
-                case TypeCode.SByte:
-                    return sizeof(SByte);
-                case TypeCode.Int16:
-                    return sizeof(Int16);
-                case TypeCode.Int32:
-                    return sizeof(Int32);
-                case TypeCode.Int64:
-                    return sizeof(Int64);
-                case TypeCode.UInt16:
-                    return sizeof(UInt16);
-                case TypeCode.UInt32:
-                    return sizeof(UInt32);
-                case TypeCode.UInt64:
-                    return sizeof(UInt64);
-                case TypeCode.Single:
-                    return sizeof(Single);
-                case TypeCode.Double:
-                    return sizeof(Double);
-                default:
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Invalid element type");
-                    return 0;
-            }
         }
     }
     //// End class

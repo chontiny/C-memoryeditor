@@ -5,6 +5,7 @@
     using Engine;
     using Engine.VirtualMachines;
     using SqualrCore.Content;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils;
     using System;
     using System.Collections.Generic;
@@ -43,7 +44,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
         /// </summary>
-        public PointerItem() : this(IntPtr.Zero, typeof(Int32), "New Address")
+        public PointerItem() : this(IntPtr.Zero, DataTypes.Int32, "New Address")
         {
         }
 
@@ -200,7 +201,7 @@
                     }
                     else
                     {
-                        return this.ModuleName + " - " + Conversions.ParsePrimitiveAsHexString(typeof(IntPtr), this.ModuleOffset, signHex: true).TrimStart('-');
+                        return this.ModuleName + " - " + Conversions.ParsePrimitiveAsHexString(DataTypes.IntPtr, this.ModuleOffset, signHex: true).TrimStart('-');
                     }
                 }
                 else if (this.IsPointer)

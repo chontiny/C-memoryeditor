@@ -103,7 +103,7 @@
         public void LoadLayoutFromResource(DockingManager dockManager, String resource)
         {
             String layoutResource = Assembly.GetEntryAssembly().GetManifestResourceNames()
-                .SingleOrDefault(resourceName => resourceName.EndsWith(resource));
+                .FirstOrDefault(resourceName => resourceName.EndsWith(resource));
 
             if (layoutResource.IsNullOrEmpty())
             {

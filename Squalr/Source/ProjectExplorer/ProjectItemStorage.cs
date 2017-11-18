@@ -197,7 +197,7 @@
                     // Add each high level child in the project root to this project
                     foreach (ProjectItem child in importedProjectRoot)
                     {
-                        ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, child);
+                        ProjectExplorerViewModel.GetInstance().AddNewProjectItems(false, importedProjectRoot);
                     }
 
                     this.HasUnsavedChanges = true;

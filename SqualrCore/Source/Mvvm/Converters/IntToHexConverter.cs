@@ -40,7 +40,7 @@
         {
             if (value != null)
             {
-                if (CheckSyntax.CanParseHex(targetType, value.ToString()))
+                if (SyntaxChecker.CanParseHex(targetType, value.ToString()))
                 {
                     return Conversions.ParseHexStringAsPrimitive(targetType, value.ToString());
                 }

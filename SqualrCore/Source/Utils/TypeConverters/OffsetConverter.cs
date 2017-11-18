@@ -1,5 +1,6 @@
 ﻿namespace SqualrCore.Source.Utils.TypeConverters
 {
+    using SqualrCore.Source.Engine.Types;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -40,6 +41,29 @@
             }
 
             return base.ConvertTo(context, culture, value, destinationType);
+        }
+
+        /// <summary>
+        /// Converts a string to the corresponding value type.
+        /// </summary>
+        /// <param name="context">Type descriptor context.</param>
+        /// <param name="culture">Globalization info.</param>
+        /// <param name="value">The value being converted.</param>
+        /// <returns>The converted value.</returns>
+        public override Object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)
+        {
+            if (value is String)
+            {
+                IEnumerable<String> offsetStrings = (value as String).Split(',').Select(offset => offset.Trim());
+
+                if (offsetStrings.All(offset => SyntaxChecker.CanParseHex(DataTypes.Int32, offset)))
+                {
+                    return offsetStrings.Select(offset => (Int32)Conversions.ParseHexStringAsPrimitive(DataTypes.Int32, offset)).ToArray();
+                }
+            }
+
+            // Return an invalid object, such that it gets rejected by the property updater -- Note: This exception is not thrown
+            return new ArgumentException();
         }
 
         /// <summary>

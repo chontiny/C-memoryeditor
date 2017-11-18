@@ -4,6 +4,7 @@
     using Squalr.Source.Prefilters;
     using Squalr.Source.Results;
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
@@ -297,7 +298,7 @@
         /// Updates the active type.
         /// </summary>
         /// <param name="activeType">The new active type.</param>
-        public void Update(Type activeType)
+        public void Update(DataType activeType)
         {
             this.GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot)?.UpdateSettings(ScanResultsViewModel.GetInstance().ActiveType, SettingsViewModel.GetInstance().Alignment);
         }

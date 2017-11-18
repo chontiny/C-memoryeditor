@@ -1,5 +1,6 @@
 ﻿namespace SqualrCore.Source.Utils.TypeConverters
 {
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.ProjectItems;
     using System;
     using System.ComponentModel;
@@ -21,7 +22,7 @@
         public override Object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, Object value, Type destinationType)
         {
             String valueString = (value == null) ? String.Empty : value.ToString();
-            Type valueType = (value == null) ? null : value.GetType();
+            DataType dataType = (value == null) ? null : value.GetType();
             Boolean isHex = false;
 
             if (typeof(AddressItem).IsAssignableFrom(context?.Instance?.GetType()))
@@ -29,12 +30,12 @@
                 isHex = (context.Instance as AddressItem).IsValueHex;
             }
 
-            if (value == null || !CheckSyntax.CanParseValue(valueType, valueString))
+            if (value == null || !SyntaxChecker.CanParseValue(dataType, valueString))
             {
                 return base.ConvertTo(context, culture, value, destinationType);
             }
 
-            return isHex ? Conversions.ParsePrimitiveAsHexString(valueType, valueString) : valueString;
+            return isHex ? Conversions.ParsePrimitiveAsHexString(dataType, valueString) : valueString;
         }
 
         /// <summary>
@@ -46,26 +47,26 @@
         /// <returns>The converted value.</returns>
         public override Object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, Object value)
         {
-            Type valueType = null;
+            DataType dataType = null;
             Boolean isHex = false;
 
             if (typeof(AddressItem).IsAssignableFrom(context.Instance.GetType()))
             {
-                valueType = (context.Instance as AddressItem)?.DataType;
+                dataType = (context.Instance as AddressItem)?.DataType;
                 isHex = (context.Instance as AddressItem).IsValueHex;
             }
 
-            if (valueType == null || !value.GetType().IsAssignableFrom(typeof(String)))
+            if (dataType == (DataType)null || !value.GetType().IsAssignableFrom(typeof(String)))
             {
                 return base.ConvertFrom(context, culture, value);
             }
 
-            if (!(isHex ? CheckSyntax.CanParseHex(valueType, value as String) : CheckSyntax.CanParseValue(valueType, value as String)))
+            if (!(isHex ? SyntaxChecker.CanParseHex(dataType, value as String) : SyntaxChecker.CanParseValue(dataType, value as String)))
             {
                 return base.ConvertFrom(context, culture, value);
             }
 
-            return isHex ? Conversions.ParseHexStringAsPrimitive(valueType, value as String) : Conversions.ParsePrimitiveStringAsPrimitive(valueType, value as String);
+            return isHex ? Conversions.ParseHexStringAsPrimitive(dataType, value as String) : Conversions.ParsePrimitiveStringAsPrimitive(dataType, value as String);
         }
 
         /// <summary>

@@ -5,7 +5,9 @@
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMachines;
+    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
@@ -77,7 +79,7 @@
             this.ContentId = ScanResultsViewModel.ToolContentId;
             this.ObserverLock = new Object();
 
-            this.ChangeTypeCommand = new RelayCommand<Type>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
+            this.ChangeTypeCommand = new RelayCommand<DataType>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
             this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<ScanResult>(), (selectedItems) => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
@@ -87,7 +89,7 @@
             this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
-            this.ActiveType = typeof(Int32);
+            this.ActiveType = DataTypes.Int32;
             this.addresses = new FullyObservableCollection<ScanResult>();
 
             SnapshotManager.GetInstance().Subscribe(this);
@@ -155,7 +157,7 @@
         /// <summary>
         /// Gets or sets the active scan results data type.
         /// </summary>
-        public Type ActiveType
+        public DataType ActiveType
         {
             get
             {
@@ -167,7 +169,7 @@
                 this.activeType = value;
 
                 // Update data type of addresses
-                this.Addresses?.ToArray().ForEach(address => address.DataType = this.ActiveType);
+                this.Addresses?.ToArray().ForEach(address => address.PointerItem.DataType = this.ActiveType);
 
                 this.NotifyObservers();
                 this.RaisePropertyChanged(nameof(this.ActiveType));
@@ -182,7 +184,7 @@
         {
             get
             {
-                return Conversions.TypeToName(this.ActiveType);
+                return Conversions.DataTypeToName(this.ActiveType);
             }
         }
 
@@ -400,7 +402,8 @@
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);
 
-                    newAddresses.Add(new ScanResult(moduleName, address.ToIntPtr(), this.ActiveType, currentValue, previousValue, label));
+                    PointerItem pointerItem = new PointerItem(baseAddress: address.ToIntPtr(), dataType: this.ActiveType, moduleName: moduleName, value: currentValue);
+                    newAddresses.Add(new ScanResult(pointerItem, previousValue, label));
                 }
             }
 
@@ -423,7 +426,7 @@
                 {
                     foreach (ScanResult address in this.Addresses.ToArray())
                     {
-                        address.Update();
+                        address.PointerItem.Update();
                     }
 
                     Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);
@@ -435,7 +438,7 @@
         /// Changes the active scan results type.
         /// </summary>
         /// <param name="newType">The new scan results type.</param>
-        private void ChangeType(Type newType)
+        private void ChangeType(DataType newType)
         {
             this.ActiveType = newType;
         }
@@ -478,7 +481,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddScanResult(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult);
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult.PointerItem);
         }
 
         /// <summary>
@@ -492,7 +495,9 @@
                 return;
             }
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResults?.ToArray());
+            IEnumerable<PointerItem> projectItems = scanResults.Select(scanResult => scanResult.PointerItem);
+
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: projectItems);
         }
 
         /// <summary>

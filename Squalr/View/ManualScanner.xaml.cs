@@ -3,6 +3,7 @@
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ManualScanner;
     using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Engine.Types;
     using System;
     using System.Threading.Tasks;
     using System.Windows.Controls;
@@ -47,7 +48,7 @@
         /// Updates the active type.
         /// </summary>
         /// <param name="activeType">The new active type.</param>
-        public void Update(Type activeType)
+        public void Update(DataType activeType)
         {
             this.ValueHexDecBox.ElementType = activeType;
         }

@@ -1,5 +1,6 @@
 ﻿namespace SqualrCore.Source.Engine.VirtualMachines.DotNet
 {
+    using SqualrCore.Source.Engine.Types;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -56,8 +57,9 @@
         /// Gets or sets the data type of the .Net object.
         /// </summary>
         [ReadOnly(true)]
+        [TypeConverter(typeof(DataTypeConverter))]
         [Category("Properties"), DisplayName("Value Type"), Description("Data type of the address")]
-        public Type ElementType { get; set; }
+        public DataType ElementType { get; set; }
 
         /// <summary>
         /// Gets or sets the children of this .Net object.

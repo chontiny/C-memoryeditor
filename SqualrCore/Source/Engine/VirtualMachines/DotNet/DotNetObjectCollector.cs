@@ -3,13 +3,14 @@
     using ActionScheduler;
     using Processes;
     using Proxy;
+    using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Output;
     using SqualrProxy;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Reflection;
     using System.Threading;
-    using Utils;
     using Utils.Extensions;
 
     /// <summary>
@@ -133,7 +134,7 @@
                 foreach (UInt64 rootRef in proxyService.GetRoots())
                 {
                     String rootName = proxyService.GetRootName(rootRef);
-                    Type rootType = Conversions.TypeCodeToType((TypeCode)proxyService.GetRootType(rootRef));
+                    Type rootType = this.TypeCodeToType((TypeCode)proxyService.GetRootType(rootRef));
 
                     if (rootRef == 0 || rootName == null)
                     {
@@ -174,15 +175,17 @@
 
                         this.RecursiveBuild(proxyService, visited, rootObject, rootRef);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error building .NET objects", ex);
                     }
                 }
 
                 this.ObjectTrees = objectTrees;
             }
-            catch
+            catch (Exception ex)
             {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error collecting .NET objects", ex);
             }
         }
 
@@ -208,7 +211,7 @@
                 DotNetObject childObject = new DotNetObject(
                     parent,
                     parent.ObjectReference.ToIntPtr().Add(proxyService.GetFieldOffset(fieldRef)).ToUInt64(),
-                    Conversions.TypeCodeToType((TypeCode)proxyService.GetFieldType(fieldRef)),
+                    this.TypeCodeToType((TypeCode)proxyService.GetFieldType(fieldRef)),
                     proxyService.GetFieldName(fieldRef));
                 parent.Children.Add(childObject);
             }
@@ -223,7 +226,7 @@
 
                 visited.Add(childObjectRef);
 
-                Type type = Conversions.TypeCodeToType((TypeCode)proxyService.GetObjectType(childObjectRef));
+                Type type = this.TypeCodeToType((TypeCode)proxyService.GetObjectType(childObjectRef));
 
                 if (type == null || excludedNameSpaces.Any(X => type.Name.StartsWith(X, StringComparison.OrdinalIgnoreCase)))
                 {
@@ -236,6 +239,61 @@
             }
 
             parent.Children.Sort();
+        }
+
+        /// <summary>
+        /// Gets the type from the given type code.
+        /// </summary>
+        /// <param name="typeCode">The type code.</param>
+        /// <returns>Returns the data type, or null if the conversion is not possible.</returns>
+        private Type TypeCodeToType(TypeCode? typeCode)
+        {
+            if (typeCode == null)
+            {
+                return null;
+            }
+
+            switch (typeCode)
+            {
+                case TypeCode.Boolean:
+                    return typeof(Boolean);
+                case TypeCode.Byte:
+                    return DataTypes.Byte;
+                case TypeCode.Char:
+                    return DataTypes.Char;
+                case TypeCode.DateTime:
+                    return typeof(DateTime);
+                case TypeCode.DBNull:
+                    return typeof(DBNull);
+                case TypeCode.Decimal:
+                    return typeof(Decimal);
+                case TypeCode.Double:
+                    return DataTypes.Double;
+                case TypeCode.Int16:
+                    return DataTypes.Int16;
+                case TypeCode.Int32:
+                    return DataTypes.Int32;
+                case TypeCode.Int64:
+                    return DataTypes.Int64;
+                case TypeCode.Object:
+                    return typeof(Object);
+                case TypeCode.SByte:
+                    return DataTypes.SByte;
+                case TypeCode.Single:
+                    return DataTypes.Single;
+                case TypeCode.String:
+                    return DataTypes.String;
+                case TypeCode.UInt16:
+                    return DataTypes.UInt16;
+                case TypeCode.UInt32:
+                    return DataTypes.UInt32;
+                case TypeCode.UInt64:
+                    return DataTypes.UInt64;
+                default:
+                    break;
+            }
+
+            return null;
         }
     }
     //// End class

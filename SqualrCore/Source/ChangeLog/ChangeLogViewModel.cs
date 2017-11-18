@@ -32,8 +32,6 @@
         /// </summary>
         private ChangeLogViewModel()
         {
-            this.changeLog = new Content.ChangeLog().TransformText();
-
             this.CloseWindowCommand = new RelayCommand<Window>(this.CloseWindow);
         }
 
@@ -51,6 +49,12 @@
             {
                 return this.changeLog;
             }
+
+            private set
+            {
+                this.changeLog = value;
+                this.RaisePropertyChanged(nameof(this.ChangeLog));
+            }
         }
 
         /// <summary>
@@ -60,7 +64,7 @@
         {
             get
             {
-                return "Change Log - " + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+                return "Change Log - " + Assembly.GetEntryAssembly().GetName().Version.ToString();
             }
         }
 
@@ -76,7 +80,7 @@
         /// <summary>
         /// Displays the change log to the user if there has been a recent update.
         /// </summary>
-        public void DisplayChangeLog()
+        public void DisplayChangeLog(String changeLogText)
         {
             try
             {
@@ -91,6 +95,7 @@
                 return;
             }
 
+            this.ChangeLog = changeLogText;
             View.ChangeLog changeLog = new View.ChangeLog();
             changeLog.Owner = Application.Current.MainWindow;
             changeLog.ShowDialog();
