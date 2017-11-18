@@ -3,6 +3,7 @@
     using ActionScheduler;
     using Processes;
     using Proxy;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Output;
     using SqualrProxy;
     using System;
@@ -257,9 +258,9 @@
                 case TypeCode.Boolean:
                     return typeof(Boolean);
                 case TypeCode.Byte:
-                    return typeof(Byte);
+                    return DataTypes.Byte;
                 case TypeCode.Char:
-                    return typeof(Char);
+                    return DataTypes.Char;
                 case TypeCode.DateTime:
                     return typeof(DateTime);
                 case TypeCode.DBNull:
@@ -267,27 +268,27 @@
                 case TypeCode.Decimal:
                     return typeof(Decimal);
                 case TypeCode.Double:
-                    return typeof(Double);
+                    return DataTypes.Double;
                 case TypeCode.Int16:
-                    return typeof(Int16);
+                    return DataTypes.Int16;
                 case TypeCode.Int32:
-                    return typeof(Int32);
+                    return DataTypes.Int32;
                 case TypeCode.Int64:
-                    return typeof(Int64);
+                    return DataTypes.Int64;
                 case TypeCode.Object:
                     return typeof(Object);
                 case TypeCode.SByte:
-                    return typeof(SByte);
+                    return DataTypes.SByte;
                 case TypeCode.Single:
-                    return typeof(Single);
+                    return DataTypes.Single;
                 case TypeCode.String:
-                    return typeof(String);
+                    return DataTypes.String;
                 case TypeCode.UInt16:
-                    return typeof(UInt16);
+                    return DataTypes.UInt16;
                 case TypeCode.UInt32:
-                    return typeof(UInt32);
+                    return DataTypes.UInt32;
                 case TypeCode.UInt64:
-                    return typeof(UInt64);
+                    return DataTypes.UInt64;
                 default:
                     break;
             }

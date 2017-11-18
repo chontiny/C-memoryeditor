@@ -2,8 +2,8 @@
 {
     using Controls;
     using Engine;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Output;
-    using SqualrCore.Source.Utils.Types;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;
@@ -43,7 +43,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
         /// </summary>
-        public AddressItem() : this(typeof(Int32), "New Address")
+        public AddressItem() : this(DataTypes.Int32, "New Address")
         {
         }
 

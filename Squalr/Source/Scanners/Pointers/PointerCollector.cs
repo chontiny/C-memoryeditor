@@ -6,6 +6,8 @@
     using Squalr.Source.Scanners.ValueCollector;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -76,7 +78,9 @@
             }
 
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
-            this.Snapshot.UpdateSettings(activeType: isProcess32Bit ? typeof(UInt32) : typeof(UInt64), alignment: isProcess32Bit ? sizeof(UInt32) : sizeof(UInt64));
+            this.Snapshot.UpdateSettings(
+                activeType: isProcess32Bit ? DataTypes.UInt32 : DataTypes.UInt64,
+                alignment: isProcess32Bit ? Conversions.SizeOf(DataTypes.UInt32) : Conversions.SizeOf(DataTypes.UInt64));
         }
 
         /// <summary>

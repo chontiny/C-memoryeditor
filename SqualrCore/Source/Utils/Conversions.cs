@@ -1,8 +1,8 @@
 ﻿namespace SqualrCore.Source.Utils
 {
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.Extensions;
-    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Runtime.InteropServices;
 
@@ -21,31 +21,31 @@
         {
             switch (dataType)
             {
-                case DataType type when type == typeof(Byte):
+                case DataType type when type == DataTypes.Byte:
                     return Byte.Parse(value);
-                case DataType type when type == typeof(Char):
+                case DataType type when type == DataTypes.Char:
                     return Byte.Parse(value);
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     return SByte.Parse(value);
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     return Int16.Parse(value);
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     return Int32.Parse(value);
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     return Int64.Parse(value);
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     return UInt16.Parse(value);
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     return UInt32.Parse(value);
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     return UInt64.Parse(value);
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     return Single.Parse(value);
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     return Double.Parse(value);
-                case DataType type when type == typeof(IntPtr):
+                case DataType type when type == DataTypes.IntPtr:
                     return EngineCore.GetInstance().Processes.IsSelf32Bit() ? new IntPtr(Int32.Parse(value)) : new IntPtr(Int64.Parse(value));
-                case DataType type when type == typeof(UIntPtr):
+                case DataType type when type == DataTypes.UIntPtr:
                     return EngineCore.GetInstance().Processes.IsSelf32Bit() ? new UIntPtr(UInt32.Parse(value)) : new UIntPtr(UInt64.Parse(value));
                 default:
                     return null;
@@ -88,29 +88,29 @@
 
             switch (dataType)
             {
-                case DataType type when type == typeof(Byte) || type == typeof(Char):
+                case DataType type when type == DataTypes.Byte || type == DataTypes.Char:
                     return (signHex && (Byte)realValue < 0) ? ("-" + (-(Byte)realValue).ToString("X")) : ((Byte)realValue).ToString("X");
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     return ((SByte)realValue).ToString("X");
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     return (signHex && (Int16)realValue < 0) ? ("-" + (-(Int16)realValue).ToString("X")) : ((Int16)realValue).ToString("X");
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     return (signHex && (Int32)realValue < 0) ? ("-" + (-(Int32)realValue).ToString("X")) : ((Int32)realValue).ToString("X");
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     return (signHex && (Int64)realValue < 0) ? ("-" + (-(Int64)realValue).ToString("X")) : ((Int64)realValue).ToString("X");
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     return ((UInt16)realValue).ToString("X");
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     return ((UInt32)realValue).ToString("X");
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     return ((UInt64)realValue).ToString("X");
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     return BitConverter.ToUInt32(BitConverter.GetBytes((Single)realValue), 0).ToString("X");
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     return BitConverter.ToUInt64(BitConverter.GetBytes((Double)realValue), 0).ToString("X");
-                case DataType type when type == typeof(IntPtr):
+                case DataType type when type == DataTypes.IntPtr:
                     return ((IntPtr)realValue).ToString("X");
-                case DataType type when type == typeof(UIntPtr):
+                case DataType type when type == DataTypes.UIntPtr:
                     return ((UIntPtr)realValue).ToIntPtr().ToString("X");
                 default:
                     return null;
@@ -129,7 +129,7 @@
 
             switch (dataType)
             {
-                case DataType type when type == typeof(Byte) || type == typeof(Int16) || type == typeof(Int32) || type == typeof(Int64):
+                case DataType type when type == DataTypes.Byte || type == DataTypes.Int16 || type == DataTypes.Int32 || type == DataTypes.Int64:
                     if (value.StartsWith("-"))
                     {
                         value = value.Substring(1);
@@ -152,31 +152,31 @@
 
             switch (dataType)
             {
-                case DataType type when type == typeof(Byte):
+                case DataType type when type == DataTypes.Byte:
                     return realValue.ToString();
-                case DataType type when type == typeof(Char):
+                case DataType type when type == DataTypes.Char:
                     return realValue.ToString();
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     return unchecked((SByte)realValue).ToString();
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     return unchecked((Int16)realValue).ToString();
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     return unchecked((Int32)realValue).ToString();
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     return unchecked((Int64)realValue).ToString();
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     return realValue.ToString();
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     return realValue.ToString();
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     return realValue.ToString();
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     return BitConverter.ToSingle(BitConverter.GetBytes(unchecked((UInt32)realValue)), 0).ToString();
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     return BitConverter.ToDouble(BitConverter.GetBytes(realValue), 0).ToString();
-                case DataType type when type == typeof(IntPtr):
+                case DataType type when type == DataTypes.IntPtr:
                     return ((IntPtr)realValue).ToString();
-                case DataType type when type == typeof(UIntPtr):
+                case DataType type when type == DataTypes.UIntPtr:
                     return ((UIntPtr)realValue).ToIntPtr().ToString();
                 default:
                     return null;
@@ -196,13 +196,13 @@
             Type dataType = value.GetType();
 
             // If a pointer type, parse as a long integer
-            if (dataType == typeof(IntPtr))
+            if (dataType == DataTypes.IntPtr)
             {
-                dataType = typeof(Int64);
+                dataType = DataTypes.Int64;
             }
-            else if (dataType == typeof(UIntPtr))
+            else if (dataType == DataTypes.UIntPtr)
             {
-                dataType = typeof(UInt64);
+                dataType = DataTypes.UInt64;
             }
 
             String result = Conversions.ParsePrimitiveStringAsHexString(dataType, value.ToString());
@@ -259,31 +259,31 @@
         /// </summary>
         /// <param name="dataType">The data type.</param>
         /// <returns>The size of the given type.</returns>
-        public static Int32 GetTypeSize(DataType dataType)
+        public static Int32 SizeOf(DataType dataType)
         {
             switch (dataType)
             {
-                case DataType type when type == typeof(Byte):
+                case DataType type when type == DataTypes.Byte:
                     return sizeof(Byte);
-                case DataType type when type == typeof(Char):
+                case DataType type when type == DataTypes.Char:
                     return sizeof(Char);
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     return sizeof(SByte);
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     return sizeof(Int16);
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     return sizeof(Int32);
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     return sizeof(Int64);
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     return sizeof(UInt16);
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     return sizeof(UInt32);
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     return sizeof(UInt64);
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     return sizeof(Single);
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     return sizeof(Double);
                 default:
                     return Marshal.SizeOf(dataType);
@@ -305,27 +305,27 @@
             {
                 case DataType type when type == typeof(Boolean):
                     return (T)(Object)BitConverter.ToBoolean(byteArray, 0);
-                case DataType type when type == typeof(Byte):
+                case DataType type when type == DataTypes.Byte:
                     return (T)(Object)byteArray[0];
-                case DataType type when type == typeof(Char):
+                case DataType type when type == DataTypes.Char:
                     return (T)(Object)BitConverter.ToChar(byteArray, 0);
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     return (T)(Object)BitConverter.ToInt16(byteArray, 0);
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     return (T)(Object)BitConverter.ToInt32(byteArray, 0);
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     return (T)(Object)BitConverter.ToInt64(byteArray, 0);
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     return (T)(Object)unchecked((SByte)byteArray[0]);
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     return (T)(Object)BitConverter.ToUInt16(byteArray, 0);
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     return (T)(Object)BitConverter.ToUInt32(byteArray, 0);
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     return (T)(Object)BitConverter.ToUInt64(byteArray, 0);
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     return (T)(Object)BitConverter.ToSingle(byteArray, 0);
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     return (T)(Object)BitConverter.ToDouble(byteArray, 0);
                 default:
                     throw new ArgumentException("Invalid type provided");
@@ -343,27 +343,27 @@
             {
                 case DataType type when type == typeof(Boolean):
                     return "Boolean";
-                case DataType type when type == typeof(Byte):
+                case DataType type when type == DataTypes.Byte:
                     return "Byte";
-                case DataType type when type == typeof(Char):
+                case DataType type when type == DataTypes.Char:
                     return "Char";
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     return "SByte";
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     return "Int16";
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     return "Int32";
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     return "Int64";
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     return "UInt16";
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     return "UInt32";
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     return "UInt64";
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     return "Single";
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     return "Double";
                 default:
                     return "Unknown Type";

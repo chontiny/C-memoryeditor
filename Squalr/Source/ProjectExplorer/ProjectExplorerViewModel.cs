@@ -239,16 +239,29 @@
         /// </summary>
         /// <param name="addToSelected">Whether or not the items should be added under the selected item.</param>
         /// <param name="projectItems">The project item to add.</param>
-        public void AddNewProjectItems(Boolean addToSelected = true, params ProjectItem[] projectItems)
+        public void AddNewProjectItems(Boolean addToSelected = true, IEnumerable<ProjectItem> projectItems = null)
         {
             if (projectItems.IsNullOrEmpty())
             {
                 return;
             }
 
-            this.ProjectItems = new FullyObservableCollection<ProjectItem>(this.ProjectItems.Concat(projectItems));
+            // Clone each project item, as we do not want to reference the same object that was passed to this function
+            IEnumerable<ProjectItem> newProjectItems = projectItems.Select(projectItem => projectItem.Clone());
+
+            this.ProjectItems = new FullyObservableCollection<ProjectItem>(this.ProjectItems.Concat(newProjectItems));
 
             this.RaisePropertyChanged(nameof(this.ProjectItems));
+        }
+
+        /// <summary>
+        /// Adds the new project item to the project item collection.
+        /// </summary>
+        /// <param name="addToSelected">Whether or not the items should be added under the selected item.</param>
+        /// <param name="projectItems">The project item to add.</param>
+        public void AddNewProjectItems(Boolean addToSelected = true, params ProjectItem[] projectItems)
+        {
+            this.AddNewProjectItems(addToSelected, (IEnumerable<ProjectItem>)projectItems);
         }
 
         /// <summary>
@@ -376,11 +389,7 @@
                 return;
             }
 
-            foreach (ProjectItem projectItem in this.ClipBoard)
-            {
-                // We must clone the item, such as to prevent duplicate references of the same exact object
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, projectItem.Clone());
-            }
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, this.ClipBoard);
         }
 
         /// <summary>

@@ -4,8 +4,8 @@
     using Output;
     using Processes;
     using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory.Windows.PEB;
-    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -103,34 +103,34 @@
 
             switch (dataType)
             {
-                case DataType type when type == typeof(Byte):
+                case DataType type when type == DataTypes.Byte:
                     value = this.Read<Byte>(address, out success);
                     break;
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     value = this.Read<SByte>(address, out success);
                     break;
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     value = this.Read<Int16>(address, out success);
                     break;
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     value = this.Read<Int32>(address, out success);
                     break;
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     value = this.Read<Int64>(address, out success);
                     break;
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     value = this.Read<UInt16>(address, out success);
                     break;
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     value = this.Read<UInt32>(address, out success);
                     break;
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     value = this.Read<UInt64>(address, out success);
                     break;
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     value = this.Read<Single>(address, out success);
                     break;
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     value = this.Read<Double>(address, out success);
                     break;
                 default:
@@ -156,7 +156,7 @@
         /// <returns>A value.</returns>
         public T Read<T>(IntPtr address, out Boolean success)
         {
-            Byte[] byteArray = this.ReadBytes(address, Conversions.GetTypeSize(typeof(T)), out success);
+            Byte[] byteArray = this.ReadBytes(address, Conversions.SizeOf(typeof(T)), out success);
             return Conversions.BytesToObject<T>(byteArray);
         }
 
@@ -207,37 +207,37 @@
 
             switch (elementType)
             {
-                case DataType type when type == typeof(Byte) || type == typeof(Boolean):
+                case DataType type when type == DataTypes.Byte || type == typeof(Boolean):
                     bytes = BitConverter.GetBytes((Byte)value);
                     break;
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     bytes = BitConverter.GetBytes((SByte)value);
                     break;
-                case DataType type when type == typeof(Char):
+                case DataType type when type == DataTypes.Char:
                     bytes = Encoding.UTF8.GetBytes(new Char[] { (Char)value });
                     break;
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     bytes = BitConverter.GetBytes((Int16)value);
                     break;
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     bytes = BitConverter.GetBytes((Int32)value);
                     break;
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     bytes = BitConverter.GetBytes((Int64)value);
                     break;
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     bytes = BitConverter.GetBytes((UInt16)value);
                     break;
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     bytes = BitConverter.GetBytes((UInt32)value);
                     break;
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     bytes = BitConverter.GetBytes((UInt64)value);
                     break;
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     bytes = BitConverter.GetBytes((Single)value);
                     break;
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     bytes = BitConverter.GetBytes((Double)value);
                     break;
                 default:
@@ -410,11 +410,11 @@
         /// <returns>The maximum address possible in the target process</returns>
         public IntPtr GetMaximumAddress()
         {
-            if (IntPtr.Size == sizeof(Int32))
+            if (IntPtr.Size == Conversions.SizeOf(DataTypes.Int32))
             {
                 return unchecked(UInt32.MaxValue.ToIntPtr());
             }
-            else if (IntPtr.Size == sizeof(Int64))
+            else if (IntPtr.Size == Conversions.SizeOf(DataTypes.Int64))
             {
                 return unchecked(UInt64.MaxValue.ToIntPtr());
             }

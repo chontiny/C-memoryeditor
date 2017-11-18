@@ -336,7 +336,7 @@
     <Compile Include="Source\Utils\DataStructures\BiDictionary.cs" />
     <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs" />
     <Compile Include="Source\Utils\DataStructures\TTLCache.cs" />
-    <Compile Include="Source\Utils\Types\DataType.cs" />
+    <Compile Include="Source\Engine\Types\DataType.cs" />
     <Compile Include="Source\Utils\Extensions\ArrayExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
@@ -354,7 +354,7 @@
     <Compile Include="Source\Utils\ImageUtils.cs" />
     <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
     <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
-    <Compile Include="Source\Utils\Types\DataTypes.cs" />
+    <Compile Include="Source\Engine\Types\DataTypes.cs" />
     <Compile Include="Source\Utils\StaticRandom.cs" />
     <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DataTypeConverter.cs" />
@@ -537,10 +537,6 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Resource>
     <Page Include="View\ChangeLog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

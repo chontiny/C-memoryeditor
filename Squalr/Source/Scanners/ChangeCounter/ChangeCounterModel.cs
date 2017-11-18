@@ -4,6 +4,7 @@
     using Snapshots;
     using Squalr.Properties;
     using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.Engine.Types;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -75,7 +76,7 @@
         {
             // Initialize labeled snapshot
             this.Snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.SetLabelType(typeof(UInt16));
+            this.Snapshot.SetLabelDataType(DataTypes.UInt16);
 
             if (this.Snapshot == null)
             {

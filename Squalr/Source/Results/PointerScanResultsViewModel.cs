@@ -4,11 +4,11 @@
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
-    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -85,7 +85,7 @@
             this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<PointerItem>(), (selectedItems) => true);
             this.AddScanResultCommand = new RelayCommand<PointerItem>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
             this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
-            this.ChangeTypeCommand = new RelayCommand<Type>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
+            this.ChangeTypeCommand = new RelayCommand<DataType>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
             this.NewPointerScanCommand = new RelayCommand(() => Task.Run(() => this.DiscoveredPointers = null), () => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
@@ -94,7 +94,7 @@
             this.AddAddressCommand = new RelayCommand<PointerItem>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
-            this.ActiveType = typeof(Int32);
+            this.ActiveType = DataTypes.Int32;
             this.addresses = new FullyObservableCollection<PointerItem>();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
@@ -406,7 +406,7 @@
                 return;
             }
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResults.ToArray());
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResults);
         }
 
         /// <summary>

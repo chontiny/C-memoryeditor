@@ -1,18 +1,18 @@
 ﻿namespace Squalr.Source.Snapshots
 {
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Linq;
 
     /// <summary>
     /// Defines a snapshot of memory in an external process.
     /// </summary>
-    internal class Snapshot : INotifyPropertyChanged, IEnumerable
+    internal class Snapshot : IEnumerable
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
@@ -138,13 +138,11 @@
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         /// <summary>
         /// Sets the data type of the labels contained in this snapshot.
         /// </summary>
         /// <param name="labelType"></param>
-        public void SetLabelType(Type labelType)
+        public void SetLabelDataType(DataType labelType)
         {
             this.SnapshotRegions?.ForEach(x => x.LabelType = labelType);
         }

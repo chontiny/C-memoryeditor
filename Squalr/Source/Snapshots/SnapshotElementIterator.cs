@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Scanners.ScanConstraints;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.Extensions;
-    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Runtime.CompilerServices;
     using System.Runtime.InteropServices;
@@ -10,7 +10,7 @@
     /// <summary>
     /// Defines a reference to an element within a snapshot region.
     /// </summary>
-    public class SnapshotElementIterator
+    internal class SnapshotElementIterator
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotElementIterator" /> class.
@@ -24,7 +24,7 @@
             SnapshotRegion parent,
             Int32 elementIndex = 0,
             PointerIncrementMode pointerIncrementMode = PointerIncrementMode.AllPointers,
-            ConstraintsEnum compareActionConstraint = ConstraintsEnum.Changed,
+            ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
             Object compareActionValue = null)
         {
             this.Parent = parent;
@@ -340,7 +340,7 @@
         {
             switch (this.DataType)
             {
-                case DataType type when type == typeof(Byte):
+                case DataType type when type == DataTypes.Byte:
                     this.Changed = () => { return *this.CurrentValuePointer != *this.PreviousValuePointer; };
                     this.Unchanged = () => { return *this.CurrentValuePointer == *this.PreviousValuePointer; };
                     this.Increased = () => { return *this.CurrentValuePointer > *this.PreviousValuePointer; };
@@ -355,7 +355,7 @@
                     this.DecreasedByValue = (value) => { return *this.CurrentValuePointer == unchecked(*this.PreviousValuePointer - (Byte)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     this.Changed = () => { return *(SByte*)this.CurrentValuePointer != *(SByte*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(SByte*)this.CurrentValuePointer == *(SByte*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(SByte*)this.CurrentValuePointer > *(SByte*)this.PreviousValuePointer; };
@@ -370,7 +370,7 @@
                     this.DecreasedByValue = (value) => { return *(SByte*)this.CurrentValuePointer == unchecked(*(SByte*)this.PreviousValuePointer - (SByte)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     this.Changed = () => { return *(Int16*)this.CurrentValuePointer != *(Int16*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(Int16*)this.CurrentValuePointer == *(Int16*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(Int16*)this.CurrentValuePointer > *(Int16*)this.PreviousValuePointer; };
@@ -385,7 +385,7 @@
                     this.DecreasedByValue = (value) => { return *(Int16*)this.CurrentValuePointer == unchecked(*(Int16*)this.PreviousValuePointer - (Int16)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     this.Changed = () => { return *(Int32*)this.CurrentValuePointer != *(Int32*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(Int32*)this.CurrentValuePointer == *(Int32*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(Int32*)this.CurrentValuePointer > *(Int32*)this.PreviousValuePointer; };
@@ -400,7 +400,7 @@
                     this.DecreasedByValue = (value) => { return *(Int32*)this.CurrentValuePointer == unchecked(*(Int32*)this.PreviousValuePointer - (Int32)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     this.Changed = () => { return *(Int64*)this.CurrentValuePointer != *(Int64*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(Int64*)this.CurrentValuePointer == *(Int64*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(Int64*)this.CurrentValuePointer > *(Int64*)this.PreviousValuePointer; };
@@ -415,7 +415,7 @@
                     this.DecreasedByValue = (value) => { return *(Int64*)this.CurrentValuePointer == unchecked(*(Int64*)this.PreviousValuePointer - (Int64)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     this.Changed = () => { return *(UInt16*)this.CurrentValuePointer != *(UInt16*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(UInt16*)this.CurrentValuePointer == *(UInt16*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(UInt16*)this.CurrentValuePointer > *(UInt16*)this.PreviousValuePointer; };
@@ -430,7 +430,7 @@
                     this.DecreasedByValue = (value) => { return *(UInt16*)this.CurrentValuePointer == unchecked(*(UInt16*)this.PreviousValuePointer - (UInt16)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     this.Changed = () => { return *(UInt32*)this.CurrentValuePointer != *(UInt32*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(UInt32*)this.CurrentValuePointer == *(UInt32*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(UInt32*)this.CurrentValuePointer > *(UInt32*)this.PreviousValuePointer; };
@@ -445,7 +445,7 @@
                     this.DecreasedByValue = (value) => { return *(UInt32*)this.CurrentValuePointer == unchecked(*(UInt32*)this.PreviousValuePointer - (UInt32)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     this.Changed = () => { return *(UInt64*)this.CurrentValuePointer != *(UInt64*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(UInt64*)this.CurrentValuePointer == *(UInt64*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(UInt64*)this.CurrentValuePointer > *(UInt64*)this.PreviousValuePointer; };
@@ -460,7 +460,7 @@
                     this.DecreasedByValue = (value) => { return *(UInt64*)this.CurrentValuePointer == unchecked(*(UInt64*)this.PreviousValuePointer - (UInt64)value); };
                     this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     this.Changed = () => { return !(*(Single*)this.CurrentValuePointer).AlmostEquals(*(Single*)this.PreviousValuePointer); };
                     this.Unchanged = () => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(*(Single*)this.PreviousValuePointer); };
                     this.Increased = () => { return *(Single*)this.CurrentValuePointer > *(Single*)this.PreviousValuePointer; };
@@ -475,7 +475,7 @@
                     this.DecreasedByValue = (value) => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Single*)this.PreviousValuePointer - (Single)value)); };
                     this.IsScientificNotation = () => { return (*this.CurrentValuePointer).ToString().Contains("E"); };
                     break;
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     this.Changed = () => { return !(*(Double*)this.CurrentValuePointer).AlmostEquals(*(Double*)this.PreviousValuePointer); };
                     this.Unchanged = () => { return (*(Double*)this.CurrentValuePointer).AlmostEquals(*(Double*)this.PreviousValuePointer); };
                     this.Increased = () => { return *(Double*)this.CurrentValuePointer > *(Double*)this.PreviousValuePointer; };
@@ -590,47 +590,47 @@
         /// </summary>
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
-        private void SetCompareAction(ConstraintsEnum compareActionConstraint, Object compareActionValue)
+        private void SetCompareAction(ScanConstraint.ConstraintType compareActionConstraint, Object compareActionValue)
         {
             switch (compareActionConstraint)
             {
-                case ConstraintsEnum.Unchanged:
+                case ScanConstraint.ConstraintType.Unchanged:
                     this.Compare = this.Unchanged;
                     break;
-                case ConstraintsEnum.Changed:
+                case ScanConstraint.ConstraintType.Changed:
                     this.Compare = this.Changed;
                     break;
-                case ConstraintsEnum.Increased:
+                case ScanConstraint.ConstraintType.Increased:
                     this.Compare = this.Increased;
                     break;
-                case ConstraintsEnum.Decreased:
+                case ScanConstraint.ConstraintType.Decreased:
                     this.Compare = this.Decreased;
                     break;
-                case ConstraintsEnum.IncreasedByX:
+                case ScanConstraint.ConstraintType.IncreasedByX:
                     this.Compare = () => this.IncreasedByValue(compareActionValue);
                     break;
-                case ConstraintsEnum.DecreasedByX:
+                case ScanConstraint.ConstraintType.DecreasedByX:
                     this.Compare = () => this.DecreasedByValue(compareActionValue);
                     break;
-                case ConstraintsEnum.Equal:
+                case ScanConstraint.ConstraintType.Equal:
                     this.Compare = () => this.EqualToValue(compareActionValue);
                     break;
-                case ConstraintsEnum.NotEqual:
+                case ScanConstraint.ConstraintType.NotEqual:
                     this.Compare = () => this.NotEqualToValue(compareActionValue);
                     break;
-                case ConstraintsEnum.GreaterThan:
+                case ScanConstraint.ConstraintType.GreaterThan:
                     this.Compare = () => this.GreaterThanValue(compareActionValue);
                     break;
-                case ConstraintsEnum.GreaterThanOrEqual:
+                case ScanConstraint.ConstraintType.GreaterThanOrEqual:
                     this.Compare = () => this.GreaterThanOrEqualToValue(compareActionValue);
                     break;
-                case ConstraintsEnum.LessThan:
+                case ScanConstraint.ConstraintType.LessThan:
                     this.Compare = () => this.LessThanValue(compareActionValue);
                     break;
-                case ConstraintsEnum.LessThanOrEqual:
+                case ScanConstraint.ConstraintType.LessThanOrEqual:
                     this.Compare = () => this.LessThanValue(compareActionValue);
                     break;
-                case ConstraintsEnum.NotScientificNotation:
+                case ScanConstraint.ConstraintType.NotScientificNotation:
                     this.Compare = this.IsScientificNotation;
                     break;
             }
@@ -646,25 +646,25 @@
         {
             switch (this.DataType)
             {
-                case DataType type when type == typeof(Byte):
+                case DataType type when type == DataTypes.Byte:
                     return *array;
-                case DataType type when type == typeof(SByte):
+                case DataType type when type == DataTypes.SByte:
                     return *(SByte*)array;
-                case DataType type when type == typeof(Int16):
+                case DataType type when type == DataTypes.Int16:
                     return *(Int16*)array;
-                case DataType type when type == typeof(Int32):
+                case DataType type when type == DataTypes.Int32:
                     return *(Int32*)array;
-                case DataType type when type == typeof(Int64):
+                case DataType type when type == DataTypes.Int64:
                     return *(Int64*)array;
-                case DataType type when type == typeof(UInt16):
+                case DataType type when type == DataTypes.UInt16:
                     return *(UInt16*)array;
-                case DataType type when type == typeof(UInt32):
+                case DataType type when type == DataTypes.UInt32:
                     return *(UInt32*)array;
-                case DataType type when type == typeof(UInt64):
+                case DataType type when type == DataTypes.UInt64:
                     return *(UInt64*)array;
-                case DataType type when type == typeof(Single):
+                case DataType type when type == DataTypes.Single:
                     return *(Single*)array;
-                case DataType type when type == typeof(Double):
+                case DataType type when type == DataTypes.Double:
                     return *(Double*)array;
                 default:
                     throw new ArgumentException();

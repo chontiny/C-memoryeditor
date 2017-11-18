@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.ScanConstraints
 {
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -74,9 +75,9 @@
 
             foreach (ScanConstraint scanConstraint in this.ValueConstraints.Select(x => x).Reverse())
             {
-                if (scanConstraint.Constraint == ConstraintsEnum.NotScientificNotation)
+                if (scanConstraint.Constraint == ScanConstraint.ConstraintType.NotScientificNotation)
                 {
-                    if (elementType != typeof(Single) && elementType != typeof(Double))
+                    if (elementType != DataTypes.Single && elementType != DataTypes.Double)
                     {
                         this.ValueConstraints = new FullyObservableCollection<ScanConstraint>(this.ValueConstraints.Where(x => x != scanConstraint));
                         continue;
@@ -126,9 +127,9 @@
         public void AddConstraint(ScanConstraint newScanConstraint, Boolean hasPriority = true)
         {
             // Resolve potential conflicts depending on if the new constraint has priority
-            if (newScanConstraint.Constraint == ConstraintsEnum.NotScientificNotation)
+            if (newScanConstraint.Constraint == ScanConstraint.ConstraintType.NotScientificNotation)
             {
-                if (this.ElementType != typeof(Single) && this.ElementType != typeof(Double))
+                if (this.ElementType != DataTypes.Single && this.ElementType != DataTypes.Double)
                 {
                     return;
                 }

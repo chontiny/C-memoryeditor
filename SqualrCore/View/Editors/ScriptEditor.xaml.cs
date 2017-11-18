@@ -82,7 +82,7 @@
         private void LoadHightLightRules()
         {
             String highlightingResource = Assembly.GetExecutingAssembly().GetManifestResourceNames()
-                .SingleOrDefault(resourceName => resourceName.EndsWith(ScriptEditor.ScriptSyntaxHighlightingResource));
+                .FirstOrDefault(resourceName => resourceName.EndsWith(ScriptEditor.ScriptSyntaxHighlightingResource));
 
             if (highlightingResource.IsNullOrEmpty())
             {

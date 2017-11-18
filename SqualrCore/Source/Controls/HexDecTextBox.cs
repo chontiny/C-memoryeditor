@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.Controls
 {
     using Source.Utils;
+    using SqualrCore.Source.Engine.Types;
     using System;
     using System.Drawing;
     using System.Windows.Forms;
@@ -28,7 +29,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="HexDecTextBox" /> class.
         /// </summary>
-        public HexDecTextBox() : this(typeof(UInt64))
+        public HexDecTextBox() : this(DataTypes.UInt64)
         {
         }
 

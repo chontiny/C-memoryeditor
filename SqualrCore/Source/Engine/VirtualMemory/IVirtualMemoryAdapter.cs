@@ -1,7 +1,7 @@
 ﻿namespace SqualrCore.Source.Engine.VirtualMemory
 {
     using Processes;
-    using SqualrCore.Source.Utils.Types;
+    using SqualrCore.Source.Engine.Types;
     using System;
     using System.Collections.Generic;
 

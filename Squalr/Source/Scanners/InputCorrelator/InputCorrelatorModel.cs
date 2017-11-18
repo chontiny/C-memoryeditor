@@ -7,6 +7,8 @@
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using SqualrCore.Source.Engine.Input.Keyboard;
+    using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -16,7 +18,7 @@
 
     internal class InputCorrelatorModel : ScheduledTask, IObserver<KeyState>
     {
-        private List<Hotkey> hotKeys;
+        private FullyObservableCollection<Hotkey> hotKeys;
 
         /// <summary>
         /// The number of scans completed.
@@ -30,10 +32,10 @@
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();
-            this.HotKeys = new List<Hotkey>();
+            this.HotKeys = new FullyObservableCollection<Hotkey>();
         }
 
-        public List<Hotkey> HotKeys
+        public FullyObservableCollection<Hotkey> HotKeys
         {
             get
             {
@@ -104,7 +106,7 @@
 
             // Initialize labeled snapshot
             this.Snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.SetLabelType(typeof(Int16));
+            this.Snapshot.SetLabelDataType(DataTypes.Int16);
 
             if (this.Snapshot == null)
             {

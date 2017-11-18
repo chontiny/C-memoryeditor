@@ -6,7 +6,6 @@
     using SqualrCore.Source.Engine.Input.HotKeys;
     using SqualrCore.Source.Utils.DataStructures;
     using System;
-    using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -55,7 +54,7 @@
         {
             get
             {
-                return new FullyObservableCollection<Hotkey>(this.InputCorrelatorModel.HotKeys == null ? new List<Hotkey>() : this.InputCorrelatorModel.HotKeys);
+                return this.InputCorrelatorModel.HotKeys;
             }
         }
 

@@ -2,10 +2,10 @@
 {
     using SqualrCore.Content;
     using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.Utils.Extensions;
     using SqualrCore.Source.Utils.TypeConverters;
-    using SqualrCore.Source.Utils.Types;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;

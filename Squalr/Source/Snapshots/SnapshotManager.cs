@@ -4,10 +4,10 @@
     using Squalr.Source.Prefilters;
     using Squalr.Source.Results;
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
-    using SqualrCore.Source.Utils.Types;
     using System;
     using System.Collections.Generic;
     using System.Threading;

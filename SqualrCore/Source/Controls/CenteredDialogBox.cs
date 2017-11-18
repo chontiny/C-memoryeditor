@@ -111,7 +111,7 @@
             {
                 ProcessThread processThread = Process.GetCurrentProcess().Threads
                     .OfType<ProcessThread>()
-                    .SingleOrDefault(thread => thread.ThreadState == ThreadState.Running);
+                    .FirstOrDefault(thread => thread.ThreadState == ThreadState.Running);
 
                 if (processThread != null)
                 {
