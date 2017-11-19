@@ -16,7 +16,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueCollectorModel" /> class.
         /// </summary>
-        public ValueCollectorModel(SnapshotRetrievalMode snapshotRetrievalMode = SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, Action<Snapshot> callback = null) : base(
+        public ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode snapshotRetrievalMode = SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, Action<Snapshot> callback = null) : base(
             taskName: "Value Collector",
             isRepeated: false,
             trackProgress: true)
@@ -34,7 +34,7 @@
         /// <summary>
         /// Gets or sets the method of snapshot retrieval.
         /// </summary>
-        private SnapshotRetrievalMode SnapshotRetrievalMode { get; set; }
+        private SnapshotManagerViewModel.SnapshotRetrievalMode SnapshotRetrievalMode { get; set; }
 
         /// <summary>
         /// Gets or sets the snapshot on which we perform the value collection.
@@ -51,7 +51,7 @@
         /// </summary>
         protected override void OnBegin()
         {
-            this.Snapshot = SnapshotManager.GetInstance().GetSnapshot(this.SnapshotRetrievalMode)?.Clone(this.TaskName);
+            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(this.SnapshotRetrievalMode)?.Clone(this.TaskName);
         }
 
         /// <summary>
@@ -80,7 +80,7 @@
                     }
 
                     // Read the memory for this region
-                    region.ReadAllMemory(keepValues: true);
+                    region.ReadAllMemory();
 
                     // Update progress
                     lock (this.ProgressLock)
@@ -105,7 +105,7 @@
         {
             if (this.CallBack == null)
             {
-                SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+                SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
             }
             else
             {

@@ -26,7 +26,7 @@
         {
             this.ProgressLock = new Object();
 
-            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, this.SetSnapshot));
+            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, this.SetSnapshot));
         }
 
         /// <summary>
@@ -77,7 +77,9 @@
             Boolean hasRelativeConstraint = this.ScanConstraintManager.HasRelativeConstraint();
 
             // Determine if we need to increment both current and previous value pointers, or just current value pointers
-            PointerIncrementMode pointerIncrementMode = hasRelativeConstraint ? PointerIncrementMode.ValuesOnly : PointerIncrementMode.CurrentOnly;
+            SnapshotElementIterator.PointerIncrementMode pointerIncrementMode = hasRelativeConstraint
+                ? SnapshotElementIterator.PointerIncrementMode.ValuesOnly
+                : SnapshotElementIterator.PointerIncrementMode.CurrentOnly;
 
             cancellationToken.ThrowIfCancellationRequested();
 

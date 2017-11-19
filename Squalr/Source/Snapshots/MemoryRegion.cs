@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.SnapshotsV2
+﻿namespace Squalr.Source.Snapshots
 {
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.VirtualMemory;

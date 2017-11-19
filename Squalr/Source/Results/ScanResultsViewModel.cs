@@ -86,7 +86,7 @@
             this.ActiveType = DataTypes.Int32;
             this.addresses = new FullyObservableCollection<ScanResult>();
 
-            SnapshotManager.GetInstance().Subscribe(this);
+            SnapshotManagerViewModel.GetInstance().Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
             this.UpdateScanResults();
@@ -378,7 +378,7 @@
         /// </summary>
         private void LoadScanResults()
         {
-            Snapshot snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot);
+            Snapshot snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshot);
             IList<ScanResult> newAddresses = new List<ScanResult>();
 
             if (snapshot != null)

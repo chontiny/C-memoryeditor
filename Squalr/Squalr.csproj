@@ -348,21 +348,18 @@
     <Compile Include="Source\Scanners\Pointers\PointerScannerViewModel.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\LevelPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\PointerPool.cs" />
-    <Compile Include="Source\SnapshotsV2\DEBUG_Snapshots.cs" />
-    <Compile Include="Source\SnapshotsV2\ISnapshotObserver.cs" />
-    <Compile Include="Source\SnapshotsV2\PointerIncrementMode.cs" />
-    <Compile Include="Source\SnapshotsV2\ReadGroup.cs" />
-    <Compile Include="Source\SnapshotsV2\Snapshot.cs" />
-    <Compile Include="Source\SnapshotsV2\SnapshotElementIterator.cs" />
-    <Compile Include="Source\SnapshotsV2\SnapshotManagerViewModel.cs" />
-    <Compile Include="Source\SnapshotsV2\SnapshotRegion.cs" />
-    <Compile Include="Source\SnapshotsV2\SnapshotRetrievalMode.cs" />
-    <Compile Include="Source\Snapshots\SnapshotRetrievalMode.cs" />
-    <Compile Include="Source\Scripting\ScriptEngine.cs" />
-    <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
-    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
+    <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
+    <Compile Include="Source\Snapshots\ReadGroup.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
+    <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
+    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
+    <Compile Include="Source\SnapshotsV1\SnapshotRetrievalMode.cs" />
+    <Compile Include="Source\Scripting\ScriptEngine.cs" />
+    <Compile Include="Source\SnapshotsV1\PointerIncrementMode.cs" />
+    <Compile Include="Source\SnapshotsV1\SnapshotRegion.cs" />
+    <Compile Include="Source\SnapshotsV1\Snapshot.cs" />
+    <Compile Include="Source\SnapshotsV1\SnapshotElementIterator.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetExplorerViewModel.cs" />
     <Compile Include="Source\Scripting\Graphics\GraphicsCore.cs" />
     <Compile Include="Source\Scripting\Graphics\IGraphicsCore.cs" />
@@ -387,13 +384,13 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
-    <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
+    <Compile Include="Source\SnapshotsV1\SnapshotManagerViewModel.cs" />
     <Compile Include="Source\Prefilters\ISnapshotPrefilter.cs" />
     <Compile Include="Source\Prefilters\ShallowPointerPrefilter.cs" />
-    <Compile Include="Source\Snapshots\SnapshotManager.cs" />
-    <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
+    <Compile Include="Source\SnapshotsV1\SnapshotManager.cs" />
+    <Compile Include="Source\SnapshotsV1\ISnapshotObserver.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
-    <Compile Include="Source\SnapshotsV2\MemoryRegion.cs" />
+    <Compile Include="Source\Snapshots\MemoryRegion.cs" />
     <Compile Include="View\PointerScanner.xaml.cs">
       <DependentUpon>PointerScanner.xaml</DependentUpon>
     </Compile>

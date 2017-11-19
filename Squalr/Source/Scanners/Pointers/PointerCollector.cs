@@ -36,7 +36,7 @@
             this.ProgressLock = new Object();
             this.CollectedPointersCallback = collectedPointersCallback;
 
-            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotRetrievalMode.FromUserModeMemory, this.SetSnapshot));
+            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromUserModeMemory, this.SetSnapshot));
         }
 
         /// <summary>
@@ -78,9 +78,8 @@
             }
 
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
-            this.Snapshot.UpdateSettings(
-                activeType: isProcess32Bit ? DataTypes.UInt32 : DataTypes.UInt64,
-                alignment: isProcess32Bit ? Conversions.SizeOf(DataTypes.UInt32) : Conversions.SizeOf(DataTypes.UInt64));
+            this.Snapshot.ElementDataType = isProcess32Bit ? DataTypes.UInt32 : DataTypes.UInt64;
+            this.Snapshot.Alignment = isProcess32Bit ? Conversions.SizeOf(DataTypes.UInt32) : Conversions.SizeOf(DataTypes.UInt64);
         }
 
         /// <summary>
@@ -110,7 +109,7 @@
 
                     if (isProcess32Bit)
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
                         {
                             SnapshotElementIterator element = enumerator.Current;
                             UInt32 value = unchecked((UInt32)element.LoadCurrentValue());
@@ -137,7 +136,7 @@
                     }
                     else
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
                         {
                             SnapshotElementIterator element = enumerator.Current;
                             UInt64 value = unchecked((UInt64)element.LoadCurrentValue());

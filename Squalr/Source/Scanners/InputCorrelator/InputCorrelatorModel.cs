@@ -105,8 +105,8 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.SetLabelDataType(DataTypes.Int16);
+            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot.LabelDataType = DataTypes.Int16;
 
             if (this.Snapshot == null)
             {
@@ -200,7 +200,7 @@
 
             foreach (SnapshotRegion region in this.Snapshot)
             {
-                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                 {
                     SnapshotElementIterator element = enumerator.Current;
 
@@ -213,7 +213,7 @@
 
             this.Snapshot.DiscardInvalidRegions();
 
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
 
             this.CleanUp();
             LabelThresholderViewModel.GetInstance().OpenLabelThresholder();

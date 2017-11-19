@@ -75,8 +75,8 @@
         protected override void OnBegin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.SetLabelDataType(DataTypes.UInt16);
+            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot.LabelDataType = DataTypes.UInt16;
 
             if (this.Snapshot == null)
             {
@@ -110,7 +110,7 @@
                     return;
                 }
 
-                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.AllPointers); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.AllPointers); enumerator.MoveNext();)
                 {
                     SnapshotElementIterator element = enumerator.Current;
 
@@ -139,7 +139,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
             LabelThresholderViewModel.GetInstance().OpenLabelThresholder();
             this.Snapshot = null;
         }

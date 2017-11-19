@@ -55,7 +55,7 @@
             ValidatedPointers validatedPointers = new ValidatedPointers();
             Int32 processedPointers = 0;
 
-            Snapshot snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromUserModeMemory);
+            Snapshot snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromUserModeMemory);
 
             // Enumerate all discovered pointers and determine if they have a valid target address
             foreach (PointerItem pointerItem in this.DiscoveredPointers)

@@ -3,7 +3,6 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.SnapshotsV2;
     using SqualrCore.Source.ChangeLog;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Output;
@@ -32,8 +31,6 @@
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr developer tools started");
 
             this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(new Content.ChangeLog().TransformText()), () => true);
-
-            DEBUG_Snapshots k = new DEBUG_Snapshots();
         }
 
         /// <summary>

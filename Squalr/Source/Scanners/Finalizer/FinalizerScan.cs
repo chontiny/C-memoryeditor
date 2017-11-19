@@ -97,7 +97,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
             Snapshot = null;
         }
     }

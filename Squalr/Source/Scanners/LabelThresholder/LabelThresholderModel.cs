@@ -26,7 +26,7 @@
             this.SnapshotLock = new Object();
             this.ProgressLock = new Object();
             this.OnUpdateHistogram = onUpdateHistogram;
-            Task.Run(() => SnapshotManager.GetInstance().Subscribe(this));
+            Task.Run(() => SnapshotManagerViewModel.GetInstance().Subscribe(this));
         }
 
         public Double LowerThreshold
@@ -125,7 +125,7 @@
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                         {
                             SnapshotElementIterator element = enumerator.Current;
 
@@ -144,7 +144,7 @@
 
                     foreach (SnapshotRegion region in this.Snapshot)
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                         {
                             SnapshotElementIterator element = enumerator.Current;
 
@@ -161,7 +161,7 @@
                 this.Snapshot.DiscardInvalidRegions();
             }
 
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
             this.UpdateHistogram(forceUpdate: true);
         }
 
@@ -196,7 +196,7 @@
                         return;
                     }
 
-                    for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                    for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                     {
                         SnapshotElementIterator element = enumerator.Current;
 
