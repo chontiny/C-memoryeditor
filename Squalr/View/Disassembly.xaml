@@ -56,83 +56,95 @@
             <RowDefinition Height="Auto" />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <Grid Grid.Row="1">
-            <ScrollViewer
-                Grid.Row="0"
-                HorizontalScrollBarVisibility="Hidden"
-                VerticalScrollBarVisibility="Auto">
-                <ListView
-                    Name="ProjectExplorerListView"
-                    Background="{StaticResource SqualrColorBlack}"
-                    BorderThickness="0"
-                    ContextMenu="{StaticResource RightClickMenu}"
-                    ItemsSource="{Binding Instructions}"
-                    SelectionMode="Extended">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="ContextMenu" Value="{StaticResource ProjectItemRightClickMenu}" />
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <!--  Click and Selection events  -->
-                    <intr:Interaction.Triggers>
-                        <intr:EventTrigger EventName="SelectionChanged">
-                            <intr:InvokeCommandAction Command="{Binding SelectProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItems}" />
-                        </intr:EventTrigger>
-                        <intr:EventTrigger EventName="MouseDoubleClick">
-                            <intr:InvokeCommandAction Command="{Binding EditProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItem}" />
-                        </intr:EventTrigger>
-                    </intr:Interaction.Triggers>
-                    <!--  Keyboard shortcuts  -->
-                    <ListView.InputBindings>
-                        <KeyBinding
-                            Key="C"
-                            Command="{Binding CopySelectionCommand}"
-                            Modifiers="Ctrl" />
-                        <KeyBinding
-                            Key="X"
-                            Command="{Binding CutSelectionCommand}"
-                            Modifiers="Ctrl" />
-                        <KeyBinding
-                            Key="V"
-                            Command="{Binding PasteSelectionCommand}"
-                            Modifiers="Ctrl" />
-                        <KeyBinding Key="Space" Command="{Binding ToggleSelectionActivationCommand}" />
-                        <KeyBinding Key="Delete" Command="{Binding DeleteSelectionCommand}" />
-                    </ListView.InputBindings>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid HorizontalAlignment="Stretch">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    Grid.Column="0"
-                                    Margin="4,0,0,0"
-                                    Foreground="{StaticResource SqualrColorWhite}"
-                                    IsHitTestVisible="False"
-                                    Text="{Binding Path=AddressSpecifier}" />
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Margin="4,0,0,0"
-                                    Foreground="{StaticResource SqualrColorWhite}"
-                                    IsHitTestVisible="False"
-                                    Text="{Binding Path=InstructionBytes, Converter={StaticResource OffsetsToStringConverter}}" />
-                                <TextBlock
-                                    Grid.Column="2"
-                                    Margin="4,0,4,0"
-                                    HorizontalAlignment="Right"
-                                    Foreground="{StaticResource SqualrColorWhite}"
-                                    IsHitTestVisible="False"
-                                    Text="{Binding Path=Instruction}" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </ScrollViewer>
-        </Grid>
+        <DataGrid
+            Name="ScanResultsDataGrid"
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            Background="{StaticResource SqualrColorBlack}"
+            CanUserAddRows="False"
+            ColumnWidth="*"
+            HeadersVisibility="Column"
+            ItemsSource="{Binding Instructions}"
+            RowHeaderWidth="0"
+            SelectionMode="Extended"
+            SelectionUnit="FullRow">
+            <!--  Click and Selection events  -->
+            <intr:Interaction.Triggers>
+                <intr:EventTrigger EventName="SelectionChanged">
+                    <intr:InvokeCommandAction Command="{Binding SelectInstructionsCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItems}" />
+                </intr:EventTrigger>
+                <intr:EventTrigger EventName="MouseDoubleClick">
+                    <intr:InvokeCommandAction Command="{Binding AddInstructionsCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItem}" />
+                </intr:EventTrigger>
+            </intr:Interaction.Triggers>
+            <DataGrid.Resources>
+                <Style x:Key="NoFocus" TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray24}" />
+                    <Setter Property="IsManipulationEnabled" Value="False" />
+                    <Setter Property="IsTabStop" Value="False" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Style>
+                <Style TargetType="{x:Type DataGrid}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                </Style>
+            </DataGrid.Style>
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray74}" />
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="96"
+                    Binding="{Binding Path=AddressSpecifier}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Address"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="64"
+                    Binding="{Binding Path=InstructionBytes, Converter={StaticResource OffsetsToStringConverter}}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Bytes"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    MinWidth="64"
+                    Binding="{Binding Path=Instruction}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Instruction"
+                    IsReadOnly="True" />
+            </DataGrid.Columns>
+            <DataGrid.ItemTemplate>
+                <DataTemplate>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </DataTemplate>
+            </DataGrid.ItemTemplate>
+        </DataGrid>
     </Grid>
 </UserControl>

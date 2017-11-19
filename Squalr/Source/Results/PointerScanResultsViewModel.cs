@@ -159,6 +159,7 @@
             set
             {
                 this.selectedScanResults = value;
+                this.RaisePropertyChanged(nameof(this.SelectedScanResults));
             }
         }
 

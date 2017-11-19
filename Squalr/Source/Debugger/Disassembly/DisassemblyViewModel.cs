@@ -1,5 +1,7 @@
 ﻿namespace Squalr.Source.Debugger.Disassembly
 {
+    using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Architecture;
@@ -10,6 +12,7 @@
     using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
@@ -39,11 +42,20 @@
         private FullyObservableCollection<InstructionItem> instructions;
 
         /// <summary>
+        /// The selected instructions.
+        /// </summary>
+        private IEnumerable<InstructionItem> selectedInstructions;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="DisassemblyViewModel" /> class from being created.
         /// </summary>
         private DisassemblyViewModel() : base("Disassembly")
         {
             this.Instructions = new FullyObservableCollection<InstructionItem>();
+
+            this.SelectInstructionsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedInstructions = (selectedItems as IList)?.Cast<InstructionItem>(), (selectedItems) => true);
+            this.AddInstructionCommand = new RelayCommand<InstructionItem>((instruction) => Task.Run(() => this.AddInstruction(instruction)), (scanResult) => true);
+            this.AddInstructionsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddInstructions(this.SelectedInstructions)), (selectedItems) => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
@@ -51,9 +63,36 @@
         }
 
         /// <summary>
-        /// Gets a command to resume execution.
+        /// Gets or sets the command to select instructions.
         /// </summary>
-        public ICommand Resume { get; private set; }
+        public ICommand SelectInstructionsCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add an instruction to the project explorer.
+        /// </summary>
+        public ICommand AddInstructionCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add instructions to the project explorer.
+        /// </summary>
+        public ICommand AddInstructionsCommand { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the selected scan results.
+        /// </summary>
+        public IEnumerable<InstructionItem> SelectedInstructions
+        {
+            get
+            {
+                return this.selectedInstructions;
+            }
+
+            set
+            {
+                this.selectedInstructions = value;
+                this.RaisePropertyChanged(nameof(this.SelectedInstructions));
+            }
+        }
 
         /// <summary>
         /// Gets or sets the base address from which dissassembly begins.
@@ -117,6 +156,29 @@
 
                 this.LoadInstructions();
             }
+        }
+
+        /// <summary>
+        /// Adds the given instruction to the project explorer.
+        /// </summary>
+        /// <param name="instruction">The instruction to add to the project explorer.</param>
+        private void AddInstruction(InstructionItem instruction)
+        {
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: instruction);
+        }
+
+        /// <summary>
+        /// Adds the given instructions to the project explorer.
+        /// </summary>
+        /// <param name="instructions">The instructions to add to the project explorer.</param>
+        private void AddInstructions(IEnumerable<InstructionItem> instructions)
+        {
+            if (instructions == null)
+            {
+                return;
+            }
+
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: instructions);
         }
 
         /// <summary>
