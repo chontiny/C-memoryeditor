@@ -80,7 +80,7 @@
                     }
 
                     // Read the memory for this region
-                    region.ReadAllMemory(keepValues: true, readSuccess: out _);
+                    region.ReadAllMemory(keepValues: true);
 
                     // Update progress
                     lock (this.ProgressLock)

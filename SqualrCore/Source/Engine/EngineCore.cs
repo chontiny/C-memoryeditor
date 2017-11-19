@@ -40,6 +40,12 @@
             this.Architecture = ArchitectureFactory.GetArchitecture();
             this.Input = new InputManager();
 
+            if (this.Architecture.HasVectorSupport())
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Hardware acceleration enabled");
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
+            }
+
             this.StartBackgroundServices();
         }
 

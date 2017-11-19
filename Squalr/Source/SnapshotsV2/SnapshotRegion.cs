@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Snapshots
+﻿namespace Squalr.Source.SnapshotsV2
 {
     using Squalr.Properties;
     using Squalr.Source.Results;

@@ -348,6 +348,15 @@
     <Compile Include="Source\Scanners\Pointers\PointerScannerViewModel.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\LevelPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\PointerPool.cs" />
+    <Compile Include="Source\SnapshotsV2\DEBUG_Snapshots.cs" />
+    <Compile Include="Source\SnapshotsV2\ISnapshotObserver.cs" />
+    <Compile Include="Source\SnapshotsV2\PointerIncrementMode.cs" />
+    <Compile Include="Source\SnapshotsV2\ReadGroup.cs" />
+    <Compile Include="Source\SnapshotsV2\Snapshot.cs" />
+    <Compile Include="Source\SnapshotsV2\SnapshotElementIterator.cs" />
+    <Compile Include="Source\SnapshotsV2\SnapshotManagerViewModel.cs" />
+    <Compile Include="Source\SnapshotsV2\SnapshotRegion.cs" />
+    <Compile Include="Source\SnapshotsV2\SnapshotRetrievalMode.cs" />
     <Compile Include="Source\Snapshots\SnapshotRetrievalMode.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
@@ -384,6 +393,7 @@
     <Compile Include="Source\Snapshots\SnapshotManager.cs" />
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
+    <Compile Include="Source\SnapshotsV2\MemoryRegion.cs" />
     <Compile Include="View\PointerScanner.xaml.cs">
       <DependentUpon>PointerScanner.xaml</DependentUpon>
     </Compile>
