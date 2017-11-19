@@ -29,6 +29,7 @@
         private MainViewModel() : base()
         {
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr developer tools started");
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Hardware acceleration enabled: " + System.Numerics.Vector.IsHardwareAccelerated);
 
             this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(new Content.ChangeLog().TransformText()), () => true);
         }

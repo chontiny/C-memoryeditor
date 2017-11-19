@@ -179,6 +179,7 @@
     <Compile Include="Source\Engine\Processes\Windows\Native\NativeMethods.cs" />
     <Compile Include="Source\Engine\Processes\Windows\WindowsAdapter.cs" />
     <Compile Include="Source\Engine\VirtualMemory\Windows\PEB\ManagedPeb.cs" />
+    <Compile Include="Source\Mvvm\AttachedBehaviors\ScrollToCenterBehavior.cs" />
     <Compile Include="Source\Mvvm\AttachedBehaviors\ScrollToTopBehavior.cs" />
     <Compile Include="Source\Mvvm\Converters\DataTypeToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\OffsetsToStringConverter.cs" />
