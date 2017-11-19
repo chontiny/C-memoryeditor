@@ -2,10 +2,11 @@
 {
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
-    internal class Snapshot
+    internal class Snapshot : IEnumerable<SnapshotRegion>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
@@ -113,6 +114,16 @@
             }
 
             //// this.MergeAndSortRegions();
+        }
+
+        public IEnumerator<SnapshotRegion> GetEnumerator()
+        {
+            return this.MemoryRegions?.SelectMany(snapshotRegion => snapshotRegion).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.MemoryRegions?.SelectMany(snapshotRegion => snapshotRegion).GetEnumerator();
         }
     }
     //// End class

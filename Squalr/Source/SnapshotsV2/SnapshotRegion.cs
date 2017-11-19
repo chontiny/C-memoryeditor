@@ -15,7 +15,7 @@
     /// <summary>
     /// Defines a region of memory in an external process.
     /// </summary>
-    internal class SnapshotRegion : NormalizedRegion, IEnumerable
+    internal class SnapshotRegion : NormalizedRegion, IEnumerable<SnapshotElementIterator>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
@@ -294,6 +294,11 @@
         /// </summary>
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator GetEnumerator()
+        {
+            return this.IterateElements(PointerIncrementMode.AllPointers);
+        }
+
+        IEnumerator<SnapshotElementIterator> IEnumerable<SnapshotElementIterator>.GetEnumerator()
         {
             return this.IterateElements(PointerIncrementMode.AllPointers);
         }

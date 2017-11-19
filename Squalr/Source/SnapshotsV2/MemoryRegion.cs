@@ -4,9 +4,11 @@
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
 
-    internal class MemoryRegion : NormalizedRegion
+    internal class MemoryRegion : NormalizedRegion, IEnumerable<SnapshotRegion>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryRegion" /> class.
@@ -91,6 +93,20 @@
         {
             // Get the size of vectors on the device
             Int32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
+
+            // TODO:
+            // - Ensure vectorSize aligned start/end addres
+            // - Ensure optimal readgroup placement
+        }
+
+        public IEnumerator<SnapshotRegion> GetEnumerator()
+        {
+            return this.ReadGroups?.SelectMany(snapshotRegion => snapshotRegion).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.ReadGroups?.SelectMany(snapshotRegion => snapshotRegion).GetEnumerator();
         }
     }
     //// End class

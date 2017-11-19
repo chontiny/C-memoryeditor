@@ -4,8 +4,9 @@
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections.Generic;
 
-    internal class ReadGroup : NormalizedRegion
+    internal class ReadGroup : NormalizedRegion, IEnumerable<SnapshotRegion>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadGroup" /> class.
@@ -65,6 +66,8 @@
                 return (this.CurrentValues == null ? 0L : this.CurrentValues.LongLength / this.Alignment).ToUInt64();
             }
         }
+
+        public IList<SnapshotRegion> SnapshotRegions;
 
         /// <summary>
         /// Reads all memory for this memory region.
