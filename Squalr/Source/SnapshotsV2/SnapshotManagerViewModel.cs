@@ -26,6 +26,11 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
+        /// The size limit for snapshots to be saved in the snapshot history (1GB).
+        /// </summary>
+        private const UInt64 SizeLimit = 1UL << 30;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="SnapshotManagerViewModel"/> class from being created.
         /// </summary>
         private SnapshotManagerViewModel() : base("Snapshot Manager")
@@ -103,10 +108,16 @@
         /// </summary>
         private List<ISnapshotObserver> SnapshotObservers { get; set; }
 
-        /// <summary>
-        /// The size limit for snapshots to be saved in the snapshot history (1GB).
-        /// </summary>
-        private const UInt64 SizeLimit = 1UL << 30;
+        [Flags]
+        internal enum SnapshotRetrievalMode
+        {
+            FromActiveSnapshot,
+            FromActiveSnapshotOrPrefilter,
+            FromSettings,
+            FromUserModeMemory,
+            FromHeap,
+            FromStack,
+        }
 
         /// <summary>
         /// Subscribes the given object to changes in the active snapshot.

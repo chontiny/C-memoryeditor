@@ -39,41 +39,6 @@
             this.RebuildReadGroups();
         }
 
-        /// <summary>
-        /// Gets the number of regions contained in this snapshot.
-        /// </summary>
-        /// <returns>The number of regions contained in this snapshot.</returns>
-        public Int32 RegionCount
-        {
-            get
-            {
-                return this.ReadGroups?.Count ?? 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets the total number of bytes contained in this snapshot.
-        /// </summary>
-        public UInt64 ByteCount
-        {
-            get
-            {
-                return this.ReadGroups?.Sum(x => x.ByteCount) ?? 0UL;
-            }
-        }
-
-        /// <summary>
-        /// Gets the number of individual elements contained in this snapshot.
-        /// </summary>
-        /// <returns>The number of individual elements contained in this snapshot.</returns>
-        public UInt64 ElementCount
-        {
-            get
-            {
-                return this.ReadGroups?.Sum(region => region.ElementCount) ?? 0UL;
-            }
-        }
-
         public IList<ReadGroup> ReadGroups;
 
         /// <summary>

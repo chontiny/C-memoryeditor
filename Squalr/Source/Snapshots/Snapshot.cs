@@ -144,13 +144,13 @@
         /// <param name="labelType"></param>
         public void SetLabelDataType(DataType labelType)
         {
-            this.SnapshotRegions?.ForEach(x => x.LabelType = labelType);
+            this.SnapshotRegions?.ForEach(x => x.LabelDataType = labelType);
         }
 
         /// <summary>
         /// Updates the alignment and type settings of all snapshot regions.
         /// </summary>
-        public void UpdateSettings(Type activeType, Int32 alignment)
+        public void UpdateSettings(DataType activeType, Int32 alignment)
         {
             if (this.SnapshotRegions == null)
             {
@@ -159,7 +159,7 @@
 
             foreach (SnapshotRegion region in this)
             {
-                region.ElementType = activeType;
+                region.ElementDataType = activeType;
                 region.Alignment = alignment;
             }
         }
@@ -415,7 +415,7 @@
                     newRegion.SetCurrentValues(nextSnapshotRegion.CurrentValues.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt64()));
                     newRegion.SetPreviousValues(nextSnapshotRegion.PreviousValues.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt64()));
                     newRegion.SetElementLabels(nextSnapshotRegion.ElementLabels.LargestSubArray(baseOffset, newRegion.RegionSize.ToInt64()));
-                    newRegion.ElementType = nextSnapshotRegion.ElementType;
+                    newRegion.ElementDataType = nextSnapshotRegion.ElementDataType;
                     newRegion.Alignment = nextSnapshotRegion.Alignment;
                     resultRegions.Add(newRegion);
                 }

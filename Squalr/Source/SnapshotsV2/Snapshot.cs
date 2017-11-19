@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.SnapshotsV2
 {
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
@@ -66,7 +67,7 @@
         {
             get
             {
-                return this.MemoryRegions?.Count ?? 0;
+                return this.SnapshotRegions?.Count() ?? 0;
             }
         }
 
@@ -77,7 +78,7 @@
         {
             get
             {
-                return this.MemoryRegions?.Sum(x => x.ByteCount) ?? 0UL;
+                return this.SnapshotRegions?.Sum(x => x.ByteCount) ?? 0UL;
             }
         }
 
@@ -89,7 +90,15 @@
         {
             get
             {
-                return this.MemoryRegions?.Sum(region => region.ElementCount) ?? 0UL;
+                return this.SnapshotRegions?.Sum(region => region.ElementCount) ?? 0UL;
+            }
+        }
+
+        public DataType LabelDataType
+        {
+            set
+            {
+                this.SnapshotRegions.ForEach(region => region.LabelDataType = value);
             }
         }
 
@@ -97,6 +106,71 @@
         /// Gets or sets the memory regions contained in this snapshot.
         /// </summary>
         private IList<MemoryRegion> MemoryRegions { get; set; }
+
+        private IEnumerable<SnapshotRegion> SnapshotRegions
+        {
+            get
+            {
+                IEnumerator<SnapshotRegion> enumerator = this.GetEnumerator();
+
+                while (enumerator.MoveNext())
+                {
+                    yield return enumerator.Current;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Indexer to allow the retrieval of the element at the specified index. Notes: This does NOT index into a region.
+        /// </summary>
+        /// <param name="index">The index of the snapshot element.</param>
+        /// <returns>Returns the snapshot element at the specified index.</returns>
+        public SnapshotElementIterator this[UInt64 index]
+        {
+            get
+            {
+                foreach (SnapshotRegion region in this)
+                {
+                    UInt64 elementCount = region.ElementCount;
+
+                    if (index >= elementCount)
+                    {
+                        index -= elementCount;
+                    }
+                    else
+                    {
+                        return region[(Int32)index * region.Alignment];
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Creates a shallow clone of this snapshot.
+        /// </summary>
+        /// <param name="newSnapshotName">The snapshot generation method name.</param>
+        /// <returns>The shallow cloned snapshot.</returns>
+        public Snapshot Clone(String newSnapshotName = null)
+        {
+            return new Snapshot(newSnapshotName, this.MemoryRegions);
+        }
+
+        /// <summary>
+        /// Determines if an address is contained in this snapshot.
+        /// </summary>
+        /// <param name="address">The address for which we are searching.</param>
+        /// <returns>True if the address is contained.</returns>
+        public Boolean ContainsAddress(UInt64 address)
+        {
+            if (this[address] != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         /// <summary>
         /// Adds memory regions to the regions contained in this snapshot. Will automatically merge and sort regions.

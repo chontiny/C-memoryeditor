@@ -4,6 +4,7 @@
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
 
     internal class ReadGroup : NormalizedRegion, IEnumerable<SnapshotRegion>
@@ -31,6 +32,7 @@
         /// <param name="regionSize">The size of this memory region.</param>
         public ReadGroup(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
         {
+            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this.BaseAddress, this.RegionSize) };
         }
 
         /// <summary>
@@ -42,30 +44,6 @@
         /// Gets the previously read values.
         /// </summary>
         public unsafe Byte[] PreviousValues { get; private set; }
-
-        /// <summary>
-        /// Gets the number of bytes that this snapshot spans.
-        /// </summary>
-        /// <returns>The number of bytes that this snapshot spans.</returns>
-        public UInt64 ByteCount
-        {
-            get
-            {
-                return this.CurrentValues == null ? 0UL : this.CurrentValues.LongLength.ToUInt64();
-            }
-        }
-
-        /// <summary>
-        /// Gets the number of elements contained by this snapshot. Equal to ByteCount / Alignment.
-        /// </summary>
-        /// <returns>The number of elements contained by this snapshot.</returns>
-        public UInt64 ElementCount
-        {
-            get
-            {
-                return (this.CurrentValues == null ? 0L : this.CurrentValues.LongLength / this.Alignment).ToUInt64();
-            }
-        }
 
         public IList<SnapshotRegion> SnapshotRegions;
 
@@ -101,6 +79,16 @@
         public void SetPreviousValues(Byte[] newValues)
         {
             this.PreviousValues = newValues;
+        }
+
+        public IEnumerator<SnapshotRegion> GetEnumerator()
+        {
+            return SnapshotRegions.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return SnapshotRegions.GetEnumerator();
         }
     }
     //// End class

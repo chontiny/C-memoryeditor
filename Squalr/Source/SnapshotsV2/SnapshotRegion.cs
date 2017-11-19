@@ -42,7 +42,7 @@
         {
             this.TimeSinceLastRead = DateTime.MinValue;
             this.Alignment = SettingsViewModel.GetInstance().Alignment;
-            this.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
+            this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
         }
 
         /// <summary>
@@ -53,31 +53,31 @@
         {
             get
             {
-                return this.CurrentValues == null ? 0UL : this.CurrentValues.LongLength.ToUInt64();
+                return this.CurrentValues?.LongLength.ToUInt64() ?? 0UL;
             }
         }
 
         /// <summary>
-        /// Gets the number of elements contained by this snapshot. Equal to ByteCount / Alignment.
+        /// Gets the number of elements contained by this snapshot.
         /// </summary>
         /// <returns>The number of elements contained by this snapshot.</returns>
         public UInt64 ElementCount
         {
             get
             {
-                return (this.CurrentValues == null ? 0L : this.CurrentValues.LongLength / this.Alignment).ToUInt64();
+                return this.ByteCount / unchecked((UInt64)this.Alignment);
             }
         }
 
         /// <summary>
         /// Gets or sets the data type of the elements of this region.
         /// </summary>
-        public DataType ElementType { get; set; }
+        public DataType ElementDataType { get; set; }
 
         /// <summary>
         /// Gets or sets the data type of the labels of this region.
         /// </summary>
-        public DataType LabelType { get; set; }
+        public DataType LabelDataType { get; set; }
 
         /// <summary>
         /// Gets the most recently read values.
@@ -113,7 +113,7 @@
         {
             get
             {
-                return new SnapshotElementIterator(parent: this, elementIndex: index, pointerIncrementMode: PointerIncrementMode.AllPointers);
+                return new SnapshotElementIterator(parent: this, elementIndex: index, pointerIncrementMode: SnapshotElementIterator.PointerIncrementMode.AllPointers);
             }
         }
 
@@ -188,9 +188,8 @@
         /// <summary>
         /// Reads all memory for this snapshot region.
         /// </summary>
-        /// <param name="keepValues">Whether or not to keep the values returned as current values.</param>
         /// <returns>True if read successful.</returns>
-        public Boolean ReadAllMemory(Boolean keepValues)
+        public Boolean ReadAllMemory()
         {
             this.TimeSinceLastRead = DateTime.Now;
 
@@ -202,11 +201,8 @@
                 return false;
             }
 
-            if (keepValues)
-            {
-                this.SetPreviousValues(this.CurrentValues);
-                this.SetCurrentValues(newCurrentValues);
-            }
+            this.SetPreviousValues(this.CurrentValues);
+            this.SetCurrentValues(newCurrentValues);
 
             return true;
         }
@@ -218,7 +214,7 @@
         public IEnumerable<SnapshotRegion> GetValidRegions()
         {
             List<SnapshotRegion> validRegions = new List<SnapshotRegion>();
-            Int32 elementSize = Conversions.SizeOf(this.ElementType);
+            Int32 elementSize = Conversions.SizeOf(this.ElementDataType);
 
             if (this.ValidBits == null)
             {
@@ -245,7 +241,7 @@
                 SnapshotRegion subRegion = new SnapshotRegion(this.BaseAddress + startIndex, validRegionSize.ToUInt64());
 
                 // Ensure region size is worth keeping. This can happen if we grab a misaligned segment
-                if (subRegion.RegionSize < Conversions.SizeOf(this.ElementType).ToUInt64())
+                if (subRegion.RegionSize < Conversions.SizeOf(this.ElementDataType).ToUInt64())
                 {
                     continue;
                 }
@@ -271,7 +267,7 @@
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator<SnapshotElementIterator> IterateElements(
-            PointerIncrementMode pointerIncrementMode,
+            SnapshotElementIterator.PointerIncrementMode pointerIncrementMode,
             ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
             Object compareActionValue = null)
         {
@@ -295,12 +291,12 @@
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator GetEnumerator()
         {
-            return this.IterateElements(PointerIncrementMode.AllPointers);
+            return this.IterateElements(SnapshotElementIterator.PointerIncrementMode.AllPointers);
         }
 
         IEnumerator<SnapshotElementIterator> IEnumerable<SnapshotElementIterator>.GetEnumerator()
         {
-            return this.IterateElements(PointerIncrementMode.AllPointers);
+            return this.IterateElements(SnapshotElementIterator.PointerIncrementMode.AllPointers);
         }
     }
     //// End class

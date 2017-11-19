@@ -42,7 +42,7 @@
         {
             this.TimeSinceLastRead = DateTime.MinValue;
             this.Alignment = SettingsViewModel.GetInstance().Alignment;
-            this.ElementType = ScanResultsViewModel.GetInstance().ActiveType;
+            this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
         }
 
         /// <summary>
@@ -72,12 +72,12 @@
         /// <summary>
         /// Gets or sets the data type of the elements of this region.
         /// </summary>
-        public DataType ElementType { get; set; }
+        public DataType ElementDataType { get; set; }
 
         /// <summary>
         /// Gets or sets the data type of the labels of this region.
         /// </summary>
-        public DataType LabelType { get; set; }
+        public DataType LabelDataType { get; set; }
 
         /// <summary>
         /// Gets the most recently read values.
@@ -218,7 +218,7 @@
         public IEnumerable<SnapshotRegion> GetValidRegions()
         {
             List<SnapshotRegion> validRegions = new List<SnapshotRegion>();
-            Int32 elementSize = Conversions.SizeOf(this.ElementType);
+            Int32 elementSize = Conversions.SizeOf(this.ElementDataType);
 
             if (this.ValidBits == null)
             {
@@ -245,7 +245,7 @@
                 SnapshotRegion subRegion = new SnapshotRegion(this.BaseAddress + startIndex, validRegionSize.ToUInt64());
 
                 // Ensure region size is worth keeping. This can happen if we grab a misaligned segment
-                if (subRegion.RegionSize < Conversions.SizeOf(this.ElementType).ToUInt64())
+                if (subRegion.RegionSize < Conversions.SizeOf(this.ElementDataType).ToUInt64())
                 {
                     continue;
                 }

@@ -296,7 +296,7 @@
         private unsafe void InitializePointers(Int32 index = 0)
         {
             this.CurrentLabelIndex = index;
-            this.DataType = this.Parent.ElementType;
+            this.DataType = this.Parent.ElementDataType;
 
             if (this.Parent.CurrentValues != null && this.Parent.CurrentValues.Length > 0)
             {
