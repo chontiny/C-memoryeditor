@@ -11,6 +11,8 @@
     using Source.Scanners.ValueCollector;
     using Source.Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Debugger;
+    using Squalr.Source.Debugger.Disassembly;
     using Squalr.Source.ProjectExplorer;
 
     /// <summary>
@@ -166,6 +168,28 @@
             get
             {
                 return ValueCollectorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Debugger view model.
+        /// </summary>
+        public DebuggerViewModel DebuggerViewModel
+        {
+            get
+            {
+                return DebuggerViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Debugger view model.
+        /// </summary>
+        public DisassemblyViewModel DisassemblyViewModel
+        {
+            get
+            {
+                return DisassemblyViewModel.GetInstance();
             }
         }
     }

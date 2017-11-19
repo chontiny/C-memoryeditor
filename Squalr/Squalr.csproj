@@ -318,6 +318,7 @@
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
     </Compile>
     <Compile Include="Source\Debugger\DebuggerViewModel.cs" />
+    <Compile Include="Source\Debugger\Disassembly\DisassemblyViewModel.cs" />
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Prefilters\HeapPrefilter.cs" />
@@ -407,6 +408,10 @@
     <Page Include="View\PointerScanResults.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="View\Disassembly.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\ProjectExplorer.xaml">
       <Generator>MSBuild:Compile</Generator>

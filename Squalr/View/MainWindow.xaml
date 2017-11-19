@@ -285,6 +285,15 @@
                             IsChecked="{Binding PointerScannerViewModel.IsVisible, Mode=TwoWay}"
                             Style="{Binding}" />
                     </shell:MenuItem>
+
+                    <!--  Debugger  -->
+                    <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Debugger">
+                        <shell:MenuItem
+                            Header="Disassembly"
+                            IsCheckable="True"
+                            IsChecked="{Binding DisassemblyViewModel.IsVisible, Mode=TwoWay}"
+                            Style="{Binding}" />
+                    </shell:MenuItem>
                 </shell:Menu>
             </shell:Grid>
 
@@ -454,6 +463,12 @@
                                 <coreView:Output />
                             </shell:DataTemplate>
                         </view:ViewTemplateSelector.OutputViewTemplate>
+                        <!--  Debugger  -->
+                        <view:ViewTemplateSelector.DisassemblyViewTemplate>
+                            <shell:DataTemplate>
+                                <view:Disassembly />
+                            </shell:DataTemplate>
+                        </view:ViewTemplateSelector.DisassemblyViewTemplate>
                     </view:ViewTemplateSelector>
                 </avalonDock:DockingManager.LayoutItemTemplateSelector>
 

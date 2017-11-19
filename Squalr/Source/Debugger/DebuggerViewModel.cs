@@ -20,7 +20,7 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="DebuggerViewModel" /> class from being created.
         /// </summary>
-        private DebuggerViewModel() : base(".Net Explorer")
+        private DebuggerViewModel() : base("Debugger")
         {
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }

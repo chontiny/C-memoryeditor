@@ -9,6 +9,8 @@
     using Source.Scanners.Pointers;
     using Source.Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Debugger;
+    using Squalr.Source.Debugger.Disassembly;
     using Squalr.Source.ProjectExplorer;
     using System.Windows;
 
@@ -71,6 +73,16 @@
         /// The template for the Settings.
         /// </summary>
         private DataTemplate settingsViewTemplate;
+
+        /// <summary>
+        /// The template for the Debugger.
+        /// </summary>
+        private DataTemplate debuggerViewTemplate;
+
+        /// <summary>
+        /// The template for the Disassembly.
+        /// </summary>
+        private DataTemplate disassemblyViewTemplate;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
@@ -263,6 +275,40 @@
             {
                 this.projectExplorerViewTemplate = value;
                 this.DataTemplates[typeof(ProjectExplorerViewModel)] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the template for the Debugger.
+        /// </summary>
+        public DataTemplate DebuggerViewTemplate
+        {
+            get
+            {
+                return this.debuggerViewTemplate;
+            }
+
+            set
+            {
+                this.debuggerViewTemplate = value;
+                this.DataTemplates[typeof(DebuggerViewModel)] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the template for the Disassembly.
+        /// </summary>
+        public DataTemplate DisassemblyViewTemplate
+        {
+            get
+            {
+                return this.disassemblyViewTemplate;
+            }
+
+            set
+            {
+                this.disassemblyViewTemplate = value;
+                this.DataTemplates[typeof(DisassemblyViewModel)] = value;
             }
         }
     }

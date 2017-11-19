@@ -195,7 +195,7 @@
             {
                 if (this.IsStatic)
                 {
-                    if (this.ModuleOffset.ToUInt64() >= 0)
+                    if (this.ModuleOffset.ToInt64() >= 0)
                     {
                         return this.ModuleName + " + " + Conversions.ToHex(this.ModuleOffset, formatAsAddress: false);
                     }
