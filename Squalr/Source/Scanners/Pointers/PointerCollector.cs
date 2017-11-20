@@ -102,17 +102,18 @@
                 SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                 (region) =>
                 {
-                    if (region.CurrentValues == null || region.CurrentValues.Length <= 0)
+                    if (region.CurrentValues == null)
                     {
                         return;
                     }
 
                     if (isProcess32Bit)
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotElementIterator element = enumerator.Current;
-                            UInt32 value = unchecked((UInt32)element.LoadCurrentValue());
+                            SnapshotRegionComparer element = enumerator.Current;
+                            throw new NotImplementedException();
+                            UInt32 value = 0; // unchecked((UInt32)element.LoadCurrentValue());
 
                             // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
                             if (value < UInt16.MaxValue || value % sizeof(UInt32) != 0)
@@ -136,10 +137,11 @@
                     }
                     else
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotElementIterator element = enumerator.Current;
-                            UInt64 value = unchecked((UInt64)element.LoadCurrentValue());
+                            SnapshotRegionComparer element = enumerator.Current;
+                            throw new NotImplementedException();
+                            UInt64 value = 0;// unchecked((UInt64)element.LoadCurrentValue());
 
                             // Enforce 8-byte alignment of destination, and filter out small (invalid) pointers
                             if (value < UInt16.MaxValue || value % sizeof(UInt64) != 0)

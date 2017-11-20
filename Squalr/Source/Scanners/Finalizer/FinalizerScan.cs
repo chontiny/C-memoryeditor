@@ -63,6 +63,7 @@
                         return;
                     }
 
+                    return;
                     // Find the regions with valid bits set
                     foreach (SnapshotRegion validRegion in region.GetValidRegions())
                     {

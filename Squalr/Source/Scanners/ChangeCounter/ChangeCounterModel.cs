@@ -7,7 +7,6 @@
     using SqualrCore.Source.Engine.Types;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -110,14 +109,15 @@
                     return;
                 }
 
-                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.AllPointers); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                 {
-                    SnapshotElementIterator element = enumerator.Current;
+                    SnapshotRegionComparer element = enumerator.Current;
 
+                    throw new NotImplementedException();
                     // Perform the comparison based on the current scan constraint
-                    if (element.Compare())
+                    // if (element.Compare())
                     {
-                        element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
+                        // element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
                     }
                 }
 

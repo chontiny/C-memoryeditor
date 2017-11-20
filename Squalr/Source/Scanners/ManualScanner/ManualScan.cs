@@ -7,6 +7,7 @@
     using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Generic;
+    using System.Numerics;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -75,11 +76,6 @@
             Int32 processedPages = 0;
             Boolean hasRelativeConstraint = this.ScanConstraintManager.HasRelativeConstraint();
 
-            // Determine if we need to increment both current and previous value pointers, or just current value pointers
-            SnapshotElementIterator.PointerIncrementMode pointerIncrementMode = hasRelativeConstraint
-                ? SnapshotElementIterator.PointerIncrementMode.ValuesOnly
-                : SnapshotElementIterator.PointerIncrementMode.CurrentOnly;
-
             cancellationToken.ThrowIfCancellationRequested();
 
             // Enforce each value constraint
@@ -104,15 +100,20 @@
                             return;
                         }
 
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(pointerIncrementMode, scanConstraint.Constraint, scanConstraint.ConstraintValue);
+                        for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(scanConstraint.Constraint, scanConstraint.ConstraintValue);
                             enumerator.MoveNext();)
                         {
-                            SnapshotElementIterator element = enumerator.Current;
+                            SnapshotRegionComparer element = enumerator.Current;
+
+                            var debug = element.Compare();
+
+                            SByte[] result = new SByte[region.RegionSize];
+                            Vector.AsVectorSByte(debug).CopyTo(result);
 
                             // Perform the comparison based on the current scan constraint
-                            if (element.Compare())
+                            // if (element.Compare())
                             {
-                                element.SetValid(true);
+                                // element.SetValid(true);
                             }
                         }
                         //// End foreach Element

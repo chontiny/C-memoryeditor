@@ -87,7 +87,7 @@
         {
             get
             {
-                return this.SnapshotRegions?.Sum(x => x.ByteCount) ?? 0UL;
+                return this.SnapshotRegions?.Sum(x => x.RegionSize) ?? 0UL;
             }
         }
 
@@ -147,7 +147,7 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementIterator this[UInt64 index]
+        public SnapshotRegionComparer this[UInt64 index]
         {
             get
             {
@@ -207,7 +207,7 @@
         {
             this.TimeSinceLastUpdate = DateTime.Now;
             // this.Intersect(SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromSettings));
-            this.SnapshotRegions?.ForEach(x => x.ReadAllMemory());
+            this.ReadGroups?.ForEach(x => x.ReadAllMemory());
         }
 
         /// <summary>

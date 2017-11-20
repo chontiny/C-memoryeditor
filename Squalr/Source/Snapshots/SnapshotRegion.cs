@@ -3,20 +3,18 @@
     using Squalr.Properties;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
-    using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Numerics;
 
     /// <summary>
     /// Defines a region of memory in an external process.
     /// </summary>
-    internal class SnapshotRegion : NormalizedRegion, IEnumerable<SnapshotElementIterator>
+    internal class SnapshotRegion : NormalizedRegion, IEnumerable<SnapshotRegionComparer>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
@@ -42,18 +40,6 @@
         }
 
         /// <summary>
-        /// Gets the number of bytes that this snapshot spans.
-        /// </summary>
-        /// <returns>The number of bytes that this snapshot spans.</returns>
-        public UInt64 ByteCount
-        {
-            get
-            {
-                return this.CurrentValues?.LongLength.ToUInt64() ?? 0UL;
-            }
-        }
-
-        /// <summary>
         /// Gets the number of elements contained by this snapshot.
         /// </summary>
         /// <returns>The number of elements contained by this snapshot.</returns>
@@ -61,7 +47,7 @@
         {
             get
             {
-                return this.ByteCount / unchecked((UInt64)this.Alignment);
+                return this.RegionSize / unchecked((UInt64)this.Alignment);
             }
         }
 
@@ -78,22 +64,32 @@
         /// <summary>
         /// Gets the most recently read values.
         /// </summary>
-        public unsafe Byte[] CurrentValues
+        public unsafe Vector<Byte> CurrentValues
         {
             get
             {
-                return this.ReadGroup?.CurrentValues?.Skip((this.BaseAddress.Subtract(this.ReadGroup.BaseAddress)).ToInt32()).ToArray();
+                if (this.ReadGroup?.CurrentValues == null)
+                {
+                    return new Vector<Byte>();
+                }
+
+                return new Vector<Byte>(this.ReadGroup.CurrentValues, this.ReadGroupOffset);
             }
         }
 
         /// <summary>
         /// Gets the previously read values.
         /// </summary>
-        public unsafe Byte[] PreviousValues
+        public unsafe Vector<Byte> PreviousValues
         {
             get
             {
-                return this.ReadGroup?.PreviousValues?.Skip((this.BaseAddress.Subtract(this.ReadGroup.BaseAddress)).ToInt32()).ToArray();
+                if (this.ReadGroup?.PreviousValues == null)
+                {
+                    return new Vector<Byte>();
+                }
+
+                return new Vector<Byte>(this.ReadGroup.PreviousValues, this.ReadGroupOffset);
             }
         }
 
@@ -114,16 +110,24 @@
 
         private ReadGroup ReadGroup { get; set; }
 
+        private Int32 ReadGroupOffset
+        {
+            get
+            {
+                return (this.BaseAddress.Subtract(this.ReadGroup.BaseAddress)).ToInt32();
+            }
+        }
+
         /// <summary>
         /// Indexer to allow the retrieval of the element at the specified index.
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementIterator this[Int32 index]
+        public SnapshotRegionComparer this[Int32 index]
         {
             get
             {
-                return new SnapshotElementIterator(parent: this, elementIndex: index, pointerIncrementMode: SnapshotElementIterator.PointerIncrementMode.AllPointers);
+                return new SnapshotRegionComparer(parent: this, elementIndex: index);
             }
         }
 
@@ -187,32 +191,10 @@
         /// <returns>True if a relative comparison can be done for this region.</returns>
         public Boolean CanCompare()
         {
-            if (this.PreviousValues == null || this.CurrentValues == null || this.PreviousValues.Length != this.CurrentValues.Length)
+            if (this.PreviousValues == null || this.CurrentValues == null)
             {
                 return false;
             }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Reads all memory for this snapshot region.
-        /// </summary>
-        /// <returns>True if read successful.</returns>
-        public Boolean ReadAllMemory()
-        {
-            this.TimeSinceLastRead = DateTime.Now;
-
-            Boolean readSuccess = false;
-            Byte[] newCurrentValues = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
-
-            if (!readSuccess)
-            {
-                return false;
-            }
-
-            this.SetPreviousValues(this.CurrentValues);
-            this.SetCurrentValues(newCurrentValues);
 
             return true;
         }
@@ -223,50 +205,7 @@
         /// <returns>The regions in this snapshot with a valid bit set.</returns>
         public IEnumerable<SnapshotRegion> GetValidRegions()
         {
-            List<SnapshotRegion> validRegions = new List<SnapshotRegion>();
-            Int32 elementSize = Conversions.SizeOf(this.ElementDataType);
-
-            if (this.ValidBits == null)
-            {
-                return validRegions;
-            }
-
-            for (Int32 startIndex = 0; startIndex < this.ValidBits.Length; startIndex += this.Alignment)
-            {
-                if (!this.ValidBits[startIndex])
-                {
-                    continue;
-                }
-
-                // Get the length of this valid segment
-                Int32 validRegionSize = 0;
-                do
-                {
-                    // We only care if the aligned elements are valid
-                    validRegionSize += elementSize;
-                }
-                while (startIndex + validRegionSize < this.ValidBits.Length && this.ValidBits[startIndex + validRegionSize]);
-
-                // Create new subregion from this valid region
-                SnapshotRegion subRegion = new SnapshotRegion(this.BaseAddress + startIndex, validRegionSize.ToUInt64());
-
-                // Ensure region size is worth keeping. This can happen if we grab a misaligned segment
-                if (subRegion.RegionSize < Conversions.SizeOf(this.ElementDataType).ToUInt64())
-                {
-                    continue;
-                }
-
-                // Copy the current values and labels.
-                subRegion.SetCurrentValues(this.CurrentValues.LargestSubArray(startIndex, subRegion.RegionSize.ToInt64()));
-                subRegion.SetPreviousValues(this.PreviousValues.LargestSubArray(startIndex, subRegion.RegionSize.ToInt64()));
-                subRegion.SetElementLabels(this.ElementLabels.LargestSubArray(startIndex, subRegion.RegionSize.ToInt64()));
-
-                validRegions.Add(subRegion);
-                startIndex += validRegionSize;
-            }
-
-            this.ValidBits = null;
-            return validRegions;
+            return null;
         }
 
         /// <summary>
@@ -276,22 +215,20 @@
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
-        public IEnumerator<SnapshotElementIterator> IterateElements(
-            SnapshotElementIterator.PointerIncrementMode pointerIncrementMode,
+        public IEnumerator<SnapshotRegionComparer> IterateElements(
             ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
             Object compareActionValue = null)
         {
             UInt64 elementCount = this.ElementCount;
-            SnapshotElementIterator snapshotElement = new SnapshotElementIterator(
+            SnapshotRegionComparer snapshotElement = new SnapshotRegionComparer(
                 parent: this,
-                pointerIncrementMode: pointerIncrementMode,
                 compareActionConstraint: compareActionConstraint,
                 compareActionValue: compareActionValue);
 
             for (UInt64 index = 0; index < elementCount; index++)
             {
                 yield return snapshotElement;
-                snapshotElement.IncrementPointers();
+                snapshotElement.IncrementCompareIndicies();
             }
         }
 
@@ -301,12 +238,12 @@
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator GetEnumerator()
         {
-            return this.IterateElements(SnapshotElementIterator.PointerIncrementMode.AllPointers);
+            return this.IterateElements();
         }
 
-        IEnumerator<SnapshotElementIterator> IEnumerable<SnapshotElementIterator>.GetEnumerator()
+        IEnumerator<SnapshotRegionComparer> IEnumerable<SnapshotRegionComparer>.GetEnumerator()
         {
-            return this.IterateElements(SnapshotElementIterator.PointerIncrementMode.AllPointers);
+            return this.IterateElements();
         }
     }
     //// End class

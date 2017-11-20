@@ -144,9 +144,10 @@
                         return;
                     }
 
-                    foreach (SnapshotElementIterator element in region)
+                    foreach (SnapshotRegionComparer element in region)
                     {
-                        if (element.Changed())
+                        throw new NotImplementedException();
+                        // if (element.Changed())
                         {
                             ((dynamic)element).ElementLabel++;
                         }
@@ -171,9 +172,11 @@
                         return;
                     }
 
-                    foreach (SnapshotElementIterator element in region)
+                    foreach (SnapshotRegionComparer element in region)
                     {
-                        if (element.Changed())
+
+                        throw new NotImplementedException();
+                        // if (element.Changed())
                         {
                             ((dynamic)element).ElementLabel--;
                         }
@@ -200,13 +203,15 @@
 
             foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
             {
-                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                 {
-                    SnapshotElementIterator element = enumerator.Current;
+                    SnapshotRegionComparer element = enumerator.Current;
 
-                    if ((Int16)element.ElementLabel > 0)
+                    throw new NotImplementedException();
+
+                    // if ((Int16)element.ElementLabel > 0)
                     {
-                        element.SetValid(true);
+                        //  element.SetValid(true);
                     }
                 }
             }
