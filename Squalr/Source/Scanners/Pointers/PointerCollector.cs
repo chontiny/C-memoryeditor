@@ -93,7 +93,7 @@
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
 
             // Create the base snapshot from the loaded modules
-            IEnumerable<SnapshotRegion> regions = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new SnapshotRegion(region));
+            IEnumerable<SnapshotRegion> regions = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new SnapshotRegion(region.BaseAddress, region.RegionSize));
             Snapshot moduleSnapshot = new Snapshot(regions);
 
             // Process the allowed amount of chunks from the priority queue

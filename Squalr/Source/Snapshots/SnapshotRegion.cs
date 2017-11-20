@@ -20,22 +20,6 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
         /// </summary>
-        public SnapshotRegion() : this(IntPtr.Zero, 0UL)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
-        /// </summary>
-        /// <param name="normalizedRegion">The region on which to base this snapshot region.</param>
-        public SnapshotRegion(NormalizedRegion normalizedRegion) :
-            this(normalizedRegion == null ? IntPtr.Zero : normalizedRegion.BaseAddress, normalizedRegion == null ? 0 : normalizedRegion.RegionSize)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
-        /// </summary>
         /// <param name="baseAddress">The base address of this snapshot region.</param>
         /// <param name="regionSize">The size of this snapshot region.</param>
         public SnapshotRegion(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
@@ -43,6 +27,17 @@
             this.TimeSinceLastRead = DateTime.MinValue;
             this.Alignment = SettingsViewModel.GetInstance().Alignment;
             this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotRegion" /> class.
+        /// </summary>
+        /// <param name="readGroup">The read group of this snapshot region.</param>
+        /// <param name="baseAddress">The base address of this snapshot region.</param>
+        /// <param name="regionSize">The size of this snapshot region.</param>
+        public SnapshotRegion(ReadGroup readGroup, IntPtr baseAddress, UInt64 regionSize) : this(baseAddress, regionSize)
+        {
+            this.ReadGroup = readGroup;
         }
 
         /// <summary>
@@ -82,12 +77,24 @@
         /// <summary>
         /// Gets the most recently read values.
         /// </summary>
-        public unsafe Byte[] CurrentValues { get; private set; }
+        public unsafe Byte[] CurrentValues
+        {
+            get
+            {
+                return this.ReadGroup?.CurrentValues;
+            }
+        }
 
         /// <summary>
         /// Gets the previously read values.
         /// </summary>
-        public unsafe Byte[] PreviousValues { get; private set; }
+        public unsafe Byte[] PreviousValues
+        {
+            get
+            {
+                return this.ReadGroup?.PreviousValues;
+            }
+        }
 
         /// <summary>
         /// Gets the element labels.
@@ -103,6 +110,8 @@
         /// Gets or sets the time since the last read was performed on this region.
         /// </summary>
         private DateTime TimeSinceLastRead { get; set; }
+
+        private ReadGroup ReadGroup { get; set; }
 
         /// <summary>
         /// Indexer to allow the retrieval of the element at the specified index.
@@ -132,7 +141,7 @@
         /// <param name="newValues">The raw bytes of the values.</param>
         public void SetCurrentValues(Byte[] newValues)
         {
-            this.CurrentValues = newValues;
+            this.ReadGroup.SetCurrentValues(newValues);
         }
 
         /// <summary>
@@ -141,7 +150,7 @@
         /// <param name="newValues">The raw bytes of the values.</param>
         public void SetPreviousValues(Byte[] newValues)
         {
-            this.PreviousValues = newValues;
+            this.ReadGroup.SetPreviousValues(newValues);
         }
 
         /// <summary>

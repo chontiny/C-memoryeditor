@@ -2,35 +2,18 @@
 {
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
 
-    internal class MemoryRegion : NormalizedRegion
+    internal class ReadGroupManager : NormalizedRegion
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryRegion" /> class.
-        /// </summary>
-        public MemoryRegion() : this(IntPtr.Zero, 0UL)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryRegion" /> class.
-        /// </summary>
-        /// <param name="normalizedRegion">The region on which to base this memory region.</param>
-        public MemoryRegion(NormalizedRegion normalizedRegion) :
-            this(normalizedRegion == null ? IntPtr.Zero : normalizedRegion.BaseAddress, normalizedRegion == null ? 0 : normalizedRegion.RegionSize)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryRegion" /> class.
+        /// Initializes a new instance of the <see cref="ReadGroupManager" /> class.
         /// </summary>
         /// <param name="baseAddress">The base address of this memory region.</param>
         /// <param name="regionSize">The size of this memory region.</param>
-        public MemoryRegion(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
+        public ReadGroupManager(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
         {
             // Create one initial read group
             this.ReadGroups = new List<ReadGroup>() { new ReadGroup(this.BaseAddress, this.RegionSize) };
@@ -46,15 +29,6 @@
             {
                 return this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions);
             }
-        }
-
-        /// <summary>
-        /// Reads all memory for this memory region.
-        /// </summary>
-        /// <returns>The bytes read from memory.</returns>
-        public void ReadAllMemory()
-        {
-            this.ReadGroups?.ForEach(group => group.ReadAllMemory());
         }
 
         /// <summary>

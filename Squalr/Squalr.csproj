@@ -382,7 +382,7 @@
     <Compile Include="Source\Prefilters\ISnapshotPrefilter.cs" />
     <Compile Include="Source\Prefilters\ShallowPointerPrefilter.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
-    <Compile Include="Source\Snapshots\MemoryRegion.cs" />
+    <Compile Include="Source\Snapshots\ReadGroupManager.cs" />
     <Compile Include="View\PointerScanner.xaml.cs">
       <DependentUpon>PointerScanner.xaml</DependentUpon>
     </Compile>

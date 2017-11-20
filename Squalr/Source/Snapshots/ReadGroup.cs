@@ -11,27 +11,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadGroup" /> class.
         /// </summary>
-        public ReadGroup() : this(IntPtr.Zero, 0UL)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadGroup" /> class.
-        /// </summary>
-        /// <param name="normalizedRegion">The region on which to base this memory region.</param>
-        public ReadGroup(NormalizedRegion normalizedRegion) :
-            this(normalizedRegion == null ? IntPtr.Zero : normalizedRegion.BaseAddress, normalizedRegion == null ? 0 : normalizedRegion.RegionSize)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReadGroup" /> class.
-        /// </summary>
         /// <param name="baseAddress">The base address of this memory region.</param>
         /// <param name="regionSize">The size of this memory region.</param>
         public ReadGroup(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
         {
-            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this.BaseAddress, this.RegionSize) };
+            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, this.BaseAddress, this.RegionSize) };
         }
 
         /// <summary>
