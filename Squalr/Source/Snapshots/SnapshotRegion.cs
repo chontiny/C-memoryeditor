@@ -11,6 +11,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Defines a region of memory in an external process.
@@ -81,7 +82,7 @@
         {
             get
             {
-                return this.ReadGroup?.CurrentValues;
+                return this.ReadGroup?.CurrentValues?.Skip((this.BaseAddress.Subtract(this.ReadGroup.BaseAddress)).ToInt32()).ToArray();
             }
         }
 
@@ -92,7 +93,7 @@
         {
             get
             {
-                return this.ReadGroup?.PreviousValues;
+                return this.ReadGroup?.PreviousValues?.Skip((this.BaseAddress.Subtract(this.ReadGroup.BaseAddress)).ToInt32()).ToArray();
             }
         }
 

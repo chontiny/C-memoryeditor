@@ -232,7 +232,7 @@
             IntPtr startAddress = IntPtr.Zero;
             IntPtr endAddress = EngineCore.GetInstance().VirtualMemory.GetUserModeRegion().EndAddress;
 
-            List<ReadGroupManager> memoryRegions = new List<ReadGroupManager>();
+            List<ReadGroup> memoryRegions = new List<ReadGroup>();
             IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
@@ -242,10 +242,10 @@
 
             foreach (NormalizedRegion virtualPage in virtualPages)
             {
-                memoryRegions.Add(new ReadGroupManager(virtualPage.BaseAddress, virtualPage.RegionSize));
+                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize));
             }
 
-            return new Snapshot(memoryRegions);
+            return new Snapshot(null, memoryRegions);
         }
 
         /// <summary>
@@ -271,7 +271,7 @@
                 endAddress = SettingsViewModel.GetInstance().EndAddress.ToIntPtr();
             }
 
-            List<ReadGroupManager> memoryRegions = new List<ReadGroupManager>();
+            List<ReadGroup> memoryRegions = new List<ReadGroup>();
             IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
@@ -282,10 +282,10 @@
             // Convert each virtual page to a snapshot region
             foreach (NormalizedRegion virtualPage in virtualPages)
             {
-                memoryRegions.Add(new ReadGroupManager(virtualPage.BaseAddress, virtualPage.RegionSize));
+                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize));
             }
 
-            return new Snapshot(memoryRegions);
+            return new Snapshot(null, memoryRegions);
         }
 
         /// <summary>

@@ -8,6 +8,8 @@
 
     internal class ReadGroup : NormalizedRegion
     {
+        private const UInt64 ChunkSize = 2048UL;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadGroup" /> class.
         /// </summary>
@@ -15,7 +17,7 @@
         /// <param name="regionSize">The size of this memory region.</param>
         public ReadGroup(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
         {
-            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, this.BaseAddress, this.RegionSize) };
+            this.LoadSnapshotRegions(new NormalizedRegion(baseAddress, regionSize));
         }
 
         /// <summary>
@@ -69,6 +71,16 @@
         public void SetPreviousValues(Byte[] newValues)
         {
             this.PreviousValues = newValues;
+        }
+
+        private void LoadSnapshotRegions(NormalizedRegion baseRegion)
+        {
+            this.SnapshotRegions = new List<SnapshotRegion>();
+
+            foreach (NormalizedRegion region in baseRegion.ChunkNormalizedRegion(ReadGroup.ChunkSize))
+            {
+                this.SnapshotRegions.Add(new SnapshotRegion(this, region.BaseAddress, region.RegionSize));
+            }
         }
     }
     //// End class

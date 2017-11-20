@@ -15,26 +15,17 @@
         public Snapshot(String snapshotName = null)
         {
             this.SnapshotName = snapshotName == null ? String.Empty : snapshotName;
-            this.ReadGroupManagers = new List<ReadGroupManager>();
+            this.ReadGroups = new List<ReadGroup>();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
         /// </summary>
         /// <param name="memoryRegions">The regions with which to initialize this snapshot.</param>
-        public Snapshot(String snapshotName, IEnumerable<ReadGroupManager> memoryRegions)
+        public Snapshot(String snapshotName, IEnumerable<ReadGroup> memoryRegions)
         {
             this.SnapshotName = snapshotName == null ? String.Empty : snapshotName;
-            this.ReadGroupManagers = memoryRegions?.ToList();
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Snapshot" /> class.
-        /// </summary>
-        /// <param name="memoryRegions">The regions with which to initialize this snapshot.</param>
-        public Snapshot(IEnumerable<ReadGroupManager> memoryRegions) : this()
-        {
-            this.ReadGroupManagers = memoryRegions?.ToList();
+            this.ReadGroups = memoryRegions?.ToList();
         }
 
         /// <summary>
@@ -137,28 +128,17 @@
         }
 
         /// <summary>
-        /// Gets or sets the memory regions contained in this snapshot.
-        /// </summary>
-        private IList<ReadGroupManager> ReadGroupManagers { get; set; }
-
-        /// <summary>
         /// Gets the time since the last update was performed on this snapshot.
         /// </summary>
         public DateTime TimeSinceLastUpdate { get; private set; }
 
-        public IEnumerable<ReadGroup> ReadGroups
-        {
-            get
-            {
-                return this.ReadGroupManagers?.SelectMany(memoryRegion => memoryRegion.ReadGroups);
-            }
-        }
+        public IList<ReadGroup> ReadGroups;
 
         public IEnumerable<SnapshotRegion> SnapshotRegions
         {
             get
             {
-                return this.ReadGroupManagers?.SelectMany(memoryRegion => memoryRegion.ReadGroups)?.SelectMany(readGroup => readGroup.SnapshotRegions);
+                return this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions);
             }
         }
 
@@ -196,7 +176,7 @@
         /// <returns>The shallow cloned snapshot.</returns>
         public Snapshot Clone(String newSnapshotName = null)
         {
-            return new Snapshot(newSnapshotName, this.ReadGroupManagers);
+            return new Snapshot(newSnapshotName, this.ReadGroups);
         }
 
         /// <summary>
@@ -279,9 +259,9 @@
         /// <param name="snapshotRegions">The snapshot regions to add.</param>
         public void AddSnapshotRegions(params SnapshotRegion[] snapshotRegions)
         {
-            this.ReadGroupManagers = new List<ReadGroupManager>();
+            //   this.ReadGroupManagers = new List<ReadGroupManager>();
 
-            snapshotRegions?.ForEach(snapshotRegion => this.ReadGroupManagers.Add(new ReadGroupManager(snapshotRegion.BaseAddress, snapshotRegion.RegionSize)));
+            //  snapshotRegions?.ForEach(snapshotRegion => this.ReadGroupManagers.Add(new ReadGroupManager(snapshotRegion.BaseAddress, snapshotRegion.RegionSize)));
 
             //// this.MergeAndSortRegions();
         }
