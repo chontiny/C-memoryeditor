@@ -3,11 +3,10 @@
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.Extensions;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
-    internal class Snapshot : IEnumerable<SnapshotRegion>
+    internal class Snapshot
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
@@ -137,16 +136,19 @@
         /// </summary>
         public DateTime TimeSinceLastUpdate { get; private set; }
 
-        private IEnumerable<SnapshotRegion> SnapshotRegions
+        public IEnumerable<ReadGroup> ReadGroups
         {
             get
             {
-                IEnumerator<SnapshotRegion> enumerator = this.GetEnumerator();
+                return this.MemoryRegions?.SelectMany(memoryRegion => memoryRegion.ReadGroups);
+            }
+        }
 
-                while (enumerator.MoveNext())
-                {
-                    yield return enumerator.Current;
-                }
+        public IEnumerable<SnapshotRegion> SnapshotRegions
+        {
+            get
+            {
+                return this.MemoryRegions?.SelectMany(memoryRegion => memoryRegion.ReadGroups)?.SelectMany(readGroup => readGroup.SnapshotRegions);
             }
         }
 
@@ -159,7 +161,7 @@
         {
             get
             {
-                foreach (SnapshotRegion region in this)
+                foreach (SnapshotRegion region in this.SnapshotRegions)
                 {
                     UInt64 elementCount = region.ElementCount;
 
@@ -214,7 +216,7 @@
         public void ReadAllMemory()
         {
             this.TimeSinceLastUpdate = DateTime.Now;
-            this.Intersect(SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromSettings));
+            // this.Intersect(SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromSettings));
             this.SnapshotRegions?.ForEach(x => x.ReadAllMemory());
         }
 
@@ -272,16 +274,6 @@
             snapshotRegions?.ForEach(snapshotRegion => this.MemoryRegions.Add(new MemoryRegion(snapshotRegion)));
 
             //// this.MergeAndSortRegions();
-        }
-
-        public IEnumerator<SnapshotRegion> GetEnumerator()
-        {
-            return this.MemoryRegions?.SelectMany(snapshotRegion => snapshotRegion).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.MemoryRegions?.SelectMany(snapshotRegion => snapshotRegion).GetEnumerator();
         }
     }
     //// End class

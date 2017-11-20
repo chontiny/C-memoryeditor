@@ -101,7 +101,7 @@
             this.Snapshot.ReadAllMemory();
 
             Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
             {

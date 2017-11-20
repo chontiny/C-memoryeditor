@@ -5,7 +5,6 @@
     using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Concurrent;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -54,7 +53,7 @@
 
             // Find the regions with valid bits set
             Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                 (region) =>
                 {

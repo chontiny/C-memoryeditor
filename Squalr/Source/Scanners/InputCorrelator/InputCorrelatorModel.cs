@@ -135,7 +135,7 @@
             if (conditionValid)
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
@@ -162,7 +162,7 @@
             else
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
@@ -198,7 +198,7 @@
             // Prefilter items with negative penalties (ie constantly changing variables)
             this.Snapshot.SetAllValidBits(false);
 
-            foreach (SnapshotRegion region in this.Snapshot)
+            foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
             {
                 for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                 {

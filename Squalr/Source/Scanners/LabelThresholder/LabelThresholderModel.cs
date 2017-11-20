@@ -6,7 +6,6 @@
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -123,7 +122,7 @@
                 {
                     this.Snapshot.SetAllValidBits(false);
 
-                    foreach (SnapshotRegion region in this.Snapshot)
+                    foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
                         for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                         {
@@ -142,7 +141,7 @@
                 {
                     this.Snapshot.SetAllValidBits(true);
 
-                    foreach (SnapshotRegion region in this.Snapshot)
+                    foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
                         for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(SnapshotElementIterator.PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
                         {
@@ -187,7 +186,7 @@
                 }
 
                 Parallel.ForEach(
-                    this.Snapshot.Cast<SnapshotRegion>(),
+                    this.Snapshot.SnapshotRegions,
                     SettingsViewModel.GetInstance().ParallelSettingsFast,
                     (region) =>
                 {

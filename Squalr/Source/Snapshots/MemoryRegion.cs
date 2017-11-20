@@ -4,11 +4,10 @@
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
-    internal class MemoryRegion : NormalizedRegion, IEnumerable<SnapshotRegion>
+    internal class MemoryRegion : NormalizedRegion
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MemoryRegion" /> class.
@@ -41,14 +40,21 @@
 
         public IList<ReadGroup> ReadGroups;
 
+        public IEnumerable<SnapshotRegion> SnapshotRegions
+        {
+            get
+            {
+                return this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions);
+            }
+        }
+
         /// <summary>
         /// Reads all memory for this memory region.
         /// </summary>
-        /// <param name="keepValues">Whether or not to keep the values returned as current values.</param>
         /// <returns>The bytes read from memory.</returns>
-        public void ReadAllMemory(Boolean keepValues)
+        public void ReadAllMemory()
         {
-            this.ReadGroups?.ForEach(group => group.ReadAllMemory(keepValues));
+            this.ReadGroups?.ForEach(group => group.ReadAllMemory());
         }
 
         /// <summary>
@@ -62,16 +68,6 @@
             // TODO:
             // - Ensure vectorSize aligned start/end addres
             // - Ensure optimal readgroup placement
-        }
-
-        public IEnumerator<SnapshotRegion> GetEnumerator()
-        {
-            return this.ReadGroups?.SelectMany(snapshotRegion => snapshotRegion).GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return this.ReadGroups?.SelectMany(snapshotRegion => snapshotRegion).GetEnumerator();
         }
     }
     //// End class

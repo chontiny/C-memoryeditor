@@ -4,10 +4,9 @@
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
-    using System.Collections;
     using System.Collections.Generic;
 
-    internal class ReadGroup : NormalizedRegion, IEnumerable<SnapshotRegion>
+    internal class ReadGroup : NormalizedRegion
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadGroup" /> class.
@@ -50,17 +49,24 @@
         /// <summary>
         /// Reads all memory for this memory region.
         /// </summary>
-        /// <param name="keepValues">Whether or not to keep the values returned as current values.</param>
         /// <returns>The bytes read from memory.</returns>
-        public void ReadAllMemory(Boolean keepValues)
+        public Boolean ReadAllMemory()
         {
-            Byte[] newCurrentValues = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out _);
+            Boolean readSuccess;
+            Byte[] newCurrentValues = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
 
-            if (keepValues)
+            if (readSuccess)
             {
                 this.SetPreviousValues(this.CurrentValues);
                 this.SetCurrentValues(newCurrentValues);
             }
+            else
+            {
+                this.SetPreviousValues(null);
+                this.SetCurrentValues(null);
+            }
+
+            return readSuccess;
         }
 
         /// <summary>
@@ -79,16 +85,6 @@
         public void SetPreviousValues(Byte[] newValues)
         {
             this.PreviousValues = newValues;
-        }
-
-        public IEnumerator<SnapshotRegion> GetEnumerator()
-        {
-            return SnapshotRegions.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return SnapshotRegions.GetEnumerator();
         }
     }
     //// End class

@@ -7,7 +7,6 @@
     using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -89,7 +88,7 @@
                 this.Snapshot.SetAllValidBits(false);
 
                 Parallel.ForEach(
-                    this.Snapshot.Cast<SnapshotRegion>(),
+                    this.Snapshot.SnapshotRegions,
                     SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                     (region) =>
                     {

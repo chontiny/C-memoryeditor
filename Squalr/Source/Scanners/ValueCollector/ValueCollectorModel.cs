@@ -69,9 +69,9 @@
 
             // Read memory to get current values for each region
             Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.ReadGroups,
                 SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
-                (region) =>
+                (readGroup) =>
                 {
                     // Check for canceled scan
                     if (cancellationToken.IsCancellationRequested)
@@ -80,7 +80,7 @@
                     }
 
                     // Read the memory for this region
-                    region.ReadAllMemory();
+                    readGroup.ReadAllMemory();
 
                     // Update progress
                     lock (this.ProgressLock)

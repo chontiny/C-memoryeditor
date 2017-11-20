@@ -98,7 +98,7 @@
 
             // Process the allowed amount of chunks from the priority queue
             Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                 (region) =>
                 {
