@@ -147,7 +147,7 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotRegionComparer this[UInt64 index]
+        public SnapshotElementIterator this[UInt64 index]
         {
             get
             {

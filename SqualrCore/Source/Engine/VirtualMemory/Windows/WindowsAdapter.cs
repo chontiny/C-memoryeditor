@@ -434,7 +434,7 @@
             }
             else
             {
-                return new NormalizedRegion(IntPtr.Zero, Int64.MaxValue);
+                return new NormalizedRegion(IntPtr.Zero, 0x7FFFFFFFFFF);
             }
         }
 

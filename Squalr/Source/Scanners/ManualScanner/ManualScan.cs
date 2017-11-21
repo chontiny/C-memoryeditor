@@ -5,6 +5,8 @@
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;
     using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Numerics;
@@ -78,6 +80,8 @@
 
             cancellationToken.ThrowIfCancellationRequested();
 
+            UInt64 sanity = 0;
+
             // Enforce each value constraint
             foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
             {
@@ -95,9 +99,9 @@
                         }
 
                         // Ignore region if it requires current & previous values, but we cannot find them
-                        if (hasRelativeConstraint && !region.CanCompare())
+                        // if (hasRelativeConstraint && !region.CanCompare())
                         {
-                            return;
+                            //   return;
                         }
 
                         for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(scanConstraint.Constraint, scanConstraint.ConstraintValue);
@@ -109,6 +113,8 @@
 
                             SByte[] result = new SByte[region.RegionSize];
                             Vector.AsVectorSByte(debug).CopyTo(result);
+
+                            sanity += EngineCore.GetInstance().Architecture.GetVectorSize().ToUInt64();
 
                             // Perform the comparison based on the current scan constraint
                             // if (element.Compare())

@@ -33,14 +33,6 @@
         }
 
         /// <summary>
-        /// Gets an action to increment only the needed pointers.
-        /// </summary>
-        public void IncrementCompareIndicies()
-        {
-            this.ElementIndex += EngineCore.GetInstance().Architecture.GetVectorSize();
-        }
-
-        /// <summary>
         /// Gets an action based on the element iterator scan constraint.
         /// </summary>
         public Func<Vector<Byte>> Compare { get; private set; }
@@ -153,9 +145,9 @@
         }
 
         /// <summary>
-        /// Gets the index of this element.
+        /// Gets or sets the index of this element.
         /// </summary>
-        public unsafe Int32 ElementIndex { get; private set; }
+        public unsafe Int32 ElementIndex { get; set; }
 
         /// <summary>
         /// Initializes snapshot value reference pointers

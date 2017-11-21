@@ -388,11 +388,11 @@
 
                 for (UInt64 index = startIndex; index < endIndex; index++)
                 {
-                    SnapshotRegionComparer element = snapshot[index];
+                    SnapshotElementIterator element = snapshot[index];
 
-                    String label = String.Empty; // element.GetElementLabel() != null ? element.GetElementLabel().ToString() : String.Empty;
-                    Object currentValue = null; // element.HasCurrentValue() ? element.LoadCurrentValue() : null;
-                    Object previousValue = null; // element.HasPreviousValue() ? element.LoadPreviousValue() : null;
+                    String label = element.GetElementLabel() != null ? element.GetElementLabel().ToString() : String.Empty;
+                    Object currentValue = element.HasCurrentValue() ? element.LoadCurrentValue() : null;
+                    Object previousValue = element.HasPreviousValue() ? element.LoadPreviousValue() : null;
 
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);

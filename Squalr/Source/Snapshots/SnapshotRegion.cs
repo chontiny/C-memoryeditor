@@ -3,6 +3,7 @@
     using Squalr.Properties;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
+    using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
@@ -108,9 +109,9 @@
         /// </summary>
         private DateTime TimeSinceLastRead { get; set; }
 
-        private ReadGroup ReadGroup { get; set; }
+        public ReadGroup ReadGroup { get; set; }
 
-        private Int32 ReadGroupOffset
+        public Int32 ReadGroupOffset
         {
             get
             {
@@ -123,11 +124,11 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotRegionComparer this[Int32 index]
+        public SnapshotElementIterator this[Int32 index]
         {
             get
             {
-                return new SnapshotRegionComparer(parent: this, elementIndex: index);
+                return new SnapshotElementIterator(parent: this, elementIndex: index);
             }
         }
 
@@ -224,11 +225,14 @@
                 parent: this,
                 compareActionConstraint: compareActionConstraint,
                 compareActionValue: compareActionValue);
+            Int32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
 
-            for (UInt64 index = 0; index < elementCount; index++)
+            Int32 batchCount = (elementCount / (vectorSize / 4).ToUInt64()).ToInt32();
+
+            for (Int32 index = 0; index < batchCount; index++)
             {
                 yield return snapshotElement;
-                snapshotElement.IncrementCompareIndicies();
+                snapshotElement.ElementIndex += vectorSize;
             }
         }
 
