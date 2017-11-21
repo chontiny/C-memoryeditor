@@ -7,9 +7,9 @@
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Output;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Numerics;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -75,25 +75,29 @@
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
+            Int32 regionCount = this.Snapshot.RegionCount;
+            Int32 constraintCount = this.ScanConstraintManager.Count();
+
+            ConcurrentBag<SnapshotRegion> regions = new ConcurrentBag<SnapshotRegion>();
+
             // Enforce each value constraint
             foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
             {
-                this.Snapshot.SetAllValidBits(false);
-
-                Int32 regionCount = this.Snapshot.RegionCount;
-                Int32 constraintCount = this.ScanConstraintManager.Count();
-
                 Parallel.ForEach(
                     this.Snapshot.OptimizedSnapshotRegions,
                     SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                     (region) =>
                     {
-                        for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(scanConstraint.Constraint, scanConstraint.ConstraintValue);
-                            enumerator.MoveNext();)
-                        {
-                            SnapshotRegionComparer element = enumerator.Current;
+                        IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(scanConstraint.Constraint, scanConstraint.ConstraintValue);
 
-                            Vector<Byte> compareResult = element.Compare();
+                        while (enumerator.MoveNext())
+                        {
+                            enumerator.Current.Compare();
+                        }
+
+                        foreach (SnapshotRegion result in enumerator.Current.ResultRegions)
+                        {
+                            regions.Add(result);
                         }
 
                         // Update progress every N regions

@@ -120,7 +120,7 @@
             {
                 if (!this.Inverted)
                 {
-                    this.Snapshot.SetAllValidBits(false);
+                    //// this.Snapshot.SetAllValidBits(false);
 
                     foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
@@ -140,7 +140,7 @@
                 }
                 else
                 {
-                    this.Snapshot.SetAllValidBits(true);
+                    //// this.Snapshot.SetAllValidBits(true);
 
                     foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
@@ -160,7 +160,7 @@
                     }
                 }
 
-                this.Snapshot.DiscardInvalidRegions();
+                //// this.Snapshot.DiscardInvalidRegions();
             }
 
             SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);

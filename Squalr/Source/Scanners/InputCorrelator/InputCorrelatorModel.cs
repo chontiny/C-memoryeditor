@@ -199,7 +199,7 @@
         protected override void OnEnd()
         {
             // Prefilter items with negative penalties (ie constantly changing variables)
-            this.Snapshot.SetAllValidBits(false);
+            //// this.Snapshot.SetAllValidBits(false);
 
             foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
             {
@@ -216,7 +216,7 @@
                 }
             }
 
-            this.Snapshot.DiscardInvalidRegions();
+            ////  this.Snapshot.DiscardInvalidRegions();
 
             SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
 

@@ -18,8 +18,6 @@
         public ReadGroup(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
         {
             this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(baseAddress, regionSize) };
-
-            //this.LoadSnapshotRegions(new NormalizedRegion(baseAddress, regionSize));
         }
 
         /// <summary>
@@ -73,16 +71,6 @@
         public void SetPreviousValues(Byte[] newValues)
         {
             this.PreviousValues = newValues;
-        }
-
-        private void LoadSnapshotRegions(NormalizedRegion baseRegion)
-        {
-            this.SnapshotRegions = new List<SnapshotRegion>();
-
-            foreach (NormalizedRegion region in baseRegion.ChunkNormalizedRegion(ReadGroup.ChunkSize))
-            {
-                this.SnapshotRegions.Add(new SnapshotRegion(this, region.BaseAddress, region.RegionSize));
-            }
         }
     }
     //// End class

@@ -203,27 +203,6 @@
         }
 
         /// <summary>
-        /// Sets all valid bits to the specified boolean value for each memory region contained.
-        /// </summary>
-        /// <param name="isValid">Value indicating if valid bits will be marked as valid or invalid.</param>
-        public void SetAllValidBits(Boolean isValid)
-        {
-            this.SnapshotRegions?.ForEach(x => x.SetAllValidBits(isValid));
-        }
-
-        /// <summary>
-        /// Discards all sections of memory marked with invalid bits.
-        /// </summary>
-        public void DiscardInvalidRegions()
-        {
-            List<SnapshotRegion> validRegions = new List<SnapshotRegion>();
-            this.SnapshotRegions?.ForEach(x => validRegions.AddRange(x.GetValidRegions()));
-
-            // TODO: Something that isn't this
-            // this.SnapshotRegions = validRegions;
-        }
-
-        /// <summary>
         /// Reads all memory for every region contained in this snapshot. TODO: This is not parallel, nor does it track progress.
         /// </summary>
         public void ReadAllMemory()

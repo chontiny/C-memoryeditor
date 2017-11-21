@@ -180,15 +180,6 @@
         }
 
         /// <summary>
-        /// Gets the regions in this snapshot with a valid bit set.
-        /// </summary>
-        /// <returns>The regions in this snapshot with a valid bit set.</returns>
-        public IEnumerable<SnapshotRegion> GetValidRegions()
-        {
-            return null;
-        }
-
-        /// <summary>
         /// Gets the enumerator for an element reference within this snapshot region.
         /// </summary>
         /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
@@ -199,19 +190,27 @@
             ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
             Object compareActionValue = null)
         {
-            UInt64 elementCount = this.ElementCount;
-            SnapshotRegionComparer snapshotElement = new SnapshotRegionComparer(
+            SnapshotRegionComparer regionComparer = new SnapshotRegionComparer(
                 parent: this,
+                vectorSize: EngineCore.GetInstance().Architecture.GetVectorSize(),
                 compareActionConstraint: compareActionConstraint,
                 compareActionValue: compareActionValue);
+
             Int32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
+            Int32 regionSize = this.RegionSize.ToInt32();
 
-            Int32 batchCount = (elementCount / (vectorSize / 4).ToUInt64()).ToInt32();
+            // Pad to allow for the comparer to copy scan result bits in chunks of the vector size
+            UInt64 byteCount = this.ElementCount / sizeof(byte);
+            UInt64 divisor = byteCount % vectorSize.ToUInt64();
+            UInt64 padding = divisor == 0 ? 0 : vectorSize.ToUInt64() - divisor;
 
-            for (Int32 index = 0; index < batchCount; index++)
+            // Initialize valid bits
+            this.ValidBits = new Byte[byteCount + padding];
+
+            while (regionComparer.ElementIndex < regionSize)
             {
-                yield return snapshotElement;
-                snapshotElement.ElementIndex += vectorSize;
+                yield return regionComparer;
+                regionComparer.ElementIndex += vectorSize;
             }
         }
 

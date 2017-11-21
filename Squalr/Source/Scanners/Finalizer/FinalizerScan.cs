@@ -22,18 +22,12 @@
             trackProgress: true)
         {
             this.Snapshot = snapshot;
-            this.ProgressLock = new Object();
         }
 
         /// <summary>
         /// Gets or sets the snapshot on which we perform the finalization.
         /// </summary>
         private Snapshot Snapshot { get; set; }
-
-        /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
 
         /// <summary>
         /// Called when the scan begins.
@@ -53,33 +47,22 @@
 
             // Find the regions with valid bits set
             Parallel.ForEach(
-                this.Snapshot.SnapshotRegions,
+                this.Snapshot.OptimizedSnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                 (region) =>
                 {
-                    // Check for canceled scan
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
+                    // Valid bits no longer exist, so the finalizer is pretty useless?
 
-                    return;
-                    // Find the regions with valid bits set
-                    foreach (SnapshotRegion validRegion in region.GetValidRegions())
+                    // Update progress every N regions
+                    if (Interlocked.Increment(ref processedPages) % 32 == 0)
                     {
-                        validRegions.Add(validRegion);
-                    }
-
-                    // Update progress
-                    lock (this.ProgressLock)
-                    {
-                        processedPages++;
-
-                        // Limit how often we update the progress
-                        if (processedPages % 10 == 0)
+                        // Check for canceled scan
+                        if (cancellationToken.IsCancellationRequested)
                         {
-                            this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
+                            return;
                         }
+
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                 });
             //// End foreach Region

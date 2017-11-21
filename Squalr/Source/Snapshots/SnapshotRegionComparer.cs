@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Scanners.ScanConstraints;
-    using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections.Generic;
     using System.Numerics;
 
     /// <summary>
@@ -16,26 +16,74 @@
         /// Initializes a new instance of the <see cref="SnapshotRegionComparer" /> class.
         /// </summary>
         /// <param name="parent">The parent region that contains this element.</param>
-        /// <param name="elementIndex">The index of the element to begin pointing to.</param>
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
         public unsafe SnapshotRegionComparer(
             SnapshotRegion parent,
-            Int32 elementIndex = 0,
-            ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
-            Object compareActionValue = null)
+            Int32 vectorSize,
+            ScanConstraint.ConstraintType compareActionConstraint,
+            Object compareActionValue)
         {
             this.Parent = parent;
+            this.VectorSize = vectorSize;
+            this.ResultRegions = new List<SnapshotRegion>();
 
             this.SetConstraintFunctions();
             this.SetCompareAction(compareActionConstraint, compareActionValue);
         }
 
+        private Boolean Encoding { get; set; }
+
+        private Int32 RunLength { get; set; }
+
+        private Int32 VectorSize { get; set; }
+
+        public void Compare()
+        {
+            Vector<Byte> scanResults = this.VectorCompare();
+
+            if (Vector.EqualsAll(scanResults, Vector<Byte>.Zero))
+            {
+                this.RunLength += this.VectorSize;
+
+                this.Encoding = true;
+            }
+            else if (Vector.LessThanAll(scanResults, Vector<Byte>.Zero))
+            {
+                if (this.Encoding)
+                {
+                    this.CreateSnapshot();
+                    this.RunLength = 0;
+                }
+                else
+                {
+                    this.RunLength += this.VectorSize;
+                }
+
+                this.Encoding = false;
+            }
+            else
+            {
+                // Well, it isn't going to be easy
+
+                this.RunLength += this.VectorSize;
+
+                this.Encoding = false;
+            }
+        }
+
+        public IList<SnapshotRegion> ResultRegions { get; set; }
+
+        private void CreateSnapshot()
+        {
+            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.BaseAddress.Add(this.ElementIndex), this.RunLength.ToUInt64()));
+        }
+
         /// <summary>
         /// Gets an action based on the element iterator scan constraint.
         /// </summary>
-        public Func<Vector<Byte>> Compare { get; private set; }
+        public Func<Vector<Byte>> VectorCompare { get; private set; }
 
         /// <summary>
         /// Gets a function to load the current value.
@@ -328,43 +376,43 @@
             switch (compareActionConstraint)
             {
                 case ScanConstraint.ConstraintType.Unchanged:
-                    this.Compare = this.Unchanged;
+                    this.VectorCompare = this.Unchanged;
                     break;
                 case ScanConstraint.ConstraintType.Changed:
-                    this.Compare = this.Changed;
+                    this.VectorCompare = this.Changed;
                     break;
                 case ScanConstraint.ConstraintType.Increased:
-                    this.Compare = this.Increased;
+                    this.VectorCompare = this.Increased;
                     break;
                 case ScanConstraint.ConstraintType.Decreased:
-                    this.Compare = this.Decreased;
+                    this.VectorCompare = this.Decreased;
                     break;
                 case ScanConstraint.ConstraintType.IncreasedByX:
-                    this.Compare = () => this.IncreasedByValue(compareActionValue);
+                    this.VectorCompare = () => this.IncreasedByValue(compareActionValue);
                     break;
                 case ScanConstraint.ConstraintType.DecreasedByX:
-                    this.Compare = () => this.DecreasedByValue(compareActionValue);
+                    this.VectorCompare = () => this.DecreasedByValue(compareActionValue);
                     break;
                 case ScanConstraint.ConstraintType.Equal:
-                    this.Compare = () => this.EqualToValue(compareActionValue);
+                    this.VectorCompare = () => this.EqualToValue(compareActionValue);
                     break;
                 case ScanConstraint.ConstraintType.NotEqual:
-                    this.Compare = () => this.NotEqualToValue(compareActionValue);
+                    this.VectorCompare = () => this.NotEqualToValue(compareActionValue);
                     break;
                 case ScanConstraint.ConstraintType.GreaterThan:
-                    this.Compare = () => this.GreaterThanValue(compareActionValue);
+                    this.VectorCompare = () => this.GreaterThanValue(compareActionValue);
                     break;
                 case ScanConstraint.ConstraintType.GreaterThanOrEqual:
-                    this.Compare = () => this.GreaterThanOrEqualToValue(compareActionValue);
+                    this.VectorCompare = () => this.GreaterThanOrEqualToValue(compareActionValue);
                     break;
                 case ScanConstraint.ConstraintType.LessThan:
-                    this.Compare = () => this.LessThanValue(compareActionValue);
+                    this.VectorCompare = () => this.LessThanValue(compareActionValue);
                     break;
                 case ScanConstraint.ConstraintType.LessThanOrEqual:
-                    this.Compare = () => this.LessThanValue(compareActionValue);
+                    this.VectorCompare = () => this.LessThanValue(compareActionValue);
                     break;
                 case ScanConstraint.ConstraintType.NotScientificNotation:
-                    this.Compare = this.IsScientificNotation;
+                    this.VectorCompare = this.IsScientificNotation;
                     break;
             }
         }

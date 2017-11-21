@@ -262,32 +262,6 @@
         }
 
         /// <summary>
-        /// Sets the valid bit of this element.
-        /// </summary>
-        public void SetValid()
-        {
-            Int32 byteIndex = this.ElementIndex / sizeof(Byte);
-            Int32 bitInByteIndex = this.ElementIndex % sizeof(Byte);
-
-            Byte mask = (Byte)(1 << bitInByteIndex);
-
-            this.Parent.ValidBits[byteIndex] |= mask;
-        }
-
-        /// <summary>
-        /// Sets the valid bit of this element.
-        /// </summary>
-        public void SetInvalid()
-        {
-            Int32 byteIndex = this.ElementIndex / sizeof(Byte);
-            Int32 bitInByteIndex = this.ElementIndex % sizeof(Byte);
-
-            Byte mask = (Byte)(1 << bitInByteIndex);
-
-            this.Parent.ValidBits[byteIndex] &= mask;
-        }
-
-        /// <summary>
         /// Gets the label of this element.
         /// </summary>
         /// <returns>The label of this element.</returns>
