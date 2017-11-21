@@ -369,6 +369,22 @@
                     return "Unknown Type";
             }
         }
+
+        public static String ValueToMetricSize(UInt64 value)
+        {
+            // Note: UInt64s run out around EB
+            String[] suffix = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
+
+            if (value == 0)
+            {
+                return "0" + suffix[0];
+            }
+
+            Int32 place = Convert.ToInt32(Math.Floor(Math.Log(value, 1024)));
+            Double number = Math.Round(value / Math.Pow(1024, place), 1);
+
+            return number.ToString() + suffix[place];
+        }
     }
     //// End class
 }

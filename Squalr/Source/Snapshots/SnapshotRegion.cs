@@ -41,18 +41,6 @@
         }
 
         /// <summary>
-        /// Gets the number of elements contained by this snapshot.
-        /// </summary>
-        /// <returns>The number of elements contained by this snapshot.</returns>
-        public UInt64 ElementCount
-        {
-            get
-            {
-                return this.RegionSize / unchecked((UInt64)this.Alignment);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the data type of the elements of this region.
         /// </summary>
         public DataType ElementDataType { get; set; }
@@ -102,7 +90,7 @@
         /// <summary>
         /// Gets or sets the valid bits for use in filtering scans.
         /// </summary>
-        private BitArray ValidBits { get; set; }
+        public Byte[] ValidBits { get; set; }
 
         /// <summary>
         /// Gets or sets the time since the last read was performed on this region.
@@ -138,7 +126,7 @@
         /// <param name="isValid">Value indicating if valid bits will be marked as valid or invalid.</param>
         public void SetAllValidBits(Boolean isValid)
         {
-            this.ValidBits = new BitArray(this.RegionSize.ToInt32(), isValid);
+            this.ValidBits = new Byte[this.RegionSize.ToInt32() / this.Alignment];
         }
 
         /// <summary>
@@ -166,15 +154,6 @@
         public DateTime GetTimeSinceLastRead()
         {
             return this.TimeSinceLastRead;
-        }
-
-        /// <summary>
-        /// Gets the valid bit array associated with this region.
-        /// </summary>
-        /// <returns>The valid bit array associated with this region.</returns>
-        public BitArray GetValidBits()
-        {
-            return this.ValidBits;
         }
 
         /// <summary>

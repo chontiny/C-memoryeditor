@@ -385,6 +385,11 @@
                     continue;
                 }
 
+                if (memoryInfo.BaseAddress == new IntPtr(0xc00000000))
+                {
+                    int i = 0;
+                }
+
                 // Return the memory page
                 yield return memoryInfo;
             }

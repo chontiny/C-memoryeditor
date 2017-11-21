@@ -3,8 +3,9 @@
     using Snapshots;
     using Squalr.Properties;
     using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.Output;
     using System;
-    using System.Linq;
+    using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -23,7 +24,6 @@
         {
             this.SnapshotRetrievalMode = snapshotRetrievalMode;
             this.CallBack = callback;
-            this.ProgressLock = new Object();
         }
 
         /// <summary>
@@ -40,11 +40,6 @@
         /// Gets or sets the snapshot on which we perform the value collection.
         /// </summary>
         private Snapshot Snapshot { get; set; }
-
-        /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
 
         /// <summary>
         /// Performs the value collection scan.
@@ -67,33 +62,33 @@
 
             Int32 processedRegions = 0;
 
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             // Read memory to get current values for each region
             Parallel.ForEach(
-                this.Snapshot.ReadGroups,
+                this.Snapshot.OptimizedReadGroups,
                 SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                 (readGroup) =>
                 {
-                    // Check for canceled scan
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
                     // Read the memory for this region
                     readGroup.ReadAllMemory();
 
-                    // Update progress
-                    lock (this.ProgressLock)
+                    // Update progress every N regions
+                    if (Interlocked.Increment(ref processedRegions) % 32 == 0)
                     {
-                        processedRegions++;
-
-                        // Limit how often we update the progress
-                        if (processedRegions % 10 == 0)
+                        // Check for canceled scan
+                        if (cancellationToken.IsCancellationRequested)
                         {
-                            this.UpdateProgress(processedRegions, this.Snapshot.RegionCount, canFinalize: false);
+                            return;
                         }
+
+                        this.UpdateProgress(processedRegions, this.Snapshot.RegionCount, canFinalize: false);
                     }
                 });
+
+            stopwatch.Stop();
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
 
             cancellationToken.ThrowIfCancellationRequested();
         }

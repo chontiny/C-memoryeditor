@@ -264,10 +264,27 @@
         /// <summary>
         /// Sets the valid bit of this element.
         /// </summary>
-        /// <param name="isValid">Whether or not this element's valid bit is set.</param>
-        public void SetValid(Boolean isValid)
+        public void SetValid()
         {
-            this.Parent.GetValidBits().Set(this.ElementIndex, isValid);
+            Int32 byteIndex = this.ElementIndex / sizeof(Byte);
+            Int32 bitInByteIndex = this.ElementIndex % sizeof(Byte);
+
+            Byte mask = (Byte)(1 << bitInByteIndex);
+
+            this.Parent.ValidBits[byteIndex] |= mask;
+        }
+
+        /// <summary>
+        /// Sets the valid bit of this element.
+        /// </summary>
+        public void SetInvalid()
+        {
+            Int32 byteIndex = this.ElementIndex / sizeof(Byte);
+            Int32 bitInByteIndex = this.ElementIndex % sizeof(Byte);
+
+            Byte mask = (Byte)(1 << bitInByteIndex);
+
+            this.Parent.ValidBits[byteIndex] &= mask;
         }
 
         /// <summary>

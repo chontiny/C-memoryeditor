@@ -5,10 +5,10 @@
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;
     using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Utils.Extensions;
+    using SqualrCore.Source.Output;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Numerics;
     using System.Threading;
     using System.Threading.Tasks;
@@ -26,8 +26,6 @@
             isRepeated: false,
             trackProgress: true)
         {
-            this.ProgressLock = new Object();
-
             this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, this.SetSnapshot));
         }
 
@@ -40,11 +38,6 @@
         /// Gets or sets the scan constraint manager.
         /// </summary>
         private ScanConstraintManager ScanConstraintManager { get; set; }
-
-        /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
 
         /// <summary>
         /// Sets the scan constraints for this scan.
@@ -76,63 +69,43 @@
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
             Int32 processedPages = 0;
-            Boolean hasRelativeConstraint = this.ScanConstraintManager.HasRelativeConstraint();
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            UInt64 sanity = 0;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             // Enforce each value constraint
             foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
             {
                 this.Snapshot.SetAllValidBits(false);
 
+                Int32 regionCount = this.Snapshot.RegionCount;
+                Int32 constraintCount = this.ScanConstraintManager.Count();
+
                 Parallel.ForEach(
-                    this.Snapshot.SnapshotRegions,
+                    this.Snapshot.OptimizedSnapshotRegions,
                     SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                     (region) =>
                     {
-                        // Check for canceled scan
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            return;
-                        }
-
-                        // Ignore region if it requires current & previous values, but we cannot find them
-                        // if (hasRelativeConstraint && !region.CanCompare())
-                        {
-                            //   return;
-                        }
-
                         for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(scanConstraint.Constraint, scanConstraint.ConstraintValue);
                             enumerator.MoveNext();)
                         {
                             SnapshotRegionComparer element = enumerator.Current;
 
-                            var debug = element.Compare();
-
-                            SByte[] result = new SByte[region.RegionSize];
-                            Vector.AsVectorSByte(debug).CopyTo(result);
-
-                            sanity += EngineCore.GetInstance().Architecture.GetVectorSize().ToUInt64();
-
-                            // Perform the comparison based on the current scan constraint
-                            // if (element.Compare())
-                            {
-                                // element.SetValid(true);
-                            }
+                            Vector<Byte> compareResult = element.Compare();
                         }
-                        //// End foreach Element
 
-                        lock (this.ProgressLock)
+                        // Update progress every N regions
+                        if (Interlocked.Increment(ref processedPages) % 32 == 0)
                         {
-                            processedPages++;
-
-                            // Limit how often we update the progress
-                            if (processedPages % 10 == 0)
+                            // Check for canceled scan
+                            if (cancellationToken.IsCancellationRequested)
                             {
-                                this.UpdateProgress(processedPages / this.ScanConstraintManager.Count(), this.Snapshot.RegionCount, canFinalize: false);
+                                return;
                             }
+
+                            this.UpdateProgress(processedPages / constraintCount, regionCount, canFinalize: false);
                         }
                     });
                 //// End foreach Region
@@ -141,6 +114,9 @@
                 cancellationToken.ThrowIfCancellationRequested();
             }
             //// End foreach Constraint
+
+            stopwatch.Stop();
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
         }
 
         /// <summary>

@@ -27,6 +27,7 @@
         /// <param name="regionSize">The size of the region.</param>
         public NormalizedRegion(IntPtr baseAddress, UInt64 regionSize)
         {
+            this.Alignment = 1;
             this.BaseAddress = baseAddress;
             this.RegionSize = regionSize;
         }
@@ -49,6 +50,18 @@
             set
             {
                 this.regionSize = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the number of elements contained by this region.
+        /// </summary>
+        /// <returns>The number of elements contained by this region.</returns>
+        public UInt64 ElementCount
+        {
+            get
+            {
+                return this.RegionSize / unchecked((UInt64)this.Alignment);
             }
         }
 

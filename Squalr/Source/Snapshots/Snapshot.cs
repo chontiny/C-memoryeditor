@@ -134,11 +134,34 @@
 
         public IList<ReadGroup> ReadGroups;
 
+        /// <summary>
+        /// Gets the read groups in this snapshot, ordered descending by their region size. This is much more performant for multi-threaded access.
+        /// </summary>
+        public IEnumerable<ReadGroup> OptimizedReadGroups
+        {
+            get
+            {
+                return this.ReadGroups.OrderByDescending(readGroup => readGroup.RegionSize);
+            }
+        }
+
         public IEnumerable<SnapshotRegion> SnapshotRegions
         {
             get
             {
                 return this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions);
+            }
+        }
+
+        /// <summary>
+        /// Gets the snapshot regions in this snapshot, ordered descending by their region size. This is much more performant for multi-threaded access.
+        /// This is very similar to the greedy interval scheduling algorithm, and can result in significant scan speed gains.
+        /// </summary>
+        public IEnumerable<SnapshotRegion> OptimizedSnapshotRegions
+        {
+            get
+            {
+                return this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions).OrderByDescending(region => region.RegionSize);
             }
         }
 
