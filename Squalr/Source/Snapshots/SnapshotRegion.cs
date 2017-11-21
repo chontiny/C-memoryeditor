@@ -121,15 +121,6 @@
         }
 
         /// <summary>
-        /// Sets all valid bits to the specified boolean value.
-        /// </summary>
-        /// <param name="isValid">Value indicating if valid bits will be marked as valid or invalid.</param>
-        public void SetAllValidBits(Boolean isValid)
-        {
-            this.ValidBits = new Byte[this.RegionSize.ToInt32() / this.Alignment];
-        }
-
-        /// <summary>
         /// Sets the current values of this region.
         /// </summary>
         /// <param name="newValues">The raw bytes of the values.</param>
@@ -169,9 +160,9 @@
         /// Determines if a relative comparison can be done for this region, ie current and previous values are loaded.
         /// </summary>
         /// <returns>True if a relative comparison can be done for this region.</returns>
-        public Boolean CanCompare()
+        public Boolean CanCompare(Boolean hasRelativeConstraint)
         {
-            if (this.PreviousValues == null || this.CurrentValues == null)
+            if (this.ReadGroup?.CurrentValues == null || (hasRelativeConstraint && this.ReadGroup?.PreviousValues == null))
             {
                 return false;
             }
@@ -190,6 +181,11 @@
             ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
             Object compareActionValue = null)
         {
+            if (!this.CanCompare(ScanConstraint.IsRelativeConstraint(compareActionConstraint)))
+            {
+                yield break;
+            }
+
             SnapshotRegionComparer regionComparer = new SnapshotRegionComparer(
                 parent: this,
                 vectorSize: EngineCore.GetInstance().Architecture.GetVectorSize(),
@@ -198,14 +194,6 @@
 
             Int32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
             Int32 regionSize = this.RegionSize.ToInt32();
-
-            // Pad to allow for the comparer to copy scan result bits in chunks of the vector size
-            UInt64 byteCount = this.ElementCount / sizeof(byte);
-            UInt64 divisor = byteCount % vectorSize.ToUInt64();
-            UInt64 padding = divisor == 0 ? 0 : vectorSize.ToUInt64() - divisor;
-
-            // Initialize valid bits
-            this.ValidBits = new Byte[byteCount + padding];
 
             while (regionComparer.ElementIndex < regionSize)
             {

@@ -110,7 +110,7 @@
         {
             foreach (ScanConstraint valueConstraint in this)
             {
-                if (valueConstraint.IsRelativeConstraint())
+                if (ScanConstraint.IsRelativeConstraint(valueConstraint.Constraint))
                 {
                     return true;
                 }

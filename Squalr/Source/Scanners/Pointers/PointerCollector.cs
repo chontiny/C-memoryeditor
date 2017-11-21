@@ -102,7 +102,7 @@
                 SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
                 (region) =>
                 {
-                    if (region.CurrentValues == null)
+                    if (region.ReadGroup?.CurrentValues == null)
                     {
                         return;
                     }

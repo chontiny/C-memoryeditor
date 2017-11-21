@@ -39,46 +39,7 @@
 
         private Int32 VectorSize { get; set; }
 
-        public void Compare()
-        {
-            Vector<Byte> scanResults = this.VectorCompare();
-
-            if (Vector.EqualsAll(scanResults, Vector<Byte>.Zero))
-            {
-                this.RunLength += this.VectorSize;
-
-                this.Encoding = true;
-            }
-            else if (Vector.LessThanAll(scanResults, Vector<Byte>.Zero))
-            {
-                if (this.Encoding)
-                {
-                    this.CreateSnapshot();
-                    this.RunLength = 0;
-                }
-                else
-                {
-                    this.RunLength += this.VectorSize;
-                }
-
-                this.Encoding = false;
-            }
-            else
-            {
-                // Well, it isn't going to be easy
-
-                this.RunLength += this.VectorSize;
-
-                this.Encoding = false;
-            }
-        }
-
         public IList<SnapshotRegion> ResultRegions { get; set; }
-
-        private void CreateSnapshot()
-        {
-            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.BaseAddress.Add(this.ElementIndex), this.RunLength.ToUInt64()));
-        }
 
         /// <summary>
         /// Gets an action based on the element iterator scan constraint.
@@ -176,11 +137,53 @@
         /// </summary>
         private SnapshotRegion Parent { get; set; }
 
+        public void Compare()
+        {
+            Vector<Byte> scanResults = this.VectorCompare();
+
+            // Check all true
+            if (Vector.GreaterThanAll(scanResults, Vector<Byte>.Zero))
+            {
+                this.RunLength += this.VectorSize;
+
+                this.Encoding = true;
+            }
+            // Check all false
+            else if (Vector.EqualsAll(scanResults, Vector<Byte>.Zero))
+            {
+                if (this.Encoding)
+                {
+                    this.CreateSnapshot();
+                    this.RunLength = 0;
+                }
+                else
+                {
+                    this.RunLength += this.VectorSize;
+                }
+
+                this.Encoding = false;
+            }
+            // Mixed and matching
+            else
+            {
+                // Well, it isn't going to be easy
+
+                this.RunLength += this.VectorSize;
+
+                this.Encoding = false;
+            }
+        }
+
+        private void CreateSnapshot()
+        {
+            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.BaseAddress.Add(this.ElementIndex), this.RunLength.ToUInt64()));
+        }
+
         private Vector<Byte> CurrentValues
         {
             get
             {
-                return this.Parent.CurrentValues;
+                return new Vector<Byte>(this.Parent.ReadGroup.CurrentValues, this.Parent.ReadGroupOffset + this.ElementIndex);
             }
         }
 
@@ -188,7 +191,7 @@
         {
             get
             {
-                return this.Parent.PreviousValues;
+                return new Vector<Byte>(this.Parent.ReadGroup.PreviousValues, this.Parent.ReadGroupOffset + this.ElementIndex);
             }
         }
 

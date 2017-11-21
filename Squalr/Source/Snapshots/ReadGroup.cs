@@ -17,7 +17,7 @@
         /// <param name="regionSize">The size of this memory region.</param>
         public ReadGroup(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
         {
-            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(baseAddress, regionSize) };
+            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, baseAddress, regionSize) };
         }
 
         /// <summary>

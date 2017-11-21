@@ -139,7 +139,7 @@
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
-                    if (!region.CanCompare())
+                    if (!region.CanCompare(hasRelativeConstraint: true))
                     {
                         return;
                     }
@@ -167,7 +167,7 @@
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
-                    if (!region.CanCompare())
+                    if (!region.CanCompare(hasRelativeConstraint: true))
                     {
                         return;
                     }

@@ -212,7 +212,7 @@
         {
             get
             {
-                return this.CurrentScanConstraint?.IsValuedConstraint() ?? true;
+                return CurrentScanConstraint == null ? true : ScanConstraint.IsValuedConstraint(this.CurrentScanConstraint.Constraint);
             }
         }
 
