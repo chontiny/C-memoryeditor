@@ -138,12 +138,12 @@
         {
             get
             {
-                return this.Parent.ElementLabels[this.CurrentLabelIndex];
+                return this.Parent.ReadGroup.ElementLabels[this.CurrentLabelIndex];
             }
 
             set
             {
-                this.Parent.ElementLabels[this.CurrentLabelIndex] = value;
+                this.Parent.ReadGroup.ElementLabels[this.CurrentLabelIndex] = value;
             }
         }
 
@@ -216,7 +216,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Object GetElementLabel()
         {
-            return this.Parent.ElementLabels == null ? null : this.Parent.ElementLabels[this.CurrentLabelIndex];
+            return this.Parent.ReadGroup.ElementLabels == null ? null : this.Parent.ReadGroup.ElementLabels[this.CurrentLabelIndex];
         }
 
         /// <summary>
@@ -226,7 +226,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void SetElementLabel(Object newLabel)
         {
-            this.Parent.ElementLabels[this.CurrentLabelIndex] = newLabel;
+            this.Parent.ReadGroup.ElementLabels[this.CurrentLabelIndex] = newLabel;
         }
 
         /// <summary>

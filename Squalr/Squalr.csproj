@@ -332,7 +332,6 @@
     <Compile Include="Source\Results\PointerScanResultsViewModel.cs" />
     <Compile Include="Source\Results\ScanResult.cs" />
     <Compile Include="Source\Results\ScanResultsViewModel.cs" />
-    <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerValidationScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerValueRescan.cs" />
@@ -381,7 +380,6 @@
     </Compile>
     <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
     <Compile Include="Source\Prefilters\ISnapshotPrefilter.cs" />
-    <Compile Include="Source\Prefilters\ShallowPointerPrefilter.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
     <Compile Include="View\PointerScanner.xaml.cs">
       <DependentUpon>PointerScanner.xaml</DependentUpon>

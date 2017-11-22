@@ -193,7 +193,7 @@
                     SettingsViewModel.GetInstance().ParallelSettingsFast,
                     (region) =>
                 {
-                    if (region.ElementLabels == null || region.ElementCount <= 0)
+                    if (region.ReadGroup.ElementLabels == null || region.ElementCount <= 0)
                     {
                         return;
                     }

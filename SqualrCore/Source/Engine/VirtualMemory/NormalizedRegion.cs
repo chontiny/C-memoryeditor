@@ -61,7 +61,7 @@
         {
             get
             {
-                return this.RegionSize / unchecked((UInt64)this.Alignment);
+                return this.RegionSize / this.Alignment.ToUInt64();
             }
         }
 

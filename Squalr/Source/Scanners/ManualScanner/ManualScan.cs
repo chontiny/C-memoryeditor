@@ -10,6 +10,7 @@
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -68,21 +69,20 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            Int32 processedPages = 0;
-
             cancellationToken.ThrowIfCancellationRequested();
 
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            Int32 regionCount = this.Snapshot.RegionCount;
             Int32 constraintCount = this.ScanConstraintManager.Count();
-
-            ConcurrentBag<SnapshotRegion> regions = new ConcurrentBag<SnapshotRegion>();
 
             // Enforce each value constraint
             foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
             {
+                Int32 processedPages = 0;
+                Int32 regionCount = this.Snapshot.RegionCount;
+                ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
+
                 Parallel.ForEach(
                     this.Snapshot.SnapshotRegions,
                     SettingsViewModel.GetInstance().ParallelSettingsNone,
@@ -95,10 +95,7 @@
                             enumerator.Current.Compare();
                         }
 
-                        foreach (SnapshotRegion result in enumerator.Current.ResultRegions)
-                        {
-                            regions.Add(result);
-                        }
+                        regions.Add(enumerator.Current.ResultRegions);
 
                         // Update progress every N regions
                         if (Interlocked.Increment(ref processedPages) % 32 == 0)
@@ -116,13 +113,13 @@
 
                 // Exit if canceled
                 cancellationToken.ThrowIfCancellationRequested();
+
+                this.Snapshot = new Snapshot(this.TaskName, regions.SelectMany(region => region));
             }
             //// End foreach Constraint
 
             stopwatch.Stop();
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
-
-            this.Snapshot = new Snapshot(regions);
         }
 
         /// <summary>

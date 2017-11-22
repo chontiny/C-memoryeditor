@@ -88,7 +88,7 @@
         {
             get
             {
-                return this.SnapshotRegions?.Sum(x => x.RegionSize) ?? 0UL;
+                return this.SnapshotRegions?.Sum(x => x.RegionSize.ToUInt64()) ?? 0UL;
             }
         }
 
@@ -100,7 +100,7 @@
         {
             get
             {
-                return this.SnapshotRegions?.Sum(region => region.RegionSize / region.ReadGroup.Alignment.ToUInt64()) ?? 0UL;
+                return this.SnapshotRegions?.Sum(region => region.ElementCount.ToUInt64()) ?? 0UL;
             }
         }
 
@@ -177,7 +177,7 @@
             {
                 foreach (SnapshotRegion region in this.SnapshotRegions)
                 {
-                    UInt64 elementCount = region.RegionSize / region.ReadGroup.Alignment.ToUInt64();
+                    UInt64 elementCount = region.ElementCount.ToUInt64();
 
                     if (index >= elementCount)
                     {
@@ -220,7 +220,7 @@
         /// <param name="label">The new snapshot label value.</param>
         public void SetElementLabels<LabelType>(LabelType label) where LabelType : struct, IComparable<LabelType>
         {
-            this.SnapshotRegions?.ForEach(x => x.SetElementLabels(Enumerable.Repeat(label, x.RegionSize.ToInt32()).Cast<Object>().ToArray()));
+            this.SnapshotRegions?.ForEach(x => x.ReadGroup.SetElementLabels(Enumerable.Repeat(label, x.RegionSize).Cast<Object>().ToArray()));
         }
 
         /// <summary>

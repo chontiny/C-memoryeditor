@@ -139,18 +139,19 @@
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
-                    if (!region.CanCompare(hasRelativeConstraint: true))
+                    if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
                     {
                         return;
                     }
 
-                    foreach (SnapshotRegionComparer element in region)
+                    IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements();
+
+                    while (enumerator.MoveNext())
                     {
-                        throw new NotImplementedException();
-                        // if (element.Changed())
-                        {
-                            ((dynamic)element).ElementLabel++;
-                        }
+                        enumerator.Current.Compare();
+
+                        throw new NotImplementedException("Maybe some sort of lambda to update labels?");
+                        ((dynamic)enumerator).ElementLabel++;
                     }
 
                     lock (this.ProgressLock)
@@ -167,19 +168,19 @@
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
-                    if (!region.CanCompare(hasRelativeConstraint: true))
+                    if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
                     {
                         return;
                     }
 
-                    foreach (SnapshotRegionComparer element in region)
-                    {
+                    IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements();
 
-                        throw new NotImplementedException();
-                        // if (element.Changed())
-                        {
-                            ((dynamic)element).ElementLabel--;
-                        }
+                    while (enumerator.MoveNext())
+                    {
+                        enumerator.Current.Compare();
+
+                        throw new NotImplementedException("Maybe some sort of lambda to update labels?");
+                        ((dynamic)enumerator).ElementLabel--;
                     }
 
                     lock (this.ProgressLock)

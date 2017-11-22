@@ -8,10 +8,8 @@
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -93,8 +91,9 @@
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
 
             // Create the base snapshot from the loaded modules
-            IEnumerable<SnapshotRegion> regions = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new SnapshotRegion(region.BaseAddress, region.RegionSize));
-            Snapshot moduleSnapshot = new Snapshot(regions);
+            //IEnumerable<SnapshotRegion> regions = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new SnapshotRegion(region.BaseAddress, region.RegionSize));
+            throw new NotImplementedException("Regions cant be in snapshots this way anymore");
+            Snapshot moduleSnapshot = new Snapshot();
 
             // Process the allowed amount of chunks from the priority queue
             Parallel.ForEach(
@@ -126,11 +125,11 @@
                             {
                                 if (moduleSnapshot.ContainsAddress(value))
                                 {
-                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                    // this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                                 else
                                 {
-                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                    // this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                             }
                         }
@@ -154,18 +153,18 @@
                             {
                                 if (moduleSnapshot.ContainsAddress(value))
                                 {
-                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                    //  this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                                 else
                                 {
-                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                    //   this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                             }
                         }
                     }
 
                     // Clear the saved values, we do not need them now
-                    region.SetCurrentValues(null);
+                    region.ReadGroup.SetCurrentValues(null);
 
                     // Update scan progress
                     lock (this.ProgressLock)

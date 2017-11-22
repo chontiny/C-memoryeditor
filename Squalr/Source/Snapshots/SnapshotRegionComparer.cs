@@ -3,7 +3,6 @@
     using Scanners.ScanConstraints;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Numerics;
@@ -30,7 +29,9 @@
             this.VectorSize = vectorSize;
             this.DataTypeSize = Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType);
             this.RatioSize = this.VectorReadIndex / this.DataTypeSize;
-            this.ResultRegions = new List<SnapshotRegion>();
+
+            // Initialize result capacity to 1/16 elements
+            this.ResultRegions = new List<SnapshotRegion>(this.Parent.ElementCount / 16);
 
             this.SetConstraintFunctions();
             this.SetCompareAction(compareActionConstraint, compareActionValue);
@@ -129,17 +130,6 @@
         public Func<Vector<Byte>> IsScientificNotation { get; private set; }
 
         /// <summary>
-        /// Gets the base address of this element.
-        /// </summary>
-        public IntPtr BaseAddress
-        {
-            get
-            {
-                return this.Parent.BaseAddress.Add(this.VectorReadIndex);
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the parent snapshot region.
         /// </summary>
         private SnapshotRegion Parent { get; set; }
@@ -159,7 +149,7 @@
             {
                 if (this.Encoding)
                 {
-                    this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex, this.RunLength.ToUInt64()));
+                    this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex, this.RunLength));
                     this.RunLength = 0;
                     this.Encoding = false;
                 }
@@ -167,6 +157,7 @@
             // Otherwise the vector contains a mixture of true and false
             else
             {
+                // NOTE: This code below is the biggest scan bottleneck. Improvements here are welcome.
                 for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
                 {
                     // Vector result was false
@@ -174,7 +165,7 @@
                     {
                         if (this.Encoding)
                         {
-                            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex + index - this.RunLength, this.RunLength.ToUInt64()));
+                            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex + index - this.RunLength, this.RunLength));
                             this.RunLength = 0;
                             this.Encoding = false;
                         }
@@ -194,7 +185,7 @@
         {
             if (this.Encoding)
             {
-                this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex, this.RunLength.ToUInt64()));
+                this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex, this.RunLength));
                 this.RunLength = 0;
                 this.Encoding = false;
             }

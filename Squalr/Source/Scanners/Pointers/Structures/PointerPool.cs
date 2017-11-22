@@ -86,7 +86,7 @@
             }
         }
 
-        public Snapshot ToSnapshot(UInt64 pointerRadius)
+        public Snapshot ToSnapshot(UInt32 pointerRadius)
         {
             Snapshot pointerPoolSnapshot = new Snapshot();
 
@@ -94,9 +94,10 @@
 
             foreach (KeyValuePair<UInt64, UInt64> pointer in this)
             {
-                SnapshotRegion levelRegion = new SnapshotRegion(pointer.Key.ToIntPtr(), 1);
-                levelRegion.Expand(pointerRadius);
-                levelRegions.Add(levelRegion);
+                throw new NotImplementedException("Snapshots aint like this no more");
+                //SnapshotRegion levelRegion = new SnapshotRegion(pointer.Key.ToIntPtr(), 1);
+                //levelRegion.Expand(pointerRadius);
+                //levelRegions.Add(levelRegion);
             }
 
             pointerPoolSnapshot.AddSnapshotRegions(levelRegions);
