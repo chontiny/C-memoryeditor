@@ -1,10 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Squalr.Properties;
-    using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -24,9 +21,6 @@
         /// <param name="regionSize">The size of this snapshot region.</param>
         public SnapshotRegion(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
         {
-            this.TimeSinceLastRead = DateTime.MinValue;
-            this.Alignment = SettingsViewModel.GetInstance().Alignment;
-            this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
         }
 
         /// <summary>
@@ -39,16 +33,6 @@
         {
             this.ReadGroup = readGroup;
         }
-
-        /// <summary>
-        /// Gets or sets the data type of the elements of this region.
-        /// </summary>
-        public DataType ElementDataType { get; set; }
-
-        /// <summary>
-        /// Gets or sets the data type of the labels of this region.
-        /// </summary>
-        public DataType LabelDataType { get; set; }
 
         /// <summary>
         /// Gets the most recently read values.

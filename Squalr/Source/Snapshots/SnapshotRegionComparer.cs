@@ -2,6 +2,7 @@
 {
     using Scanners.ScanConstraints;
     using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -27,6 +28,7 @@
         {
             this.Parent = parent;
             this.VectorSize = vectorSize;
+            this.DataTypeSize = Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType);
             this.ResultRegions = new List<SnapshotRegion>();
 
             this.SetConstraintFunctions();
@@ -38,6 +40,8 @@
         private Int32 RunLength { get; set; }
 
         private Int32 VectorSize { get; set; }
+
+        private Int32 DataTypeSize { get; set; }
 
         public IList<SnapshotRegion> ResultRegions { get; set; }
 
@@ -141,36 +145,45 @@
         {
             Vector<Byte> scanResults = this.VectorCompare();
 
-            // Check all true
+            // Check all vector results true
             if (Vector.GreaterThanAll(scanResults, Vector<Byte>.Zero))
             {
                 this.RunLength += this.VectorSize;
-
                 this.Encoding = true;
             }
-            // Check all false
+            // Check all vector results false
             else if (Vector.EqualsAll(scanResults, Vector<Byte>.Zero))
             {
                 if (this.Encoding)
                 {
                     this.CreateSnapshot();
                     this.RunLength = 0;
+                    this.Encoding = false;
                 }
-                else
-                {
-                    this.RunLength += this.VectorSize;
-                }
-
-                this.Encoding = false;
             }
-            // Mixed and matching
+            // Otherwise the vector contains a mixture of true and false
             else
             {
-                // Well, it isn't going to be easy
-
-                this.RunLength += this.VectorSize;
-
-                this.Encoding = false;
+                return;
+                for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
+                {
+                    // Vector result was true
+                    if (scanResults[index] != 0)
+                    {
+                        this.RunLength += this.DataTypeSize;
+                        this.Encoding = true;
+                    }
+                    // Vector result was false
+                    else
+                    {
+                        if (this.Encoding)
+                        {
+                            this.CreateSnapshot();
+                            this.RunLength = 0;
+                            this.Encoding = false;
+                        }
+                    }
+                }
             }
         }
 
@@ -214,7 +227,7 @@
         /// </summary>
         private unsafe void SetConstraintFunctions()
         {
-            switch (this.Parent.ElementDataType)
+            switch (this.Parent.ReadGroup.ElementDataType)
             {
                 case DataType type when type == DataTypes.Byte:
                     this.Changed = () => { return Vector.Equals(this.CurrentValues, this.PreviousValues); };

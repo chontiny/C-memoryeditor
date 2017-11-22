@@ -318,7 +318,7 @@
         private unsafe void InitializePointers(Int32 index = 0)
         {
             this.CurrentLabelIndex = index;
-            this.DataType = this.Parent.ElementDataType;
+            this.DataType = this.Parent.ReadGroup.ElementDataType;
 
             if (this.Parent?.ReadGroup?.CurrentValues != null && this.Parent.ReadGroupOffset + index < this.Parent.ReadGroup.CurrentValues.Length)
             {

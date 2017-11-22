@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -29,6 +30,16 @@
         /// Gets the previously read values.
         /// </summary>
         public unsafe Byte[] PreviousValues { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the data type of the elements of this region.
+        /// </summary>
+        public DataType ElementDataType { get; set; }
+
+        /// <summary>
+        /// Gets or sets the data type of the labels of this region.
+        /// </summary>
+        public DataType LabelDataType { get; set; }
 
         public IList<SnapshotRegion> SnapshotRegions;
 

@@ -121,6 +121,8 @@
 
             stopwatch.Stop();
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
+
+            this.Snapshot = new Snapshot(regions);
         }
 
         /// <summary>
@@ -128,10 +130,11 @@
         /// </summary>
         protected override void OnEnd()
         {
-            FinalizerScan finalizer = new FinalizerScan(this.Snapshot);
-            finalizer.Start();
+            // FinalizerScan finalizer = new FinalizerScan(this.Snapshot);
+            // finalizer.Start();
 
-            this.Snapshot = null;
+            // this.Snapshot = null;
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
         }

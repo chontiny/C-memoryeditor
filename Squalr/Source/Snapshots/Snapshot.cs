@@ -49,8 +49,9 @@
         /// </summary>
         /// <param name="snapshotRegions">The regions with which to initialize this snapshot.</param>
         /// <param name="snapshotName">The snapshot generation method name.</param>
-        public Snapshot(String snapshotName, IEnumerable<SnapshotRegion> snapshotRegions) : this(snapshotName, snapshotRegions?.ToArray())
+        public Snapshot(String snapshotName, IEnumerable<SnapshotRegion> snapshotRegions) : this(snapshotName)
         {
+            this.AddSnapshotRegions(snapshotRegions);
         }
 
         /// <summary>
@@ -107,7 +108,7 @@
         {
             set
             {
-                this.SnapshotRegions.ForEach(region => region.LabelDataType = value);
+                this.SnapshotRegions.ForEach(region => region.ReadGroup.LabelDataType = value);
             }
         }
 
@@ -123,7 +124,7 @@
         {
             set
             {
-                this.SnapshotRegions.ForEach(region => region.ElementDataType = value);
+                this.SnapshotRegions.ForEach(region => region.ReadGroup.ElementDataType = value);
             }
         }
 
@@ -252,20 +253,21 @@
         /// <param name="snapshotRegions">The snapshot regions to add.</param>
         public void AddSnapshotRegions(IEnumerable<SnapshotRegion> snapshotRegions)
         {
-            this.AddSnapshotRegions(snapshotRegions?.ToArray());
-        }
+            this.ReadGroups = new List<ReadGroup>();
 
-        /// <summary>
-        /// Adds memory regions to the regions contained in this snapshot. Will automatically merge and sort regions.
-        /// </summary>
-        /// <param name="snapshotRegions">The snapshot regions to add.</param>
-        public void AddSnapshotRegions(params SnapshotRegion[] snapshotRegions)
-        {
-            //   this.ReadGroupManagers = new List<ReadGroupManager>();
+            IEnumerable<IGrouping<ReadGroup, SnapshotRegion>> snapshotsByReadGroup = snapshotRegions.GroupBy(region => region.ReadGroup);
 
-            //  snapshotRegions?.ForEach(snapshotRegion => this.ReadGroupManagers.Add(new ReadGroupManager(snapshotRegion.BaseAddress, snapshotRegion.RegionSize)));
+            foreach (IGrouping<ReadGroup, SnapshotRegion> group in snapshotsByReadGroup)
+            {
+                group.Key.SnapshotRegions.Clear();
 
-            //// this.MergeAndSortRegions();
+                foreach (SnapshotRegion region in group)
+                {
+                    group.Key.SnapshotRegions.Add(region);
+                }
+
+                this.ReadGroups.Add(group.Key);
+            }
         }
     }
     //// End class
