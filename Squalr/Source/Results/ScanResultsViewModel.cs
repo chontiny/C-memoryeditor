@@ -476,7 +476,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddScanResult(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult.PointerItem);
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult?.PointerItem);
         }
 
         /// <summary>

@@ -64,6 +64,21 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
+        /// Settings that control the degree of parallelism for multithreaded tasks.
+        /// </summary>
+        private static Lazy<ParallelOptions> parallelSettingsNone = new Lazy<ParallelOptions>(
+                () =>
+                {
+                    ParallelOptions parallelOptions = new ParallelOptions()
+                    {
+                        // Only use 1 CPU
+                        MaxDegreeOfParallelism = 1
+                    };
+                    return parallelOptions;
+                },
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="SettingsViewModel"/> class from being created.
         /// </summary>
         private SettingsViewModel() : base("Settings")
@@ -102,6 +117,17 @@
             get
             {
                 return parallelSettingsMedium.Value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the parallelism settings which use only one CPU. This should only be used for debugging.
+        /// </summary>
+        public ParallelOptions ParallelSettingsNone
+        {
+            get
+            {
+                return parallelSettingsNone.Value;
             }
         }
 

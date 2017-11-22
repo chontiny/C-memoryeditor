@@ -84,8 +84,8 @@
             foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
             {
                 Parallel.ForEach(
-                    this.Snapshot.OptimizedSnapshotRegions,
-                    SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
+                    this.Snapshot.SnapshotRegions,
+                    SettingsViewModel.GetInstance().ParallelSettingsNone,
                     (region) =>
                     {
                         IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(scanConstraint.Constraint, scanConstraint.ConstraintValue);

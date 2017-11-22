@@ -7,7 +7,6 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Numerics;
 
     /// <summary>
     /// Defines a region of memory in an external process.
@@ -29,41 +28,10 @@
         /// <param name="readGroup">The read group of this snapshot region.</param>
         /// <param name="baseAddress">The base address of this snapshot region.</param>
         /// <param name="regionSize">The size of this snapshot region.</param>
-        public SnapshotRegion(ReadGroup readGroup, IntPtr baseAddress, UInt64 regionSize) : this(baseAddress, regionSize)
+        public SnapshotRegion(ReadGroup readGroup, Int32 readGroupOffset, UInt64 regionSize) : this(IntPtr.Zero, regionSize)
         {
             this.ReadGroup = readGroup;
-        }
-
-        /// <summary>
-        /// Gets the most recently read values.
-        /// </summary>
-        public unsafe Vector<Byte> CurrentValues
-        {
-            get
-            {
-                if (this.ReadGroup?.CurrentValues == null)
-                {
-                    return new Vector<Byte>();
-                }
-
-                return new Vector<Byte>(this.ReadGroup.CurrentValues, this.ReadGroupOffset);
-            }
-        }
-
-        /// <summary>
-        /// Gets the previously read values.
-        /// </summary>
-        public unsafe Vector<Byte> PreviousValues
-        {
-            get
-            {
-                if (this.ReadGroup?.PreviousValues == null)
-                {
-                    return new Vector<Byte>();
-                }
-
-                return new Vector<Byte>(this.ReadGroup.PreviousValues, this.ReadGroupOffset);
-            }
+            this.ReadGroupOffset = readGroupOffset;
         }
 
         /// <summary>
@@ -72,24 +40,13 @@
         public unsafe Object[] ElementLabels { get; private set; }
 
         /// <summary>
-        /// Gets or sets the valid bits for use in filtering scans.
-        /// </summary>
-        public Byte[] ValidBits { get; set; }
-
-        /// <summary>
         /// Gets or sets the time since the last read was performed on this region.
         /// </summary>
-        private DateTime TimeSinceLastRead { get; set; }
+        public DateTime TimeSinceLastRead { get; set; }
 
         public ReadGroup ReadGroup { get; set; }
 
-        public Int32 ReadGroupOffset
-        {
-            get
-            {
-                return (this.BaseAddress.Subtract(this.ReadGroup.BaseAddress)).ToInt32();
-            }
-        }
+        public Int32 ReadGroupOffset { get; set; }
 
         /// <summary>
         /// Indexer to allow the retrieval of the element at the specified index.
@@ -120,15 +77,6 @@
         public void SetPreviousValues(Byte[] newValues)
         {
             this.ReadGroup.SetPreviousValues(newValues);
-        }
-
-        /// <summary>
-        /// Gets the time since values were read for this region.
-        /// </summary>
-        /// <returns>The time since values were read for this region.</returns>
-        public DateTime GetTimeSinceLastRead()
-        {
-            return this.TimeSinceLastRead;
         }
 
         /// <summary>
@@ -179,10 +127,10 @@
             Int32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
             Int32 regionSize = this.RegionSize.ToInt32();
 
-            while (regionComparer.ElementIndex < regionSize)
+            while (regionComparer.VectorReadIndex < regionSize)
             {
                 yield return regionComparer;
-                regionComparer.ElementIndex += vectorSize;
+                regionComparer.VectorReadIndex += vectorSize;
             }
         }
 

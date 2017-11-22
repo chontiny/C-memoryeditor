@@ -100,7 +100,7 @@
         {
             get
             {
-                return this.SnapshotRegions?.Sum(region => region.ElementCount) ?? 0UL;
+                return this.SnapshotRegions?.Sum(region => region.RegionSize / region.ReadGroup.Alignment.ToUInt64()) ?? 0UL;
             }
         }
 
@@ -108,7 +108,7 @@
         {
             set
             {
-                this.SnapshotRegions.ForEach(region => region.ReadGroup.LabelDataType = value);
+                this.ReadGroups.ForEach(readGroup => readGroup.LabelDataType = value);
             }
         }
 
@@ -116,7 +116,7 @@
         {
             set
             {
-                this.SnapshotRegions.ForEach(region => region.Alignment = value);
+                this.ReadGroups.ForEach(readGroup => readGroup.Alignment = value);
             }
         }
 
@@ -124,7 +124,7 @@
         {
             set
             {
-                this.SnapshotRegions.ForEach(region => region.ReadGroup.ElementDataType = value);
+                this.ReadGroups.ForEach(readGroup => readGroup.ElementDataType = value);
             }
         }
 
@@ -177,7 +177,7 @@
             {
                 foreach (SnapshotRegion region in this.SnapshotRegions)
                 {
-                    UInt64 elementCount = region.ElementCount;
+                    UInt64 elementCount = region.RegionSize / region.ReadGroup.Alignment.ToUInt64();
 
                     if (index >= elementCount)
                     {
@@ -185,7 +185,7 @@
                     }
                     else
                     {
-                        return region[(Int32)index * region.Alignment];
+                        return region[(Int32)index * region.ReadGroup.Alignment];
                     }
                 }
 
@@ -266,8 +266,12 @@
                     group.Key.SnapshotRegions.Add(region);
                 }
 
+                group.Key.SnapshotRegions = group.Key.SnapshotRegions.OrderBy(region => region.ReadGroupOffset).ToList();
+
                 this.ReadGroups.Add(group.Key);
             }
+
+            this.ReadGroups = this.ReadGroups.OrderBy(group => group.BaseAddress.ToUInt64()).ToList();
         }
     }
     //// End class

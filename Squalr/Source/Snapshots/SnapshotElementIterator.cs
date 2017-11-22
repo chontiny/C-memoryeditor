@@ -5,7 +5,6 @@
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Runtime.CompilerServices;
-    using System.Runtime.InteropServices;
 
     /// <summary>
     /// Defines a reference to an element within a snapshot region.
@@ -28,25 +27,12 @@
             Object compareActionValue = null)
         {
             this.Parent = parent;
-
-            // The garbage collector can relocate variables at runtime. Since we use unsafe pointers, we need to keep these pinned
-            this.CurrentValuesHandle = GCHandle.Alloc(this.Parent.CurrentValues, GCHandleType.Pinned);
-            this.PreviousValuesHandle = GCHandle.Alloc(this.Parent.PreviousValues, GCHandleType.Pinned);
+            this.ElementIndex = elementIndex;
 
             this.InitializePointers(elementIndex);
             this.SetConstraintFunctions();
             this.SetPointerFunction(pointerIncrementMode);
             this.SetCompareAction(compareActionConstraint, compareActionValue);
-        }
-
-        /// <summary>
-        /// Finalizes an instance of the <see cref="SnapshotElementIterator" /> class.
-        /// </summary>
-        ~SnapshotElementIterator()
-        {
-            // Let the GC do what it wants now
-            this.CurrentValuesHandle.Free();
-            this.PreviousValuesHandle.Free();
         }
 
         /// <summary>
@@ -141,7 +127,7 @@
         {
             get
             {
-                return this.Parent.BaseAddress.Add(this.ElementIndex);
+                return this.Parent.ReadGroup.BaseAddress.Add(this.Parent.ReadGroupOffset).Add(this.ElementIndex);
             }
         }
 
@@ -160,16 +146,6 @@
                 this.Parent.ElementLabels[this.CurrentLabelIndex] = value;
             }
         }
-
-        /// <summary>
-        /// Gets or sets a garbage collector handle to the current value array.
-        /// </summary>
-        private GCHandle CurrentValuesHandle { get; set; }
-
-        /// <summary>
-        /// Gets or sets a garbage collector handle to the previous value array.
-        /// </summary>
-        private GCHandle PreviousValuesHandle { get; set; }
 
         /// <summary>
         /// Gets or sets the parent snapshot region.
@@ -195,35 +171,7 @@
         /// <summary>
         /// Gets the index of this element.
         /// </summary>
-        private unsafe Int32 ElementIndex
-        {
-            get
-            {
-                // Use the incremented current value pointer or label index to figure out the index of this element
-                if (this.CurrentLabelIndex != 0)
-                {
-                    return this.CurrentLabelIndex;
-                }
-                else if (this.CurrentValuePointer != null)
-                {
-                    fixed (Byte* pointerBase = &this.Parent.ReadGroup.CurrentValues[this.Parent.ReadGroupOffset])
-                    {
-                        return (Int32)(this.CurrentValuePointer - pointerBase);
-                    }
-                }
-                else if (this.PreviousValuePointer != null)
-                {
-                    fixed (Byte* pointerBase = &this.Parent.ReadGroup.PreviousValues[this.Parent.ReadGroupOffset])
-                    {
-                        return (Int32)(this.PreviousValuePointer - pointerBase);
-                    }
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
+        private unsafe Int32 ElementIndex { get; set; }
 
         /// <summary>
         /// Gets or sets the data type of this element.
@@ -533,9 +481,9 @@
         /// <param name="pointerIncrementMode">The method by which to increment pointers.</param>
         private unsafe void SetPointerFunction(PointerIncrementMode pointerIncrementMode)
         {
-            Int32 alignment = this.Parent.Alignment;
+            Int32 alignment = this.Parent.ReadGroup.Alignment;
 
-            if (this.Parent.Alignment == 1)
+            if (alignment == 1)
             {
                 switch (pointerIncrementMode)
                 {

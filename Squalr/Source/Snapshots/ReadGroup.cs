@@ -1,5 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
+    using Squalr.Properties;
+    using Squalr.Source.Results;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
@@ -9,8 +11,6 @@
 
     internal class ReadGroup : NormalizedRegion
     {
-        private const UInt64 ChunkSize = 67108864UL;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ReadGroup" /> class.
         /// </summary>
@@ -18,7 +18,10 @@
         /// <param name="regionSize">The size of this memory region.</param>
         public ReadGroup(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
         {
-            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, baseAddress, regionSize) };
+            this.Alignment = SettingsViewModel.GetInstance().Alignment;
+            this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
+
+            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, regionSize) };
         }
 
         /// <summary>

@@ -29,6 +29,7 @@
             this.Parent = parent;
             this.VectorSize = vectorSize;
             this.DataTypeSize = Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType);
+            this.RatioSize = this.VectorReadIndex / this.DataTypeSize;
             this.ResultRegions = new List<SnapshotRegion>();
 
             this.SetConstraintFunctions();
@@ -42,6 +43,8 @@
         private Int32 VectorSize { get; set; }
 
         private Int32 DataTypeSize { get; set; }
+
+        private Int32 RatioSize { get; set; }
 
         public IList<SnapshotRegion> ResultRegions { get; set; }
 
@@ -132,7 +135,7 @@
         {
             get
             {
-                return this.Parent.BaseAddress.Add(this.ElementIndex);
+                return this.Parent.BaseAddress.Add(this.VectorReadIndex);
             }
         }
 
@@ -156,7 +159,7 @@
             {
                 if (this.Encoding)
                 {
-                    this.CreateSnapshot();
+                    this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex, this.RunLength.ToUInt64()));
                     this.RunLength = 0;
                     this.Encoding = false;
                 }
@@ -164,39 +167,44 @@
             // Otherwise the vector contains a mixture of true and false
             else
             {
-                return;
                 for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
                 {
-                    // Vector result was true
-                    if (scanResults[index] != 0)
-                    {
-                        this.RunLength += this.DataTypeSize;
-                        this.Encoding = true;
-                    }
                     // Vector result was false
-                    else
+                    if (scanResults[index] == 0)
                     {
                         if (this.Encoding)
                         {
-                            this.CreateSnapshot();
+                            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex + index - this.RunLength, this.RunLength.ToUInt64()));
                             this.RunLength = 0;
                             this.Encoding = false;
                         }
+                    }
+                    // Vector result was true
+                    else
+                    {
+                        this.RunLength += this.DataTypeSize;
+                        this.Encoding = true;
                     }
                 }
             }
         }
 
-        private void CreateSnapshot()
+        // TODO: Call after all iteration complete
+        public void FinalizeSnapshots()
         {
-            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.BaseAddress.Add(this.ElementIndex), this.RunLength.ToUInt64()));
+            if (this.Encoding)
+            {
+                this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex, this.RunLength.ToUInt64()));
+                this.RunLength = 0;
+                this.Encoding = false;
+            }
         }
 
         private Vector<Byte> CurrentValues
         {
             get
             {
-                return new Vector<Byte>(this.Parent.ReadGroup.CurrentValues, this.Parent.ReadGroupOffset + this.ElementIndex);
+                return new Vector<Byte>(this.Parent.ReadGroup.CurrentValues, this.Parent.ReadGroupOffset + this.VectorReadIndex);
             }
         }
 
@@ -204,23 +212,14 @@
         {
             get
             {
-                return new Vector<Byte>(this.Parent.ReadGroup.PreviousValues, this.Parent.ReadGroupOffset + this.ElementIndex);
+                return new Vector<Byte>(this.Parent.ReadGroup.PreviousValues, this.Parent.ReadGroupOffset + this.VectorReadIndex);
             }
         }
 
         /// <summary>
         /// Gets or sets the index of this element.
         /// </summary>
-        public unsafe Int32 ElementIndex { get; set; }
-
-        /// <summary>
-        /// Initializes snapshot value reference pointers
-        /// </summary>
-        /// <param name="index">The index of the element to begin pointing to.</param>
-        private unsafe void InitializePointers(Int32 index = 0)
-        {
-            this.ElementIndex = index;
-        }
+        public unsafe Int32 VectorReadIndex { get; set; }
 
         /// <summary>
         /// Initializes all constraint functions for value comparisons.
