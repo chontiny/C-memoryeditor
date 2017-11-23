@@ -42,31 +42,24 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementIterator this[Int32 index]
+        public SnapshotElementComparer this[Int32 index]
         {
             get
             {
-                return new SnapshotElementIterator(parent: this, elementIndex: index);
+                return new SnapshotElementComparer(parent: this, elementIndex: index);
             }
         }
 
-        /// <summary>
-        /// Gets the enumerator for an element reference within this snapshot region.
-        /// </summary>
-        /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
-        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
-        /// <param name="compareActionValue">The value to use for the element quick action.</param>
-        /// <returns>The enumerator for an element reference within this snapshot region.</returns>
-        public IEnumerator<SnapshotRegionComparer> IterateElements(
-            ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
+        public IList<SnapshotRegion> CompareAll(
+            ScanConstraint.ConstraintType compareActionConstraint,
             Object compareActionValue = null)
         {
             if (!this.ReadGroup.CanCompare(ScanConstraint.IsRelativeConstraint(compareActionConstraint)))
             {
-                yield break;
+                return null;
             }
 
-            SnapshotRegionComparer regionComparer = new SnapshotRegionComparer(
+            SnapshotElementVectorComparer regionComparer = new SnapshotElementVectorComparer(
                 parent: this,
                 vectorSize: EngineCore.GetInstance().Architecture.GetVectorSize(),
                 compareActionConstraint: compareActionConstraint,
@@ -76,11 +69,27 @@
 
             while (regionComparer.VectorReadIndex < this.RegionSize)
             {
-                yield return regionComparer;
+                regionComparer.Compare();
                 regionComparer.VectorReadIndex += vectorSize;
             }
 
-            regionComparer.FinalizeSnapshots();
+            regionComparer.AddRemainingSnapshotRegions();
+
+            return regionComparer.ResultRegions;
+        }
+
+        /// <summary>
+        /// Gets the enumerator for an element reference within this snapshot region.
+        /// </summary>
+        /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
+        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
+        /// <param name="compareActionValue">The value to use for the element quick action.</param>
+        /// <returns>The enumerator for an element reference within this snapshot region.</returns>
+        public IEnumerator<SnapshotElementVectorComparer> IterateElements(
+            ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
+            Object compareActionValue = null)
+        {
+            yield break;
         }
     }
     //// End class

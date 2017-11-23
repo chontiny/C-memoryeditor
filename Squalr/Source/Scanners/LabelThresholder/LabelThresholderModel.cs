@@ -124,9 +124,9 @@
 
                     foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
-                        for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotRegionComparer element = enumerator.Current;
+                            SnapshotElementVectorComparer element = enumerator.Current;
 
                             throw new NotImplementedException();
                             // dynamic label = element.GetElementLabel();
@@ -144,9 +144,9 @@
 
                     foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
-                        for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotRegionComparer element = enumerator.Current;
+                            SnapshotElementVectorComparer element = enumerator.Current;
 
                             throw new NotImplementedException();
 
@@ -198,9 +198,9 @@
                         return;
                     }
 
-                    for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                    for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                     {
-                        SnapshotRegionComparer element = enumerator.Current;
+                        SnapshotElementVectorComparer element = enumerator.Current;
 
                         lock (this.ItemLock)
                         {

@@ -338,6 +338,9 @@
                 this.Snapshots.Clear();
                 this.DeletedSnapshots.Clear();
                 this.NotifyObservers();
+
+                // There can be multiple GB of deleted snapshots, so run the garbage collector ASAP for a performance boost.
+                Task.Run(() => GC.Collect());
             }
         }
 

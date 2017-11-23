@@ -51,7 +51,7 @@
 
         public IList<SnapshotRegion> ResultRegions { get; set; }
 
-        public IList<SnapshotRegion> SnapshotRegions;
+        public IEnumerable<SnapshotRegion> SnapshotRegions;
 
         /// <summary>
         /// Reads all memory for this memory region.

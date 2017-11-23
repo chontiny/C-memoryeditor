@@ -350,8 +350,8 @@
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
     <Compile Include="Source\Snapshots\ReadGroup.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
-    <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
-    <Compile Include="Source\Snapshots\SnapshotRegionComparer.cs" />
+    <Compile Include="Source\Snapshots\SnapshotElementComparer.cs" />
+    <Compile Include="Source\Snapshots\SnapshotElementVectorComparer.cs" />
     <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
     <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Scripting\ScriptEngine.cs" />

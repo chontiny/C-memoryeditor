@@ -144,7 +144,7 @@
                         return;
                     }
 
-                    IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements();
+                    IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements();
 
                     while (enumerator.MoveNext())
                     {
@@ -173,7 +173,7 @@
                         return;
                     }
 
-                    IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements();
+                    IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements();
 
                     while (enumerator.MoveNext())
                     {
@@ -204,9 +204,9 @@
 
             foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
             {
-                for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                 {
-                    SnapshotRegionComparer element = enumerator.Current;
+                    SnapshotElementVectorComparer element = enumerator.Current;
 
                     throw new NotImplementedException();
 

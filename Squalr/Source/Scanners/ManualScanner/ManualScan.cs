@@ -6,6 +6,7 @@
     using Squalr.Source.Scanners.ValueCollector;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -84,18 +85,16 @@
                 ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
 
                 Parallel.ForEach(
-                    this.Snapshot.SnapshotRegions,
-                    SettingsViewModel.GetInstance().ParallelSettingsNone,
+                    this.Snapshot.OptimizedSnapshotRegions,
+                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
                     (region) =>
                     {
-                        IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(scanConstraint.Constraint, scanConstraint.ConstraintValue);
+                        IList<SnapshotRegion> results = region.CompareAll(scanConstraint.Constraint, scanConstraint.ConstraintValue);
 
-                        while (enumerator.MoveNext())
+                        if (!results.IsNullOrEmpty())
                         {
-                            enumerator.Current.Compare();
+                            regions.Add(results);
                         }
-
-                        regions.Add(enumerator.Current.ResultRegions);
 
                         // Update progress every N regions
                         if (Interlocked.Increment(ref processedPages) % 32 == 0)

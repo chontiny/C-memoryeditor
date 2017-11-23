@@ -235,7 +235,7 @@
         /// <param name="projectItems">The project item to add.</param>
         public void AddNewProjectItems(Boolean addToSelected = true, IEnumerable<ProjectItem> projectItems = null)
         {
-            if (projectItems.IsNullOrEmpty())
+            if (projectItems.IsNullOrEmpty() || projectItems.Contains(null))
             {
                 return;
             }

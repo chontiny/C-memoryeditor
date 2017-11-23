@@ -106,7 +106,7 @@
                 // Iterate all of the heap or module pointers
                 Parallel.ForEach(
                     isModuleLevel ? this.ModulePointers : this.HeapPointers,
-                    SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
+                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
                     (pointer) =>
                 {
                     // Accept this pointer if it is points to the previous level snapshot

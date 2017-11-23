@@ -14,6 +14,7 @@
     using System.Text;
     using System.Threading.Tasks;
     using Utils;
+    using Utils.DataStructures;
     using Utils.Extensions;
     using static Native.Enumerations;
     using static Native.Structures;
@@ -33,6 +34,8 @@
         /// </summary>
         public WindowsAdapter()
         {
+            this.ModuleCache = new TtlCache<List<NormalizedModule>>(TimeSpan.FromSeconds(30));
+
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
             Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });
         }
@@ -438,17 +441,26 @@
             }
         }
 
+        private TtlCache<List<NormalizedModule>> ModuleCache { get; set; }
+
+        private List<NormalizedModule> Modules { get; set; }
+
         /// <summary>
         /// Gets all modules in the opened process
         /// </summary>
         /// <returns>A collection of modules in the process</returns>
         public IEnumerable<NormalizedModule> GetModules()
         {
-            List<NormalizedModule> normalizedModules = new List<NormalizedModule>();
+            if (this.Modules != null && this.ModuleCache.Contains(this.Modules))
+            {
+                return this.Modules;
+            }
+
+            this.Modules = new List<NormalizedModule>();
 
             if (this.SystemProcess == null)
             {
-                return normalizedModules;
+                return this.Modules;
             }
 
             // Query all modules in the target process
@@ -460,7 +472,8 @@
                 // Determine number of modules
                 if (!NativeMethods.EnumProcessModulesEx(this.SystemProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
                 {
-                    return normalizedModules;
+                    this.ModuleCache.Add(this.Modules);
+                    return this.Modules;
                 }
 
                 Int32 totalNumberofModules = bytesNeeded / IntPtr.Size;
@@ -479,7 +492,7 @@
 
                         // Convert to a normalized module and add it to our list
                         NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase, moduleInformation.SizeOfImage.ToUInt64());
-                        normalizedModules.Add(module);
+                        this.Modules.Add(module);
                     }
                 }
             }
@@ -489,7 +502,8 @@
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
 
-            return normalizedModules;
+            this.ModuleCache.Add(this.Modules);
+            return this.Modules;
         }
 
         /// <summary>

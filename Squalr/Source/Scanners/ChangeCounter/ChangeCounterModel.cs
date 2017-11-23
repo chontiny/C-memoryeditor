@@ -109,9 +109,9 @@
                     return;
                 }
 
-                for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                 {
-                    SnapshotRegionComparer element = enumerator.Current;
+                    SnapshotElementVectorComparer element = enumerator.Current;
 
                     throw new NotImplementedException();
                     // Perform the comparison based on the current scan constraint

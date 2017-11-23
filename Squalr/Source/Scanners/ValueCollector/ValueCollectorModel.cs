@@ -68,7 +68,7 @@
             // Read memory to get current values for each region
             Parallel.ForEach(
                 this.Snapshot.OptimizedReadGroups,
-                SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
+                SettingsViewModel.GetInstance().ParallelSettingsFastest,
                 (readGroup) =>
                 {
                     // Read the memory for this region

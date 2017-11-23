@@ -10,16 +10,16 @@
     /// <summary>
     /// Class for comparing snapshot regions.
     /// </summary>
-    internal class SnapshotRegionComparer
+    internal class SnapshotElementVectorComparer
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotRegionComparer" /> class.
+        /// Initializes a new instance of the <see cref="SnapshotElementVectorComparer" /> class.
         /// </summary>
         /// <param name="parent">The parent region that contains this element.</param>
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
-        public unsafe SnapshotRegionComparer(
+        public unsafe SnapshotElementVectorComparer(
             SnapshotRegion parent,
             Int32 vectorSize,
             ScanConstraint.ConstraintType compareActionConstraint,
@@ -30,24 +30,36 @@
             this.DataTypeSize = Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType);
             this.RatioSize = this.VectorReadIndex / this.DataTypeSize;
 
-            // Initialize result capacity to 1/16 elements
+            // Initialize capacity to 1/16 elements
             this.ResultRegions = new List<SnapshotRegion>(this.Parent.ElementCount / 16);
 
             this.SetConstraintFunctions();
             this.SetCompareAction(compareActionConstraint, compareActionValue);
         }
 
-        private Boolean Encoding { get; set; }
+        /// <summary>
+        /// Gets or sets the list of discovered result regions.
+        /// </summary>
+        public IList<SnapshotRegion> ResultRegions { get; private set; }
 
-        private Int32 RunLength { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether we are currently encoding a new result region.
+        /// </summary>
+        public Boolean Encoding { get; set; }
 
+        /// <summary>
+        /// Gets or sets the current run length for run length encoded current scan results.
+        /// </summary>
+        public Int32 RunLength { get; set; }
+
+        /// <summary>
+        /// Gets or sets the SSE vector size on the machine.
+        /// </summary>
         private Int32 VectorSize { get; set; }
 
         private Int32 DataTypeSize { get; set; }
 
         private Int32 RatioSize { get; set; }
-
-        public IList<SnapshotRegion> ResultRegions { get; set; }
 
         /// <summary>
         /// Gets an action based on the element iterator scan constraint.
@@ -138,7 +150,7 @@
         {
             Vector<Byte> scanResults = this.VectorCompare();
 
-            // Check all vector results true
+            // Check all vector results true (vector of 0xFF's, which is how SSE instructions store true)
             if (Vector.GreaterThanAll(scanResults, Vector<Byte>.Zero))
             {
                 this.RunLength += this.VectorSize;
@@ -149,7 +161,7 @@
             {
                 if (this.Encoding)
                 {
-                    this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex, this.RunLength));
+                    this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex - this.RunLength, this.RunLength));
                     this.RunLength = 0;
                     this.Encoding = false;
                 }
@@ -157,7 +169,6 @@
             // Otherwise the vector contains a mixture of true and false
             else
             {
-                // NOTE: This code below is the biggest scan bottleneck. Improvements here are welcome.
                 for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
                 {
                     // Vector result was false
@@ -180,12 +191,14 @@
             }
         }
 
-        // TODO: Call after all iteration complete
-        public void FinalizeSnapshots()
+        /// <summary>
+        /// Finalizes any leftover snapshot regions.
+        /// </summary>
+        public void AddRemainingSnapshotRegions()
         {
             if (this.Encoding)
             {
-                this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex, this.RunLength));
+                this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex - this.RunLength, this.RunLength));
                 this.RunLength = 0;
                 this.Encoding = false;
             }

@@ -90,7 +90,7 @@
         /// <summary>
         /// Gets the parallelism settings which use all CPUs available.
         /// </summary>
-        public ParallelOptions ParallelSettingsFullCpu
+        public ParallelOptions ParallelSettingsFastest
         {
             get
             {

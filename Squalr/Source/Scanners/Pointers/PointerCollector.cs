@@ -98,7 +98,7 @@
             // Process the allowed amount of chunks from the priority queue
             Parallel.ForEach(
                 this.Snapshot.SnapshotRegions,
-                SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
+                SettingsViewModel.GetInstance().ParallelSettingsFastest,
                 (region) =>
                 {
                     if (region.ReadGroup?.CurrentValues == null)
@@ -108,9 +108,9 @@
 
                     if (isProcess32Bit)
                     {
-                        for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotRegionComparer element = enumerator.Current;
+                            SnapshotElementVectorComparer element = enumerator.Current;
                             throw new NotImplementedException();
                             UInt32 value = 0; // unchecked((UInt32)element.LoadCurrentValue());
 
@@ -136,9 +136,9 @@
                     }
                     else
                     {
-                        for (IEnumerator<SnapshotRegionComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotRegionComparer element = enumerator.Current;
+                            SnapshotElementVectorComparer element = enumerator.Current;
                             throw new NotImplementedException();
                             UInt64 value = 0;// unchecked((UInt64)element.LoadCurrentValue());
 

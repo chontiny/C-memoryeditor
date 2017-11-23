@@ -9,17 +9,17 @@
     /// <summary>
     /// Defines a reference to an element within a snapshot region.
     /// </summary>
-    internal class SnapshotElementIterator
+    internal class SnapshotElementComparer
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SnapshotElementIterator" /> class.
+        /// Initializes a new instance of the <see cref="SnapshotElementComparer" /> class.
         /// </summary>
         /// <param name="parent">The parent region that contains this element.</param>
         /// <param name="elementIndex">The index of the element to begin pointing to.</param>
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
-        public unsafe SnapshotElementIterator(
+        public unsafe SnapshotElementComparer(
             SnapshotRegion parent,
             Int32 elementIndex = 0,
             PointerIncrementMode pointerIncrementMode = PointerIncrementMode.AllPointers,

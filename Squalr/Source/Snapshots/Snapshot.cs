@@ -8,6 +8,8 @@
 
     internal class Snapshot
     {
+        private IEnumerable<ReadGroup> readGroups { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
         /// </summary>
@@ -88,7 +90,8 @@
         {
             get
             {
-                return this.SnapshotRegions?.Sum(x => x.RegionSize.ToUInt64()) ?? 0UL;
+                // Use read group size rather than region size because it's faster, although slightly inaccurate right now
+                return this.ReadGroups?.Sum(x => x.RegionSize) ?? 0UL;
             }
         }
 
@@ -133,7 +136,19 @@
         /// </summary>
         public DateTime TimeSinceLastUpdate { get; private set; }
 
-        public IList<ReadGroup> ReadGroups;
+        public IEnumerable<ReadGroup> ReadGroups
+        {
+            get
+            {
+                return this.readGroups;
+            }
+
+            set
+            {
+                this.readGroups = value;
+                this.SnapshotRegions = this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions);
+            }
+        }
 
         /// <summary>
         /// Gets the read groups in this snapshot, ordered descending by their region size. This is much more performant for multi-threaded access.
@@ -146,13 +161,7 @@
             }
         }
 
-        public IEnumerable<SnapshotRegion> SnapshotRegions
-        {
-            get
-            {
-                return this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions);
-            }
-        }
+        public IEnumerable<SnapshotRegion> SnapshotRegions { get; private set; }
 
         /// <summary>
         /// Gets the snapshot regions in this snapshot, ordered descending by their region size. This is much more performant for multi-threaded access.
@@ -162,7 +171,7 @@
         {
             get
             {
-                return this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions).OrderByDescending(region => region.RegionSize);
+                return this.SnapshotRegions.OrderByDescending(region => region.RegionSize);
             }
         }
 
@@ -171,7 +180,7 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementIterator this[UInt64 index]
+        public SnapshotElementComparer this[UInt64 index]
         {
             get
             {
@@ -253,25 +262,14 @@
         /// <param name="snapshotRegions">The snapshot regions to add.</param>
         public void AddSnapshotRegions(IEnumerable<SnapshotRegion> snapshotRegions)
         {
-            this.ReadGroups = new List<ReadGroup>();
-
             IEnumerable<IGrouping<ReadGroup, SnapshotRegion>> snapshotsByReadGroup = snapshotRegions.GroupBy(region => region.ReadGroup);
 
             foreach (IGrouping<ReadGroup, SnapshotRegion> group in snapshotsByReadGroup)
             {
-                group.Key.SnapshotRegions.Clear();
-
-                foreach (SnapshotRegion region in group)
-                {
-                    group.Key.SnapshotRegions.Add(region);
-                }
-
-                group.Key.SnapshotRegions = group.Key.SnapshotRegions.OrderBy(region => region.ReadGroupOffset).ToList();
-
-                this.ReadGroups.Add(group.Key);
+                group.Key.SnapshotRegions = group.OrderBy(region => region.ReadGroupOffset);
             }
 
-            this.ReadGroups = this.ReadGroups.OrderBy(group => group.BaseAddress.ToUInt64()).ToList();
+            this.ReadGroups = snapshotsByReadGroup.Select(x => x.Key).OrderBy(group => group.BaseAddress.ToUInt64());
         }
     }
     //// End class
