@@ -21,7 +21,7 @@
             this.Alignment = SettingsViewModel.GetInstance().Alignment;
             this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
 
-            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, regionSize.ToInt32()) };
+            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, regionSize) };
         }
 
         /// <summary>

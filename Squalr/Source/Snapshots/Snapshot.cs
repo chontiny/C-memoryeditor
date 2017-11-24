@@ -75,37 +75,18 @@
         /// Gets the number of regions contained in this snapshot.
         /// </summary>
         /// <returns>The number of regions contained in this snapshot.</returns>
-        public Int32 RegionCount
-        {
-            get
-            {
-                return this.SnapshotRegions?.Count() ?? 0;
-            }
-        }
+        public Int32 RegionCount { get; set; }
 
         /// <summary>
         /// Gets the total number of bytes contained in this snapshot.
         /// </summary>
-        public UInt64 ByteCount
-        {
-            get
-            {
-                // Use read group size rather than region size because it's faster, although slightly inaccurate right now
-                return this.ReadGroups?.Sum(x => x.RegionSize) ?? 0UL;
-            }
-        }
+        public UInt64 ByteCount { get; set; }
 
         /// <summary>
         /// Gets the number of individual elements contained in this snapshot.
         /// </summary>
         /// <returns>The number of individual elements contained in this snapshot.</returns>
-        public UInt64 ElementCount
-        {
-            get
-            {
-                return this.SnapshotRegions?.Sum(region => region.ElementCount.ToUInt64()) ?? 0UL;
-            }
-        }
+        public UInt64 ElementCount { get; set; }
 
         public DataType LabelDataType
         {
@@ -146,7 +127,7 @@
             set
             {
                 this.readGroups = value;
-                this.SnapshotRegions = this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions);
+                this.LoadMetaData();
             }
         }
 
@@ -157,11 +138,14 @@
         {
             get
             {
-                return this.ReadGroups.OrderByDescending(readGroup => readGroup.RegionSize);
+                return this.ReadGroups?.OrderByDescending(readGroup => readGroup.RegionSize);
             }
         }
 
-        public IEnumerable<SnapshotRegion> SnapshotRegions { get; private set; }
+        /// <summary>
+        /// Gets the snapshot regions in this snapshot. These are the same regions from the read groups, except flattened as an array.
+        /// </summary>
+        public SnapshotRegion[] SnapshotRegions { get; private set; }
 
         /// <summary>
         /// Gets the snapshot regions in this snapshot, ordered descending by their region size. This is much more performant for multi-threaded access.
@@ -171,34 +155,27 @@
         {
             get
             {
-                return this.SnapshotRegions.OrderByDescending(region => region.RegionSize);
+                return this.SnapshotRegions?.OrderByDescending(region => region.RegionSize);
             }
         }
 
         /// <summary>
         /// Indexer to allow the retrieval of the element at the specified index. Notes: This does NOT index into a region.
         /// </summary>
-        /// <param name="index">The index of the snapshot element.</param>
+        /// <param name="elementIndex">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementComparer this[UInt64 index]
+        public SnapshotElementComparer this[UInt64 elementIndex]
         {
             get
             {
-                foreach (SnapshotRegion region in this.SnapshotRegions)
-                {
-                    UInt64 elementCount = region.ElementCount.ToUInt64();
+                SnapshotRegion region = this.BinaryRegionSearch(elementIndex);
 
-                    if (index >= elementCount)
-                    {
-                        index -= elementCount;
-                    }
-                    else
-                    {
-                        return region[(Int32)index * region.ReadGroup.Alignment];
-                    }
+                if (region == null)
+                {
+                    return null;
                 }
 
-                return null;
+                return region[(elementIndex - region.BaseElementIndex).ToUInt32()];
             }
         }
 
@@ -229,7 +206,7 @@
         /// <param name="label">The new snapshot label value.</param>
         public void SetElementLabels<LabelType>(LabelType label) where LabelType : struct, IComparable<LabelType>
         {
-            this.SnapshotRegions?.ForEach(x => x.ReadGroup.SetElementLabels(Enumerable.Repeat(label, x.RegionSize).Cast<Object>().ToArray()));
+            this.SnapshotRegions?.ForEach(x => x.ReadGroup.SetElementLabels(Enumerable.Repeat(label, unchecked((Int32)(x.RegionSize))).Cast<Object>().ToArray()));
         }
 
         /// <summary>
@@ -239,21 +216,6 @@
         public DateTime GetTimeSinceLastUpdate()
         {
             return this.TimeSinceLastUpdate;
-        }
-
-        /// <summary>
-        /// Determines if an address is contained in this snapshot.
-        /// </summary>
-        /// <param name="address">The address for which we are searching.</param>
-        /// <returns>True if the address is contained.</returns>
-        public Boolean ContainsAddress(UInt64 address)
-        {
-            if (this[address] != null)
-            {
-                return true;
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -270,6 +232,105 @@
             }
 
             this.ReadGroups = snapshotsByReadGroup.Select(x => x.Key).OrderBy(group => group.BaseAddress.ToUInt64());
+        }
+
+        /// <summary>
+        /// Determines if an address is contained in this snapshot.
+        /// </summary>
+        /// <param name="address">The address for which we are searching.</param>
+        /// <returns>True if the address is contained.</returns>
+        public Boolean ContainsAddress(UInt64 address)
+        {
+            if (this.SnapshotRegions == null || this.SnapshotRegions.Length == 0)
+            {
+                return false;
+            }
+
+            return this.ContainsAddressHelper(address, this.SnapshotRegions.Length / 2, 0, this.SnapshotRegions.Length);
+        }
+
+        private SnapshotRegion BinaryRegionSearch(UInt64 elementIndex)
+        {
+            if (this.SnapshotRegions == null || this.SnapshotRegions.Length == 0)
+            {
+                return null;
+            }
+
+            return this.BinaryRegionSearchHelper(elementIndex, this.SnapshotRegions.Length / 2, 0, this.SnapshotRegions.Length);
+        }
+
+        private void LoadMetaData()
+        {
+            this.SnapshotRegions = this.ReadGroups?.SelectMany(readGroup => readGroup.SnapshotRegions).ToArray();
+
+            this.RegionCount = this.SnapshotRegions.Count();
+            this.ByteCount = 0;
+            this.ElementCount = 0;
+
+            foreach (SnapshotRegion region in this.SnapshotRegions)
+            {
+                region.BaseElementIndex = this.ElementCount;
+                this.ByteCount += region.RegionSize;
+                this.ElementCount += region.ElementCount;
+            }
+        }
+
+        /// <summary>
+        /// Helper function for searching for an address in this snapshot. Binary search that assumes this snapshot has sorted regions.
+        /// </summary>
+        /// <param name="address">The address for which we are searching.</param>
+        /// <param name="middle">The middle region index.</param>
+        /// <param name="min">The lower region index.</param>
+        /// <param name="max">The upper region index.</param>
+        /// <returns>True if the address was found.</returns>
+        private Boolean ContainsAddressHelper(UInt64 address, Int32 middle, Int32 min, Int32 max)
+        {
+            if (middle < 0 || middle == this.SnapshotRegions.Length || max < min)
+            {
+                return false;
+            }
+
+            if (address < this.SnapshotRegions[middle].BaseAddress.ToUInt64())
+            {
+                return this.ContainsAddressHelper(address, (min + middle - 1) / 2, min, middle - 1);
+            }
+            else if (address > this.SnapshotRegions[middle].EndAddress.ToUInt64())
+            {
+                return this.ContainsAddressHelper(address, (middle + 1 + max) / 2, middle + 1, max);
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Helper function for searching for an address in this snapshot. Binary search that assumes this snapshot has sorted regions.
+        /// </summary>
+        /// <param name="elementIndex">The address for which we are searching.</param>
+        /// <param name="middle">The middle region index.</param>
+        /// <param name="min">The lower region index.</param>
+        /// <param name="max">The upper region index.</param>
+        /// <returns>True if the address was found.</returns>
+        private SnapshotRegion BinaryRegionSearchHelper(UInt64 elementIndex, Int32 middle, Int32 min, Int32 max)
+        {
+            if (middle < 0 || middle == this.SnapshotRegions.Length || max < min)
+            {
+                return null;
+            }
+
+            if (elementIndex < this.SnapshotRegions[middle].BaseElementIndex)
+            {
+                return this.BinaryRegionSearchHelper(elementIndex, (min + middle - 1) / 2, min, middle - 1);
+            }
+            else if (elementIndex >= this.SnapshotRegions[middle].BaseElementIndex + this.SnapshotRegions[middle].ElementCount)
+            {
+                return this.BinaryRegionSearchHelper(elementIndex, (middle + 1 + max) / 2, middle + 1, max);
+            }
+            else
+            {
+                return this.SnapshotRegions[middle];
+            }
         }
     }
     //// End class

@@ -21,7 +21,7 @@
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
         public unsafe SnapshotElementComparer(
             SnapshotRegion parent,
-            Int32 elementIndex = 0,
+            UInt32 elementIndex = 0,
             PointerIncrementMode pointerIncrementMode = PointerIncrementMode.AllPointers,
             ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
             Object compareActionValue = null)
@@ -127,7 +127,7 @@
         {
             get
             {
-                return this.Parent.ReadGroup.BaseAddress.Add(this.Parent.ReadGroupOffset).Add(this.ElementIndex);
+                return this.Parent.ReadGroup.BaseAddress.Add(this.Parent.ReadGroupOffset).Add(this.ElementIndex * this.Parent.ReadGroup.Alignment);
             }
         }
 
@@ -166,12 +166,12 @@
         /// Gets or sets the index of this element, used for setting and getting the label.
         /// Note that we cannot have a pointer to the label, as it is a non-blittable type.
         /// </summary>
-        private Int32 CurrentLabelIndex { get; set; }
+        private UInt32 CurrentLabelIndex { get; set; }
 
         /// <summary>
         /// Gets the index of this element.
         /// </summary>
-        private unsafe Int32 ElementIndex { get; set; }
+        private unsafe UInt32 ElementIndex { get; set; }
 
         /// <summary>
         /// Gets or sets the data type of this element.
@@ -263,12 +263,12 @@
         /// Initializes snapshot value reference pointers
         /// </summary>
         /// <param name="index">The index of the element to begin pointing to.</param>
-        private unsafe void InitializePointers(Int32 index = 0)
+        private unsafe void InitializePointers(UInt32 index = 0)
         {
             this.CurrentLabelIndex = index;
             this.DataType = this.Parent.ReadGroup.ElementDataType;
 
-            if (this.Parent?.ReadGroup?.CurrentValues != null && this.Parent.ReadGroupOffset + index < this.Parent.ReadGroup.CurrentValues.Length)
+            if (this.Parent?.ReadGroup?.CurrentValues != null && this.Parent.ReadGroupOffset + index < this.Parent.ReadGroup.CurrentValues.Length.ToUInt64())
             {
                 fixed (Byte* pointerBase = &this.Parent.ReadGroup.CurrentValues[this.Parent.ReadGroupOffset + index])
                 {
@@ -280,7 +280,7 @@
                 this.CurrentValuePointer = null;
             }
 
-            if (this.Parent?.ReadGroup?.PreviousValues != null && this.Parent.ReadGroupOffset + index < this.Parent.ReadGroup.PreviousValues.Length)
+            if (this.Parent?.ReadGroup?.PreviousValues != null && this.Parent.ReadGroupOffset + index < this.Parent.ReadGroup.PreviousValues.Length.ToUInt64())
             {
                 fixed (Byte* pointerBase = &this.Parent.ReadGroup.PreviousValues[this.Parent.ReadGroupOffset + index])
                 {
@@ -481,7 +481,7 @@
         /// <param name="pointerIncrementMode">The method by which to increment pointers.</param>
         private unsafe void SetPointerFunction(PointerIncrementMode pointerIncrementMode)
         {
-            Int32 alignment = this.Parent.ReadGroup.Alignment;
+            UInt32 alignment = unchecked((UInt32)this.Parent.ReadGroup.Alignment);
 
             if (alignment == 1)
             {

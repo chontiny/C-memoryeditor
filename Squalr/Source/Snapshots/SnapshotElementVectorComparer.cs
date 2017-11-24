@@ -21,17 +21,16 @@
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
         public unsafe SnapshotElementVectorComparer(
             SnapshotRegion parent,
-            Int32 vectorSize,
+            UInt32 vectorSize,
             ScanConstraint.ConstraintType compareActionConstraint,
             Object compareActionValue)
         {
             this.Parent = parent;
             this.VectorSize = vectorSize;
-            this.DataTypeSize = Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType);
-            this.RatioSize = this.VectorReadIndex / this.DataTypeSize;
+            this.DataTypeSize = unchecked((UInt32)Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType));
 
             // Initialize capacity to 1/16 elements
-            this.ResultRegions = new List<SnapshotRegion>(this.Parent.ElementCount / 16);
+            this.ResultRegions = new List<SnapshotRegion>(unchecked((Int32)(this.Parent.ElementCount)) / 16);
 
             this.SetConstraintFunctions();
             this.SetCompareAction(compareActionConstraint, compareActionValue);
@@ -50,16 +49,14 @@
         /// <summary>
         /// Gets or sets the current run length for run length encoded current scan results.
         /// </summary>
-        public Int32 RunLength { get; set; }
+        public UInt32 RunLength { get; set; }
 
         /// <summary>
         /// Gets or sets the SSE vector size on the machine.
         /// </summary>
-        private Int32 VectorSize { get; set; }
+        private UInt32 VectorSize { get; set; }
 
-        private Int32 DataTypeSize { get; set; }
-
-        private Int32 RatioSize { get; set; }
+        private UInt32 DataTypeSize { get; set; }
 
         /// <summary>
         /// Gets an action based on the element iterator scan constraint.
@@ -169,10 +166,10 @@
             // Otherwise the vector contains a mixture of true and false
             else
             {
-                for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
+                for (UInt32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
                 {
                     // Vector result was false
-                    if (scanResults[index] == 0)
+                    if (scanResults[unchecked((Int32)index)] == 0)
                     {
                         if (this.Encoding)
                         {
@@ -208,7 +205,7 @@
         {
             get
             {
-                return new Vector<Byte>(this.Parent.ReadGroup.CurrentValues, this.Parent.ReadGroupOffset + this.VectorReadIndex);
+                return new Vector<Byte>(this.Parent.ReadGroup.CurrentValues, unchecked((Int32)(this.Parent.ReadGroupOffset + this.VectorReadIndex)));
             }
         }
 
@@ -216,14 +213,14 @@
         {
             get
             {
-                return new Vector<Byte>(this.Parent.ReadGroup.PreviousValues, this.Parent.ReadGroupOffset + this.VectorReadIndex);
+                return new Vector<Byte>(this.Parent.ReadGroup.PreviousValues, unchecked((Int32)(this.Parent.ReadGroupOffset + this.VectorReadIndex)));
             }
         }
 
         /// <summary>
         /// Gets or sets the index of this element.
         /// </summary>
-        public unsafe Int32 VectorReadIndex { get; set; }
+        public unsafe UInt64 VectorReadIndex { get; set; }
 
         /// <summary>
         /// Initializes all constraint functions for value comparisons.

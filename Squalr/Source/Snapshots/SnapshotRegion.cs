@@ -2,6 +2,7 @@
 {
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
 
@@ -16,7 +17,7 @@
         /// <param name="readGroup">The read group of this snapshot region.</param>
         /// <param name="baseAddress">The base address of this snapshot region.</param>
         /// <param name="regionSize">The size of this snapshot region.</param>
-        public SnapshotRegion(ReadGroup readGroup, Int32 readGroupOffset, Int32 regionSize)
+        public SnapshotRegion(ReadGroup readGroup, UInt64 readGroupOffset, UInt64 regionSize)
         {
             this.ReadGroup = readGroup;
             this.ReadGroupOffset = readGroupOffset;
@@ -25,15 +26,36 @@
 
         public ReadGroup ReadGroup { get; set; }
 
-        public Int32 ReadGroupOffset { get; set; }
+        public UInt64 ReadGroupOffset { get; set; }
 
-        public Int32 RegionSize { get; set; }
+        public UInt64 RegionSize { get; set; }
 
-        public Int32 ElementCount
+        public IntPtr BaseAddress
         {
             get
             {
-                return this.RegionSize / this.ReadGroup.Alignment;
+                return this.ReadGroup.BaseAddress.Add(this.ReadGroupOffset);
+            }
+        }
+
+        public IntPtr EndAddress
+        {
+            get
+            {
+                return this.ReadGroup.BaseAddress.Add(this.ReadGroupOffset + this.RegionSize);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the base index of this snapshot. In other words, the index of the first element of this region in the scan results.
+        /// </summary>
+        public UInt64 BaseElementIndex { get; set; }
+
+        public UInt64 ElementCount
+        {
+            get
+            {
+                return this.RegionSize / unchecked((UInt32)this.ReadGroup.Alignment);
             }
         }
 
@@ -42,7 +64,7 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementComparer this[Int32 index]
+        public SnapshotElementComparer this[UInt32 index]
         {
             get
             {
@@ -65,7 +87,7 @@
                 compareActionConstraint: compareActionConstraint,
                 compareActionValue: compareActionValue);
 
-            Int32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
+            UInt32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
 
             while (regionComparer.VectorReadIndex < this.RegionSize)
             {
