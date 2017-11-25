@@ -17,25 +17,24 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotElementVectorComparer" /> class.
         /// </summary>
-        /// <param name="parent">The parent region that contains this element.</param>
+        /// <param name="region">The parent region that contains this element.</param>
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
         public unsafe SnapshotElementVectorComparer(
-            SnapshotRegion parent,
-            UInt32 misalignment,
+            SnapshotRegion region,
             UInt32 vectorSize,
             ScanConstraint.ConstraintType compareActionConstraint,
             Object compareActionValue)
         {
-            this.Parent = parent;
-            this.VectorReadBase = this.Parent.ReadGroupOffset - misalignment;
-            this.VectorReadIndex = 0;
+            this.Region = region;
             this.VectorSize = vectorSize;
-            this.DataTypeSize = unchecked((UInt32)Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType));
+            this.VectorReadBase = this.Region.ReadGroupOffset - (this.Region.ReadGroupOffset % this.VectorSize).ToUInt32();
+            this.VectorReadIndex = 0;
+            this.DataTypeSize = unchecked((UInt32)Conversions.SizeOf(this.Region.ReadGroup.ElementDataType));
 
             // Initialize capacity to 1/16 elements
-            this.ResultRegions = new List<SnapshotRegion>(unchecked((Int32)(this.Parent.ElementCount)) / 16);
+            this.ResultRegions = new List<SnapshotRegion>(unchecked((Int32)(this.Region.ElementCount)) / 16);
 
             this.SetConstraintFunctions();
             this.SetCompareAction(compareActionConstraint, compareActionValue);
@@ -124,7 +123,7 @@
         /// <summary>
         /// Gets or sets the parent snapshot region.
         /// </summary>
-        private SnapshotRegion Parent { get; set; }
+        private SnapshotRegion Region { get; set; }
 
         /// <summary>
         /// Gets or sets the index of this element.
@@ -145,11 +144,6 @@
         /// Gets or sets the index of this element.
         /// </summary>
         private UInt64 VectorReadBase { get; set; }
-
-        /// <summary>
-        /// Gets or sets the misalignment of the base of the snapshot region being compared by the system vector size.
-        /// </summary>
-        private UInt32 Misalignment { get; set; }
 
         /// <summary>
         /// Gets or sets the SSE vector size on the machine.
@@ -181,7 +175,7 @@
             {
                 if (this.Encoding)
                 {
-                    this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.VectorReadBase + this.VectorReadIndex - this.RunLength, this.RunLength));
+                    this.ResultRegions.Add(new SnapshotRegion(this.Region.ReadGroup, this.VectorReadBase + this.VectorReadIndex - this.RunLength, this.RunLength));
                     this.RunLength = 0;
                     this.Encoding = false;
                 }
@@ -196,7 +190,7 @@
                     {
                         if (this.Encoding)
                         {
-                            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.VectorReadBase + this.VectorReadIndex + index - this.RunLength, this.RunLength));
+                            this.ResultRegions.Add(new SnapshotRegion(this.Region.ReadGroup, this.VectorReadBase + this.VectorReadIndex + index - this.RunLength, this.RunLength));
                             this.RunLength = 0;
                             this.Encoding = false;
                         }
@@ -219,69 +213,67 @@
             // Create the final region if we are still encoding
             if (this.Encoding)
             {
-                this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.VectorReadBase + this.VectorReadIndex - this.RunLength, this.RunLength));
+                this.ResultRegions.Add(new SnapshotRegion(this.Region.ReadGroup, this.VectorReadBase + this.VectorReadIndex - this.RunLength, this.RunLength));
                 this.RunLength = 0;
                 this.Encoding = false;
             }
 
             // Remove vector misaligned leading regions
             SnapshotRegion firstRegion = this.ResultRegions.FirstOrDefault();
+            Int32 adjustedIndex = 0;
 
-            while (this.Misalignment > 0 && firstRegion != null)
+            while (firstRegion != null)
             {
-                // Exit if the first region falls outside of the misaligned section
-                if (firstRegion.ReadGroupOffset - this.Parent.ReadGroupOffset > this.Misalignment)
+                // Exit if not misaligned
+                if (firstRegion.ReadGroupOffset >= this.Region.ReadGroupOffset)
                 {
                     break;
                 }
 
-                // The region is misaligned - check if partially eclipsed
-                if (firstRegion.RegionSize <= this.Misalignment)
+                UInt32 misalignment = (this.Region.ReadGroupOffset - firstRegion.ReadGroupOffset).ToUInt32();
+
+                if (firstRegion.RegionSize <= misalignment)
                 {
-                    // Adjust the region to exclude misaligned segments
-                    firstRegion.ReadGroupOffset += this.Misalignment;
-                    firstRegion.RegionSize -= this.Misalignment;
-                    this.Misalignment = firstRegion.RegionSize < this.Misalignment ? 0 : this.Misalignment - firstRegion.RegionSize.ToUInt32();
+                    // The region is totally eclipsed -- remove it
                     this.ResultRegions.Remove(firstRegion);
                 }
                 else
                 {
-                    // The region is totally eclipsed -- remove it
-                    this.Misalignment = firstRegion.RegionSize < this.Misalignment ? 0 : this.Misalignment - firstRegion.RegionSize.ToUInt32();
-                    this.ResultRegions.Remove(firstRegion);
+                    // The region is partially eclipsed -- adjust the size
+                    firstRegion.ReadGroupOffset += misalignment;
+                    firstRegion.RegionSize -= misalignment;
+                    adjustedIndex++;
                 }
 
-                firstRegion = this.ResultRegions.FirstOrDefault();
+                firstRegion = this.ResultRegions.Skip(adjustedIndex).FirstOrDefault();
             }
 
-            // Remove vector misaligned trailing regions
-            UInt32 overRead = this.Parent.RegionSize % this.VectorSize == 0 ? 0 : this.VectorSize - (this.Parent.RegionSize % this.VectorSize).ToUInt32();
+            // Remove vector overreading trailing regions
             SnapshotRegion lastRegion = this.ResultRegions.LastOrDefault();
+            adjustedIndex = 0;
 
-            while (overRead > 0 && lastRegion != null)
+            while (lastRegion != null)
             {
-                // Exit if the last region falls outside of the overread
-                if (this.Parent.EndAddress.ToUInt64() - lastRegion.EndAddress.ToUInt64() > overRead)
+                // Exit if not overreading
+                if (lastRegion.EndAddress.ToUInt64() <= this.Region.EndAddress.ToUInt64())
                 {
                     break;
                 }
 
-                // The region is overreading - check if partially eclipsed
-                if (lastRegion.RegionSize <= overRead)
+                UInt32 overread = (lastRegion.EndAddress.ToUInt64() - this.Region.EndAddress.ToUInt64()).ToUInt32();
+
+                if (lastRegion.RegionSize <= overread)
                 {
-                    // Resize the region
-                    lastRegion.RegionSize -= overRead;
-                    overRead = lastRegion.RegionSize < overRead ? 0 : overRead - lastRegion.RegionSize.ToUInt32();
+                    // The region is totally eclipsed -- remove it
                     this.ResultRegions.Remove(lastRegion);
                 }
                 else
                 {
-                    // The region is totally eclipsed -- remove it
-                    overRead = lastRegion.RegionSize < overRead ? 0 : overRead - lastRegion.RegionSize.ToUInt32();
-                    this.ResultRegions.Remove(lastRegion);
+                    lastRegion.RegionSize -= overread;
+                    adjustedIndex++;
                 }
 
-                lastRegion = this.ResultRegions.LastOrDefault();
+                lastRegion = this.ResultRegions.Reverse().Skip(adjustedIndex).FirstOrDefault();
             }
 
             return this.ResultRegions;
@@ -291,7 +283,7 @@
         {
             get
             {
-                return new Vector<Byte>(this.Parent.ReadGroup.CurrentValues, unchecked((Int32)(this.VectorReadBase + this.VectorReadIndex)));
+                return new Vector<Byte>(this.Region.ReadGroup.CurrentValues, unchecked((Int32)(this.VectorReadBase + this.VectorReadIndex)));
             }
         }
 
@@ -299,7 +291,7 @@
         {
             get
             {
-                return new Vector<Byte>(this.Parent.ReadGroup.PreviousValues, unchecked((Int32)(this.VectorReadBase + this.VectorReadIndex)));
+                return new Vector<Byte>(this.Region.ReadGroup.PreviousValues, unchecked((Int32)(this.VectorReadBase + this.VectorReadIndex)));
             }
         }
 
@@ -308,15 +300,15 @@
         /// </summary>
         private unsafe void SetConstraintFunctions()
         {
-            switch (this.Parent.ReadGroup.ElementDataType)
+            switch (this.Region.ReadGroup.ElementDataType)
             {
                 case DataType type when type == DataTypes.Byte:
                     this.Changed = () => { return Vector.Equals(this.CurrentValues, this.PreviousValues); };
-                    this.Unchanged = () => { return Vector.Equals(this.CurrentValues, this.PreviousValues); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.Equals(this.CurrentValues, this.PreviousValues)); };
                     this.Increased = () => { return Vector.GreaterThan(this.CurrentValues, this.PreviousValues); };
                     this.Decreased = () => { return Vector.LessThan(this.CurrentValues, this.PreviousValues); };
                     this.EqualToValue = (value) => { return Vector.Equals(this.CurrentValues, new Vector<Byte>(unchecked((Byte)value))); };
-                    this.NotEqualToValue = (value) => { return Vector.Equals(this.CurrentValues, new Vector<Byte>(unchecked((Byte)value))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.Equals(this.CurrentValues, new Vector<Byte>(unchecked((Byte)value)))); };
                     this.GreaterThanValue = (value) => { return Vector.GreaterThan(this.CurrentValues, new Vector<Byte>(unchecked((Byte)value))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.GreaterThanOrEqual(this.CurrentValues, new Vector<Byte>(unchecked((Byte)value))); };
                     this.LessThanValue = (value) => { return Vector.LessThan(this.CurrentValues, new Vector<Byte>(unchecked((Byte)value))); };
@@ -327,11 +319,11 @@
                     break;
                 case DataType type when type == DataTypes.SByte:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.AsVectorSByte(this.PreviousValues))); };
-                    this.Unchanged = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.AsVectorSByte(this.PreviousValues))); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.AsVectorSByte(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorSByte(this.CurrentValues), Vector.AsVectorSByte(this.PreviousValues))); };
                     this.Decreased = () => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorSByte(this.CurrentValues), Vector.AsVectorSByte(this.PreviousValues))); };
                     this.EqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), new Vector<SByte>(unchecked((SByte)value)))); };
-                    this.NotEqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), new Vector<SByte>(unchecked((SByte)value)))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), new Vector<SByte>(unchecked((SByte)value))))); };
                     this.GreaterThanValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorSByte(this.CurrentValues), new Vector<SByte>(unchecked((SByte)value)))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThanOrEqual(Vector.AsVectorSByte(this.CurrentValues), new Vector<SByte>(unchecked((SByte)value)))); };
                     this.LessThanValue = (value) => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorSByte(this.CurrentValues), new Vector<SByte>(unchecked((SByte)value)))); };
@@ -342,11 +334,11 @@
                     break;
                 case DataType type when type == DataTypes.Int16:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.AsVectorInt16(this.PreviousValues))); };
-                    this.Unchanged = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.AsVectorInt16(this.PreviousValues))); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.AsVectorInt16(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorInt16(this.CurrentValues), Vector.AsVectorInt16(this.PreviousValues))); };
                     this.Decreased = () => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorInt16(this.CurrentValues), Vector.AsVectorInt16(this.PreviousValues))); };
                     this.EqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), new Vector<Int16>(unchecked((Int16)value)))); };
-                    this.NotEqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), new Vector<Int16>(unchecked((Int16)value)))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), new Vector<Int16>(unchecked((Int16)value))))); };
                     this.GreaterThanValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorInt16(this.CurrentValues), new Vector<Int16>(unchecked((Int16)value)))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThanOrEqual(Vector.AsVectorInt16(this.CurrentValues), new Vector<Int16>(unchecked((Int16)value)))); };
                     this.LessThanValue = (value) => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorInt16(this.CurrentValues), new Vector<Int16>(unchecked((Int16)value)))); };
@@ -357,11 +349,11 @@
                     break;
                 case DataType type when type == DataTypes.Int32:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.AsVectorInt32(this.PreviousValues))); };
-                    this.Unchanged = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.AsVectorInt32(this.PreviousValues))); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.AsVectorInt32(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorInt32(this.CurrentValues), Vector.AsVectorInt32(this.PreviousValues))); };
                     this.Decreased = () => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorInt32(this.CurrentValues), Vector.AsVectorInt32(this.PreviousValues))); };
                     this.EqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), new Vector<Int32>(unchecked((Int32)value)))); };
-                    this.NotEqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), new Vector<Int32>(unchecked((Int32)value)))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), new Vector<Int32>(unchecked((Int32)value))))); };
                     this.GreaterThanValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorInt32(this.CurrentValues), new Vector<Int32>(unchecked((Int32)value)))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThanOrEqual(Vector.AsVectorInt32(this.CurrentValues), new Vector<Int32>(unchecked((Int32)value)))); };
                     this.LessThanValue = (value) => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorInt32(this.CurrentValues), new Vector<Int32>(unchecked((Int32)value)))); };
@@ -372,11 +364,11 @@
                     break;
                 case DataType type when type == DataTypes.Int64:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.AsVectorInt64(this.PreviousValues))); };
-                    this.Unchanged = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.AsVectorInt64(this.PreviousValues))); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.AsVectorInt64(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorInt64(this.CurrentValues), Vector.AsVectorInt64(this.PreviousValues))); };
                     this.Decreased = () => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorInt64(this.CurrentValues), Vector.AsVectorInt64(this.PreviousValues))); };
                     this.EqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), new Vector<Int64>(unchecked((Int64)value)))); };
-                    this.NotEqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), new Vector<Int64>(unchecked((Int64)value)))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), new Vector<Int64>(unchecked((Int64)value))))); };
                     this.GreaterThanValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorInt64(this.CurrentValues), new Vector<Int64>(unchecked((Int64)value)))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThanOrEqual(Vector.AsVectorInt64(this.CurrentValues), new Vector<Int64>(unchecked((Int64)value)))); };
                     this.LessThanValue = (value) => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorInt64(this.CurrentValues), new Vector<Int64>(unchecked((Int64)value)))); };
@@ -387,11 +379,11 @@
                     break;
                 case DataType type when type == DataTypes.UInt16:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.AsVectorUInt16(this.PreviousValues))); };
-                    this.Unchanged = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.AsVectorUInt16(this.PreviousValues))); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.AsVectorUInt16(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorUInt16(this.CurrentValues), Vector.AsVectorUInt16(this.PreviousValues))); };
                     this.Decreased = () => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorUInt16(this.CurrentValues), Vector.AsVectorUInt16(this.PreviousValues))); };
                     this.EqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), new Vector<UInt16>(unchecked((UInt16)value)))); };
-                    this.NotEqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), new Vector<UInt16>(unchecked((UInt16)value)))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), new Vector<UInt16>(unchecked((UInt16)value))))); };
                     this.GreaterThanValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorUInt16(this.CurrentValues), new Vector<UInt16>(unchecked((UInt16)value)))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThanOrEqual(Vector.AsVectorUInt16(this.CurrentValues), new Vector<UInt16>(unchecked((UInt16)value)))); };
                     this.LessThanValue = (value) => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorUInt16(this.CurrentValues), new Vector<UInt16>(unchecked((UInt16)value)))); };
@@ -402,11 +394,11 @@
                     break;
                 case DataType type when type == DataTypes.UInt32:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.AsVectorUInt32(this.PreviousValues))); };
-                    this.Unchanged = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.AsVectorUInt32(this.PreviousValues))); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.AsVectorUInt32(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorUInt32(this.CurrentValues), Vector.AsVectorUInt32(this.PreviousValues))); };
                     this.Decreased = () => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorUInt32(this.CurrentValues), Vector.AsVectorUInt32(this.PreviousValues))); };
                     this.EqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), new Vector<UInt32>(unchecked((UInt32)value)))); };
-                    this.NotEqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), new Vector<UInt32>(unchecked((UInt32)value)))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), new Vector<UInt32>(unchecked((UInt32)value))))); };
                     this.GreaterThanValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorUInt32(this.CurrentValues), new Vector<UInt32>(unchecked((UInt32)value)))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThanOrEqual(Vector.AsVectorUInt32(this.CurrentValues), new Vector<UInt32>(unchecked((UInt32)value)))); };
                     this.LessThanValue = (value) => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorUInt32(this.CurrentValues), new Vector<UInt32>(unchecked((UInt32)value)))); };
@@ -417,11 +409,11 @@
                     break;
                 case DataType type when type == DataTypes.UInt64:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.AsVectorUInt64(this.PreviousValues))); };
-                    this.Unchanged = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.AsVectorUInt64(this.PreviousValues))); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.AsVectorUInt64(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorUInt64(this.CurrentValues), Vector.AsVectorUInt64(this.PreviousValues))); };
                     this.Decreased = () => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorUInt64(this.CurrentValues), Vector.AsVectorUInt64(this.PreviousValues))); };
                     this.EqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), new Vector<UInt64>(unchecked((UInt64)value)))); };
-                    this.NotEqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), new Vector<UInt64>(unchecked((UInt64)value)))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), new Vector<UInt64>(unchecked((UInt64)value))))); };
                     this.GreaterThanValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorUInt64(this.CurrentValues), new Vector<UInt64>(unchecked((UInt64)value)))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThanOrEqual(Vector.AsVectorUInt64(this.CurrentValues), new Vector<UInt64>(unchecked((UInt64)value)))); };
                     this.LessThanValue = (value) => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorUInt64(this.CurrentValues), new Vector<UInt64>(unchecked((UInt64)value)))); };
@@ -432,11 +424,11 @@
                     break;
                 case DataType type when type == DataTypes.Single:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), Vector.AsVectorSingle(this.PreviousValues))); };
-                    this.Unchanged = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), Vector.AsVectorSingle(this.PreviousValues))); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), Vector.AsVectorSingle(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorSingle(this.CurrentValues), Vector.AsVectorSingle(this.PreviousValues))); };
                     this.Decreased = () => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorSingle(this.CurrentValues), Vector.AsVectorSingle(this.PreviousValues))); };
                     this.EqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), new Vector<Single>(unchecked((Single)value)))); };
-                    this.NotEqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), new Vector<Single>(unchecked((Single)value)))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), new Vector<Single>(unchecked((Single)value))))); };
                     this.GreaterThanValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorSingle(this.CurrentValues), new Vector<Single>(unchecked((Single)value)))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThanOrEqual(Vector.AsVectorSingle(this.CurrentValues), new Vector<Single>(unchecked((Single)value)))); };
                     this.LessThanValue = (value) => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorSingle(this.CurrentValues), new Vector<Single>(unchecked((Single)value)))); };
@@ -446,11 +438,11 @@
                     break;
                 case DataType type when type == DataTypes.Double:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorDouble(this.CurrentValues), Vector.AsVectorDouble(this.PreviousValues))); };
-                    this.Unchanged = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorDouble(this.CurrentValues), Vector.AsVectorDouble(this.PreviousValues))); };
+                    this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorDouble(this.CurrentValues), Vector.AsVectorDouble(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorDouble(this.CurrentValues), Vector.AsVectorDouble(this.PreviousValues))); };
                     this.Decreased = () => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorDouble(this.CurrentValues), Vector.AsVectorDouble(this.PreviousValues))); };
                     this.EqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorDouble(this.CurrentValues), new Vector<Double>(unchecked((Double)value)))); };
-                    this.NotEqualToValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorDouble(this.CurrentValues), new Vector<Double>(unchecked((Double)value)))); };
+                    this.NotEqualToValue = (value) => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorDouble(this.CurrentValues), new Vector<Double>(unchecked((Double)value))))); };
                     this.GreaterThanValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorDouble(this.CurrentValues), new Vector<Double>(unchecked((Double)value)))); };
                     this.GreaterThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.GreaterThanOrEqual(Vector.AsVectorDouble(this.CurrentValues), new Vector<Double>(unchecked((Double)value)))); };
                     this.LessThanValue = (value) => { return Vector.AsVectorByte(Vector.LessThan(Vector.AsVectorDouble(this.CurrentValues), new Vector<Double>(unchecked((Double)value)))); };

@@ -85,8 +85,8 @@
                 ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
 
                 Parallel.ForEach(
-                    this.Snapshot.OptimizedSnapshotRegions,
-                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                    this.Snapshot.SnapshotRegions,
+                    SettingsViewModel.GetInstance().ParallelSettingsNone,
                     (region) =>
                     {
                         IList<SnapshotRegion> results = region.CompareAll(scanConstraint.Constraint, scanConstraint.ConstraintValue);

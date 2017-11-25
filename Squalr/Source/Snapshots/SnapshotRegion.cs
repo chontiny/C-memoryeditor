@@ -82,11 +82,9 @@
             }
 
             UInt32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
-            Int32 misalignment = (this.ReadGroupOffset % vectorSize).ToInt32();
 
             SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(
-                parent: this,
-                misalignment: unchecked((UInt32)misalignment),
+                region: this,
                 vectorSize: vectorSize,
                 compareActionConstraint: compareActionConstraint,
                 compareActionValue: compareActionValue);

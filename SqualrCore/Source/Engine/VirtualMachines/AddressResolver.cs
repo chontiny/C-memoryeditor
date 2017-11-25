@@ -82,9 +82,9 @@
 
             identifier = identifier?.RemoveSuffixes(true, ".exe", ".dll");
             IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().VirtualMemory.GetModules()
+                ?.ToList()
                 ?.Select(module => module)
-                ?.Where(module => module.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase))
-                ?.ToList();
+                ?.Where(module => module.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));
 
             if (modules.Count() > 0)
             {
