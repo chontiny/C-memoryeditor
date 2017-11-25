@@ -2,6 +2,7 @@
 {
     using Scanners.ScanConstraints;
     using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Runtime.CompilerServices;
@@ -28,6 +29,7 @@
         {
             this.Parent = parent;
             this.ElementIndex = elementIndex;
+            this.DataTypeSize = unchecked((UInt32)Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType));
 
             this.InitializePointers(elementIndex);
             this.SetConstraintFunctions();
@@ -177,6 +179,8 @@
         /// Gets or sets the data type of this element.
         /// </summary>
         private DataType DataType { get; set; }
+
+        private UInt32 DataTypeSize { get; set; }
 
         /// <summary>
         /// Enums determining which pointers need to be updated every iteration.

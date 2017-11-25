@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
-    using Snapshots;
     using Squalr.Properties;
     using Squalr.Source.Scanners.Pointers.Structures;
     using Squalr.Source.Scanners.ValueCollector;
+    using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;

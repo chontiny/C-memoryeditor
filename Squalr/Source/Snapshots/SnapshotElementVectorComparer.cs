@@ -3,8 +3,10 @@
     using Scanners.ScanConstraints;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Numerics;
 
     /// <summary>
@@ -21,11 +23,14 @@
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
         public unsafe SnapshotElementVectorComparer(
             SnapshotRegion parent,
+            UInt32 misalignment,
             UInt32 vectorSize,
             ScanConstraint.ConstraintType compareActionConstraint,
             Object compareActionValue)
         {
             this.Parent = parent;
+            this.VectorReadBase = this.Parent.ReadGroupOffset - misalignment;
+            this.VectorReadIndex = 0;
             this.VectorSize = vectorSize;
             this.DataTypeSize = unchecked((UInt32)Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType));
 
@@ -35,28 +40,6 @@
             this.SetConstraintFunctions();
             this.SetCompareAction(compareActionConstraint, compareActionValue);
         }
-
-        /// <summary>
-        /// Gets or sets the list of discovered result regions.
-        /// </summary>
-        public IList<SnapshotRegion> ResultRegions { get; private set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether we are currently encoding a new result region.
-        /// </summary>
-        public Boolean Encoding { get; set; }
-
-        /// <summary>
-        /// Gets or sets the current run length for run length encoded current scan results.
-        /// </summary>
-        public UInt32 RunLength { get; set; }
-
-        /// <summary>
-        /// Gets or sets the SSE vector size on the machine.
-        /// </summary>
-        private UInt32 VectorSize { get; set; }
-
-        private UInt32 DataTypeSize { get; set; }
 
         /// <summary>
         /// Gets an action based on the element iterator scan constraint.
@@ -143,6 +126,46 @@
         /// </summary>
         private SnapshotRegion Parent { get; set; }
 
+        /// <summary>
+        /// Gets or sets the index of this element.
+        /// </summary>
+        public UInt64 VectorReadIndex { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether we are currently encoding a new result region.
+        /// </summary>
+        private Boolean Encoding { get; set; }
+
+        /// <summary>
+        /// Gets or sets the current run length for run length encoded current scan results.
+        /// </summary>
+        private UInt32 RunLength { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index of this element.
+        /// </summary>
+        private UInt64 VectorReadBase { get; set; }
+
+        /// <summary>
+        /// Gets or sets the misalignment of the base of the snapshot region being compared by the system vector size.
+        /// </summary>
+        private UInt32 Misalignment { get; set; }
+
+        /// <summary>
+        /// Gets or sets the SSE vector size on the machine.
+        /// </summary>
+        private UInt32 VectorSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the size of the data type being compared.
+        /// </summary>
+        private UInt32 DataTypeSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets the list of discovered result regions.
+        /// </summary>
+        private IList<SnapshotRegion> ResultRegions { get; set; }
+
         public void Compare()
         {
             Vector<Byte> scanResults = this.VectorCompare();
@@ -158,7 +181,7 @@
             {
                 if (this.Encoding)
                 {
-                    this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex - this.RunLength, this.RunLength));
+                    this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.VectorReadBase + this.VectorReadIndex - this.RunLength, this.RunLength));
                     this.RunLength = 0;
                     this.Encoding = false;
                 }
@@ -173,7 +196,7 @@
                     {
                         if (this.Encoding)
                         {
-                            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex + index - this.RunLength, this.RunLength));
+                            this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.VectorReadBase + this.VectorReadIndex + index - this.RunLength, this.RunLength));
                             this.RunLength = 0;
                             this.Encoding = false;
                         }
@@ -189,23 +212,86 @@
         }
 
         /// <summary>
-        /// Finalizes any leftover snapshot regions.
+        /// Finalizes any leftover snapshot regions and returns them.
         /// </summary>
-        public void AddRemainingSnapshotRegions()
+        public IList<SnapshotRegion> GatherCollectedRegions()
         {
+            // Create the final region if we are still encoding
             if (this.Encoding)
             {
-                this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.Parent.ReadGroupOffset + this.VectorReadIndex - this.RunLength, this.RunLength));
+                this.ResultRegions.Add(new SnapshotRegion(this.Parent.ReadGroup, this.VectorReadBase + this.VectorReadIndex - this.RunLength, this.RunLength));
                 this.RunLength = 0;
                 this.Encoding = false;
             }
+
+            // Remove vector misaligned leading regions
+            SnapshotRegion firstRegion = this.ResultRegions.FirstOrDefault();
+
+            while (this.Misalignment > 0 && firstRegion != null)
+            {
+                // Exit if the first region falls outside of the misaligned section
+                if (firstRegion.ReadGroupOffset - this.Parent.ReadGroupOffset > this.Misalignment)
+                {
+                    break;
+                }
+
+                // The region is misaligned - check if partially eclipsed
+                if (firstRegion.RegionSize <= this.Misalignment)
+                {
+                    // Adjust the region to exclude misaligned segments
+                    firstRegion.ReadGroupOffset += this.Misalignment;
+                    firstRegion.RegionSize -= this.Misalignment;
+                    this.Misalignment = firstRegion.RegionSize < this.Misalignment ? 0 : this.Misalignment - firstRegion.RegionSize.ToUInt32();
+                    this.ResultRegions.Remove(firstRegion);
+                }
+                else
+                {
+                    // The region is totally eclipsed -- remove it
+                    this.Misalignment = firstRegion.RegionSize < this.Misalignment ? 0 : this.Misalignment - firstRegion.RegionSize.ToUInt32();
+                    this.ResultRegions.Remove(firstRegion);
+                }
+
+                firstRegion = this.ResultRegions.FirstOrDefault();
+            }
+
+            // Remove vector misaligned trailing regions
+            UInt32 overRead = this.Parent.RegionSize % this.VectorSize == 0 ? 0 : this.VectorSize - (this.Parent.RegionSize % this.VectorSize).ToUInt32();
+            SnapshotRegion lastRegion = this.ResultRegions.LastOrDefault();
+
+            while (overRead > 0 && lastRegion != null)
+            {
+                // Exit if the last region falls outside of the overread
+                if (this.Parent.EndAddress.ToUInt64() - lastRegion.EndAddress.ToUInt64() > overRead)
+                {
+                    break;
+                }
+
+                // The region is overreading - check if partially eclipsed
+                if (lastRegion.RegionSize <= overRead)
+                {
+                    // Resize the region
+                    lastRegion.RegionSize -= overRead;
+                    overRead = lastRegion.RegionSize < overRead ? 0 : overRead - lastRegion.RegionSize.ToUInt32();
+                    this.ResultRegions.Remove(lastRegion);
+                }
+                else
+                {
+                    // The region is totally eclipsed -- remove it
+                    overRead = lastRegion.RegionSize < overRead ? 0 : overRead - lastRegion.RegionSize.ToUInt32();
+                    this.ResultRegions.Remove(lastRegion);
+                }
+
+                lastRegion = this.ResultRegions.LastOrDefault();
+            }
+
+            return this.ResultRegions;
         }
 
         private Vector<Byte> CurrentValues
         {
             get
             {
-                return new Vector<Byte>(this.Parent.ReadGroup.CurrentValues, unchecked((Int32)(this.Parent.ReadGroupOffset + this.VectorReadIndex)));
+                return new Vector<Byte>(this.Parent.ReadGroup.CurrentValues, unchecked((Int32)(this.VectorReadBase + this.VectorReadIndex)));
             }
         }
 
@@ -213,14 +299,9 @@
         {
             get
             {
-                return new Vector<Byte>(this.Parent.ReadGroup.PreviousValues, unchecked((Int32)(this.Parent.ReadGroupOffset + this.VectorReadIndex)));
+                return new Vector<Byte>(this.Parent.ReadGroup.PreviousValues, unchecked((Int32)(this.VectorReadBase + this.VectorReadIndex)));
             }
         }
-
-        /// <summary>
-        /// Gets or sets the index of this element.
-        /// </summary>
-        public unsafe UInt64 VectorReadIndex { get; set; }
 
         /// <summary>
         /// Initializes all constraint functions for value comparisons.

@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Results
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Snapshots;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.Snapshots;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMachines;

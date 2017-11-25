@@ -81,23 +81,23 @@
                 return null;
             }
 
-            SnapshotElementVectorComparer regionComparer = new SnapshotElementVectorComparer(
+            UInt32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
+            Int32 misalignment = (this.ReadGroupOffset % vectorSize).ToInt32();
+
+            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(
                 parent: this,
-                vectorSize: EngineCore.GetInstance().Architecture.GetVectorSize(),
+                misalignment: unchecked((UInt32)misalignment),
+                vectorSize: vectorSize,
                 compareActionConstraint: compareActionConstraint,
                 compareActionValue: compareActionValue);
 
-            UInt32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
-
-            while (regionComparer.VectorReadIndex < this.RegionSize)
+            while (vectorComparer.VectorReadIndex < this.RegionSize)
             {
-                regionComparer.Compare();
-                regionComparer.VectorReadIndex += vectorSize;
+                vectorComparer.Compare();
+                vectorComparer.VectorReadIndex += vectorSize;
             }
 
-            regionComparer.AddRemainingSnapshotRegions();
-
-            return regionComparer.ResultRegions;
+            return vectorComparer.GatherCollectedRegions();
         }
 
         /// <summary>
