@@ -88,7 +88,7 @@
                 });
 
             stopwatch.Stop();
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
 
             cancellationToken.ThrowIfCancellationRequested();
         }

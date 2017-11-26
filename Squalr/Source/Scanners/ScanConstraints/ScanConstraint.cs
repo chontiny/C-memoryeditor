@@ -277,6 +277,16 @@
             }
         }
 
+        public Boolean IsValid()
+        {
+            if (!ScanConstraint.IsValuedConstraint(this.Constraint))
+            {
+                return true;
+            }
+
+            return this.ConstraintValue != null;
+        }
+
         /// <summary>
         /// Indicates that a given property in this project item has changed.
         /// </summary>

@@ -5,6 +5,7 @@
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Threading;
@@ -281,6 +282,12 @@
             // Create a constraint manager that includes the current active constraint
             ScanConstraintManager allScanConstraints = this.ScanConstraintManager.Clone();
             allScanConstraints.AddConstraint(this.CurrentScanConstraint);
+
+            if (!allScanConstraints.IsValid())
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to start scan with given constraints");
+                return;
+            }
 
             ManualScannerModel.SetScanConstraintManager(allScanConstraints);
             ManualScannerModel.Start();

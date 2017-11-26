@@ -72,11 +72,9 @@
             }
         }
 
-        public IList<SnapshotRegion> CompareAll(
-            ScanConstraint.ConstraintType compareActionConstraint,
-            Object compareActionValue = null)
+        public IList<SnapshotRegion> CompareAll(ScanConstraintManager scanConstraints)
         {
-            if (!this.ReadGroup.CanCompare(ScanConstraint.IsRelativeConstraint(compareActionConstraint)))
+            if (!this.ReadGroup.CanCompare(scanConstraints.HasRelativeConstraint()))
             {
                 return null;
             }
@@ -86,8 +84,7 @@
             SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(
                 region: this,
                 vectorSize: vectorSize,
-                compareActionConstraint: compareActionConstraint,
-                compareActionValue: compareActionValue);
+                scanConstraints: scanConstraints);
 
             while (vectorComparer.VectorReadIndex < this.RegionSize)
             {

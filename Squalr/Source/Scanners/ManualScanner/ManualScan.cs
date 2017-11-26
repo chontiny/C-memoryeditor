@@ -47,7 +47,7 @@
         /// <param name="scanConstraintManager">The scan constraint manager, which contains all scan constraints.</param>
         public void SetScanConstraintManager(ScanConstraintManager scanConstraintManager)
         {
-            this.ScanConstraintManager = scanConstraintManager;
+            this.ScanConstraintManager = scanConstraintManager.Clone();
         }
 
         /// <summary>
@@ -75,47 +75,41 @@
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            Int32 constraintCount = this.ScanConstraintManager.Count();
+            Int32 processedPages = 0;
+            Int32 regionCount = this.Snapshot.RegionCount;
+            ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
 
-            // Enforce each value constraint
-            foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
-            {
-                Int32 processedPages = 0;
-                Int32 regionCount = this.Snapshot.RegionCount;
-                ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
+            Parallel.ForEach(
+                this.Snapshot.OptimizedSnapshotRegions,
+                SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                (region) =>
+                {
+                    // Perform comparisons
+                    IList<SnapshotRegion> results = region.CompareAll(this.ScanConstraintManager);
 
-                Parallel.ForEach(
-                    this.Snapshot.SnapshotRegions,
-                    SettingsViewModel.GetInstance().ParallelSettingsNone,
-                    (region) =>
+                    if (!results.IsNullOrEmpty())
                     {
-                        IList<SnapshotRegion> results = region.CompareAll(scanConstraint.Constraint, scanConstraint.ConstraintValue);
+                        regions.Add(results);
+                    }
 
-                        if (!results.IsNullOrEmpty())
+                    // Update progress every N regions
+                    if (Interlocked.Increment(ref processedPages) % 32 == 0)
+                    {
+                        // Check for canceled scan
+                        if (cancellationToken.IsCancellationRequested)
                         {
-                            regions.Add(results);
+                            return;
                         }
 
-                        // Update progress every N regions
-                        if (Interlocked.Increment(ref processedPages) % 32 == 0)
-                        {
-                            // Check for canceled scan
-                            if (cancellationToken.IsCancellationRequested)
-                            {
-                                return;
-                            }
+                        this.UpdateProgress(processedPages, regionCount, canFinalize: false);
+                    }
+                });
+            //// End foreach Region
 
-                            this.UpdateProgress(processedPages / constraintCount, regionCount, canFinalize: false);
-                        }
-                    });
-                //// End foreach Region
+            // Exit if canceled
+            cancellationToken.ThrowIfCancellationRequested();
 
-                // Exit if canceled
-                cancellationToken.ThrowIfCancellationRequested();
-
-                this.Snapshot = new Snapshot(this.TaskName, regions.SelectMany(region => region));
-            }
-            //// End foreach Constraint
+            this.Snapshot = new Snapshot(this.TaskName, regions.SelectMany(region => region));
 
             stopwatch.Stop();
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
