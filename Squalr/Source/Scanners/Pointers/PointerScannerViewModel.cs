@@ -14,11 +14,6 @@
     internal class PointerScannerViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(PointerScannerViewModel);
-
-        /// <summary>
         /// Gets the default pointer scan depth.
         /// </summary>
         public const Int32 DefaultPointerScanDepth = 3;
@@ -45,11 +40,10 @@
         /// </summary>
         private PointerScannerViewModel() : base("Pointer Scanner")
         {
-            this.ContentId = PointerScannerViewModel.ToolContentId;
-
             this.PointerScan = new PointerScan();
             this.PointerRescan = new PointerRescan();
             this.PointerValueRescan = new PointerValueRescan();
+            this.PointerValidationScan = new PointerValidationScan();
 
             this.SetPointerScanAddressCommand = new RelayCommand<UInt64>((newValue) => this.TargetAddress = newValue, (newValue) => true);
             this.SetPointerRescanAddressCommand = new RelayCommand<UInt64>((newValue) => this.RescanAddress = newValue, (newValue) => true);
@@ -59,6 +53,7 @@
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
             this.StartPointerRescanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerRescan()), () => true);
             this.StartPointerValueRescanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerValueRescan()), () => true);
+            this.StartPointerValidationScanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerValidationScan()), () => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -77,6 +72,11 @@
         /// Gets a command to start the pointer value rescan.
         /// </summary>
         public ICommand StartPointerValueRescanCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to start the scan to remove invalid pointers.
+        /// </summary>
+        public ICommand StartPointerValidationScanCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to set the pointer scan address.
@@ -204,6 +204,11 @@
         private PointerValueRescan PointerValueRescan { get; set; }
 
         /// <summary>
+        /// Gets or sets the pointer validation scan task.
+        /// </summary>
+        private PointerValidationScan PointerValidationScan { get; set; }
+
+        /// <summary>
         /// Gets a singleton instance of the <see cref="ChangeCounterViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -240,6 +245,14 @@
         private void StartPointerValueRescan()
         {
             this.PointerValueRescan.Start();
+        }
+
+        /// <summary>
+        /// Starts the pointer validation scan.
+        /// </summary>
+        private void StartPointerValidationScan()
+        {
+            this.PointerValidationScan.Start();
         }
     }
     //// End class

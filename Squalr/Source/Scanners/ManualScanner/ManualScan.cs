@@ -5,8 +5,12 @@
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;
     using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -24,9 +28,7 @@
             isRepeated: false,
             trackProgress: true)
         {
-            this.ProgressLock = new Object();
-
-            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, this.SetSnapshot));
+            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, this.SetSnapshot));
         }
 
         /// <summary>
@@ -40,17 +42,12 @@
         private ScanConstraintManager ScanConstraintManager { get; set; }
 
         /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
-
-        /// <summary>
         /// Sets the scan constraints for this scan.
         /// </summary>
         /// <param name="scanConstraintManager">The scan constraint manager, which contains all scan constraints.</param>
         public void SetScanConstraintManager(ScanConstraintManager scanConstraintManager)
         {
-            this.ScanConstraintManager = scanConstraintManager;
+            this.ScanConstraintManager = scanConstraintManager.Clone();
         }
 
         /// <summary>
@@ -73,23 +70,30 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            Int32 processedPages = 0;
-            Boolean hasRelativeConstraint = this.ScanConstraintManager.HasRelativeConstraint();
-
-            // Determine if we need to increment both current and previous value pointers, or just current value pointers
-            PointerIncrementMode pointerIncrementMode = hasRelativeConstraint ? PointerIncrementMode.ValuesOnly : PointerIncrementMode.CurrentOnly;
-
             cancellationToken.ThrowIfCancellationRequested();
 
-            // Enforce each value constraint
-            foreach (ScanConstraint scanConstraint in this.ScanConstraintManager)
-            {
-                this.Snapshot.SetAllValidBits(false);
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
-                Parallel.ForEach(
-                    this.Snapshot.Cast<SnapshotRegion>(),
-                    SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
-                    (region) =>
+            Int32 processedPages = 0;
+            Int32 regionCount = this.Snapshot.RegionCount;
+            ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
+
+            Parallel.ForEach(
+                this.Snapshot.OptimizedSnapshotRegions,
+                SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                (region) =>
+                {
+                    // Perform comparisons
+                    IList<SnapshotRegion> results = region.CompareAll(this.ScanConstraintManager);
+
+                    if (!results.IsNullOrEmpty())
+                    {
+                        regions.Add(results);
+                    }
+
+                    // Update progress every N regions
+                    if (Interlocked.Increment(ref processedPages) % 32 == 0)
                     {
                         // Check for canceled scan
                         if (cancellationToken.IsCancellationRequested)
@@ -97,42 +101,18 @@
                             return;
                         }
 
-                        // Ignore region if it requires current & previous values, but we cannot find them
-                        if (hasRelativeConstraint && !region.CanCompare())
-                        {
-                            return;
-                        }
+                        this.UpdateProgress(processedPages, regionCount, canFinalize: false);
+                    }
+                });
+            //// End foreach Region
 
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(pointerIncrementMode, scanConstraint.Constraint, scanConstraint.ConstraintValue);
-                            enumerator.MoveNext();)
-                        {
-                            SnapshotElementIterator element = enumerator.Current;
+            // Exit if canceled
+            cancellationToken.ThrowIfCancellationRequested();
 
-                            // Perform the comparison based on the current scan constraint
-                            if (element.Compare())
-                            {
-                                element.SetValid(true);
-                            }
-                        }
-                        //// End foreach Element
+            this.Snapshot = new Snapshot(this.TaskName, regions.SelectMany(region => region));
 
-                        lock (this.ProgressLock)
-                        {
-                            processedPages++;
-
-                            // Limit how often we update the progress
-                            if (processedPages % 10 == 0)
-                            {
-                                this.UpdateProgress(processedPages / this.ScanConstraintManager.Count(), this.Snapshot.RegionCount, canFinalize: false);
-                            }
-                        }
-                    });
-                //// End foreach Region
-
-                // Exit if canceled
-                cancellationToken.ThrowIfCancellationRequested();
-            }
-            //// End foreach Constraint
+            stopwatch.Stop();
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
         }
 
         /// <summary>
@@ -140,10 +120,11 @@
         /// </summary>
         protected override void OnEnd()
         {
-            FinalizerScan finalizer = new FinalizerScan(this.Snapshot);
-            finalizer.Start();
+            // FinalizerScan finalizer = new FinalizerScan(this.Snapshot);
+            // finalizer.Start();
 
-            this.Snapshot = null;
+            // this.Snapshot = null;
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
         }

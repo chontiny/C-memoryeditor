@@ -16,11 +16,6 @@
     internal class InputCorrelatorViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(InputCorrelatorViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="InputCorrelatorViewModel" /> class.
         /// </summary>
         private static Lazy<InputCorrelatorViewModel> inputCorrelatorViewModelInstance = new Lazy<InputCorrelatorViewModel>(
@@ -32,7 +27,6 @@
         /// </summary>
         private InputCorrelatorViewModel() : base("Input Correlator")
         {
-            this.ContentId = InputCorrelatorViewModel.ToolContentId;
             this.NewHotkeyCommand = new RelayCommand(() => this.NewHotkey(), () => true);
             this.RemoveHotkeyCommand = new RelayCommand<Hotkey>((hotkey) => this.RemoveHotkey(hotkey), (hotkey) => true);
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);

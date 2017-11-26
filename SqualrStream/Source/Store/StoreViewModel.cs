@@ -20,11 +20,6 @@
     internal class StoreViewModel : ToolViewModel, INavigable
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(StoreViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="StoreViewModel" /> class.
         /// </summary>
         private static Lazy<StoreViewModel> storeViewModelInstance = new Lazy<StoreViewModel>(
@@ -51,8 +46,6 @@
         /// </summary>
         private StoreViewModel() : base("Store")
         {
-            this.ContentId = StoreViewModel.ToolContentId;
-
             this.LockedCheatList = new FullyObservableCollection<Cheat>();
             this.UnlockedCheatList = new FullyObservableCollection<Cheat>();
 

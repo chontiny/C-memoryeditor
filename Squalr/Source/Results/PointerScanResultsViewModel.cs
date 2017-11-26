@@ -23,11 +23,6 @@
     internal class PointerScanResultsViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(PointerScanResultsViewModel);
-
-        /// <summary>
         /// The number of elements to display on each page.
         /// </summary>
         private const Int32 PageSize = 64;
@@ -57,7 +52,7 @@
         /// <summary>
         /// The addresses on the current page.
         /// </summary>
-        private FullyObservableCollection<PointerItem> addresses;
+        private FullyObservableCollection<PointerItem> pointers;
 
         /// <summary>
         /// The list of discovered pointers.
@@ -79,7 +74,6 @@
         /// </summary>
         private PointerScanResultsViewModel() : base("Pointer Scan Results")
         {
-            this.ContentId = PointerScanResultsViewModel.ToolContentId;
             this.ObserverLock = new Object();
 
             this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<PointerItem>(), (selectedItems) => true);
@@ -95,7 +89,7 @@
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = DataTypes.Int32;
-            this.addresses = new FullyObservableCollection<PointerItem>();
+            this.pointers = new FullyObservableCollection<PointerItem>();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
@@ -165,6 +159,7 @@
             set
             {
                 this.selectedScanResults = value;
+                this.RaisePropertyChanged(nameof(this.SelectedScanResults));
             }
         }
 
@@ -304,12 +299,12 @@
         {
             get
             {
-                return this.addresses;
+                return this.pointers;
             }
 
             set
             {
-                this.addresses = value;
+                this.pointers = value;
 
                 this.RaisePropertyChanged(nameof(this.Pointers));
             }

@@ -199,7 +199,18 @@
         /// Gets the display value for this project item, which is the address value.
         /// </summary>
         [Browsable(false)]
-        public override String DisplayValue { get { return this.AddressValue?.ToString() ?? String.Empty; } }
+        public override String DisplayValue
+        {
+            get
+            {
+                return this.AddressValue?.ToString() ?? String.Empty;
+            }
+
+            set
+            {
+                this.AddressValue = value;
+            }
+        }
 
         /// <summary>
         /// Update event for this project item. Resolves addresses and values.
@@ -208,9 +219,9 @@
         {
             this.CalculatedAddress = this.ResolveAddress();
 
+            // Freeze current value if this entry is activated
             if (this.IsActivated)
             {
-                // Freeze current value if this entry is activated
                 Object value = this.AddressValue;
 
                 if (value != null && value.GetType() == this.DataType)
@@ -220,10 +231,16 @@
             }
             else
             {
+                Object previousValue = this.AddressValue;
+
                 // Otherwise we read as normal (bypass assigning setter and set value directly to avoid a write-back to memory)
                 this.addressValue = EngineCore.GetInstance()?.VirtualMemory?.Read(this.DataType, this.CalculatedAddress, out _);
-                this.RaisePropertyChanged(nameof(this.AddressValue));
-                this.RaisePropertyChanged(nameof(this.DisplayValue));
+
+                if (!(this.AddressValue?.Equals(previousValue) ?? false))
+                {
+                    this.RaisePropertyChanged(nameof(this.AddressValue));
+                    this.RaisePropertyChanged(nameof(this.DisplayValue));
+                }
             }
         }
 

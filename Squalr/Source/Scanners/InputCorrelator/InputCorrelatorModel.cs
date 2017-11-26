@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
     using LabelThresholder;
-    using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Input.HotKeys;
@@ -105,8 +105,8 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.SetLabelDataType(DataTypes.Int16);
+            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot.LabelDataType = DataTypes.Int16;
 
             if (this.Snapshot == null)
             {
@@ -135,21 +135,23 @@
             if (conditionValid)
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
-                    if (!region.CanCompare())
+                    if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
                     {
                         return;
                     }
 
-                    foreach (SnapshotElementIterator element in region)
+                    IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements();
+
+                    while (enumerator.MoveNext())
                     {
-                        if (element.Changed())
-                        {
-                            ((dynamic)element).ElementLabel++;
-                        }
+                        enumerator.Current.Compare();
+
+                        throw new NotImplementedException("Maybe some sort of lambda to update labels?");
+                        ((dynamic)enumerator).ElementLabel++;
                     }
 
                     lock (this.ProgressLock)
@@ -162,21 +164,23 @@
             else
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
-                    if (!region.CanCompare())
+                    if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
                     {
                         return;
                     }
 
-                    foreach (SnapshotElementIterator element in region)
+                    IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements();
+
+                    while (enumerator.MoveNext())
                     {
-                        if (element.Changed())
-                        {
-                            ((dynamic)element).ElementLabel--;
-                        }
+                        enumerator.Current.Compare();
+
+                        throw new NotImplementedException("Maybe some sort of lambda to update labels?");
+                        ((dynamic)enumerator).ElementLabel--;
                     }
 
                     lock (this.ProgressLock)
@@ -196,24 +200,26 @@
         protected override void OnEnd()
         {
             // Prefilter items with negative penalties (ie constantly changing variables)
-            this.Snapshot.SetAllValidBits(false);
+            //// this.Snapshot.SetAllValidBits(false);
 
-            foreach (SnapshotRegion region in this.Snapshot)
+            foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
             {
-                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                 {
-                    SnapshotElementIterator element = enumerator.Current;
+                    SnapshotElementVectorComparer element = enumerator.Current;
 
-                    if ((Int16)element.ElementLabel > 0)
+                    throw new NotImplementedException();
+
+                    // if ((Int16)element.ElementLabel > 0)
                     {
-                        element.SetValid(true);
+                        //  element.SetValid(true);
                     }
                 }
             }
 
-            this.Snapshot.DiscardInvalidRegions();
+            ////  this.Snapshot.DiscardInvalidRegions();
 
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
 
             this.CleanUp();
             LabelThresholderViewModel.GetInstance().OpenLabelThresholder();

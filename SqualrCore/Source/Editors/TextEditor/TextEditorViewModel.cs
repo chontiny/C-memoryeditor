@@ -13,11 +13,6 @@
     public class TextEditorViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(TextEditorViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="TextEditorViewModel" /> class.
         /// </summary>
         private static Lazy<TextEditorViewModel> textEditorViewModelInstance = new Lazy<TextEditorViewModel>(
@@ -29,7 +24,6 @@
         /// </summary>
         private TextEditorViewModel() : base("Text Editor")
         {
-            this.ContentId = TextEditorViewModel.ToolContentId;
             this.UpdateTextCommand = new RelayCommand<String>((text) => this.UpdateText(text), (text) => true);
             this.SaveTextCommand = new RelayCommand<String>((text) => this.SaveText(text), (text) => true);
 

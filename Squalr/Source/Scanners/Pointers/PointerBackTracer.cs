@@ -4,6 +4,7 @@
     using Squalr.Properties;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -88,11 +89,13 @@
             UInt64 processedPointers = 0;
 
             // Create a snapshot only containing the destination
-            SnapshotRegion destinationRegion = new SnapshotRegion(baseAddress: this.TargetAddress.ToIntPtr(), regionSize: 1);
-            destinationRegion.Expand(this.PointerRadius);
+            NormalizedRegion destinationRegion = new NormalizedRegion(baseAddress: this.TargetAddress.ToIntPtr(), regionSize: 1);
+            destinationRegion.Expand(this.PointerRadius.ToUInt64());
+
+            throw new NotImplementedException("Destination region used to belong to the snapshot below. This needs reworking");
 
             // Start with the previous level as the destination (as this is a back-tracing algorithm, we work backwards from the destination)
-            Snapshot previousLevelSnapshot = new Snapshot(destinationRegion);
+            Snapshot previousLevelSnapshot = new Snapshot();
 
             // Find all pointers that point to the previous level
             for (Int32 level = 0; level < this.PointerDepth; level++)
@@ -103,7 +106,7 @@
                 // Iterate all of the heap or module pointers
                 Parallel.ForEach(
                     isModuleLevel ? this.ModulePointers : this.HeapPointers,
-                    SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
+                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
                     (pointer) =>
                 {
                     // Accept this pointer if it is points to the previous level snapshot

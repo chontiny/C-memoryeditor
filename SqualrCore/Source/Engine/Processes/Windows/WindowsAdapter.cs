@@ -1,5 +1,6 @@
 ﻿namespace SqualrCore.Source.Engine.Processes.Windows
 {
+    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine.Processes.Windows.Native;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.DataStructures;
@@ -8,12 +9,13 @@
     using System.Diagnostics;
     using System.Drawing;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
     /// A class responsible for collecting all running processes on a Windows system.
     /// </summary>
-    internal class WindowsAdapter : IProcessAdapter, IProcessObserver
+    internal class WindowsAdapter : ScheduledTask, IProcessAdapter, IProcessObserver
     {
         /// <summary>
         /// Thread safe collection of listeners.
@@ -28,7 +30,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="WindowsAdapter" /> class.
         /// </summary>
-        public WindowsAdapter()
+        public WindowsAdapter() : base(
+            taskName: "Check Process Alive",
+            isRepeated: true,
+            trackProgress: false)
         {
             this.processListeners = new ConcurrentHashSet<IProcessObserver>();
 
@@ -44,6 +49,8 @@
 
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
             Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });
+
+            this.Start();
         }
 
         /// <summary>
@@ -53,24 +60,13 @@
         {
             get
             {
-                try
-                {
-                    if (this.systemProcess?.HasExited == true)
-                    {
-                        EngineCore.GetInstance().Processes.OpenProcess(null);
-                        this.systemProcess = null;
-                    }
-                }
-                catch
-                {
-                }
-
                 return this.systemProcess;
             }
 
             private set
             {
                 this.systemProcess = value;
+                this.RaisePropertyChanged(nameof(this.SystemProcess));
             }
         }
 
@@ -155,21 +151,30 @@
         }
 
         /// <summary>
+        /// Closes a process for editing.
+        /// </summary>
+        public void CloseProcess()
+        {
+            if (this.OpenedProcess != null)
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Detached from target process");
+            }
+
+            this.OpenProcess(null);
+        }
+
+        /// <summary>
         /// Opens a process for editing.
         /// </summary>
         /// <param name="process">The process to be opened.</param>
         public void OpenProcess(NormalizedProcess process)
         {
-            this.OpenedProcess = process;
-
             if (process != null)
             {
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Attached to process: " + process.ProcessName);
             }
-            else
-            {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Detached from target process");
-            }
+
+            this.OpenedProcess = process;
 
             if (this.processListeners != null)
             {
@@ -477,6 +482,39 @@
         public Boolean IsOperatingSystem64Bit()
         {
             return Environment.Is64BitOperatingSystem;
+        }
+
+        /// <summary>
+        /// Called when the scheduled task starts.
+        /// </summary>
+        protected override void OnBegin()
+        {
+        }
+
+        /// <summary>
+        /// Called when the scheduled task is updated.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (this.SystemProcess?.HasExited ?? false)
+                {
+                    EngineCore.GetInstance().Processes.CloseProcess();
+                    this.SystemProcess = null;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        /// <summary>
+        /// Called when the repeated task completes.
+        /// </summary>
+        protected override void OnEnd()
+        {
         }
     }
     //// End class

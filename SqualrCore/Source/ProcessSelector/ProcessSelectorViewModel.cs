@@ -19,11 +19,6 @@
     public class ProcessSelectorViewModel : ToolViewModel, IProcessObserver
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ProcessSelectorViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="ProcessSelectorViewModel" /> class.
         /// </summary>
         private static Lazy<ProcessSelectorViewModel> processSelectorViewModelInstance = new Lazy<ProcessSelectorViewModel>(
@@ -45,7 +40,6 @@
         /// </summary>
         private ProcessSelectorViewModel() : base("Process Selector")
         {
-            this.ContentId = ProcessSelectorViewModel.ToolContentId;
             this.IconSource = Images.SelectProcess;
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<NormalizedProcess>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
@@ -115,19 +109,20 @@
 
             set
             {
-                Boolean detached = false;
+                Boolean selectedDetatchProcess = value == this.DetachProcess;
 
-                // Set process to null if selecting the detach option
-                if (value == this.DetachProcess)
+                if (selectedDetatchProcess)
                 {
                     value = null;
-                    detached = true;
                 }
 
-                EngineCore.GetInstance().Processes.OpenProcess(value);
-                this.RaisePropertyChanged(nameof(this.SelectedProcess));
+                if (value != this.SelectedProcess)
+                {
+                    EngineCore.GetInstance().Processes.OpenProcess(value);
+                    this.RaisePropertyChanged(nameof(this.SelectedProcess));
+                }
 
-                if (detached)
+                if (selectedDetatchProcess)
                 {
                     this.RaisePropertyChanged(nameof(this.WindowedProcessList));
                 }
@@ -180,6 +175,8 @@
         {
             // Raise event to update process name in the view
             this.RaisePropertyChanged(nameof(this.ProcessName));
+
+            this.RefreshProcessList();
         }
 
         /// <summary>

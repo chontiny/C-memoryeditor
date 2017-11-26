@@ -12,11 +12,6 @@
     public class PropertyViewerViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(PropertyViewerViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="PropertyViewerViewModel" /> class.
         /// </summary>
         private static Lazy<PropertyViewerViewModel> propertyViewerViewModelInstance = new Lazy<PropertyViewerViewModel>(
@@ -33,7 +28,6 @@
         /// </summary>
         private PropertyViewerViewModel() : base("Property Viewer")
         {
-            this.ContentId = PropertyViewerViewModel.ToolContentId;
             this.ObserverLock = new Object();
             this.PropertyViewerObservers = new List<IPropertyViewerObserver>();
 

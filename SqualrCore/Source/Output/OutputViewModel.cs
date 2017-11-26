@@ -24,11 +24,6 @@
     public class OutputViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(OutputViewModel);
-
-        /// <summary>
         /// The rough total capacity in bytes of our log.
         /// </summary>
         private const Int32 LogCapacity = Int16.MaxValue;
@@ -73,7 +68,6 @@
             this.OutputMasks = new List<OutputMask>();
             this.AccessLock = new Object();
 
-            this.ContentId = OutputViewModel.ToolContentId;
             this.logText = new StringBuilder(OutputViewModel.LogCapacity);
             this.ClearOutputCommand = new RelayCommand(() => this.ClearOutput(), () => true);
 

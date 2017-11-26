@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.Mvvm.Converters
 {
     using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Utils;
     using System;
     using System.Globalization;
     using System.Windows.Data;
@@ -25,19 +26,7 @@
                 return null;
             }
 
-            // Note: UInt64s run out around EB
-            String[] suffix = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
-
-            UInt64 realByteCount = (UInt64)System.Convert.ChangeType(value, DataTypes.UInt64);
-
-            if (realByteCount == 0)
-            {
-                return "0" + suffix[0];
-            }
-
-            Int32 place = System.Convert.ToInt32(Math.Floor(Math.Log(realByteCount, 1024)));
-            Double number = Math.Round(realByteCount / Math.Pow(1024, place), 1);
-            return number.ToString() + suffix[place];
+            return Conversions.ValueToMetricSize((UInt64)System.Convert.ChangeType(value, DataTypes.UInt64));
         }
 
         /// <summary>

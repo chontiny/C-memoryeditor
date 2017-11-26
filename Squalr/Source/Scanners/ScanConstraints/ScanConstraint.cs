@@ -72,7 +72,7 @@
         {
             get
             {
-                if (this.IsValuedConstraint())
+                if (ScanConstraint.IsValuedConstraint(this.Constraint))
                 {
                     return this.constraintValue;
                 }
@@ -174,28 +174,28 @@
         /// <summary>
         /// Determines if this constraint conflicts with another constraint.
         /// </summary>
-        /// <param name="scanConstraint">The other scan constraint.</param>
+        /// <param name="other">The other scan constraint.</param>
         /// <returns>True if the constraints conflict, otherwise false.</returns>
-        public Boolean ConflictsWith(ScanConstraint scanConstraint)
+        public Boolean ConflictsWith(ScanConstraint other)
         {
-            if (this.Constraint == scanConstraint.Constraint)
+            if (this.Constraint == other.Constraint)
             {
                 return true;
             }
 
-            if (this.IsRelativeConstraint() && scanConstraint.IsRelativeConstraint())
+            if (ScanConstraint.IsRelativeConstraint(this.Constraint) && ScanConstraint.IsRelativeConstraint(other.Constraint))
             {
                 return true;
             }
 
-            if (this.IsValuedConstraint() && scanConstraint.IsValuedConstraint())
+            if (ScanConstraint.IsValuedConstraint(this.Constraint) && ScanConstraint.IsValuedConstraint(other.Constraint))
             {
-                if (!this.IsRelativeConstraint() && !scanConstraint.IsRelativeConstraint())
+                if (!ScanConstraint.IsRelativeConstraint(this.Constraint) && !ScanConstraint.IsRelativeConstraint(other.Constraint))
                 {
                     if ((this.Constraint == ConstraintType.LessThan || this.Constraint == ConstraintType.LessThanOrEqual || this.Constraint == ConstraintType.NotEqual) &&
-                        (scanConstraint.Constraint == ConstraintType.GreaterThan || scanConstraint.Constraint == ConstraintType.GreaterThanOrEqual || scanConstraint.Constraint == ConstraintType.NotEqual))
+                        (other.Constraint == ConstraintType.GreaterThan || other.Constraint == ConstraintType.GreaterThanOrEqual || other.Constraint == ConstraintType.NotEqual))
                     {
-                        if ((dynamic)this.ConstraintValue <= (dynamic)scanConstraint.ConstraintValue)
+                        if ((dynamic)this.ConstraintValue <= (dynamic)other.ConstraintValue)
                         {
                             return true;
                         }
@@ -204,9 +204,9 @@
                     }
 
                     if ((this.Constraint == ConstraintType.GreaterThan || this.Constraint == ConstraintType.GreaterThanOrEqual || this.Constraint == ConstraintType.NotEqual) &&
-                        (scanConstraint.Constraint == ConstraintType.LessThan || scanConstraint.Constraint == ConstraintType.LessThanOrEqual || scanConstraint.Constraint == ConstraintType.NotEqual))
+                        (other.Constraint == ConstraintType.LessThan || other.Constraint == ConstraintType.LessThanOrEqual || other.Constraint == ConstraintType.NotEqual))
                     {
-                        if ((dynamic)this.ConstraintValue >= (dynamic)scanConstraint.ConstraintValue)
+                        if ((dynamic)this.ConstraintValue >= (dynamic)other.ConstraintValue)
                         {
                             return true;
                         }
@@ -225,9 +225,9 @@
         /// Gets a value indicating whether this constraint is a relative comparison constraint, requiring previous values.
         /// </summary>
         /// <returns>True if the constraint is a relative value constraint.</returns>
-        public Boolean IsRelativeConstraint()
+        public static Boolean IsRelativeConstraint(ScanConstraint.ConstraintType constraint)
         {
-            switch (this.Constraint)
+            switch (constraint)
             {
                 case ConstraintType.Changed:
                 case ConstraintType.Unchanged:
@@ -253,9 +253,9 @@
         /// Gets a value indicating whether this constraint requires a value.
         /// </summary>
         /// <returns>True if the constraint requires a value.</returns>
-        public Boolean IsValuedConstraint()
+        public static Boolean IsValuedConstraint(ScanConstraint.ConstraintType constraint)
         {
-            switch (this.Constraint)
+            switch (constraint)
             {
                 case ConstraintType.Equal:
                 case ConstraintType.NotEqual:
@@ -275,6 +275,16 @@
                 default:
                     throw new ArgumentException();
             }
+        }
+
+        public Boolean IsValid()
+        {
+            if (!ScanConstraint.IsValuedConstraint(this.Constraint))
+            {
+                return true;
+            }
+
+            return this.ConstraintValue != null;
         }
 
         /// <summary>

@@ -1,0 +1,153 @@
+﻿<UserControl
+    x:Class="Squalr.View.Disassembly"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:SqualrCore.Source.Mvvm.AttachedBehaviors;assembly=SqualrCore"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="SqualrDisassembly"
+    d:DesignHeight="256"
+    d:DesignWidth="256"
+    x:ClassModifier="internal"
+    DataContext="{Binding DisassemblyViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public Disassembly() { InitializeComponent(); }]]>
+    </x:Code>
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToHiddenConverter"
+            False="Hidden"
+            True="Visible" />
+        <converters:OffsetsToStringConverter x:Key="OffsetsToStringConverter" />
+        <ContextMenu
+            x:Key="RightClickMenu"
+            Background="{StaticResource SqualrColorGray27}"
+            BorderBrush="{StaticResource SqualrColorWhite}"
+            DataContext="{StaticResource ViewModelLocator}"
+            Foreground="{StaticResource SqualrColorWhite}">
+            <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Add New Address" />
+            <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
+            <Separator />
+            <MenuItem Command="{Binding AddNewInstructionItemCommand}" Header="Add New Instruction" />
+            <Separator />
+            <MenuItem Command="{Binding PasteSelectionCommand}" Header="Paste" />
+        </ContextMenu>
+        <ContextMenu
+            x:Key="ProjectItemRightClickMenu"
+            Background="{StaticResource SqualrColorGray27}"
+            BorderBrush="{StaticResource SqualrColorWhite}"
+            DataContext="{StaticResource ViewModelLocator}"
+            Foreground="{StaticResource SqualrColorWhite}">
+            <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
+            <Separator />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.DeleteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Delete Selection" />
+            <Separator />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.CopySelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Copy" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.PasteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Paste" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.CutSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Cut" />
+        </ContextMenu>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <DataGrid
+            Name="ScanResultsDataGrid"
+            Grid.Row="1"
+            behaviors:ScrollToCenterBehavior.ScrollToCenter="True"
+            AutoGenerateColumns="False"
+            Background="{StaticResource SqualrColorBlack}"
+            CanUserAddRows="False"
+            ColumnWidth="*"
+            EnableRowVirtualization="True"
+            HeadersVisibility="Column"
+            ItemsSource="{Binding Instructions}"
+            RowHeaderWidth="0"
+            SelectionMode="Extended"
+            SelectionUnit="FullRow">
+            <!--  Click and Selection events  -->
+            <intr:Interaction.Triggers>
+                <intr:EventTrigger EventName="SelectionChanged">
+                    <intr:InvokeCommandAction Command="{Binding SelectInstructionsCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItems}" />
+                </intr:EventTrigger>
+                <intr:EventTrigger EventName="MouseDoubleClick">
+                    <intr:InvokeCommandAction Command="{Binding AddInstructionsCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItem}" />
+                </intr:EventTrigger>
+            </intr:Interaction.Triggers>
+            <DataGrid.Resources>
+                <Style x:Key="NoFocus" TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray24}" />
+                    <Setter Property="IsManipulationEnabled" Value="False" />
+                    <Setter Property="IsTabStop" Value="False" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Style>
+                <Style TargetType="{x:Type DataGrid}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                </Style>
+            </DataGrid.Style>
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray74}" />
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="96"
+                    Binding="{Binding Path=AddressSpecifier}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Address"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Width="SizeToCells"
+                    MinWidth="64"
+                    Binding="{Binding Path=InstructionBytes, Converter={StaticResource OffsetsToStringConverter}}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Bytes"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    MinWidth="64"
+                    Binding="{Binding Path=Instruction}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Instruction"
+                    IsReadOnly="True" />
+            </DataGrid.Columns>
+            <DataGrid.ItemTemplate>
+                <DataTemplate>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </DataTemplate>
+            </DataGrid.ItemTemplate>
+        </DataGrid>
+    </Grid>
+</UserControl>

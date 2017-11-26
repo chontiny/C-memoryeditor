@@ -14,11 +14,6 @@
     public class HotkeyEditorViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(HotkeyEditorViewModel);
-
-        /// <summary>
         /// The keyboard hotkey being constructed.
         /// </summary>
         private KeyboardHotkeyBuilder keyboardHotKeyBuilder;
@@ -35,7 +30,6 @@
         /// </summary>
         private HotkeyEditorViewModel() : base("Hotkey Editor")
         {
-            this.ContentId = HotkeyEditorViewModel.ToolContentId;
             this.ClearHotkeysCommand = new RelayCommand(() => this.ClearActiveHotkey(), () => true);
             this.AccessLock = new Object();
 

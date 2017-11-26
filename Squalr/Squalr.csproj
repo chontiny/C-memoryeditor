@@ -31,11 +31,11 @@
     <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
     <ProductName>Squalr Developer Tools</ProductName>
     <PublisherName>Squalr Developer Tools</PublisherName>
-    <MinimumRequiredVersion>2.1.7.0</MinimumRequiredVersion>
+    <MinimumRequiredVersion>2.1.8.0</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.1.7.0</ApplicationVersion>
+    <ApplicationVersion>2.1.8.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -120,7 +120,7 @@
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>C1A711EAE328CAEA08DA8ACE57DFE7AA5D129D11</ManifestCertificateThumbprint>
@@ -227,6 +227,9 @@
       <HintPath>..\packages\System.IO.FileSystem.Primitives.4.3.0\lib\net46\System.IO.FileSystem.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.4.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Reflection.Metadata, Version=1.4.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reflection.Metadata.1.4.2\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
     </Reference>
@@ -317,6 +320,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
     </Compile>
+    <Compile Include="Source\Debugger\DebuggerViewModel.cs" />
+    <Compile Include="Source\Debugger\Disassembly\DisassemblyViewModel.cs" />
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetObjectViewModel.cs" />
     <Compile Include="Source\Prefilters\HeapPrefilter.cs" />
@@ -327,8 +332,8 @@
     <Compile Include="Source\Results\PointerScanResultsViewModel.cs" />
     <Compile Include="Source\Results\ScanResult.cs" />
     <Compile Include="Source\Results\ScanResultsViewModel.cs" />
-    <Compile Include="Source\Scanners\Finalizer\FinalizerScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
+    <Compile Include="Source\Scanners\Pointers\PointerValidationScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerValueRescan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerRescan.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\DiscoveredPointers.cs" />
@@ -342,12 +347,14 @@
     <Compile Include="Source\Scanners\Pointers\PointerScannerViewModel.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\LevelPointers.cs" />
     <Compile Include="Source\Scanners\Pointers\Structures\PointerPool.cs" />
-    <Compile Include="Source\Snapshots\SnapshotRetrievalMode.cs" />
-    <Compile Include="Source\Scripting\ScriptEngine.cs" />
-    <Compile Include="Source\Snapshots\PointerIncrementMode.cs" />
-    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
+    <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
+    <Compile Include="Source\Snapshots\ReadGroup.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
-    <Compile Include="Source\Snapshots\SnapshotElementIterator.cs" />
+    <Compile Include="Source\Snapshots\SnapshotElementComparer.cs" />
+    <Compile Include="Source\Snapshots\SnapshotElementVectorComparer.cs" />
+    <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
+    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
+    <Compile Include="Source\Scripting\ScriptEngine.cs" />
     <Compile Include="Source\DotNetExplorer\DotNetExplorerViewModel.cs" />
     <Compile Include="Source\Scripting\Graphics\GraphicsCore.cs" />
     <Compile Include="Source\Scripting\Graphics\IGraphicsCore.cs" />
@@ -372,11 +379,7 @@
       <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
     </Compile>
     <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
-    <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
     <Compile Include="Source\Prefilters\ISnapshotPrefilter.cs" />
-    <Compile Include="Source\Prefilters\ShallowPointerPrefilter.cs" />
-    <Compile Include="Source\Snapshots\SnapshotManager.cs" />
-    <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
     <Compile Include="View\PointerScanner.xaml.cs">
       <DependentUpon>PointerScanner.xaml</DependentUpon>
@@ -405,6 +408,10 @@
     <Page Include="View\PointerScanResults.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
+    </Page>
+    <Page Include="View\Disassembly.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\ProjectExplorer.xaml">
       <Generator>MSBuild:Compile</Generator>

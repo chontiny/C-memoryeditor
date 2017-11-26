@@ -5,6 +5,7 @@
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Threading;
@@ -17,11 +18,6 @@
     /// </summary>
     internal class ManualScannerViewModel : ToolViewModel, IResultDataTypeObserver
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ManualScannerViewModel);
-
         /// <summary>
         /// Singleton instance of the <see cref="ManualScannerViewModel" /> class.
         /// </summary>
@@ -44,7 +40,6 @@
         /// </summary>
         private ManualScannerViewModel() : base("Manual Scanner")
         {
-            this.ContentId = ManualScannerViewModel.ToolContentId;
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
 
             // Note: Not async to avoid updates slower than the perception threshold
@@ -207,7 +202,18 @@
         {
             get
             {
-                return new FullyObservableCollection<ScanConstraint>(new ScanConstraint[] { this.CurrentScanConstraint });
+                return new FullyObservableCollection<ScanConstraint>() { this.CurrentScanConstraint };
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating if the current scan constraint requires a value.
+        /// </summary>
+        public Boolean IsActiveScanConstraintValued
+        {
+            get
+            {
+                return CurrentScanConstraint == null ? true : ScanConstraint.IsValuedConstraint(this.CurrentScanConstraint.Constraint);
             }
         }
 
@@ -225,17 +231,6 @@
             {
                 this.currentScanConstraint = value;
                 this.UpdateAllProperties();
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether or not no constraints have been added.
-        /// </summary>
-        public Boolean HasNoConstraints
-        {
-            get
-            {
-                return this.ScanConstraintManager.ValueConstraints.Count <= 0;
             }
         }
 
@@ -287,6 +282,12 @@
             // Create a constraint manager that includes the current active constraint
             ScanConstraintManager allScanConstraints = this.ScanConstraintManager.Clone();
             allScanConstraints.AddConstraint(this.CurrentScanConstraint);
+
+            if (!allScanConstraints.IsValid())
+            {
+                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to start scan with given constraints");
+                return;
+            }
 
             ManualScannerModel.SetScanConstraintManager(allScanConstraints);
             ManualScannerModel.Start();
@@ -360,7 +361,7 @@
             this.RaisePropertyChanged(nameof(this.CurrentScanConstraint));
             this.RaisePropertyChanged(nameof(this.ScanConstraintImage));
             this.RaisePropertyChanged(nameof(this.ActiveScanConstraint));
-            this.RaisePropertyChanged(nameof(this.HasNoConstraints));
+            this.RaisePropertyChanged(nameof(this.IsActiveScanConstraintValued));
         }
     }
     //// End class

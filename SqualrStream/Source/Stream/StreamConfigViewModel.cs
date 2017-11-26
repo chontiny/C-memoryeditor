@@ -24,11 +24,6 @@
     internal class StreamConfigViewModel : ToolViewModel, INavigable
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(StreamConfigViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="StreamConfigViewModel" /> class.
         /// </summary>
         private static Lazy<StreamConfigViewModel> streamConfigViewModelInstance = new Lazy<StreamConfigViewModel>(
@@ -45,7 +40,6 @@
         /// </summary>
         private StreamConfigViewModel() : base("Stream Config")
         {
-            this.ContentId = StreamConfigViewModel.ToolContentId;
             this.VoteLock = new Object();
             this.IsConnected = true;
 

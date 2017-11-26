@@ -244,7 +244,17 @@
         /// <summary>
         /// Gets the display value to represent this project item.
         /// </summary>
-        public virtual String DisplayValue { get { return String.Empty; } }
+        public virtual String DisplayValue
+        {
+            get
+            {
+                return String.Empty;
+            }
+
+            set
+            {
+            }
+        }
 
         /// <summary>
         /// Gets the image associated with this project item.

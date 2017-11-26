@@ -270,6 +270,15 @@
                         </MenuItem.Header>
                     </MenuItem>
                 </MenuItem>
+                <Separator Style="{DynamicResource VerticalSeparator}" />
+                <MenuItem Command="{Binding PointerScannerViewModel.StartPointerValidationScanCommand, Source={StaticResource ViewModelLocator}}" ToolTip="Remove Invalid Pointers">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="{x:Static content:Images.LetterP}" />
+                    </MenuItem.Header>
+                </MenuItem>
             </Menu>
             <Menu
                 Grid.Column="1"
@@ -296,7 +305,7 @@
             CanUserAddRows="False"
             ColumnWidth="*"
             HeadersVisibility="Column"
-            ItemsSource="{Binding Path=Addresses}"
+            ItemsSource="{Binding Path=Pointers}"
             RowHeaderWidth="0"
             SelectionMode="Extended"
             SelectionUnit="FullRow">

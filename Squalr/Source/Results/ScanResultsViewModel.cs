@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Results
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Snapshots;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.Snapshots;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMachines;
@@ -24,11 +24,6 @@
     /// </summary>
     internal class ScanResultsViewModel : ToolViewModel, ISnapshotObserver
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ScanResultsViewModel);
-
         /// <summary>
         /// The number of elements to display on each page.
         /// </summary>
@@ -76,7 +71,6 @@
         /// </summary>
         private ScanResultsViewModel() : base("Scan Results")
         {
-            this.ContentId = ScanResultsViewModel.ToolContentId;
             this.ObserverLock = new Object();
 
             this.ChangeTypeCommand = new RelayCommand<DataType>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
@@ -92,7 +86,7 @@
             this.ActiveType = DataTypes.Int32;
             this.addresses = new FullyObservableCollection<ScanResult>();
 
-            SnapshotManager.GetInstance().Subscribe(this);
+            SnapshotManagerViewModel.GetInstance().Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
             this.UpdateScanResults();
@@ -151,6 +145,7 @@
             set
             {
                 this.selectedScanResults = value;
+                this.RaisePropertyChanged(nameof(this.SelectedScanResults));
             }
         }
 
@@ -383,7 +378,7 @@
         /// </summary>
         private void LoadScanResults()
         {
-            Snapshot snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot);
+            Snapshot snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshot);
             IList<ScanResult> newAddresses = new List<ScanResult>();
 
             if (snapshot != null)
@@ -393,11 +388,11 @@
 
                 for (UInt64 index = startIndex; index < endIndex; index++)
                 {
-                    SnapshotElementIterator element = snapshot[index];
+                    SnapshotElementComparer element = snapshot[index];
 
                     String label = element.GetElementLabel() != null ? element.GetElementLabel().ToString() : String.Empty;
-                    Object currentValue = element.HasCurrentValue() ? element.GetCurrentValue() : null;
-                    Object previousValue = element.HasPreviousValue() ? element.GetPreviousValue() : null;
+                    Object currentValue = element.HasCurrentValue() ? element.LoadCurrentValue() : null;
+                    Object previousValue = element.HasPreviousValue() ? element.LoadPreviousValue() : null;
 
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress.ToUInt64(), out moduleName);
@@ -481,7 +476,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddScanResult(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult.PointerItem);
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult?.PointerItem);
         }
 
         /// <summary>

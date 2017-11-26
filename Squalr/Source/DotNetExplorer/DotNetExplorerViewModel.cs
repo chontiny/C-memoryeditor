@@ -20,11 +20,6 @@
     internal class DotNetExplorerViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(DotNetExplorerViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="DotNetExplorerViewModel" /> class.
         /// </summary>
         private static Lazy<DotNetExplorerViewModel> dotNetExplorerViewModelInstance = new Lazy<DotNetExplorerViewModel>(
@@ -41,7 +36,6 @@
         /// </summary>
         private DotNetExplorerViewModel() : base(".Net Explorer")
         {
-            this.ContentId = DotNetExplorerViewModel.ToolContentId;
             this.dotNetObjects = new ReadOnlyCollection<DotNetObjectViewModel>(new List<DotNetObjectViewModel>());
             this.RefreshObjectsCommand = new RelayCommand(() => this.RefreshObjects(), () => true);
             this.AddDotNetObjectCommand = new RelayCommand<DotNetObjectViewModel>((dotNetObjectViewModel) => this.AddDotNetObject(dotNetObjectViewModel), (dotNetObjectViewModel) => true);

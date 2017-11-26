@@ -4,6 +4,7 @@
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMachines;
+    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using SqualrCore.Source.Utils.TypeConverters;
     using System;
@@ -14,6 +15,12 @@
     [DataContract]
     public class InstructionItem : AddressItem
     {
+        /// <summary>
+        /// The disassembled instruction.
+        /// </summary>
+        [Browsable(false)]
+        public String instruction;
+
         /// <summary>
         /// The identifier for the base address of this object.
         /// </summary>
@@ -35,9 +42,16 @@
         [Browsable(false)]
         private Byte[] followingBytes;
 
-        public InstructionItem() : base(null, "New Instruction")
+        public InstructionItem() : this(IntPtr.Zero, null, null, null)
         {
+        }
 
+        public InstructionItem(IntPtr BaseAddress, String moduleName, String instruction, Byte[] instructionBytes) : base(DataTypes.ArrayOfBytes, "New Instruction")
+        {
+            this.ModuleOffset = BaseAddress;
+            this.ModuleName = moduleName;
+            this.Instruction = instruction;
+            this.InstructionBytes = instructionBytes;
         }
 
         /// <summary>
@@ -56,7 +70,6 @@
             set
             {
                 // Assemble and write bytes
-
                 this.RaisePropertyChanged(nameof(this.AddressValue));
             }
         }
@@ -108,23 +121,28 @@
 
                 this.instructionBytes = value;
 
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.InstructionBytes));
             }
         }
 
         /// <summary>
-        /// Gets or sets the data type of the value at this address.
+        /// Gets or sets the disassembled instruction.
         /// </summary>
         [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Instruction"), Description("The assembled instruction")]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Instruction"), Description("The disassembled instruction")]
         public String Instruction
         {
             get
             {
-                return "Not Implemented";
+                return this.instruction;
+            }
+
+            set
+            {
+                this.instruction = value;
+                this.RaisePropertyChanged(nameof(this.Instruction));
             }
         }
 
@@ -220,7 +238,6 @@
 
                 this.moduleName = value == null ? String.Empty : value;
 
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.ModuleName));
             }
         }
@@ -248,11 +265,34 @@
 
                 this.CalculatedAddress = value;
                 this.moduleOffset = value;
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.ModuleOffset));
+                this.RaisePropertyChanged(nameof(this.AddressSpecifier));
             }
         }
 
+        /// <summary>
+        /// Gets the address specifier for this address. If a static address, this is 'ModuleName + offset', otherwise this is an address string.
+        /// </summary>
+        [Browsable(false)]
+        public String AddressSpecifier
+        {
+            get
+            {
+                if (!this.ModuleName.IsNullOrEmpty())
+                {
+                    return this.ModuleName + "+" + Conversions.ToHex(this.ModuleOffset, formatAsAddress: true);
+                }
+                else
+                {
+                    return Conversions.ToHex(this.ModuleOffset, formatAsAddress: true);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Resolves the address of this instruction.
+        /// </summary>
+        /// <returns>The base address of this instruction.</returns>
         protected override IntPtr ResolveAddress()
         {
             return AddressResolver.GetInstance().ResolveModule(this.ModuleName).Add(this.ModuleOffset);

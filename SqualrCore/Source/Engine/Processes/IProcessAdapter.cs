@@ -33,6 +33,11 @@
         void OpenProcess(NormalizedProcess process);
 
         /// <summary>
+        /// Closes a process for editing.
+        /// </summary>
+        void CloseProcess();
+
+        /// <summary>
         /// Gets the process that has been opened.
         /// </summary>
         /// <returns>The opened process.</returns>

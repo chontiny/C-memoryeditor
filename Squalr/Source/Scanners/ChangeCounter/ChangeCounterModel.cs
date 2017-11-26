@@ -1,13 +1,12 @@
 ﻿namespace Squalr.Source.Scanners.ChangeCounter
 {
     using LabelThresholder;
-    using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine.Types;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -75,8 +74,8 @@
         protected override void OnBegin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.SetLabelDataType(DataTypes.UInt16);
+            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot.LabelDataType = DataTypes.UInt16;
 
             if (this.Snapshot == null)
             {
@@ -101,23 +100,24 @@
             this.Snapshot.ReadAllMemory();
 
             Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
             {
-                if (!region.CanCompare())
+                if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
                 {
                     return;
                 }
 
-                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.AllPointers); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                 {
-                    SnapshotElementIterator element = enumerator.Current;
+                    SnapshotElementVectorComparer element = enumerator.Current;
 
+                    throw new NotImplementedException();
                     // Perform the comparison based on the current scan constraint
-                    if (element.Compare())
+                    // if (element.Compare())
                     {
-                        element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
+                        // element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
                     }
                 }
 
@@ -139,7 +139,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
             LabelThresholderViewModel.GetInstance().OpenLabelThresholder();
             this.Snapshot = null;
         }

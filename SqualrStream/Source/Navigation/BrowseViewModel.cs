@@ -24,11 +24,6 @@
     internal class BrowseViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(BrowseViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="BrowseViewModel" /> class.
         /// </summary>
         private static Lazy<BrowseViewModel> browseViewModelInstance = new Lazy<BrowseViewModel>(
@@ -60,7 +55,6 @@
         /// </summary>
         private BrowseViewModel() : base("Browse")
         {
-            this.ContentId = BrowseViewModel.ToolContentId;
             this.PreviousPages = new Stack<NavigationPage>();
             this.NextPages = new Stack<NavigationPage>();
             this.AccessLock = new Object();

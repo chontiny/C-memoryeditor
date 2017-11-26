@@ -51,7 +51,7 @@
         {
             ScanConstraintManager scanConstraintManager = new ScanConstraintManager();
             scanConstraintManager.SetElementType(this.ElementType);
-            this.ValueConstraints.ForEach(x => scanConstraintManager.AddConstraint(x));
+            this.ValueConstraints.ForEach(constraints => scanConstraintManager.AddConstraint(constraints));
 
             return scanConstraintManager;
         }
@@ -110,13 +110,18 @@
         {
             foreach (ScanConstraint valueConstraint in this)
             {
-                if (valueConstraint.IsRelativeConstraint())
+                if (ScanConstraint.IsRelativeConstraint(valueConstraint.Constraint))
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        public Boolean IsValid()
+        {
+            return this.ValueConstraints.All(constraint => constraint.IsValid());
         }
 
         /// <summary>

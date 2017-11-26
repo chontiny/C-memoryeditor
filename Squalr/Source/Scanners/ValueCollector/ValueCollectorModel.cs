@@ -3,8 +3,9 @@
     using Snapshots;
     using Squalr.Properties;
     using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.Output;
     using System;
-    using System.Linq;
+    using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -16,14 +17,13 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueCollectorModel" /> class.
         /// </summary>
-        public ValueCollectorModel(SnapshotRetrievalMode snapshotRetrievalMode = SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, Action<Snapshot> callback = null) : base(
+        public ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode snapshotRetrievalMode = SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, Action<Snapshot> callback = null) : base(
             taskName: "Value Collector",
             isRepeated: false,
             trackProgress: true)
         {
             this.SnapshotRetrievalMode = snapshotRetrievalMode;
             this.CallBack = callback;
-            this.ProgressLock = new Object();
         }
 
         /// <summary>
@@ -34,7 +34,7 @@
         /// <summary>
         /// Gets or sets the method of snapshot retrieval.
         /// </summary>
-        private SnapshotRetrievalMode SnapshotRetrievalMode { get; set; }
+        private SnapshotManagerViewModel.SnapshotRetrievalMode SnapshotRetrievalMode { get; set; }
 
         /// <summary>
         /// Gets or sets the snapshot on which we perform the value collection.
@@ -42,16 +42,11 @@
         private Snapshot Snapshot { get; set; }
 
         /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
-
-        /// <summary>
         /// Performs the value collection scan.
         /// </summary>
         protected override void OnBegin()
         {
-            this.Snapshot = SnapshotManager.GetInstance().GetSnapshot(this.SnapshotRetrievalMode)?.Clone(this.TaskName);
+            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(this.SnapshotRetrievalMode)?.Clone(this.TaskName);
         }
 
         /// <summary>
@@ -67,33 +62,33 @@
 
             Int32 processedRegions = 0;
 
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             // Read memory to get current values for each region
             Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
-                SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
-                (region) =>
+                this.Snapshot.OptimizedReadGroups,
+                SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                (readGroup) =>
                 {
-                    // Check for canceled scan
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
                     // Read the memory for this region
-                    region.ReadAllMemory(keepValues: true, readSuccess: out _);
+                    readGroup.ReadAllMemory();
 
-                    // Update progress
-                    lock (this.ProgressLock)
+                    // Update progress every N regions
+                    if (Interlocked.Increment(ref processedRegions) % 32 == 0)
                     {
-                        processedRegions++;
-
-                        // Limit how often we update the progress
-                        if (processedRegions % 10 == 0)
+                        // Check for canceled scan
+                        if (cancellationToken.IsCancellationRequested)
                         {
-                            this.UpdateProgress(processedRegions, this.Snapshot.RegionCount, canFinalize: false);
+                            return;
                         }
+
+                        this.UpdateProgress(processedRegions, this.Snapshot.RegionCount, canFinalize: false);
                     }
                 });
+
+            stopwatch.Stop();
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
 
             cancellationToken.ThrowIfCancellationRequested();
         }
@@ -105,7 +100,7 @@
         {
             if (this.CallBack == null)
             {
-                SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+                SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
             }
             else
             {

@@ -30,7 +30,7 @@ namespace Squalr.Content
         public virtual string TransformText()
         {
             this.Write("- Fixes to project saving\r\n- Allowing offsets to be entered directly into propert" +
-                    "y viewer.");
+                    "y viewer\r\n- Added pointer validation scan");
             return this.GenerationEnvironment.ToString();
         }
     }

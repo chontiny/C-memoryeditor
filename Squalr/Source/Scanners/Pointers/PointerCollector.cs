@@ -1,17 +1,15 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
-    using Snapshots;
     using Squalr.Properties;
     using Squalr.Source.Scanners.Pointers.Structures;
     using Squalr.Source.Scanners.ValueCollector;
+    using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -36,7 +34,7 @@
             this.ProgressLock = new Object();
             this.CollectedPointersCallback = collectedPointersCallback;
 
-            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotRetrievalMode.FromUserModeMemory, this.SetSnapshot));
+            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromUserModeMemory, this.SetSnapshot));
         }
 
         /// <summary>
@@ -78,9 +76,8 @@
             }
 
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
-            this.Snapshot.UpdateSettings(
-                activeType: isProcess32Bit ? DataTypes.UInt32 : DataTypes.UInt64,
-                alignment: isProcess32Bit ? Conversions.SizeOf(DataTypes.UInt32) : Conversions.SizeOf(DataTypes.UInt64));
+            this.Snapshot.ElementDataType = isProcess32Bit ? DataTypes.UInt32 : DataTypes.UInt64;
+            this.Snapshot.Alignment = isProcess32Bit ? Conversions.SizeOf(DataTypes.UInt32) : Conversions.SizeOf(DataTypes.UInt64);
         }
 
         /// <summary>
@@ -94,26 +91,28 @@
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
 
             // Create the base snapshot from the loaded modules
-            IEnumerable<SnapshotRegion> regions = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new SnapshotRegion(region));
-            Snapshot moduleSnapshot = new Snapshot(regions);
+            //IEnumerable<SnapshotRegion> regions = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new SnapshotRegion(region.BaseAddress, region.RegionSize));
+            throw new NotImplementedException("Regions cant be in snapshots this way anymore");
+            Snapshot moduleSnapshot = new Snapshot();
 
             // Process the allowed amount of chunks from the priority queue
             Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
-                SettingsViewModel.GetInstance().ParallelSettingsFullCpu,
+                this.Snapshot.SnapshotRegions,
+                SettingsViewModel.GetInstance().ParallelSettingsFastest,
                 (region) =>
                 {
-                    if (region.CurrentValues == null || region.CurrentValues.Length <= 0)
+                    if (region.ReadGroup?.CurrentValues == null)
                     {
                         return;
                     }
 
                     if (isProcess32Bit)
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotElementIterator element = enumerator.Current;
-                            UInt32 value = unchecked((UInt32)element.GetCurrentValue());
+                            SnapshotElementVectorComparer element = enumerator.Current;
+                            throw new NotImplementedException();
+                            UInt32 value = 0; // unchecked((UInt32)element.LoadCurrentValue());
 
                             // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
                             if (value < UInt16.MaxValue || value % sizeof(UInt32) != 0)
@@ -126,21 +125,22 @@
                             {
                                 if (moduleSnapshot.ContainsAddress(value))
                                 {
-                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                    // this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                                 else
                                 {
-                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                    // this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                             }
                         }
                     }
                     else
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.CurrentOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotElementIterator element = enumerator.Current;
-                            UInt64 value = unchecked((UInt64)element.GetCurrentValue());
+                            SnapshotElementVectorComparer element = enumerator.Current;
+                            throw new NotImplementedException();
+                            UInt64 value = 0;// unchecked((UInt64)element.LoadCurrentValue());
 
                             // Enforce 8-byte alignment of destination, and filter out small (invalid) pointers
                             if (value < UInt16.MaxValue || value % sizeof(UInt64) != 0)
@@ -153,18 +153,18 @@
                             {
                                 if (moduleSnapshot.ContainsAddress(value))
                                 {
-                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                    //  this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                                 else
                                 {
-                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                    //   this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                             }
                         }
                     }
 
                     // Clear the saved values, we do not need them now
-                    region.SetCurrentValues(null);
+                    region.ReadGroup.SetCurrentValues(null);
 
                     // Update scan progress
                     lock (this.ProgressLock)

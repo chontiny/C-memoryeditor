@@ -2,6 +2,8 @@
 {
     using Assembler;
     using Disassembler;
+    using System;
+    using System.Numerics;
 
     /// <summary>
     /// A class containing an x86/64 assembler and disassembler.
@@ -43,6 +45,25 @@
         public IDisassembler GetDisassembler()
         {
             return this.Disassembler;
+        }
+
+        /// <summary>
+        /// Gets a value indicating if the archiecture has vector instruction support.
+        /// </summary>
+        /// <returns>A value indicating if the archiecture has vector instruction support.</returns>
+        public Boolean HasVectorSupport()
+        {
+            return Vector.IsHardwareAccelerated;
+        }
+
+        /// <summary>
+        /// Gets the vector size supported by the current architecture.
+        /// If vectors are not supported, returns the lowest common denominator vector size for the architecture.
+        /// </summary>
+        /// <returns>The vector size.</returns>
+        public UInt32 GetVectorSize()
+        {
+            return unchecked((UInt32)Vector<Byte>.Count);
         }
     }
     //// End class

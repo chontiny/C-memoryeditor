@@ -1,7 +1,7 @@
 ﻿namespace SqualrStream.Properties
 {
-    using SqualrStream.Source.Api.Models;
     using SqualrCore.Source.Docking;
+    using SqualrStream.Source.Api.Models;
     using System;
     using System.IO;
     using System.Runtime.Serialization.Json;
@@ -14,11 +14,6 @@
     /// </summary>
     internal class SettingsViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(SettingsViewModel);
-
         /// <summary>
         /// Singleton instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
@@ -61,8 +56,6 @@
         /// </summary>
         private SettingsViewModel() : base("Settings")
         {
-            this.ContentId = SettingsViewModel.ToolContentId;
-
             // Subscribe async to avoid a deadlock situation
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }

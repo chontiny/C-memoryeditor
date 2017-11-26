@@ -28,7 +28,12 @@
             this.disassembler = new Disassembler(bytes, isProcess32Bit ? ArchitectureMode.x86_32 : ArchitectureMode.x86_64, baseAddress.ToUInt64());
             IEnumerable<Instruction> instructions = this.disassembler.Disassemble();
 
-            return instructions.Select(instruction => new NormalizedInstruction(instruction.ToString(), instruction.Bytes, instruction.Bytes.Length));
+            return instructions.Select(instruction =>
+                new NormalizedInstruction(
+                    instruction.Offset,
+                    instruction.ToString(),
+                    instruction.Bytes,
+                    instruction.Bytes.Length));
         }
     }
     //// End class

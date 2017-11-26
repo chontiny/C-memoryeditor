@@ -9,6 +9,11 @@
     public static class DataTypes
     {
         /// <summary>
+        /// DataType for an array of bytes.
+        /// </summary>
+        public static readonly DataType ArrayOfBytes = new DataType(typeof(Byte[]));
+
+        /// <summary>
         /// DataType for a boolean.
         /// </summary>
         public static readonly DataType Boolean = new DataType(typeof(Boolean));
