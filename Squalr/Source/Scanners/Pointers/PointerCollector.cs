@@ -7,6 +7,7 @@
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils;
     using System;
     using System.Collections.Generic;
@@ -34,7 +35,7 @@
             this.ProgressLock = new Object();
             this.CollectedPointersCallback = collectedPointersCallback;
 
-            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromUserModeMemory, this.SetSnapshot));
+            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromUserModeMemory, callback: this.SetSnapshot));
         }
 
         /// <summary>
@@ -91,8 +92,8 @@
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
 
             // Create the base snapshot from the loaded modules
-            //IEnumerable<SnapshotRegion> regions = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new SnapshotRegion(region.BaseAddress, region.RegionSize));
-            throw new NotImplementedException("Regions cant be in snapshots this way anymore");
+            IEnumerable<NormalizedRegion> modules = EngineCore.GetInstance().VirtualMemory.GetModules();
+
             Snapshot moduleSnapshot = new Snapshot();
 
             // Process the allowed amount of chunks from the priority queue

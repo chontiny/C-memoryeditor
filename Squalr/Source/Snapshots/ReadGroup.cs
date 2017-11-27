@@ -9,6 +9,10 @@
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Defines a segment of process memory, which many snapshot regions may read from. This serves as a shared pool of memory, such as to
+    /// minimize the number of calls to the OS to read the memory of a process.
+    /// </summary>
     internal class ReadGroup : NormalizedRegion
     {
         /// <summary>
@@ -49,9 +53,10 @@
         /// </summary>
         public DataType LabelDataType { get; set; }
 
-        public IList<SnapshotRegion> ResultRegions { get; set; }
-
-        public IEnumerable<SnapshotRegion> SnapshotRegions;
+        /// <summary>
+        /// Gets or sets the collection of snapshot regions within this read group.
+        /// </summary>
+        public IEnumerable<SnapshotRegion> SnapshotRegions { get; set; }
 
         /// <summary>
         /// Reads all memory for this memory region.

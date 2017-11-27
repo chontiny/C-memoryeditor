@@ -24,12 +24,24 @@
             this.RegionSize = regionSize;
         }
 
+        /// <summary>
+        /// Gets or sets the readgroup to which this snapshot region reads it's values.
+        /// </summary>
         public ReadGroup ReadGroup { get; set; }
 
+        /// <summary>
+        /// Gets or sets the offset from the base of this snapshot's read group.
+        /// </summary>
         public UInt64 ReadGroupOffset { get; set; }
 
+        /// <summary>
+        /// Gets the size of this snapshot in bytes.
+        /// </summary>
         public UInt64 RegionSize { get; set; }
 
+        /// <summary>
+        /// Gets the base address of the region.
+        /// </summary>
         public IntPtr BaseAddress
         {
             get
@@ -38,6 +50,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the end address of the region.
+        /// </summary>
         public IntPtr EndAddress
         {
             get
@@ -51,6 +66,9 @@
         /// </summary>
         public UInt64 BaseElementIndex { get; set; }
 
+        /// <summary>
+        /// Gets the number of elements contained in this snapshot.
+        /// </summary>
         public UInt64 ElementCount
         {
             get
@@ -64,14 +82,19 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementComparer this[UInt32 index]
+        public SnapshotElementIndexer this[UInt32 index]
         {
             get
             {
-                return new SnapshotElementComparer(parent: this, elementIndex: index);
+                return new SnapshotElementIndexer(parent: this, elementIndex: index);
             }
         }
 
+        /// <summary>
+        /// Compares this snapshot region against the given
+        /// </summary>
+        /// <param name="scanConstraints"></param>
+        /// <returns></returns>
         public IList<SnapshotRegion> CompareAll(ScanConstraintManager scanConstraints)
         {
             if (!this.ReadGroup.CanCompare(scanConstraints.HasRelativeConstraint()))

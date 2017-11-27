@@ -159,6 +159,9 @@
         /// </summary>
         private IList<SnapshotRegion> ResultRegions { get; set; }
 
+        /// <summary>
+        /// Compares the parent snapshot region at the current vector index.
+        /// </summary>
         public void Compare()
         {
             Vector<Byte> scanResults = this.VectorCompare();
@@ -278,6 +281,9 @@
             return this.ResultRegions;
         }
 
+        /// <summary>
+        /// Gets the current values at the current vector read index.
+        /// </summary>
         private Vector<Byte> CurrentValues
         {
             get
@@ -286,6 +292,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the previous values at the current vector read index.
+        /// </summary>
         private Vector<Byte> PreviousValues
         {
             get
@@ -501,7 +510,7 @@
                         vectorCompare = () => this.LessThanValue(scanConstraint.ConstraintValue);
                         break;
                     case ScanConstraint.ConstraintType.LessThanOrEqual:
-                        vectorCompare = () => this.LessThanValue(scanConstraint.ConstraintValue);
+                        vectorCompare = () => this.LessThanOrEqualToValue(scanConstraint.ConstraintValue);
                         break;
                     case ScanConstraint.ConstraintType.NotScientificNotation:
                         vectorCompare = this.IsScientificNotation;
