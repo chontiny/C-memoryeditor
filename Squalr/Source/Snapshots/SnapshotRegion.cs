@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Squalr.Source.Scanners.ScanConstraints;
-    using SqualrCore.Source.Engine;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -102,20 +101,16 @@
                 return null;
             }
 
-            UInt32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
-
-            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(
-                region: this,
-                vectorSize: vectorSize,
-                scanConstraints: scanConstraints);
-
-            while (vectorComparer.VectorReadIndex < this.RegionSize)
+            /*if (Gpu.Default != null)
             {
-                vectorComparer.Compare();
-                vectorComparer.VectorReadIndex += vectorSize;
-            }
+                SnapshotElementGpuComparer gpuComparer = new SnapshotElementGpuComparer(region: this, scanConstraints: scanConstraints);
 
-            return vectorComparer.GatherCollectedRegions();
+                return gpuComparer.Compare();
+            }*/
+
+            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: this, scanConstraints: scanConstraints);
+
+            return vectorComparer.Compare();
         }
 
         /// <summary>

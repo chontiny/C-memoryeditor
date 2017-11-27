@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Scanners.ScanConstraints;
+    using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
@@ -18,16 +19,14 @@
         /// Initializes a new instance of the <see cref="SnapshotElementVectorComparer" /> class.
         /// </summary>
         /// <param name="region">The parent region that contains this element.</param>
-        /// <param name="scanConstraints">The constraint to use for the element quick action.</param>
-        /// <param name="compareActionValue">The value to use for the element quick action.</param>
-        /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
+        /// <param name="vectorSize">The size of vectors on the system.</param>
+        /// <param name="scanConstraints">The set of constraints to use for the element comparisons.</param>
         public unsafe SnapshotElementVectorComparer(
             SnapshotRegion region,
-            UInt32 vectorSize,
             ScanConstraintManager scanConstraints)
         {
             this.Region = region;
-            this.VectorSize = vectorSize;
+            this.VectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
             this.VectorReadBase = this.Region.ReadGroupOffset - (this.Region.ReadGroupOffset % this.VectorSize).ToUInt32();
             this.VectorReadIndex = 0;
             this.DataTypeSize = unchecked((UInt32)Conversions.SizeOf(this.Region.ReadGroup.ElementDataType));
@@ -43,16 +42,6 @@
         /// Gets an action based on the element iterator scan constraint.
         /// </summary>
         public Func<Vector<Byte>> VectorCompare { get; private set; }
-
-        /// <summary>
-        /// Gets a function to load the current value.
-        /// </summary>
-        public Func<Vector<Byte>> LoadCurrentValue { get; private set; }
-
-        /// <summary>
-        /// Gets a function to load the previous value.
-        /// </summary>
-        public Func<Vector<Byte>> LoadPreviousValue { get; private set; }
 
         /// <summary>
         /// Gets a function which determines if this element has changed.
@@ -115,11 +104,6 @@
         public Func<Object, Vector<Byte>> DecreasedByValue { get; private set; }
 
         /// <summary>
-        /// Gets a function which determines if the value is in scientific notation. Only applicable for Single and Double data types.
-        /// </summary>
-        public Func<Vector<Byte>> IsScientificNotation { get; private set; }
-
-        /// <summary>
         /// Gets or sets the parent snapshot region.
         /// </summary>
         private SnapshotRegion Region { get; set; }
@@ -162,49 +146,56 @@
         /// <summary>
         /// Compares the parent snapshot region at the current vector index.
         /// </summary>
-        public void Compare()
+        public IList<SnapshotRegion> Compare()
         {
-            Vector<Byte> scanResults = this.VectorCompare();
+            while (this.VectorReadIndex < this.Region.RegionSize)
+            {
+                Vector<Byte> scanResults = this.VectorCompare();
 
-            // Check all vector results true (vector of 0xFF's, which is how SSE instructions store true)
-            if (Vector.GreaterThanAll(scanResults, Vector<Byte>.Zero))
-            {
-                this.RunLength += this.VectorSize;
-                this.Encoding = true;
-            }
-            // Check all vector results false
-            else if (Vector.EqualsAll(scanResults, Vector<Byte>.Zero))
-            {
-                if (this.Encoding)
+                // Check all vector results true (vector of 0xFF's, which is how SSE instructions store true)
+                if (Vector.GreaterThanAll(scanResults, Vector<Byte>.Zero))
                 {
-                    this.ResultRegions.Add(new SnapshotRegion(this.Region.ReadGroup, this.VectorReadBase + this.VectorReadIndex - this.RunLength, this.RunLength));
-                    this.RunLength = 0;
-                    this.Encoding = false;
+                    this.RunLength += this.VectorSize;
+                    this.Encoding = true;
                 }
-            }
-            // Otherwise the vector contains a mixture of true and false
-            else
-            {
-                for (UInt32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
+                // Check all vector results false
+                else if (Vector.EqualsAll(scanResults, Vector<Byte>.Zero))
                 {
-                    // Vector result was false
-                    if (scanResults[unchecked((Int32)index)] == 0)
+                    if (this.Encoding)
                     {
-                        if (this.Encoding)
+                        this.ResultRegions.Add(new SnapshotRegion(this.Region.ReadGroup, this.VectorReadBase + this.VectorReadIndex - this.RunLength, this.RunLength));
+                        this.RunLength = 0;
+                        this.Encoding = false;
+                    }
+                }
+                // Otherwise the vector contains a mixture of true and false
+                else
+                {
+                    for (UInt32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
+                    {
+                        // Vector result was false
+                        if (scanResults[unchecked((Int32)index)] == 0)
                         {
-                            this.ResultRegions.Add(new SnapshotRegion(this.Region.ReadGroup, this.VectorReadBase + this.VectorReadIndex + index - this.RunLength, this.RunLength));
-                            this.RunLength = 0;
-                            this.Encoding = false;
+                            if (this.Encoding)
+                            {
+                                this.ResultRegions.Add(new SnapshotRegion(this.Region.ReadGroup, this.VectorReadBase + this.VectorReadIndex + index - this.RunLength, this.RunLength));
+                                this.RunLength = 0;
+                                this.Encoding = false;
+                            }
+                        }
+                        // Vector result was true
+                        else
+                        {
+                            this.RunLength += this.DataTypeSize;
+                            this.Encoding = true;
                         }
                     }
-                    // Vector result was true
-                    else
-                    {
-                        this.RunLength += this.DataTypeSize;
-                        this.Encoding = true;
-                    }
                 }
+
+                this.VectorReadIndex += this.VectorSize;
             }
+
+            return this.GatherCollectedRegions();
         }
 
         /// <summary>
@@ -323,7 +314,6 @@
                     this.LessThanOrEqualToValue = (value) => { return Vector.LessThanOrEqual(this.CurrentValues, new Vector<Byte>(unchecked((Byte)value))); };
                     this.IncreasedByValue = (value) => { return Vector.Equals(this.CurrentValues, Vector.Add(this.PreviousValues, new Vector<Byte>(unchecked((Byte)value)))); };
                     this.DecreasedByValue = (value) => { return Vector.Equals(this.CurrentValues, Vector.Subtract(this.PreviousValues, new Vector<Byte>(unchecked((Byte)value)))); };
-                    this.IsScientificNotation = () => { return new Vector<Byte>(); };
                     break;
                 case DataType type when type == DataTypes.SByte:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.AsVectorSByte(this.PreviousValues))); };
@@ -338,7 +328,6 @@
                     this.LessThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.LessThanOrEqual(Vector.AsVectorSByte(this.CurrentValues), new Vector<SByte>(unchecked((SByte)value)))); };
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.Add(Vector.AsVectorSByte(this.PreviousValues), new Vector<SByte>(unchecked((SByte)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.Subtract(Vector.AsVectorSByte(this.PreviousValues), new Vector<SByte>(unchecked((SByte)value))))); };
-                    this.IsScientificNotation = () => { return new Vector<Byte>(); };
                     break;
                 case DataType type when type == DataTypes.Int16:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.AsVectorInt16(this.PreviousValues))); };
@@ -353,7 +342,6 @@
                     this.LessThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.LessThanOrEqual(Vector.AsVectorInt16(this.CurrentValues), new Vector<Int16>(unchecked((Int16)value)))); };
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.Add(Vector.AsVectorInt16(this.PreviousValues), new Vector<Int16>(unchecked((Int16)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.Subtract(Vector.AsVectorInt16(this.PreviousValues), new Vector<Int16>(unchecked((Int16)value))))); };
-                    this.IsScientificNotation = () => { return new Vector<Byte>(); };
                     break;
                 case DataType type when type == DataTypes.Int32:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.AsVectorInt32(this.PreviousValues))); };
@@ -368,7 +356,6 @@
                     this.LessThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.LessThanOrEqual(Vector.AsVectorInt32(this.CurrentValues), new Vector<Int32>(unchecked((Int32)value)))); };
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.Add(Vector.AsVectorInt32(this.PreviousValues), new Vector<Int32>(unchecked((Int32)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.Subtract(Vector.AsVectorInt32(this.PreviousValues), new Vector<Int32>(unchecked((Int32)value))))); };
-                    this.IsScientificNotation = () => { return new Vector<Byte>(); };
                     break;
                 case DataType type when type == DataTypes.Int64:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.AsVectorInt64(this.PreviousValues))); };
@@ -383,7 +370,6 @@
                     this.LessThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.LessThanOrEqual(Vector.AsVectorInt64(this.CurrentValues), new Vector<Int64>(unchecked((Int64)value)))); };
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.Add(Vector.AsVectorInt64(this.PreviousValues), new Vector<Int64>(unchecked((Int64)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.Subtract(Vector.AsVectorInt64(this.PreviousValues), new Vector<Int64>(unchecked((Int64)value))))); };
-                    this.IsScientificNotation = () => { return new Vector<Byte>(); };
                     break;
                 case DataType type when type == DataTypes.UInt16:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.AsVectorUInt16(this.PreviousValues))); };
@@ -398,7 +384,6 @@
                     this.LessThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.LessThanOrEqual(Vector.AsVectorUInt16(this.CurrentValues), new Vector<UInt16>(unchecked((UInt16)value)))); };
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.Add(Vector.AsVectorUInt16(this.PreviousValues), new Vector<UInt16>(unchecked((UInt16)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.Subtract(Vector.AsVectorUInt16(this.PreviousValues), new Vector<UInt16>(unchecked((UInt16)value))))); };
-                    this.IsScientificNotation = () => { return new Vector<Byte>(); };
                     break;
                 case DataType type when type == DataTypes.UInt32:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.AsVectorUInt32(this.PreviousValues))); };
@@ -413,7 +398,6 @@
                     this.LessThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.LessThanOrEqual(Vector.AsVectorUInt32(this.CurrentValues), new Vector<UInt32>(unchecked((UInt32)value)))); };
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.Add(Vector.AsVectorUInt32(this.PreviousValues), new Vector<UInt32>(unchecked((UInt32)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.Subtract(Vector.AsVectorUInt32(this.PreviousValues), new Vector<UInt32>(unchecked((UInt32)value))))); };
-                    this.IsScientificNotation = () => { return new Vector<Byte>(); };
                     break;
                 case DataType type when type == DataTypes.UInt64:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.AsVectorUInt64(this.PreviousValues))); };
@@ -428,7 +412,6 @@
                     this.LessThanOrEqualToValue = (value) => { return Vector.AsVectorByte(Vector.LessThanOrEqual(Vector.AsVectorUInt64(this.CurrentValues), new Vector<UInt64>(unchecked((UInt64)value)))); };
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.Add(Vector.AsVectorUInt64(this.PreviousValues), new Vector<UInt64>(unchecked((UInt64)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.Subtract(Vector.AsVectorUInt64(this.PreviousValues), new Vector<UInt64>(unchecked((UInt64)value))))); };
-                    this.IsScientificNotation = () => { return new Vector<Byte>(); };
                     break;
                 case DataType type when type == DataTypes.Single:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), Vector.AsVectorSingle(this.PreviousValues))); };
@@ -511,9 +494,6 @@
                         break;
                     case ScanConstraint.ConstraintType.LessThanOrEqual:
                         vectorCompare = () => this.LessThanOrEqualToValue(scanConstraint.ConstraintValue);
-                        break;
-                    case ScanConstraint.ConstraintType.NotScientificNotation:
-                        vectorCompare = this.IsScientificNotation;
                         break;
                     default:
                         throw new Exception("Unknown constraint type");

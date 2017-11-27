@@ -110,8 +110,6 @@
                         return "Less Than";
                     case ConstraintType.LessThanOrEqual:
                         return "Less Than Or Equal";
-                    case ConstraintType.NotScientificNotation:
-                        return "Not Scientific Notation";
                     case ConstraintType.Changed:
                         return "Changed";
                     case ConstraintType.Unchanged:
@@ -151,8 +149,6 @@
                         return Images.LessThan;
                     case ConstraintType.LessThanOrEqual:
                         return Images.LessThanOrEqual;
-                    case ConstraintType.NotScientificNotation:
-                        return Images.ENotation;
                     case ConstraintType.Changed:
                         return Images.Changed;
                     case ConstraintType.Unchanged:
@@ -242,7 +238,6 @@
                 case ConstraintType.GreaterThanOrEqual:
                 case ConstraintType.LessThan:
                 case ConstraintType.LessThanOrEqual:
-                case ConstraintType.NotScientificNotation:
                     return false;
                 default:
                     throw new ArgumentException();
@@ -266,7 +261,6 @@
                 case ConstraintType.IncreasedByX:
                 case ConstraintType.DecreasedByX:
                     return true;
-                case ConstraintType.NotScientificNotation:
                 case ConstraintType.Changed:
                 case ConstraintType.Unchanged:
                 case ConstraintType.Increased:
@@ -360,11 +354,6 @@
             /// Comparative: The value must be less than or equal the other value.
             /// </summary>
             LessThanOrEqual,
-
-            /// <summary>
-            /// Special: Only applies to singles and doubles. The value must not be in E notation.
-            /// </summary>
-            NotScientificNotation,
         }
     }
     //// End class

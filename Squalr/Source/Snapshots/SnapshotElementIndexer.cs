@@ -22,7 +22,7 @@
             SnapshotRegion parent,
             UInt32 elementIndex = 0)
         {
-            this.Parent = parent;
+            this.Region = parent;
             this.ElementIndex = elementIndex;
         }
 
@@ -33,7 +33,7 @@
         {
             get
             {
-                return this.Parent.ReadGroup.BaseAddress.Add(this.Parent.ReadGroupOffset).Add(this.ElementIndex * this.Parent.ReadGroup.Alignment);
+                return this.Region.ReadGroup.BaseAddress.Add(this.Region.ReadGroupOffset).Add(this.ElementIndex * this.Region.ReadGroup.Alignment);
             }
         }
 
@@ -44,35 +44,30 @@
         {
             get
             {
-                return this.Parent.ReadGroup.ElementLabels[this.ElementIndex];
+                return this.Region.ReadGroup.ElementLabels[this.ElementIndex];
             }
 
             set
             {
-                this.Parent.ReadGroup.ElementLabels[this.ElementIndex] = value;
+                this.Region.ReadGroup.ElementLabels[this.ElementIndex] = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the parent snapshot region.
         /// </summary>
-        private SnapshotRegion Parent { get; set; }
+        private SnapshotRegion Region { get; set; }
 
         /// <summary>
         /// Gets the index of this element.
         /// </summary>
         private unsafe UInt32 ElementIndex { get; set; }
 
-        /// <summary>
-        /// Gets or sets the data type of this element.
-        /// </summary>
-        private DataType DataType { get; set; }
-
         public Object LoadCurrentValue()
         {
-            fixed (Byte* pointerBase = &this.Parent.ReadGroup.CurrentValues[this.Parent.ReadGroupOffset + this.ElementIndex])
+            fixed (Byte* pointerBase = &this.Region.ReadGroup.CurrentValues[this.Region.ReadGroupOffset + this.ElementIndex])
             {
-                switch (this.DataType)
+                switch (this.Region.ReadGroup.ElementDataType)
                 {
                     case DataType type when type == DataTypes.Byte:
                         return *pointerBase;
@@ -102,9 +97,9 @@
 
         public Object LoadPreviousValue()
         {
-            fixed (Byte* pointerBase = &this.Parent.ReadGroup.PreviousValues[this.Parent.ReadGroupOffset + this.ElementIndex])
+            fixed (Byte* pointerBase = &this.Region.ReadGroup.PreviousValues[this.Region.ReadGroupOffset + this.ElementIndex])
             {
-                switch (this.DataType)
+                switch (this.Region.ReadGroup.ElementDataType)
                 {
                     case DataType type when type == DataTypes.Byte:
                         return *pointerBase;
@@ -139,7 +134,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Object GetElementLabel()
         {
-            return this.Parent.ReadGroup.ElementLabels == null ? null : this.Parent.ReadGroup.ElementLabels[this.ElementIndex];
+            return this.Region.ReadGroup.ElementLabels == null ? null : this.Region.ReadGroup.ElementLabels[this.ElementIndex];
         }
 
         /// <summary>
@@ -149,7 +144,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void SetElementLabel(Object newLabel)
         {
-            this.Parent.ReadGroup.ElementLabels[this.ElementIndex] = newLabel;
+            this.Region.ReadGroup.ElementLabels[this.ElementIndex] = newLabel;
         }
 
         /// <summary>
@@ -159,7 +154,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Boolean HasCurrentValue()
         {
-            if (this.Parent.ReadGroup.CurrentValues.IsNullOrEmpty())
+            if (this.Region.ReadGroup.CurrentValues.IsNullOrEmpty())
             {
                 return false;
             }
@@ -174,7 +169,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Boolean HasPreviousValue()
         {
-            if (this.Parent.ReadGroup.PreviousValues.IsNullOrEmpty())
+            if (this.Region.ReadGroup.PreviousValues.IsNullOrEmpty())
             {
                 return false;
             }

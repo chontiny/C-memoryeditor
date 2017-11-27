@@ -148,7 +148,7 @@
 
                     while (enumerator.MoveNext())
                     {
-                        enumerator.Current.Compare();
+                        // enumerator.Current.Compare();
 
                         throw new NotImplementedException("Maybe some sort of lambda to update labels?");
                         ((dynamic)enumerator).ElementLabel++;
@@ -177,7 +177,7 @@
 
                     while (enumerator.MoveNext())
                     {
-                        enumerator.Current.Compare();
+                        // enumerator.Current.Compare();
 
                         throw new NotImplementedException("Maybe some sort of lambda to update labels?");
                         ((dynamic)enumerator).ElementLabel--;
