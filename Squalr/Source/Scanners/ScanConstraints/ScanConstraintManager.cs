@@ -50,7 +50,7 @@
         {
             ScanConstraintManager scanConstraintManager = new ScanConstraintManager();
             scanConstraintManager.SetElementType(this.ElementType);
-            this.ValueConstraints.ForEach(constraints => scanConstraintManager.AddConstraint(constraints));
+            this.ValueConstraints.ForEach(constraint => scanConstraintManager.AddConstraint(constraint.Clone()));
 
             return scanConstraintManager;
         }

@@ -9,6 +9,7 @@
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -109,11 +110,11 @@
 
                     if (isProcess32Bit)
                     {
-                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementIndexer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotElementVectorComparer element = enumerator.Current;
-                            throw new NotImplementedException();
-                            UInt32 value = 0; // unchecked((UInt32)element.LoadCurrentValue());
+                            SnapshotElementIndexer element = enumerator.Current;
+
+                            UInt32 value = unchecked((UInt32)element.LoadCurrentValue());
 
                             // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
                             if (value < UInt16.MaxValue || value % sizeof(UInt32) != 0)
@@ -126,22 +127,22 @@
                             {
                                 if (moduleSnapshot.ContainsAddress(value))
                                 {
-                                    // this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                                 else
                                 {
-                                    // this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                             }
                         }
                     }
                     else
                     {
-                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementIndexer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                         {
-                            SnapshotElementVectorComparer element = enumerator.Current;
-                            throw new NotImplementedException();
-                            UInt64 value = 0;// unchecked((UInt64)element.LoadCurrentValue());
+                            SnapshotElementIndexer element = enumerator.Current;
+
+                            UInt64 value = unchecked((UInt64)element.LoadCurrentValue());
 
                             // Enforce 8-byte alignment of destination, and filter out small (invalid) pointers
                             if (value < UInt16.MaxValue || value % sizeof(UInt64) != 0)
@@ -154,11 +155,11 @@
                             {
                                 if (moduleSnapshot.ContainsAddress(value))
                                 {
-                                    //  this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                                 else
                                 {
-                                    //   this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
                                 }
                             }
                         }

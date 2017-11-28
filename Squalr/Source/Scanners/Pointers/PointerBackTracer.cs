@@ -92,8 +92,6 @@
             NormalizedRegion destinationRegion = new NormalizedRegion(baseAddress: this.TargetAddress.ToIntPtr(), regionSize: 1);
             destinationRegion.Expand(this.PointerRadius.ToUInt64());
 
-            throw new NotImplementedException("Destination region used to belong to the snapshot below. This needs reworking");
-
             // Start with the previous level as the destination (as this is a back-tracing algorithm, we work backwards from the destination)
             Snapshot previousLevelSnapshot = new Snapshot();
 
@@ -121,7 +119,7 @@
                         processedPointers++;
 
                         // Limit how often we update the progress
-                        if (processedPointers % 10000 == 0)
+                        if (processedPointers % 8192 == 0)
                         {
                             this.UpdateProgress((processedPointers / this.PointerDepth).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
                         }

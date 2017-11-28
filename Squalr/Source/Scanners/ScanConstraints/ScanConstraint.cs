@@ -168,6 +168,15 @@
         }
 
         /// <summary>
+        /// Clones this scan constraint.
+        /// </summary>
+        /// <returns>The cloned scan constraint.</returns>
+        public ScanConstraint Clone()
+        {
+            return new ScanConstraint(this.Constraint, this.ConstraintValue);
+        }
+
+        /// <summary>
         /// Determines if this constraint conflicts with another constraint.
         /// </summary>
         /// <param name="other">The other scan constraint.</param>

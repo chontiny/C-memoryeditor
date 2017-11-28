@@ -182,7 +182,7 @@
         /// </summary>
         /// <param name="elementIndex">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementComparer this[UInt64 elementIndex]
+        public SnapshotElementIndexer this[UInt64 elementIndex]
         {
             get
             {

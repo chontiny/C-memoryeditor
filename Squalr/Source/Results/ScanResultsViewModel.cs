@@ -388,7 +388,7 @@
 
                 for (UInt64 index = startIndex; index < endIndex; index++)
                 {
-                    SnapshotElementComparer element = snapshot[index];
+                    SnapshotElementIndexer element = snapshot[index];
 
                     String label = element.GetElementLabel() != null ? element.GetElementLabel().ToString() : String.Empty;
                     Object currentValue = element.HasCurrentValue() ? element.LoadCurrentValue() : null;

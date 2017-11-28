@@ -81,11 +81,50 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementComparer this[UInt32 index]
+        public SnapshotElementIndexer this[UInt32 index]
         {
             get
             {
-                return new SnapshotElementComparer(parent: this, elementIndex: index);
+                return new SnapshotElementIndexer(region: this, elementIndex: index);
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumerator for an element reference within this snapshot region.
+        /// </summary>
+        /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
+        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
+        /// <param name="compareActionValue">The value to use for the element quick action.</param>
+        /// <returns>The enumerator for an element reference within this snapshot region.</returns>
+        public IEnumerator<SnapshotElementIndexer> IterateElements()
+        {
+            UInt64 elementCount = this.ElementCount;
+            SnapshotElementIndexer snapshotElement = new SnapshotElementIndexer(region: this);
+
+            for (snapshotElement.ElementIndex = 0; snapshotElement.ElementIndex < elementCount; snapshotElement.ElementIndex++)
+            {
+                yield return snapshotElement;
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumerator for an element reference within this snapshot region.
+        /// </summary>
+        /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
+        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
+        /// <param name="compareActionValue">The value to use for the element quick action.</param>
+        /// <returns>The enumerator for an element reference within this snapshot region.</returns>
+        public IEnumerator<SnapshotElementComparer> IterateComparer(
+            SnapshotElementComparer.PointerIncrementMode pointerIncrementMode,
+            ScanConstraintManager scanConstraintManager)
+        {
+            UInt64 elementCount = this.ElementCount;
+            SnapshotElementComparer snapshotElement = new SnapshotElementComparer(region: this, pointerIncrementMode: pointerIncrementMode, scanConstraintManager: scanConstraintManager);
+
+            for (UInt64 elementIndex = 0; elementIndex < elementCount; elementIndex++)
+            {
+                yield return snapshotElement;
+                snapshotElement.IncrementPointers();
             }
         }
 
@@ -111,20 +150,6 @@
             SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: this, scanConstraints: scanConstraints);
 
             return vectorComparer.Compare();
-        }
-
-        /// <summary>
-        /// Gets the enumerator for an element reference within this snapshot region.
-        /// </summary>
-        /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
-        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
-        /// <param name="compareActionValue">The value to use for the element quick action.</param>
-        /// <returns>The enumerator for an element reference within this snapshot region.</returns>
-        public IEnumerator<SnapshotElementVectorComparer> IterateElements(
-            ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
-            Object compareActionValue = null)
-        {
-            yield break;
         }
     }
     //// End class

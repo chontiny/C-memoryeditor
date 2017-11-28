@@ -109,15 +109,14 @@
                             return;
                         }
 
-                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.ValuesOnly, null); enumerator.MoveNext();)
                         {
-                            SnapshotElementVectorComparer element = enumerator.Current;
+                            SnapshotElementComparer element = enumerator.Current;
 
-                            throw new NotImplementedException();
                             // Perform the comparison based on the current scan constraint
-                            // if (element.Compare())
+                            if (element.Compare())
                             {
-                                // element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
+                                element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
                             }
                         }
 
