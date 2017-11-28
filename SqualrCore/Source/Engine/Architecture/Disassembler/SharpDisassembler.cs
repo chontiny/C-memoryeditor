@@ -25,7 +25,12 @@
         /// <returns>An array of bytes containing the assembly code.</returns>
         public IEnumerable<NormalizedInstruction> Disassemble(Byte[] bytes, Boolean isProcess32Bit, IntPtr baseAddress)
         {
-            this.disassembler = new Disassembler(bytes, isProcess32Bit ? ArchitectureMode.x86_32 : ArchitectureMode.x86_64, baseAddress.ToUInt64());
+            this.disassembler = new Disassembler(
+                code: bytes,
+                architecture: isProcess32Bit ? ArchitectureMode.x86_32 : ArchitectureMode.x86_64,
+                address: baseAddress.ToUInt64(),
+                copyBinaryToInstruction: true);
+
             IEnumerable<Instruction> instructions = this.disassembler.Disassemble();
 
             return instructions.Select(instruction =>

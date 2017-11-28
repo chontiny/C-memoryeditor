@@ -361,7 +361,7 @@
     <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
     <Compile Include="Source\Snapshots\ReadGroup.cs" />
     <Compile Include="Source\Snapshots\Snapshot.cs" />
-    <Compile Include="Source\Snapshots\SnapshotElementIndexer.cs" />
+    <Compile Include="Source\Snapshots\SnapshotElementComparer.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementGpuComparer.cs" />
     <Compile Include="Source\Snapshots\SnapshotElementVectorComparer.cs" />
     <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />

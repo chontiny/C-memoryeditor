@@ -81,11 +81,11 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementIndexer this[UInt32 index]
+        public SnapshotElementComparer this[UInt32 index]
         {
             get
             {
-                return new SnapshotElementIndexer(parent: this, elementIndex: index);
+                return new SnapshotElementComparer(parent: this, elementIndex: index);
             }
         }
 

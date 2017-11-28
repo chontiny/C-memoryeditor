@@ -154,7 +154,7 @@
                     processedPointerRoots++;
 
                     // Limit how often we update the progress
-                    if (processedPointerRoots % 10 == 0)
+                    if (processedPointerRoots % 32 == 0)
                     {
                         this.UpdateProgress(processedPointerRoots, this.ScannedPointers.PointerRoots.Count, canFinalize: false);
                     }

@@ -173,7 +173,7 @@
                         processedRegions++;
 
                         // Limit how often we update the progress
-                        if (processedRegions % 10 == 0)
+                        if (processedRegions % 32 == 0)
                         {
                             this.UpdateProgress(processedRegions, this.Snapshot.RegionCount, canFinalize: false);
                         }
