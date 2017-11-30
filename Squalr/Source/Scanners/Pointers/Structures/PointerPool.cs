@@ -88,19 +88,15 @@
 
         public Snapshot ToSnapshot(UInt32 pointerRadius)
         {
-            Snapshot pointerPoolSnapshot = new Snapshot();
-
-            IList<SnapshotRegion> levelRegions = new List<SnapshotRegion>();
+            IList<ReadGroup> levelRegions = new List<ReadGroup>();
 
             foreach (KeyValuePair<UInt64, UInt64> pointer in this)
             {
-                throw new NotImplementedException("Snapshots aint like this no more");
-                //SnapshotRegion levelRegion = new SnapshotRegion(pointer.Key.ToIntPtr(), 1);
-                //levelRegion.Expand(pointerRadius);
-                //levelRegions.Add(levelRegion);
+                ReadGroup levelRegion = new ReadGroup(pointer.Key.ToIntPtr().Subtract(pointerRadius, wrapAround: false), pointerRadius);
+                levelRegions.Add(levelRegion);
             }
 
-            pointerPoolSnapshot.AddSnapshotRegions(levelRegions);
+            Snapshot pointerPoolSnapshot = new Snapshot(null, levelRegions);
 
             return pointerPoolSnapshot;
         }

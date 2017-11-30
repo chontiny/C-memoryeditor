@@ -26,11 +26,11 @@
         /// <summary>
         /// Gets the base address of this element.
         /// </summary>
-        public IntPtr BaseAddress
+        public UInt64 BaseAddress
         {
             get
             {
-                return this.Region.ReadGroup.BaseAddress.Add(this.Region.ReadGroupOffset).Add(this.ElementIndex * this.Region.ReadGroup.Alignment);
+                return this.Region.ReadGroup.BaseAddress.Add(this.Region.ReadGroupOffset).Add(this.ElementIndex * this.Region.ReadGroup.Alignment).ToUInt64();
             }
         }
 

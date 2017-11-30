@@ -33,7 +33,6 @@
             isRepeated: false,
             trackProgress: true)
         {
-            this.ProgressLock = new Object();
             this.CollectedPointersCallback = collectedPointersCallback;
 
             this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromUserModeMemory, callback: this.SetSnapshot));
@@ -58,11 +57,6 @@
         /// Gets or sets the callback function to which we pass the collected pointers.
         /// </summary>
         private Action<PointerPool, PointerPool> CollectedPointersCallback;
-
-        /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
 
         /// <summary>
         /// Called when the scheduled task starts.
@@ -95,91 +89,97 @@
             // Create the base snapshot from the loaded modules
             IEnumerable<NormalizedRegion> modules = EngineCore.GetInstance().VirtualMemory.GetModules();
 
-            Snapshot moduleSnapshot = new Snapshot();
+            Snapshot moduleSnapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromModules);
+            moduleSnapshot.ReadAllMemory();
 
-            // Process the allowed amount of chunks from the priority queue
-            Parallel.ForEach(
-                this.Snapshot.SnapshotRegions,
-                SettingsViewModel.GetInstance().ParallelSettingsFastest,
-                (region) =>
-                {
-                    if (region.ReadGroup?.CurrentValues == null)
-                    {
-                        return;
-                    }
+            Snapshot heapSnapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromHeap);
+            heapSnapshot.ReadAllMemory();
 
-                    if (isProcess32Bit)
+            if (EngineCore.GetInstance().Graphics.HasGpu())
+            {
+                PointerCollectorGpu pointerCollectorGpu = new PointerCollectorGpu();
+                pointerCollectorGpu.CollectPointers(moduleSnapshot, heapSnapshot, UInt16.MaxValue, EngineCore.GetInstance().VirtualMemory.GetUserModeRegion().EndAddress.ToUInt64());
+            }
+            else
+            {
+                // Process the allowed amount of chunks from the priority queue
+                Parallel.ForEach(
+                    this.Snapshot.SnapshotRegions,
+                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                    (region) =>
                     {
-                        for (IEnumerator<SnapshotElementIndexer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        if (region.ReadGroup?.CurrentValues == null)
                         {
-                            SnapshotElementIndexer element = enumerator.Current;
+                            return;
+                        }
 
-                            UInt32 value = unchecked((UInt32)element.LoadCurrentValue());
-
-                            // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
-                            if (value < UInt16.MaxValue || value % sizeof(UInt32) != 0)
+                        if (isProcess32Bit)
+                        {
+                            for (IEnumerator<SnapshotElementIndexer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                             {
-                                continue;
-                            }
+                                SnapshotElementIndexer element = enumerator.Current;
 
-                            // Check if it is possible that this pointer is valid, if so keep it
-                            if (this.Snapshot.ContainsAddress(value))
-                            {
-                                if (moduleSnapshot.ContainsAddress(value))
+                                UInt32 value = unchecked((UInt32)element.LoadCurrentValue());
+
+                                // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
+                                if (value < UInt16.MaxValue || value % sizeof(UInt32) != 0)
                                 {
-                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                    continue;
                                 }
-                                else
+
+                                // Check if it is possible that this pointer is valid, if so keep it
+                                if (this.Snapshot.ContainsAddress(value))
                                 {
-                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                    if (moduleSnapshot.ContainsAddress(value))
+                                    {
+                                        this.ModulePointers[element.BaseAddress] = value;
+                                    }
+                                    else
+                                    {
+                                        this.HeapPointers[element.BaseAddress] = value;
+                                    }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
-                        for (IEnumerator<SnapshotElementIndexer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        else
                         {
-                            SnapshotElementIndexer element = enumerator.Current;
-
-                            UInt64 value = unchecked((UInt64)element.LoadCurrentValue());
-
-                            // Enforce 8-byte alignment of destination, and filter out small (invalid) pointers
-                            if (value < UInt16.MaxValue || value % sizeof(UInt64) != 0)
+                            for (IEnumerator<SnapshotElementIndexer> enumerator = region.IterateElements(); enumerator.MoveNext();)
                             {
-                                continue;
-                            }
+                                SnapshotElementIndexer element = enumerator.Current;
 
-                            // Check if it is possible that this pointer is valid, if so keep it
-                            if (this.Snapshot.ContainsAddress(value))
-                            {
-                                if (moduleSnapshot.ContainsAddress(value))
+                                UInt64 value = unchecked((UInt64)element.LoadCurrentValue());
+
+                                // Enforce 8-byte alignment of destination, and filter out small (invalid) pointers
+                                if (value < UInt16.MaxValue || value % sizeof(UInt64) != 0)
                                 {
-                                    this.ModulePointers[element.BaseAddress.ToUInt64()] = value;
+                                    continue;
                                 }
-                                else
+
+                                // Check if it is possible that this pointer is valid, if so keep it
+                                if (this.Snapshot.ContainsAddress(value))
                                 {
-                                    this.HeapPointers[element.BaseAddress.ToUInt64()] = value;
+                                    if (moduleSnapshot.ContainsAddress(value))
+                                    {
+                                        this.ModulePointers[element.BaseAddress] = value;
+                                    }
+                                    else
+                                    {
+                                        this.HeapPointers[element.BaseAddress] = value;
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    // Clear the saved values, we do not need them now
-                    region.ReadGroup.SetCurrentValues(null);
+                        // Clear the saved values, we do not need them now
+                        region.ReadGroup.SetCurrentValues(null);
 
-                    // Update scan progress
-                    lock (this.ProgressLock)
-                    {
-                        processedRegions++;
-
-                        // Limit how often we update the progress
-                        if (processedRegions % 32 == 0)
+                        // Update scan progress
+                        if (Interlocked.Increment(ref processedRegions) % 32 == 0)
                         {
                             this.UpdateProgress(processedRegions, this.Snapshot.RegionCount, canFinalize: false);
                         }
-                    }
-                });
+                    });
+            }
         }
 
         /// <summary>

@@ -11,6 +11,10 @@
 
     /// <summary>
     /// Class for comparing snapshot regions.
+    /// 
+    /// Algorithm steps (simplified version of https://erkaman.github.io/posts/cuda_rle.html)
+    /// - Compute backwards mask. Instead of an RLE check where (previous == current), we use our scan comparison.
+    /// - Compact the backwards mask
     /// </summary>
     [GpuManaged]
     internal class SnapshotElementGpuComparer
@@ -228,6 +232,16 @@
             return this.ResultRegions;
         }
 
+        public static void CompactKernel(Int32[] compactMask, Int32[] backwardMask)
+        {
+            Int32 start = blockIdx.x * blockDim.x + threadIdx.x;
+            Int32 stride = gridDim.x * blockDim.x;
+
+            for (Int32 i = start; i < backwardMask.Length; i += stride)
+            {
+            }
+        }
+
         /// <summary>
         /// Initializes all constraint functions for value comparisons.
         /// </summary>
@@ -247,21 +261,23 @@
                     this.EqualToValue = (value) =>
                     {
                         Byte[] currentValues = this.Region.ReadGroup.CurrentValues;
-                        Boolean[] result = new Boolean[this.Region.ElementCount];
+                        // Boolean[] result = new Boolean[this.Region.ElementCount];
                         Int64 baseIndex = this.GpuReadBase.ToInt64();
-
                         Int32 realValue = unchecked((Int32)value);
 
-                        // TODO: Figure out how to implement this https://erkaman.github.io/posts/cuda_rle.html
+                        // Step 1: Backwards mask
+                        UInt32[] backwardMask = new UInt32[this.Region.ElementCount];
                         Gpu.Default.LongFor(0, this.Region.ElementCount.ToInt64(), (index) =>
                         {
                             fixed (Byte* currentValuePointer = &currentValues[0])
                             {
-                                result[index] = ((Int32*)currentValuePointer)[baseIndex + index] == realValue;
+                                backwardMask[index] = ((Int32*)currentValuePointer)[baseIndex + index] == realValue ? (UInt32)1 : (UInt32)0;
                             }
                         });
 
-                        return result;
+                        // Step 2: Compact backwards mask
+
+                        return null;
                     };
                     break;
                 case DataType type when type == DataTypes.Int64:

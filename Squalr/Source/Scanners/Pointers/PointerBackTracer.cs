@@ -89,11 +89,12 @@
             UInt64 processedPointers = 0;
 
             // Create a snapshot only containing the destination
-            NormalizedRegion destinationRegion = new NormalizedRegion(baseAddress: this.TargetAddress.ToIntPtr(), regionSize: 1);
-            destinationRegion.Expand(this.PointerRadius.ToUInt64());
+            NormalizedRegion destinationRegion = new NormalizedRegion(
+                baseAddress: this.TargetAddress.ToIntPtr().Subtract(this.PointerRadius, wrapAround: false),
+                regionSize: this.PointerRadius);
 
             // Start with the previous level as the destination (as this is a back-tracing algorithm, we work backwards from the destination)
-            Snapshot previousLevelSnapshot = new Snapshot();
+            Snapshot previousLevelSnapshot = new Snapshot(null, new ReadGroup[] { new ReadGroup(destinationRegion.BaseAddress, destinationRegion.RegionSize) });
 
             // Find all pointers that point to the previous level
             for (Int32 level = 0; level < this.PointerDepth; level++)

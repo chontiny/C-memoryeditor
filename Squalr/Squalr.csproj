@@ -344,6 +344,7 @@
     <Compile Include="Source\Results\ScanResult.cs" />
     <Compile Include="Source\Results\ScanResultsViewModel.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
+    <Compile Include="Source\Scanners\Pointers\PointerCollectorGpu.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerValidationScan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerValueRescan.cs" />
     <Compile Include="Source\Scanners\Pointers\PointerRescan.cs" />

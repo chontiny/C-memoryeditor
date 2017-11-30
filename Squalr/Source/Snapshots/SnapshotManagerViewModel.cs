@@ -11,6 +11,7 @@
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -119,6 +120,7 @@
             FromUserModeMemory,
             FromHeap,
             FromStack,
+            FromModules,
         }
 
         /// <summary>
@@ -169,8 +171,10 @@
                     return this.CreateSnapshotFromSettings();
                 case SnapshotRetrievalMode.FromUserModeMemory:
                     return this.CreateSnapshotFromUsermodeMemory();
+                case SnapshotRetrievalMode.FromModules:
+                    return this.CreateSnapshotFromModules();
                 case SnapshotRetrievalMode.FromHeap:
-                    throw new NotImplementedException();
+                    return this.CreateSnapshotFromHeaps();
                 case SnapshotRetrievalMode.FromStack:
                     throw new NotImplementedException();
                 default:
@@ -286,6 +290,34 @@
             }
 
             return new Snapshot(null, memoryRegions);
+        }
+
+        /// <summary>
+        /// Creates a snapshot from modules in the selected process.
+        /// </summary>
+        /// <returns>The created snapshot.</returns>
+        private Snapshot CreateSnapshotFromModules()
+        {
+            IEnumerable<ReadGroup> moduleGroups = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            Snapshot moduleSnapshot = new Snapshot(null, moduleGroups);
+
+            return moduleSnapshot;
+        }
+
+        /// <summary>
+        /// Creates a snapshot from modules in the selected process.
+        /// </summary>
+        /// <returns>The created snapshot.</returns>
+        private Snapshot CreateSnapshotFromHeaps()
+        {
+            // TODO: Implement an actual heap collection function. In the mean time, just grab usermode memory and remove the modules.
+            Snapshot snapshot = this.CreateSnapshotFromUsermodeMemory();
+
+            // Remove module regions
+            IEnumerable<ReadGroup> moduleGroups = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            snapshot.ReadGroups = snapshot.ReadGroups.Where(group => moduleGroups.All(moduleGroup => moduleGroup.BaseAddress != group.BaseAddress));
+
+            return snapshot;
         }
 
         /// <summary>

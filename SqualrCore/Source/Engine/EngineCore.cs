@@ -36,6 +36,7 @@
             this.Processes = ProcessAdapterFactory.GetProcessAdapter();
             this.VirtualMemory = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter();
             this.Debugger = DebuggerFactory.GetDebugger();
+            this.Graphics = new GraphicsAdapter();
             this.Network = new Network();
             this.Architecture = ArchitectureFactory.GetArchitecture();
             this.Input = new InputManager();
