@@ -2,16 +2,15 @@
 {
     using Squalr.Properties;
     using Squalr.Source.Scanners.Pointers.Structures;
-    using Squalr.Source.Scanners.ValueCollector;
     using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Numerics;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -34,14 +33,7 @@
             trackProgress: true)
         {
             this.CollectedPointersCallback = collectedPointersCallback;
-
-            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromUserModeMemory, callback: this.SetSnapshot));
         }
-
-        /// <summary>
-        /// Gets or sets the current snapshot being parsed.
-        /// </summary>
-        private Snapshot Snapshot { get; set; }
 
         /// <summary>
         /// Gets or sets the collected module pointers.
@@ -66,14 +58,7 @@
             this.ModulePointers = new PointerPool();
             this.HeapPointers = new PointerPool();
 
-            if (this.Snapshot == null)
-            {
-                this.Cancel();
-            }
-
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
-            this.Snapshot.ElementDataType = isProcess32Bit ? DataTypes.UInt32 : DataTypes.UInt64;
-            this.Snapshot.Alignment = isProcess32Bit ? Conversions.SizeOf(DataTypes.UInt32) : Conversions.SizeOf(DataTypes.UInt64);
         }
 
         /// <summary>
@@ -82,104 +67,84 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            Int32 processedRegions = 0;
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
 
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
-
-            // Create the base snapshot from the loaded modules
-            IEnumerable<NormalizedRegion> modules = EngineCore.GetInstance().VirtualMemory.GetModules();
+            Int32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
+            Vector<UInt64> minValue = new Vector<UInt64>(UInt16.MaxValue);
+            Vector<UInt64> maxValue = new Vector<UInt64>(EngineCore.GetInstance().VirtualMemory.GetMaxUsermodeAddress());
 
             Snapshot moduleSnapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromModules);
-            moduleSnapshot.ReadAllMemory();
-
             Snapshot heapSnapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromHeap);
+            List<Snapshot> snapshots = new List<Snapshot>(new Snapshot[] { moduleSnapshot, heapSnapshot });
+
+            moduleSnapshot.ReadAllMemory();
             heapSnapshot.ReadAllMemory();
 
-            if (EngineCore.GetInstance().Graphics.HasGpu())
+            Int32 processedRegions = 0;
+            Int32 regionCount = moduleSnapshot.RegionCount + heapSnapshot.RegionCount;
+
+            // Process the allowed amount of chunks from the priority queue
+            foreach (Snapshot snapshot in snapshots)
             {
-                PointerCollectorGpu pointerCollectorGpu = new PointerCollectorGpu();
-                pointerCollectorGpu.CollectPointers(moduleSnapshot, heapSnapshot, UInt16.MaxValue, EngineCore.GetInstance().VirtualMemory.GetUserModeRegion().EndAddress.ToUInt64());
-            }
-            else
-            {
-                // Process the allowed amount of chunks from the priority queue
+                Boolean isModule = snapshot == moduleSnapshot;
+
                 Parallel.ForEach(
-                    this.Snapshot.SnapshotRegions,
-                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
-                    (region) =>
+                snapshot.SnapshotRegions,
+                SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                (region) =>
+                {
+                    if (region.ReadGroup.CurrentValues.IsNullOrEmpty())
                     {
-                        if (region.ReadGroup?.CurrentValues == null)
+                        return;
+                    }
+
+                    for (Int32 vectorReadIndex = 0; vectorReadIndex < region.RegionSize; vectorReadIndex += vectorSize)
+                    {
+                        Vector<UInt64> nextElements = Vector.AsVectorUInt64(new Vector<Byte>(region.ReadGroup.CurrentValues, unchecked((Int32)vectorReadIndex)));
+
+                        // Check for common invalid values (~70-80% of values will simply be 0)
+                        if (Vector.LessThanAll(nextElements, minValue) || Vector.GreaterThanAll(nextElements, maxValue))
                         {
-                            return;
-                        }
-
-                        if (isProcess32Bit)
-                        {
-                            for (IEnumerator<SnapshotElementIndexer> enumerator = region.IterateElements(); enumerator.MoveNext();)
-                            {
-                                SnapshotElementIndexer element = enumerator.Current;
-
-                                UInt32 value = unchecked((UInt32)element.LoadCurrentValue());
-
-                                // Enforce 4-byte alignment of destination, and filter out small (invalid) pointers
-                                if (value < UInt16.MaxValue || value % sizeof(UInt32) != 0)
-                                {
-                                    continue;
-                                }
-
-                                // Check if it is possible that this pointer is valid, if so keep it
-                                if (this.Snapshot.ContainsAddress(value))
-                                {
-                                    if (moduleSnapshot.ContainsAddress(value))
-                                    {
-                                        this.ModulePointers[element.BaseAddress] = value;
-                                    }
-                                    else
-                                    {
-                                        this.HeapPointers[element.BaseAddress] = value;
-                                    }
-                                }
-                            }
+                            continue;
                         }
                         else
                         {
-                            for (IEnumerator<SnapshotElementIndexer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                            // Vector contains valid elements. These must be processed normally.
+                            for (Int32 index = 0; index < vectorSize / sizeof(UInt64); index++)
                             {
-                                SnapshotElementIndexer element = enumerator.Current;
-
-                                UInt64 value = unchecked((UInt64)element.LoadCurrentValue());
-
-                                // Enforce 8-byte alignment of destination, and filter out small (invalid) pointers
-                                if (value < UInt16.MaxValue || value % sizeof(UInt64) != 0)
-                                {
-                                    continue;
-                                }
+                                UInt64 candidatePointer = nextElements[index];
 
                                 // Check if it is possible that this pointer is valid, if so keep it
-                                if (this.Snapshot.ContainsAddress(value))
+                                if (heapSnapshot.ContainsAddress(candidatePointer))
                                 {
-                                    if (moduleSnapshot.ContainsAddress(value))
+                                    if (isModule)
                                     {
-                                        this.ModulePointers[element.BaseAddress] = value;
+                                        this.ModulePointers[region.BaseAddress.ToUInt64() + (vectorReadIndex + index).ToUInt64()] = candidatePointer;
                                     }
                                     else
                                     {
-                                        this.HeapPointers[element.BaseAddress] = value;
+                                        this.HeapPointers[region.BaseAddress.ToUInt64() + (vectorReadIndex + index).ToUInt64()] = candidatePointer;
                                     }
                                 }
                             }
                         }
+                    }
 
-                        // Clear the saved values, we do not need them now
-                        region.ReadGroup.SetCurrentValues(null);
+                    // Clear the saved values, we do not need them now
+                    region.ReadGroup.SetCurrentValues(null);
 
-                        // Update scan progress
-                        if (Interlocked.Increment(ref processedRegions) % 32 == 0)
-                        {
-                            this.UpdateProgress(processedRegions, this.Snapshot.RegionCount, canFinalize: false);
-                        }
-                    });
+                    // Update scan progress
+                    if (Interlocked.Increment(ref processedRegions) % 32 == 0)
+                    {
+                        this.UpdateProgress(processedRegions, regionCount, canFinalize: false);
+                    }
+                });
             }
+
+            stopwatch.Stop();
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Pointers collected in: " + stopwatch.Elapsed);
         }
 
         /// <summary>
@@ -191,18 +156,8 @@
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
 
-            this.Snapshot = null;
             this.ModulePointers = null;
             this.HeapPointers = null;
-        }
-
-        /// <summary>
-        /// Sets the snapshot to scan.
-        /// </summary>
-        /// <param name="snapshot">The snapshot to scan.</param>
-        private void SetSnapshot(Snapshot snapshot)
-        {
-            this.Snapshot = snapshot;
         }
     }
     //// End class

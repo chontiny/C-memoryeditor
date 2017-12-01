@@ -32,7 +32,7 @@
         /// If vectors are not supported, returns the lowest common denominator vector size for the architecture.
         /// </summary>
         /// <returns>The vector size.</returns>
-        UInt32 GetVectorSize();
+        Int32 GetVectorSize();
     }
     //// End architecture
 }

@@ -27,9 +27,9 @@
         {
             this.Region = region;
             this.VectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
-            this.VectorReadBase = this.Region.ReadGroupOffset - (this.Region.ReadGroupOffset % this.VectorSize).ToUInt32();
+            this.VectorReadBase = this.Region.ReadGroupOffset - this.Region.ReadGroupOffset % this.VectorSize;
             this.VectorReadIndex = 0;
-            this.DataTypeSize = unchecked((UInt32)Conversions.SizeOf(this.Region.ReadGroup.ElementDataType));
+            this.DataTypeSize = Conversions.SizeOf(this.Region.ReadGroup.ElementDataType);
 
             // Initialize capacity to 1/16 elements
             this.ResultRegions = new List<SnapshotRegion>(unchecked((Int32)(this.Region.ElementCount)) / 16);
@@ -111,7 +111,7 @@
         /// <summary>
         /// Gets or sets the index of this element.
         /// </summary>
-        public UInt64 VectorReadIndex { get; set; }
+        public Int32 VectorReadIndex { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether we are currently encoding a new result region.
@@ -121,22 +121,22 @@
         /// <summary>
         /// Gets or sets the current run length for run length encoded current scan results.
         /// </summary>
-        private UInt32 RunLength { get; set; }
+        private Int32 RunLength { get; set; }
 
         /// <summary>
         /// Gets or sets the index of this element.
         /// </summary>
-        private UInt64 VectorReadBase { get; set; }
+        private Int32 VectorReadBase { get; set; }
 
         /// <summary>
         /// Gets or sets the SSE vector size on the machine.
         /// </summary>
-        private UInt32 VectorSize { get; set; }
+        private Int32 VectorSize { get; set; }
 
         /// <summary>
         /// Gets or sets the size of the data type being compared.
         /// </summary>
-        private UInt32 DataTypeSize { get; set; }
+        private Int32 DataTypeSize { get; set; }
 
         /// <summary>
         /// Gets or sets the list of discovered result regions.
@@ -171,7 +171,7 @@
                 // Otherwise the vector contains a mixture of true and false
                 else
                 {
-                    for (UInt32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
+                    for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
                     {
                         // Vector result was false
                         if (scanResults[unchecked((Int32)index)] == 0)
@@ -223,7 +223,7 @@
                     break;
                 }
 
-                UInt32 misalignment = (this.Region.ReadGroupOffset - firstRegion.ReadGroupOffset).ToUInt32();
+                Int32 misalignment = this.Region.ReadGroupOffset - firstRegion.ReadGroupOffset;
 
                 if (firstRegion.RegionSize <= misalignment)
                 {
@@ -253,7 +253,7 @@
                     break;
                 }
 
-                UInt32 overread = (lastRegion.EndAddress.ToUInt64() - this.Region.EndAddress.ToUInt64()).ToUInt32();
+                Int32 overread = (lastRegion.EndAddress.ToUInt64() - this.Region.EndAddress.ToUInt64()).ToInt32();
 
                 if (lastRegion.RegionSize <= overread)
                 {

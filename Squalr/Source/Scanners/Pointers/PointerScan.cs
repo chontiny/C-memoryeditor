@@ -60,7 +60,7 @@
         /// <summary>
         /// Gets or sets the pointer depth of the scan.
         /// </summary>
-        public UInt32 PointerDepth
+        public Int32 PointerDepth
         {
             get
             {
@@ -76,7 +76,7 @@
         /// <summary>
         /// Gets or sets the pointer radius of the scan.
         /// </summary>
-        public UInt32 PointerRadius
+        public Int32 PointerRadius
         {
             get
             {

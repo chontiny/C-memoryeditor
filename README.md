@@ -19,7 +19,6 @@ Reference | Description
 --- | ---
 [XAML Formatter](https://marketplace.visualstudio.com/items?itemName=TeamXavalon.XAMLStyler) | XAML should be run through this formatter
 [StyleCop](https://marketplace.visualstudio.com/items?itemName=ChrisDahlberg.StyleCop) | StyleCop to enforce code conventions. Note that we deviate on some standard conventions. We use the full type name for variables (ex Int32 rather than int). The reasoning is that this is a memory editor, so we prefer to use the type name that is most explicit to avoid coding mistakes.
-[Nvidia Nsight](https://developer.nvidia.com/nvidia-nsight-visual-studio-edition) | Profiling GPU usage. Useful for debugging pointer scans that run on the GPU.
 
 ## Build
 
@@ -31,7 +30,6 @@ Library | Description
 [SharpDisasm](https://github.com/spazzarama/SharpDisasm) | Udis86 Assembler Ported to C#
 [MemorySharp](https://github.com/ZenLulz/MemorySharp) | Memory Editing Library
 [FASM](https://flatassembler.net/) | Flat Assembler (C# Invocation done via MemorySharp)
-[Alea GPU](http://www.aleagpu.com) | GPU Computing (for pointer scans)
 [CsScript](https://github.com/oleg-shilo/cs-script) | C# Scripting Library
 [AvalonEdit](https://github.com/icsharpcode/AvalonEdit) | Code Editing Library
 [SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper

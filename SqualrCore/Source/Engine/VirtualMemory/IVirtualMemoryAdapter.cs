@@ -42,7 +42,7 @@
         /// Gets the maximum usermode address possible in the target process.
         /// </summary>
         /// <returns>The maximum usermode address possible in the target process.</returns>
-        NormalizedRegion GetUserModeRegion();
+        UInt64 GetMaxUsermodeAddress();
 
         /// <summary>
         /// Gets all modules in the opened process.

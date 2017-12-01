@@ -29,6 +29,11 @@
         private Process systemProcess;
 
         /// <summary>
+        /// The chunk size for memory regions. Prevents large allocations.
+        /// </summary>
+        private const Int32 ChunkSize = 2000000000;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="WindowsAdapter"/> class.
         /// </summary>
         public WindowsAdapter()
@@ -390,8 +395,39 @@
                 excludedFlags |= MemoryProtectionFlags.ExecuteWriteCopy;
             }
 
-            return Memory.VirtualPages(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, startAddress, endAddress, requiredFlags, excludedFlags, allowedTypes)
-                .Select(x => new NormalizedRegion(x.BaseAddress, x.RegionSize.ToUInt64()));
+            IEnumerable<MemoryBasicInformation64> memoryInfo = Memory.VirtualPages(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, startAddress, endAddress, requiredFlags, excludedFlags, allowedTypes);
+
+            IList<NormalizedRegion> regions = new List<NormalizedRegion>();
+
+            foreach (MemoryBasicInformation64 next in memoryInfo)
+            {
+
+                if (next.RegionSize < ChunkSize)
+                {
+                    regions.Add(new NormalizedRegion(next.BaseAddress, next.RegionSize.ToInt32()));
+                }
+                else
+                {
+                    // This region requires chunking
+                    Int64 remaining = next.RegionSize;
+                    IntPtr currentBaseAddress = next.BaseAddress;
+
+                    while (remaining >= ChunkSize)
+                    {
+                        regions.Add(new NormalizedRegion(currentBaseAddress, ChunkSize));
+
+                        remaining -= ChunkSize;
+                        currentBaseAddress = currentBaseAddress.Add(ChunkSize, wrapAround: false);
+                    }
+
+                    if (remaining > 0)
+                    {
+                        regions.Add(new NormalizedRegion(currentBaseAddress, remaining.ToInt32()));
+                    }
+                }
+            }
+
+            return regions;
         }
 
         /// <summary>
@@ -426,15 +462,15 @@
         /// Gets the maximum usermode address possible in the target process.
         /// </summary>
         /// <returns>The maximum usermode address possible in the target process.</returns>
-        public NormalizedRegion GetUserModeRegion()
+        public UInt64 GetMaxUsermodeAddress()
         {
             if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
             {
-                return new NormalizedRegion(IntPtr.Zero, Int32.MaxValue);
+                return Int32.MaxValue;
             }
             else
             {
-                return new NormalizedRegion(IntPtr.Zero, 0x7FFFFFFFFFF);
+                return 0x7FFFFFFFFFF;
             }
         }
 
@@ -478,7 +514,7 @@
                         NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
                         // Convert to a normalized module and add it to our list
-                        NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase, moduleInformation.SizeOfImage.ToUInt64());
+                        NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase, (Int32)moduleInformation.SizeOfImage);
                         modules.Add(module);
                     }
                 }

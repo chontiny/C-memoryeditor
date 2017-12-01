@@ -231,10 +231,10 @@
         {
             MemoryProtectionEnum requiredPageFlags = 0;
             MemoryProtectionEnum excludedPageFlags = 0;
-            MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image | MemoryTypeEnum.Mapped;
+            MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image;
 
             IntPtr startAddress = IntPtr.Zero;
-            IntPtr endAddress = EngineCore.GetInstance().VirtualMemory.GetUserModeRegion().EndAddress;
+            IntPtr endAddress = EngineCore.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();
             IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
@@ -267,7 +267,7 @@
             if (SettingsViewModel.GetInstance().IsUserMode)
             {
                 startAddress = IntPtr.Zero;
-                endAddress = EngineCore.GetInstance().VirtualMemory.GetUserModeRegion().EndAddress;
+                endAddress = EngineCore.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
             }
             else
             {

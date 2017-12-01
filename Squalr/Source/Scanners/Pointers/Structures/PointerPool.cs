@@ -86,7 +86,7 @@
             }
         }
 
-        public Snapshot ToSnapshot(UInt32 pointerRadius)
+        public Snapshot ToSnapshot(Int32 pointerRadius)
         {
             IList<ReadGroup> levelRegions = new List<ReadGroup>();
 
@@ -125,11 +125,11 @@
         /// <param name="pointerDestination">The pointer destination.</param>
         /// <param name="pointerRadius">How far to search in each direction from the given pointer.</param>
         /// <returns>The list of valid offsets from the destination pointer that point to a pointer in this pool.</returns>
-        public IEnumerable<Int32> FindOffsets(UInt64 pointerDestination, UInt32 pointerRadius)
+        public IEnumerable<Int32> FindOffsets(UInt64 pointerDestination, Int32 pointerRadius)
         {
             return this.PointerAddresses
                 .Select(x => x)
-                .Where(x => (x > pointerDestination - pointerRadius) && (x < pointerDestination + pointerRadius))
+                .Where(x => (x > pointerDestination - unchecked((UInt32)pointerRadius)) && (x < pointerDestination + unchecked((UInt32)pointerRadius)))
                 .Select(x => x > pointerDestination ? (x - pointerDestination).ToInt32() : -(pointerDestination - x).ToInt32());
         }
     }

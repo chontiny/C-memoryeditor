@@ -5,7 +5,6 @@
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
 
@@ -20,7 +19,7 @@
         /// </summary>
         /// <param name="baseAddress">The base address of this memory region.</param>
         /// <param name="regionSize">The size of this memory region.</param>
-        public ReadGroup(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
+        public ReadGroup(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
         {
             this.Alignment = SettingsViewModel.GetInstance().Alignment;
             this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
@@ -65,7 +64,7 @@
         public Boolean ReadAllMemory()
         {
             Boolean readSuccess;
-            Byte[] newCurrentValues = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
+            Byte[] newCurrentValues = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
 
             if (readSuccess)
             {

@@ -48,8 +48,8 @@
             this.SetPointerScanAddressCommand = new RelayCommand<UInt64>((newValue) => this.TargetAddress = newValue, (newValue) => true);
             this.SetPointerRescanAddressCommand = new RelayCommand<UInt64>((newValue) => this.RescanAddress = newValue, (newValue) => true);
             this.SetPointerRescanValueCommand = new RelayCommand<Object>((newValue) => this.RescanValue = newValue, (newValue) => true);
-            this.SetDepthCommand = new RelayCommand<UInt32>((newValue) => this.PointerDepth = newValue, (newValue) => true);
-            this.SetPointerRadiusCommand = new RelayCommand<UInt32>((newValue) => this.PointerRadius = newValue, (newValue) => true);
+            this.SetDepthCommand = new RelayCommand<Int32>((newValue) => this.PointerDepth = newValue, (newValue) => true);
+            this.SetPointerRadiusCommand = new RelayCommand<Int32>((newValue) => this.PointerRadius = newValue, (newValue) => true);
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
             this.StartPointerRescanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerRescan()), () => true);
             this.StartPointerValueRescanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerValueRescan()), () => true);
@@ -157,7 +157,7 @@
         /// <summary>
         /// Gets or sets the pointer depth of the scan.
         /// </summary>
-        public UInt32 PointerDepth
+        public Int32 PointerDepth
         {
             get
             {
@@ -174,7 +174,7 @@
         /// <summary>
         /// Gets or sets the pointer radius of the scan.
         /// </summary>
-        public UInt32 PointerRadius
+        public Int32 PointerRadius
         {
             get
             {

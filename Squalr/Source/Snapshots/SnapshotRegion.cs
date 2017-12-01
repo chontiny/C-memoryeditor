@@ -16,7 +16,7 @@
         /// <param name="readGroup">The read group of this snapshot region.</param>
         /// <param name="baseAddress">The base address of this snapshot region.</param>
         /// <param name="regionSize">The size of this snapshot region.</param>
-        public SnapshotRegion(ReadGroup readGroup, UInt64 readGroupOffset, UInt64 regionSize)
+        public SnapshotRegion(ReadGroup readGroup, Int32 readGroupOffset, Int32 regionSize)
         {
             this.ReadGroup = readGroup;
             this.ReadGroupOffset = readGroupOffset;
@@ -31,12 +31,12 @@
         /// <summary>
         /// Gets or sets the offset from the base of this snapshot's read group.
         /// </summary>
-        public UInt64 ReadGroupOffset { get; set; }
+        public Int32 ReadGroupOffset { get; set; }
 
         /// <summary>
         /// Gets the size of this snapshot in bytes.
         /// </summary>
-        public UInt64 RegionSize { get; set; }
+        public Int32 RegionSize { get; set; }
 
         /// <summary>
         /// Gets the base address of the region.
@@ -68,11 +68,11 @@
         /// <summary>
         /// Gets the number of elements contained in this snapshot.
         /// </summary>
-        public UInt64 ElementCount
+        public Int32 ElementCount
         {
             get
             {
-                return this.RegionSize / unchecked((UInt32)this.ReadGroup.Alignment);
+                return this.RegionSize / this.ReadGroup.Alignment;
             }
         }
 
@@ -81,7 +81,7 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementIndexer this[UInt32 index]
+        public SnapshotElementIndexer this[Int32 index]
         {
             get
             {
@@ -98,7 +98,7 @@
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator<SnapshotElementIndexer> IterateElements()
         {
-            UInt64 elementCount = this.ElementCount;
+            Int32 elementCount = this.ElementCount;
             SnapshotElementIndexer snapshotElement = new SnapshotElementIndexer(region: this);
 
             for (snapshotElement.ElementIndex = 0; snapshotElement.ElementIndex < elementCount; snapshotElement.ElementIndex++)
@@ -118,10 +118,10 @@
             SnapshotElementComparer.PointerIncrementMode pointerIncrementMode,
             ScanConstraintManager scanConstraintManager)
         {
-            UInt64 elementCount = this.ElementCount;
+            Int32 elementCount = this.ElementCount;
             SnapshotElementComparer snapshotElement = new SnapshotElementComparer(region: this, pointerIncrementMode: pointerIncrementMode, scanConstraintManager: scanConstraintManager);
 
-            for (UInt64 elementIndex = 0; elementIndex < elementCount; elementIndex++)
+            for (Int32 elementIndex = 0; elementIndex < elementCount; elementIndex++)
             {
                 yield return snapshotElement;
                 snapshotElement.IncrementPointers();
@@ -139,13 +139,6 @@
             {
                 return null;
             }
-
-            /*if (Gpu.Default != null)
-            {
-                SnapshotElementGpuComparer gpuComparer = new SnapshotElementGpuComparer(region: this, scanConstraints: scanConstraints);
-
-                return gpuComparer.Compare();
-            }*/
 
             SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: this, scanConstraints: scanConstraints);
 

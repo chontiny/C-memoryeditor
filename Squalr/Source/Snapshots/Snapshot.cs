@@ -1,10 +1,12 @@
 ﻿namespace Squalr.Source.Snapshots
 {
+    using Squalr.Properties;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// A class to contain snapshots of memory, which can be compared by scanners.
@@ -193,7 +195,7 @@
                     return null;
                 }
 
-                return region[(elementIndex - region.BaseElementIndex).ToUInt32()];
+                return region[(elementIndex - region.BaseElementIndex).ToInt32()];
             }
         }
 
@@ -213,8 +215,14 @@
         public void ReadAllMemory()
         {
             this.TimeSinceLastUpdate = DateTime.Now;
-            // this.Intersect(SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromSettings));
-            this.ReadGroups?.ForEach(x => x.ReadAllMemory());
+
+            Parallel.ForEach(
+            this.OptimizedReadGroups,
+            SettingsViewModel.GetInstance().ParallelSettingsFastest,
+            (readGroup) =>
+            {
+                readGroup.ReadAllMemory();
+            });
         }
 
         /// <summary>
@@ -288,8 +296,8 @@
             foreach (SnapshotRegion region in this.SnapshotRegions)
             {
                 region.BaseElementIndex = this.ElementCount;
-                this.ByteCount += region.RegionSize;
-                this.ElementCount += region.ElementCount;
+                this.ByteCount += region.RegionSize.ToUInt64();
+                this.ElementCount += region.ElementCount.ToUInt64();
             }
         }
 
@@ -341,7 +349,7 @@
             {
                 return this.BinaryRegionSearchHelper(elementIndex, (min + middle - 1) / 2, min, middle - 1);
             }
-            else if (elementIndex >= this.SnapshotRegions[middle].BaseElementIndex + this.SnapshotRegions[middle].ElementCount)
+            else if (elementIndex >= this.SnapshotRegions[middle].BaseElementIndex + this.SnapshotRegions[middle].ElementCount.ToUInt64())
             {
                 return this.BinaryRegionSearchHelper(elementIndex, (middle + 1 + max) / 2, middle + 1, max);
             }

@@ -13,7 +13,7 @@
         /// <summary>
         /// The size of the region.
         /// </summary>
-        private UInt64 regionSize;
+        private Int32 regionSize;
 
         /// <summary>
         /// The memory alignment of this region.
@@ -25,7 +25,7 @@
         /// </summary>
         /// <param name="baseAddress">The base address of the region.</param>
         /// <param name="regionSize">The size of the region.</param>
-        public NormalizedRegion(IntPtr baseAddress, UInt64 regionSize)
+        public NormalizedRegion(IntPtr baseAddress, Int32 regionSize)
         {
             this.Alignment = 1;
             this.BaseAddress = baseAddress;
@@ -40,7 +40,7 @@
         /// <summary>
         /// Gets or sets the size of the region.
         /// </summary>
-        public UInt64 RegionSize
+        public Int32 RegionSize
         {
             get
             {
@@ -57,11 +57,11 @@
         /// Gets the number of elements contained by this region.
         /// </summary>
         /// <returns>The number of elements contained by this region.</returns>
-        public UInt64 ElementCount
+        public Int32 ElementCount
         {
             get
             {
-                return this.RegionSize / this.Alignment.ToUInt64();
+                return this.RegionSize / this.Alignment;
             }
         }
 
@@ -77,7 +77,7 @@
 
             set
             {
-                this.RegionSize = value.Subtract(this.BaseAddress, wrapAround: false).ToUInt64();
+                this.RegionSize = value.Subtract(this.BaseAddress, wrapAround: false).ToInt32();
             }
         }
 
@@ -174,7 +174,7 @@
         /// Expands a region by the element type size in both directions unconditionally.
         /// </summary>
         /// <param name="expandSize">The size by which to expand this region.</param>
-        public virtual void Expand(UInt64 expandSize)
+        public virtual void Expand(Int32 expandSize)
         {
             this.BaseAddress = this.BaseAddress.Subtract(expandSize, wrapAround: false);
             this.RegionSize += expandSize * 2;
@@ -186,7 +186,7 @@
         /// </summary>
         /// <param name="chunkSize">The size to break down the region into.</param>
         /// <returns>A collection of regions broken down from the original region based on the chunk size.</returns>
-        public IEnumerable<NormalizedRegion> ChunkNormalizedRegion(UInt64 chunkSize)
+        public IEnumerable<NormalizedRegion> ChunkNormalizedRegion(Int32 chunkSize)
         {
             if (chunkSize <= 0)
             {
@@ -196,11 +196,11 @@
 
             chunkSize = Math.Min(chunkSize, this.RegionSize);
 
-            UInt64 chunkCount = (this.RegionSize / chunkSize) + (this.RegionSize % chunkSize == 0UL ? 0UL : 1UL);
+            Int32 chunkCount = (this.RegionSize / chunkSize) + (this.RegionSize % chunkSize == 0 ? 0 : 1);
 
-            for (UInt64 index = 0; index < chunkCount; index++)
+            for (Int32 index = 0; index < chunkCount; index++)
             {
-                UInt64 size = chunkSize;
+                Int32 size = chunkSize;
 
                 // Set size to the remainder if on the final chunk and they are not divisible evenly
                 if (index == chunkCount - 1 && this.RegionSize > chunkSize && this.RegionSize % chunkSize != 0)

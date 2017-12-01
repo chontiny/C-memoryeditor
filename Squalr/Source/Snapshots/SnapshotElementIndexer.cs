@@ -17,7 +17,7 @@
         /// <param name="elementIndex">The index of the element to begin pointing to.</param>
         public unsafe SnapshotElementIndexer(
             SnapshotRegion region,
-            UInt32 elementIndex = 0)
+            Int32 elementIndex = 0)
         {
             this.Region = region;
             this.ElementIndex = elementIndex;
@@ -58,7 +58,7 @@
         /// <summary>
         /// Gets the index of this element.
         /// </summary>
-        public UInt32 ElementIndex { get; set; }
+        public Int32 ElementIndex { get; set; }
 
         public Object LoadCurrentValue()
         {

@@ -49,12 +49,12 @@
         /// <summary>
         /// Gets or sets the pointer depth of the scan.
         /// </summary>
-        public UInt32 PointerDepth { get; set; }
+        public Int32 PointerDepth { get; set; }
 
         /// <summary>
         /// Gets or sets the pointer radius of the scan.
         /// </summary>
-        public UInt32 PointerRadius { get; set; }
+        public Int32 PointerRadius { get; set; }
 
         /// <summary>
         /// Gets or sets the target address of the pointer scan.
@@ -122,7 +122,7 @@
                         // Limit how often we update the progress
                         if (processedPointers % 8192 == 0)
                         {
-                            this.UpdateProgress((processedPointers / this.PointerDepth).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
+                            this.UpdateProgress((processedPointers / unchecked((UInt32)this.PointerDepth)).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
                         }
                     }
                 });

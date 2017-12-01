@@ -38,7 +38,7 @@
                     instruction.Offset,
                     instruction.ToString(),
                     instruction.Bytes,
-                    instruction.Bytes.Length));
+                    instruction.Bytes.Length)).ToArray();
         }
     }
     //// End class
