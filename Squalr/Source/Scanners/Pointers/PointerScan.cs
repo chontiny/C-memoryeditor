@@ -21,8 +21,6 @@
             isRepeated: false,
             trackProgress: true)
         {
-            this.ProgressLock = new Object();
-
             this.PointerBackTracer = new PointerBackTracer(this.SetLevelPointers);
 
             this.PointerDepth = 1;
@@ -95,11 +93,6 @@
         private ScannedPointers ScannedPointers { get; set; }
 
         /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
-
-        /// <summary>
         /// Called when the scheduled task starts.
         /// </summary>
         protected override void OnBegin()
@@ -149,15 +142,9 @@
                 }
 
                 // Update scan progress
-                lock (this.ProgressLock)
+                if (Interlocked.Increment(ref processedPointerRoots) % 32 == 0)
                 {
-                    processedPointerRoots++;
-
-                    // Limit how often we update the progress
-                    if (processedPointerRoots % 32 == 0)
-                    {
-                        this.UpdateProgress(processedPointerRoots, this.ScannedPointers.PointerRoots.Count, canFinalize: false);
-                    }
+                    this.UpdateProgress(processedPointerRoots, this.ScannedPointers.PointerRoots.Count, canFinalize: false);
                 }
             }
 

@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Source.Results;
     using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
@@ -223,12 +222,6 @@
         private void StartScan()
         {
             this.PointerScan.Start();
-            if (PointerScanResultsViewModel.GetInstance().ResultCount <= 0)
-            {
-            }
-            else
-            {
-            }
         }
 
         /// <summary>

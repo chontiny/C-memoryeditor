@@ -22,7 +22,6 @@
             isRepeated: false,
             trackProgress: true)
         {
-            this.ProgressLock = new Object();
         }
 
         /// <summary>
@@ -34,11 +33,6 @@
         /// Gets or sets the discovered pointers from the pointer scan.
         /// </summary>
         private DiscoveredPointers DiscoveredPointers { get; set; }
-
-        /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
 
         /// <summary>
         /// Called when the scheduled task starts.
@@ -57,8 +51,7 @@
             cancellationToken.ThrowIfCancellationRequested();
 
             ValidatedPointers validatedPointers = new ValidatedPointers();
-            Int32 processedPointers = 0;
-            String valueString = this.Value?.ToString() ?? String.Empty;
+            Int64 processedPointers = 0;
 
             // Enumerate all discovered pointers and determine if they have a valid target address
             foreach (PointerItem pointerItem in this.DiscoveredPointers)
@@ -76,15 +69,9 @@
                 }
 
                 // Update scan progress
-                lock (this.ProgressLock)
+                if (Interlocked.Increment(ref processedPointers) % 1024 == 0)
                 {
-                    processedPointers++;
-
-                    // Limit how often we update the progress
-                    if (processedPointers % 1000 == 0)
-                    {
-                        this.UpdateProgress(processedPointers, this.DiscoveredPointers.Count.ToInt32(), canFinalize: false);
-                    }
+                    this.UpdateProgress(processedPointers, this.DiscoveredPointers.Count.ToInt64(), canFinalize: false);
                 }
             }
 

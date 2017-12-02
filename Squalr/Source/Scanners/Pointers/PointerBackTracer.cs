@@ -4,7 +4,6 @@
     using Squalr.Properties;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -29,8 +28,6 @@
             isRepeated: false,
             trackProgress: true)
         {
-            this.ProgressLock = new Object();
-
             this.LevelPointersCallback = levelPointersCallback;
 
             this.Dependencies.Enqueue(new PointerCollector(this.SetCollectedPointers));
@@ -66,11 +63,6 @@
         private Action<LevelPointers> LevelPointersCallback { get; set; }
 
         /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
-
-        /// <summary>
         /// Called when the scheduled task starts.
         /// </summary>
         protected override void OnBegin()
@@ -86,15 +78,10 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            UInt64 processedPointers = 0;
+            Int64 processedPointers = 0;
 
-            // Create a snapshot only containing the destination
-            NormalizedRegion destinationRegion = new NormalizedRegion(
-                baseAddress: this.TargetAddress.ToIntPtr().Subtract(this.PointerRadius, wrapAround: false),
-                regionSize: this.PointerRadius);
-
-            // Start with the previous level as the destination (as this is a back-tracing algorithm, we work backwards from the destination)
-            Snapshot previousLevelSnapshot = new Snapshot(null, new ReadGroup[] { new ReadGroup(destinationRegion.BaseAddress, destinationRegion.RegionSize) });
+            // Create a snapshot only containing the destination (as this is a back-tracing algorithm, we work backwards from the destination)
+            Snapshot previousLevelSnapshot = new Snapshot(null, new ReadGroup[] { new ReadGroup(this.TargetAddress.ToIntPtr().Subtract(this.PointerRadius, wrapAround: false), this.PointerRadius) });
 
             // Find all pointers that point to the previous level
             for (Int32 level = 0; level < this.PointerDepth; level++)
@@ -115,15 +102,9 @@
                     }
 
                     // Update scan progress
-                    lock (this.ProgressLock)
+                    if (Interlocked.Increment(ref processedPointers) % 1024 == 0)
                     {
-                        processedPointers++;
-
-                        // Limit how often we update the progress
-                        if (processedPointers % 8192 == 0)
-                        {
-                            this.UpdateProgress((processedPointers / unchecked((UInt32)this.PointerDepth)).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
-                        }
+                        this.UpdateProgress((processedPointers / unchecked((UInt32)this.PointerDepth)).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
                     }
                 });
 

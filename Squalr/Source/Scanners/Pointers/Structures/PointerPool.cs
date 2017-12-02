@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
     using Squalr.Source.Snapshots;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
@@ -88,15 +89,20 @@
 
         public Snapshot ToSnapshot(Int32 pointerRadius)
         {
-            IList<ReadGroup> levelRegions = new List<ReadGroup>();
+            IList<NormalizedRegion> levelRegions = new List<NormalizedRegion>();
+            IList<ReadGroup> levelReadGroups = new List<ReadGroup>();
 
             foreach (KeyValuePair<UInt64, UInt64> pointer in this)
             {
-                ReadGroup levelRegion = new ReadGroup(pointer.Key.ToIntPtr().Subtract(pointerRadius, wrapAround: false), pointerRadius);
-                levelRegions.Add(levelRegion);
+                levelRegions.Add(new NormalizedRegion(pointer.Key.ToIntPtr().Subtract(pointerRadius, wrapAround: false), pointerRadius));
             }
 
-            Snapshot pointerPoolSnapshot = new Snapshot(null, levelRegions);
+            foreach (NormalizedRegion region in NormalizedRegion.MergeAndSortRegions(levelRegions))
+            {
+                levelReadGroups.Add(new ReadGroup(region.BaseAddress, region.RegionSize));
+            }
+
+            Snapshot pointerPoolSnapshot = new Snapshot(null, levelReadGroups);
 
             return pointerPoolSnapshot;
         }

@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
-    using Squalr.Properties;
     using Squalr.Source.Scanners.Pointers.Structures;
     using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
@@ -57,8 +56,6 @@
         {
             this.ModulePointers = new PointerPool();
             this.HeapPointers = new PointerPool();
-
-            Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
         }
 
         /// <summary>
@@ -72,8 +69,12 @@
 
             Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
             Int32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
-            Vector<UInt64> minValue = new Vector<UInt64>(UInt16.MaxValue);
-            Vector<UInt64> maxValue = new Vector<UInt64>(EngineCore.GetInstance().VirtualMemory.GetMaxUsermodeAddress());
+            UInt64 minValue = UInt16.MaxValue;
+            UInt64 maxValue = EngineCore.GetInstance().VirtualMemory.GetMaxUsermodeAddress();
+            Vector<UInt32> minValueVector = new Vector<UInt32>(minValue.ToUInt32());
+            Vector<UInt32> maxValueVector = new Vector<UInt32>(maxValue.ToUInt32());
+            Vector<UInt64> minValueVector64 = new Vector<UInt64>(minValue);
+            Vector<UInt64> maxValueVector64 = new Vector<UInt64>(maxValue);
 
             Snapshot moduleSnapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromModules);
             Snapshot heapSnapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromHeap);
@@ -90,46 +91,100 @@
             {
                 Boolean isModule = snapshot == moduleSnapshot;
 
-                Parallel.ForEach(
-                snapshot.SnapshotRegions,
-                SettingsViewModel.GetInstance().ParallelSettingsFastest,
-                (region) =>
+                foreach (SnapshotRegion region in snapshot.SnapshotRegions)
                 {
                     if (region.ReadGroup.CurrentValues.IsNullOrEmpty())
                     {
-                        return;
+                        continue;
                     }
 
-                    for (Int32 vectorReadIndex = 0; vectorReadIndex < region.RegionSize; vectorReadIndex += vectorSize)
+                    if (isProcess32Bit)
                     {
-                        Vector<UInt64> nextElements = Vector.AsVectorUInt64(new Vector<Byte>(region.ReadGroup.CurrentValues, unchecked((Int32)vectorReadIndex)));
+                        Parallel.For(0, region.RegionSize / vectorSize, (elementIndex) =>
+                        {
+                            Int32 vectorReadIndex = elementIndex * vectorSize;
 
-                        // Check for common invalid values (~70-80% of values will simply be 0)
-                        if (Vector.LessThanAll(nextElements, minValue) || Vector.GreaterThanAll(nextElements, maxValue))
-                        {
-                            continue;
-                        }
-                        else
-                        {
-                            // Vector contains valid elements. These must be processed normally.
-                            for (Int32 index = 0; index < vectorSize / sizeof(UInt64); index++)
+                            Vector<UInt32> nextElements = Vector.AsVectorUInt32(new Vector<Byte>(region.ReadGroup.CurrentValues, unchecked((Int32)vectorReadIndex)));
+
+                            // Check if all elements contain common invalid values (~70-80% of values will simply be 0)
+                            if (Vector.LessThanAll(nextElements, minValueVector) || Vector.GreaterThanAll(nextElements, minValueVector))
                             {
-                                UInt64 candidatePointer = nextElements[index];
-
-                                // Check if it is possible that this pointer is valid, if so keep it
-                                if (heapSnapshot.ContainsAddress(candidatePointer))
+                                return;
+                            }
+                            else
+                            {
+                                // Vector contains valid elements. These must be processed normally.
+                                for (Int32 index = 0; index < vectorSize / sizeof(UInt32); index++)
                                 {
-                                    if (isModule)
+                                    UInt32 pointerDestination = nextElements[index];
+
+                                    // Check for common invalid values again, but for this specific element
+                                    if (pointerDestination < minValue || pointerDestination > maxValue)
                                     {
-                                        this.ModulePointers[region.BaseAddress.ToUInt64() + (vectorReadIndex + index).ToUInt64()] = candidatePointer;
+                                        continue;
                                     }
-                                    else
+
+                                    // Check if it is possible that this pointer is valid -- if so keep it
+                                    if (heapSnapshot.ContainsAddress(pointerDestination))
                                     {
-                                        this.HeapPointers[region.BaseAddress.ToUInt64() + (vectorReadIndex + index).ToUInt64()] = candidatePointer;
+                                        UInt32 pointerAddress = region.BaseAddress.ToUInt32() + unchecked((UInt32)(vectorReadIndex + index));
+
+                                        if (isModule)
+                                        {
+                                            this.ModulePointers[pointerAddress] = pointerDestination;
+                                        }
+                                        else
+                                        {
+                                            this.HeapPointers[pointerAddress] = pointerDestination;
+                                        }
                                     }
                                 }
                             }
-                        }
+                        });
+                    }
+                    else
+                    {
+                        Parallel.For(0, region.RegionSize / vectorSize, (elementIndex) =>
+                        {
+                            Int32 vectorReadIndex = elementIndex * vectorSize;
+
+                            Vector<UInt64> nextElements = Vector.AsVectorUInt64(new Vector<Byte>(region.ReadGroup.CurrentValues, unchecked((Int32)vectorReadIndex)));
+
+                            // Check if all elements contain common invalid values (~70-80% of values will simply be 0)
+                            if (Vector.LessThanAll(nextElements, minValueVector64) || Vector.GreaterThanAll(nextElements, maxValueVector64))
+                            {
+                                return;
+                            }
+                            else
+                            {
+                                // Vector contains valid elements. These must be processed normally.
+                                for (Int32 index = 0; index < vectorSize / sizeof(UInt64); index++)
+                                {
+                                    UInt64 pointerDestination = nextElements[index];
+
+                                    // Check for common invalid values again, but for this specific element
+                                    if (pointerDestination < minValue || pointerDestination > maxValue)
+                                    {
+                                        continue;
+                                    }
+
+                                    // Check if it is possible that this pointer is valid -- if so keep it
+                                    if (heapSnapshot.ContainsAddress(pointerDestination))
+                                    {
+                                        UInt64 pointerAddress = region.BaseAddress.ToUInt64() + (vectorReadIndex + index).ToUInt64();
+
+                                        if (isModule)
+                                        {
+                                            this.ModulePointers[pointerAddress] = pointerDestination;
+                                        }
+                                        else
+                                        {
+                                            this.HeapPointers[pointerAddress] = pointerDestination;
+                                        }
+                                    }
+                                }
+                            }
+                        });
                     }
 
                     // Clear the saved values, we do not need them now
@@ -140,7 +195,7 @@
                     {
                         this.UpdateProgress(processedRegions, regionCount, canFinalize: false);
                     }
-                });
+                }
             }
 
             stopwatch.Stop();

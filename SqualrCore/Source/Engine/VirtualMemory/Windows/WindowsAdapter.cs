@@ -513,6 +513,12 @@
                         ModuleInformation moduleInformation = new ModuleInformation();
                         NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
+                        // Ignore modules in 64-bit address space for WoW64 processes
+                        if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)
+                        {
+                            continue;
+                        }
+
                         // Convert to a normalized module and add it to our list
                         NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase, (Int32)moduleInformation.SizeOfImage);
                         modules.Add(module);

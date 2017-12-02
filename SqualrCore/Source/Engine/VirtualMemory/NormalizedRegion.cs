@@ -3,6 +3,7 @@
     using Output;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using Utils.Extensions;
 
     /// <summary>
@@ -210,6 +211,45 @@
 
                 yield return new NormalizedRegion(this.BaseAddress.Add(chunkSize * index), size);
             }
+        }
+
+        public static IEnumerable<NormalizedRegion> MergeAndSortRegions(IEnumerable<NormalizedRegion> regions)
+        {
+            if (regions == null || regions.Count() <= 0)
+            {
+                return null;
+            }
+
+            // First, sort by start address
+            IList<NormalizedRegion> sortedRegions = regions.OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
+
+            // Create and initialize the stack with the first region
+            Stack<NormalizedRegion> combinedRegions = new Stack<NormalizedRegion>();
+            combinedRegions.Push(sortedRegions[0]);
+
+            // Build the remaining regions
+            for (Int32 index = combinedRegions.Count; index < sortedRegions.Count; index++)
+            {
+                NormalizedRegion top = combinedRegions.Peek();
+
+                if (top.EndAddress.ToUInt64() < sortedRegions[index].BaseAddress.ToUInt64())
+                {
+                    // If the interval does not overlap, put it on the top of the stack
+                    combinedRegions.Push(sortedRegions[index]);
+                }
+                else if (top.EndAddress.ToUInt64() == sortedRegions[index].BaseAddress.ToUInt64())
+                {
+                    // The regions are adjacent; merge them
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                }
+                else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
+                {
+                    // The regions overlap
+                    top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
+                }
+            }
+
+            return combinedRegions.ToList().OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
         }
     }
     //// End interface
