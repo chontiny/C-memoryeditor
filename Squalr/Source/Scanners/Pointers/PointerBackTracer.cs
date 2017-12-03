@@ -89,24 +89,24 @@
                 Boolean isModuleLevel = level == this.PointerDepth - 1;
                 PointerPool currentLevelPointers = new PointerPool();
 
-                // Iterate all of the heap or module pointers
+                // Check if any pointers point to the previous level
                 Parallel.ForEach(
                     isModuleLevel ? this.ModulePointers : this.HeapPointers,
                     SettingsViewModel.GetInstance().ParallelSettingsFastest,
                     (pointer) =>
-                {
-                    // Accept this pointer if it is points to the previous level snapshot
-                    if (previousLevelSnapshot.ContainsAddress(pointer.Value))
                     {
-                        currentLevelPointers[pointer.Key] = pointer.Value;
-                    }
+                        // Accept this pointer if it is points to the previous level snapshot
+                        if (previousLevelSnapshot.ContainsAddress(pointer.Value))
+                        {
+                            currentLevelPointers[pointer.Key] = pointer.Value;
+                        }
 
-                    // Update scan progress
-                    if (Interlocked.Increment(ref processedPointers) % 1024 == 0)
-                    {
-                        this.UpdateProgress((processedPointers / unchecked((UInt32)this.PointerDepth)).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
-                    }
-                });
+                        // Update scan progress
+                        if (Interlocked.Increment(ref processedPointers) % 1024 == 0)
+                        {
+                            this.UpdateProgress((processedPointers / unchecked((UInt32)this.PointerDepth)).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
+                        }
+                    });
 
                 // Create a snapshot from this level of pointers
                 previousLevelSnapshot = currentLevelPointers.ToSnapshot(this.PointerRadius);

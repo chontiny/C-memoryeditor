@@ -127,7 +127,7 @@
                                     // Check if it is possible that this pointer is valid -- if so keep it
                                     if (heapSnapshot.ContainsAddress(pointerDestination))
                                     {
-                                        UInt32 pointerAddress = region.BaseAddress.ToUInt32() + unchecked((UInt32)(vectorReadIndex + index));
+                                        UInt32 pointerAddress = region.BaseAddress.ToUInt32() + unchecked((UInt32)(vectorReadIndex + index * sizeof(UInt32)));
 
                                         if (isModule)
                                         {
@@ -171,7 +171,7 @@
                                     // Check if it is possible that this pointer is valid -- if so keep it
                                     if (heapSnapshot.ContainsAddress(pointerDestination))
                                     {
-                                        UInt64 pointerAddress = region.BaseAddress.ToUInt64() + (vectorReadIndex + index).ToUInt64();
+                                        UInt64 pointerAddress = region.BaseAddress.ToUInt64() + (vectorReadIndex + index * sizeof(UInt64)).ToUInt64();
 
                                         if (isModule)
                                         {

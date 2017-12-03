@@ -3,6 +3,7 @@
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Structure for organizing all levels of pointer pools that a discovered pointer path may pass through.
@@ -46,7 +47,7 @@
         /// <summary>
         /// Gets the non static pointer pools. This is comprised of the heap pointer pools and the destination pointer pool.
         /// </summary>
-        public IEnumerable<PointerPool> NonStaticPointerPools
+        public IEnumerable<PointerPool> DynamicPointerPools
         {
             get
             {
@@ -64,6 +65,11 @@
                 return this.PointerPools.Count;
             }
         }
+
+        /// <summary>
+        /// Gets a value indicating if this set of level pointers contains multiple levels.
+        /// </summary>
+        public Boolean IsMultiLevel { get { return this.HeapPointerPools.Count() > 0; } }
 
         /// <summary>
         /// Adds a new pointer pool level. This will be inserted as the first level.
