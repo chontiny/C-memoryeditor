@@ -5,6 +5,5 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="SqualrCore" #>
-- Fixes to project saving
-- Allowing offsets to be entered directly into property viewer
-- Added pointer validation scan
+- Significant changes to scanning. These should be incredibly fast now.
+- Some fixes/updates to pointer scanning

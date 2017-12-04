@@ -273,8 +273,7 @@
                             Header="Manual Scanner"
                             IsCheckable="True"
                             IsChecked="{Binding ManualScannerViewModel.IsVisible, Mode=TwoWay}"
-                            Style="{Binding}"
-                            Visibility="Collapsed" />
+                            Style="{Binding}" />
                         <shell:MenuItem
                             Header="Label Thresholder"
                             IsCheckable="True"
