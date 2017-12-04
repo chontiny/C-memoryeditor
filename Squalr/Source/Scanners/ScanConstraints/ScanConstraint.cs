@@ -1,80 +1,9 @@
 ﻿namespace Squalr.Source.Scanners.ScanConstraints
 {
-    using Content;
+    using SqualrCore.Content;
     using System;
     using System.ComponentModel;
     using System.Windows.Media.Imaging;
-
-    /// <summary>
-    /// Enumeration of all possible scan constraints.
-    /// </summary>
-    internal enum ConstraintsEnum
-    {
-        /// <summary>
-        /// Comparative: The values must be equal.
-        /// </summary>
-        Equal,
-
-        /// <summary>
-        /// Comparative: The values must not be equal.
-        /// </summary>
-        NotEqual,
-
-        /// <summary>
-        /// Relative: The value must have changed.
-        /// </summary>
-        Changed,
-
-        /// <summary>
-        /// Relative: The value must not have changed.
-        /// </summary>
-        Unchanged,
-
-        /// <summary>
-        /// Relative: The value must have increased.
-        /// </summary>
-        Increased,
-
-        /// <summary>
-        /// Relative: The value must have decreased.
-        /// </summary>
-        Decreased,
-
-        /// <summary>
-        /// Relative: The value must have increased by a specific value.
-        /// </summary>
-        IncreasedByX,
-
-        /// <summary>
-        /// Relative: The value must have decreased by a specific value.
-        /// </summary>
-        DecreasedByX,
-
-        /// <summary>
-        /// Comparative: The value must be greater than the other value.
-        /// </summary>
-        GreaterThan,
-
-        /// <summary>
-        /// Comparative: The value must be greater than or equal the other value.
-        /// </summary>
-        GreaterThanOrEqual,
-
-        /// <summary>
-        /// Comparative: The value must be less than the other value.
-        /// </summary>
-        LessThan,
-
-        /// <summary>
-        /// Comparative: The value must be less than or equal the other value.
-        /// </summary>
-        LessThanOrEqual,
-
-        /// <summary>
-        /// Special: Only applies to singles and doubles. The value must not be in E notation.
-        /// </summary>
-        NotScientificNotation,
-    }
 
     /// <summary>
     /// Class to define a constraint for certain types of scans.
@@ -84,7 +13,7 @@
         /// <summary>
         /// The constraint type.
         /// </summary>
-        private ConstraintsEnum constraint;
+        private ConstraintType constraint;
 
         /// <summary>
         /// The value associated with this constraint, if applicable.
@@ -96,7 +25,7 @@
         /// </summary>
         public ScanConstraint()
         {
-            this.Constraint = ConstraintsEnum.Changed;
+            this.Constraint = ConstraintType.Changed;
             this.ConstraintValue = null;
         }
 
@@ -105,7 +34,7 @@
         /// </summary>
         /// <param name="valueConstraint">The constraint type.</param>
         /// <param name="addressValue">The value associated with this constraint.</param>
-        public ScanConstraint(ConstraintsEnum valueConstraint, Object addressValue = null)
+        public ScanConstraint(ConstraintType valueConstraint, Object addressValue = null)
         {
             this.Constraint = valueConstraint;
             this.ConstraintValue = addressValue;
@@ -119,7 +48,7 @@
         /// <summary>
         /// Gets or sets the constraint type.
         /// </summary>
-        public ConstraintsEnum Constraint
+        public ConstraintType Constraint
         {
             get
             {
@@ -129,7 +58,7 @@
             set
             {
                 this.constraint = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.Constraint)));
+                this.RaisePropertyChanged(nameof(this.Constraint));
 
                 // Force an update of the constraint value, to determine if it is still valid for the new constraint
                 this.ConstraintValue = this.constraintValue;
@@ -143,7 +72,7 @@
         {
             get
             {
-                if (this.IsValuedConstraint())
+                if (ScanConstraint.IsValuedConstraint(this.Constraint))
                 {
                     return this.constraintValue;
                 }
@@ -156,7 +85,7 @@
             set
             {
                 this.constraintValue = value;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ConstraintValue)));
+                this.RaisePropertyChanged(nameof(this.ConstraintValue));
             }
         }
 
@@ -169,31 +98,29 @@
             {
                 switch (this.Constraint)
                 {
-                    case ConstraintsEnum.Equal:
+                    case ConstraintType.Equal:
                         return "Equal";
-                    case ConstraintsEnum.NotEqual:
+                    case ConstraintType.NotEqual:
                         return "Not Equal";
-                    case ConstraintsEnum.GreaterThan:
+                    case ConstraintType.GreaterThan:
                         return "Greater Than";
-                    case ConstraintsEnum.GreaterThanOrEqual:
+                    case ConstraintType.GreaterThanOrEqual:
                         return "Greater Than Or Equal";
-                    case ConstraintsEnum.LessThan:
+                    case ConstraintType.LessThan:
                         return "Less Than";
-                    case ConstraintsEnum.LessThanOrEqual:
+                    case ConstraintType.LessThanOrEqual:
                         return "Less Than Or Equal";
-                    case ConstraintsEnum.NotScientificNotation:
-                        return "Not Scientific Notation";
-                    case ConstraintsEnum.Changed:
+                    case ConstraintType.Changed:
                         return "Changed";
-                    case ConstraintsEnum.Unchanged:
+                    case ConstraintType.Unchanged:
                         return "Unchanged";
-                    case ConstraintsEnum.Increased:
+                    case ConstraintType.Increased:
                         return "Increased";
-                    case ConstraintsEnum.Decreased:
+                    case ConstraintType.Decreased:
                         return "Decreased";
-                    case ConstraintsEnum.IncreasedByX:
+                    case ConstraintType.IncreasedByX:
                         return "Increased By X";
-                    case ConstraintsEnum.DecreasedByX:
+                    case ConstraintType.DecreasedByX:
                         return "Decreased By X";
                     default:
                         throw new Exception("Unrecognized Constraint");
@@ -210,31 +137,29 @@
             {
                 switch (this.Constraint)
                 {
-                    case ConstraintsEnum.Equal:
+                    case ConstraintType.Equal:
                         return Images.Equal;
-                    case ConstraintsEnum.NotEqual:
+                    case ConstraintType.NotEqual:
                         return Images.NotEqual;
-                    case ConstraintsEnum.GreaterThan:
+                    case ConstraintType.GreaterThan:
                         return Images.GreaterThan;
-                    case ConstraintsEnum.GreaterThanOrEqual:
+                    case ConstraintType.GreaterThanOrEqual:
                         return Images.GreaterThanOrEqual;
-                    case ConstraintsEnum.LessThan:
+                    case ConstraintType.LessThan:
                         return Images.LessThan;
-                    case ConstraintsEnum.LessThanOrEqual:
+                    case ConstraintType.LessThanOrEqual:
                         return Images.LessThanOrEqual;
-                    case ConstraintsEnum.NotScientificNotation:
-                        return Images.ExponentialNotation;
-                    case ConstraintsEnum.Changed:
+                    case ConstraintType.Changed:
                         return Images.Changed;
-                    case ConstraintsEnum.Unchanged:
+                    case ConstraintType.Unchanged:
                         return Images.Unchanged;
-                    case ConstraintsEnum.Increased:
+                    case ConstraintType.Increased:
                         return Images.Increased;
-                    case ConstraintsEnum.Decreased:
+                    case ConstraintType.Decreased:
                         return Images.Decreased;
-                    case ConstraintsEnum.IncreasedByX:
+                    case ConstraintType.IncreasedByX:
                         return Images.PlusX;
-                    case ConstraintsEnum.DecreasedByX:
+                    case ConstraintType.DecreasedByX:
                         return Images.MinusX;
                     default:
                         throw new Exception("Unrecognized Constraint");
@@ -243,30 +168,39 @@
         }
 
         /// <summary>
+        /// Clones this scan constraint.
+        /// </summary>
+        /// <returns>The cloned scan constraint.</returns>
+        public ScanConstraint Clone()
+        {
+            return new ScanConstraint(this.Constraint, this.ConstraintValue);
+        }
+
+        /// <summary>
         /// Determines if this constraint conflicts with another constraint.
         /// </summary>
-        /// <param name="scanConstraint">The other scan constraint.</param>
+        /// <param name="other">The other scan constraint.</param>
         /// <returns>True if the constraints conflict, otherwise false.</returns>
-        public Boolean ConflictsWith(ScanConstraint scanConstraint)
+        public Boolean ConflictsWith(ScanConstraint other)
         {
-            if (this.Constraint == scanConstraint.Constraint)
+            if (this.Constraint == other.Constraint)
             {
                 return true;
             }
 
-            if (this.IsRelativeConstraint() && scanConstraint.IsRelativeConstraint())
+            if (ScanConstraint.IsRelativeConstraint(this.Constraint) && ScanConstraint.IsRelativeConstraint(other.Constraint))
             {
                 return true;
             }
 
-            if (this.IsValuedConstraint() && scanConstraint.IsValuedConstraint())
+            if (ScanConstraint.IsValuedConstraint(this.Constraint) && ScanConstraint.IsValuedConstraint(other.Constraint))
             {
-                if (!this.IsRelativeConstraint() && !scanConstraint.IsRelativeConstraint())
+                if (!ScanConstraint.IsRelativeConstraint(this.Constraint) && !ScanConstraint.IsRelativeConstraint(other.Constraint))
                 {
-                    if ((this.Constraint == ConstraintsEnum.LessThan || this.Constraint == ConstraintsEnum.LessThanOrEqual || this.Constraint == ConstraintsEnum.NotEqual) &&
-                        (scanConstraint.Constraint == ConstraintsEnum.GreaterThan || scanConstraint.Constraint == ConstraintsEnum.GreaterThanOrEqual || scanConstraint.Constraint == ConstraintsEnum.NotEqual))
+                    if ((this.Constraint == ConstraintType.LessThan || this.Constraint == ConstraintType.LessThanOrEqual || this.Constraint == ConstraintType.NotEqual) &&
+                        (other.Constraint == ConstraintType.GreaterThan || other.Constraint == ConstraintType.GreaterThanOrEqual || other.Constraint == ConstraintType.NotEqual))
                     {
-                        if ((dynamic)this.ConstraintValue <= (dynamic)scanConstraint.ConstraintValue)
+                        if ((dynamic)this.ConstraintValue <= (dynamic)other.ConstraintValue)
                         {
                             return true;
                         }
@@ -274,10 +208,10 @@
                         return false;
                     }
 
-                    if ((this.Constraint == ConstraintsEnum.GreaterThan || this.Constraint == ConstraintsEnum.GreaterThanOrEqual || this.Constraint == ConstraintsEnum.NotEqual) &&
-                        (scanConstraint.Constraint == ConstraintsEnum.LessThan || scanConstraint.Constraint == ConstraintsEnum.LessThanOrEqual || scanConstraint.Constraint == ConstraintsEnum.NotEqual))
+                    if ((this.Constraint == ConstraintType.GreaterThan || this.Constraint == ConstraintType.GreaterThanOrEqual || this.Constraint == ConstraintType.NotEqual) &&
+                        (other.Constraint == ConstraintType.LessThan || other.Constraint == ConstraintType.LessThanOrEqual || other.Constraint == ConstraintType.NotEqual))
                     {
-                        if ((dynamic)this.ConstraintValue >= (dynamic)scanConstraint.ConstraintValue)
+                        if ((dynamic)this.ConstraintValue >= (dynamic)other.ConstraintValue)
                         {
                             return true;
                         }
@@ -296,24 +230,23 @@
         /// Gets a value indicating whether this constraint is a relative comparison constraint, requiring previous values.
         /// </summary>
         /// <returns>True if the constraint is a relative value constraint.</returns>
-        public Boolean IsRelativeConstraint()
+        public static Boolean IsRelativeConstraint(ScanConstraint.ConstraintType constraint)
         {
-            switch (this.Constraint)
+            switch (constraint)
             {
-                case ConstraintsEnum.Changed:
-                case ConstraintsEnum.Unchanged:
-                case ConstraintsEnum.Increased:
-                case ConstraintsEnum.Decreased:
-                case ConstraintsEnum.IncreasedByX:
-                case ConstraintsEnum.DecreasedByX:
+                case ConstraintType.Changed:
+                case ConstraintType.Unchanged:
+                case ConstraintType.Increased:
+                case ConstraintType.Decreased:
+                case ConstraintType.IncreasedByX:
+                case ConstraintType.DecreasedByX:
                     return true;
-                case ConstraintsEnum.Equal:
-                case ConstraintsEnum.NotEqual:
-                case ConstraintsEnum.GreaterThan:
-                case ConstraintsEnum.GreaterThanOrEqual:
-                case ConstraintsEnum.LessThan:
-                case ConstraintsEnum.LessThanOrEqual:
-                case ConstraintsEnum.NotScientificNotation:
+                case ConstraintType.Equal:
+                case ConstraintType.NotEqual:
+                case ConstraintType.GreaterThan:
+                case ConstraintType.GreaterThanOrEqual:
+                case ConstraintType.LessThan:
+                case ConstraintType.LessThanOrEqual:
                     return false;
                 default:
                     throw new ArgumentException();
@@ -324,28 +257,112 @@
         /// Gets a value indicating whether this constraint requires a value.
         /// </summary>
         /// <returns>True if the constraint requires a value.</returns>
-        public Boolean IsValuedConstraint()
+        public static Boolean IsValuedConstraint(ScanConstraint.ConstraintType constraint)
         {
-            switch (this.Constraint)
+            switch (constraint)
             {
-                case ConstraintsEnum.Equal:
-                case ConstraintsEnum.NotEqual:
-                case ConstraintsEnum.GreaterThan:
-                case ConstraintsEnum.GreaterThanOrEqual:
-                case ConstraintsEnum.LessThan:
-                case ConstraintsEnum.LessThanOrEqual:
-                case ConstraintsEnum.IncreasedByX:
-                case ConstraintsEnum.DecreasedByX:
+                case ConstraintType.Equal:
+                case ConstraintType.NotEqual:
+                case ConstraintType.GreaterThan:
+                case ConstraintType.GreaterThanOrEqual:
+                case ConstraintType.LessThan:
+                case ConstraintType.LessThanOrEqual:
+                case ConstraintType.IncreasedByX:
+                case ConstraintType.DecreasedByX:
                     return true;
-                case ConstraintsEnum.NotScientificNotation:
-                case ConstraintsEnum.Changed:
-                case ConstraintsEnum.Unchanged:
-                case ConstraintsEnum.Increased:
-                case ConstraintsEnum.Decreased:
+                case ConstraintType.Changed:
+                case ConstraintType.Unchanged:
+                case ConstraintType.Increased:
+                case ConstraintType.Decreased:
                     return false;
                 default:
                     throw new ArgumentException();
             }
+        }
+
+        public Boolean IsValid()
+        {
+            if (!ScanConstraint.IsValuedConstraint(this.Constraint))
+            {
+                return true;
+            }
+
+            return this.ConstraintValue != null;
+        }
+
+        /// <summary>
+        /// Indicates that a given property in this project item has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the changed property.</param>
+        protected void RaisePropertyChanged(String propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// Enumeration of all possible scan constraints.
+        /// </summary>
+        public enum ConstraintType
+        {
+            /// <summary>
+            /// Comparative: The values must be equal.
+            /// </summary>
+            Equal,
+
+            /// <summary>
+            /// Comparative: The values must not be equal.
+            /// </summary>
+            NotEqual,
+
+            /// <summary>
+            /// Relative: The value must have changed.
+            /// </summary>
+            Changed,
+
+            /// <summary>
+            /// Relative: The value must not have changed.
+            /// </summary>
+            Unchanged,
+
+            /// <summary>
+            /// Relative: The value must have increased.
+            /// </summary>
+            Increased,
+
+            /// <summary>
+            /// Relative: The value must have decreased.
+            /// </summary>
+            Decreased,
+
+            /// <summary>
+            /// Relative: The value must have increased by a specific value.
+            /// </summary>
+            IncreasedByX,
+
+            /// <summary>
+            /// Relative: The value must have decreased by a specific value.
+            /// </summary>
+            DecreasedByX,
+
+            /// <summary>
+            /// Comparative: The value must be greater than the other value.
+            /// </summary>
+            GreaterThan,
+
+            /// <summary>
+            /// Comparative: The value must be greater than or equal the other value.
+            /// </summary>
+            GreaterThanOrEqual,
+
+            /// <summary>
+            /// Comparative: The value must be less than the other value.
+            /// </summary>
+            LessThan,
+
+            /// <summary>
+            /// Comparative: The value must be less than or equal the other value.
+            /// </summary>
+            LessThanOrEqual,
         }
     }
     //// End class

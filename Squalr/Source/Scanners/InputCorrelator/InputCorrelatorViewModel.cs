@@ -1,13 +1,11 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
-    using Docking;
-    using Editors.HotkeyEditor;
-    using Engine.Input.HotKeys;
-    using GalaSoft.MvvmLight.Command;
-    using Main;
+    using GalaSoft.MvvmLight.CommandWpf;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Editors.HotkeyEditor;
+    using SqualrCore.Source.Engine.Input.HotKeys;
+    using SqualrCore.Source.Utils.DataStructures;
     using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
@@ -17,11 +15,6 @@
     /// </summary>
     internal class InputCorrelatorViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(InputCorrelatorViewModel);
-
         /// <summary>
         /// Singleton instance of the <see cref="InputCorrelatorViewModel" /> class.
         /// </summary>
@@ -34,14 +27,13 @@
         /// </summary>
         private InputCorrelatorViewModel() : base("Input Correlator")
         {
-            this.ContentId = InputCorrelatorViewModel.ToolContentId;
             this.NewHotkeyCommand = new RelayCommand(() => this.NewHotkey(), () => true);
             this.RemoveHotkeyCommand = new RelayCommand<Hotkey>((hotkey) => this.RemoveHotkey(hotkey), (hotkey) => true);
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
             this.InputCorrelatorModel = new InputCorrelatorModel(this.ScanCountUpdated);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         public ICommand StartScanCommand { get; private set; }
@@ -52,11 +44,11 @@
 
         public ICommand RemoveHotkeyCommand { get; private set; }
 
-        public ObservableCollection<Hotkey> Hotkeys
+        public FullyObservableCollection<Hotkey> Hotkeys
         {
             get
             {
-                return new ObservableCollection<Hotkey>(this.InputCorrelatorModel.HotKeys == null ? new List<Hotkey>() : this.InputCorrelatorModel.HotKeys);
+                return this.InputCorrelatorModel.HotKeys;
             }
         }
 
@@ -104,7 +96,7 @@
 
         private void StartScan()
         {
-            this.InputCorrelatorModel.Schedule();
+            this.InputCorrelatorModel.Start();
         }
 
         private void StopScan()

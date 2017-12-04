@@ -11,16 +11,15 @@
         <ResourceDictionary>
             <viewModel:ViewModelLocator x:Key="ViewModelLocator" d:IsDataSource="True" />
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/DarkBrushes.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/DarkBrushes.xaml" />
 
-                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/CheckBoxes.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/DropDown.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/DropDownAutoClose.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/DropDownContextMenu.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/FlatComboBox.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/ScrollViewer.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/TextBoxPlaceHolder.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/VerticalSeparator.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/ComboBox.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/ContextMenu.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/MenuItem.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/ScrollViewer.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/Separator.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/Submenu.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/SqualrCore;component/View/Style/TextBoxPlaceHolder.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

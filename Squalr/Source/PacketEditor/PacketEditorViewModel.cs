@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Source.PacketEditor
 {
-    using Docking;
-    using Main;
+    using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -11,11 +10,6 @@
     /// </summary>
     internal class PacketEditorViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(PacketEditorViewModel);
-
         /// <summary>
         /// Singleton instance of the <see cref="PacketEditorViewModel" /> class.
         /// </summary>
@@ -28,9 +22,7 @@
         /// </summary>
         private PacketEditorViewModel() : base("Packet Editor")
         {
-            this.ContentId = PacketEditorViewModel.ToolContentId;
-
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>

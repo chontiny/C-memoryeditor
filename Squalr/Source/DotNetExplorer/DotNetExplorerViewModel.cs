@@ -1,11 +1,12 @@
 ﻿namespace Squalr.Source.DotNetExplorer
 {
-    using Docking;
     using Engine.AddressResolver.DotNet;
-    using GalaSoft.MvvmLight.Command;
-    using Main;
-    using ProjectExplorer;
-    using ProjectExplorer.ProjectItems;
+    using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Source.ProjectExplorer;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Engine.VirtualMachines.DotNet;
+    using SqualrCore.Source.ProjectItems;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -18,11 +19,6 @@
     /// </summary>
     internal class DotNetExplorerViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(DotNetExplorerViewModel);
-
         /// <summary>
         /// Singleton instance of the <see cref="DotNetExplorerViewModel" /> class.
         /// </summary>
@@ -40,12 +36,11 @@
         /// </summary>
         private DotNetExplorerViewModel() : base(".Net Explorer")
         {
-            this.ContentId = DotNetExplorerViewModel.ToolContentId;
             this.dotNetObjects = new ReadOnlyCollection<DotNetObjectViewModel>(new List<DotNetObjectViewModel>());
             this.RefreshObjectsCommand = new RelayCommand(() => this.RefreshObjects(), () => true);
             this.AddDotNetObjectCommand = new RelayCommand<DotNetObjectViewModel>((dotNetObjectViewModel) => this.AddDotNetObject(dotNetObjectViewModel), (dotNetObjectViewModel) => true);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
@@ -108,9 +103,8 @@
             DotNetObject dotNetObject = dotNetObjectViewModel.DotNetObject;
             DotNetItem dotnetItem = new DotNetItem(
                 dotNetObject.Name,
-                dotNetObject.ElementType == typeof(Boolean) ? typeof(Byte) : dotNetObject.ElementType,
-                dotNetObject.GetFullName()
-                );
+                dotNetObject.ElementType == DataTypes.Boolean ? DataTypes.Byte : dotNetObject.ElementType,
+                dotNetObject.GetFullName());
 
             ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, dotnetItem);
         }

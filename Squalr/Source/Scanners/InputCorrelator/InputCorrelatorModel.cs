@@ -1,34 +1,41 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
-    using ActionScheduler;
-    using BackgroundScans.Prefilters;
-    using Engine;
-    using Engine.Input.HotKeys;
-    using Engine.Input.Keyboard;
     using LabelThresholder;
-    using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Snapshots;
+    using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.Engine;
+    using SqualrCore.Source.Engine.Input.HotKeys;
+    using SqualrCore.Source.Engine.Input.Keyboard;
+    using SqualrCore.Source.Engine.Types;
+    using SqualrCore.Source.Utils.DataStructures;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
-    using Utils.Extensions;
 
-    internal class InputCorrelatorModel : ScannerBase, IObserver<KeyState>
+    internal class InputCorrelatorModel : ScheduledTask, IObserver<KeyState>
     {
-        private List<Hotkey> hotKeys;
+        private FullyObservableCollection<Hotkey> hotKeys;
+
+        /// <summary>
+        /// The number of scans completed.
+        /// </summary>
+        private Int32 scanCount;
 
         public InputCorrelatorModel(Action updateScanCount) : base(
-            scannerName: "Input Correlator",
+            taskName: "Input Correlator",
             isRepeated: true,
-            dependencyBehavior: new DependencyBehavior(dependencies: typeof(ISnapshotPrefilter)))
+            trackProgress: true)
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();
-            this.HotKeys = new List<Hotkey>();
+            this.HotKeys = new FullyObservableCollection<Hotkey>();
         }
 
-        public List<Hotkey> HotKeys
+        public FullyObservableCollection<Hotkey> HotKeys
         {
             get
             {
@@ -53,6 +60,23 @@
         private DateTime LastActivated { get; set; }
 
         private Object ProgressLock { get; set; }
+
+        /// <summary>
+        /// Gets the number of scans that have been executed.
+        /// </summary>
+        public Int32 ScanCount
+        {
+            get
+            {
+                return this.scanCount;
+            }
+
+            private set
+            {
+                this.scanCount = value;
+                this.RaisePropertyChanged(nameof(this.ScanCount));
+            }
+        }
 
         public void OnNext(KeyState value)
         {
@@ -81,8 +105,8 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
-            this.Snapshot.SetLabelType(typeof(Int16));
+            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot.LabelDataType = DataTypes.Int16;
 
             if (this.Snapshot == null)
             {
@@ -93,11 +117,13 @@
             // Initialize with no correlation
             this.Snapshot.SetElementLabels<Int16>(0);
             this.TimeOutIntervalMs = SettingsViewModel.GetInstance().InputCorrelatorTimeOutInterval;
-
-            base.OnBegin();
         }
 
-        protected override void OnUpdate()
+        /// <summary>
+        /// Called when the scan updates.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             // Read memory to update previous and current values
             this.Snapshot.ReadAllMemory();
@@ -109,61 +135,61 @@
             if (conditionValid)
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
-                    if (!region.CanCompare())
+                    if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
                     {
                         return;
                     }
 
-                    foreach (SnapshotElementIterator element in region)
+                    IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.AllPointers, null);
+
+                    while (enumerator.MoveNext())
                     {
-                        if (element.Changed())
-                        {
-                            ((dynamic)element).ElementLabel++;
-                        }
+                        enumerator.Current.Compare();
+
+                        ((dynamic)enumerator).ElementLabel++;
                     }
 
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                 });
             }
             else
             {
                 Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
+                this.Snapshot.SnapshotRegions,
                 SettingsViewModel.GetInstance().ParallelSettingsFast,
                 (region) =>
                 {
-                    if (!region.CanCompare())
+                    if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
                     {
                         return;
                     }
 
-                    foreach (SnapshotElementIterator element in region)
+                    IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.AllPointers, null);
+
+                    while (enumerator.MoveNext())
                     {
-                        if (element.Changed())
-                        {
-                            ((dynamic)element).ElementLabel--;
-                        }
+                        enumerator.Current.Compare();
+
+                        ((dynamic)enumerator).ElementLabel--;
                     }
 
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                 });
             }
 
             this.UpdateScanCount?.Invoke();
-
-            base.OnUpdate();
         }
 
         /// <summary>
@@ -172,29 +198,27 @@
         protected override void OnEnd()
         {
             // Prefilter items with negative penalties (ie constantly changing variables)
-            this.Snapshot.SetAllValidBits(false);
+            //// this.Snapshot.SetAllValidBits(false);
 
-            foreach (SnapshotRegion region in this.Snapshot)
+            foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
             {
-                for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.ValuesOnly, null); enumerator.MoveNext();)
                 {
-                    SnapshotElementIterator element = enumerator.Current;
+                    SnapshotElementComparer element = enumerator.Current;
 
                     if ((Int16)element.ElementLabel > 0)
                     {
-                        element.SetValid(true);
+                        //// element.SetValid(true);
                     }
                 }
             }
 
-            this.Snapshot.DiscardInvalidRegions();
+            ////  this.Snapshot.DiscardInvalidRegions();
 
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
 
             this.CleanUp();
             LabelThresholderViewModel.GetInstance().OpenLabelThresholder();
-
-            base.OnEnd();
         }
 
         private void InitializeObjects()

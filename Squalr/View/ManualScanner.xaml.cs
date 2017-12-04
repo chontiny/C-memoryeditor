@@ -1,6 +1,9 @@
 ﻿namespace Squalr.View
 {
-    using Source.Results.ScanResults;
+    using Squalr.Source.Results;
+    using Squalr.Source.Scanners.ManualScanner;
+    using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Engine.Types;
     using System;
     using System.Threading.Tasks;
     using System.Windows.Controls;
@@ -8,7 +11,7 @@
     /// <summary>
     /// Interaction logic for ManualScanner.xaml.
     /// </summary>
-    internal partial class ManualScanner : UserControl, IScanResultsObserver
+    internal partial class ManualScanner : UserControl, IResultDataTypeObserver
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ManualScanner"/> class.
@@ -18,23 +21,34 @@
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
-            this.ValueHexDecBox = new Source.Controls.HexDecTextBox();
+            this.ValueHexDecBox = new HexDecTextBox();
             this.ValueHexDecBox.TextChanged += this.ValueUpdated;
-            this.valueHexDecBox.Children.Add(Source.Controls.WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
+            this.valueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
         }
 
         /// <summary>
+        /// Gets the view model associated with this view.
+        /// </summary>
+        public ManualScannerViewModel ManualScannerViewModel
+        {
+            get
+            {
+                return this.DataContext as ManualScannerViewModel;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the value hex dec box used to display the current value being edited.
         /// </summary>
-        private Source.Controls.HexDecTextBox ValueHexDecBox { get; set; }
+        private HexDecTextBox ValueHexDecBox { get; set; }
 
         /// <summary>
         /// Updates the active type.
         /// </summary>
         /// <param name="activeType">The new active type.</param>
-        public void Update(Type activeType)
+        public void Update(DataType activeType)
         {
             this.ValueHexDecBox.ElementType = activeType;
         }
@@ -46,7 +60,7 @@
         /// <param name="e">Event args.</param>
         private void ValueUpdated(Object sender, EventArgs e)
         {
-            Source.Scanners.ManualScanner.ManualScannerViewModel.GetInstance().UpdateActiveValueCommand.Execute(this.ValueHexDecBox.GetValue());
+            this.ManualScannerViewModel.UpdateActiveValueCommand.Execute(this.ValueHexDecBox.GetValue());
         }
     }
     //// End class

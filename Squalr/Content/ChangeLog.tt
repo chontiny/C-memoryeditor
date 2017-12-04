@@ -4,5 +4,6 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ import namespace="Squalr" #>
-- Fixes to evaluating pointers via scripts
+<#@ import namespace="SqualrCore" #>
+- Significant changes to scanning. These should be incredibly fast now.
+- Some fixes/updates to pointer scanning

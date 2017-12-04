@@ -1,0 +1,41 @@
+﻿<shell:Window
+    x:Class="SqualrStream.View.Login.TwitchLoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Name="SqualrTwitchLoginPage"
+    Title="Twitch Login"
+    Width="480"
+    Height="544"
+    d:DesignHeight="544"
+    d:DesignWidth="480"
+    x:ClassModifier="internal"
+    BorderBrush="{StaticResource SqualrColorWhite}"
+    BorderThickness="2"
+    DataContext="{Binding TwitchLoginViewModel, Source={StaticResource ViewModelLocator}}"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <shell:Grid Background="{StaticResource SqualrColorBlack}">
+        <shell:Grid.RowDefinitions>
+            <shell:RowDefinition />
+            <shell:RowDefinition Height="Auto" />
+        </shell:Grid.RowDefinitions>
+
+        <shell:WebBrowser Name="browser" Grid.Row="0" />
+
+        <shell:Grid Grid.Row="1" Margin="8">
+            <shell:Button
+                Width="96"
+                Height="20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                shell:Grid.Column="1"
+                Click="CancelButtonClick">
+                <shell:TextBlock Text="Cancel" />
+            </shell:Button>
+        </shell:Grid>
+    </shell:Grid>
+</shell:Window>

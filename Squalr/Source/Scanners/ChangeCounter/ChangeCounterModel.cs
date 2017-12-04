@@ -1,23 +1,47 @@
 ﻿namespace Squalr.Source.Scanners.ChangeCounter
 {
-    using ActionScheduler;
-    using BackgroundScans.Prefilters;
     using LabelThresholder;
-    using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Scanners.ValueCollector;
+    using Squalr.Source.Snapshots;
+    using SqualrCore.Source.ActionScheduler;
+    using SqualrCore.Source.Engine.Types;
     using System;
-    using System.Linq;
+    using System.Collections.Generic;
+    using System.Threading;
     using System.Threading.Tasks;
 
-    internal class ChangeCounterModel : ScannerBase
+    internal class ChangeCounterModel : ScheduledTask
     {
+        /// <summary>
+        /// The number of scans completed.
+        /// </summary>
+        private Int32 scanCount;
+
         public ChangeCounterModel(Action updateScanCount) : base(
-            scannerName: "Change Counter",
+            taskName: "Change Counter",
             isRepeated: true,
-            dependencyBehavior: new DependencyBehavior(dependencies: typeof(ISnapshotPrefilter)))
+            trackProgress: true)
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();
+        }
+
+        /// <summary>
+        /// Gets the number of scans that have been executed.
+        /// </summary>
+        public Int32 ScanCount
+        {
+            get
+            {
+                return this.scanCount;
+            }
+
+            private set
+            {
+                this.scanCount = value;
+                this.RaisePropertyChanged(nameof(this.ScanCount));
+            }
         }
 
         /// <summary>
@@ -43,11 +67,16 @@
             this.MaxChanges = maxChanges;
         }
 
+        public void Stop()
+        {
+            this.EndUpdateLoop();
+        }
+
         protected override void OnBegin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetInstance().GetActiveSnapshot(createIfNone: true).Clone(this.ScannerName);
-            this.Snapshot.SetLabelType(typeof(UInt16));
+            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot.LabelDataType = DataTypes.UInt16;
 
             if (this.Snapshot == null)
             {
@@ -57,41 +86,58 @@
             // Initialize change counts to zero
             this.Snapshot.SetElementLabels<UInt16>(0);
 
-            base.OnBegin();
+            this.ScanCount = 0;
         }
 
-        protected unsafe override void OnUpdate()
+        /// <summary>
+        /// Called when the scan updates.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             Int32 processedPages = 0;
 
-            // Read memory to get current values
-            this.Snapshot.ReadAllMemory();
-
-            Parallel.ForEach(
-                this.Snapshot.Cast<SnapshotRegion>(),
-                SettingsViewModel.GetInstance().ParallelSettingsFast,
-                (region) =>
+            ValueCollectorModel valueCollectorModel = new ValueCollectorModel(defaultSnapshot: this.Snapshot, callback: (snapshot) =>
             {
-                if (!region.CanCompare())
-                {
-                    return;
-                }
+                Parallel.ForEach(
+                    this.Snapshot.OptimizedSnapshotRegions,
+                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                    (region) =>
+                    {
+                        if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
+                        {
+                            return;
+                        }
 
-                foreach (SnapshotElementIterator element in region)
-                {
-                    element.ElementLabel = (UInt16)element.ElementLabel + 1;
-                }
+                        for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.ValuesOnly, null); enumerator.MoveNext();)
+                        {
+                            SnapshotElementComparer element = enumerator.Current;
 
-                lock (this.ProgressLock)
-                {
-                    processedPages++;
-                    this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
-                }
+                            // Perform the comparison based on the current scan constraint
+                            if (element.Compare())
+                            {
+                                element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
+                            }
+                        }
+
+                        // Update progress
+                        lock (this.ProgressLock)
+                        {
+                            processedPages++;
+                            this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
+                        }
+                    });
+
+                this.ScanCount++;
+
+                this.UpdateScanCount?.Invoke();
             });
 
-            this.UpdateScanCount?.Invoke();
-
-            base.OnUpdate();
+            // TODO: Figure out a better way
+            while (!valueCollectorModel.IsTaskComplete)
+            {
+                Thread.Sleep(100);
+            }
         }
 
         /// <summary>
@@ -99,11 +145,9 @@
         /// </summary>
         protected override void OnEnd()
         {
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
             LabelThresholderViewModel.GetInstance().OpenLabelThresholder();
             this.Snapshot = null;
-
-            base.OnEnd();
         }
     }
     //// End class

@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Scanners.ScanConstraints
 {
+    using SqualrCore.Source.Utils.DataStructures;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
-    using System.Collections.ObjectModel;
     using System.Linq;
-    using Utils.Extensions;
 
     /// <summary>
     /// Class for storing a collection of constraints to be used in a scan that applies more than one constraint per update.
@@ -16,13 +16,13 @@
         /// </summary>
         public ScanConstraintManager()
         {
-            this.ValueConstraints = new ObservableCollection<ScanConstraint>();
+            this.ValueConstraints = new FullyObservableCollection<ScanConstraint>();
         }
 
         /// <summary>
         /// Gets the collection of constraints.
         /// </summary>
-        public ObservableCollection<ScanConstraint> ValueConstraints { get; private set; }
+        public FullyObservableCollection<ScanConstraint> ValueConstraints { get; private set; }
 
         /// <summary>
         /// Gets the element type of this constraint manager.
@@ -50,7 +50,7 @@
         {
             ScanConstraintManager scanConstraintManager = new ScanConstraintManager();
             scanConstraintManager.SetElementType(this.ElementType);
-            this.ValueConstraints.ForEach(x => scanConstraintManager.AddConstraint(x));
+            this.ValueConstraints.ForEach(constraint => scanConstraintManager.AddConstraint(constraint.Clone()));
 
             return scanConstraintManager;
         }
@@ -74,15 +74,6 @@
 
             foreach (ScanConstraint scanConstraint in this.ValueConstraints.Select(x => x).Reverse())
             {
-                if (scanConstraint.Constraint == ConstraintsEnum.NotScientificNotation)
-                {
-                    if (elementType != typeof(Single) && elementType != typeof(Double))
-                    {
-                        this.ValueConstraints = new ObservableCollection<ScanConstraint>(this.ValueConstraints.Where(x => x != scanConstraint));
-                        continue;
-                    }
-                }
-
                 if (scanConstraint.ConstraintValue == null)
                 {
                     continue;
@@ -109,13 +100,18 @@
         {
             foreach (ScanConstraint valueConstraint in this)
             {
-                if (valueConstraint.IsRelativeConstraint())
+                if (ScanConstraint.IsRelativeConstraint(valueConstraint.Constraint))
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+
+        public Boolean IsValid()
+        {
+            return this.ValueConstraints.All(constraint => constraint.IsValid());
         }
 
         /// <summary>
@@ -125,15 +121,6 @@
         /// <param name="hasPriority">Whether or not the new constraint has priority for conflicts.</param>
         public void AddConstraint(ScanConstraint newScanConstraint, Boolean hasPriority = true)
         {
-            // Resolve potential conflicts depending on if the new constraint has priority
-            if (newScanConstraint.Constraint == ConstraintsEnum.NotScientificNotation)
-            {
-                if (this.ElementType != typeof(Single) && this.ElementType != typeof(Double))
-                {
-                    return;
-                }
-            }
-
             // Remove conflicting constraints
             foreach (ScanConstraint scanConstraint in this.ValueConstraints.Select(x => x).Reverse())
             {

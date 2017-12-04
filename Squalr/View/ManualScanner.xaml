@@ -2,18 +2,23 @@
     x:Class="Squalr.View.ManualScanner"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="SqualrManualScanner"
     d:DesignHeight="256"
-    d:DesignWidth="384"
+    d:DesignWidth="420"
     x:ClassModifier="internal"
     DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
-    <Grid Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+    <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
             <converters:IconConverter x:Key="IconConverter" />
+            <converters:BooleanToVisibilityConverter
+                x:Key="BooleanToHiddenConverter"
+                False="Hidden"
+                True="Visible" />
             <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </Grid.Resources>
         <Grid>
@@ -22,314 +27,9 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <WrapPanel Background="{StaticResource AvalonDock_Expression_BaseColor1}">
-                <Menu
-                    Grid.Row="0"
-                    Padding="4"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                    BorderBrush="{StaticResource AvalonDock_Expression_BaseColor2}"
-                    DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}">
-                    <MenuItem Command="{Binding ManualScannerViewModel.StartScanCommand}" ToolTip="Start Scan">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/RightArrow.png" />
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <Separator Style="{DynamicResource VerticalSeparator}" />
-                    <MenuItem Command="{Binding ManualScannerViewModel.ClearConstraintsCommand}" ToolTip="Clear Constraints">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/Cancel.png" />
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <Separator Style="{DynamicResource VerticalSeparator}" />
-                    <MenuItem
-                        BorderThickness="0"
-                        Style="{StaticResource DropDownAutoClose}"
-                        ToolTip="Scan Constraints">
-                        <MenuItem.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <Image
-                                    Width="16"
-                                    Height="16"
-                                    Source="{Binding ManualScannerViewModel.ScanConstraintImage}" />
-                                <Grid
-                                    x:Name="arrowGlyph"
-                                    Grid.Column="1"
-                                    Margin="4,3,4,3"
-                                    IsHitTestVisible="False">
-                                    <Path
-                                        x:Name="Arrow"
-                                        Width="7"
-                                        Height="4"
-                                        Data="M 0,1 C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1 z"
-                                        Fill="White" />
-                                </Grid>
-                            </StackPanel>
-                        </MenuItem.Header>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectChangedCommand}"
-                            ToolTip="Changed Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Changed.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Changed" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectUnchangedCommand}"
-                            ToolTip="Unchanged Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Unchanged.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Unchanged" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectIncreasedCommand}"
-                            ToolTip="Increased Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Increased.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Increased" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectDecreasedCommand}"
-                            ToolTip="Decreased Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Decreased.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Decreased" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectEqualCommand}"
-                            ToolTip="Equal to Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/Equal.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Equal" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectNotEqualCommand}"
-                            ToolTip="Not Equal to Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/NotEqual.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Not Equal To" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectIncreasedByXCommand}"
-                            ToolTip="Increased by Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/PlusX.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Increased By" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectDecreasedByXCommand}"
-                            ToolTip="Decreased by Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/MinusX.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Decreased By" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectGreaterThanCommand}"
-                            ToolTip="Greater Than Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/GreaterThan.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Greater Than" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectGreaterThanOrEqualCommand}"
-                            ToolTip="Greater Than or Equal to Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/GreaterThanOrEqual.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Greater Than Or Equal To" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectLessThanCommand}"
-                            ToolTip="Less Than Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/LessThan.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Less Than" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectLessThanOrEqualCommand}"
-                            ToolTip="Less Than or Equal to Value">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/LessThanOrEqual.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Less Than Or Equal To" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                        <MenuItem
-                            Background="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            BorderBrush="{StaticResource AvalonDock_Expression_BaseColor1}"
-                            Command="{Binding ManualScannerViewModel.SelectNotScientificNotationCommand}"
-                            ToolTip="Exclude Scientific Notation Values">
-                            <MenuItem.Header>
-                                <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="pack://application:,,,/Squalr;component/Content/Icons/ENotation.png" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="Not Scientific Notation" />
-                                </WrapPanel>
-                            </MenuItem.Header>
-                        </MenuItem>
-                    </MenuItem>
-                </Menu>
-                <Grid
-                    x:Name="valueHexDecBox"
-                    Width="196"
-                    Height="20"
-                    Margin="4,0,0,0"
-                    Background="{StaticResource AvalonDock_Expression_BaseColor4}" />
-                <Menu
-                    VerticalAlignment="Center"
-                    Background="Transparent"
-                    DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}">
-                    <MenuItem Command="{Binding AddCurrentConstraintCommand}" ToolTip="Add Constraint">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="pack://application:,,,/Squalr;component/Content/Icons/DownArrows.png" />
-                        </MenuItem.Header>
-                    </MenuItem>
-                </Menu>
-            </WrapPanel>
 
             <!--  Column titles  -->
             <ListView Grid.Row="2" BorderThickness="0">
@@ -345,19 +45,20 @@
                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
                                 VerticalAlignment="Center">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
+                                    <ColumnDefinition SharedSizeGroup="Constraints" />
+                                    <ColumnDefinition SharedSizeGroup="Values" />
+                                    <ColumnDefinition Width="96" SharedSizeGroup="Edits" />
                                 </Grid.ColumnDefinitions>
                                 <Grid.Resources>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource AvalonDock_Expression_BaseColor2}" />
+                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                                         <Setter Property="FontWeight" Value="Bold" />
                                     </Style>
                                     <Style TargetType="Border">
                                         <Setter Property="BorderThickness" Value="0" />
                                         <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource AvalonDock_Expression_BaseColor4}" />
+                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
                                     </Style>
                                 </Grid.Resources>
                                 <Border Grid.Column="0">
@@ -366,69 +67,16 @@
                                 <Border Grid.Column="1">
                                     <TextBlock Text="Value" />
                                 </Border>
+                                <Border Grid.Column="2" />
                             </Grid>
                         </Grid>
                     </ControlTemplate>
                 </ListView.Template>
             </ListView>
 
-            <!--  Pending constraint, visible if no constraints added  -->
-            <ScrollViewer
-                Grid.Row="3"
-                VerticalScrollBarVisibility="Auto"
-                Visibility="{Binding HasNoConstraints, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
-                    <ListView.Resources>
-                        <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
-                    </ListView.Resources>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Focusable" Value="false" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.Template>
-                        <ControlTemplate>
-                            <Grid HorizontalAlignment="Left">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <ItemsPresenter />
-                            </Grid>
-                        </ControlTemplate>
-                    </ListView.Template>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
-                                </Grid.ColumnDefinitions>
-                                <WrapPanel Grid.Column="0">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="{Binding Path=ConstraintImage}" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                        Text="{Binding Path=ConstraintName}" />
-                                </WrapPanel>
-                                <WrapPanel Grid.Column="1">
-                                    <TextBlock Foreground="{StaticResource AvalonDock_Expression_BaseColor2}" Text="{Binding Path=ConstraintValue}" />
-                                </WrapPanel>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </ScrollViewer>
-
             <!--  Added constraints  -->
-            <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
                 <ListView BorderThickness="0" ItemsSource="{Binding Constraints}">
-                    <ListView.Resources>
-                        <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
-                    </ListView.Resources>
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Focusable" Value="false" />
@@ -449,11 +97,27 @@
                         <DataTemplate>
                             <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition />
-                                    <ColumnDefinition />
+                                    <ColumnDefinition SharedSizeGroup="Constraints" />
+                                    <ColumnDefinition SharedSizeGroup="Values" />
+                                    <ColumnDefinition Width="96" SharedSizeGroup="Edits" />
                                 </Grid.ColumnDefinitions>
                                 <WrapPanel Grid.Column="0">
-                                    <Menu Name="debug" Background="{StaticResource AvalonDock_Expression_BaseColor3}">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Margin="8,0,0,0"
+                                        Source="{Binding Path=ConstraintImage}" />
+                                    <TextBlock
+                                        Padding="4,0,0,0"
+                                        Foreground="{StaticResource SqualrColorWhite}"
+                                        Text="{Binding Path=ConstraintName}" />
+                                </WrapPanel>
+                                <TextBlock
+                                    Grid.Column="1"
+                                    Foreground="{StaticResource SqualrColorWhite}"
+                                    Text="{Binding Path=ConstraintValue}" />
+                                <WrapPanel Grid.Column="2">
+                                    <Menu Background="{StaticResource SqualrColorBlack}">
                                         <MenuItem
                                             Command="{Binding ElementName=SqualrManualScanner, Path=DataContext.RemoveConstraintCommand}"
                                             CommandParameter="{Binding .}"
@@ -462,7 +126,7 @@
                                                 <Image
                                                     Width="16"
                                                     Height="16"
-                                                    Source="pack://application:,,,/Squalr;component/Content/Icons/X.png" />
+                                                    Source="{x:Static content:Images.X}" />
                                             </MenuItem.Header>
                                         </MenuItem>
                                         <MenuItem
@@ -473,10 +137,45 @@
                                                 <Image
                                                     Width="16"
                                                     Height="16"
-                                                    Source="pack://application:,,,/Squalr;component/Content/Icons/MoveUp.png" />
+                                                    Source="{x:Static content:Images.MoveDown}" />
                                             </MenuItem.Header>
                                         </MenuItem>
                                     </Menu>
+                                </WrapPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </ScrollViewer>
+
+            <!--  Pending constraint, visible if no constraints added  -->
+            <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto">
+                <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="Focusable" Value="false" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.Template>
+                        <ControlTemplate>
+                            <Grid HorizontalAlignment="Left">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <ItemsPresenter />
+                            </Grid>
+                        </ControlTemplate>
+                    </ListView.Template>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition SharedSizeGroup="Constraints" />
+                                    <ColumnDefinition SharedSizeGroup="Values" />
+                                    <ColumnDefinition Width="96" SharedSizeGroup="Edits" />
+                                </Grid.ColumnDefinitions>
+                                <WrapPanel Grid.Column="0">
                                     <Image
                                         Width="16"
                                         Height="16"
@@ -484,18 +183,305 @@
                                         Source="{Binding Path=ConstraintImage}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
-                                        Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
+                                        Foreground="{StaticResource SqualrColorWhite}"
                                         Text="{Binding Path=ConstraintName}" />
                                 </WrapPanel>
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Foreground="{StaticResource AvalonDock_Expression_BaseColor2}"
-                                    Text="{Binding Path=ConstraintValue}" />
+                                <WrapPanel Grid.Column="1">
+                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding Path=ConstraintValue}" />
+                                </WrapPanel>
+                                <Border Grid.Column="2" />
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </ScrollViewer>
+
+            <!--  Scan bar  -->
+            <Grid Grid.Row="5" Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <WrapPanel Background="{StaticResource SqualrColorGray27}">
+                    <MenuItem
+                        Grid.Row="6"
+                        Command="{Binding AddCurrentConstraintCommand}"
+                        ToolTip="Add Constraint">
+                        <MenuItem.Header>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="{x:Static content:Images.Increased}" />
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <Menu
+                        VerticalAlignment="Center"
+                        Background="{StaticResource SqualrColorGray27}"
+                        BorderBrush="{StaticResource SqualrColorWhite}"
+                        Foreground="{StaticResource SqualrColorWhite}">
+                        <MenuItem ToolTip="Scan Constraints">
+                            <MenuItem.Header>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{Binding ScanConstraintImage}" />
+                                    <Grid
+                                        x:Name="arrowGlyph"
+                                        Grid.Column="1"
+                                        Margin="4,3,4,3"
+                                        IsHitTestVisible="False">
+                                        <Path
+                                            x:Name="Arrow"
+                                            Width="7"
+                                            Height="4"
+                                            Data="M 0,1 C0,1 0,0 0,0 0,0 3,0 3,0 3,0 3,1 3,1 3,1 4,1 4,1 4,1 4,0 4,0 4,0 7,0 7,0 7,0 7,1 7,1 7,1 6,1 6,1 6,1 6,2 6,2 6,2 5,2 5,2 5,2 5,3 5,3 5,3 4,3 4,3 4,3 4,4 4,4 4,4 3,4 3,4 3,4 3,3 3,3 3,3 2,3 2,3 2,3 2,2 2,2 2,2 1,2 1,2 1,2 1,1 1,1 1,1 0,1 0,1 z"
+                                            Fill="White" />
+                                    </Grid>
+                                </StackPanel>
+                            </MenuItem.Header>
+                            <MenuItem
+                                Command="{Binding SelectChangedCommand}"
+                                Style="{Binding}"
+                                ToolTip="Changed Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.Changed}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Changed" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectUnchangedCommand}"
+                                Style="{Binding}"
+                                ToolTip="Unchanged Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.Unchanged}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Unchanged" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectIncreasedCommand}"
+                                Style="{Binding}"
+                                ToolTip="Increased Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.Increased}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Increased" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectDecreasedCommand}"
+                                Style="{Binding}"
+                                ToolTip="Decreased Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.Decreased}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Decreased" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectEqualCommand}"
+                                Style="{Binding}"
+                                ToolTip="Equal to Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.Equal}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Equal" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectNotEqualCommand}"
+                                Style="{Binding}"
+                                ToolTip="Not Equal to Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.NotEqual}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Not Equal To" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectIncreasedByXCommand}"
+                                Style="{Binding}"
+                                ToolTip="Increased by Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.PlusX}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Increased By" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectDecreasedByXCommand}"
+                                Style="{Binding}"
+                                ToolTip="Decreased by Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.MinusX}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Decreased By" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectGreaterThanCommand}"
+                                Style="{Binding}"
+                                ToolTip="Greater Than Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.GreaterThan}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Greater Than" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectGreaterThanOrEqualCommand}"
+                                Style="{Binding}"
+                                ToolTip="Greater Than or Equal to Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.GreaterThanOrEqual}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Greater Than Or Equal To" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectLessThanCommand}"
+                                Style="{Binding}"
+                                ToolTip="Less Than Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.LessThan}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Less Than" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Command="{Binding SelectLessThanOrEqualCommand}"
+                                Style="{Binding}"
+                                ToolTip="Less Than or Equal to Value">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.LessThanOrEqual}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Less Than Or Equal To" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </MenuItem>
+                    </Menu>
+                    <Border
+                        Height="20"
+                        Margin="0,2,0,2"
+                        VerticalAlignment="Center"
+                        Background="{StaticResource SqualrColorGray20}"
+                        BorderBrush="{StaticResource SqualrColorGray35}"
+                        BorderThickness="1"
+                        Visibility="{Binding IsActiveScanConstraintValued, Converter={StaticResource BooleanToHiddenConverter}}">
+                        <Grid
+                            x:Name="valueHexDecBox"
+                            Width="196"
+                            Height="16" />
+                    </Border>
+                    <MenuItem Command="{Binding StartScanCommand}" ToolTip="Start Scan">
+                        <MenuItem.Header>
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Source="{x:Static content:Images.RightArrow}" />
+                        </MenuItem.Header>
+                    </MenuItem>
+                </WrapPanel>
+                <MenuItem
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Background="{StaticResource SqualrColorGray27}"
+                    Command="{Binding ClearConstraintsCommand}"
+                    ToolTip="Clear Constraints">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            Source="{x:Static content:Images.Cancel}" />
+                    </MenuItem.Header>
+                </MenuItem>
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

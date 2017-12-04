@@ -1,0 +1,62 @@
+﻿<UserControl
+    x:Class="SqualrStream.View.Streaming.StreamConfigurationHome"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="SqualrStreamConfigurationHome"
+    d:DesignHeight="256"
+    d:DesignWidth="480"
+    x:ClassModifier="internal"
+    DataContext="{Binding StreamConfigViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public StreamConfigurationHome() { InitializeComponent(); }]]>
+    </x:Code>
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToVisibilityConverterInverse"
+            False="Visible"
+            True="Collapsed" />
+    </UserControl.Resources>
+    <Border>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Background="{StaticResource SqualrColorBlack}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Border
+                    Grid.Row="0"
+                    Padding="8,4,8,4"
+                    Background="{StaticResource SqualrColorGray20}">
+                    <Menu Background="Transparent">
+                        <MenuItem Command="{Binding ToggleConnectionCommand}">
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.Connect}"
+                                        ToolTip="Disconnect from Stream Service" />
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{Binding ConnectionImage}"
+                                        ToolTip="Connect/Disconnect from Stream Service" />
+                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ConnectionOption}" />
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </Menu>
+                </Border>
+            </Grid>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,29 +1,31 @@
 ﻿namespace Squalr.Source.Scanners.LabelThresholder
 {
-    using Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.Snapshots;
+    using SqualrCore.Source.ActionScheduler;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Linq;
+    using System.Threading;
     using System.Threading.Tasks;
 
-    internal class LabelThresholderModel : ScannerBase, ISnapshotObserver
+    internal class LabelThresholderModel : ScheduledTask, ISnapshotObserver
     {
         private Double upperThreshold;
 
         private Double lowerThreshold;
 
         public LabelThresholderModel(Action onUpdateHistogram) : base(
-            scannerName: "Label Thresholder",
+            taskName: "Label Thresholder",
             isRepeated: false,
-            dependencyBehavior: null)
+            trackProgress: true
+            )
         {
             this.ItemLock = new Object();
             this.SnapshotLock = new Object();
             this.ProgressLock = new Object();
             this.OnUpdateHistogram = onUpdateHistogram;
-            Task.Run(() => SnapshotManager.GetInstance().Subscribe(this));
+            Task.Run(() => SnapshotManagerViewModel.GetInstance().Subscribe(this));
         }
 
         public Double LowerThreshold
@@ -98,7 +100,7 @@
                 }
             }
 
-            this.Schedule();
+            this.Start();
         }
 
         public void ApplyThreshold()
@@ -111,63 +113,66 @@
                 }
             }
 
-            Object lowerValue = this.Histogram.Keys[this.LowerIndex];
-            Object upperValue = this.Histogram.Keys[this.UpperIndex];
+            dynamic lowerValue = this.Histogram.Keys[this.LowerIndex];
+            dynamic upperValue = this.Histogram.Keys[this.UpperIndex];
 
             lock (this.SnapshotLock)
             {
                 if (!this.Inverted)
                 {
-                    this.Snapshot.SetAllValidBits(false);
+                    //// this.Snapshot.SetAllValidBits(false);
 
-                    foreach (SnapshotRegion region in this.Snapshot)
+                    foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.ValuesOnly, null); enumerator.MoveNext();)
                         {
-                            SnapshotElementIterator element = enumerator.Current;
+                            SnapshotElementComparer element = enumerator.Current;
 
                             dynamic label = element.GetElementLabel();
 
                             if (label >= lowerValue && label <= upperValue)
                             {
-                                element.SetValid(true);
+                                //// element.SetValid(true);
                             }
                         }
                     }
                 }
                 else
                 {
-                    this.Snapshot.SetAllValidBits(true);
+                    //// this.Snapshot.SetAllValidBits(true);
 
-                    foreach (SnapshotRegion region in this.Snapshot)
+                    foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
-                        for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.LabelsOnly, null); enumerator.MoveNext();)
                         {
-                            SnapshotElementIterator element = enumerator.Current;
+                            SnapshotElementComparer element = enumerator.Current;
 
                             dynamic label = element.GetElementLabel();
 
                             if (label >= lowerValue && label <= upperValue)
                             {
-                                element.SetValid(false);
+                                //// element.SetValid(false);
                             }
                         }
                     }
                 }
 
-                this.Snapshot.DiscardInvalidRegions();
+                //// this.Snapshot.DiscardInvalidRegions();
             }
 
-            SnapshotManager.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
             this.UpdateHistogram(forceUpdate: true);
         }
 
         protected override void OnBegin()
         {
-            base.OnBegin();
         }
 
-        protected override void OnUpdate()
+        /// <summary>
+        /// Called when the scan updates.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
+        protected override void OnUpdate(CancellationToken cancellationToken)
         {
             ConcurrentDictionary<Object, Int64> histogram = new ConcurrentDictionary<Object, Int64>();
             Int32 processedPages = 0;
@@ -181,21 +186,22 @@
                 }
 
                 Parallel.ForEach(
-                    this.Snapshot.Cast<SnapshotRegion>(),
+                    this.Snapshot.SnapshotRegions,
                     SettingsViewModel.GetInstance().ParallelSettingsFast,
                     (region) =>
                 {
-                    if (region.ElementLabels == null || region.ElementCount <= 0)
+                    if (region.ReadGroup.ElementLabels == null || region.ElementCount <= 0)
                     {
                         return;
                     }
 
-                    for (IEnumerator<SnapshotElementIterator> enumerator = region.IterateElements(PointerIncrementMode.LabelsOnly); enumerator.MoveNext();)
+                    for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.LabelsOnly, null); enumerator.MoveNext();)
                     {
-                        SnapshotElementIterator element = enumerator.Current;
+                        SnapshotElementComparer element = enumerator.Current;
 
                         lock (this.ItemLock)
                         {
+
                             Object label = element.GetElementLabel();
 
                             if (histogram.ContainsKey(label))
@@ -212,7 +218,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount);
+                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                     //// End foreach element
                 });
@@ -221,14 +227,10 @@
 
             this.Histogram = new SortedList<Object, Int64>(histogram);
             this.UpdateHistogram();
-            this.Cancel();
-
-            base.OnUpdate();
         }
 
         protected override void OnEnd()
         {
-            base.OnEnd();
         }
 
         private void UpdateHistogram(Boolean forceUpdate = false)

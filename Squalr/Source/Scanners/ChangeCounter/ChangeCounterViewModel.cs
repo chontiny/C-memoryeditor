@@ -1,8 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.ChangeCounter
 {
-    using Docking;
-    using GalaSoft.MvvmLight.Command;
-    using Main;
+    using GalaSoft.MvvmLight.CommandWpf;
+    using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -13,11 +12,6 @@
     /// </summary>
     internal class ChangeCounterViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ChangeCounterViewModel);
-
         /// <summary>
         /// Singleton instance of the <see cref="ChangeCounterViewModel" /> class.
         /// </summary>
@@ -30,12 +24,11 @@
         /// </summary>
         private ChangeCounterViewModel() : base("Change Counter")
         {
-            this.ContentId = ChangeCounterViewModel.ToolContentId;
             this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
             this.StopScanCommand = new RelayCommand(() => Task.Run(() => this.StopScan()), () => true);
             this.ChangeCounterModel = new ChangeCounterModel(this.ScanCountUpdated);
 
-            MainViewModel.GetInstance().RegisterTool(this);
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         public ICommand StartScanCommand { get; private set; }
@@ -67,12 +60,12 @@
 
         private void StartScan()
         {
-            this.ChangeCounterModel.Schedule();
+            this.ChangeCounterModel.Start();
         }
 
         private void StopScan()
         {
-            this.ChangeCounterModel.Cancel();
+            this.ChangeCounterModel.Stop();
         }
     }
     //// End class

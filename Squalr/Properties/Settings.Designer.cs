@@ -109,7 +109,7 @@ namespace Squalr.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool MemoryTypeMapped {
             get {
                 return ((bool)(this["MemoryTypeMapped"]));
@@ -248,30 +248,6 @@ namespace Squalr.Properties {
             }
             set {
                 this["IsUserMode"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ScriptKittiez")]
-        public string TwitchChannel {
-            get {
-                return ((string)(this["TwitchChannel"]));
-            }
-            set {
-                this["TwitchChannel"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("{}")]
-        public string AccessTokens {
-            get {
-                return ((string)(this["AccessTokens"]));
-            }
-            set {
-                this["AccessTokens"] = value;
             }
         }
     }

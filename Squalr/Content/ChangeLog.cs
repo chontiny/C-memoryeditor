@@ -12,7 +12,7 @@ namespace Squalr.Content
     using System.Linq;
     using System.Text;
     using System.Collections.Generic;
-    using Squalr;
+    using SqualrCore;
     using System;
     
     /// <summary>
@@ -29,7 +29,8 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Fixes to evaluating pointers via scripts");
+            this.Write("- Significant changes to scanning. These should be incredibly fast now.\r\n- Some f" +
+                    "ixes/updates to pointer scanning");
             return this.GenerationEnvironment.ToString();
         }
     }

@@ -1,37 +1,30 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
-    using Docking;
-    using Engine;
-    using Engine.OperatingSystems;
-    using GalaSoft.MvvmLight.Command;
-    using Main;
-    using ProjectItems;
-    using PropertyViewer;
+    using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Properties;
-    using Squalr.Source.Controls;
-    using Squalr.Source.Editors.ScriptEditor;
-    using Squalr.Source.Editors.ValueEditor;
-    using Squalr.Source.Utils;
+    using SqualrCore.Source.Controls;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Editors.ScriptEditor;
+    using SqualrCore.Source.Editors.ValueEditor;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.PropertyViewer;
+    using SqualrCore.Source.Utils;
+    using SqualrCore.Source.Utils.DataStructures;
+    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using Utils.Extensions;
 
     /// <summary>
     /// View model for the Project Explorer.
     /// </summary>
-    internal class ProjectExplorerViewModel : ToolViewModel
+    public class ProjectExplorerViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(ProjectExplorerViewModel);
-
         /// <summary>
         /// The filter to use for saving and loading project filters.
         /// </summary>
@@ -57,7 +50,7 @@
         /// <summary>
         /// The project root which contains all project items.
         /// </summary>
-        private ObservableCollection<ProjectItem> projectItems;
+        private FullyObservableCollection<ProjectItem> projectItems;
 
         /// <summary>
         /// The selected project item.
@@ -69,7 +62,6 @@
         /// </summary>
         private ProjectExplorerViewModel() : base("Project Explorer")
         {
-            this.ContentId = ProjectExplorerViewModel.ToolContentId;
             this.ObserverLock = new Object();
             this.ProjectItemStorage = new ProjectItemStorage();
 
@@ -81,17 +73,18 @@
             this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
             this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItems) => this.SelectedProjectItems = (selectedItems as IList)?.Cast<ProjectItem>(), (selectedItems) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
-            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewPointerItem(), () => true);
-            this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewScriptItem(), () => true);
+            this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
+            this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(ScriptItem)), () => true);
+            this.AddNewInstructionItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(InstructionItem)), () => true);
             this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
             this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
             this.CopySelectionCommand = new RelayCommand(() => this.CopySelection(), () => true);
             this.PasteSelectionCommand = new RelayCommand(() => this.PasteSelection(), () => true);
             this.CutSelectionCommand = new RelayCommand(() => this.CutSelection(), () => true);
-            this.ProjectItems = new ObservableCollection<ProjectItem>();
+            this.ProjectItems = new FullyObservableCollection<ProjectItem>();
             this.Update();
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>
@@ -123,6 +116,11 @@
         /// Gets the command to add a new address.
         /// </summary>
         public ICommand AddNewAddressItemCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add a new instruction.
+        /// </summary>
+        public ICommand AddNewInstructionItemCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to add a new script.
@@ -172,7 +170,7 @@
         /// <summary>
         /// Gets the root that contains all project items.
         /// </summary>
-        public ObservableCollection<ProjectItem> ProjectItems
+        public FullyObservableCollection<ProjectItem> ProjectItems
         {
             get
             {
@@ -183,17 +181,6 @@
             {
                 this.projectItems = value;
                 this.RaisePropertyChanged(nameof(this.ProjectItems));
-            }
-        }
-
-        /// <summary>
-        /// Gets project items that can be bound to a hotkey.
-        /// </summary>
-        public ObservableCollection<ProjectItem> BindableProjectItems
-        {
-            get
-            {
-                return new ObservableCollection<ProjectItem>(this.projectItems);
             }
         }
 
@@ -242,33 +229,23 @@
         }
 
         /// <summary>
-        /// Adds a specific address to the project explorer.
+        /// Adds the new project item to the project item collection.
         /// </summary>
-        /// <param name="baseAddress">The address.</param>
-        /// <param name="elementType">The value type.</param>
-        public void AddSpecificAddressItem(IntPtr baseAddress, Type elementType)
+        /// <param name="addToSelected">Whether or not the items should be added under the selected item.</param>
+        /// <param name="projectItems">The project item to add.</param>
+        public void AddNewProjectItems(Boolean addToSelected = true, IEnumerable<ProjectItem> projectItems = null)
         {
-            // Check if the address is within a module, adding it as module format if so
-            foreach (NormalizedModule module in EngineCore.GetInstance().OperatingSystem.GetModules())
+            if (projectItems.IsNullOrEmpty() || projectItems.Contains(null))
             {
-                if (module.ContainsAddress(baseAddress))
-                {
-                    this.AddNewProjectItems(
-                        addToSelected: true,
-                        projectItems: new PointerItem(
-                            baseAddress: baseAddress.Subtract(module.BaseAddress),
-                            elementType: elementType,
-                            moduleName: module.Name));
-
-                    return;
-                }
+                return;
             }
 
-            this.AddNewProjectItems(
-                addToSelected: true,
-                projectItems: new PointerItem(
-                    baseAddress: baseAddress,
-                    elementType: elementType));
+            // Clone each project item, as we do not want to reference the same object that was passed to this function
+            IEnumerable<ProjectItem> newProjectItems = projectItems.Select(projectItem => projectItem.Clone());
+
+            this.ProjectItems = new FullyObservableCollection<ProjectItem>(this.ProjectItems.Concat(newProjectItems));
+
+            this.RaisePropertyChanged(nameof(this.ProjectItems));
         }
 
         /// <summary>
@@ -278,17 +255,7 @@
         /// <param name="projectItems">The project item to add.</param>
         public void AddNewProjectItems(Boolean addToSelected = true, params ProjectItem[] projectItems)
         {
-            if (projectItems.IsNullOrEmpty())
-            {
-                return;
-            }
-
-            foreach (ProjectItem projectItem in projectItems)
-            {
-                this.ProjectItems.Add(projectItem);
-            }
-
-            this.RaisePropertyChanged(nameof(this.ProjectItems));
+            this.AddNewProjectItems(addToSelected, (IEnumerable<ProjectItem>)projectItems);
         }
 
         /// <summary>
@@ -302,17 +269,23 @@
         /// <summary>
         /// Adds a new address to the project items.
         /// </summary>
-        private void AddNewPointerItem()
+        private void AddNewProjectItem(Type projectItemType)
         {
-            this.AddNewProjectItems(true, new PointerItem());
-        }
-
-        /// <summary>
-        /// Adds a new script to the project items.
-        /// </summary>
-        private void AddNewScriptItem()
-        {
-            this.AddNewProjectItems(true, new ScriptItem());
+            switch (projectItemType)
+            {
+                case Type _ when projectItemType == typeof(PointerItem):
+                    this.AddNewProjectItems(true, new PointerItem());
+                    break;
+                case Type _ when projectItemType == typeof(ScriptItem):
+                    this.AddNewProjectItems(true, new ScriptItem());
+                    break;
+                case Type _ when projectItemType == typeof(InstructionItem):
+                    this.AddNewProjectItems(true, new InstructionItem());
+                    break;
+                default:
+                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
+                    break;
+            }
         }
 
         /// <summary>
@@ -327,7 +300,7 @@
                 AddressItem addressItem = projectItem as AddressItem;
                 dynamic result = valueEditor.EditValue(null, null, addressItem);
 
-                if (CheckSyntax.CanParseValue(addressItem.DataType, result?.ToString()))
+                if (SyntaxChecker.CanParseValue(addressItem.DataType, result?.ToString()))
                 {
                     addressItem.AddressValue = result;
                 }
@@ -410,11 +383,7 @@
                 return;
             }
 
-            foreach (ProjectItem projectItem in this.ClipBoard)
-            {
-                // We must clone the item, such as to prevent duplicate references of the same exact object
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, projectItem.Clone());
-            }
+            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, this.ClipBoard);
         }
 
         /// <summary>

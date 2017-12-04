@@ -1,13 +1,8 @@
 ﻿namespace Squalr.Properties
 {
-    using Squalr.Source.Api.Models;
-    using Squalr.Source.Docking;
-    using Squalr.Source.Engine.OperatingSystems;
-    using Squalr.Source.Main;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using System;
-    using System.IO;
-    using System.Runtime.Serialization.Json;
-    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -17,15 +12,25 @@
     internal class SettingsViewModel : ToolViewModel
     {
         /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(SettingsViewModel);
-
-        /// <summary>
         /// Singleton instance of the <see cref="SettingsViewModel"/> class.
         /// </summary>
         private static Lazy<SettingsViewModel> settingsViewModelInstance = new Lazy<SettingsViewModel>(
                 () => { return new SettingsViewModel(); },
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
+        /// Settings that control the degree of parallelism for multithreaded tasks.
+        /// </summary>
+        private static Lazy<ParallelOptions> parallelSettingsFullCpu = new Lazy<ParallelOptions>(
+                () =>
+                {
+                    ParallelOptions parallelOptions = new ParallelOptions()
+                    {
+                        // Full throttle; all processors used
+                        MaxDegreeOfParallelism = Environment.ProcessorCount
+                    };
+                    return parallelOptions;
+                },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
@@ -59,18 +64,42 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
+        /// Settings that control the degree of parallelism for multithreaded tasks.
+        /// </summary>
+        private static Lazy<ParallelOptions> parallelSettingsNone = new Lazy<ParallelOptions>(
+                () =>
+                {
+                    ParallelOptions parallelOptions = new ParallelOptions()
+                    {
+                        // Only use 1 CPU
+                        MaxDegreeOfParallelism = 1
+                    };
+                    return parallelOptions;
+                },
+                LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="SettingsViewModel"/> class from being created.
         /// </summary>
         private SettingsViewModel() : base("Settings")
         {
-            this.ContentId = SettingsViewModel.ToolContentId;
-
             // Subscribe async to avoid a deadlock situation
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>
-        /// Gets the parallelism settings.
+        /// Gets the parallelism settings which use all CPUs available.
+        /// </summary>
+        public ParallelOptions ParallelSettingsFastest
+        {
+            get
+            {
+                return parallelSettingsFullCpu.Value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the parallelism settings which use most of the CPUs available.
         /// </summary>
         public ParallelOptions ParallelSettingsFast
         {
@@ -81,7 +110,7 @@
         }
 
         /// <summary>
-        /// Gets the parallelism settings.
+        /// Gets the parallelism settings which use some of the CPUs available.
         /// </summary>
         public ParallelOptions ParallelSettingsMedium
         {
@@ -92,30 +121,13 @@
         }
 
         /// <summary>
-        /// Gets or sets the saved twitch access tokens.
+        /// Gets the parallelism settings which use only one CPU. This should only be used for debugging.
         /// </summary>
-        public AccessTokens AccessTokens
+        public ParallelOptions ParallelSettingsNone
         {
             get
             {
-                using (MemoryStream memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(Settings.Default.AccessTokens)))
-                {
-                    DataContractJsonSerializer deserializer = new DataContractJsonSerializer(typeof(AccessTokens));
-
-                    return deserializer.ReadObject(memoryStream) as AccessTokens;
-                }
-            }
-
-            set
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(AccessTokens));
-                    serializer.WriteObject(memoryStream, value);
-
-                    Settings.Default.AccessTokens = Encoding.ASCII.GetString(memoryStream.ToArray());
-                    this.RaisePropertyChanged(nameof(this.AccessTokens));
-                }
+                return parallelSettingsNone.Value;
             }
         }
 
@@ -458,23 +470,6 @@
             {
                 Settings.Default.EndAddress = value;
                 this.RaisePropertyChanged(nameof(this.EndAddress));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the Twitch API channel.
-        /// </summary>
-        public String TwitchChannel
-        {
-            get
-            {
-                return Settings.Default.TwitchChannel;
-            }
-
-            set
-            {
-                Settings.Default.TwitchChannel = value;
-                this.RaisePropertyChanged(nameof(this.TwitchChannel));
             }
         }
 

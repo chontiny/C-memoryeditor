@@ -2,9 +2,10 @@
 {
     using Content.Templates;
     using CSScriptLibrary;
-    using Output;
-    using ProjectExplorer.ProjectItems;
-    using Squalr.Source.Analytics;
+    using SqualrCore.Source.Analytics;
+    using SqualrCore.Source.Output;
+    using SqualrCore.Source.ProjectItems;
+    using SqualrCore.Source.Utils;
     using System;
     using System.IO;
     using System.Reflection;
@@ -12,7 +13,6 @@
     using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
-    using Utils;
 
     /// <summary>
     /// Class for managing a single script.

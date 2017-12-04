@@ -1,16 +1,15 @@
 ﻿namespace Squalr.Source.Scanners.LabelThresholder
 {
-    using Docking;
-    using GalaSoft.MvvmLight.Command;
+    using GalaSoft.MvvmLight.CommandWpf;
     using LiveCharts;
     using LiveCharts.Wpf;
-    using Main;
+    using SqualrCore.Source.Docking;
+    using SqualrCore.Source.Utils;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media;
 
@@ -19,11 +18,6 @@
     /// </summary>
     internal class LabelThresholderViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The content id for the docking library associated with this view model.
-        /// </summary>
-        public const String ToolContentId = nameof(LabelThresholderViewModel);
-
         /// <summary>
         /// Singleton instance of the <see cref="LabelThresholderViewModel" /> class.
         /// </summary>
@@ -56,14 +50,13 @@
         /// </summary>
         private LabelThresholderViewModel() : base("Label Thresholder")
         {
-            this.ContentId = LabelThresholderViewModel.ToolContentId;
             this.LabelThresholderModel = new LabelThresholderModel(this.OnUpdateHistogram);
             this.LowerThreshold = 0;
             this.UpperThreshold = 100;
             this.ApplyThresholdCommand = new RelayCommand(() => Task.Run(() => this.ApplyThreshold()), () => true);
             this.InvertSelectionCommand = new RelayCommand(() => Task.Run(() => this.InvertSelection()), () => true);
 
-            Task.Run(() => MainViewModel.GetInstance().RegisterTool(this));
+            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 
         /// <summary>
@@ -198,6 +191,7 @@
         public void OpenLabelThresholder()
         {
             this.IsVisible = true;
+            this.IsSelected = true;
             this.IsActive = true;
         }
 
@@ -230,7 +224,7 @@
             this.KeptValues = new ChartValues<Int64>(histogramKept.Values.Select(x => (Int64)Math.Log(x)));
             this.FilteredValues = new ChartValues<Int64>(histogramFiltered.Values.Select(x => (Int64)Math.Log(x)));
 
-            Application.Current.Dispatcher.Invoke((Action)delegate
+            Dispatcher.Run(() =>
             {
                 if (this.SeriesCollection == null)
                 {

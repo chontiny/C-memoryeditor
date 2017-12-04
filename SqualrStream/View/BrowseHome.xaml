@@ -1,0 +1,195 @@
+﻿<UserControl
+    x:Class="SqualrStream.View.BrowseHome"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:browseConverters="clr-namespace:SqualrStream.Source.Mvvm.Converters"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:loaders="clr-namespace:SqualrCore.View.Loaders;assembly=SqualrCore"
+    xmlns:login="clr-namespace:SqualrStream.View.Login"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:navigationViewModel="clr-namespace:SqualrStream.Source.Navigation"
+    xmlns:store="clr-namespace:SqualrStream.View.Store"
+    x:Name="SqualrBrowseHome"
+    d:DesignHeight="256"
+    d:DesignWidth="256"
+    x:ClassModifier="internal"
+    DataContext="{Binding BrowseViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public BrowseHome() { InitializeComponent(); }]]>
+    </x:Code>
+    <UserControl.Resources>
+        <browseConverters:BrowsePageToVisibilityConverter x:Key="BrowsePageToVisibilityConverter" />
+        <browseConverters:BrowsePageToInvisibilityConverter x:Key="BrowsePageToInvisibilityConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid>
+            <Grid.Background>
+                <StaticResource ResourceKey="SqualrColorBlack" />
+            </Grid.Background>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid
+                Grid.Row="0"
+                Background="{StaticResource SqualrColorGray20}"
+                Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToInvisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.Login}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Menu Grid.Column="1" Background="Transparent">
+                    <MenuItem Padding="4" Command="{Binding LogoutCommand}">
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Grid>
+                                    <TextBlock
+                                        Foreground="White"
+                                        Opacity="0.5"
+                                        Text="Log Out">
+                                        <TextBlock.Effect>
+                                            <BlurEffect KernelType="Gaussian" Radius="8.0" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Foreground="LightBlue" Text="Log Out" />
+                                </Grid>
+                            </WrapPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem Padding="4" Command="{Binding OpenVirtualCurrencyStoreCommand}">
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Margin="0,0,4,0"
+                                    Source="{x:Static content:Images.Coin}" />
+                                <Grid>
+                                    <TextBlock
+                                        Foreground="White"
+                                        Opacity="0.5"
+                                        Text="{Binding ActiveUser.Coins}">
+                                        <TextBlock.Effect>
+                                            <BlurEffect KernelType="Gaussian" Radius="8.0" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                    <TextBlock Foreground="LightCyan" Text="{Binding ActiveUser.Coins}" />
+                                </Grid>
+                            </WrapPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </Menu>
+            </Grid>
+            <Grid Grid.Row="1" Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="64" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Rectangle Grid.Column="1">
+                        <Rectangle.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Offset="0.0" Color="Transparent" />
+                                <GradientStop Offset="0.5" Color="MediumPurple" />
+                                <GradientStop Offset="1.0" Color="Transparent" />
+                            </LinearGradientBrush>
+                        </Rectangle.Fill>
+                    </Rectangle>
+                    <Grid Grid.Column="0">
+                        <Menu
+                            Grid.Row="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            BorderBrush="{StaticResource SqualrColorWhite}"
+                            DataContext="{Binding Source={StaticResource ViewModelLocator}}"
+                            Foreground="{StaticResource SqualrColorWhite}">
+                            <MenuItem
+                                Width="24"
+                                Height="24"
+                                Command="{Binding BrowseViewModel.NavigateBackCommand}"
+                                IsEnabled="{Binding BrowseViewModel.IsBackAvailable}"
+                                ToolTip="Navigate back">
+                                <MenuItem.Header>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.Previous}">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Opacity" Value="0.5" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </MenuItem.Header>
+                            </MenuItem>
+                            <MenuItem
+                                Width="24"
+                                Height="24"
+                                Command="{Binding BrowseViewModel.NavigateForwardCommand}"
+                                IsEnabled="{Binding BrowseViewModel.IsForwardAvailable}"
+                                ToolTip="Navigate forward">
+                                <MenuItem.Header>
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.Next}">
+                                        <Image.Style>
+                                            <Style TargetType="Image">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="Opacity" Value="0.5" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </Menu>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="24"
+                            Foreground="White"
+                            Opacity="0.5"
+                            Text="{Binding BannerText}">
+                            <TextBlock.Effect>
+                                <BlurEffect KernelType="Gaussian" Radius="8.0" />
+                            </TextBlock.Effect>
+                        </TextBlock>
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            FontSize="24"
+                            Foreground="LightCyan"
+                            Text="{Binding BannerText}" />
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid Grid.Row="2">
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.Login}}">
+                    <login:LoginHome />
+                </Grid>
+                <Grid Visibility="{Binding CurrentPage, Converter={StaticResource BrowsePageToVisibilityConverter}, ConverterParameter={x:Static navigationViewModel:NavigationPage.LibraryEdit}}">
+                    <store:StoreHome />
+                </Grid>
+            </Grid>
+        </Grid>
+        <Grid Visibility="{Binding IsLoginStatusLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <loaders:SpinnerCogs
+                Margin="10"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center" />
+        </Grid>
+    </Grid>
+</UserControl>

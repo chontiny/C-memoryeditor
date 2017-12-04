@@ -1,0 +1,340 @@
+﻿<shell:Window
+    x:Class="SqualrStream.View.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+    xmlns:content="clr-namespace:SqualrCore.Content;assembly=SqualrCore"
+    xmlns:converters="clr-namespace:SqualrCore.Source.Mvvm.Converters;assembly=SqualrCore"
+    xmlns:coreView="clr-namespace:SqualrCore.View;assembly=SqualrCore"
+    xmlns:docking="clr-namespace:SqualrCore.Source.Docking;assembly=SqualrCore"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:libraryView="clr-namespace:SqualrStream.View.Library"
+    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:view="clr-namespace:SqualrStream.View"
+    x:Name="SqualrStreamWindow"
+    Title="Squalr"
+    Width="960"
+    Height="720"
+    x:ClassModifier="internal"
+    AllowsTransparency="False"
+    DataContext="{Binding MainViewModel, Source={StaticResource ViewModelLocator}}"
+    WindowStyle="None">
+    <x:Code>
+        <![CDATA[ public MainWindow() { InitializeComponent(); }]]>
+    </x:Code>
+    <shell:Window.Resources>
+        <converters:IconConverter x:Key="IconConverter" />
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToHiddenConverter"
+            False="Hidden"
+            True="Visible" />
+    </shell:Window.Resources>
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
+    </shell:WindowChrome.WindowChrome>
+    <intr:Interaction.Triggers>
+        <intr:EventTrigger EventName="Loaded">
+            <intr:InvokeCommandAction Command="{Binding LoadLayoutCommand}" CommandParameter="{Binding ., ElementName=dockManager}" />
+        </intr:EventTrigger>
+        <intr:EventTrigger EventName="Unloaded">
+            <intr:InvokeCommandAction Command="{Binding SaveLayoutCommand}" CommandParameter="{Binding ., ElementName=dockManager}" />
+        </intr:EventTrigger>
+        <intr:EventTrigger EventName="ContentRendered">
+            <intr:InvokeCommandAction Command="{Binding DisplayChangeLogCommand}" />
+        </intr:EventTrigger>
+    </intr:Interaction.Triggers>
+    <shell:Grid>
+        <shell:Grid.RowDefinitions>
+            <!--  Title Bar Row  -->
+            <shell:RowDefinition Height="Auto" />
+            <!--  Menu Bar Row  -->
+            <shell:RowDefinition Height="Auto" />
+            <!--  Button Menu Bar Row  -->
+            <shell:RowDefinition Height="Auto" />
+            <!--  Docking Panel Row  -->
+            <shell:RowDefinition Height="*" />
+            <!--  Status Bar Row  -->
+            <shell:RowDefinition Height="Auto" />
+        </shell:Grid.RowDefinitions>
+
+        <!--  Title Bar  -->
+        <shell:Grid
+            x:Name="titlebar"
+            Grid.Row="0"
+            Background="{StaticResource SqualrColorGray20}">
+            <shell:Grid.ColumnDefinitions>
+                <!--  Title Text Column  -->
+                <shell:ColumnDefinition />
+                <!--  Buttons  -->
+                <shell:ColumnDefinition Width="Auto" />
+            </shell:Grid.ColumnDefinitions>
+            <shell:Grid Grid.Column="0">
+                <shell:Grid.ColumnDefinitions>
+                    <shell:ColumnDefinition Width="Auto" />
+                    <shell:ColumnDefinition Width="Auto" />
+                </shell:Grid.ColumnDefinitions>
+                <shell:Image
+                    Grid.Column="0"
+                    Width="24"
+                    Height="24"
+                    Margin="4"
+                    Source="{x:Static content:Images.Squalr}" />
+                <shell:TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Foreground="{StaticResource SqualrColorWhite}"
+                    Text="Squalr" />
+            </shell:Grid>
+            <shell:Menu
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Background="Transparent">
+                <shell:MenuItem
+                    Height="24"
+                    Command="{Binding MinimizeCommand}"
+                    CommandParameter="{Binding ElementName=SqualrStreamWindow}"
+                    ToolTip="Minimize"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
+                    <shell:MenuItem.Header>
+                        <shell:Image
+                            Width="16"
+                            Height="16"
+                            Source="{x:Static content:Images.Decreased}" />
+                    </shell:MenuItem.Header>
+                </shell:MenuItem>
+                <shell:MenuItem
+                    Height="24"
+                    Command="{Binding MaximizeRestoreCommand}"
+                    CommandParameter="{Binding ElementName=SqualrStreamWindow}"
+                    ToolTip="Maximize/Restore"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
+                    <shell:MenuItem.Header>
+                        <shell:Image
+                            Width="16"
+                            Height="16"
+                            Source="{x:Static content:Images.Maximize}" />
+                    </shell:MenuItem.Header>
+                </shell:MenuItem>
+                <shell:MenuItem
+                    Height="24"
+                    Command="{Binding CloseCommand}"
+                    CommandParameter="{Binding ElementName=SqualrStreamWindow}"
+                    ToolTip="Close"
+                    WindowChrome.IsHitTestVisibleInChrome="True">
+                    <shell:MenuItem.Header>
+                        <shell:Image
+                            Width="16"
+                            Height="16"
+                            Source="{x:Static content:Images.X}" />
+                    </shell:MenuItem.Header>
+                </shell:MenuItem>
+            </shell:Menu>
+        </shell:Grid>
+
+        <!--  Menu Bar  -->
+        <shell:Grid Grid.Row="1">
+            <shell:Menu
+                Background="{StaticResource SqualrColorGray20}"
+                BorderBrush="{StaticResource SqualrColorWhite}"
+                Foreground="{StaticResource SqualrColorWhite}">
+                <!--  File Header  -->
+                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="File">
+                    <shell:MenuItem
+                        Command="{Binding MainViewModel.CloseCommand}"
+                        CommandParameter="{Binding ElementName=SqualrStreamWindow}"
+                        Header="Exit"
+                        Style="{Binding}" />
+                </shell:MenuItem>
+
+                <!--  Edit Header  -->
+                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Edit">
+                    <shell:MenuItem
+                        Header="Settings"
+                        IsCheckable="True"
+                        IsChecked="{Binding SettingsViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{Binding}" />
+                </shell:MenuItem>
+
+                <!--  Layout Header  -->
+                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Layout">
+                    <shell:MenuItem
+                        Command="{Binding MainViewModel.ResetLayoutCommand}"
+                        CommandParameter="{Binding ., ElementName=dockManager}"
+                        Header="Reset Window Layout"
+                        Style="{Binding}" />
+                </shell:MenuItem>
+
+                <!--  Windows Header  -->
+                <shell:MenuItem DataContext="{Binding Source={StaticResource ViewModelLocator}}" Header="Windows">
+                    <shell:MenuItem
+                        Header="Library"
+                        IsCheckable="True"
+                        IsChecked="{Binding LibraryViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{Binding}" />
+                    <shell:MenuItem
+                        Header="Browse"
+                        IsCheckable="True"
+                        IsChecked="{Binding BrowseViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{Binding}" />
+                    <shell:MenuItem
+                        Header="Process Selector"
+                        IsCheckable="True"
+                        IsChecked="{Binding ProcessSelectorViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{Binding}" />
+                    <shell:MenuItem
+                        Header="Property Viewer"
+                        IsCheckable="True"
+                        IsChecked="{Binding PropertyViewerViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{Binding}" />
+                    <shell:MenuItem
+                        Header="Output"
+                        IsCheckable="True"
+                        IsChecked="{Binding OutputViewModel.IsVisible, Mode=TwoWay}"
+                        Style="{Binding}" />
+                </shell:MenuItem>
+            </shell:Menu>
+        </shell:Grid>
+
+        <!--  Button Menu Bar  -->
+        <shell:WrapPanel Grid.Row="2" Background="{StaticResource SqualrColorGray20}">
+            <shell:Menu
+                Padding="4"
+                Background="Transparent"
+                DataContext="{Binding Source={StaticResource ViewModelLocator}}">
+                <shell:MenuItem Command="{Binding ProcessSelectorViewModel.Show}" ToolTip="Select a Target Process">
+                    <shell:MenuItem.Header>
+                        <shell:Image
+                            Width="16"
+                            Height="16"
+                            Source="{x:Static content:Images.SelectProcess}" />
+                    </shell:MenuItem.Header>
+                </shell:MenuItem>
+                <shell:Separator Style="{DynamicResource VerticalSeparator}" />
+            </shell:Menu>
+            <shell:ComboBox
+                Width="196"
+                Height="24"
+                ItemsSource="{Binding ProcessSelectorViewModel.WindowedProcessList, Source={StaticResource ViewModelLocator}}"
+                SelectedItem="{Binding ProcessSelectorViewModel.SelectedProcess, Source={StaticResource ViewModelLocator}, Mode=TwoWay}">
+                <shell:ComboBox.ItemTemplate>
+                    <shell:DataTemplate>
+                        <shell:StackPanel Orientation="Horizontal">
+                            <shell:Image
+                                Width="16"
+                                Height="16"
+                                Source="{Binding Path=Icon, Converter={StaticResource IconConverter}}" />
+                            <shell:TextBlock Margin="6,0,0,0" Text="{Binding Path=ProcessName}" />
+                        </shell:StackPanel>
+                    </shell:DataTemplate>
+                </shell:ComboBox.ItemTemplate>
+            </shell:ComboBox>
+        </shell:WrapPanel>
+
+        <!--  Docking Panel AnchorablesSource="{Binding Tools}"  -->
+        <avalonDock:DockingManager
+            x:Name="dockManager"
+            Grid.Row="3"
+            AnchorablesSource="{Binding DockingViewModel.Tools, Source={StaticResource ViewModelLocator}}"
+            Background="{StaticResource SqualrColorGray20}">
+            <!--  Theme  -->
+            <avalonDock:DockingManager.Theme>
+                <avalonDock:DarkTheme />
+            </avalonDock:DockingManager.Theme>
+
+            <!--  All Dockable Windows  -->
+            <avalonDock:DockingManager.LayoutItemTemplateSelector>
+                <view:ViewTemplateSelector>
+                    <!--  Error Message When Missing Data Template (KEEP AS FIRST IN THIS LIST)  -->
+                    <view:ViewTemplateSelector.DataTemplateErrorViewTemplate>
+                        <shell:DataTemplate>
+                            <coreView:DataTemplateError />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.DataTemplateErrorViewTemplate>
+                    <!--  Browse  -->
+                    <view:ViewTemplateSelector.BrowseViewTemplate>
+                        <shell:DataTemplate>
+                            <view:BrowseHome />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.BrowseViewTemplate>
+                    <!--  Library  -->
+                    <view:ViewTemplateSelector.LibraryViewTemplate>
+                        <shell:DataTemplate>
+                            <libraryView:LibraryHome />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.LibraryViewTemplate>
+                    <!--  Process Selector  -->
+                    <view:ViewTemplateSelector.ProcessSelectorViewTemplate>
+                        <shell:DataTemplate>
+                            <coreView:ProcessSelector />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.ProcessSelectorViewTemplate>
+                    <!--  Property Viewer  -->
+                    <view:ViewTemplateSelector.PropertyViewerViewTemplate>
+                        <shell:DataTemplate>
+                            <coreView:PropertyViewer />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.PropertyViewerViewTemplate>
+                    <!--  Output  -->
+                    <view:ViewTemplateSelector.OutputViewTemplate>
+                        <shell:DataTemplate>
+                            <coreView:Output />
+                        </shell:DataTemplate>
+                    </view:ViewTemplateSelector.OutputViewTemplate>
+                </view:ViewTemplateSelector>
+            </avalonDock:DockingManager.LayoutItemTemplateSelector>
+
+            <!--  Container Style  -->
+            <avalonDock:DockingManager.LayoutItemContainerStyleSelector>
+                <docking:PanesStyleSelector>
+                    <!--  General Docking Tools Style  -->
+                    <docking:PanesStyleSelector.ToolStyle>
+                        <shell:Style TargetType="{x:Type avalonDock:LayoutAnchorableItem}">
+                            <shell:Setter Property="Title" Value="{Binding Model.Title}" />
+                            <shell:Setter Property="IconSource" Value="{Binding Model.IconSource}" />
+                            <shell:Setter Property="Visibility" Value="{Binding Model.IsVisible, Mode=TwoWay, Converter={StaticResource BooleanToHiddenConverter}}" />
+                            <shell:Setter Property="ContentId" Value="{Binding Model.ContentId}" />
+                            <shell:Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}" />
+                            <shell:Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}" />
+                        </shell:Style>
+                    </docking:PanesStyleSelector.ToolStyle>
+                </docking:PanesStyleSelector>
+            </avalonDock:DockingManager.LayoutItemContainerStyleSelector>
+
+            <!--  Layout Style  -->
+            <avalonDock:LayoutRoot>
+                <!--  Docking Group for All Windows  -->
+                <avalonDock:LayoutPanel />
+            </avalonDock:LayoutRoot>
+        </avalonDock:DockingManager>
+
+        <!--  Status Bar  -->
+        <shell:Border
+            Grid.Row="4"
+            Height="24"
+            Padding="4"
+            Background="{StaticResource SqualrColorBlue}"
+            DataContext="{Binding ActionSchedulerViewModel, Source={StaticResource ViewModelLocator}}">
+            <shell:Grid>
+                <shell:ItemsControl HorizontalAlignment="Right" ItemsSource="{Binding Path=ActiveTasks}">
+                    <shell:ItemsControl.ItemTemplate>
+                        <shell:DataTemplate>
+                            <shell:WrapPanel Visibility="{Binding Path=TrackProgress, Converter={StaticResource BooleanToHiddenConverter}}">
+                                <shell:TextBlock
+                                    Padding="4,0,4,0"
+                                    Foreground="{StaticResource SqualrColorWhite}"
+                                    Text="{Binding Path=TaskName}" />
+                                <shell:ProgressBar Width="96" Value="{Binding Path=Progress, Mode=OneWay}" />
+                            </shell:WrapPanel>
+                        </shell:DataTemplate>
+                    </shell:ItemsControl.ItemTemplate>
+                    <shell:ItemsControl.ItemsPanel>
+                        <shell:ItemsPanelTemplate>
+                            <shell:StackPanel Orientation="Horizontal" />
+                        </shell:ItemsPanelTemplate>
+                    </shell:ItemsControl.ItemsPanel>
+                </shell:ItemsControl>
+            </shell:Grid>
+        </shell:Border>
+    </shell:Grid>
+</shell:Window>
