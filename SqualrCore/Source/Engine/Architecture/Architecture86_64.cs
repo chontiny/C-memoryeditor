@@ -61,9 +61,9 @@
         /// If vectors are not supported, returns the lowest common denominator vector size for the architecture.
         /// </summary>
         /// <returns>The vector size.</returns>
-        public UInt32 GetVectorSize()
+        public Int32 GetVectorSize()
         {
-            return unchecked((UInt32)Vector<Byte>.Count);
+            return Vector<Byte>.Count;
         }
     }
     //// End class

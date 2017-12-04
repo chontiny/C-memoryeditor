@@ -4,7 +4,6 @@
     using Squalr.Properties;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -29,8 +28,6 @@
             isRepeated: false,
             trackProgress: true)
         {
-            this.ProgressLock = new Object();
-
             this.LevelPointersCallback = levelPointersCallback;
 
             this.Dependencies.Enqueue(new PointerCollector(this.SetCollectedPointers));
@@ -49,12 +46,12 @@
         /// <summary>
         /// Gets or sets the pointer depth of the scan.
         /// </summary>
-        public UInt32 PointerDepth { get; set; }
+        public Int32 PointerDepth { get; set; }
 
         /// <summary>
         /// Gets or sets the pointer radius of the scan.
         /// </summary>
-        public UInt32 PointerRadius { get; set; }
+        public Int32 PointerRadius { get; set; }
 
         /// <summary>
         /// Gets or sets the target address of the pointer scan.
@@ -64,11 +61,6 @@
         private LevelPointers LevelPointers { get; set; }
 
         private Action<LevelPointers> LevelPointersCallback { get; set; }
-
-        /// <summary>
-        /// Gets or sets a lock object for updating scan progress.
-        /// </summary>
-        private Object ProgressLock { get; set; }
 
         /// <summary>
         /// Called when the scheduled task starts.
@@ -86,16 +78,10 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected override void OnUpdate(CancellationToken cancellationToken)
         {
-            UInt64 processedPointers = 0;
+            Int64 processedPointers = 0;
 
-            // Create a snapshot only containing the destination
-            NormalizedRegion destinationRegion = new NormalizedRegion(baseAddress: this.TargetAddress.ToIntPtr(), regionSize: 1);
-            destinationRegion.Expand(this.PointerRadius.ToUInt64());
-
-            throw new NotImplementedException("Destination region used to belong to the snapshot below. This needs reworking");
-
-            // Start with the previous level as the destination (as this is a back-tracing algorithm, we work backwards from the destination)
-            Snapshot previousLevelSnapshot = new Snapshot();
+            // Create a snapshot only containing the destination (as this is a back-tracing algorithm, we work backwards from the destination)
+            Snapshot previousLevelSnapshot = new Snapshot(null, new ReadGroup[] { new ReadGroup(this.TargetAddress.ToIntPtr().Subtract(this.PointerRadius, wrapAround: false), this.PointerRadius) });
 
             // Find all pointers that point to the previous level
             for (Int32 level = 0; level < this.PointerDepth; level++)
@@ -103,30 +89,24 @@
                 Boolean isModuleLevel = level == this.PointerDepth - 1;
                 PointerPool currentLevelPointers = new PointerPool();
 
-                // Iterate all of the heap or module pointers
+                // Check if any pointers point to the previous level
                 Parallel.ForEach(
                     isModuleLevel ? this.ModulePointers : this.HeapPointers,
                     SettingsViewModel.GetInstance().ParallelSettingsFastest,
                     (pointer) =>
-                {
-                    // Accept this pointer if it is points to the previous level snapshot
-                    if (previousLevelSnapshot.ContainsAddress(pointer.Value))
                     {
-                        currentLevelPointers[pointer.Key] = pointer.Value;
-                    }
-
-                    // Update scan progress
-                    lock (this.ProgressLock)
-                    {
-                        processedPointers++;
-
-                        // Limit how often we update the progress
-                        if (processedPointers % 10000 == 0)
+                        // Accept this pointer if it is points to the previous level snapshot
+                        if (previousLevelSnapshot.ContainsAddress(pointer.Value))
                         {
-                            this.UpdateProgress((processedPointers / this.PointerDepth).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
+                            currentLevelPointers[pointer.Key] = pointer.Value;
                         }
-                    }
-                });
+
+                        // Update scan progress
+                        if (Interlocked.Increment(ref processedPointers) % 1024 == 0)
+                        {
+                            this.UpdateProgress((processedPointers / unchecked((UInt32)this.PointerDepth)).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
+                        }
+                    });
 
                 // Create a snapshot from this level of pointers
                 previousLevelSnapshot = currentLevelPointers.ToSnapshot(this.PointerRadius);

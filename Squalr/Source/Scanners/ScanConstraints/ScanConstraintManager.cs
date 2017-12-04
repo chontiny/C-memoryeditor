@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Source.Scanners.ScanConstraints
 {
-    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -51,7 +50,7 @@
         {
             ScanConstraintManager scanConstraintManager = new ScanConstraintManager();
             scanConstraintManager.SetElementType(this.ElementType);
-            this.ValueConstraints.ForEach(constraints => scanConstraintManager.AddConstraint(constraints));
+            this.ValueConstraints.ForEach(constraint => scanConstraintManager.AddConstraint(constraint.Clone()));
 
             return scanConstraintManager;
         }
@@ -75,15 +74,6 @@
 
             foreach (ScanConstraint scanConstraint in this.ValueConstraints.Select(x => x).Reverse())
             {
-                if (scanConstraint.Constraint == ScanConstraint.ConstraintType.NotScientificNotation)
-                {
-                    if (elementType != DataTypes.Single && elementType != DataTypes.Double)
-                    {
-                        this.ValueConstraints = new FullyObservableCollection<ScanConstraint>(this.ValueConstraints.Where(x => x != scanConstraint));
-                        continue;
-                    }
-                }
-
                 if (scanConstraint.ConstraintValue == null)
                 {
                     continue;
@@ -131,15 +121,6 @@
         /// <param name="hasPriority">Whether or not the new constraint has priority for conflicts.</param>
         public void AddConstraint(ScanConstraint newScanConstraint, Boolean hasPriority = true)
         {
-            // Resolve potential conflicts depending on if the new constraint has priority
-            if (newScanConstraint.Constraint == ScanConstraint.ConstraintType.NotScientificNotation)
-            {
-                if (this.ElementType != DataTypes.Single && this.ElementType != DataTypes.Double)
-                {
-                    return;
-                }
-            }
-
             // Remove conflicting constraints
             foreach (ScanConstraint scanConstraint in this.ValueConstraints.Select(x => x).Reverse())
             {

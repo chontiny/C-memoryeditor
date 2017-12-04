@@ -1,14 +1,22 @@
 ﻿namespace Squalr.Source.Snapshots
 {
+    using Squalr.Properties;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
+    /// <summary>
+    /// A class to contain snapshots of memory, which can be compared by scanners.
+    /// </summary>
     internal class Snapshot
     {
-        private IEnumerable<ReadGroup> readGroups { get; set; }
+        /// <summary>
+        /// The read groups of this snapshot.
+        /// </summary>
+        private IEnumerable<ReadGroup> readGroups;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
@@ -88,6 +96,9 @@
         /// <returns>The number of individual elements contained in this snapshot.</returns>
         public UInt64 ElementCount { get; set; }
 
+        /// <summary>
+        /// Sets the label data type for all read groups.
+        /// </summary>
         public DataType LabelDataType
         {
             set
@@ -96,6 +107,9 @@
             }
         }
 
+        /// <summary>
+        /// Sets the alignment for all of the read groups.
+        /// </summary>
         public Int32 Alignment
         {
             set
@@ -104,6 +118,9 @@
             }
         }
 
+        /// <summary>
+        /// Sets the data type for all of the read groups.
+        /// </summary>
         public DataType ElementDataType
         {
             set
@@ -117,6 +134,9 @@
         /// </summary>
         public DateTime TimeSinceLastUpdate { get; private set; }
 
+        /// <summary>
+        /// Gets or sets the read groups of this snapshot.
+        /// </summary>
         public IEnumerable<ReadGroup> ReadGroups
         {
             get
@@ -164,7 +184,7 @@
         /// </summary>
         /// <param name="elementIndex">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementComparer this[UInt64 elementIndex]
+        public SnapshotElementIndexer this[UInt64 elementIndex]
         {
             get
             {
@@ -175,7 +195,7 @@
                     return null;
                 }
 
-                return region[(elementIndex - region.BaseElementIndex).ToUInt32()];
+                return region[(elementIndex - region.BaseElementIndex).ToInt32()];
             }
         }
 
@@ -195,8 +215,14 @@
         public void ReadAllMemory()
         {
             this.TimeSinceLastUpdate = DateTime.Now;
-            // this.Intersect(SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromSettings));
-            this.ReadGroups?.ForEach(x => x.ReadAllMemory());
+
+            Parallel.ForEach(
+            this.OptimizedReadGroups,
+            SettingsViewModel.GetInstance().ParallelSettingsFastest,
+            (readGroup) =>
+            {
+                readGroup.ReadAllMemory();
+            });
         }
 
         /// <summary>
@@ -270,8 +296,8 @@
             foreach (SnapshotRegion region in this.SnapshotRegions)
             {
                 region.BaseElementIndex = this.ElementCount;
-                this.ByteCount += region.RegionSize;
-                this.ElementCount += region.ElementCount;
+                this.ByteCount += region.RegionSize.ToUInt64();
+                this.ElementCount += region.ElementCount.ToUInt64();
             }
         }
 
@@ -323,7 +349,7 @@
             {
                 return this.BinaryRegionSearchHelper(elementIndex, (min + middle - 1) / 2, min, middle - 1);
             }
-            else if (elementIndex >= this.SnapshotRegions[middle].BaseElementIndex + this.SnapshotRegions[middle].ElementCount)
+            else if (elementIndex >= this.SnapshotRegions[middle].BaseElementIndex + this.SnapshotRegions[middle].ElementCount.ToUInt64())
             {
                 return this.BinaryRegionSearchHelper(elementIndex, (middle + 1 + max) / 2, middle + 1, max);
             }

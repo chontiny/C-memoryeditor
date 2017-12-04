@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
     using Squalr.Source.Snapshots;
+    using SqualrCore.Source.Engine.VirtualMemory;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;
@@ -86,21 +87,22 @@
             }
         }
 
-        public Snapshot ToSnapshot(UInt32 pointerRadius)
+        public Snapshot ToSnapshot(Int32 pointerRadius)
         {
-            Snapshot pointerPoolSnapshot = new Snapshot();
-
-            IList<SnapshotRegion> levelRegions = new List<SnapshotRegion>();
+            IList<NormalizedRegion> levelRegions = new List<NormalizedRegion>();
+            IList<ReadGroup> levelReadGroups = new List<ReadGroup>();
 
             foreach (KeyValuePair<UInt64, UInt64> pointer in this)
             {
-                throw new NotImplementedException("Snapshots aint like this no more");
-                //SnapshotRegion levelRegion = new SnapshotRegion(pointer.Key.ToIntPtr(), 1);
-                //levelRegion.Expand(pointerRadius);
-                //levelRegions.Add(levelRegion);
+                levelRegions.Add(new NormalizedRegion(pointer.Key.ToIntPtr().Subtract(pointerRadius, wrapAround: false), pointerRadius));
             }
 
-            pointerPoolSnapshot.AddSnapshotRegions(levelRegions);
+            foreach (NormalizedRegion region in NormalizedRegion.MergeAndSortRegions(levelRegions))
+            {
+                levelReadGroups.Add(new ReadGroup(region.BaseAddress, region.RegionSize));
+            }
+
+            Snapshot pointerPoolSnapshot = new Snapshot(null, levelReadGroups);
 
             return pointerPoolSnapshot;
         }
@@ -129,11 +131,11 @@
         /// <param name="pointerDestination">The pointer destination.</param>
         /// <param name="pointerRadius">How far to search in each direction from the given pointer.</param>
         /// <returns>The list of valid offsets from the destination pointer that point to a pointer in this pool.</returns>
-        public IEnumerable<Int32> FindOffsets(UInt64 pointerDestination, UInt32 pointerRadius)
+        public IEnumerable<Int32> FindOffsets(UInt64 pointerDestination, Int32 pointerRadius)
         {
             return this.PointerAddresses
                 .Select(x => x)
-                .Where(x => (x > pointerDestination - pointerRadius) && (x < pointerDestination + pointerRadius))
+                .Where(x => (x > pointerDestination - unchecked((UInt32)pointerRadius)) && (x < pointerDestination + unchecked((UInt32)pointerRadius)))
                 .Select(x => x > pointerDestination ? (x - pointerDestination).ToInt32() : -(pointerDestination - x).ToInt32());
         }
     }

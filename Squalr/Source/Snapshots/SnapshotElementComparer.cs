@@ -1,11 +1,10 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Scanners.ScanConstraints;
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.Utils;
+    using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
 
     /// <summary>
     /// Defines a reference to an element within a snapshot region.
@@ -15,26 +14,36 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotElementComparer" /> class.
         /// </summary>
-        /// <param name="parent">The parent region that contains this element.</param>
+        /// <param name="region">The parent region that contains this element.</param>
         /// <param name="elementIndex">The index of the element to begin pointing to.</param>
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
         public unsafe SnapshotElementComparer(
-            SnapshotRegion parent,
-            UInt32 elementIndex = 0,
-            PointerIncrementMode pointerIncrementMode = PointerIncrementMode.AllPointers,
-            ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
-            Object compareActionValue = null)
+            SnapshotRegion region,
+            PointerIncrementMode pointerIncrementMode,
+            ScanConstraintManager scanConstraintManager)
         {
-            this.Parent = parent;
-            this.ElementIndex = elementIndex;
-            this.DataTypeSize = unchecked((UInt32)Conversions.SizeOf(this.Parent.ReadGroup.ElementDataType));
+            this.Region = region;
 
-            this.InitializePointers(elementIndex);
+            // The garbage collector can relocate variables at runtime. Since we use unsafe pointers, we need to keep these pinned
+            this.CurrentValuesHandle = GCHandle.Alloc(this.Region.ReadGroup.CurrentValues, GCHandleType.Pinned);
+            this.PreviousValuesHandle = GCHandle.Alloc(this.Region.ReadGroup.PreviousValues, GCHandleType.Pinned);
+
+            this.InitializePointers();
             this.SetConstraintFunctions();
             this.SetPointerFunction(pointerIncrementMode);
-            this.SetCompareAction(compareActionConstraint, compareActionValue);
+            this.SetCompareAction(scanConstraintManager);
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="SnapshotElementComparer" /> class.
+        /// </summary>
+        ~SnapshotElementComparer()
+        {
+            // Let the GC do what it wants now
+            this.CurrentValuesHandle.Free();
+            this.PreviousValuesHandle.Free();
         }
 
         /// <summary>
@@ -45,142 +54,67 @@
         /// <summary>
         /// Gets an action based on the element iterator scan constraint.
         /// </summary>
-        public Func<Boolean> Compare { get; private set; }
-
-        /// <summary>
-        /// Gets a function to load the current value.
-        /// </summary>
-        public Func<Object> LoadCurrentValue { get; private set; }
-
-        /// <summary>
-        /// Gets a function to load the previous value.
-        /// </summary>
-        public Func<Object> LoadPreviousValue { get; private set; }
+        public Func<Boolean> Compare { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has changed.
         /// </summary>
-        public Func<Boolean> Changed { get; private set; }
+        private Func<Boolean> Changed { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has not changed.
         /// </summary>
-        public Func<Boolean> Unchanged { get; private set; }
+        private Func<Boolean> Unchanged { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has increased.
         /// </summary>
-        public Func<Boolean> Increased { get; private set; }
+        private Func<Boolean> Increased { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has decreased.
         /// </summary>
-        public Func<Boolean> Decreased { get; private set; }
+        private Func<Boolean> Decreased { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has a value equal to the given value.
         /// </summary>
-        public Func<Object, Boolean> EqualToValue { get; private set; }
+        private Func<Object, Boolean> EqualToValue { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has a value not equal to the given value.
         /// </summary>
-        public Func<Object, Boolean> NotEqualToValue { get; private set; }
+        private Func<Object, Boolean> NotEqualToValue { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has a value greater than to the given value.
         /// </summary>
-        public Func<Object, Boolean> GreaterThanValue { get; private set; }
+        private Func<Object, Boolean> GreaterThanValue { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has a value greater than or equal to the given value.
         /// </summary>
-        public Func<Object, Boolean> GreaterThanOrEqualToValue { get; private set; }
+        private Func<Object, Boolean> GreaterThanOrEqualToValue { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has a value less than to the given value.
         /// </summary>
-        public Func<Object, Boolean> LessThanValue { get; private set; }
+        private Func<Object, Boolean> LessThanValue { get; set; }
 
         /// <summary>
         /// Gets a function which determines if this element has a value less than to the given value.
         /// </summary>
-        public Func<Object, Boolean> LessThanOrEqualToValue { get; private set; }
+        private Func<Object, Boolean> LessThanOrEqualToValue { get; set; }
 
         /// <summary>
         /// Gets a function which determines if the element has increased it's value by the given value.
         /// </summary>
-        public Func<Object, Boolean> IncreasedByValue { get; private set; }
+        private Func<Object, Boolean> IncreasedByValue { get; set; }
 
         /// <summary>
         /// Gets a function which determines if the element has decreased it's value by the given value.
         /// </summary>
-        public Func<Object, Boolean> DecreasedByValue { get; private set; }
-
-        /// <summary>
-        /// Gets a function which determines if the value is in scientific notation. Only applicable for Single and Double data types.
-        /// </summary>
-        public Func<Boolean> IsScientificNotation { get; private set; }
-
-        /// <summary>
-        /// Gets the base address of this element.
-        /// </summary>
-        public IntPtr BaseAddress
-        {
-            get
-            {
-                return this.Parent.ReadGroup.BaseAddress.Add(this.Parent.ReadGroupOffset).Add(this.ElementIndex * this.Parent.ReadGroup.Alignment);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the label associated with this element.
-        /// </summary>
-        public Object ElementLabel
-        {
-            get
-            {
-                return this.Parent.ReadGroup.ElementLabels[this.CurrentLabelIndex];
-            }
-
-            set
-            {
-                this.Parent.ReadGroup.ElementLabels[this.CurrentLabelIndex] = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the parent snapshot region.
-        /// </summary>
-        private SnapshotRegion Parent { get; set; }
-
-        /// <summary>
-        /// Gets or sets the pointer to the current value.
-        /// </summary>
-        private unsafe Byte* CurrentValuePointer { get; set; }
-
-        /// <summary>
-        /// Gets or sets the pointer to the previous value.
-        /// </summary>
-        private unsafe Byte* PreviousValuePointer { get; set; }
-
-        /// <summary>
-        /// Gets or sets the index of this element, used for setting and getting the label.
-        /// Note that we cannot have a pointer to the label, as it is a non-blittable type.
-        /// </summary>
-        private UInt32 CurrentLabelIndex { get; set; }
-
-        /// <summary>
-        /// Gets the index of this element.
-        /// </summary>
-        private unsafe UInt32 ElementIndex { get; set; }
-
-        /// <summary>
-        /// Gets or sets the data type of this element.
-        /// </summary>
-        private DataType DataType { get; set; }
-
-        private UInt32 DataTypeSize { get; set; }
+        private Func<Object, Boolean> DecreasedByValue { get; set; }
 
         /// <summary>
         /// Enums determining which pointers need to be updated every iteration.
@@ -214,13 +148,129 @@
         }
 
         /// <summary>
+        /// Gets the base address of this element.
+        /// </summary>
+        public IntPtr BaseAddress
+        {
+            get
+            {
+                return this.Region.BaseAddress.Add(this.ElementIndex);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the label associated with this element.
+        /// </summary>
+        public Object ElementLabel
+        {
+            get
+            {
+                return this.Region.ReadGroup.ElementLabels[this.CurrentLabelIndex];
+            }
+
+            set
+            {
+                this.Region.ReadGroup.ElementLabels[this.CurrentLabelIndex] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a garbage collector handle to the current value array.
+        /// </summary>
+        private GCHandle CurrentValuesHandle { get; set; }
+
+        /// <summary>
+        /// Gets or sets a garbage collector handle to the previous value array.
+        /// </summary>
+        private GCHandle PreviousValuesHandle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the parent snapshot region.
+        /// </summary>
+        private SnapshotRegion Region { get; set; }
+
+        /// <summary>
+        /// Gets or sets the pointer to the current value.
+        /// </summary>
+        private unsafe Byte* CurrentValuePointer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the pointer to the previous value.
+        /// </summary>
+        private unsafe Byte* PreviousValuePointer { get; set; }
+
+        /// <summary>
+        /// Gets or sets the index of this element, used for setting and getting the label.
+        /// Note that we cannot have a pointer to the label, as it is a non-blittable type.
+        /// </summary>
+        private Int32 CurrentLabelIndex { get; set; }
+
+        /// <summary>
+        /// Gets the index of this element.
+        /// </summary>
+        private unsafe Int32 ElementIndex
+        {
+            get
+            {
+                // Use the incremented current value pointer or label index to figure out the index of this element
+                if (this.CurrentLabelIndex != 0)
+                {
+                    return this.CurrentLabelIndex;
+                }
+                else if (this.CurrentValuePointer != null)
+                {
+                    fixed (Byte* pointerBase = &this.Region.ReadGroup.CurrentValues[this.Region.ReadGroupOffset])
+                    {
+                        return (Int32)(this.CurrentValuePointer - pointerBase);
+                    }
+                }
+                else if (this.PreviousValuePointer != null)
+                {
+                    fixed (Byte* pointerBase = &this.Region.ReadGroup.PreviousValues[this.Region.ReadGroupOffset])
+                    {
+                        return (Int32)(this.PreviousValuePointer - pointerBase);
+                    }
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the type code associated with the data type of this element.
+        /// </summary>
+        private TypeCode CurrentTypeCode { get; set; }
+
+        /// <summary>
+        /// Gets the current value of this element.
+        /// </summary>
+        /// <returns>The current value of this element.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe Object GetCurrentValue()
+        {
+            return this.LoadValue(this.CurrentValuePointer);
+        }
+
+        /// <summary>
+        /// Gets the previous value of this element.
+        /// </summary>
+        /// <returns>The previous value of this element.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe Object GetPreviousValue()
+        {
+            return this.LoadValue(this.PreviousValuePointer);
+        }
+
+        /// <summary>
         /// Gets the label of this element.
         /// </summary>
         /// <returns>The label of this element.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe Object GetElementLabel()
         {
-            return this.Parent.ReadGroup.ElementLabels == null ? null : this.Parent.ReadGroup.ElementLabels[this.CurrentLabelIndex];
+            return this.Region.ReadGroup.ElementLabels == null ? null : this.Region.ReadGroup.ElementLabels[this.CurrentLabelIndex];
         }
 
         /// <summary>
@@ -230,7 +280,7 @@
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public unsafe void SetElementLabel(Object newLabel)
         {
-            this.Parent.ReadGroup.ElementLabels[this.CurrentLabelIndex] = newLabel;
+            this.Region.ReadGroup.ElementLabels[this.CurrentLabelIndex] = newLabel;
         }
 
         /// <summary>
@@ -266,15 +316,14 @@
         /// <summary>
         /// Initializes snapshot value reference pointers
         /// </summary>
-        /// <param name="index">The index of the element to begin pointing to.</param>
-        private unsafe void InitializePointers(UInt32 index = 0)
+        private unsafe void InitializePointers()
         {
-            this.CurrentLabelIndex = index;
-            this.DataType = this.Parent.ReadGroup.ElementDataType;
+            this.CurrentLabelIndex = 0;
+            this.CurrentTypeCode = Type.GetTypeCode(this.Region.ReadGroup.ElementDataType);
 
-            if (this.Parent?.ReadGroup?.CurrentValues != null && this.Parent.ReadGroupOffset + index < this.Parent.ReadGroup.CurrentValues.Length.ToUInt64())
+            if (this.Region.ReadGroup.CurrentValues != null && this.Region.ReadGroup.CurrentValues.Length > 0)
             {
-                fixed (Byte* pointerBase = &this.Parent.ReadGroup.CurrentValues[this.Parent.ReadGroupOffset + index])
+                fixed (Byte* pointerBase = &this.Region.ReadGroup.CurrentValues[this.Region.ReadGroupOffset])
                 {
                     this.CurrentValuePointer = pointerBase;
                 }
@@ -284,9 +333,9 @@
                 this.CurrentValuePointer = null;
             }
 
-            if (this.Parent?.ReadGroup?.PreviousValues != null && this.Parent.ReadGroupOffset + index < this.Parent.ReadGroup.PreviousValues.Length.ToUInt64())
+            if (this.Region.ReadGroup.PreviousValues != null && this.Region.ReadGroup.PreviousValues.Length > 0)
             {
-                fixed (Byte* pointerBase = &this.Parent.ReadGroup.PreviousValues[this.Parent.ReadGroupOffset + index])
+                fixed (Byte* pointerBase = &this.Region.ReadGroup.PreviousValues[this.Region.ReadGroupOffset])
                 {
                     this.PreviousValuePointer = pointerBase;
                 }
@@ -302,11 +351,9 @@
         /// </summary>
         private unsafe void SetConstraintFunctions()
         {
-            switch (this.DataType)
+            switch (this.CurrentTypeCode)
             {
-                case DataType type when type == DataTypes.Byte:
-                    this.LoadCurrentValue = () => { return *this.CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *this.PreviousValuePointer; };
+                case TypeCode.Byte:
                     this.Changed = () => { return *this.CurrentValuePointer != *this.PreviousValuePointer; };
                     this.Unchanged = () => { return *this.CurrentValuePointer == *this.PreviousValuePointer; };
                     this.Increased = () => { return *this.CurrentValuePointer > *this.PreviousValuePointer; };
@@ -319,11 +366,8 @@
                     this.LessThanOrEqualToValue = (value) => { return *this.CurrentValuePointer <= (Byte)value; };
                     this.IncreasedByValue = (value) => { return *this.CurrentValuePointer == unchecked(*this.PreviousValuePointer + (Byte)value); };
                     this.DecreasedByValue = (value) => { return *this.CurrentValuePointer == unchecked(*this.PreviousValuePointer - (Byte)value); };
-                    this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == DataTypes.SByte:
-                    this.LoadCurrentValue = () => { return *(SByte*)CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *(SByte*)PreviousValuePointer; };
+                case TypeCode.SByte:
                     this.Changed = () => { return *(SByte*)this.CurrentValuePointer != *(SByte*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(SByte*)this.CurrentValuePointer == *(SByte*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(SByte*)this.CurrentValuePointer > *(SByte*)this.PreviousValuePointer; };
@@ -336,11 +380,8 @@
                     this.LessThanOrEqualToValue = (value) => { return *(SByte*)this.CurrentValuePointer <= (SByte)value; };
                     this.IncreasedByValue = (value) => { return *(SByte*)this.CurrentValuePointer == unchecked(*(SByte*)this.PreviousValuePointer + (SByte)value); };
                     this.DecreasedByValue = (value) => { return *(SByte*)this.CurrentValuePointer == unchecked(*(SByte*)this.PreviousValuePointer - (SByte)value); };
-                    this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == DataTypes.Int16:
-                    this.LoadCurrentValue = () => { return *(Int16*)CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *(Int16*)PreviousValuePointer; };
+                case TypeCode.Int16:
                     this.Changed = () => { return *(Int16*)this.CurrentValuePointer != *(Int16*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(Int16*)this.CurrentValuePointer == *(Int16*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(Int16*)this.CurrentValuePointer > *(Int16*)this.PreviousValuePointer; };
@@ -353,11 +394,8 @@
                     this.LessThanOrEqualToValue = (value) => { return *(Int16*)this.CurrentValuePointer <= (Int16)value; };
                     this.IncreasedByValue = (value) => { return *(Int16*)this.CurrentValuePointer == unchecked(*(Int16*)this.PreviousValuePointer + (Int16)value); };
                     this.DecreasedByValue = (value) => { return *(Int16*)this.CurrentValuePointer == unchecked(*(Int16*)this.PreviousValuePointer - (Int16)value); };
-                    this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == DataTypes.Int32:
-                    this.LoadCurrentValue = () => { return *(Int32*)CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *(Int32*)PreviousValuePointer; };
+                case TypeCode.Int32:
                     this.Changed = () => { return *(Int32*)this.CurrentValuePointer != *(Int32*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(Int32*)this.CurrentValuePointer == *(Int32*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(Int32*)this.CurrentValuePointer > *(Int32*)this.PreviousValuePointer; };
@@ -370,11 +408,8 @@
                     this.LessThanOrEqualToValue = (value) => { return *(Int32*)this.CurrentValuePointer <= (Int32)value; };
                     this.IncreasedByValue = (value) => { return *(Int32*)this.CurrentValuePointer == unchecked(*(Int32*)this.PreviousValuePointer + (Int32)value); };
                     this.DecreasedByValue = (value) => { return *(Int32*)this.CurrentValuePointer == unchecked(*(Int32*)this.PreviousValuePointer - (Int32)value); };
-                    this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == DataTypes.Int64:
-                    this.LoadCurrentValue = () => { return *(Int64*)CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *(Int64*)PreviousValuePointer; };
+                case TypeCode.Int64:
                     this.Changed = () => { return *(Int64*)this.CurrentValuePointer != *(Int64*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(Int64*)this.CurrentValuePointer == *(Int64*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(Int64*)this.CurrentValuePointer > *(Int64*)this.PreviousValuePointer; };
@@ -387,11 +422,8 @@
                     this.LessThanOrEqualToValue = (value) => { return *(Int64*)this.CurrentValuePointer <= (Int64)value; };
                     this.IncreasedByValue = (value) => { return *(Int64*)this.CurrentValuePointer == unchecked(*(Int64*)this.PreviousValuePointer + (Int64)value); };
                     this.DecreasedByValue = (value) => { return *(Int64*)this.CurrentValuePointer == unchecked(*(Int64*)this.PreviousValuePointer - (Int64)value); };
-                    this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == DataTypes.UInt16:
-                    this.LoadCurrentValue = () => { return *(UInt16*)CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *(UInt16*)PreviousValuePointer; };
+                case TypeCode.UInt16:
                     this.Changed = () => { return *(UInt16*)this.CurrentValuePointer != *(UInt16*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(UInt16*)this.CurrentValuePointer == *(UInt16*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(UInt16*)this.CurrentValuePointer > *(UInt16*)this.PreviousValuePointer; };
@@ -404,11 +436,8 @@
                     this.LessThanOrEqualToValue = (value) => { return *(UInt16*)this.CurrentValuePointer <= (UInt16)value; };
                     this.IncreasedByValue = (value) => { return *(UInt16*)this.CurrentValuePointer == unchecked(*(UInt16*)this.PreviousValuePointer + (UInt16)value); };
                     this.DecreasedByValue = (value) => { return *(UInt16*)this.CurrentValuePointer == unchecked(*(UInt16*)this.PreviousValuePointer - (UInt16)value); };
-                    this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == DataTypes.UInt32:
-                    this.LoadCurrentValue = () => { return *(UInt32*)CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *(UInt32*)PreviousValuePointer; };
+                case TypeCode.UInt32:
                     this.Changed = () => { return *(UInt32*)this.CurrentValuePointer != *(UInt32*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(UInt32*)this.CurrentValuePointer == *(UInt32*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(UInt32*)this.CurrentValuePointer > *(UInt32*)this.PreviousValuePointer; };
@@ -421,11 +450,8 @@
                     this.LessThanOrEqualToValue = (value) => { return *(UInt32*)this.CurrentValuePointer <= (UInt32)value; };
                     this.IncreasedByValue = (value) => { return *(UInt32*)this.CurrentValuePointer == unchecked(*(UInt32*)this.PreviousValuePointer + (UInt32)value); };
                     this.DecreasedByValue = (value) => { return *(UInt32*)this.CurrentValuePointer == unchecked(*(UInt32*)this.PreviousValuePointer - (UInt32)value); };
-                    this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == DataTypes.UInt64:
-                    this.LoadCurrentValue = () => { return *(UInt64*)CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *(UInt64*)PreviousValuePointer; };
+                case TypeCode.UInt64:
                     this.Changed = () => { return *(UInt64*)this.CurrentValuePointer != *(UInt64*)this.PreviousValuePointer; };
                     this.Unchanged = () => { return *(UInt64*)this.CurrentValuePointer == *(UInt64*)this.PreviousValuePointer; };
                     this.Increased = () => { return *(UInt64*)this.CurrentValuePointer > *(UInt64*)this.PreviousValuePointer; };
@@ -438,13 +464,10 @@
                     this.LessThanOrEqualToValue = (value) => { return *(UInt64*)this.CurrentValuePointer <= (UInt64)value; };
                     this.IncreasedByValue = (value) => { return *(UInt64*)this.CurrentValuePointer == unchecked(*(UInt64*)this.PreviousValuePointer + (UInt64)value); };
                     this.DecreasedByValue = (value) => { return *(UInt64*)this.CurrentValuePointer == unchecked(*(UInt64*)this.PreviousValuePointer - (UInt64)value); };
-                    this.IsScientificNotation = () => { return false; };
                     break;
-                case DataType type when type == DataTypes.Single:
-                    this.LoadCurrentValue = () => { return *(Single*)CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *(Single*)PreviousValuePointer; };
-                    this.Changed = () => { return *(Single*)this.CurrentValuePointer != *(Single*)this.PreviousValuePointer; };
-                    this.Unchanged = () => { return *(Single*)this.CurrentValuePointer == *(Single*)this.PreviousValuePointer; };
+                case TypeCode.Single:
+                    this.Changed = () => { return !(*(Single*)this.CurrentValuePointer).AlmostEquals(*(Single*)this.PreviousValuePointer); };
+                    this.Unchanged = () => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(*(Single*)this.PreviousValuePointer); };
                     this.Increased = () => { return *(Single*)this.CurrentValuePointer > *(Single*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(Single*)this.CurrentValuePointer < *(Single*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return (*(Single*)this.CurrentValuePointer).AlmostEquals((Single)value); };
@@ -455,13 +478,10 @@
                     this.LessThanOrEqualToValue = (value) => { return *(Single*)this.CurrentValuePointer <= (Single)value; };
                     this.IncreasedByValue = (value) => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Single*)this.PreviousValuePointer + (Single)value)); };
                     this.DecreasedByValue = (value) => { return (*(Single*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Single*)this.PreviousValuePointer - (Single)value)); };
-                    this.IsScientificNotation = () => { return (*this.CurrentValuePointer).ToString().Contains("E"); };
                     break;
-                case DataType type when type == DataTypes.Double:
-                    this.LoadCurrentValue = () => { return *(Double*)CurrentValuePointer; };
-                    this.LoadPreviousValue = () => { return *(Double*)PreviousValuePointer; };
-                    this.Changed = () => { return *(Double*)this.CurrentValuePointer != *(Double*)this.PreviousValuePointer; };
-                    this.Unchanged = () => { return *(Double*)this.CurrentValuePointer == *(Double*)this.PreviousValuePointer; };
+                case TypeCode.Double:
+                    this.Changed = () => { return !(*(Double*)this.CurrentValuePointer).AlmostEquals(*(Double*)this.PreviousValuePointer); };
+                    this.Unchanged = () => { return (*(Double*)this.CurrentValuePointer).AlmostEquals(*(Double*)this.PreviousValuePointer); };
                     this.Increased = () => { return *(Double*)this.CurrentValuePointer > *(Double*)this.PreviousValuePointer; };
                     this.Decreased = () => { return *(Double*)this.CurrentValuePointer < *(Double*)this.PreviousValuePointer; };
                     this.EqualToValue = (value) => { return (*(Double*)this.CurrentValuePointer).AlmostEquals((Double)value); };
@@ -472,7 +492,6 @@
                     this.LessThanOrEqualToValue = (value) => { return *(Double*)this.CurrentValuePointer <= (Double)value; };
                     this.IncreasedByValue = (value) => { return (*(Double*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Double*)this.PreviousValuePointer + (Double)value)); };
                     this.DecreasedByValue = (value) => { return (*(Double*)this.CurrentValuePointer).AlmostEquals(unchecked(*(Double*)this.PreviousValuePointer - (Double)value)); };
-                    this.IsScientificNotation = () => { return (*this.CurrentValuePointer).ToString().Contains("E"); };
                     break;
                 default:
                     throw new ArgumentException();
@@ -485,9 +504,9 @@
         /// <param name="pointerIncrementMode">The method by which to increment pointers.</param>
         private unsafe void SetPointerFunction(PointerIncrementMode pointerIncrementMode)
         {
-            UInt32 alignment = unchecked((UInt32)this.Parent.ReadGroup.Alignment);
+            Int32 alignment = this.Region.ReadGroup.Alignment;
 
-            if (alignment == 1)
+            if (this.Region.ReadGroup.Alignment == 1)
             {
                 switch (pointerIncrementMode)
                 {
@@ -574,49 +593,84 @@
         /// </summary>
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
-        private void SetCompareAction(ScanConstraint.ConstraintType compareActionConstraint, Object compareActionValue)
+        private void SetCompareAction(ScanConstraintManager scanConstraintManager)
         {
-            switch (compareActionConstraint)
+            foreach (ScanConstraint scanConstraint in scanConstraintManager)
             {
-                case ScanConstraint.ConstraintType.Unchanged:
-                    this.Compare = this.Unchanged;
-                    break;
-                case ScanConstraint.ConstraintType.Changed:
-                    this.Compare = this.Changed;
-                    break;
-                case ScanConstraint.ConstraintType.Increased:
-                    this.Compare = this.Increased;
-                    break;
-                case ScanConstraint.ConstraintType.Decreased:
-                    this.Compare = this.Decreased;
-                    break;
-                case ScanConstraint.ConstraintType.IncreasedByX:
-                    this.Compare = () => this.IncreasedByValue(compareActionValue);
-                    break;
-                case ScanConstraint.ConstraintType.DecreasedByX:
-                    this.Compare = () => this.DecreasedByValue(compareActionValue);
-                    break;
-                case ScanConstraint.ConstraintType.Equal:
-                    this.Compare = () => this.EqualToValue(compareActionValue);
-                    break;
-                case ScanConstraint.ConstraintType.NotEqual:
-                    this.Compare = () => this.NotEqualToValue(compareActionValue);
-                    break;
-                case ScanConstraint.ConstraintType.GreaterThan:
-                    this.Compare = () => this.GreaterThanValue(compareActionValue);
-                    break;
-                case ScanConstraint.ConstraintType.GreaterThanOrEqual:
-                    this.Compare = () => this.GreaterThanOrEqualToValue(compareActionValue);
-                    break;
-                case ScanConstraint.ConstraintType.LessThan:
-                    this.Compare = () => this.LessThanValue(compareActionValue);
-                    break;
-                case ScanConstraint.ConstraintType.LessThanOrEqual:
-                    this.Compare = () => this.LessThanValue(compareActionValue);
-                    break;
-                case ScanConstraint.ConstraintType.NotScientificNotation:
-                    this.Compare = this.IsScientificNotation;
-                    break;
+                switch (scanConstraint.Constraint)
+                {
+                    case ScanConstraint.ConstraintType.Unchanged:
+                        this.Compare = this.Unchanged;
+                        break;
+                    case ScanConstraint.ConstraintType.Changed:
+                        this.Compare = this.Changed;
+                        break;
+                    case ScanConstraint.ConstraintType.Increased:
+                        this.Compare = this.Increased;
+                        break;
+                    case ScanConstraint.ConstraintType.Decreased:
+                        this.Compare = this.Decreased;
+                        break;
+                    case ScanConstraint.ConstraintType.IncreasedByX:
+                        this.Compare = () => this.IncreasedByValue(scanConstraint.ConstraintValue);
+                        break;
+                    case ScanConstraint.ConstraintType.DecreasedByX:
+                        this.Compare = () => this.DecreasedByValue(scanConstraint.ConstraintValue);
+                        break;
+                    case ScanConstraint.ConstraintType.Equal:
+                        this.Compare = () => this.EqualToValue(scanConstraint.ConstraintValue);
+                        break;
+                    case ScanConstraint.ConstraintType.NotEqual:
+                        this.Compare = () => this.NotEqualToValue(scanConstraint.ConstraintValue);
+                        break;
+                    case ScanConstraint.ConstraintType.GreaterThan:
+                        this.Compare = () => this.GreaterThanValue(scanConstraint.ConstraintValue);
+                        break;
+                    case ScanConstraint.ConstraintType.GreaterThanOrEqual:
+                        this.Compare = () => this.GreaterThanOrEqualToValue(scanConstraint.ConstraintValue);
+                        break;
+                    case ScanConstraint.ConstraintType.LessThan:
+                        this.Compare = () => this.LessThanValue(scanConstraint.ConstraintValue);
+                        break;
+                    case ScanConstraint.ConstraintType.LessThanOrEqual:
+                        this.Compare = () => this.LessThanValue(scanConstraint.ConstraintValue);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Loads the value of this snapshot element from the given array.
+        /// </summary>
+        /// <param name="array">The byte array from which to read a value.</param>
+        /// <returns>The value at the start of this array casted as the proper data type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private unsafe Object LoadValue(Byte* array)
+        {
+            switch (this.CurrentTypeCode)
+            {
+                case TypeCode.Byte:
+                    return *array;
+                case TypeCode.SByte:
+                    return *(SByte*)array;
+                case TypeCode.Int16:
+                    return *(Int16*)array;
+                case TypeCode.Int32:
+                    return *(Int32*)array;
+                case TypeCode.Int64:
+                    return *(Int64*)array;
+                case TypeCode.UInt16:
+                    return *(UInt16*)array;
+                case TypeCode.UInt32:
+                    return *(UInt32*)array;
+                case TypeCode.UInt64:
+                    return *(UInt64*)array;
+                case TypeCode.Single:
+                    return *(Single*)array;
+                case TypeCode.Double:
+                    return *(Double*)array;
+                default:
+                    throw new ArgumentException();
             }
         }
     }

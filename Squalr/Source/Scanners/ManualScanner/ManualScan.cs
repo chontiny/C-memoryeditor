@@ -28,7 +28,7 @@
             isRepeated: false,
             trackProgress: true)
         {
-            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, this.SetSnapshot));
+            this.Dependencies.Enqueue(new ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, callback: this.SetSnapshot));
         }
 
         /// <summary>
@@ -120,11 +120,8 @@
         /// </summary>
         protected override void OnEnd()
         {
-            // FinalizerScan finalizer = new FinalizerScan(this.Snapshot);
-            // finalizer.Start();
-
-            // this.Snapshot = null;
             SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
+            this.Snapshot = null;
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);
         }

@@ -124,16 +124,15 @@
 
                     foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
-                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.ValuesOnly, null); enumerator.MoveNext();)
                         {
-                            SnapshotElementVectorComparer element = enumerator.Current;
+                            SnapshotElementComparer element = enumerator.Current;
 
-                            throw new NotImplementedException();
-                            // dynamic label = element.GetElementLabel();
+                            dynamic label = element.GetElementLabel();
 
-                            // if (label >= lowerValue && label <= upperValue)
+                            if (label >= lowerValue && label <= upperValue)
                             {
-                                //   element.SetValid(true);
+                                //// element.SetValid(true);
                             }
                         }
                     }
@@ -144,17 +143,15 @@
 
                     foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
                     {
-                        for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                        for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.LabelsOnly, null); enumerator.MoveNext();)
                         {
-                            SnapshotElementVectorComparer element = enumerator.Current;
+                            SnapshotElementComparer element = enumerator.Current;
 
-                            throw new NotImplementedException();
+                            dynamic label = element.GetElementLabel();
 
-                            // dynamic label = element.GetElementLabel();
-
-                            // if (label >= lowerValue && label <= upperValue)
+                            if (label >= lowerValue && label <= upperValue)
                             {
-                                //  element.SetValid(false);
+                                //// element.SetValid(false);
                             }
                         }
                     }
@@ -198,15 +195,14 @@
                         return;
                     }
 
-                    for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                    for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.LabelsOnly, null); enumerator.MoveNext();)
                     {
-                        SnapshotElementVectorComparer element = enumerator.Current;
+                        SnapshotElementComparer element = enumerator.Current;
 
                         lock (this.ItemLock)
                         {
 
-                            throw new NotImplementedException();
-                            /* Object label = element.GetElementLabel();
+                            Object label = element.GetElementLabel();
 
                             if (histogram.ContainsKey(label))
                             {
@@ -215,7 +211,7 @@
                             else
                             {
                                 histogram.TryAdd(label, 1);
-                            }*/
+                            }
                         }
                     }
 

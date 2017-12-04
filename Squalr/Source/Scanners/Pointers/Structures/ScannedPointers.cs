@@ -28,9 +28,9 @@
         }
 
         /// <summary>
-        /// Gets or sets the discovered pointer roots.
+        /// Gets the discovered pointer roots.
         /// </summary>
-        public IList<PointerRoot> PointerRoots { get; set; }
+        public IEnumerable<PointerRoot> PointerRoots { get; private set; }
 
         /// <summary>
         /// Gets the number of discovered pointers.
@@ -67,7 +67,6 @@
         /// </summary>
         public void Sort()
         {
-            this.PointerRoots = new List<PointerRoot>(this.PointerRoots.OrderBy(root => root.BaseAddress));
         }
 
         /// <summary>
@@ -82,9 +81,16 @@
         /// Adds a new pointer root to the discovered pointers.
         /// </summary>
         /// <param name="pointerRoot">The pointer root.</param>
-        public void AddPointerRoot(PointerRoot pointerRoot)
+        public void CreatePointerRoots(IEnumerable<UInt64> pointerRoots)
         {
-            this.PointerRoots.Add(pointerRoot);
+            IList<PointerRoot> newPointerRoots = new List<PointerRoot>();
+
+            foreach (UInt64 pointerRoot in pointerRoots)
+            {
+                newPointerRoots.Add(new PointerRoot(pointerRoot));
+            }
+
+            this.PointerRoots = newPointerRoots.OrderBy(root => root.BaseAddress);
         }
 
         /// <summary>

@@ -28,12 +28,12 @@
             this.PointerScanAddressHexDecBox.TextChanged += this.PointerScanAddressUpdated;
             this.pointerScanAddressHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerScanAddressHexDecBox));
 
-            this.DepthHexDecBox = new HexDecTextBox(DataTypes.UInt32);
+            this.DepthHexDecBox = new HexDecTextBox(DataTypes.Int32);
             this.DepthHexDecBox.TextChanged += this.DepthUpdated;
             this.DepthHexDecBox.SetValue(PointerScannerViewModel.DefaultPointerScanDepth);
             this.depthHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.DepthHexDecBox));
 
-            this.PointerRadiusHexDecBox = new HexDecTextBox(DataTypes.UInt32);
+            this.PointerRadiusHexDecBox = new HexDecTextBox(DataTypes.Int32);
             this.PointerRadiusHexDecBox.TextChanged += this.PointerRadiusUpdated;
             this.PointerRadiusHexDecBox.SetValue(PointerScannerViewModel.DefaultPointerScanRadius);
             this.pointerRadiusHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRadiusHexDecBox));
@@ -136,11 +136,11 @@
         private void DepthUpdated(Object sender, EventArgs e)
         {
             Object value = this.DepthHexDecBox.GetValue();
-            UInt32 realValue = value == null ? 0 : (UInt32)Conversions.ParsePrimitiveStringAsPrimitive(DataTypes.UInt32, value.ToString());
+            Int32 realValue = value == null ? 0 : (Int32)Conversions.ParsePrimitiveStringAsPrimitive(DataTypes.Int32, value.ToString());
 
             if (this.DepthHexDecBox.IsValid())
             {
-                this.DepthHexDecBox.SetValue(realValue.Clamp<UInt32>(0, PointerScannerViewModel.MaximumPointerScanDepth));
+                this.DepthHexDecBox.SetValue(realValue.Clamp<Int32>(0, PointerScannerViewModel.MaximumPointerScanDepth));
             }
 
             this.PointerScannerViewModel.SetDepthCommand.Execute(realValue);
@@ -154,7 +154,7 @@
         private void PointerRadiusUpdated(Object sender, EventArgs e)
         {
             Object value = this.PointerRadiusHexDecBox.GetValue();
-            this.PointerScannerViewModel.SetPointerRadiusCommand.Execute(value == null ? 0 : Conversions.ParsePrimitiveStringAsPrimitive(DataTypes.UInt32, value.ToString()));
+            this.PointerScannerViewModel.SetPointerRadiusCommand.Execute(value == null ? 0 : Conversions.ParsePrimitiveStringAsPrimitive(DataTypes.Int32, value.ToString()));
         }
     }
     //// End class

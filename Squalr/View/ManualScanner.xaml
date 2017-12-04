@@ -444,23 +444,6 @@
                                     </WrapPanel>
                                 </MenuItem.Header>
                             </MenuItem>
-                            <MenuItem
-                                Command="{Binding SelectNotScientificNotationCommand}"
-                                Style="{Binding}"
-                                ToolTip="Exclude Scientific Notation Values">
-                                <MenuItem.Header>
-                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
-                                        <Image
-                                            Width="16"
-                                            Height="16"
-                                            Source="{x:Static content:Images.ENotation}" />
-                                        <TextBlock
-                                            Padding="4,0,0,0"
-                                            Foreground="{StaticResource SqualrColorWhite}"
-                                            Text="Not Scientific Notation" />
-                                    </WrapPanel>
-                                </MenuItem.Header>
-                            </MenuItem>
                         </MenuItem>
                     </Menu>
                     <Border

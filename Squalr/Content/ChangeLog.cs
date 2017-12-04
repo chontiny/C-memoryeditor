@@ -29,8 +29,8 @@ namespace Squalr.Content
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write("- Fixes to project saving\r\n- Allowing offsets to be entered directly into propert" +
-                    "y viewer\r\n- Added pointer validation scan");
+            this.Write("- Significant changes to scanning. These should be incredibly fast now.\r\n- Some f" +
+                    "ixes/updates to pointer scanning");
             return this.GenerationEnvironment.ToString();
         }
     }

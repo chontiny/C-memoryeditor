@@ -334,6 +334,17 @@
         }
 
         /// <summary>
+        /// Updates the progress of this task.
+        /// </summary>
+        /// <param name="subtotal">The current subtotal of an arbitrary progress goal.</param>
+        /// <param name="total">The progress goal total.</param>
+        /// <param name="canFinalize">A value indicating whether the update can trigger a completion.</param>
+        public void UpdateProgress(Int64 subtotal, Int64 total, Boolean canFinalize = true)
+        {
+            this.UpdateProgress(total <= 0 ? 0.0 : (((Double)subtotal / (Double)total) * ScheduledTask.MaximumProgress) + ScheduledTask.MinimumProgress, canFinalize);
+        }
+
+        /// <summary>
         /// Resets all state tracking variables.
         /// </summary>
         internal void ResetState()

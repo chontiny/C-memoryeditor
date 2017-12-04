@@ -144,13 +144,12 @@
                         return;
                     }
 
-                    IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements();
+                    IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.AllPointers, null);
 
                     while (enumerator.MoveNext())
                     {
                         enumerator.Current.Compare();
 
-                        throw new NotImplementedException("Maybe some sort of lambda to update labels?");
                         ((dynamic)enumerator).ElementLabel++;
                     }
 
@@ -173,13 +172,12 @@
                         return;
                     }
 
-                    IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements();
+                    IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.AllPointers, null);
 
                     while (enumerator.MoveNext())
                     {
                         enumerator.Current.Compare();
 
-                        throw new NotImplementedException("Maybe some sort of lambda to update labels?");
                         ((dynamic)enumerator).ElementLabel--;
                     }
 
@@ -204,15 +202,13 @@
 
             foreach (SnapshotRegion region in this.Snapshot.SnapshotRegions)
             {
-                for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
+                for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.ValuesOnly, null); enumerator.MoveNext();)
                 {
-                    SnapshotElementVectorComparer element = enumerator.Current;
+                    SnapshotElementComparer element = enumerator.Current;
 
-                    throw new NotImplementedException();
-
-                    // if ((Int16)element.ElementLabel > 0)
+                    if ((Int16)element.ElementLabel > 0)
                     {
-                        //  element.SetValid(true);
+                        //// element.SetValid(true);
                     }
                 }
             }

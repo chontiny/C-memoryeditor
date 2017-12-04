@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Squalr.Source.Scanners.ScanConstraints;
-    using SqualrCore.Source.Engine;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -17,19 +16,31 @@
         /// <param name="readGroup">The read group of this snapshot region.</param>
         /// <param name="baseAddress">The base address of this snapshot region.</param>
         /// <param name="regionSize">The size of this snapshot region.</param>
-        public SnapshotRegion(ReadGroup readGroup, UInt64 readGroupOffset, UInt64 regionSize)
+        public SnapshotRegion(ReadGroup readGroup, Int32 readGroupOffset, Int32 regionSize)
         {
             this.ReadGroup = readGroup;
             this.ReadGroupOffset = readGroupOffset;
             this.RegionSize = regionSize;
         }
 
+        /// <summary>
+        /// Gets or sets the readgroup to which this snapshot region reads it's values.
+        /// </summary>
         public ReadGroup ReadGroup { get; set; }
 
-        public UInt64 ReadGroupOffset { get; set; }
+        /// <summary>
+        /// Gets or sets the offset from the base of this snapshot's read group.
+        /// </summary>
+        public Int32 ReadGroupOffset { get; set; }
 
-        public UInt64 RegionSize { get; set; }
+        /// <summary>
+        /// Gets the size of this snapshot in bytes.
+        /// </summary>
+        public Int32 RegionSize { get; set; }
 
+        /// <summary>
+        /// Gets the base address of the region.
+        /// </summary>
         public IntPtr BaseAddress
         {
             get
@@ -38,6 +49,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the end address of the region.
+        /// </summary>
         public IntPtr EndAddress
         {
             get
@@ -51,11 +65,14 @@
         /// </summary>
         public UInt64 BaseElementIndex { get; set; }
 
-        public UInt64 ElementCount
+        /// <summary>
+        /// Gets the number of elements contained in this snapshot.
+        /// </summary>
+        public Int32 ElementCount
         {
             get
             {
-                return this.RegionSize / unchecked((UInt32)this.ReadGroup.Alignment);
+                return this.RegionSize / this.ReadGroup.Alignment;
             }
         }
 
@@ -64,35 +81,12 @@
         /// </summary>
         /// <param name="index">The index of the snapshot element.</param>
         /// <returns>Returns the snapshot element at the specified index.</returns>
-        public SnapshotElementComparer this[UInt32 index]
+        public SnapshotElementIndexer this[Int32 index]
         {
             get
             {
-                return new SnapshotElementComparer(parent: this, elementIndex: index);
+                return new SnapshotElementIndexer(region: this, elementIndex: index);
             }
-        }
-
-        public IList<SnapshotRegion> CompareAll(ScanConstraintManager scanConstraints)
-        {
-            if (!this.ReadGroup.CanCompare(scanConstraints.HasRelativeConstraint()))
-            {
-                return null;
-            }
-
-            UInt32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
-
-            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(
-                region: this,
-                vectorSize: vectorSize,
-                scanConstraints: scanConstraints);
-
-            while (vectorComparer.VectorReadIndex < this.RegionSize)
-            {
-                vectorComparer.Compare();
-                vectorComparer.VectorReadIndex += vectorSize;
-            }
-
-            return vectorComparer.GatherCollectedRegions();
         }
 
         /// <summary>
@@ -102,11 +96,53 @@
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
-        public IEnumerator<SnapshotElementVectorComparer> IterateElements(
-            ScanConstraint.ConstraintType compareActionConstraint = ScanConstraint.ConstraintType.Changed,
-            Object compareActionValue = null)
+        public IEnumerator<SnapshotElementIndexer> IterateElements()
         {
-            yield break;
+            Int32 elementCount = this.ElementCount;
+            SnapshotElementIndexer snapshotElement = new SnapshotElementIndexer(region: this);
+
+            for (snapshotElement.ElementIndex = 0; snapshotElement.ElementIndex < elementCount; snapshotElement.ElementIndex++)
+            {
+                yield return snapshotElement;
+            }
+        }
+
+        /// <summary>
+        /// Gets the enumerator for an element reference within this snapshot region.
+        /// </summary>
+        /// <param name="pointerIncrementMode">The method for incrementing pointers.</param>
+        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
+        /// <param name="compareActionValue">The value to use for the element quick action.</param>
+        /// <returns>The enumerator for an element reference within this snapshot region.</returns>
+        public IEnumerator<SnapshotElementComparer> IterateComparer(
+            SnapshotElementComparer.PointerIncrementMode pointerIncrementMode,
+            ScanConstraintManager scanConstraintManager)
+        {
+            Int32 elementCount = this.ElementCount;
+            SnapshotElementComparer snapshotElement = new SnapshotElementComparer(region: this, pointerIncrementMode: pointerIncrementMode, scanConstraintManager: scanConstraintManager);
+
+            for (Int32 elementIndex = 0; elementIndex < elementCount; elementIndex++)
+            {
+                yield return snapshotElement;
+                snapshotElement.IncrementPointers();
+            }
+        }
+
+        /// <summary>
+        /// Compares this snapshot region against the given
+        /// </summary>
+        /// <param name="scanConstraints"></param>
+        /// <returns></returns>
+        public IList<SnapshotRegion> CompareAll(ScanConstraintManager scanConstraints)
+        {
+            if (!this.ReadGroup.CanCompare(scanConstraints.HasRelativeConstraint()))
+            {
+                return null;
+            }
+
+            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: this, scanConstraints: scanConstraints);
+
+            return vectorComparer.Compare();
         }
     }
     //// End class

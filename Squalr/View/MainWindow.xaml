@@ -262,7 +262,8 @@
                             Header="Change Counter"
                             IsCheckable="True"
                             IsChecked="{Binding ChangeCounterViewModel.IsVisible, Mode=TwoWay}"
-                            Style="{Binding}" />
+                            Style="{Binding}"
+                            Visibility="Collapsed" />
                         <shell:MenuItem
                             Header="Input Correlator"
                             IsCheckable="True"
@@ -277,7 +278,8 @@
                             Header="Label Thresholder"
                             IsCheckable="True"
                             IsChecked="{Binding LabelThresholderViewModel.IsVisible, Mode=TwoWay}"
-                            Style="{Binding}" />
+                            Style="{Binding}"
+                            Visibility="Collapsed" />
                         <shell:Separator />
                         <shell:MenuItem
                             Header="Pointer Scanner"

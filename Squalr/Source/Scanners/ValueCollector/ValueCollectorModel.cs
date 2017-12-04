@@ -17,7 +17,10 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ValueCollectorModel" /> class.
         /// </summary>
-        public ValueCollectorModel(SnapshotManagerViewModel.SnapshotRetrievalMode snapshotRetrievalMode = SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, Action<Snapshot> callback = null) : base(
+        public ValueCollectorModel(
+            SnapshotManagerViewModel.SnapshotRetrievalMode snapshotRetrievalMode = SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter,
+            Snapshot defaultSnapshot = null,
+            Action<Snapshot> callback = null) : base(
             taskName: "Value Collector",
             isRepeated: false,
             trackProgress: true)
@@ -25,6 +28,11 @@
             this.SnapshotRetrievalMode = snapshotRetrievalMode;
             this.CallBack = callback;
         }
+
+        /// <summary>
+        /// Gets or sets the default snapshot to use instead of the snapshot retrieval mode.
+        /// </summary>
+        private Snapshot DefaultSnapshot { get; set; }
 
         /// <summary>
         /// Gets or sets the callback to call with the collected snapshot. If none specified, the collected snapshot is set as the current results.
@@ -46,7 +54,16 @@
         /// </summary>
         protected override void OnBegin()
         {
-            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(this.SnapshotRetrievalMode)?.Clone(this.TaskName);
+            if (this.DefaultSnapshot != null)
+            {
+                // Use the provided default snapshot
+                this.Snapshot = DefaultSnapshot;
+            }
+            else
+            {
+                // Otherwise retrieve it using the settings
+                this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(this.SnapshotRetrievalMode)?.Clone(this.TaskName);
+            }
         }
 
         /// <summary>

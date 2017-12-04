@@ -6,13 +6,15 @@
 
 Join us on our [Discord Channel](https://discord.gg/Pq2msTx)
 
-**Squalr** is Memory Editing software that allows users to create and share cheats in their windows desktop games. This includes memory scanning, pointers, x86/x64 assembly injection, and so on.
+**Squalr** is performant Memory Editing software that allows users to create and share cheats in their windows desktop games. This includes memory scanning, pointers, x86/x64 assembly injection, and so on.
+
+How does Squalr achieve fast memory scans in .NET? Multi-threading combined with single-core parallelism via SIMD instructions. See this article: [SIMD in .NET](https://instil.co/2016/03/21/parallelism-on-a-single-core-simd-with-c/). To take advantage of these gains, your CPU needs to have support for SSE, AVX, or AVX-512.
 
 ## Wiki Documentation
 
 You can find more documentation on the [Wiki](https://github.com/Squalr/Squalr/wiki)
 
-## Coding Conventions
+## Recommended Visual Studio Extensions
 Reference | Description 
 --- | ---
 [XAML Formatter](https://marketplace.visualstudio.com/items?itemName=TeamXavalon.XAMLStyler) | XAML should be run through this formatter
@@ -24,16 +26,16 @@ In order to compile Squalr, you should only need **Visual Studio 2017**. This sh
 
 Library | Description 
 --- | ---
-[SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper
-[CLRMD](https://github.com/Microsoft/clrmd) | .NET Application Inspection Library
-[AvalonDock](https://avalondock.codeplex.com/) | Docking Library
-[AvalonEdit](https://github.com/icsharpcode/AvalonEdit) | Code Editing Library
-[LiveCharts](https://github.com/beto-rodriguez/Live-Charts) | WPF Charts
-[CsScript](https://github.com/oleg-shilo/cs-script) | C# Scripting Library
 [EasyHook](https://github.com/EasyHook/EasyHook) | Managed/Unmanaged API Hooking
 [SharpDisasm](https://github.com/spazzarama/SharpDisasm) | Udis86 Assembler Ported to C#
 [MemorySharp](https://github.com/ZenLulz/MemorySharp) | Memory Editing Library
 [FASM](https://flatassembler.net/) | Flat Assembler (C# Invocation done via MemorySharp)
+[CsScript](https://github.com/oleg-shilo/cs-script) | C# Scripting Library
+[AvalonEdit](https://github.com/icsharpcode/AvalonEdit) | Code Editing Library
+[SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper
+[CLRMD](https://github.com/Microsoft/clrmd) | .NET Application Inspection Library
+[AvalonDock](https://avalondock.codeplex.com/) | Docking Library
+[LiveCharts](https://github.com/beto-rodriguez/Live-Charts) | WPF Charts
 
 Intending to Use (Eventually):
 

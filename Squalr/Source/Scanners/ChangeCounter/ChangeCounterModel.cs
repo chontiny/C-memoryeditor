@@ -2,6 +2,7 @@
 {
     using LabelThresholder;
     using Squalr.Properties;
+    using Squalr.Source.Scanners.ValueCollector;
     using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine.Types;
@@ -96,42 +97,47 @@
         {
             Int32 processedPages = 0;
 
-            // Read memory to get current values
-            this.Snapshot.ReadAllMemory();
-
-            Parallel.ForEach(
-                this.Snapshot.SnapshotRegions,
-                SettingsViewModel.GetInstance().ParallelSettingsFast,
-                (region) =>
+            ValueCollectorModel valueCollectorModel = new ValueCollectorModel(defaultSnapshot: this.Snapshot, callback: (snapshot) =>
             {
-                if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
-                {
-                    return;
-                }
-
-                for (IEnumerator<SnapshotElementVectorComparer> enumerator = region.IterateElements(); enumerator.MoveNext();)
-                {
-                    SnapshotElementVectorComparer element = enumerator.Current;
-
-                    throw new NotImplementedException();
-                    // Perform the comparison based on the current scan constraint
-                    // if (element.Compare())
+                Parallel.ForEach(
+                    this.Snapshot.OptimizedSnapshotRegions,
+                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                    (region) =>
                     {
-                        // element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
-                    }
-                }
+                        if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
+                        {
+                            return;
+                        }
 
-                // Update progress
-                lock (this.ProgressLock)
-                {
-                    processedPages++;
-                    this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
-                }
+                        for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.ValuesOnly, null); enumerator.MoveNext();)
+                        {
+                            SnapshotElementComparer element = enumerator.Current;
+
+                            // Perform the comparison based on the current scan constraint
+                            if (element.Compare())
+                            {
+                                element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
+                            }
+                        }
+
+                        // Update progress
+                        lock (this.ProgressLock)
+                        {
+                            processedPages++;
+                            this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
+                        }
+                    });
+
+                this.ScanCount++;
+
+                this.UpdateScanCount?.Invoke();
             });
 
-            this.ScanCount++;
-
-            this.UpdateScanCount?.Invoke();
+            // TODO: Figure out a better way
+            while (!valueCollectorModel.IsTaskComplete)
+            {
+                Thread.Sleep(100);
+            }
         }
 
         /// <summary>

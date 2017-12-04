@@ -5,10 +5,13 @@
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
 
+    /// <summary>
+    /// Defines a segment of process memory, which many snapshot regions may read from. This serves as a shared pool of memory, such as to
+    /// minimize the number of calls to the OS to read the memory of a process.
+    /// </summary>
     internal class ReadGroup : NormalizedRegion
     {
         /// <summary>
@@ -16,7 +19,7 @@
         /// </summary>
         /// <param name="baseAddress">The base address of this memory region.</param>
         /// <param name="regionSize">The size of this memory region.</param>
-        public ReadGroup(IntPtr baseAddress, UInt64 regionSize) : base(baseAddress, regionSize)
+        public ReadGroup(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
         {
             this.Alignment = SettingsViewModel.GetInstance().Alignment;
             this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
@@ -49,9 +52,10 @@
         /// </summary>
         public DataType LabelDataType { get; set; }
 
-        public IList<SnapshotRegion> ResultRegions { get; set; }
-
-        public IEnumerable<SnapshotRegion> SnapshotRegions;
+        /// <summary>
+        /// Gets or sets the collection of snapshot regions within this read group.
+        /// </summary>
+        public IEnumerable<SnapshotRegion> SnapshotRegions { get; set; }
 
         /// <summary>
         /// Reads all memory for this memory region.
@@ -60,7 +64,7 @@
         public Boolean ReadAllMemory()
         {
             Boolean readSuccess;
-            Byte[] newCurrentValues = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize.ToInt32(), out readSuccess);
+            Byte[] newCurrentValues = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
 
             if (readSuccess)
             {

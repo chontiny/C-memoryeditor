@@ -55,7 +55,6 @@
             this.SelectLessThanCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.LessThan), () => true);
             this.SelectLessThanOrEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.LessThanOrEqual), () => true);
             this.SelectNotEqualCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.NotEqual), () => true);
-            this.SelectNotScientificNotationCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.NotScientificNotation), () => true);
             this.SelectUnchangedCommand = new RelayCommand(() => this.ChangeScanConstraintSelection(ScanConstraint.ConstraintType.Unchanged), () => true);
 
             // Note: Constraint modifying commands cannot be async since they modify the observable collection, which must be done on the same thread as the GUI
@@ -156,11 +155,6 @@
         /// Gets the command to select the <see cref="ConstraintType.NotEqual"/> constraint.
         /// </summary>
         public ICommand SelectNotEqualCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.NotScientificNotation"/> constraint.
-        /// </summary>
-        public ICommand SelectNotScientificNotationCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to select the <see cref="ConstraintType.Unchanged"/> constraint.
