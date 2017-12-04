@@ -1,14 +1,27 @@
-﻿namespace SqualrCore.Source.Engine.Networks
+﻿namespace SqualrCore.Source.Engine.Speed
 {
     using SqualrCore.Source.Engine.Hook;
     using SqualrCore.Source.Engine.Processes;
+    using System;
     using System.Threading.Tasks;
 
-    internal class Network : INetwork, IProcessObserver
+    /// <summary>
+    /// Manipulates thread speed in a target process.
+    /// </summary>
+    public class SpeedManipulator : ISpeedManipulator, IProcessObserver
     {
-        public Network()
+        public SpeedManipulator()
         {
             Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });
+        }
+
+        /// <summary>
+        /// Sets the speed in the external process.
+        /// </summary>
+        /// <param name="speed">The speed multiplier.</param>
+        public void SetSpeed(Double speed)
+        {
+
         }
 
         private HookClient HookClient { get; set; }
@@ -19,7 +32,6 @@
         {
             this.TargetProcess = process;
 
-            // Disabled for now
             // this.UninstallHook();
             // this.InstallHook();
         }
@@ -41,6 +53,6 @@
             this.HookClient = null;
         }
     }
-    //// End class
+    //// End interface
 }
 //// End namespace

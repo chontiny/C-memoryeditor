@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Engine.Hook.Client
+﻿namespace SqualrCore.Source.Engine.Hook
 {
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Output;
@@ -20,16 +20,6 @@
         public HookClient()
         {
         }
-
-        /// <summary>
-        /// Gets or sets the graphics interface shared between client and hook
-        /// </summary>
-        // private IGraphicsInterface GraphicsInterface { get; set; }
-
-        /// <summary>
-        /// Gets or sets the speedhack interface shared between client and hook
-        /// </summary>
-        //  private ISpeedHackInterface SpeedHackInterface { get; set; }
 
         /// <summary>
         /// Injects the hook into the specified process
@@ -57,27 +47,6 @@
                 OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to Hook Process, some features may not be available", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
-
-            // this.GraphicsInterface = GraphicsFactory.GetGraphicsInterface(projectDirectory);
-            // this.SpeedHackInterface = new SpeedHackInterface();
-        }
-
-        /// <summary>
-        /// Gets the graphics interface hook object.
-        /// </summary>
-        /// <returns>The graphics interface hook object.</returns>
-        public override Object GetGraphicsInterface()
-        {
-            return null; // this.GraphicsInterface;
-        }
-
-        /// <summary>
-        /// Gets the speed hack hook object.
-        /// </summary>
-        /// <returns>The speed hack hook object.</returns>
-        public override Object GetSpeedHackInterface()
-        {
-            return null; //this.SpeedHackInterface;
         }
 
         /// <summary>
@@ -88,9 +57,14 @@
             OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Debug, "Hook pinged client");
         }
 
+        /// <summary>
+        /// Logs a message from the server to the client.
+        /// </summary>
+        /// <param name="message">The log message.</param>
+        /// <param name="innerMessage">The inner log message.</param>
         public override void Log(String message, String innerMessage = null)
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Hook: " + message, innerMessage);
+            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "[Hook] " + message, innerMessage);
         }
 
         /// <summary>
@@ -99,9 +73,6 @@
         public override void Uninject()
         {
             base.Uninject();
-
-            // this.GraphicsInterface = null;
-            // this.SpeedHackInterface = null;
         }
     }
     //// End class

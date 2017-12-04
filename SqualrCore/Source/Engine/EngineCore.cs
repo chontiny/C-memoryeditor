@@ -4,7 +4,7 @@
     using Graphics;
     using Input;
     using Processes;
-    using SpeedManipulator;
+    using Speed;
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Engine.Debugger;
     using SqualrCore.Source.Engine.Networks;
@@ -35,11 +35,12 @@
         {
             this.Processes = ProcessAdapterFactory.GetProcessAdapter();
             this.VirtualMemory = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter();
+            this.Architecture = ArchitectureFactory.GetArchitecture();
             this.Debugger = DebuggerFactory.GetDebugger();
+            this.Input = new InputManager();
+            this.SpeedManipulator = new SpeedManipulator();
             this.Graphics = new GraphicsAdapter();
             this.Network = new Network();
-            this.Architecture = ArchitectureFactory.GetArchitecture();
-            this.Input = new InputManager();
 
             if (this.Architecture.HasVectorSupport())
             {

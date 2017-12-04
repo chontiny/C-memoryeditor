@@ -30,23 +30,15 @@
         public abstract void Inject(Int32 processId);
 
         /// <summary>
-        /// Gets the graphics interface hook object.
-        /// </summary>
-        /// <returns>The graphics interface hook object.</returns>
-        public abstract Object GetGraphicsInterface();
-
-        /// <summary>
-        /// Gets the speed hack hook object.
-        /// </summary>
-        /// <returns>The speed hack hook object.</returns>
-        public abstract Object GetSpeedHackInterface();
-
-        /// <summary>
         /// Allows the server to ping the client to ensure that it is still alive.
         /// </summary>
         public abstract void Ping();
 
-
+        /// <summary>
+        /// Logs a message from the server to the client.
+        /// </summary>
+        /// <param name="message">The log message.</param>
+        /// <param name="innerMessage">The inner log message.</param>
         public abstract void Log(String message, String innerMessage = null);
 
         /// <summary>

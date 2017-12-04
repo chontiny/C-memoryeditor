@@ -1,5 +1,6 @@
-﻿namespace SqualrCore.Source.Engine.Hook.SpeedHack
+﻿namespace SqualrHookServer.Source.Speed
 {
+    using SqualrHookClient.Source;
     using System;
     using System.Runtime.InteropServices;
 
@@ -13,18 +14,24 @@
     /// Interface to a hook that controls speed in an external process.
     /// </summary>
     [Serializable]
-    internal class SpeedHackInterface : MarshalByRefObject, ISpeedHackInterface
+    internal class SpeedHook
     {
         private static Int64 queryPerformanceBase;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SpeedHackInterface" /> class.
+        /// Initializes a new instance of the <see cref="SpeedHook" /> class.
         /// </summary>
-        public SpeedHackInterface()
+        public SpeedHook(HookClientBase hookClient)
         {
-            SpeedHackInterface.QueryPerformanceCounter(out queryPerformanceBase);
+            this.HookClient = hookClient;
+
+            this.HookClient.Log("Speedhack loaded");
+
+            SpeedHook.QueryPerformanceCounter(out queryPerformanceBase);
             // this.Hook = LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "QueryPerformanceCounter"), new QueryPerformanceCounter2(QueryPerformanceCounter3), this);
         }
+
+        private HookClientBase HookClient { get; set; }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         public delegate IntPtr QueryPerformanceCounter2(out Int64 performanceCount);

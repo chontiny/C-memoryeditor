@@ -4,7 +4,9 @@
     using SqualrHookClient.Source;
     using SqualrHookServer.Source.Graphics;
     using SqualrHookServer.Source.Network;
+    using SqualrHookServer.Source.Speed;
     using System;
+    using System.Reflection;
     using System.Runtime.Remoting.Channels;
     using System.Runtime.Remoting.Channels.Ipc;
     using System.Runtime.Serialization.Formatters;
@@ -59,6 +61,11 @@
         private GraphicsHook GraphicsHook { get; set; }
 
         /// <summary>
+        /// Gets or sets the speed hook.
+        /// </summary>
+        private SpeedHook SpeedHook { get; set; }
+
+        /// <summary>
         /// Gets or sets the network hook.
         /// </summary>
         private NetworkHook NetworkHook { get; set; }
@@ -99,32 +106,15 @@
         {
             try
             {
-                // When not using GAC there can be issues with remoting assemblies resolving correctly
-                // this is a workaround that ensures that the current assembly is correctly associated
-                AppDomain.CurrentDomain.AssemblyResolve += (sender, args) =>
-                {
-                    return this.GetType().Assembly.FullName == args.Name ? this.GetType().Assembly : null;
-                };
+                AppDomain.CurrentDomain.AssemblyResolve += this.AssemblyResolve;
+                this.HookClient.Disconnected += this.OnDisconnect;
 
                 this.TaskRunning = new ManualResetEvent(false);
                 this.TaskRunning.Reset();
 
-                this.HookClient.Disconnected += () =>
-                {
-                    try
-                    {
-                        this.TaskRunning.Set();
-                    }
-                    catch
-                    {
-                        // Target process died
-                    }
-                };
-
+                this.SpeedHook = new SpeedHook(this.HookClient);
                 this.NetworkHook = new NetworkHook(this.HookClient);
 
-                // We start a thread here to periodically check if the host is still running
-                // If the host process stops then we will automatically uninstall the hooks
                 this.MaintainConnection();
             }
             catch (Exception ex)
@@ -141,13 +131,37 @@
                 {
                 }
 
-                // Always sleep long enough for any remaining messages to complete sending
+                // Sleep long enough for any remaining messages to complete sending
                 Thread.Sleep(100);
             }
         }
 
         /// <summary>
+        /// When not using GAC there can be issues with remoting assemblies resolving correctly this is a workaround that ensures that the current assembly is correctly associated.
+        /// </summary>
+        /// <param name="sender">The sending object.</param>
+        /// <param name="args">The resolve event args.</param>
+        /// <returns>The resolved assembly.</returns>
+        private Assembly AssemblyResolve(Object sender, ResolveEventArgs args)
+        {
+            return this.GetType().Assembly.FullName == args.Name ? this.GetType().Assembly : null;
+        }
+
+        private void OnDisconnect()
+        {
+            try
+            {
+                this.TaskRunning.Set();
+            }
+            catch
+            {
+                // Target process died
+            }
+        }
+
+        /// <summary>
         /// Begin a background thread to check periodically that the host process is still accessible on its IPC channel.
+        /// If the host process stops then we will automatically uninstall the hooks.
         /// </summary>
         private void MaintainConnection()
         {
