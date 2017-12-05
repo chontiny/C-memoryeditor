@@ -1,22 +1,17 @@
 ﻿namespace SqualrHookServer.Source.Speed
 {
+    using EasyHook;
     using SqualrHookClient.Source;
     using System;
     using System.Runtime.InteropServices;
 
     /// <summary>
-    /// Client event used to notify the hook to exit.
-    /// </summary>
-    [Serializable]
-    public delegate void DisconnectedEvent();
-
-    /// <summary>
     /// Interface to a hook that controls speed in an external process.
+    /// Credits to the forum post here for the performance counter hook: http://bbs.csdn.net/topics/390987111
     /// </summary>
     [Serializable]
     internal class SpeedHook
     {
-        private static Int64 queryPerformanceBase;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SpeedHook" /> class.
@@ -25,64 +20,141 @@
         {
             this.HookClient = hookClient;
 
+            return;
+
             this.HookClient.Log("Speedhack loaded");
 
-            SpeedHook.QueryPerformanceCounter(out queryPerformanceBase);
-            // this.Hook = LocalHook.Create(LocalHook.GetProcAddress("kernel32.dll", "QueryPerformanceCounter"), new QueryPerformanceCounter2(QueryPerformanceCounter3), this);
+            this.SpeedUp = 3.0;
+
+            try
+            {
+                this.QueryPerformanceCounterHook = HookServer.CreateHook("Kernel32.dll", "QueryPerformanceCounter", new QueryPerformanceCounterDelegate(this.QueryPerformanceCounterEx), this);
+                this.GetTickCountHook = HookServer.CreateHook("Kernel32.dll", "GetTickCount", new GetTickCountDelegate(this.GetTickCountEx), this);
+                this.GetTickCount64Hook = HookServer.CreateHook("Kernel32.dll", "GetTickCount64", new GetTickCount64Delegate(this.GetTickCount64Ex), this);
+            }
+            catch (Exception ex)
+            {
+                this.HookClient.Log("Error activating speed hooks", ex.ToString());
+            }
         }
+
+        /// <summary>
+        /// Gets or sets the speedup of the external process.
+        /// </summary>
+        public Double SpeedUp { get; set; }
 
         private HookClientBase HookClient { get; set; }
 
-        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-        public delegate IntPtr QueryPerformanceCounter2(out Int64 performanceCount);
+        /// <summary>
+        /// Gets or sets the hook to the GetTickCountHook method in the target process.
+        /// </summary>
+        private LocalHook GetTickCountHook { get; set; }
 
         /// <summary>
-        /// Gets or sets the hook to environment methods in the external process.
+        /// Gets or sets the hook to the GetTickCount64 method in the target process.
         /// </summary>
-       // private LocalHook Hook { get; set; }
+        private LocalHook GetTickCount64Hook { get; set; }
 
         /// <summary>
-        /// Sets the speed in the external process.
+        /// Gets or sets the hook to the QueryPerformanceCounter method in the target process.
         /// </summary>
-        /// <param name="speed">The speed multiplier.</param>
-        public void SetSpeed(Double speed)
+        private LocalHook QueryPerformanceCounterHook { get; set; }
+
+        private Int64 StoredPerformanceCounterRealTime { get; set; }
+
+        private Int64 StoredPerformanceCounterFakeTime { get; set; }
+
+        private UInt32 StoredTickCountRealTime { get; set; }
+
+        private UInt32 StoredTickCountFakeTime { get; set; }
+
+        private UInt64 StoredTickCount64RealTime { get; set; }
+
+        private UInt64 StoredTickCount64FakeTime { get; set; }
+
+        private Boolean QueryPerformanceCounterEx(out Int64 fakeTime)
         {
+            Boolean result;
+            Int64 realTime = 0;
+            Int32 tickCount = SpeedHook.timeGetTime();
+
+            result = SpeedHook.QueryPerformanceCounter(out realTime);
+
+            // Initialize
+            if (StoredPerformanceCounterRealTime == 0)
+            {
+                this.StoredPerformanceCounterRealTime = realTime;
+                this.StoredPerformanceCounterFakeTime = tickCount;
+            }
+
+            fakeTime = this.StoredPerformanceCounterFakeTime + (Int64)((realTime - this.StoredPerformanceCounterRealTime) * SpeedUp);
+
+            this.StoredPerformanceCounterRealTime = realTime;
+            this.StoredPerformanceCounterFakeTime = fakeTime;
+
+            return result;
         }
 
-        private static IntPtr QueryPerformanceCounter3(out Int64 performanceCount)
+        private UInt32 GetTickCountEx()
         {
-            performanceCount = queryPerformanceBase;
-            return IntPtr.Zero;
+            UInt32 realTime = SpeedHook.GetTickCount();
+            UInt32 tickCount = unchecked((UInt32)(SpeedHook.timeGetTime()));
+
+            // Initialize
+            if (StoredTickCountRealTime == 0)
+            {
+                this.StoredTickCountRealTime = realTime;
+                this.StoredTickCountFakeTime = tickCount;
+            }
+
+            UInt32 fakeTime = this.StoredTickCountFakeTime + (UInt32)((realTime - this.StoredTickCountRealTime) * SpeedUp);
+
+            this.StoredTickCountRealTime = realTime;
+            this.StoredTickCountFakeTime = fakeTime;
+
+            return realTime;
         }
+
+        private UInt64 GetTickCount64Ex()
+        {
+            UInt64 realTime = SpeedHook.GetTickCount();
+            UInt64 tickCount = unchecked((UInt64)(SpeedHook.timeGetTime()));
+
+            // Initialize
+            if (StoredTickCount64RealTime == 0)
+            {
+                this.StoredTickCount64RealTime = realTime;
+                this.StoredTickCount64FakeTime = tickCount;
+            }
+
+            UInt64 fakeTime = this.StoredTickCount64FakeTime + (UInt64)((realTime - this.StoredTickCount64RealTime) * SpeedUp);
+
+            this.StoredTickCount64RealTime = realTime;
+            this.StoredTickCount64FakeTime = fakeTime;
+
+            return realTime;
+        }
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Auto, SetLastError = true)]
+        private delegate Boolean QueryPerformanceCounterDelegate(out Int64 lpPerformanceCount);
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Auto, SetLastError = true)]
+        private delegate UInt32 GetTickCountDelegate();
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Auto, SetLastError = true)]
+        private delegate UInt64 GetTickCount64Delegate();
+
+        [DllImport("Winmm.dll")]
+        private static extern Int32 timeGetTime();
 
         [DllImport("kernel32.dll")]
-        private static extern Boolean QueryPerformanceCounter(out Int64 performanceCount);
+        private static extern Boolean QueryPerformanceCounter(out Int64 lpPerformanceCount);
 
-        [DllImport("Kernel32.dll")]
-        private static extern Boolean QueryPerformanceFrequency(out Int64 performanceFrequency);
+        [DllImport("kernel32.dll")]
+        private static extern UInt32 GetTickCount();
 
-        /// <summary>
-        /// Client event proxy for marshalling event handlers.
-        /// </summary>
-        internal class SpeedHackEventProxy : MarshalByRefObject
-        {
-            /// <summary>
-            /// Client event used to notify the hook to exit.
-            /// </summary>
-            public event DisconnectedEvent Disconnected;
-
-            public override Object InitializeLifetimeService()
-            {
-                // Returning null holds the object alive until it is explicitly destroyed
-                return null;
-            }
-
-            public void DisconnectedProxyHandler()
-            {
-                this.Disconnected?.Invoke();
-            }
-        }
-        //// End class
+        [DllImport("kernel32.dll")]
+        private static extern UInt64 GetTickCount64();
     }
     //// End class
 }

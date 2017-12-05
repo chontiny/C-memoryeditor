@@ -22,19 +22,12 @@
 
             try
             {
-                this.RecvHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "recv"), new DRecv(MyRecv), this);
-                this.SendHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "send"), new DSend(MySend), this);
-                // this.RecvFromHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "recvfrom"), new DRecvFrom(MyRecvFrom), this);
-                // this.SendToHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "sendto"), new DSendTo(MySendTo), this);
-                // this.WSARecvHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "WSARecv"), new DWSARecv(MyWsaRecv), this);
-                // this.WSASendHook = LocalHook.Create(LocalHook.GetProcAddress("ws2_32.dll", "WSASend"), new DWSASend(MyWsaSend), this);
-
-                RecvHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                SendHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                // RecvFromHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                // SendToHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                // WSARecvHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
-                // WSASendHook.ThreadACL.SetExclusiveACL(new Int32[] { 0 });
+                this.RecvHook = HookServer.CreateHook("ws2_32.dll", "recv", new RecvDelegate(this.RecvEx), this);
+                this.SendHook = HookServer.CreateHook("ws2_32.dll", "send", new SendDelegate(this.SendEx), this);
+                this.RecvFromHook = HookServer.CreateHook("ws2_32.dll", "recvfrom", new RecvFromDelegate(this.RecvFromEx), this);
+                this.SendToHook = HookServer.CreateHook("ws2_32.dll", "sendto", new SendToDelegate(this.SendToEx), this);
+                this.WSARecvHook = HookServer.CreateHook("ws2_32.dll", "WSARecv", new WSARecvDelegate(this.WsaRecvEx), this);
+                this.WSASendHook = HookServer.CreateHook("ws2_32.dll", "WSASend", new WSASendDelegate(this.WsaSendEx), this);
 
                 RemoteHooking.WakeUpProcess();
 
@@ -60,7 +53,7 @@
 
         private LocalHook WSASendHook { get; set; }
 
-        public Int32 MyRecvFrom(IntPtr Socket, IntPtr buffer, Int32 length, SendDataFlags flags, ref SockAddr from, IntPtr fromlen)
+        public Int32 RecvFromEx(IntPtr Socket, IntPtr buffer, Int32 length, SendDataFlags flags, ref SockAddr from, IntPtr fromlen)
         {
             // this.HookClient.Log("recvfrom");
 
@@ -68,7 +61,7 @@
             // return recvfrom(Socket, buffer, length, flags, ref from, IntPtr.Zero);
         }
 
-        private Int32 MyRecv(IntPtr socket, IntPtr buffer, Int32 length, Int32 flags)
+        private Int32 RecvEx(IntPtr socket, IntPtr buffer, Int32 length, Int32 flags)
         {
             // this.HookClient.Log("recv");
 
@@ -76,7 +69,7 @@
             // return recv(socket, buffer, length, flags);
         }
 
-        private Int32 MySend(IntPtr socket, IntPtr buffer, Int32 length, Int32 flags)
+        private Int32 SendEx(IntPtr socket, IntPtr buffer, Int32 length, Int32 flags)
         {
             // this.HookClient.Log("send");
 
@@ -84,7 +77,7 @@
             // return send(socket, buffer, length, flags);
         }
 
-        private Int32 MySendTo(IntPtr Socket, IntPtr buffer, Int32 length, SendDataFlags flags, ref SockAddr To, Int32 tomlen)
+        private Int32 SendToEx(IntPtr Socket, IntPtr buffer, Int32 length, SendDataFlags flags, ref SockAddr To, Int32 tomlen)
         {
             // this.HookClient.Log("sendto");
 
@@ -92,7 +85,7 @@
             // return sendto(Socket, buffer, length, flags, ref To, tomlen);
         }
 
-        private Int32 MyWsaRecv(
+        private Int32 WsaRecvEx(
             IntPtr socketHandle,
             WSABuffer* buffer,
             Int32 bufferCount,
@@ -108,7 +101,7 @@
             // return WSARecv(socketHandle, buffer, bufferCount, out bytesTransferred, ref socketFlags, overlapped, completionRoutine);
         }
 
-        private SocketError MyWsaSend(
+        private SocketError WsaSendEx(
             IntPtr socket,
             IntPtr buffer,
             Int32 length,
@@ -125,19 +118,19 @@
         }
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-        private delegate Int32 DRecv(IntPtr socket, IntPtr buffer, Int32 length, Int32 flags);
+        private delegate Int32 RecvDelegate(IntPtr socket, IntPtr buffer, Int32 length, Int32 flags);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-        private delegate Int32 DRecvFrom(IntPtr Socket, IntPtr buffer, Int32 length, SendDataFlags flags, ref SockAddr from, IntPtr fromlen);
+        private delegate Int32 RecvFromDelegate(IntPtr Socket, IntPtr buffer, Int32 length, SendDataFlags flags, ref SockAddr from, IntPtr fromlen);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-        private delegate Int32 DSend(IntPtr socket, IntPtr buffer, Int32 length, Int32 flags);
+        private delegate Int32 SendDelegate(IntPtr socket, IntPtr buffer, Int32 length, Int32 flags);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-        private delegate Int32 DSendTo(IntPtr Socket, IntPtr buffer, Int32 length, SendDataFlags flags, ref SockAddr To, Int32 tomlen);
+        private delegate Int32 SendToDelegate(IntPtr Socket, IntPtr buffer, Int32 length, SendDataFlags flags, ref SockAddr To, Int32 tomlen);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-        private delegate Int32 DWSARecv(
+        private delegate Int32 WSARecvDelegate(
             IntPtr socketHandle,
             WSABuffer* buffer,
             Int32 bufferCount,
@@ -147,7 +140,7 @@
             IntPtr completionRoutine);
 
         [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
-        private delegate SocketError DWSASend(
+        private delegate SocketError WSASendDelegate(
             IntPtr socket,
             IntPtr buffer,
             Int32 length,

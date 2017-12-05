@@ -54,6 +54,7 @@
     <Compile Include="Source\HookServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Source\Network\NetworkHook.cs" />
+    <Compile Include="Source\Random\RandomHook.cs" />
     <Compile Include="Source\Speed\SpeedHook.cs" />
   </ItemGroup>
   <ItemGroup>

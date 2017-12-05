@@ -4,6 +4,7 @@
     using SqualrHookClient.Source;
     using SqualrHookServer.Source.Graphics;
     using SqualrHookServer.Source.Network;
+    using SqualrHookServer.Source.Random;
     using SqualrHookServer.Source.Speed;
     using System;
     using System.Reflection;
@@ -55,10 +56,23 @@
             }
         }
 
+        public static LocalHook CreateHook(String moduleName, String functionName, Delegate callback, Object sender)
+        {
+            LocalHook hook = LocalHook.Create(LocalHook.GetProcAddress(moduleName, functionName), callback, sender);
+            hook.ThreadACL.SetExclusiveACL(new Int32[0]);
+
+            return hook;
+        }
+
         /// <summary>
         /// Gets or sets the graphics hook.
         /// </summary>
         private GraphicsHook GraphicsHook { get; set; }
+
+        /// <summary>
+        /// Gets or sets the random hook.
+        /// </summary>
+        private RandomHook RandomHook { get; set; }
 
         /// <summary>
         /// Gets or sets the speed hook.
@@ -112,6 +126,7 @@
                 this.TaskRunning = new ManualResetEvent(false);
                 this.TaskRunning.Reset();
 
+                this.RandomHook = new RandomHook(this.HookClient);
                 this.SpeedHook = new SpeedHook(this.HookClient);
                 this.NetworkHook = new NetworkHook(this.HookClient);
 
