@@ -50,8 +50,9 @@
     <Reference Include="DIA, Version=1.0.1.0, Culture=neutral, PublicKeyToken=656084dbcadfc976, processorArchitecture=MSIL">
       <HintPath>..\packages\DIA.1.0.1\lib\net461\DIA.dll</HintPath>
     </Reference>
-    <Reference Include="EasyHook">
-      <HintPath>..\SqualrHook\EasyHook.dll</HintPath>
+    <Reference Include="EasyHook, Version=2.7.5870.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Engine\Internal\SqualrHookClient\EasyHook.dll</HintPath>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.3.0.0\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
@@ -407,17 +408,17 @@
       <Project>{a82126ca-23aa-41f1-8586-a5938d44d0a7}</Project>
       <Name>Microsoft.Diagnostics.Runtime</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Engine\Internal\SqualrProxy\SqualrProxy.csproj">
-      <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
-      <Name>SqualrProxy</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SqualrHookClient\SqualrHookClient.csproj">
+    <ProjectReference Include="..\Engine\Internal\SqualrHookClient\SqualrHookClient.csproj">
       <Project>{e9576568-5640-4883-aa5d-0bb2f6853e18}</Project>
       <Name>SqualrHookClient</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SqualrHook\SqualrHookServer.csproj">
+    <ProjectReference Include="..\Engine\Internal\SqualrHookServer\SqualrHookServer.csproj">
       <Project>{78c9c399-d9ad-426a-8164-f872745aae3c}</Project>
       <Name>SqualrHookServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\Internal\SqualrProxy\SqualrProxy.csproj">
+      <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
+      <Name>SqualrProxy</Name>
     </ProjectReference>
     <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>
@@ -508,24 +509,6 @@
     <Resource Include="Content\Images\BlueBlocks4.png" />
     <Resource Include="Content\Images\BlueBlocks2.png" />
     <Resource Include="Content\Images\BlueBlocks1.png" />
-    <Content Include="EasyHook32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook32Svc.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyHook64Svc.exe">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyLoad32.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="EasyLoad64.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

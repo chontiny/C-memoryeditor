@@ -37,7 +37,7 @@
   <ItemGroup>
     <Reference Include="EasyHook, Version=2.7.5870.0, Culture=neutral, PublicKeyToken=4b580fca19d0b0c5, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\EasyHook\EasyHook.dll</HintPath>
+      <HintPath>..\SqualrHookClient\EasyHook.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,11 +56,6 @@
     <Compile Include="Source\Network\NetworkHook.cs" />
     <Compile Include="Source\Random\RandomHook.cs" />
     <Compile Include="Source\Speed\SpeedHook.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="EasyHook.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
