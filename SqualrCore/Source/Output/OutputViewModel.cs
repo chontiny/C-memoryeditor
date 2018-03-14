@@ -71,7 +71,7 @@
 
             this.ClearOutputCommand = new RelayCommand(() => this.ClearOutput(), () => true);
 
-            Squalr.Engine.Engine.GetInstance().Output.Subscribe(this);
+            Output.Subscribe(this);
             Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
         }
 

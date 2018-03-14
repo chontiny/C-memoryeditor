@@ -113,7 +113,7 @@
             this.Snapshot = new Snapshot(this.TaskName, regions.SelectMany(region => region));
 
             stopwatch.Stop();
-            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
+            Output.Log(LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
         }
 
         /// <summary>

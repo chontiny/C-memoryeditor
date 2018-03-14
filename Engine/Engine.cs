@@ -21,13 +21,7 @@
         /// </summary>
         public Engine()
         {
-            this.Output = OutputFactory.GetOutput();
         }
-
-        /// <summary>
-        /// Gets an object to read the logs of internal events.
-        /// </summary>
-        public IOutput Output { get; private set; }
 
         /// <summary>
         /// Gets an instance of the engine.

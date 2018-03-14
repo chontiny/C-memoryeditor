@@ -368,7 +368,7 @@
                 if (!this.IsBusy)
                 {
                     String error = "Error in task scheduler. Attempting to start before flagging action as busy.";
-                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Fatal, error);
+                    Output.Log(LogLevel.Fatal, error);
                     throw new Exception(error);
                 }
 
@@ -387,7 +387,7 @@
                 if (!this.IsBusy)
                 {
                     String error = "Error in task scheduler. Attempting to update before flagging action as busy.";
-                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Fatal, error);
+                    Output.Log(LogLevel.Fatal, error);
                     throw new Exception(error);
                 }
 
@@ -402,7 +402,7 @@
                     }
                     catch (OperationCanceledException)
                     {
-                        Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Task cancelled: " + this.TaskName);
+                        Output.Log(LogLevel.Info, "Task cancelled: " + this.TaskName);
                     }
                 },
                 this.CancelRequest.Token);

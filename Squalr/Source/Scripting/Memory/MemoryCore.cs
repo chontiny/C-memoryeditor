@@ -117,7 +117,7 @@
             String innerMessage;
             Byte[] result = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out message, out innerMessage);
 
-            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, message, innerMessage);
+            Output.Log(LogLevel.Info, message, innerMessage);
 
             return result;
         }

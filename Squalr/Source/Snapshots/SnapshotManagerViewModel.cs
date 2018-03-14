@@ -179,7 +179,7 @@
                 case SnapshotRetrievalMode.FromStack:
                     throw new NotImplementedException();
                 default:
-                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unknown snapshot retrieval mode");
+                    Output.Log(LogLevel.Error, "Unknown snapshot retrieval mode");
                     return null;
             }
         }

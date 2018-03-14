@@ -87,7 +87,7 @@
 
             if (highlightingResource.IsNullOrEmpty())
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to load code highlighting rules. Scripts will be affected");
+                Output.Log(LogLevel.Error, "Unable to load code highlighting rules. Scripts will be affected");
                 return;
             }
 

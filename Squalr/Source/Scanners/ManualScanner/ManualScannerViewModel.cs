@@ -280,7 +280,7 @@
 
             if (!allScanConstraints.IsValid())
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "Unable to start scan with given constraints");
+                Output.Log(LogLevel.Warn, "Unable to start scan with given constraints");
                 return;
             }
 

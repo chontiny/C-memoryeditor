@@ -139,11 +139,11 @@
                 this.Joystick.Properties.BufferSize = 128;
                 this.Joystick.Acquire();
 
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Controller device found");
+                Output.Log(LogLevel.Info, "Controller device found");
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "No (optional) game controller found", ex);
+                Output.Log(LogLevel.Warn, "No (optional) game controller found", ex);
             }
         }
     }

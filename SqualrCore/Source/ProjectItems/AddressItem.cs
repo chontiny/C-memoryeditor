@@ -130,7 +130,7 @@
                 {
                     if (!SyntaxChecker.CanParseValue(this.dataType, value as String))
                     {
-                        Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error setting new value: " + (value as String));
+                        Output.Log(LogLevel.Error, "Error setting new value: " + (value as String));
                         return;
                     }
 

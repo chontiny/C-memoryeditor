@@ -93,7 +93,7 @@
                 // Do not schedule actions of the same type
                 if (this.Actions.Select(x => x.GetType()).Any(x => x == scheduledTask.GetType()))
                 {
-                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "Action not scheduled. This action is already queued.");
+                    Output.Log(LogLevel.Warn, "Action not scheduled. This action is already queued.");
                     return;
                 }
 

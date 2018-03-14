@@ -176,11 +176,11 @@
                 this.Keyboard = new Keyboard(this.DirectInput);
                 this.Keyboard.Acquire();
 
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Keyboard device found");
+                Output.Log(LogLevel.Info, "Keyboard device found");
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to acquire keyboard device", ex);
+                Output.Log(LogLevel.Error, "Unable to acquire keyboard device", ex);
             }
         }
     }

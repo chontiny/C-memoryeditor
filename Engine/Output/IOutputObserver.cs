@@ -2,6 +2,9 @@
 {
     using System;
 
+    /// <summary>
+    /// Defines the interface for an object that observes output log events.
+    /// </summary>
     public interface IOutputObserver
     {
         /// <summary>

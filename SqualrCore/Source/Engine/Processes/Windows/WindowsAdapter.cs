@@ -158,7 +158,7 @@
         {
             if (this.OpenedProcess != null)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Detached from target process");
+                Output.Log(LogLevel.Info, "Detached from target process");
             }
 
             this.OpenProcess(null);
@@ -172,7 +172,7 @@
         {
             if (process != null)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Attached to process: " + process.ProcessName);
+                Output.Log(LogLevel.Info, "Attached to process: " + process.ProcessName);
             }
 
             this.OpenedProcess = process;

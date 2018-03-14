@@ -178,7 +178,7 @@
                     }
                     catch (Exception ex)
                     {
-                        Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error building .NET objects", ex);
+                        Output.Log(LogLevel.Error, "Error building .NET objects", ex);
                     }
                 }
 
@@ -186,7 +186,7 @@
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error collecting .NET objects", ex);
+                Output.Log(LogLevel.Error, "Error collecting .NET objects", ex);
             }
         }
 

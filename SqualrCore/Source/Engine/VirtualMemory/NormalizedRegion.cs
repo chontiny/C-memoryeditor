@@ -192,7 +192,7 @@
         {
             if (chunkSize <= 0)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Fatal, "Invalid chunk size specified for region");
+                Output.Log(LogLevel.Fatal, "Invalid chunk size specified for region");
                 yield break;
             }
 

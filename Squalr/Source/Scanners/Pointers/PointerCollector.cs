@@ -200,7 +200,7 @@
             }
 
             stopwatch.Stop();
-            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Pointers collected in: " + stopwatch.Elapsed);
+            Output.Log(LogLevel.Info, "Pointers collected in: " + stopwatch.Elapsed);
         }
 
         /// <summary>

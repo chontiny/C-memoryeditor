@@ -186,7 +186,7 @@
     {
         public void Output(UInt32 mask, String text)
         {
-            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, text?.Trim());
+            Squalr.Engine.Output.Output.Log(LogLevel.Info, text?.Trim());
         }
     }
     //// End class

@@ -29,7 +29,7 @@
         /// </summary>
         private MainViewModel() : base()
         {
-            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Squalr developer tools started");
+            Output.Log(LogLevel.Info, "Squalr developer tools started");
 
             this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(new Content.ChangeLog().TransformText()), () => true);
         }

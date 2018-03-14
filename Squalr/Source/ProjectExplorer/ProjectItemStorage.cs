@@ -113,7 +113,7 @@
             {
                 if (!File.Exists(this.ProjectFilePath))
                 {
-                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to locate project.");
+                    Output.Log(LogLevel.Error, "Unable to locate project.");
                     return;
                 }
 
@@ -127,7 +127,7 @@
             catch (Exception ex)
             {
                 this.ProjectFilePath = String.Empty;
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to open project", ex.ToString());
+                Output.Log(LogLevel.Error, "Unable to open project", ex.ToString());
                 return;
             }
 
@@ -149,7 +149,7 @@
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
+                Output.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
@@ -186,7 +186,7 @@
             {
                 if (!File.Exists(filename))
                 {
-                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to locate project.");
+                    Output.Log(LogLevel.Error, "Unable to locate project.");
                     return;
                 }
 
@@ -206,7 +206,7 @@
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to import project", ex);
+                Output.Log(LogLevel.Error, "Unable to import project", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
@@ -230,7 +230,7 @@
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
+                Output.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
@@ -276,7 +276,7 @@
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Fatal, "Unable to save project", ex);
+                Output.Log(LogLevel.Fatal, "Unable to save project", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
@@ -295,7 +295,7 @@
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to save hotkey profile", ex);
+                Output.Log(LogLevel.Error, "Unable to save hotkey profile", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
@@ -313,11 +313,11 @@
                 {
                     if (String.IsNullOrEmpty(this.ProjectFilePath) || !Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
                     {
-                        Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Please save the project before exporting");
+                        Output.Log(LogLevel.Info, "Please save the project before exporting");
                         return;
                     }
 
-                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Project export starting");
+                    Output.Log(LogLevel.Info, "Project export starting");
 
                     String folderPath = Path.Combine(Path.GetDirectoryName(this.ProjectFilePath), "Export");
                     Directory.CreateDirectory(folderPath);
@@ -348,12 +348,12 @@
                 }
                 catch (Exception ex)
                 {
-                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Fatal, "Unable to complete export project", ex);
+                    Output.Log(LogLevel.Fatal, "Unable to complete export project", ex);
                     AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                     return;
                 }
 
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Project export complete");
+                Output.Log(LogLevel.Info, "Project export complete");
             });
         }
 

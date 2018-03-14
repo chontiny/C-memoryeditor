@@ -528,7 +528,7 @@
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to fetch modules from selected process", ex);
+                Output.Log(LogLevel.Error, "Unable to fetch modules from selected process", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
 

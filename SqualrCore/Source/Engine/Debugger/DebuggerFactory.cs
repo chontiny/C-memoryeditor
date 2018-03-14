@@ -46,7 +46,7 @@
                     break;
             }
 
-            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Fatal, "Unsupported Operating System", ex);
+            Output.Log(LogLevel.Fatal, "Unsupported Operating System", ex);
             throw ex;
         }
     }

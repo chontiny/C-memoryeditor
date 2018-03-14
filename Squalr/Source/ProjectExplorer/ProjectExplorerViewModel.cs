@@ -284,7 +284,7 @@
                     this.AddNewProjectItems(true, new InstructionItem());
                     break;
                 default:
-                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
+                    Output.Log(LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
                     break;
             }
         }

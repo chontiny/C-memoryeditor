@@ -4,43 +4,37 @@
     using System;
     using System.Collections.Generic;
 
-    internal class Output : IOutput
+    /// <summary>
+    /// Handles recieving logging events, processing them, and sending them to observers.
+    /// </summary>
+    public static class Output
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        public Output()
-        {
-            this.OutputMasks = new List<OutputMask>();
-            this.Observers = new ConcurrentHashSet<IOutputObserver>();
-        }
-
         /// <summary>
         /// Gets or sets the list of output masks to apply to all logged messages.
         /// </summary>
-        private IList<OutputMask> OutputMasks { get; set; }
+        private static IList<OutputMask> outputMasks = new List<OutputMask>();
 
         /// <summary>
         /// Gets or sets the set of active observers.
         /// </summary>
-        private ConcurrentHashSet<IOutputObserver> Observers { get; set; }
+        private static ConcurrentHashSet<IOutputObserver> observers = new ConcurrentHashSet<IOutputObserver>();
 
         /// <summary>
         /// Subscribes the listener to logging events.
         /// </summary>
         /// <param name="listener">The object that wants to listen to logging events.</param>
-        public void Subscribe(IOutputObserver listener)
+        public static void Subscribe(IOutputObserver listener)
         {
-            this.Observers.Add(listener);
+            Output.observers.Add(listener);
         }
 
         /// <summary>
         /// Unsubscribes the listener from logging events.
         /// </summary>
         /// <param name="listener">The object that wants to stop listening to logging events.</param>
-        public void Unsubscribe(IOutputObserver listener)
+        public static void Unsubscribe(IOutputObserver listener)
         {
-            this.Observers.Remove(listener);
+            Output.observers.Remove(listener);
         }
 
         /// <summary>
@@ -50,12 +44,12 @@
         /// <param name="message">The log message.</param>
         /// <param name="innerMessage">The log inner message.</param>
         /// <param name="outputMask">The output masking filter.</param>
-        public void Log(LogLevel logLevel, String message, String innerMessage, OutputMask outputMask)
+        public static void Log(LogLevel logLevel, String message, String innerMessage, OutputMask outputMask)
         {
             message = outputMask.ApplyFilter(message);
             innerMessage = outputMask.ApplyFilter(innerMessage);
 
-            this.Log(logLevel, message, innerMessage);
+            Output.Log(logLevel, message, innerMessage);
         }
 
         /// <summary>
@@ -64,9 +58,9 @@
         /// <param name="logLevel">The log level.</param>
         /// <param name="message">The log message.</param>
         /// <param name="exception">An exception to be shown as the log inner message.</param>
-        public void Log(LogLevel logLevel, String message, Exception exception)
+        public static void Log(LogLevel logLevel, String message, Exception exception)
         {
-            this.Log(logLevel, message, exception?.ToString());
+            Output.Log(logLevel, message, exception?.ToString());
         }
 
         /// <summary>
@@ -75,15 +69,15 @@
         /// <param name="logLevel">The log level.</param>
         /// <param name="message">The log message.</param>
         /// <param name="innerMessage">The log inner message.</param>
-        public void Log(LogLevel logLevel, String message, String innerMessage = null)
+        public static void Log(LogLevel logLevel, String message, String innerMessage = null)
         {
-            foreach (OutputMask outputMask in this.OutputMasks)
+            foreach (OutputMask outputMask in Output.outputMasks)
             {
                 message = outputMask.ApplyFilter(message);
                 innerMessage = outputMask.ApplyFilter(innerMessage);
             }
 
-            foreach(IOutputObserver observer in this.Observers.ToList())
+            foreach(IOutputObserver observer in Output.observers.ToList())
             {
                 observer.OnLogEvent(logLevel, message, innerMessage);
             }
@@ -93,21 +87,23 @@
         /// Adds a new output mask to the list of applied output masks.
         /// </summary>
         /// <param name="outputMask">The output mask to add.</param>
-        public void AddOutputMask(OutputMask outputMask)
+        public static void AddOutputMask(OutputMask outputMask)
         {
-            this.OutputMasks.Add(outputMask);
+            Output.outputMasks.Add(outputMask);
         }
 
         /// <summary>
         /// Removes an output mask from the list of applied output masks.
         /// </summary>
         /// <param name="outputMask">The output mask to remove.</param>
-        public void RemoveOutputMask(OutputMask outputMask)
+        public static void RemoveOutputMask(OutputMask outputMask)
         {
-            if (this.OutputMasks.Contains(outputMask))
+            if (Output.outputMasks.Contains(outputMask))
             {
-                this.OutputMasks.Remove(outputMask);
+                Output.outputMasks.Remove(outputMask);
             }
         }
     }
+    //// End class
 }
+//// End namespace

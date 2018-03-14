@@ -182,11 +182,11 @@
                 this.Mouse = new Mouse(this.DirectInput);
                 this.Mouse.Acquire();
 
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Mouse device found");
+                Output.Log(LogLevel.Info, "Mouse device found");
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "No (optional) mouse found", ex);
+                Output.Log(LogLevel.Warn, "No (optional) mouse found", ex);
             }
         }
     }

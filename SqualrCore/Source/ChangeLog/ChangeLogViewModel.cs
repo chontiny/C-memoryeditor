@@ -92,7 +92,7 @@
             }
             catch (Exception ex)
             {
-                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "Error displaying change log", ex);
+                Output.Log(LogLevel.Warn, "Error displaying change log", ex);
                 return;
             }
 

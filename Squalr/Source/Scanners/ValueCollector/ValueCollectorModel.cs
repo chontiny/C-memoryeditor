@@ -106,7 +106,7 @@
                 });
 
             stopwatch.Stop();
-            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
+            Output.Log(LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
 
             cancellationToken.ThrowIfCancellationRequested();
         }
