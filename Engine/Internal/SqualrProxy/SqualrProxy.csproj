@@ -100,7 +100,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Fasm\Fasm.NET\Fasm.NET.vcxproj">
+    <ProjectReference Include="..\Fasm\Fasm.NET.vcxproj">
       <Project>{2dac1a31-ef28-499a-b67a-963b5343d778}</Project>
       <Name>Fasm.NET</Name>
     </ProjectReference>
