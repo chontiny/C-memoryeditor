@@ -3,6 +3,7 @@
     using ActionScheduler;
     using Processes;
     using Proxy;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Output;
     using SqualrProxy;
@@ -177,7 +178,7 @@
                     }
                     catch (Exception ex)
                     {
-                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error building .NET objects", ex);
+                        Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error building .NET objects", ex);
                     }
                 }
 
@@ -185,7 +186,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error collecting .NET objects", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error collecting .NET objects", ex);
             }
         }
 

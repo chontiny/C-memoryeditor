@@ -3,6 +3,7 @@
     using Output;
     using SharpDX;
     using SharpDX.DirectInput;
+    using Squalr.Engine.Output;
     using System;
     using System.Collections.Generic;
 
@@ -181,11 +182,11 @@
                 this.Mouse = new Mouse(this.DirectInput);
                 this.Mouse.Acquire();
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Mouse device found");
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Mouse device found");
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "No (optional) mouse found", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "No (optional) mouse found", ex);
             }
         }
     }

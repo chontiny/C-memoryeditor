@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
+    using Squalr.Engine.Output;
     using Squalr.Source.Scanners.Pointers.Structures;
     using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
@@ -199,7 +200,7 @@
             }
 
             stopwatch.Stop();
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Pointers collected in: " + stopwatch.Elapsed);
+            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Pointers collected in: " + stopwatch.Elapsed);
         }
 
         /// <summary>

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Internal\**" />
+    <EmbeddedResource Remove="Internal\**" />
+    <None Remove="Internal\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Architecture\" />
+    <Folder Include="Debugger\" />
+    <Folder Include="Graphics\" />
+    <Folder Include="Input\" />
+    <Folder Include="Network\" />
+    <Folder Include="VirtualMemory\" />
+    <Folder Include="Unrandomizer\" />
+    <Folder Include="SpeedManipulator\" />
+    <Folder Include="Scripting\" />
+    <Folder Include="Processes\" />
+  </ItemGroup>
+
+</Project>

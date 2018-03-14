@@ -1,9 +1,10 @@
 ﻿namespace SqualrCore.Source.Engine.Processes.Windows
 {
+    using Squalr.Engine.DataStructures;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine.Processes.Windows.Native;
     using SqualrCore.Source.Output;
-    using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -45,7 +46,7 @@
 
             // TODO: For now we will not expire the TTL icons. This may cause cosmetic bugs. Icons are currently not disposed,
             // so putting a TTL on this would cause a memory leak.
-            this.IconCache = new TTLCache<Int32, Icon>();
+            this.IconCache = new TtlCache<Int32, Icon>();
 
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
             Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });
@@ -85,7 +86,7 @@
         /// <summary>
         /// Collection of icons fetched from processes.
         /// </summary>
-        private TTLCache<Int32, Icon> IconCache;
+        private TtlCache<Int32, Icon> IconCache;
 
         /// <summary>
         /// Collection of processes with a window.
@@ -157,7 +158,7 @@
         {
             if (this.OpenedProcess != null)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Detached from target process");
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Detached from target process");
             }
 
             this.OpenProcess(null);
@@ -171,7 +172,7 @@
         {
             if (process != null)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Attached to process: " + process.ProcessName);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Attached to process: " + process.ProcessName);
             }
 
             this.OpenedProcess = process;

@@ -504,6 +504,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.csproj">
+      <Project>{081e218a-8f7c-430f-81a8-d9950c7e970c}</Project>
+      <Name>Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Internal\SqualrHookClient\SqualrHookClient.csproj">
       <Project>{e9576568-5640-4883-aa5d-0bb2f6853e18}</Project>
       <Name>SqualrHookClient</Name>

@@ -1,5 +1,6 @@
 ﻿namespace SqualrCore.Source.Engine.VirtualMemory
 {
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Output;
     using System;
     using System.Threading;
@@ -45,7 +46,7 @@
                     break;
             }
 
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Unsupported Operating System", ex);
+            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Fatal, "Unsupported Operating System", ex);
             throw ex;
         }
     }

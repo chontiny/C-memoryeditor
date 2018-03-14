@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Main
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Output;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.ChangeLog;
@@ -28,7 +29,7 @@
         /// </summary>
         private MainViewModel() : base()
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Squalr developer tools started");
+            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Squalr developer tools started");
 
             this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(new Content.ChangeLog().TransformText()), () => true);
         }

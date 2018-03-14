@@ -2,9 +2,9 @@
 {
     using Docking;
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
-    using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Text;
@@ -21,22 +21,8 @@
     /// <summary>
     /// View model for the Output.
     /// </summary>
-    public class OutputViewModel : ToolViewModel
+    public class OutputViewModel : ToolViewModel, IOutputObserver
     {
-        /// <summary>
-        /// The rough total capacity in bytes of our log.
-        /// </summary>
-        private const Int32 LogCapacity = Int16.MaxValue;
-
-        /// <summary>
-        /// The minimum number of bytes to clear when going over capacity.
-        /// </summary>
-        private const Int32 MinimumClearSize = 4096;
-
-        /// <summary>
-        /// The uri prefix for output inner message 'hyperlinks'.
-        /// </summary>
-        private const String UriPrefix = @"http://www.squalr.com/";
 
         /// <summary>
         /// Singleton instance of the <see cref="OutputViewModel" /> class.
@@ -46,9 +32,19 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// The log text builder.
+        /// The uri prefix for output inner message 'hyperlinks'.
         /// </summary>
-        private StringBuilder logText;
+        private const String UriPrefix = @"https://squalr.com/";
+
+        /// <summary>
+        /// The rough total capacity in bytes of our log.
+        /// </summary>
+        private const Int32 LogCapacity = Int16.MaxValue;
+
+        /// <summary>
+        /// The minimum number of bytes to clear when going over capacity.
+        /// </summary>
+        private const Int32 MinimumClearSize = 4096;
 
         /// <summary>
         /// A value indicating whether the current inner message is visible.
@@ -61,48 +57,22 @@
         private String innerMessageText;
 
         /// <summary>
+        /// The log text builder.
+        /// </summary>
+        private StringBuilder logText;
+
+        /// <summary>
         /// Prevents a default instance of the <see cref="OutputViewModel" /> class from being created.
         /// </summary>
         private OutputViewModel() : base("Output")
         {
-            this.OutputMasks = new List<OutputMask>();
             this.AccessLock = new Object();
-
             this.logText = new StringBuilder(OutputViewModel.LogCapacity);
+
             this.ClearOutputCommand = new RelayCommand(() => this.ClearOutput(), () => true);
 
+            Squalr.Engine.Engine.GetInstance().Output.Subscribe(this);
             Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
-        }
-
-        /// <summary>
-        /// The possible channels to which we can log messages.
-        /// </summary>
-        public enum LogLevel
-        {
-            /// <summary>
-            /// Debugging information.
-            /// </summary>
-            Debug,
-
-            /// <summary>
-            /// Standard information.
-            /// </summary>
-            Info,
-
-            /// <summary>
-            /// Warning messages.
-            /// </summary>
-            Warn,
-
-            /// <summary>
-            /// Error messages.
-            /// </summary>
-            Error,
-
-            /// <summary>
-            /// Severe error messages.
-            /// </summary>
-            Fatal,
         }
 
         /// <summary>
@@ -159,11 +129,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the list of output masks to apply to all logged messages.
-        /// </summary>
-        private IList<OutputMask> OutputMasks { get; set; }
-
-        /// <summary>
         /// Gets or sets a lock for access to the output log.
         /// </summary>
         private Object AccessLock { get; set; }
@@ -194,71 +159,13 @@
         }
 
         /// <summary>
-        /// Adds a new output mask to the list of applied output masks.
-        /// </summary>
-        /// <param name="outputMask">The output mask to add.</param>
-        public void AddOutputMask(OutputMask outputMask)
-        {
-            this.OutputMasks.Add(outputMask);
-        }
-
-        /// <summary>
-        /// Removes an output mask from the list of applied output masks.
-        /// </summary>
-        /// <param name="outputMask">The output mask to remove.</param>
-        public void RemoveOutputMask(OutputMask outputMask)
-        {
-            if (this.OutputMasks.Contains(outputMask))
-            {
-                this.OutputMasks.Remove(outputMask);
-            }
-        }
-
-        /// <summary>
-        /// Logs a message to output, filtering out sensitive text with a specific output mask.
-        /// </summary>
-        /// <param name="logLevel">The log level.</param>
-        /// <param name="message">The log message.</param>
-        /// <param name="innerMessage">The log inner message.</param>
-        /// <param name="outputMask">The output masking filter.</param>
-        public void Log(LogLevel logLevel, String message, String innerMessage, OutputMask outputMask)
-        {
-            message = outputMask.ApplyFilter(message);
-            innerMessage = outputMask.ApplyFilter(innerMessage);
-
-            this.Log(logLevel, message, innerMessage);
-        }
-
-        /// <summary>
-        /// Logs a message to output.
-        /// </summary>
-        /// <param name="logLevel">The log level.</param>
-        /// <param name="message">The log message.</param>
-        /// <param name="exception">An exception to be shown as the log inner message.</param>
-        public void Log(LogLevel logLevel, String message, Exception exception)
-        {
-            this.Log(logLevel, message, exception?.ToString());
-        }
-
-        /// <summary>
         /// Logs a message to output.
         /// </summary>
         /// <param name="logLevel">The log level.</param>
         /// <param name="message">The log message.</param>
         /// <param name="innerMessage">The log inner message.</param>
-        public void Log(LogLevel logLevel, String message, String innerMessage = null)
+        public void OnLogEvent(LogLevel logLevel, String message, String innerMessage)
         {
-            if (logLevel == LogLevel.Debug)
-            {
-                return;
-            }
-
-            foreach (OutputMask outputMask in this.OutputMasks)
-            {
-                message = outputMask.ApplyFilter(message);
-                innerMessage = outputMask.ApplyFilter(innerMessage);
-            }
-
             lock (this.AccessLock)
             {
                 // Over capacity, remove some of the first lines based on the minimum clear size

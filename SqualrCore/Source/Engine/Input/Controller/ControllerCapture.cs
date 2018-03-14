@@ -2,6 +2,7 @@
 {
     using Output;
     using SharpDX.DirectInput;
+    using Squalr.Engine.Output;
     using System;
     using System.Collections.Generic;
 
@@ -138,11 +139,11 @@
                 this.Joystick.Properties.BufferSize = 128;
                 this.Joystick.Acquire();
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Controller device found");
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Controller device found");
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "No (optional) game controller found", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "No (optional) game controller found", ex);
             }
         }
     }

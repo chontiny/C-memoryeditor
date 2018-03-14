@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Output;
     using Squalr.Properties;
     using Squalr.Source.Prefilters;
     using Squalr.Source.Results;
@@ -178,7 +179,7 @@
                 case SnapshotRetrievalMode.FromStack:
                     throw new NotImplementedException();
                 default:
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unknown snapshot retrieval mode");
+                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unknown snapshot retrieval mode");
                     return null;
             }
         }

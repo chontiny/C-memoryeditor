@@ -2,8 +2,8 @@
 {
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.DataStructures;
     using SqualrCore.Source.Mvvm;
-    using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
     using System.Threading;

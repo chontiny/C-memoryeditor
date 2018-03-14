@@ -1,13 +1,13 @@
 ﻿namespace Squalr.Source.Results
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.DataStructures;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.Scanners.Pointers.Structures;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;

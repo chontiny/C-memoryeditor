@@ -195,9 +195,7 @@
     <Compile Include="Source\Mvvm\AttachedBehaviors\ScrollToTopBehavior.cs" />
     <Compile Include="Source\Mvvm\Converters\DataTypeToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\OffsetsToStringConverter.cs" />
-    <Compile Include="Source\Output\OutputMask.cs" />
     <Compile Include="Source\ProjectItems\InstructionItem.cs" />
-    <Compile Include="Source\Utils\DataStructures\TrulyObservableCollection.cs" />
     <Compile Include="Source\Utils\Dispatcher.cs" />
     <Compile Include="Source\Utils\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Source\Utils\Browser\NativeBrowser.cs" />
@@ -342,9 +340,6 @@
     <Compile Include="Source\Utils\SyntaxChecker.cs" />
     <Compile Include="Source\Utils\Compression.cs" />
     <Compile Include="Source\Utils\Conversions.cs" />
-    <Compile Include="Source\Utils\DataStructures\BiDictionary.cs" />
-    <Compile Include="Source\Utils\DataStructures\ConcurrentHashSet.cs" />
-    <Compile Include="Source\Utils\DataStructures\TTLCache.cs" />
     <Compile Include="Source\Engine\Types\DataType.cs" />
     <Compile Include="Source\Utils\Extensions\ArrayExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
@@ -400,6 +395,10 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.csproj">
+      <Project>{081e218a-8f7c-430f-81a8-d9950c7e970c}</Project>
+      <Name>Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Internal\Fasm\Fasm.NET.vcxproj">
       <Project>{2dac1a31-ef28-499a-b67a-963b5343d778}</Project>
       <Name>Fasm.NET</Name>

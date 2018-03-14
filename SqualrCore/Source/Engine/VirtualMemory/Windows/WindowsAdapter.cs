@@ -3,6 +3,7 @@
     using Native;
     using Output;
     using Processes;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMemory.Windows.PEB;
@@ -527,7 +528,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to fetch modules from selected process", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to fetch modules from selected process", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
 

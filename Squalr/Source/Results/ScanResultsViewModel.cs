@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Results
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.DataStructures;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.Snapshots;
@@ -9,7 +10,6 @@
     using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;

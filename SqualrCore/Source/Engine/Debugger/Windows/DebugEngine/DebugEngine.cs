@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.Engine.Debugger.Windows.DebugEngine
 {
     using DbgEng;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Engine.Processes;
     using SqualrCore.Source.Output;
     using System;
@@ -185,7 +186,7 @@
     {
         public void Output(UInt32 mask, String text)
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, text?.Trim());
+            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, text?.Trim());
         }
     }
     //// End class

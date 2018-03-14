@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.Scripting.Memory
 {
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Architecture;
     using SqualrCore.Source.Engine.VirtualMemory;
@@ -116,7 +117,7 @@
             String innerMessage;
             Byte[] result = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out message, out innerMessage);
 
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, message, innerMessage);
+            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, message, innerMessage);
 
             return result;
         }

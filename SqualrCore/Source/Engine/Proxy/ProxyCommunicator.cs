@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.Engine.Proxy
 {
     using Output;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Analytics;
     using SqualrProxy;
     using System;
@@ -120,13 +121,13 @@
                 EndpointAddress endpoint = new EndpointAddress(channelServerName);
                 IProxyService proxyService = ChannelFactory<IProxyService>.CreateChannel(binding, endpoint);
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Started proxy service: " + executableName + " over channel " + channelServerName);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Started proxy service: " + executableName + " over channel " + channelServerName);
 
                 return proxyService;
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Failed to start proxy service: " + executableName + ". This may impact Scripts and .NET explorer", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Fatal, "Failed to start proxy service: " + executableName + ". This may impact Scripts and .NET explorer", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return null;
             }

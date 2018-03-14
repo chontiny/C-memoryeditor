@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.Engine.VirtualMemory
 {
     using Output;
+    using Squalr.Engine.Output;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -191,7 +192,7 @@
         {
             if (chunkSize <= 0)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Fatal, "Invalid chunk size specified for region");
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Fatal, "Invalid chunk size specified for region");
                 yield break;
             }
 

@@ -1,6 +1,7 @@
 ﻿namespace SqualrCore.Source.Utils
 {
-    using DataStructures;
+    using Squalr.Engine.Output;
+    using Squalr.Engine.DataStructures;
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
@@ -22,7 +23,7 @@
         /// <summary>
         /// Cached bitmap mappings stored by this utility.
         /// </summary>
-        private static TTLCache<String, Bitmap> bitmapCache = new TTLCache<String, Bitmap>();
+        private static TtlCache<String, Bitmap> bitmapCache = new TtlCache<String, Bitmap>();
 
         /// <summary>
         /// Loads an image from the given uri.
@@ -75,7 +76,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to export image", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to export image", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
         }

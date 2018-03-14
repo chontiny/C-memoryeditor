@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Utils.DataStructures
+﻿namespace Squalr.Engine.DataStructures
 {
     using System;
     using System.Collections.Concurrent;
@@ -75,21 +75,21 @@
         }
     }
 
-    internal class TTLCache<K, V> : TtlCache<K> where V : class
+    public class TtlCache<K, V> : TtlCache<K> where V : class
     {
         private ConcurrentDictionary<K, Tuple<V, DateTime>> cache;
 
-        public TTLCache() : base()
+        public TtlCache() : base()
         {
             this.cache = new ConcurrentDictionary<K, Tuple<V, DateTime>>();
         }
 
-        public TTLCache(TimeSpan defaultTimeToLive) : base(defaultTimeToLive)
+        public TtlCache(TimeSpan defaultTimeToLive) : base(defaultTimeToLive)
         {
             this.cache = new ConcurrentDictionary<K, Tuple<V, DateTime>>();
         }
 
-        public TTLCache(TimeSpan defaultTimeToLive, TimeSpan randomTimeToLiveOffset) : base(defaultTimeToLive, randomTimeToLiveOffset)
+        public TtlCache(TimeSpan defaultTimeToLive, TimeSpan randomTimeToLiveOffset) : base(defaultTimeToLive, randomTimeToLiveOffset)
         {
             this.cache = new ConcurrentDictionary<K, Tuple<V, DateTime>>();
         }
@@ -121,7 +121,7 @@
             if (this.RandomTimeToLiveOffset != null)
             {
                 Int32 maximumOffset = (Int32)this.RandomTimeToLiveOffset.TotalMilliseconds;
-                TimeSpan offset = TimeSpan.FromMilliseconds(TTLCache<K, V>.Random.Next(-maximumOffset, maximumOffset));
+                TimeSpan offset = TimeSpan.FromMilliseconds(TtlCache<K, V>.Random.Next(-maximumOffset, maximumOffset));
                 TimeSpan timeToLive = this.DefaultTimeToLive + offset;
 
                 this.Add(key, value, timeToLive);

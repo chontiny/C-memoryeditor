@@ -34,7 +34,10 @@
                     FlowDocument doc = new FlowDocument();
                     TextRange range = new TextRange(doc.ContentStart, doc.ContentEnd);
 
-                    range.Load(new MemoryStream(Encoding.UTF8.GetBytes(rtf)), DataFormats.Rtf);
+                    if (!String.IsNullOrEmpty(rtf))
+                    { 
+                        range.Load(new MemoryStream(Encoding.UTF8.GetBytes(rtf)), DataFormats.Rtf);
+                    }
 
                     // Set the document
                     richTextBox.Document = doc;

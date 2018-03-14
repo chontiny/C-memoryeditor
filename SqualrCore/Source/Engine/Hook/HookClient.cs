@@ -1,5 +1,6 @@
 ﻿namespace SqualrCore.Source.Engine.Hook
 {
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Output;
     using SqualrHookClient.Source;
@@ -44,7 +45,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to Hook Process, some features may not be available", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to Hook Process, some features may not be available", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
             }
         }
@@ -54,7 +55,7 @@
         /// </summary>
         public override void Ping()
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Debug, "Hook pinged client");
+            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Debug, "Hook pinged client");
         }
 
         /// <summary>
@@ -64,7 +65,7 @@
         /// <param name="innerMessage">The inner log message.</param>
         public override void Log(String message, String innerMessage = null)
         {
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "[Hook] " + message, innerMessage);
+            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "[Hook] " + message, innerMessage);
         }
 
         /// <summary>

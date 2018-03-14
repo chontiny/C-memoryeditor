@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.ValueCollector
 {
     using Snapshots;
+    using Squalr.Engine.Output;
     using Squalr.Properties;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Output;
@@ -105,7 +106,7 @@
                 });
 
             stopwatch.Stop();
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
+            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
 
             cancellationToken.ThrowIfCancellationRequested();
         }

@@ -2,6 +2,7 @@
 {
     using Content.Templates;
     using CSScriptLibrary;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Output;
     using SqualrCore.Source.ProjectItems;
@@ -80,7 +81,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error compiling script", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error compiling script", ex);
             }
 
             return result;
@@ -105,17 +106,17 @@
                 // Call OnActivate function in the script
                 this.ScriptObject.OnActivate();
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script activated: " + scriptItem.Name?.ToString());
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Script activated: " + scriptItem.Name?.ToString());
             }
             catch (SecurityException ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Invalid operation in sandbox environment", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Invalid operation in sandbox environment", ex);
                 AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return false;
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to activate script", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to activate script", ex);
                 return false;
             }
 
@@ -154,11 +155,11 @@
 
                             if (exception.ToString().Contains("does not contain a definition for 'OnUpdate'"))
                             {
-                                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Optional update function not executed");
+                                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "Optional update function not executed");
                             }
                             else
                             {
-                                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error running update function: ", ex);
+                                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error running update function: ", ex);
                             }
 
                             return;
@@ -176,7 +177,7 @@
             }
             catch
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error executing update loop.");
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error executing update loop.");
             }
         }
 
@@ -191,7 +192,7 @@
             {
                 this.ScriptObject.OnDeactivate();
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Script deactivated: " + scriptItem.Name?.ToString());
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Script deactivated: " + scriptItem.Name?.ToString());
 
                 try
                 {
@@ -204,7 +205,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error when deactivating script", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error when deactivating script", ex);
             }
 
             return;

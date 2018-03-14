@@ -5,6 +5,7 @@
     using Input;
     using Processes;
     using Speed;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Analytics;
     using SqualrCore.Source.Engine.Debugger;
     using SqualrCore.Source.Engine.Networks;
@@ -44,8 +45,8 @@
 
             if (this.Architecture.HasVectorSupport())
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Hardware acceleration enabled");
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Hardware acceleration enabled");
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
             }
 
             this.StartBackgroundServices();
@@ -115,7 +116,7 @@
             AnalyticsService.GetInstance().Start();
 
             AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, "Start");
-            OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Background services started");
+            Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Background services started");
         }
     }
     //// End interface

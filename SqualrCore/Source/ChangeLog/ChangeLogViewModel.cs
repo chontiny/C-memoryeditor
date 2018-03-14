@@ -2,6 +2,7 @@
 {
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Output;
     using System;
     using System.Deployment.Application;
@@ -91,7 +92,7 @@
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Error displaying change log", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "Error displaying change log", ex);
                 return;
             }
 

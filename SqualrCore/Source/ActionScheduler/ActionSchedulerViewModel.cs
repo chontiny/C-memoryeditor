@@ -3,6 +3,7 @@
     using Docking;
     using GalaSoft.MvvmLight.CommandWpf;
     using Output;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -92,7 +93,7 @@
                 // Do not schedule actions of the same type
                 if (this.Actions.Select(x => x.GetType()).Any(x => x == scheduledTask.GetType()))
                 {
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Action not scheduled. This action is already queued.");
+                    Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Warn, "Action not scheduled. This action is already queued.");
                     return;
                 }
 

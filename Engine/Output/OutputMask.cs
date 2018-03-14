@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Output
+﻿namespace Squalr.Engine.Output
 {
     using System;
     using System.Text.RegularExpressions;

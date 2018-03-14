@@ -2,6 +2,7 @@
 {
     using Controls;
     using Engine;
+    using Squalr.Engine.Output;
     using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Output;
     using System;
@@ -129,7 +130,7 @@
                 {
                     if (!SyntaxChecker.CanParseValue(this.dataType, value as String))
                     {
-                        OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Error setting new value: " + (value as String));
+                        Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Error setting new value: " + (value as String));
                         return;
                     }
 

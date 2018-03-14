@@ -1,7 +1,7 @@
 ﻿namespace SqualrCore.Source.Controls
 {
     using GalaSoft.MvvmLight;
-    using SqualrCore.Source.Utils.DataStructures;
+    using Squalr.Engine.DataStructures;
     using System;
 
     /// <summary>

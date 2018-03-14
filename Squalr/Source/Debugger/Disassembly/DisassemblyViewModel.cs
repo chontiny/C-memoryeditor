@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Debugger.Disassembly
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.DataStructures;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
@@ -9,7 +10,6 @@
     using SqualrCore.Source.Engine.Processes;
     using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.ProjectItems;
-    using SqualrCore.Source.Utils.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;

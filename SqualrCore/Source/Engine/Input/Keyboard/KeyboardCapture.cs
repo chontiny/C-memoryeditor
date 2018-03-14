@@ -3,6 +3,7 @@
     using Output;
     using SharpDX;
     using SharpDX.DirectInput;
+    using Squalr.Engine.Output;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -175,11 +176,11 @@
                 this.Keyboard = new Keyboard(this.DirectInput);
                 this.Keyboard.Acquire();
 
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Info, "Keyboard device found");
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Info, "Keyboard device found");
             }
             catch (Exception ex)
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unable to acquire keyboard device", ex);
+                Squalr.Engine.Engine.GetInstance().Output.Log(LogLevel.Error, "Unable to acquire keyboard device", ex);
             }
         }
     }
