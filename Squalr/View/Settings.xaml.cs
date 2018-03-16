@@ -2,7 +2,7 @@
 {
     using Squalr.Properties;
     using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Engine.Types;
+    using Squalr.Engine.Types;
     using System;
     using System.Windows.Controls;
 

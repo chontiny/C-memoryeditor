@@ -4,7 +4,7 @@
     using Source.Editors.ScriptEditor;
     using Source.Mvvm;
     using Squalr.Engine.DataStructures;
-    using SqualrCore.Source.Engine.Types;
+    using Squalr.Engine.Types;
     using System;
     using System.Collections.Generic;
     using System.Linq;

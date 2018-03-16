@@ -3,11 +3,10 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataStructures;
     using Squalr.Engine.Output;
+    using Squalr.Engine.Types;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.Output;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

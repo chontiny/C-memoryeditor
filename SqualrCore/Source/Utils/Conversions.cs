@@ -1,7 +1,7 @@
 ﻿namespace SqualrCore.Source.Utils
 {
+    using Squalr.Engine.Types;
     using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Runtime.InteropServices;
@@ -44,9 +44,9 @@
                 case DataType type when type == DataTypes.Double:
                     return Double.Parse(value);
                 case DataType type when type == DataTypes.IntPtr:
-                    return EngineCore.GetInstance().Processes.IsSelf32Bit() ? new IntPtr(Int32.Parse(value)) : new IntPtr(Int64.Parse(value));
+                    return Squalr.Engine.Engine.GetInstance().Processes.IsSelf32Bit() ? new IntPtr(Int32.Parse(value)) : new IntPtr(Int64.Parse(value));
                 case DataType type when type == DataTypes.UIntPtr:
-                    return EngineCore.GetInstance().Processes.IsSelf32Bit() ? new UIntPtr(UInt32.Parse(value)) : new UIntPtr(UInt64.Parse(value));
+                    return Squalr.Engine.Engine.GetInstance().Processes.IsSelf32Bit() ? new UIntPtr(UInt32.Parse(value)) : new UIntPtr(UInt64.Parse(value));
                 default:
                     return null;
             }

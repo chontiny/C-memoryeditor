@@ -117,6 +117,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.5.0-preview1-26216-02\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.IO.MemoryMappedFiles">
       <HintPath>..\packages\System.IO.MemoryMappedFiles.4.3.0\lib\net46\System.IO.MemoryMappedFiles.dll</HintPath>
       <Private>True</Private>
@@ -187,10 +190,7 @@
     <Compile Include="Source\Engine\Debugger\IDebugger.cs" />
     <Compile Include="Source\Engine\Debugger\Windows\DebugEngine\DebugEngine.cs" />
     <Compile Include="Source\Engine\Graphics\GraphicsAdapter.cs" />
-    <Compile Include="Source\Engine\Processes\Windows\Native\NativeMethods.cs" />
-    <Compile Include="Source\Engine\Processes\Windows\WindowsAdapter.cs" />
     <Compile Include="Source\Engine\Speed\SpeedManipulator.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\Windows\PEB\ManagedPeb.cs" />
     <Compile Include="Source\Mvvm\AttachedBehaviors\ScrollToCenterBehavior.cs" />
     <Compile Include="Source\Mvvm\AttachedBehaviors\ScrollToTopBehavior.cs" />
     <Compile Include="Source\Mvvm\Converters\DataTypeToIconConverter.cs" />
@@ -288,20 +288,6 @@
     <Compile Include="Source\Engine\Input\Mouse\MouseCapture.cs" />
     <Compile Include="Source\Engine\Networks\INetwork.cs" />
     <Compile Include="Source\Engine\Networks\Network.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\IVirtualMemoryAdapter.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\NormalizedFlags.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\NormalizedModule.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\NormalizedRegion.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\VirtualMemoryAdapterFactory.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\Windows\Memory.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\Windows\Native\Enumerations.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\Windows\Native\NativeMethods.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\Windows\Native\Structures.cs" />
-    <Compile Include="Source\Engine\VirtualMemory\Windows\WindowsAdapter.cs" />
-    <Compile Include="Source\Engine\Processes\IProcessAdapter.cs" />
-    <Compile Include="Source\Engine\Processes\IProcessObserver.cs" />
-    <Compile Include="Source\Engine\Processes\NormalizedProcess.cs" />
-    <Compile Include="Source\Engine\Processes\ProcessAdapterFactory.cs" />
     <Compile Include="Source\Engine\Proxy\ProxyCommunicator.cs" />
     <Compile Include="Source\Engine\Speed\ISpeedManipulator.cs" />
     <Compile Include="Source\Engine\Unrandomizer\IUnrandomizer.cs" />
@@ -340,7 +326,6 @@
     <Compile Include="Source\Utils\SyntaxChecker.cs" />
     <Compile Include="Source\Utils\Compression.cs" />
     <Compile Include="Source\Utils\Conversions.cs" />
-    <Compile Include="Source\Engine\Types\DataType.cs" />
     <Compile Include="Source\Utils\Extensions\ArrayExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\ColorExtensions.cs" />
     <Compile Include="Source\Utils\Extensions\DependencyObjectExtensions.cs" />
@@ -358,8 +343,6 @@
     <Compile Include="Source\Utils\ImageUtils.cs" />
     <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
     <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
-    <Compile Include="Source\Engine\Types\DataTypes.cs" />
-    <Compile Include="Source\Utils\StaticRandom.cs" />
     <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DataTypeConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DynamicConverter.cs" />

@@ -2,8 +2,8 @@
 {
     using Docking;
     using Engine;
-    using Engine.Processes;
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Processes;
     using SqualrCore.Content;
     using System;
     using System.Collections.Generic;
@@ -51,7 +51,7 @@
             Task.Run(() => { DockingViewModel.GetInstance().RegisterViewModel(this); });
 
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
-            Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });
+            Task.Run(() => { Squalr.Engine.Engine.GetInstance().Processes.Subscribe(this); });
         }
 
         /// <summary>
@@ -104,7 +104,7 @@
         {
             get
             {
-                return EngineCore.GetInstance().Processes.GetOpenedProcess();
+                return Squalr.Engine.Engine.GetInstance().Processes.GetOpenedProcess();
             }
 
             set
@@ -118,7 +118,7 @@
 
                 if (value != this.SelectedProcess)
                 {
-                    EngineCore.GetInstance().Processes.OpenProcess(value);
+                    Squalr.Engine.Engine.GetInstance().Processes.OpenProcess(value);
                     this.RaisePropertyChanged(nameof(this.SelectedProcess));
                 }
 
@@ -153,7 +153,7 @@
         {
             get
             {
-                String processName = EngineCore.GetInstance().Processes?.GetOpenedProcess()?.ProcessName;
+                String processName = Squalr.Engine.Engine.GetInstance().Processes?.GetOpenedProcess()?.ProcessName;
                 return String.IsNullOrEmpty(processName) ? "Please Select a Process" : processName;
             }
         }
@@ -195,7 +195,7 @@
         /// </summary>
         private void RefreshProcessList()
         {
-            this.ProcessList = EngineCore.GetInstance().Processes.GetProcesses();
+            this.ProcessList = Squalr.Engine.Engine.GetInstance().Processes.GetProcesses();
         }
 
         /// <summary>

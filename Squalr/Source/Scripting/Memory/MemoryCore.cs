@@ -1,10 +1,9 @@
 ﻿namespace Squalr.Source.Scripting.Memory
 {
     using Squalr.Engine.Output;
+    using Squalr.Engine.VirtualMemory;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Architecture;
-    using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -72,7 +71,7 @@
             moduleName = moduleName?.RemoveSuffixes(true, ".exe", ".dll");
 
             UInt64 address = 0;
-            foreach (NormalizedModule module in EngineCore.GetInstance().VirtualMemory.GetModules())
+            foreach (NormalizedModule module in Squalr.Engine.Engine.GetInstance().VirtualMemory.GetModules())
             {
                 String targetModuleName = module?.Name?.RemoveSuffixes(true, ".exe", ".dll");
                 if (targetModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
@@ -115,7 +114,7 @@
             assembly = this.ResolveKeywords(assembly);
             String message;
             String innerMessage;
-            Byte[] result = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out message, out innerMessage);
+            Byte[] result = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out message, out innerMessage);
 
             Output.Log(LogLevel.Info, message, innerMessage);
 
@@ -137,7 +136,7 @@
             // Read original bytes at code cave jump
             Boolean readSuccess;
 
-            Byte[] originalBytes = EngineCore.GetInstance().VirtualMemory.ReadBytes(address.ToIntPtr(), injectedCodeSize + MemoryCore.Largestx86InstructionSize, out readSuccess);
+            Byte[] originalBytes = Squalr.Engine.Engine.GetInstance().VirtualMemory.ReadBytes(address.ToIntPtr(), injectedCodeSize + MemoryCore.Largestx86InstructionSize, out readSuccess);
 
             if (!readSuccess || originalBytes == null || originalBytes.Length <= 0)
             {
@@ -145,7 +144,7 @@
             }
 
             // Grab instructions at code entry point
-            IEnumerable<NormalizedInstruction> instructions = EngineCore.GetInstance().Architecture.GetDisassembler().Disassemble(originalBytes, EngineCore.GetInstance().Processes.IsOpenedProcess32Bit(), address.ToIntPtr());
+            IEnumerable<NormalizedInstruction> instructions = EngineCore.GetInstance().Architecture.GetDisassembler().Disassemble(originalBytes, Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit(), address.ToIntPtr());
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;
@@ -178,7 +177,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = EngineCore.GetInstance().VirtualMemory.AllocateMemory(size).ToUInt64();
+            UInt64 address = Squalr.Engine.Engine.GetInstance().VirtualMemory.AllocateMemory(size).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -194,7 +193,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = EngineCore.GetInstance().VirtualMemory.AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
+            UInt64 address = Squalr.Engine.Engine.GetInstance().VirtualMemory.AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -212,7 +211,7 @@
             {
                 if (allocationAddress == address)
                 {
-                    EngineCore.GetInstance().VirtualMemory.DeallocateMemory(allocationAddress.ToIntPtr());
+                    Squalr.Engine.Engine.GetInstance().VirtualMemory.DeallocateMemory(allocationAddress.ToIntPtr());
                     this.RemoteAllocations.Remove(allocationAddress);
                     break;
                 }
@@ -230,7 +229,7 @@
 
             foreach (UInt64 address in this.RemoteAllocations)
             {
-                EngineCore.GetInstance().VirtualMemory.DeallocateMemory(address.ToIntPtr());
+                Squalr.Engine.Engine.GetInstance().VirtualMemory.DeallocateMemory(address.ToIntPtr());
             }
 
             this.RemoteAllocations.Clear();
@@ -288,7 +287,7 @@
 
                 // Allocate memory
                 UInt64 remoteAllocation;
-                if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
+                if (Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit())
                 {
                     remoteAllocation = this.Allocate(assemblySize);
                 }
@@ -339,7 +338,7 @@
             String noOps = (originalBytes.Length - assemblySize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - assemblySize)).TrimEnd(',');
 
             Byte[] injectionBytes = this.GetAssemblyBytes(assembly + "\n" + noOps, address);
-            EngineCore.GetInstance().VirtualMemory.WriteBytes(address.ToIntPtr(), injectionBytes);
+            Squalr.Engine.Engine.GetInstance().VirtualMemory.WriteBytes(address.ToIntPtr(), injectionBytes);
 
             CodeCave codeCave = new CodeCave(address, 0, originalBytes);
             this.CodeCaves.Add(codeCave);
@@ -391,9 +390,9 @@
                     continue;
                 }
 
-                EngineCore.GetInstance().VirtualMemory.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
+                Squalr.Engine.Engine.GetInstance().VirtualMemory.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
 
-                EngineCore.GetInstance().VirtualMemory.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                Squalr.Engine.Engine.GetInstance().VirtualMemory.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
         }
 
@@ -406,7 +405,7 @@
 
             foreach (CodeCave codeCave in this.CodeCaves)
             {
-                EngineCore.GetInstance().VirtualMemory.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
+                Squalr.Engine.Engine.GetInstance().VirtualMemory.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
 
                 // If remote allocation address is unset, then it was not allocated.
                 if (codeCave.RemoteAllocationAddress == 0)
@@ -414,7 +413,7 @@
                     continue;
                 }
 
-                EngineCore.GetInstance().VirtualMemory.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                Squalr.Engine.Engine.GetInstance().VirtualMemory.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
 
             this.CodeCaves.Clear();
@@ -529,7 +528,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = EngineCore.GetInstance().VirtualMemory.SearchAob(bytes).ToUInt64();
+            UInt64 address = Squalr.Engine.Engine.GetInstance().VirtualMemory.SearchAob(bytes).ToUInt64();
             return address;
         }
 
@@ -542,7 +541,7 @@
         {
             this.PrintDebugTag(pattern);
 
-            return EngineCore.GetInstance().VirtualMemory.SearchAob(pattern).ToUInt64();
+            return Squalr.Engine.Engine.GetInstance().VirtualMemory.SearchAob(pattern).ToUInt64();
         }
 
         /// <summary>
@@ -553,7 +552,7 @@
         public UInt64[] SearchAllAob(String pattern)
         {
             this.PrintDebugTag(pattern);
-            List<IntPtr> aobResults = new List<IntPtr>(EngineCore.GetInstance().VirtualMemory.SearchllAob(pattern));
+            List<IntPtr> aobResults = new List<IntPtr>(Squalr.Engine.Engine.GetInstance().VirtualMemory.SearchllAob(pattern));
             List<UInt64> convertedAobs = new List<UInt64>();
             aobResults.ForEach(x => convertedAobs.Add(x.ToUInt64()));
             return convertedAobs.ToArray();
@@ -563,7 +562,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 finalAddress = EngineCore.GetInstance().VirtualMemory.EvaluatePointer(address.ToIntPtr(), offsets).ToUInt64();
+            UInt64 finalAddress = Squalr.Engine.Engine.GetInstance().VirtualMemory.EvaluatePointer(address.ToIntPtr(), offsets).ToUInt64();
             return finalAddress;
         }
 
@@ -578,7 +577,7 @@
             this.PrintDebugTag(address.ToString("x"));
 
             Boolean readSuccess;
-            return EngineCore.GetInstance().VirtualMemory.Read<T>(address.ToIntPtr(), out readSuccess);
+            return Squalr.Engine.Engine.GetInstance().VirtualMemory.Read<T>(address.ToIntPtr(), out readSuccess);
         }
 
         /// <summary>
@@ -592,7 +591,7 @@
             this.PrintDebugTag(address.ToString("x"), count.ToString());
 
             Boolean readSuccess;
-            return EngineCore.GetInstance().VirtualMemory.ReadBytes(address.ToIntPtr(), count, out readSuccess);
+            return Squalr.Engine.Engine.GetInstance().VirtualMemory.ReadBytes(address.ToIntPtr(), count, out readSuccess);
         }
 
         /// <summary>
@@ -605,7 +604,7 @@
         {
             this.PrintDebugTag(address.ToString("x"), value.ToString());
 
-            EngineCore.GetInstance().VirtualMemory.Write<T>(address.ToIntPtr(), value);
+            Squalr.Engine.Engine.GetInstance().VirtualMemory.Write<T>(address.ToIntPtr(), value);
         }
 
         /// <summary>
@@ -617,7 +616,7 @@
         {
             this.PrintDebugTag(address.ToString("x"));
 
-            EngineCore.GetInstance().VirtualMemory.WriteBytes(address.ToIntPtr(), values);
+            Squalr.Engine.Engine.GetInstance().VirtualMemory.WriteBytes(address.ToIntPtr(), values);
         }
 
         /// <summary>

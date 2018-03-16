@@ -2,13 +2,13 @@
 {
     using LabelThresholder;
     using Squalr.Engine.DataStructures;
+    using Squalr.Engine.Types;
     using Squalr.Properties;
     using Squalr.Source.Snapshots;
     using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Input.HotKeys;
     using SqualrCore.Source.Engine.Input.Keyboard;
-    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;

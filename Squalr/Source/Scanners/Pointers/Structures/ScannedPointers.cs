@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
-    using SqualrCore.Source.Engine.Types;
+    using Squalr.Engine.Types;
     using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;

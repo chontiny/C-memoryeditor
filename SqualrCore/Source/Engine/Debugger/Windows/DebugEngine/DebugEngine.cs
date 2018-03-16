@@ -2,8 +2,7 @@
 {
     using DbgEng;
     using Squalr.Engine.Output;
-    using SqualrCore.Source.Engine.Processes;
-    using SqualrCore.Source.Output;
+    using Squalr.Engine.Processes;
     using System;
     using System.Diagnostics;
     using System.Threading.Tasks;
@@ -12,7 +11,7 @@
     {
         public DebugEngine()
         {
-            Task.Run(() => EngineCore.GetInstance().Processes.Subscribe(this));
+            Task.Run(() => Squalr.Engine.Engine.GetInstance().Processes.Subscribe(this));
         }
 
         private IDebugClient Client { get; set; }

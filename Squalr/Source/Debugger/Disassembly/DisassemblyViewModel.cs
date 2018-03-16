@@ -2,12 +2,13 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataStructures;
+    using Squalr.Engine.Processes;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
     using SqualrCore.Source.Engine;
     using SqualrCore.Source.Engine.Architecture;
     using SqualrCore.Source.Engine.Architecture.Disassembler;
-    using SqualrCore.Source.Engine.Processes;
+    using Squalr.Engine.Processes;
     using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;
@@ -59,7 +60,7 @@
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
-            Task.Run(() => EngineCore.GetInstance().Processes.Subscribe(this));
+            Task.Run(() => Squalr.Engine.Engine.GetInstance().Processes.Subscribe(this));
         }
 
         /// <summary>
@@ -152,7 +153,7 @@
         {
             if (process != null)
             {
-                this.BaseAddress = EngineCore.GetInstance().VirtualMemory.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
+                this.BaseAddress = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
 
                 this.LoadInstructions();
             }
@@ -186,14 +187,14 @@
         /// </summary>
         private void LoadInstructions()
         {
-            Byte[] bytes = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
+            Byte[] bytes = Squalr.Engine.Engine.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
 
             if (bytes.IsNullOrEmpty())
             {
                 return;
             }
 
-            Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
+            Boolean isProcess32Bit = Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit();
 
             // Disassemble instructions
             IEnumerable<NormalizedInstruction> disassembledInstructions = this.Disassembler.Disassemble(bytes, isProcess32Bit, this.BaseAddress.ToIntPtr());

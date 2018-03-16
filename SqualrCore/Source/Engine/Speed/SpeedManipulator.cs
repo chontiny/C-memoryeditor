@@ -1,7 +1,7 @@
 ﻿namespace SqualrCore.Source.Engine.Speed
 {
     using SqualrCore.Source.Engine.Hook;
-    using SqualrCore.Source.Engine.Processes;
+    using Squalr.Engine.Processes;
     using System;
     using System.Threading.Tasks;
 
@@ -12,7 +12,7 @@
     {
         public SpeedManipulator()
         {
-            Task.Run(() => { EngineCore.GetInstance().Processes.Subscribe(this); });
+            Task.Run(() => { Squalr.Engine.Engine.GetInstance().Processes.Subscribe(this); });
         }
 
         /// <summary>

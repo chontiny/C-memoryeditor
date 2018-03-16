@@ -2,12 +2,12 @@
 {
     using ActionScheduler;
     using DotNet;
+    using Squalr.Engine.VirtualMemory;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using Utils.Extensions;
-    using VirtualMemory;
 
     /// <summary>
     /// Singleton class to resolve the address of managed objects in an external process.
@@ -61,7 +61,7 @@
         /// <returns>The module name and address offset. If not contained by a module, the original address is returned.</returns>
         public UInt64 AddressToModule(UInt64 address, out String moduleName)
         {
-            NormalizedModule containingModule = EngineCore.GetInstance().VirtualMemory.GetModules()
+            NormalizedModule containingModule = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetModules()
                 .Select(module => module)
                 .Where(module => module.ContainsAddress(address))
                 .FirstOrDefault();
@@ -81,7 +81,7 @@
             IntPtr result = IntPtr.Zero;
 
             identifier = identifier?.RemoveSuffixes(true, ".exe", ".dll");
-            IEnumerable<NormalizedModule> modules = EngineCore.GetInstance().VirtualMemory.GetModules()
+            IEnumerable<NormalizedModule> modules = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetModules()
                 ?.ToList()
                 ?.Select(module => module)
                 ?.Where(module => module.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));

@@ -1,10 +1,8 @@
 ﻿namespace SqualrCore.Source.ProjectItems
 {
     using Controls;
-    using Engine;
     using Squalr.Engine.Output;
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.Output;
+    using Squalr.Engine.Types;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;
@@ -235,7 +233,7 @@
                 Object previousValue = this.AddressValue;
 
                 // Otherwise we read as normal (bypass assigning setter and set value directly to avoid a write-back to memory)
-                this.addressValue = EngineCore.GetInstance()?.VirtualMemory?.Read(this.DataType, this.CalculatedAddress, out _);
+                this.addressValue = Squalr.Engine.Engine.GetInstance()?.VirtualMemory?.Read(this.DataType, this.CalculatedAddress, out _);
 
                 if (!(this.AddressValue?.Equals(previousValue) ?? false))
                 {
@@ -262,7 +260,7 @@
                 return;
             }
 
-            EngineCore.GetInstance()?.VirtualMemory?.Write(this.DataType, this.CalculatedAddress, newValue);
+            Squalr.Engine.Engine.GetInstance()?.VirtualMemory?.Write(this.DataType, this.CalculatedAddress, newValue);
         }
     }
     //// End class

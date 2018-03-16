@@ -1,6 +1,6 @@
 ﻿namespace SqualrCore.Source.Mvvm.Converters
 {
-    using SqualrCore.Source.Engine.Types;
+    using Squalr.Engine.Types;
     using SqualrCore.Source.Utils;
     using System;
     using System.Globalization;

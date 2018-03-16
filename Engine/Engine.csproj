@@ -4,10 +4,32 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Remove="Internal\**" />
-    <EmbeddedResource Remove="Internal\**" />
-    <None Remove="Internal\**" />
+    <Compile Remove="Internal\Fasm\**" />
+    <Compile Remove="Internal\Microsoft.Diagnostics.Runtime\**" />
+    <Compile Remove="Internal\SqualrHookClient\**" />
+    <Compile Remove="Internal\SqualrHookServer\**" />
+    <Compile Remove="Internal\SqualrProxy32\**" />
+    <Compile Remove="Internal\SqualrProxy64\**" />
+    <Compile Remove="Internal\SqualrProxy\**" />
+    <EmbeddedResource Remove="Internal\Fasm\**" />
+    <EmbeddedResource Remove="Internal\Microsoft.Diagnostics.Runtime\**" />
+    <EmbeddedResource Remove="Internal\SqualrHookClient\**" />
+    <EmbeddedResource Remove="Internal\SqualrHookServer\**" />
+    <EmbeddedResource Remove="Internal\SqualrProxy32\**" />
+    <EmbeddedResource Remove="Internal\SqualrProxy64\**" />
+    <EmbeddedResource Remove="Internal\SqualrProxy\**" />
+    <None Remove="Internal\Fasm\**" />
+    <None Remove="Internal\Microsoft.Diagnostics.Runtime\**" />
+    <None Remove="Internal\SqualrHookClient\**" />
+    <None Remove="Internal\SqualrHookServer\**" />
+    <None Remove="Internal\SqualrProxy32\**" />
+    <None Remove="Internal\SqualrProxy64\**" />
+    <None Remove="Internal\SqualrProxy\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,12 +37,21 @@
     <Folder Include="Debugger\" />
     <Folder Include="Graphics\" />
     <Folder Include="Input\" />
+    <Folder Include="Internal\" />
     <Folder Include="Network\" />
-    <Folder Include="VirtualMemory\" />
     <Folder Include="Unrandomizer\" />
     <Folder Include="SpeedManipulator\" />
     <Folder Include="Scripting\" />
-    <Folder Include="Processes\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.0-preview1-26216-02" />
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="Internal\SqualrProxy\SqualrProxy.csproj" />
   </ItemGroup>
 
 </Project>

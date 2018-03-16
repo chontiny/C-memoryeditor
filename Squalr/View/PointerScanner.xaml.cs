@@ -3,7 +3,7 @@
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.Pointers;
     using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Engine.Types;
+    using Squalr.Engine.Types;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;

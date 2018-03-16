@@ -4,8 +4,8 @@
     using Editors.OffsetEditor;
     using Engine;
     using Engine.VirtualMachines;
+    using Squalr.Engine.Types;
     using SqualrCore.Content;
-    using SqualrCore.Source.Engine.Types;
     using SqualrCore.Source.Utils;
     using System;
     using System.Collections.Generic;
@@ -257,13 +257,13 @@
 
             foreach (Int32 offset in this.PointerOffsets)
             {
-                if (EngineCore.GetInstance().Processes.IsOpenedProcess32Bit())
+                if (Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit())
                 {
-                    pointer = EngineCore.GetInstance().VirtualMemory.Read<Int32>(pointer, out successReading).ToIntPtr();
+                    pointer = Squalr.Engine.Engine.GetInstance().VirtualMemory.Read<Int32>(pointer, out successReading).ToIntPtr();
                 }
                 else
                 {
-                    pointer = EngineCore.GetInstance().VirtualMemory.Read<Int64>(pointer, out successReading).ToIntPtr();
+                    pointer = Squalr.Engine.Engine.GetInstance().VirtualMemory.Read<Int64>(pointer, out successReading).ToIntPtr();
                 }
 
                 if (pointer == IntPtr.Zero || !successReading)

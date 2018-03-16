@@ -1,6 +1,5 @@
 ﻿namespace SqualrCore.Source.Engine.Proxy
 {
-    using Output;
     using Squalr.Engine.Output;
     using SqualrCore.Source.Analytics;
     using SqualrProxy;
@@ -17,34 +16,34 @@
     internal class ProxyCommunicator
     {
         /// <summary>
-        /// The 32 bit proxy service executable
+        /// The 32 bit proxy service executable.
         /// </summary>
         private const String Proxy32Executable = "SqualrProxy32.exe";
 
         /// <summary>
-        /// The 64 bit proxy service executable
+        /// The 64 bit proxy service executable.
         /// </summary>
         private const String Proxy64Executable = "SqualrProxy64.exe";
 
         /// <summary>
-        /// The event name for a wait event, which allows us to wait for a proxy service to start
+        /// The event name for a wait event, which allows us to wait for a proxy service to start.
         /// </summary>
         private const String WaitEventName = @"Global\Squalr";
 
         /// <summary>
-        /// Uri prefix for IPC channel names
+        /// Uri prefix for IPC channel names.
         /// </summary>
         private const String UriPrefix = "net.pipe://localhost/";
 
         /// <summary>
-        /// Singleton instance of the <see cref="ProxyCommunicator" /> class
+        /// Singleton instance of the <see cref="ProxyCommunicator" /> class.
         /// </summary>
         private static Lazy<ProxyCommunicator> proxyCommunicatorInstance = new Lazy<ProxyCommunicator>(
             () => { return new ProxyCommunicator(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="ProxyCommunicator" /> class from being created
+        /// Prevents a default instance of the <see cref="ProxyCommunicator" /> class from being created.
         /// </summary>
         private ProxyCommunicator()
         {
@@ -58,29 +57,29 @@
         }
 
         /// <summary>
-        /// Gets or sets the 32 bit proxy service
+        /// Gets or sets the 32 bit proxy service.
         /// </summary>
         private IProxyService Proxy32 { get; set; }
 
         /// <summary>
-        /// Gets or sets the 64 bit proxy service
+        /// Gets or sets the 64 bit proxy service.
         /// </summary>
         private IProxyService Proxy64 { get; set; }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="ProxyCommunicator"/> class
+        /// Gets a singleton instance of the <see cref="ProxyCommunicator"/> class.
         /// </summary>
-        /// <returns>A singleton instance of the class</returns>
+        /// <returns>A singleton instance of the class.</returns>
         public static ProxyCommunicator GetInstance()
         {
             return proxyCommunicatorInstance.Value;
         }
 
         /// <summary>
-        /// Gets the proxy service based on provided parameters
+        /// Gets the proxy service based on provided parameters.
         /// </summary>
-        /// <param name="is32Bit">Whether or not to get the 32 or 64 bit service</param>
-        /// <returns>The 32 or 64 bit service</returns>
+        /// <param name="is32Bit">Whether or not to get the 32 or 64 bit service.</param>
+        /// <returns>The 32 or 64 bit service.</returns>
         public IProxyService GetProxyService(Boolean is32Bit)
         {
             if (is32Bit)
@@ -94,11 +93,11 @@
         }
 
         /// <summary>
-        /// Starts a proxy service
+        /// Starts a proxy service.
         /// </summary>
-        /// <param name="executableName">The executable name of the service to start</param>
-        /// <param name="channelServerName">The channel name for IPC</param>
-        /// <returns>The proxy service that is created</returns>
+        /// <param name="executableName">The executable name of the service to start.</param>
+        /// <param name="channelServerName">The channel name for IPC.</param>
+        /// <returns>The proxy service that is created.</returns>
         private IProxyService StartProxyService(String executableName, String channelServerName)
         {
             try

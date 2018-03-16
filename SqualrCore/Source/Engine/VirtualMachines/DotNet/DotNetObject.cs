@@ -1,6 +1,6 @@
 ﻿namespace SqualrCore.Source.Engine.VirtualMachines.DotNet
 {
-    using SqualrCore.Source.Engine.Types;
+    using Squalr.Engine.Types;
     using System;
     using System.Collections;
     using System.Collections.Generic;

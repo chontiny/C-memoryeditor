@@ -1,7 +1,7 @@
 ﻿namespace SqualrCore.Source.Controls
 {
     using Source.Utils;
-    using SqualrCore.Source.Engine.Types;
+    using Squalr.Engine.Types;
     using System;
     using System.Drawing;
     using System.Windows.Forms;

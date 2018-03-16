@@ -3,7 +3,6 @@
     using Architecture;
     using Graphics;
     using Input;
-    using Processes;
     using Speed;
     using Squalr.Engine.Output;
     using SqualrCore.Source.Analytics;
@@ -11,11 +10,9 @@
     using SqualrCore.Source.Engine.Networks;
     using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.Engine.VirtualMachines.DotNet;
-    using SqualrCore.Source.Output;
     using System;
     using System.Threading;
     using Unrandomizer;
-    using VirtualMemory;
 
     /// <summary>
     /// Abstraction of the system, providing the ability to easily manipulate system internals regardless of the platform.
@@ -34,8 +31,6 @@
         /// </summary>
         private EngineCore()
         {
-            this.Processes = ProcessAdapterFactory.GetProcessAdapter();
-            this.VirtualMemory = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter();
             this.Architecture = ArchitectureFactory.GetArchitecture();
             this.Debugger = DebuggerFactory.GetDebugger();
             this.Input = new InputManager();
@@ -51,16 +46,6 @@
 
             this.StartBackgroundServices();
         }
-
-        /// <summary>
-        /// Gets an object that provides access to target process manipulations.
-        /// </summary>
-        public IProcessAdapter Processes { get; private set; }
-
-        /// <summary>
-        /// Gets an object that provides access to target memory manipulations.
-        /// </summary>
-        public IVirtualMemoryAdapter VirtualMemory { get; private set; }
 
         /// <summary>
         /// Gets an object that enables debugging of a process.

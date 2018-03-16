@@ -2,13 +2,11 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Output;
+    using Squalr.Engine.VirtualMemory;
     using Squalr.Properties;
     using Squalr.Source.Prefilters;
     using Squalr.Source.Results;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -235,10 +233,10 @@
             MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image;
 
             IntPtr startAddress = IntPtr.Zero;
-            IntPtr endAddress = EngineCore.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
+            IntPtr endAddress = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -268,7 +266,7 @@
             if (SettingsViewModel.GetInstance().IsUserMode)
             {
                 startAddress = IntPtr.Zero;
-                endAddress = EngineCore.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
+                endAddress = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
             }
             else
             {
@@ -277,7 +275,7 @@
             }
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -299,7 +297,7 @@
         /// <returns>The created snapshot.</returns>
         private Snapshot CreateSnapshotFromModules()
         {
-            IEnumerable<ReadGroup> moduleGroups = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            IEnumerable<ReadGroup> moduleGroups = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
             Snapshot moduleSnapshot = new Snapshot(null, moduleGroups);
 
             return moduleSnapshot;
@@ -315,7 +313,7 @@
             Snapshot snapshot = this.CreateSnapshotFromUsermodeMemory();
 
             // Remove module regions
-            IEnumerable<ReadGroup> moduleGroups = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            IEnumerable<ReadGroup> moduleGroups = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
             snapshot.ReadGroups = snapshot.ReadGroups.Where(group => moduleGroups.All(moduleGroup => moduleGroup.BaseAddress != group.BaseAddress));
 
             return snapshot;
