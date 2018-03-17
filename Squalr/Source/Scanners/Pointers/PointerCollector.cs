@@ -69,7 +69,7 @@
             stopwatch.Start();
 
             Boolean isProcess32Bit = Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit();
-            Int32 vectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
+            Int32 vectorSize = Squalr.Engine.Engine.GetInstance().Architecture.GetVectorSize();
             UInt64 minValue = UInt16.MaxValue;
             UInt64 maxValue = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetMaxUsermodeAddress();
             Vector<UInt32> minValueVector = new Vector<UInt32>(minValue.ToUInt32());

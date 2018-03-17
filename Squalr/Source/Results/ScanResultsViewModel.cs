@@ -3,11 +3,11 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataStructures;
     using Squalr.Engine.Types;
+    using Squalr.Engine.VirtualMachines;
     using Squalr.Properties;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.Snapshots;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;

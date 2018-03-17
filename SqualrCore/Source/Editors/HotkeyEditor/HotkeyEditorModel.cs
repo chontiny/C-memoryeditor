@@ -1,6 +1,6 @@
 ﻿namespace SqualrCore.Source.Editors.HotkeyEditor
 {
-    using Engine.Input.HotKeys;
+    using Squalr.Engine.Input.HotKeys;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;

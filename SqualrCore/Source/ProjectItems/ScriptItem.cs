@@ -2,7 +2,7 @@
 {
     using Controls;
     using Editors.ScriptEditor;
-    using Scripting;
+    using Squalr.Engine.Scripting;
     using SqualrCore.Content;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -150,6 +150,7 @@
         /// </summary>
         protected override void OnActivationChanged()
         {
+            /*
             if (this.IsActivated)
             {
                 // Try to run script.
@@ -167,7 +168,7 @@
             {
                 // Try to deactivate script (we do not care if this fails)
                 this.ScriptManager.RunDeactivationFunction(this);
-            }
+            }*/
         }
     }
     //// End class

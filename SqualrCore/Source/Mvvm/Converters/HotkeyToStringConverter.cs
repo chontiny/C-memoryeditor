@@ -1,6 +1,6 @@
 ﻿namespace SqualrCore.Source.Mvvm.Converters
 {
-    using Engine.Input.HotKeys;
+    using Squalr.Engine.Input.HotKeys;
     using System;
     using System.Globalization;
     using System.Windows.Data;

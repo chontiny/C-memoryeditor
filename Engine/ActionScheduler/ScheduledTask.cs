@@ -290,7 +290,7 @@
         /// </summary>
         public void Start()
         {
-            ActionSchedulerViewModel.GetInstance().ScheduleAction(this);
+            Scheduler.GetInstance().ScheduleAction(this);
         }
 
         /// <summary>

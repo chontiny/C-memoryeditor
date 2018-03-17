@@ -1,9 +1,10 @@
-﻿namespace SqualrProxy32
+﻿namespace SqualrProxy64
 {
     using System;
 
     /// <summary>
-    /// Program to handle operations that are required to be run in the same bitness as Squalr.
+    /// Program to handle operations that are required to be run in 32 bit mode.
+    /// This is needed when Squalr is running in 64 bit and editing a 32 bit application.
     /// </summary>
     public class Program
     {

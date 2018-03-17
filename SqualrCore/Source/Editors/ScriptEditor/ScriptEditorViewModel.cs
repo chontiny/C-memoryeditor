@@ -2,7 +2,7 @@
 {
     using Docking;
     using GalaSoft.MvvmLight.CommandWpf;
-    using SqualrCore.Content.Templates;
+    using Squalr.Engine.Content.Templates;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

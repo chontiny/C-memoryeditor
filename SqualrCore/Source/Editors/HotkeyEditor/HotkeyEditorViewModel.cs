@@ -1,8 +1,8 @@
 ﻿namespace SqualrCore.Source.Editors.HotkeyEditor
 {
     using Docking;
-    using Engine.Input.HotKeys;
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Input.HotKeys;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

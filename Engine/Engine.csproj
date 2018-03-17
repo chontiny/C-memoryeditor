@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Squalr.Engine</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -9,49 +10,72 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Internal\Fasm\**" />
-    <Compile Remove="Internal\Microsoft.Diagnostics.Runtime\**" />
-    <Compile Remove="Internal\SqualrHookClient\**" />
-    <Compile Remove="Internal\SqualrHookServer\**" />
-    <Compile Remove="Internal\SqualrProxy32\**" />
-    <Compile Remove="Internal\SqualrProxy64\**" />
-    <Compile Remove="Internal\SqualrProxy\**" />
-    <EmbeddedResource Remove="Internal\Fasm\**" />
-    <EmbeddedResource Remove="Internal\Microsoft.Diagnostics.Runtime\**" />
-    <EmbeddedResource Remove="Internal\SqualrHookClient\**" />
-    <EmbeddedResource Remove="Internal\SqualrHookServer\**" />
-    <EmbeddedResource Remove="Internal\SqualrProxy32\**" />
-    <EmbeddedResource Remove="Internal\SqualrProxy64\**" />
-    <EmbeddedResource Remove="Internal\SqualrProxy\**" />
-    <None Remove="Internal\Fasm\**" />
-    <None Remove="Internal\Microsoft.Diagnostics.Runtime\**" />
-    <None Remove="Internal\SqualrHookClient\**" />
-    <None Remove="Internal\SqualrHookServer\**" />
-    <None Remove="Internal\SqualrProxy32\**" />
-    <None Remove="Internal\SqualrProxy64\**" />
-    <None Remove="Internal\SqualrProxy\**" />
+    <Compile Remove="Internal\**" />
+    <EmbeddedResource Remove="Internal\**" />
+    <None Remove="Internal\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Architecture\" />
-    <Folder Include="Debugger\" />
-    <Folder Include="Graphics\" />
-    <Folder Include="Input\" />
-    <Folder Include="Internal\" />
-    <Folder Include="Network\" />
-    <Folder Include="Unrandomizer\" />
     <Folder Include="SpeedManipulator\" />
-    <Folder Include="Scripting\" />
+    <Folder Include="VirtualMachines\Java\" />
+    <Folder Include="VirtualMachines\Python\" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="CS-Script.Core" Version="1.0.0.3-HotFix" />
+    <PackageReference Include="CsDebugScript.DbgEng" Version="1.3.0.69" />
     <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
+    <PackageReference Include="SharpDX" Version="4.1.0-ci217" />
+    <PackageReference Include="SharpDX.DirectInput" Version="4.1.0-ci217" />
+    <PackageReference Include="SharpDX.XInput" Version="4.1.0-ci217" />
+    <PackageReference Include="System.CodeDom" Version="4.5.0-preview1-26216-02" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.0-preview1-26216-02" />
     <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0-preview1-26216-02" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="4.5.0-preview1-26228-01" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="Internal\SqualrHookClient\SqualrHookClient.csproj" />
+    <ProjectReference Include="Internal\SqualrHookServer\SqualrHookServer.csproj" />
     <ProjectReference Include="Internal\SqualrProxy\SqualrProxy.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Content\Templates\GraphicsInjectionTemplate.cs">
+      <DependentUpon>GraphicsInjectionTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Content\Templates\ScriptTemplate.cs">
+      <DependentUpon>ScriptTemplate.tt</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Content\Templates\CodeInjectionTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Content\Templates\CodeInjectionTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Content\Templates\GraphicsInjectionTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>GraphicsInjectionTemplate.cs</LastGenOutput>
+    </None>
+    <None Update="Content\Templates\ScriptTemplate.tt">
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>

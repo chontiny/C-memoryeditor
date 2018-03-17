@@ -2,8 +2,6 @@
 {
     using System;
     using System.Diagnostics;
-    using System.ServiceModel;
-    using System.ServiceModel.Description;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -28,23 +26,25 @@
         /// <param name="waitEventName">The global wait event name signaled by the parent process, which allows us to signal when this process has started.</param>
         public SqualrProxy(Int32 parentProcessId, String pipeName, String waitEventName)
         {
+            /*
             // Create an event to have the client wait until we are finished starting the service
             EventWaitHandle processStartingEvent = new EventWaitHandle(false, EventResetMode.ManualReset, waitEventName);
 
             this.InitializeAutoExit(parentProcessId);
 
-            ServiceHost serviceHost = new ServiceHost(typeof(ProxyService));
+            ServiceHost serviceHost = new ServiceHost(typeof(ProxyAssembler));
             serviceHost.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
             serviceHost.Description.Behaviors.Add(new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true });
-            NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
-            binding.ReceiveTimeout = TimeSpan.MaxValue;
-            serviceHost.AddServiceEndpoint(typeof(IProxyService), binding, pipeName);
+            NamedPipeServerStream binding = new NamedPipeServerStream(pipeName, PipeDirection.InOut);
+            binding.ReadTimeout = Int32.MaxValue;
+            serviceHost.AddServiceEndpoint(typeof(IProxyAssembler), binding, pipeName);
             serviceHost.Open();
 
             processStartingEvent.Set();
 
             Console.WriteLine("Squalr proxy library loaded");
             Console.ReadLine();
+            */
         }
 
         /// <summary>

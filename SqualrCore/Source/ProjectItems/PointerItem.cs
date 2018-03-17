@@ -2,9 +2,8 @@
 {
     using Controls;
     using Editors.OffsetEditor;
-    using Engine;
-    using Engine.VirtualMachines;
     using Squalr.Engine.Types;
+    using Squalr.Engine.VirtualMachines;
     using SqualrCore.Content;
     using SqualrCore.Source.Utils;
     using System;

@@ -1,7 +1,7 @@
 ﻿namespace SqualrCore.Source.ProjectItems
 {
+    using Squalr.Engine.VirtualMachines;
     using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Engine.VirtualMachines;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;

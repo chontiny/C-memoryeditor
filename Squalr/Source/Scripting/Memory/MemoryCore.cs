@@ -1,9 +1,8 @@
 ﻿namespace Squalr.Source.Scripting.Memory
 {
+    using Squalr.Engine.Architecture;
     using Squalr.Engine.Output;
     using Squalr.Engine.VirtualMemory;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.Architecture;
     using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -114,7 +113,7 @@
             assembly = this.ResolveKeywords(assembly);
             String message;
             String innerMessage;
-            Byte[] result = EngineCore.GetInstance().Architecture.GetAssembler().Assemble(Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out message, out innerMessage);
+            Byte[] result = Squalr.Engine.Engine.GetInstance().Architecture.GetAssembler().Assemble(Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out message, out innerMessage);
 
             Output.Log(LogLevel.Info, message, innerMessage);
 
@@ -144,7 +143,7 @@
             }
 
             // Grab instructions at code entry point
-            IEnumerable<NormalizedInstruction> instructions = EngineCore.GetInstance().Architecture.GetDisassembler().Disassemble(originalBytes, Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit(), address.ToIntPtr());
+            IEnumerable<NormalizedInstruction> instructions = Squalr.Engine.Engine.GetInstance().Architecture.GetDisassembler().Disassemble(originalBytes, Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit(), address.ToIntPtr());
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;

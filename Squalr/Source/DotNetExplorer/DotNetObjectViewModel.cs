@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Engine.AddressResolver.DotNet
 {
     using Squalr.Engine.DataStructures;
+    using Squalr.Engine.VirtualMachines.DotNet;
     using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Engine.VirtualMachines.DotNet;
     using SqualrCore.Source.PropertyViewer;
     using System.Linq;
     using System.Windows.Media.Imaging;

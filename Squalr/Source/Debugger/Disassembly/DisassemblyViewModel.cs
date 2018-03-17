@@ -1,15 +1,13 @@
 ﻿namespace Squalr.Source.Debugger.Disassembly
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Architecture;
+    using Squalr.Engine.Architecture.Disassembler;
     using Squalr.Engine.DataStructures;
     using Squalr.Engine.Processes;
+    using Squalr.Engine.VirtualMachines;
     using Squalr.Source.ProjectExplorer;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.Architecture;
-    using SqualrCore.Source.Engine.Architecture.Disassembler;
-    using Squalr.Engine.Processes;
-    using SqualrCore.Source.Engine.VirtualMachines;
     using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;
     using System;
@@ -136,7 +134,7 @@
         {
             get
             {
-                return EngineCore.GetInstance().Architecture.GetDisassembler();
+                return Squalr.Engine.Engine.GetInstance().Architecture.GetDisassembler();
             }
         }
 

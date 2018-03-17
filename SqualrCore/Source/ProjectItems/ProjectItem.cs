@@ -3,8 +3,8 @@
     using Controls;
     using Editors.HotkeyEditor;
     using Editors.TextEditor;
-    using Engine.Input.HotKeys;
     using SharpDX.DirectInput;
+    using Squalr.Engine.Input.HotKeys;
     using SqualrCore.Content;
     using System;
     using System.Collections.Generic;
