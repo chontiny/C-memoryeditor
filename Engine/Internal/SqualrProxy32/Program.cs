@@ -19,12 +19,16 @@
         /// <param name="args">The args to pass to the proxy service.</param>
         public static void Main(String[] args)
         {
-            if (args.Length < 3)
+            if (args.Length < 2)
             {
-                return;
+                Console.WriteLine("Invalid number of arguments");
+            }
+            else
+            {
+                Program.Proxy = new SqualrProxy.SqualrProxy(Int32.Parse(args[0]), args[1]);
             }
 
-            Program.Proxy = new SqualrProxy.SqualrProxy(Int32.Parse(args[0]), args[1], args[2]);
+            Console.ReadLine();
         }
     }
     //// End class

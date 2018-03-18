@@ -1,8 +1,10 @@
 ﻿namespace Squalr.Engine.Proxy
 {
-    using Squalr.Engine.Output;
     using SqualrProxy;
     using System;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Reflection;
     using System.Threading;
 
 
@@ -22,16 +24,6 @@
         private const String Proxy64Executable = "SqualrProxy64.exe";
 
         /// <summary>
-        /// The event name for a wait event, which allows us to wait for a proxy service to start
-        /// </summary>
-        private const String WaitEventName = @"Global\Squalr";
-
-        /// <summary>
-        /// Uri prefix for IPC channel names
-        /// </summary>
-        private const String UriPrefix = "net.pipe://localhost/";
-
-        /// <summary>
         /// Singleton instance of the <see cref="ProxyCommunicator" /> class
         /// </summary>
         private static Lazy<ProxyCommunicator> proxyCommunicatorInstance = new Lazy<ProxyCommunicator>(
@@ -43,13 +35,34 @@
         /// </summary>
         private ProxyCommunicator()
         {
-            // Initialize channel names
-            String proxy32ServerName = ProxyCommunicator.UriPrefix + Guid.NewGuid().ToString();
-            String proxy64ServerName = ProxyCommunicator.UriPrefix + Guid.NewGuid().ToString();
+            // Create random pipe name
+            string pipeName32 = PipeDream.PipeDream.GetUniquePipeName();
+            string pipeName64 = PipeDream.PipeDream.GetUniquePipeName();
+
+            // Start the 64 bit remote process
+            this.StartServer(ProxyCommunicator.Proxy32Executable, pipeName32);
+            this.StartServer(ProxyCommunicator.Proxy64Executable, pipeName64);
 
             // Start 32 and 64 bit proxy services
-            this.Proxy32 = this.StartProxyService(ProxyCommunicator.Proxy32Executable, proxy32ServerName);
-            this.Proxy64 = this.StartProxyService(ProxyCommunicator.Proxy64Executable, proxy64ServerName);
+            try
+            {
+                this.Proxy32 = PipeDream.PipeDream.ClientInitialize<IProxyAssembler>(pipeName32);
+                Output.Output.Log(Output.LogLevel.Info, "Initialized 32 bit proxy service over pipe: " + pipeName32);
+            }
+            catch (Exception ex)
+            {
+                Output.Output.Log(Output.LogLevel.Fatal, "Error initializing 32 bit proxy service over pipe: " + pipeName32, ex);
+            }
+
+            try
+            {
+                this.Proxy64 = PipeDream.PipeDream.ClientInitialize<IProxyAssembler>(pipeName64);
+                Output.Output.Log(Output.LogLevel.Info, "Initialized 64 bit proxy service over pipe: " + pipeName64);
+            }
+            catch (Exception ex)
+            {
+                Output.Output.Log(Output.LogLevel.Fatal, "Error initializing 64 bit proxy service over pipe: " + pipeName64, ex);
+            }
         }
 
         /// <summary>
@@ -89,45 +102,32 @@
         }
 
         /// <summary>
-        /// Starts a proxy service
+        /// Starts a proxy service.
         /// </summary>
-        /// <param name="executableName">The executable name of the service to start</param>
-        /// <param name="channelServerName">The channel name for IPC</param>
-        /// <returns>The proxy service that is created</returns>
-        private IProxyAssembler StartProxyService(String executableName, String channelServerName)
+        /// <param name="executableName">The executable name of the service to start.</param>
+        /// <param name="pipeName">The pipe name for IPC.</param>
+        /// <returns>The proxy service that is created.</returns>
+        private void StartServer(string executableName, string pipeName)
         {
             try
             {
-                /*
                 // Start the proxy service
-                EventWaitHandle processStartEvent = new EventWaitHandle(false, EventResetMode.ManualReset, ProxyCommunicator.WaitEventName);
-                ProcessStartInfo processInfo = new ProcessStartInfo(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), executableName));
-                processInfo.Arguments = Process.GetCurrentProcess().Id.ToString() + " " + channelServerName + " " + ProxyCommunicator.WaitEventName;
+                string exePath = escape(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), executableName));
+                ProcessStartInfo processInfo = new ProcessStartInfo(exePath);
+                processInfo.Arguments = Process.GetCurrentProcess().Id.ToString() + " " + pipeName;
                 processInfo.UseShellExecute = false;
                 processInfo.CreateNoWindow = true;
                 Process.Start(processInfo);
-                processStartEvent.WaitOne();
-
-                // Create connection
-                NetNamedPipeBinding binding = new NetNamedPipeBinding(NetNamedPipeSecurityMode.None);
-                binding.ReceiveTimeout = TimeSpan.MaxValue;
-                binding.MaxReceivedMessageSize = Int32.MaxValue;
-                binding.MaxBufferSize = Int32.MaxValue;
-
-                EndpointAddress endpoint = new EndpointAddress(channelServerName);
-                IProxyAssembler proxyService = ChannelFactory<IProxyAssembler>.CreateChannel(binding, endpoint);
-
-                Output.Log(LogLevel.Info, "Started proxy service: " + executableName + " over channel " + channelServerName);
-                
-                return proxyService;
-                */
-                return null;
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Fatal, "Failed to start proxy service: " + executableName + ". This may impact Scripts and .NET explorer", ex);
-                return null;
+                Output.Output.Log(Output.LogLevel.Fatal, "Error starting proxy service, some features will not be available.", ex);
             }
+        }
+
+        private static string escape(string str)
+        {
+            return string.Format("\"{0}\"", str);
         }
     }
     //// End class

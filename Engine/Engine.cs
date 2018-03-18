@@ -6,6 +6,7 @@
     using Squalr.Engine.Input;
     using Squalr.Engine.Networks;
     using Squalr.Engine.Processes;
+    using Squalr.Engine.Proxy;
     using Squalr.Engine.Speed;
     using Squalr.Engine.Unrandomizer;
     using Squalr.Engine.VirtualMachines;
@@ -44,6 +45,8 @@
             this.SpeedManipulator = new SpeedManipulator();
             this.Graphics = new GraphicsAdapter();
             this.Network = new Network();
+
+            this.StartBackgroundServices();
 
             if (this.Architecture.HasVectorSupport())
             {
@@ -103,6 +106,7 @@
         {
             DotNetObjectCollector.GetInstance().Start();
             AddressResolver.GetInstance().Start();
+            ProxyCommunicator.GetInstance();
 
             Output.Output.Log(Output.LogLevel.Info, "Background services started");
         }

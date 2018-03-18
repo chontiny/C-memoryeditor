@@ -1,5 +1,6 @@
 ﻿namespace SqualrProxy
 {
+    using Squalr.PipeDream;
     using System;
     using System.Diagnostics;
     using System.Threading;
@@ -18,33 +19,16 @@
         /// </summary>
         private const Int32 ParentCheckDelayMs = 500;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SqualrProxy" /> class.
-        /// </summary>
-        /// <param name="parentProcessId">The parent process id.</param>
-        /// <param name="pipeName">The IPC pipe name.</param>
-        /// <param name="waitEventName">The global wait event name signaled by the parent process, which allows us to signal when this process has started.</param>
-        public SqualrProxy(Int32 parentProcessId, String pipeName, String waitEventName)
+        public SqualrProxy(int parentProcessId, string pipeName)
         {
-            /*
-            // Create an event to have the client wait until we are finished starting the service
-            EventWaitHandle processStartingEvent = new EventWaitHandle(false, EventResetMode.ManualReset, waitEventName);
+            Console.WriteLine("SERVER " + (Environment.Is64BitProcess ? "64" : "32"));
+            Console.WriteLine("-----------------------------");
+            Console.WriteLine("Pipe: " + pipeName);
 
             this.InitializeAutoExit(parentProcessId);
 
-            ServiceHost serviceHost = new ServiceHost(typeof(ProxyAssembler));
-            serviceHost.Description.Behaviors.Remove(typeof(ServiceDebugBehavior));
-            serviceHost.Description.Behaviors.Add(new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true });
-            NamedPipeServerStream binding = new NamedPipeServerStream(pipeName, PipeDirection.InOut);
-            binding.ReadTimeout = Int32.MaxValue;
-            serviceHost.AddServiceEndpoint(typeof(IProxyAssembler), binding, pipeName);
-            serviceHost.Open();
-
-            processStartingEvent.Set();
-
-            Console.WriteLine("Squalr proxy library loaded");
-            Console.ReadLine();
-            */
+            IProxyAssembler instance = new ProxyAssembler();
+            PipeDream.ServerInitialize<IProxyAssembler>(instance, pipeName);
         }
 
         /// <summary>
@@ -55,14 +39,22 @@
         {
             Task.Run(() =>
             {
+                Console.WriteLine("Initializing auto-exit");
+
                 while (true)
                 {
                     try
                     {
                         // Check if the process is still running
-                        Process.GetProcessById(parentProcessId);
+                        Process process = Process.GetProcessById(parentProcessId);
+
+                        // Could not find process
+                        if (process == null || process.HasExited)
+                        {
+                            break;
+                        }
                     }
-                    catch (ArgumentException)
+                    catch (Exception)
                     {
                         // Could not find process
                         break;
@@ -71,6 +63,7 @@
                     Thread.Sleep(SqualrProxy.ParentCheckDelayMs);
                 }
 
+                Console.WriteLine("Parent process not found -- exiting");
                 Environment.Exit(0);
             });
         }

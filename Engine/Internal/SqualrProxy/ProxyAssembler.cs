@@ -17,14 +17,16 @@
         {
         }
 
-        public Byte[] Assemble(Boolean isProcess32Bit, String assembly, UInt64 baseAddress, out String message, out String innerMessage)
+        public AssemblerResult Assemble(Boolean isProcess32Bit, String assembly, UInt64 baseAddress)
         {
-            message = "Starting instruction assembly" + Environment.NewLine;
-            innerMessage = String.Empty;
+            AssemblerResult result = new AssemblerResult(null, "", "");
+
+            result.Message = "Starting instruction assembly" + Environment.NewLine;
+            result.InnerMessage = String.Empty;
 
             if (assembly == null)
             {
-                message += "No assembly code given" + Environment.NewLine;
+                result.Message += "No assembly code given" + Environment.NewLine;
                 return null;
             }
 
@@ -38,26 +40,25 @@
                 assembly = String.Format("use64\n" + "org 0x{0:X16}\n", baseAddress) + assembly;
             }
 
-            message += assembly + Environment.NewLine;
+            result.Message += assembly + Environment.NewLine;
 
-            Byte[] result;
             try
             {
                 // Call C++ FASM wrapper which will call the 32-bit FASM library which can assemble all x86/x64 instructions
-                result = FasmNet.Assemble(assembly);
+                result.Data = FasmNet.Assemble(assembly);
 
-                message += "Assembled byte results:" + Environment.NewLine;
+                result.Message += "Assembled byte results:" + Environment.NewLine;
 
-                foreach (Byte next in result)
+                foreach (Byte next in result.Data)
                 {
-                    message += next.ToString("X") + " ";
+                    result.Message += next.ToString("X") + " ";
                 }
 
-                message += Environment.NewLine;
+                result.Message += Environment.NewLine;
             }
             catch (Exception ex)
             {
-                innerMessage = "Error:" + ex.ToString() + Environment.NewLine;
+                result.InnerMessage = "Error:" + ex.ToString() + Environment.NewLine;
                 result = null;
             }
 

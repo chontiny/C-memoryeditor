@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Architecture.Assembler
 {
     using Proxy;
+    using SqualrProxy;
     using System;
     using Utils.Extensions;
 
@@ -34,7 +35,11 @@
         {
             // Call proxy service, which simply passes the asm code to Fasm.net to assemble the instructions
             // Note: for assembling instructions, we must always use the 32-bit proxy service to assemble both x86/x64 instructions
-            return ProxyCommunicator.GetInstance().GetProxyService(true).Assemble(isProcess32Bit, assembly, baseAddress.ToUInt64(), out message, out innerMessage);
+            AssemblerResult result = ProxyCommunicator.GetInstance().GetProxyService(true).Assemble(isProcess32Bit, assembly, baseAddress.ToUInt64());
+
+            message = result.Message;
+            innerMessage = result.InnerMessage;
+            return result.Data;
         }
     }
     //// End class

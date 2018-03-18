@@ -180,6 +180,9 @@
     <Reference Include="Mono.CSharp, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\packages\CS-Script.bin.3.27.2.0\lib\net46\Mono.CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="PipeDream, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PipeDream.1.0.0\lib\netstandard2.0\PipeDream.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.105.2.3\lib\net46\RestSharp.dll</HintPath>
     </Reference>
@@ -515,6 +518,14 @@
     <ProjectReference Include="..\Engine\Internal\SqualrHookServer\SqualrHookServer.csproj">
       <Project>{78c9c399-d9ad-426a-8164-f872745aae3c}</Project>
       <Name>SqualrHookServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\Internal\SqualrProxy32\SqualrProxy32.csproj">
+      <Project>{a5701dff-97c5-443b-a665-122ea1dc12df}</Project>
+      <Name>SqualrProxy32</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\Internal\SqualrProxy64\SqualrProxy64.csproj">
+      <Project>{b6bad208-a6ad-4eee-b313-f3bfc1cea6ca}</Project>
+      <Name>SqualrProxy64</Name>
     </ProjectReference>
     <ProjectReference Include="..\SqualrCore\SqualrCore.csproj">
       <Project>{78010aa2-1ecc-4cf6-87d0-c27578e79698}</Project>
