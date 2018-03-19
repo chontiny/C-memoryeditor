@@ -17,25 +17,25 @@
 
     /// <summary>
     /// </summary>
-    public class Engine
+    public class Eng
     {
         /// <summary>
         /// Singleton instance of the <see cref="Engine" /> class.
         /// </summary>
-        private static readonly Lazy<Engine> engineInstance = new Lazy<Engine>(
-            () => { return new Engine(); },
+        private static readonly Lazy<Eng> engineInstance = new Lazy<Eng>(
+            () => { return new Eng(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
         /// Gets an instance of the engine.
         /// </summary>
         /// <returns>An instance of the engine.</returns>
-        public static Engine GetInstance()
+        public static Eng GetInstance()
         {
             return engineInstance.Value;
         }
 
-        public Engine()
+        public Eng()
         {
             this.Architecture = ArchitectureFactory.GetArchitecture();
             this.Processes = ProcessAdapterFactory.GetProcessAdapter();

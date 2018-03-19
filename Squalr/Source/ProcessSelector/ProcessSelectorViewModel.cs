@@ -2,6 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Content;
+    using Squalr.Engine;
     using Squalr.Engine.Processes;
     using Squalr.Source.Docking;
     using Squalr.Source.Utils.Extensions;
@@ -50,7 +51,7 @@
             Task.Run(() => { DockingViewModel.GetInstance().RegisterViewModel(this); });
 
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
-            Task.Run(() => { Squalr.Engine.Engine.GetInstance().Processes.Subscribe(this); });
+            Task.Run(() => { Eng.GetInstance().Processes.Subscribe(this); });
         }
 
         /// <summary>
@@ -103,7 +104,7 @@
         {
             get
             {
-                return Squalr.Engine.Engine.GetInstance().Processes.GetOpenedProcess();
+                return Eng.GetInstance().Processes.GetOpenedProcess();
             }
 
             set
@@ -117,7 +118,7 @@
 
                 if (value != this.SelectedProcess)
                 {
-                    Squalr.Engine.Engine.GetInstance().Processes.OpenProcess(value);
+                    Eng.GetInstance().Processes.OpenProcess(value);
                     this.RaisePropertyChanged(nameof(this.SelectedProcess));
                 }
 
@@ -152,7 +153,7 @@
         {
             get
             {
-                String processName = Squalr.Engine.Engine.GetInstance().Processes?.GetOpenedProcess()?.ProcessName;
+                String processName = Eng.GetInstance().Processes?.GetOpenedProcess()?.ProcessName;
                 return String.IsNullOrEmpty(processName) ? "Please Select a Process" : processName;
             }
         }
@@ -194,7 +195,7 @@
         /// </summary>
         private void RefreshProcessList()
         {
-            this.ProcessList = Squalr.Engine.Engine.GetInstance().Processes.GetProcesses();
+            this.ProcessList = Eng.GetInstance().Processes.GetProcesses();
         }
 
         /// <summary>

@@ -11,7 +11,7 @@
     {
         public SpeedManipulator()
         {
-            Task.Run(() => { Squalr.Engine.Engine.GetInstance().Processes.Subscribe(this); });
+            Task.Run((Action)(() => { Eng.GetInstance().Processes.Subscribe(this); }));
         }
 
         /// <summary>
@@ -23,7 +23,7 @@
 
         }
 
-        private Squalr.Engine.Engine.Hook.HookClient HookClient { get; set; }
+        private Engine.Hook.HookClient HookClient { get; set; }
 
         private NormalizedProcess TargetProcess { get; set; }
 

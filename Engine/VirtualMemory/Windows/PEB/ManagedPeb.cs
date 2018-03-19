@@ -43,7 +43,7 @@
             Int32 queryStatus = NtQueryInformationProcess(processHandle, ProcessInformationClass.ProcessBasicInformation, ref processBasicInformation, processBasicInformation.Size, out sizeInfoReturned);
             pebs.Add(processBasicInformation.PebBaseAddress);
 
-            if (Engine.GetInstance().Processes.IsSelf64Bit() && Engine.GetInstance().Processes.IsOpenedProcess32Bit())
+            if (Eng.GetInstance().Processes.IsSelf64Bit() && Eng.GetInstance().Processes.IsOpenedProcess32Bit())
             {
                 // When a 32 bit process runs on a 64 bit OS (also known as a WoW64 process), two PEB blocks are loaded.
                 // Apparently the only solution is to navigate the TEB to find the PEB. So TODO: Port this code to C#:
@@ -100,7 +100,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<Byte>(this.Address.Add(PebStructure32.InheritedAddressSpace), out success);
+                return Eng.GetInstance().VirtualMemory.Read<Byte>(this.Address.Add(PebStructure32.InheritedAddressSpace), out success);
             }
         }
 
@@ -109,7 +109,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<Boolean>(this.Address.Add(PebStructure32.BeingDebugged), out success);
+                return Eng.GetInstance().VirtualMemory.Read<Boolean>(this.Address.Add(PebStructure32.BeingDebugged), out success);
             }
         }
 
@@ -118,7 +118,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.ProcessHeap), out success).ToIntPtr();
+                return Eng.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.ProcessHeap), out success).ToIntPtr();
             }
         }
 
@@ -127,7 +127,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.ReadOnlySharedMemoryBase), out success).ToIntPtr();
+                return Eng.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.ReadOnlySharedMemoryBase), out success).ToIntPtr();
             }
         }
 
@@ -136,7 +136,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.HeapSegmentReserve), out success).ToIntPtr();
+                return Eng.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.HeapSegmentReserve), out success).ToIntPtr();
             }
         }
 
@@ -145,7 +145,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.HeapSegmentCommit), out success).ToIntPtr();
+                return Eng.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.HeapSegmentCommit), out success).ToIntPtr();
             }
         }
 
@@ -154,7 +154,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.HeapDeCommitTotalFreeThreshold), out success).ToIntPtr();
+                return Eng.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.HeapDeCommitTotalFreeThreshold), out success).ToIntPtr();
             }
         }
 
@@ -163,7 +163,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.HeapDeCommitFreeBlockThreshold), out success).ToIntPtr();
+                return Eng.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.HeapDeCommitFreeBlockThreshold), out success).ToIntPtr();
             }
         }
 
@@ -172,7 +172,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.ProcessHeaps), out success).ToIntPtr();
+                return Eng.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.ProcessHeaps), out success).ToIntPtr();
             }
         }
 
@@ -181,7 +181,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.MinimumStackCommit), out success).ToIntPtr();
+                return Eng.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.MinimumStackCommit), out success).ToIntPtr();
             }
         }
 
@@ -190,7 +190,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.NumberOfHeaps), out success);
+                return Eng.GetInstance().VirtualMemory.Read<UInt32>(this.Address.Add(PebStructure32.NumberOfHeaps), out success);
             }
         }
 
@@ -199,7 +199,7 @@
             get
             {
                 Boolean success;
-                return Engine.GetInstance().VirtualMemory.Read<Int32>(this.Address.Add(PebStructure32.MaximumNumberOfHeaps), out success);
+                return Eng.GetInstance().VirtualMemory.Read<Int32>(this.Address.Add(PebStructure32.MaximumNumberOfHeaps), out success);
             }
         }
     }

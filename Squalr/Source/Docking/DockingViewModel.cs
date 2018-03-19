@@ -8,8 +8,8 @@
     using System.Linq;
     using System.Reflection;
     using System.Threading;
-    using Xceed.Wpf.AvalonDock;
-    using Xceed.Wpf.AvalonDock.Layout.Serialization;
+    using Squalr.Wpf.AvalonDock;
+    using Squalr.Wpf.AvalonDock.Layout.Serialization;
 
     /// <summary>
     /// Docking view model.

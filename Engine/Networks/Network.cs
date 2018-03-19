@@ -7,7 +7,7 @@
     {
         public Network()
         {
-            Task.Run(() => { Engine.GetInstance().Processes.Subscribe(this); });
+            Task.Run((System.Action)(() => { Eng.GetInstance().Processes.Subscribe(this); }));
         }
 
         private Squalr.Engine.Engine.Hook.HookClient HookClient { get; set; }

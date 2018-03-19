@@ -48,7 +48,7 @@
             this.IconCache = new TtlCache<Int32, Icon>();
 
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
-            Task.Run(() => { Engine.GetInstance().Processes.Subscribe(this); });
+            Task.Run((Action)(() => { Eng.GetInstance().Processes.Subscribe(this); }));
 
             this.Start();
         }
@@ -500,7 +500,7 @@
             {
                 if (this.SystemProcess?.HasExited ?? false)
                 {
-                    Engine.GetInstance().Processes.CloseProcess();
+                    Eng.GetInstance().Processes.CloseProcess();
                     this.SystemProcess = null;
                 }
             }

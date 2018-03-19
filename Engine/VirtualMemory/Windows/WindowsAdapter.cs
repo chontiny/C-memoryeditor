@@ -38,7 +38,7 @@
         public WindowsAdapter()
         {
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
-            Task.Run(() => { Engine.GetInstance().Processes.Subscribe(this); });
+            Task.Run((Action)(() => { Eng.GetInstance().Processes.Subscribe(this); }));
         }
 
         /// <summary>
@@ -463,7 +463,7 @@
         /// <returns>The maximum usermode address possible in the target process.</returns>
         public UInt64 GetMaxUsermodeAddress()
         {
-            if (Engine.GetInstance().Processes.IsOpenedProcess32Bit())
+            if (Eng.GetInstance().Processes.IsOpenedProcess32Bit())
             {
                 return Int32.MaxValue;
             }
@@ -513,7 +513,7 @@
                         NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
                         // Ignore modules in 64-bit address space for WoW64 processes
-                        if (Engine.GetInstance().Processes.IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)
+                        if (Eng.GetInstance().Processes.IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)
                         {
                             continue;
                         }
@@ -572,7 +572,7 @@
                 foreach (Int32 offset in offsets.Take(offsets.Count() - 1))
                 {
                     Boolean success;
-                    if (Engine.GetInstance().Processes.IsOpenedProcess32Bit())
+                    if (Eng.GetInstance().Processes.IsOpenedProcess32Bit())
                     {
                         finalAddress = (this.Read<UInt32>(finalAddress + offset, out success).ToInt64()).ToIntPtr();
                     }

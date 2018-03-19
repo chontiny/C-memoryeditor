@@ -11,7 +11,7 @@
     {
         public DebugEngine()
         {
-            Task.Run(() => Squalr.Engine.Engine.GetInstance().Processes.Subscribe(this));
+            Task.Run(() => Eng.GetInstance().Processes.Subscribe(this));
         }
 
         private IDebugClient Client { get; set; }

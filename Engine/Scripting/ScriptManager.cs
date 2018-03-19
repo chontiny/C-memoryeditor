@@ -59,55 +59,70 @@
         /// </summary>
         private dynamic ScriptObject { get; set; }
 
+        public Assembly Deserialize(String serializedScript)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream(Compression.Decompress(Convert.FromBase64String(serializedScript)));
+            Assembly assembly = (Assembly)formatter.Deserialize(stream);
+
+            return assembly;
+        }
+
+        public String Serialize(String script)
+        {
+            script = this.PrecompileScript(script);
+            Assembly assembly = CSScript.RoslynEvaluator.CompileCode(script);
+
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream stream = new MemoryStream();
+            formatter.Serialize(stream, assembly);
+
+            Byte[] compressedScript = Compression.Compress(stream.ToArray());
+            String result = Convert.ToBase64String(compressedScript);
+
+            return result;
+        }
+
         /// <summary>
         /// Compiles a script. Will compress the file and convert to base64. This will compile using CodeDOM becuase this
         /// generates a file that we can read to create the assembly.
         /// </summary>
         /// <param name="script">The input script in plaintext.</param>
         /// <returns>The compiled script. Returns null on failure.</returns>
-        public String CompileScript(String script)
+        public Assembly CompileScript(String script)
         {
-            String result = null;
             try
             {
                 script = this.PrecompileScript(script);
                 Assembly assembly = CSScript.RoslynEvaluator.CompileCode(script);
-                BinaryFormatter formatter = new BinaryFormatter();
-                MemoryStream stream = new MemoryStream();
-                formatter.Serialize(stream, assembly);
 
-                Byte[] compressedScript = Compression.Compress(stream.ToArray());
-                result = Convert.ToBase64String(compressedScript);
+                return assembly;
             }
             catch (Exception ex)
             {
                 Output.Output.Log(Output.LogLevel.Error, "Error compiling script", ex);
+                return null;
             }
-            return result;
         }
 
         /// <summary>
         /// Runs the activation function in the script.
         /// </summary>
-        /// <param name="script">The script to run.</param>
+        /// <param name="assembly">The script to run.</param>
         /// <returns>Returns true if the function successfully ran, otherwise false.</returns>
-        public Boolean RunActivationFunction(Script script)
+        public Boolean RunActivationFunction(Assembly assembly)
         {
             try
             {
-                BinaryFormatter formatter = new BinaryFormatter();
-                MemoryStream stream = new MemoryStream(Compression.Decompress(Convert.FromBase64String(script.Text)));
-                Assembly assembly = (Assembly)formatter.Deserialize(stream);
-
                 this.ScriptObject = assembly.CreateObject("*");
 
                 // Bind the deactivation function such that scripts can deactivate themselves
-                this.ScriptObject.Deactivate = new Action(() => script.IsActivated = false);
+                //// this.ScriptObject.Deactivate = new Action(() => script.IsActivated = false);
 
                 // Call OnActivate function in the script
                 this.ScriptObject.OnActivate();
 
-                Output.Output.Log(Output.LogLevel.Info, "Script activated: " + script.Name?.ToString());
+                Output.Output.Log(Output.LogLevel.Info, "Script activated: " + assembly.GetName()?.ToString());
             }
             catch (SecurityException ex)
             {

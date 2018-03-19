@@ -26,7 +26,7 @@
         {
             this.SetHotkey(keyboardHotkey);
 
-            this.Subscription = Engine.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+            this.Subscription = Eng.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
 
         /// <summary>

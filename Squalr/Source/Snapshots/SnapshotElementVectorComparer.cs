@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Scanners.ScanConstraints;
+    using Squalr.Engine;
     using Squalr.Engine.Types;
     using Squalr.Engine.Utils;
     using Squalr.Source.Utils.Extensions;
@@ -25,7 +26,7 @@
             ScanConstraintManager scanConstraints)
         {
             this.Region = region;
-            this.VectorSize = Squalr.Engine.Engine.GetInstance().Architecture.GetVectorSize();
+            this.VectorSize = Eng.GetInstance().Architecture.GetVectorSize();
             this.VectorReadBase = this.Region.ReadGroupOffset - this.Region.ReadGroupOffset % this.VectorSize;
             this.VectorReadIndex = 0;
             this.DataTypeSize = Conversions.SizeOf(this.Region.ReadGroup.ElementDataType);

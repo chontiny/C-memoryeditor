@@ -5,7 +5,7 @@
     using System;
     using System.Windows;
     using System.Windows.Input;
-    using Xceed.Wpf.AvalonDock;
+    using Squalr.Wpf.AvalonDock;
 
     /// <summary>
     /// The view model for a window that hosts docked windows.

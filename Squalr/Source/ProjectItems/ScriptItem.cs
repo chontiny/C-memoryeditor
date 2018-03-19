@@ -4,11 +4,11 @@
     using Squalr.Content;
     using Squalr.Engine.Scripting;
     using Squalr.Source.Controls;
-    using Squalr.Source.Utils.Extensions;
     using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
+    using System.Reflection;
     using System.Runtime.Serialization;
     using System.Threading.Tasks;
     using System.Windows.Media.Imaging;
@@ -29,7 +29,7 @@
         /// The base 64 encoded compiled script.
         /// </summary>
         [Browsable(false)]
-        private String compiledScript;
+        private Assembly compiledScript;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptItem" /> class.
@@ -88,7 +88,7 @@
         /// </summary>
         [DataMember]
         [Browsable(false)]
-        public String CompiledScript
+        public Assembly CompiledScript
         {
             get
             {
@@ -132,7 +132,7 @@
 
             this.ScriptManager = new ScriptManager();
 
-            if (this.compiledScript.IsNullOrEmpty())
+            if (this.compiledScript == null)
             {
                 Task.Run(() => this.compiledScript = this.ScriptManager.CompileScript(script));
             }

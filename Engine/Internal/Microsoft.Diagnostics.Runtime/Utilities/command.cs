@@ -563,7 +563,7 @@ namespace Microsoft.Diagnostics.Runtime.Utilities
             _outputStream = null;
 
             if (waitReturned && killed)
-                throw new Exception("Timeout of " + (_options.timeoutMSec / 1000) + " sec exceeded\r\n    Cmd: " + _commandLine);
+                throw new Exception("Timeout of " + (_options.timeoutMSec / 1000) + " sec eSqualred\r\n    Cmd: " + _commandLine);
 
             if (_process.ExitCode != 0 && !_options.noThrow)
                 ThrowCommandFailure(null);

@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
+    using Squalr.Engine;
     using Squalr.Engine.ActionScheduler;
     using Squalr.Engine.Output;
     using Squalr.Source.Scanners.Pointers.Structures;
@@ -66,10 +67,10 @@
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            Boolean isProcess32Bit = Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit();
-            Int32 vectorSize = Squalr.Engine.Engine.GetInstance().Architecture.GetVectorSize();
+            Boolean isProcess32Bit = Eng.GetInstance().Processes.IsOpenedProcess32Bit();
+            Int32 vectorSize = Eng.GetInstance().Architecture.GetVectorSize();
             UInt64 minValue = UInt16.MaxValue;
-            UInt64 maxValue = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetMaxUsermodeAddress();
+            UInt64 maxValue = Eng.GetInstance().VirtualMemory.GetMaxUsermodeAddress();
             Vector<UInt32> minValueVector = new Vector<UInt32>(minValue.ToUInt32());
             Vector<UInt32> maxValueVector = new Vector<UInt32>(maxValue.ToUInt32());
             Vector<UInt64> minValueVector64 = new Vector<UInt64>(minValue);

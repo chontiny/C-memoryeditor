@@ -61,7 +61,7 @@
         /// <returns>The module name and address offset. If not contained by a module, the original address is returned.</returns>
         public UInt64 AddressToModule(UInt64 address, out String moduleName)
         {
-            NormalizedModule containingModule = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetModules()
+            NormalizedModule containingModule = Eng.GetInstance().VirtualMemory.GetModules()
                 .Select(module => module)
                 .Where(module => module.ContainsAddress(address))
                 .FirstOrDefault();
@@ -81,7 +81,7 @@
             IntPtr result = IntPtr.Zero;
 
             identifier = identifier?.RemoveSuffixes(true, ".exe", ".dll");
-            IEnumerable<NormalizedModule> modules = Squalr.Engine.Engine.GetInstance().VirtualMemory.GetModules()
+            IEnumerable<NormalizedModule> modules = Eng.GetInstance().VirtualMemory.GetModules()
                 ?.ToList()
                 ?.Select(module => module)
                 ?.Where(module => module.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));
