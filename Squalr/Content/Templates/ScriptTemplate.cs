@@ -31,17 +31,17 @@ namespace Squalr.Content.Templates
         {
             this.Write(@"
 using System;
-using Squalr.Source.Scripting;
-using Squalr.Source.Scripting.Graphics;
-using Squalr.Source.Scripting.Hook;
-using Squalr.Source.Scripting.Input;
-using Squalr.Source.Scripting.Memory;
+using Squalr.Engine.Scripting;
+using Squalr.Engine.Scripting.Graphics;
+using Squalr.Engine.Scripting.Hook;
+using Squalr.Engine.Scripting.Input;
+using Squalr.Engine.Scripting.Memory;
 	
 // The using statements, if any, will be inserted here:
 ");
             
             #line 16 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Squalr\Content\Templates\ScriptTemplate.tt"
- this.Write(Squalr.Source.Scripting.ScriptManager.ScriptUsingsInsertionIdentifier); 
+ this.Write(Squalr.Engine.Scripting.ScriptManager.ScriptUsingsInsertionIdentifier); 
             
             #line default
             #line hidden
@@ -85,7 +85,7 @@ public class Script
 	");
             
             #line 54 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Squalr\Content\Templates\ScriptTemplate.tt"
- this.Write(Squalr.Source.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); 
+ this.Write(Squalr.Engine.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); 
             
             #line default
             #line hidden

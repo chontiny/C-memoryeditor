@@ -1,10 +1,9 @@
 ﻿namespace Squalr.Source.Scanners.ValueCollector
 {
     using Snapshots;
+    using Squalr.Engine.ActionScheduler;
     using Squalr.Engine.Output;
     using Squalr.Properties;
-    using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.Output;
     using System;
     using System.Diagnostics;
     using System.Threading;

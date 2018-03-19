@@ -3,8 +3,8 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataStructures;
     using Squalr.Engine.Input.HotKeys;
+    using Squalr.Source.Editors.HotkeyEditor;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Editors.HotkeyEditor;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

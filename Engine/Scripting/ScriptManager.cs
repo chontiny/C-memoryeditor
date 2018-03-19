@@ -1,6 +1,14 @@
 ﻿namespace Squalr.Engine.Scripting
 {
+    using CSScriptLib;
+    using Squalr.Engine.Content.Templates;
+    using Squalr.Engine.Utils;
     using System;
+    using System.IO;
+    using System.Reflection;
+    using System.Runtime.Serialization.Formatters.Binary;
+    using System.Security;
+    using System.Text;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -60,52 +68,55 @@
         public String CompileScript(String script)
         {
             String result = null;
-            /*
             try
             {
                 script = this.PrecompileScript(script);
-                String compiledScriptFile = CSScript.CompileCode(script);
-                Byte[] compressedScript = Compression.Compress(File.ReadAllBytes(compiledScriptFile));
+                Assembly assembly = CSScript.RoslynEvaluator.CompileCode(script);
+                BinaryFormatter formatter = new BinaryFormatter();
+                MemoryStream stream = new MemoryStream();
+                formatter.Serialize(stream, assembly);
+
+                Byte[] compressedScript = Compression.Compress(stream.ToArray());
                 result = Convert.ToBase64String(compressedScript);
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Error, "Error compiling script", ex);
+                Output.Output.Log(Output.LogLevel.Error, "Error compiling script", ex);
             }
-            */
             return result;
         }
 
-        /*
         /// <summary>
         /// Runs the activation function in the script.
         /// </summary>
-        /// <param name="scriptItem">The script to run.</param>
+        /// <param name="script">The script to run.</param>
         /// <returns>Returns true if the function successfully ran, otherwise false.</returns>
-        public Boolean RunActivationFunction(ScriptItem scriptItem)
+        public Boolean RunActivationFunction(Script script)
         {
             try
             {
-                Assembly assembly = Assembly.Load(Compression.Decompress(Convert.FromBase64String(scriptItem.CompiledScript)));
+                BinaryFormatter formatter = new BinaryFormatter();
+                MemoryStream stream = new MemoryStream(Compression.Decompress(Convert.FromBase64String(script.Text)));
+                Assembly assembly = (Assembly)formatter.Deserialize(stream);
 
                 this.ScriptObject = assembly.CreateObject("*");
 
                 // Bind the deactivation function such that scripts can deactivate themselves
-                this.ScriptObject.Deactivate = new Action(() => scriptItem.IsActivated = false);
+                this.ScriptObject.Deactivate = new Action(() => script.IsActivated = false);
 
                 // Call OnActivate function in the script
                 this.ScriptObject.OnActivate();
 
-                Output.Log(LogLevel.Info, "Script activated: " + scriptItem.Name?.ToString());
+                Output.Output.Log(Output.LogLevel.Info, "Script activated: " + script.Name?.ToString());
             }
             catch (SecurityException ex)
             {
-                Output.Log(LogLevel.Error, "Invalid operation in sandbox environment", ex);
+                Output.Output.Log(Output.LogLevel.Error, "Invalid operation in sandbox environment", ex);
                 return false;
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Error, "Unable to activate script", ex);
+                Output.Output.Log(Output.LogLevel.Error, "Unable to activate script", ex);
                 return false;
             }
 
@@ -115,8 +126,8 @@
         /// <summary>
         /// Continously runs the update function in the script.
         /// </summary>
-        /// <param name="scriptItem">The script to run.</param>
-        public void RunUpdateFunction(ScriptItem scriptItem)
+        /// <param name="script">The script to run.</param>
+        public void RunUpdateFunction(Script script)
         {
             this.CancelRequest = new CancellationTokenSource();
 
@@ -144,11 +155,11 @@
 
                             if (exception.ToString().Contains("does not contain a definition for 'OnUpdate'"))
                             {
-                                Output.Log(LogLevel.Warn, "Optional update function not executed");
+                                Output.Output.Log(Output.LogLevel.Warn, "Optional update function not executed");
                             }
                             else
                             {
-                                Output.Log(LogLevel.Error, "Error running update function: ", ex);
+                                Output.Output.Log(Output.LogLevel.Error, "Error running update function: ", ex);
                             }
 
                             return;
@@ -166,7 +177,7 @@
             }
             catch
             {
-                Output.Log(LogLevel.Error, "Error executing update loop.");
+                Output.Output.Log(Output.LogLevel.Error, "Error executing update loop.");
             }
         }
 
@@ -174,14 +185,14 @@
         /// Runs the deactivation function in the script.
         /// </summary>
         /// <param name="scriptItem">The script to run.</param>
-        public void RunDeactivationFunction(ScriptItem scriptItem)
+        public void RunDeactivationFunction(Script scriptItem)
         {
             // Abort the update loop
             try
             {
                 this.ScriptObject.OnDeactivate();
 
-                Output.Log(LogLevel.Info, "Script deactivated: " + scriptItem.Name?.ToString());
+                Output.Output.Log(Output.LogLevel.Info, "Script deactivated: " + scriptItem.Name?.ToString());
 
                 try
                 {
@@ -194,7 +205,7 @@
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Error, "Error when deactivating script", ex);
+                Output.Output.Log(Output.LogLevel.Error, "Error when deactivating script", ex);
             }
 
             return;
@@ -245,7 +256,7 @@
             script = script.Replace(ScriptManager.ScriptCodeInsertionIdentifier, classlessScript);
 
             return script;
-        }*/
+        }
     }
     //// End class
 }

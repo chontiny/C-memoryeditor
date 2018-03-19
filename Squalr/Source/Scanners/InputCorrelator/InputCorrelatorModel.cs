@@ -1,13 +1,13 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
     using LabelThresholder;
+    using Squalr.Engine.ActionScheduler;
     using Squalr.Engine.DataStructures;
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Engine.Input.Keyboard;
     using Squalr.Engine.Types;
     using Squalr.Properties;
     using Squalr.Source.Snapshots;
-    using SqualrCore.Source.ActionScheduler;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;

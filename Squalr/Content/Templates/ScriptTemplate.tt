@@ -6,14 +6,14 @@
 <#@ import namespace="Squalr" #>
 
 using System;
-using Squalr.Source.Scripting;
-using Squalr.Source.Scripting.Graphics;
-using Squalr.Source.Scripting.Hook;
-using Squalr.Source.Scripting.Input;
-using Squalr.Source.Scripting.Memory;
+using Squalr.Engine.Scripting;
+using Squalr.Engine.Scripting.Graphics;
+using Squalr.Engine.Scripting.Hook;
+using Squalr.Engine.Scripting.Input;
+using Squalr.Engine.Scripting.Memory;
 	
 // The using statements, if any, will be inserted here:
-<# this.Write(Squalr.Source.Scripting.ScriptManager.ScriptUsingsInsertionIdentifier); #>
+<# this.Write(Squalr.Engine.Scripting.ScriptManager.ScriptUsingsInsertionIdentifier); #>
 
 /// <summary>
 /// A script template which includes all necessary engine components by default.
@@ -51,6 +51,6 @@ public class Script
 	public Action Deactivate { get; set; }
 	
 	// The script will be inserted here:
-	<# this.Write(Squalr.Source.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); #>
+	<# this.Write(Squalr.Engine.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); #>
 }
 //// End class

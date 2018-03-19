@@ -4,7 +4,6 @@
     using LiveCharts;
     using LiveCharts.Wpf;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Utils;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -224,7 +223,8 @@
             this.KeptValues = new ChartValues<Int64>(histogramKept.Values.Select(x => (Int64)Math.Log(x)));
             this.FilteredValues = new ChartValues<Int64>(histogramFiltered.Values.Select(x => (Int64)Math.Log(x)));
 
-            Dispatcher.Run(() =>
+            // Note: this used to be Dispatcher.Run -- I do not understand where this method was from
+            Task.Run(() =>
             {
                 if (this.SeriesCollection == null)
                 {

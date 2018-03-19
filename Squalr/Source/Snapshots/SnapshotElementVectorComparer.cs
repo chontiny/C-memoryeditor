@@ -2,8 +2,7 @@
 {
     using Scanners.ScanConstraints;
     using Squalr.Engine.Types;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Utils;
+    using Squalr.Engine.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;

@@ -1,17 +1,16 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.DataStructures;
     using Squalr.Engine.Output;
     using Squalr.Properties;
+    using Squalr.Source.Editors.ScriptEditor;
+    using Squalr.Source.Editors.ValueEditor;
+    using Squalr.Source.ProjectItems;
+    using Squalr.Source.PropertyViewer;
+    using Squalr.Source.Utils;
     using SqualrCore.Source.Controls;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Editors.ScriptEditor;
-    using SqualrCore.Source.Editors.ValueEditor;
-    using SqualrCore.Source.Output;
-    using SqualrCore.Source.ProjectItems;
-    using SqualrCore.Source.PropertyViewer;
-    using SqualrCore.Source.Utils;
-    using Squalr.Engine.DataStructures;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;

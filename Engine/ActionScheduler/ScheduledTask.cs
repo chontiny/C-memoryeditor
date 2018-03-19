@@ -347,7 +347,7 @@
         /// <summary>
         /// Resets all state tracking variables.
         /// </summary>
-        internal void ResetState()
+        public void ResetState()
         {
             this.Progress = 0.0;
             this.IsCanceled = false;
@@ -360,7 +360,7 @@
         /// <summary>
         /// A wrapper function for the start callback. This will call the start function and update required state information.
         /// </summary>
-        internal void Begin()
+        public void Begin()
         {
             lock (this.AccessLock)
             {
@@ -379,7 +379,7 @@
         /// <summary>
         /// A wrapper function for the update callback. This will call the update function and update required state information.
         /// </summary>
-        internal void Update()
+        public void Update()
         {
             lock (this.AccessLock)
             {
@@ -416,7 +416,7 @@
         /// <summary>
         /// Called when the task is ending.
         /// </summary>
-        internal void End()
+        public void End()
         {
             if (!this.IsCanceled)
             {

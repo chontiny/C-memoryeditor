@@ -1,10 +1,11 @@
 ﻿namespace Squalr.View
 {
+    using Squalr.Engine.Types;
+    using Squalr.Engine.Utils;
+    using Squalr.Source.Controls;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.Pointers;
     using SqualrCore.Source.Controls;
-    using Squalr.Engine.Types;
-    using SqualrCore.Source.Utils;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Threading.Tasks;

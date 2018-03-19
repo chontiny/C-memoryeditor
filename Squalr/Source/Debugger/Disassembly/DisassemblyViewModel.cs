@@ -7,8 +7,8 @@
     using Squalr.Engine.Processes;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.ProjectItems;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections;

@@ -4,10 +4,9 @@
     using Squalr.Engine.DataStructures;
     using Squalr.Engine.Output;
     using Squalr.Properties;
-    using SqualrCore.Source.Analytics;
+    using Squalr.Source.Analytics;
+    using Squalr.Source.ProjectItems;
     using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Output;
-    using SqualrCore.Source.ProjectItems;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;

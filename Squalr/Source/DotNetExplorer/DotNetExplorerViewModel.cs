@@ -5,8 +5,8 @@
     using Squalr.Engine.Types;
     using Squalr.Engine.VirtualMachines.DotNet;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.ProjectItems;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.ProjectItems;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

@@ -2,11 +2,10 @@
 {
     using ScanConstraints;
     using Snapshots;
+    using Squalr.Engine.ActionScheduler;
     using Squalr.Engine.Output;
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;
-    using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.Output;
     using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Collections.Concurrent;

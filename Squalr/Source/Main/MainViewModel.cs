@@ -3,10 +3,9 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Output;
     using Squalr.Properties;
+    using Squalr.Source.ChangeLog;
     using Squalr.Source.ProjectExplorer;
-    using SqualrCore.Source.ChangeLog;
     using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Output;
     using System;
     using System.Threading;
     using System.Windows;
