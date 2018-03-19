@@ -6,7 +6,7 @@
     xmlns:content="clr-namespace:Squalr.Content"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:coreView="clr-namespace:Squalr.View"
-    xmlns:docking="clr-namespace:SqualrCore.Source.Docking;assembly=SqualrCore"
+    xmlns:docking="clr-namespace:Squalr.Source.Docking"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:view="clr-namespace:Squalr.View"

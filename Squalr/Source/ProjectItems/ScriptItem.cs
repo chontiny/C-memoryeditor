@@ -3,9 +3,9 @@
     using Editors.ScriptEditor;
     using Squalr.Content;
     using Squalr.Engine.Scripting;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Utils.Extensions;
-    using SqualrCore.Source.Utils.TypeConverters;
+    using Squalr.Source.Controls;
+    using Squalr.Source.Utils.Extensions;
+    using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;

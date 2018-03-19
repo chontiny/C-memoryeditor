@@ -2,7 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Input.HotKeys;
-    using SqualrCore.Source.Docking;
+    using Squalr.Source.Docking;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

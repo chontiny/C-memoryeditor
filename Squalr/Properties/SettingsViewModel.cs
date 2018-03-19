@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Properties
 {
     using Squalr.Engine.VirtualMemory;
-    using SqualrCore.Source.Docking;
+    using Squalr.Source.Docking;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

@@ -3,10 +3,9 @@
     using Squalr.Engine.Output;
     using Squalr.Engine.Types;
     using Squalr.Engine.Utils;
+    using Squalr.Source.Controls;
     using Squalr.Source.Utils;
     using Squalr.Source.Utils.TypeConverters;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Utils.TypeConverters;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;

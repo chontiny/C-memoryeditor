@@ -4,7 +4,7 @@
     using Squalr.Engine.ActionScheduler;
     using Squalr.Properties;
     using Squalr.Source.Scanners.Pointers.Structures;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Threading;

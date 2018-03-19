@@ -58,10 +58,6 @@
     <Compile Include="PrimitiveTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SqualrCore\SqualrCore.csproj">
-      <Project>{78010aa2-1ecc-4cf6-87d0-c27578e79698}</Project>
-      <Name>SqualrCore</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Squalr\Squalr.csproj">
       <Project>{bcc372dd-2823-459d-9594-c16e777ad292}</Project>
       <Name>Squalr</Name>

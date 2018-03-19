@@ -2,11 +2,10 @@
 {
     using Squalr.Engine.Types;
     using Squalr.Engine.Utils;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Controls;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.Pointers;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Threading.Tasks;
     using System.Windows.Controls;

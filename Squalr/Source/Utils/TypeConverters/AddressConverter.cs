@@ -2,7 +2,7 @@
 {
     using Squalr.Engine.Types;
     using Squalr.Engine.Utils;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.ComponentModel;
     using System.Globalization;

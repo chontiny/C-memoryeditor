@@ -4,7 +4,7 @@
     using Squalr.Engine.Output;
     using Squalr.Source.Scanners.Pointers.Structures;
     using Squalr.Source.Snapshots;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;

@@ -3,7 +3,6 @@
     using Source.Controls;
     using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.ProjectItems;
-    using SqualrCore.Source.Controls;
     using System;
     using System.Windows;
 

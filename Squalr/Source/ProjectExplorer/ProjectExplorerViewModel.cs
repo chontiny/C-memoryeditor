@@ -4,14 +4,14 @@
     using Squalr.Engine.DataStructures;
     using Squalr.Engine.Output;
     using Squalr.Properties;
+    using Squalr.Source.Controls;
+    using Squalr.Source.Docking;
     using Squalr.Source.Editors.ScriptEditor;
     using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.ProjectItems;
     using Squalr.Source.PropertyViewer;
     using Squalr.Source.Utils;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;

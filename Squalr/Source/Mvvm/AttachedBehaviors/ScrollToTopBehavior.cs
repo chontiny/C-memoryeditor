@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Mvvm.AttachedBehaviors
 {
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.ComponentModel;
     using System.Windows;

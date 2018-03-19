@@ -4,8 +4,8 @@
     using Squalr.Engine.Output;
     using Squalr.Properties;
     using Squalr.Source.ChangeLog;
+    using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
-    using SqualrCore.Source.Docking;
     using System;
     using System.Threading;
     using System.Windows;

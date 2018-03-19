@@ -6,7 +6,7 @@
     using Squalr.Engine.Output;
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;

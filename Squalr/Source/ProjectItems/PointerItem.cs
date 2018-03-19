@@ -5,10 +5,9 @@
     using Squalr.Engine.Types;
     using Squalr.Engine.Utils;
     using Squalr.Engine.VirtualMachines;
+    using Squalr.Source.Controls;
+    using Squalr.Source.Utils.Extensions;
     using Squalr.Source.Utils.TypeConverters;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Utils.Extensions;
-    using SqualrCore.Source.Utils.TypeConverters;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;

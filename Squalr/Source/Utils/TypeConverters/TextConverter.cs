@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Utils.TypeConverters
+﻿namespace Squalr.Source.Utils.TypeConverters
 {
     using System;
     using System.ComponentModel;

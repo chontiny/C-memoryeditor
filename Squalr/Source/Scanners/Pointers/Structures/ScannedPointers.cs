@@ -3,7 +3,7 @@
     using Squalr.Engine.Types;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Source.ProjectItems;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;

@@ -3,7 +3,6 @@
     using Squalr.Engine.Types;
     using Squalr.Engine.Utils;
     using Squalr.Source.Utils;
-    using SqualrCore.Source.Controls;
     using System;
     using System.Drawing;
     using System.Windows.Forms;

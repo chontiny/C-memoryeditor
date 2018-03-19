@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Engine.Processes.Windows.Native
+﻿namespace Squalr.Engine.Processes.Windows.Native
 {
     using System;
     using System.Runtime.InteropServices;

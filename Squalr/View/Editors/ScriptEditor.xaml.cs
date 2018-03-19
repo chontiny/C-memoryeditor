@@ -7,7 +7,7 @@
     using ICSharpCode.AvalonEdit.Highlighting.Xshd;
     using Source.Editors.ScriptEditor;
     using Squalr.Engine.Output;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.IO;

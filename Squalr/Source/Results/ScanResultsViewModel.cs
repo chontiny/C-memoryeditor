@@ -6,11 +6,11 @@
     using Squalr.Engine.Utils;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Properties;
+    using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectItems;
     using Squalr.Source.Snapshots;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;

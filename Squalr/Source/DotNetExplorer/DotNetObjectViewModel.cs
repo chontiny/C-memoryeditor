@@ -2,8 +2,8 @@
 {
     using Squalr.Engine.DataStructures;
     using Squalr.Engine.VirtualMachines.DotNet;
+    using Squalr.Source.Controls;
     using Squalr.Source.PropertyViewer;
-    using SqualrCore.Source.Controls;
     using System.Linq;
     using System.Windows.Media.Imaging;
 

@@ -1,4 +1,4 @@
-﻿namespace SqualrCore.Source.Engine.Hook
+﻿namespace Squalr.Engine.Engine.Hook
 {
     using Squalr.Engine.Output;
     using SqualrHookClient.Source;

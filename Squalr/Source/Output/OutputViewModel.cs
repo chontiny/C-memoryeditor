@@ -2,8 +2,8 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Output;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Docking;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.IO;
     using System.Linq;

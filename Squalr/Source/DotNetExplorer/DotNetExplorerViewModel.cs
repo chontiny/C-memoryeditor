@@ -4,9 +4,9 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Types;
     using Squalr.Engine.VirtualMachines.DotNet;
+    using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectItems;
-    using SqualrCore.Source.Docking;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;

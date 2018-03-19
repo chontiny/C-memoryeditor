@@ -4,8 +4,7 @@
     using Squalr.Engine.Types;
     using Squalr.Source.Controls;
     using Squalr.Source.Editors.OffsetEditor;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Mvvm;
+    using Squalr.Source.Mvvm;
     using System;
     using System.Collections.Generic;
     using System.Linq;

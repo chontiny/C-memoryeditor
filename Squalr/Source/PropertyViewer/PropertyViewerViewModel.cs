@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.PropertyViewer
 {
-    using SqualrCore.Source.Docking;
+    using Squalr.Source.Docking;
     using System;
     using System.Collections.Generic;
     using System.Threading;

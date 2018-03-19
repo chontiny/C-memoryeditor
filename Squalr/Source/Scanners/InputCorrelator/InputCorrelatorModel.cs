@@ -8,7 +8,7 @@
     using Squalr.Engine.Types;
     using Squalr.Properties;
     using Squalr.Source.Snapshots;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;

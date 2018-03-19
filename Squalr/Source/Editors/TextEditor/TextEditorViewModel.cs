@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Editors.TextEditor
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using SqualrCore.Source.Docking;
+    using Squalr.Source.Docking;
     using System;
     using System.Threading;
     using System.Threading.Tasks;

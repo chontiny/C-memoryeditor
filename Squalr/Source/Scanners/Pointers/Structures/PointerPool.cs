@@ -2,7 +2,7 @@
 {
     using Squalr.Engine.VirtualMemory;
     using Squalr.Source.Snapshots;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Concurrent;

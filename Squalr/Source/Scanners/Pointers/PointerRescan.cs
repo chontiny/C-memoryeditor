@@ -4,7 +4,7 @@
     using Squalr.Source.ProjectItems;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.Pointers.Structures;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Threading;
 

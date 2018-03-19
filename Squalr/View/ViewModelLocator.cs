@@ -15,6 +15,7 @@
     using Squalr.Source.ChangeLog;
     using Squalr.Source.Debugger;
     using Squalr.Source.Debugger.Disassembly;
+    using Squalr.Source.Docking;
     using Squalr.Source.Editors.HotkeyEditor;
     using Squalr.Source.Editors.OffsetEditor;
     using Squalr.Source.Editors.ScriptEditor;
@@ -29,13 +30,24 @@
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
     /// </summary>
-    internal class ViewModelLocator : SqualrCore.View.ViewModelLocator
+    internal class ViewModelLocator
     {
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
         public ViewModelLocator()
         {
+        }
+
+        /// <summary>
+        /// Gets the Docking view model.
+        /// </summary>
+        public DockingViewModel DockingViewModel
+        {
+            get
+            {
+                return DockingViewModel.GetInstance();
+            }
         }
 
         /// <summary>

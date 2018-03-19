@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Squalr.Engine.Types;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Runtime.CompilerServices;
 

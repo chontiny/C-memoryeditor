@@ -5,9 +5,9 @@
     using Squalr.Engine.Output;
     using Squalr.Properties;
     using Squalr.Source.Analytics;
+    using Squalr.Source.Controls;
     using Squalr.Source.ProjectItems;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.IO;
