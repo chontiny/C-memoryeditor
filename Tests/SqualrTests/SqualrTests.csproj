@@ -58,13 +58,13 @@
     <Compile Include="PrimitiveTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Squalr\Squalr.csproj">
-      <Project>{bcc372dd-2823-459d-9594-c16e777ad292}</Project>
-      <Name>Squalr</Name>
-    </ProjectReference>
+    <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <ProjectReference Include="..\..\Squalr\Squalr.csproj">
+      <Project>{4f03a43b-1ddd-4f22-b8c0-9eb80c23b9cf}</Project>
+      <Name>Squalr</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
