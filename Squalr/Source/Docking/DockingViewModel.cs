@@ -2,14 +2,14 @@
 {
     using GalaSoft.MvvmLight;
     using Squalr.Source.Utils.Extensions;
+    using Squalr.Wpf.AvalonDock;
+    using Squalr.Wpf.AvalonDock.Layout.Serialization;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Reflection;
     using System.Threading;
-    using Squalr.Wpf.AvalonDock;
-    using Squalr.Wpf.AvalonDock.Layout.Serialization;
 
     /// <summary>
     /// Docking view model.

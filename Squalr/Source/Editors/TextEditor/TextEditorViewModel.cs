@@ -4,7 +4,6 @@
     using Squalr.Source.Docking;
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Windows.Input;
 
     /// <summary>
@@ -27,7 +26,7 @@
             this.UpdateTextCommand = new RelayCommand<String>((text) => this.UpdateText(text), (text) => true);
             this.SaveTextCommand = new RelayCommand<String>((text) => this.SaveText(text), (text) => true);
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

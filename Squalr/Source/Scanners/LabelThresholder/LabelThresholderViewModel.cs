@@ -55,7 +55,7 @@
             this.ApplyThresholdCommand = new RelayCommand(() => Task.Run(() => this.ApplyThreshold()), () => true);
             this.InvertSelectionCommand = new RelayCommand(() => Task.Run(() => this.InvertSelection()), () => true);
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

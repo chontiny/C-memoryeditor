@@ -4,7 +4,6 @@
     using System;
     using System.Collections.Generic;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// View model for the Property Viewer.
@@ -31,7 +30,7 @@
             this.ObserverLock = new Object();
             this.PropertyViewerObservers = new List<IPropertyViewerObserver>();
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

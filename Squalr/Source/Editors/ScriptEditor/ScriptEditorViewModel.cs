@@ -28,7 +28,7 @@
             this.UpdateScriptCommand = new RelayCommand<String>((script) => this.UpdateScript(script), (script) => true);
             this.SaveScriptCommand = new RelayCommand<String>((script) => this.SaveScript(script), (script) => true);
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

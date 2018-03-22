@@ -68,7 +68,7 @@
             this.ScanConstraintManager.SetElementType(DataTypes.Int32);
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

@@ -5,7 +5,6 @@
     using Squalr.Source.Docking;
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Windows.Input;
 
     /// <summary>
@@ -33,7 +32,7 @@
             this.ClearHotkeysCommand = new RelayCommand(() => this.ClearActiveHotkey(), () => true);
             this.AccessLock = new Object();
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

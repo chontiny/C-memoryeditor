@@ -42,7 +42,7 @@ using Squalr.Engine.Scripting.Memory;
 ");
             
             #line 17 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Content\Templates\ScriptTemplate.tt"
- this.Write(Squalr.Engine.Scripting.ScriptManager.ScriptUsingsInsertionIdentifier); 
+ this.Write(Squalr.Engine.Scripting.Compiler.ScriptUsingsInsertionIdentifier); 
             
             #line default
             #line hidden
@@ -86,7 +86,7 @@ public class Script
 	");
             
             #line 55 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Content\Templates\ScriptTemplate.tt"
- this.Write(Squalr.Engine.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); 
+ this.Write(Squalr.Engine.Scripting.Compiler.ScriptCodeInsertionIdentifier); 
             
             #line default
             #line hidden

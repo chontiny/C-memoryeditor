@@ -84,7 +84,7 @@
             this.ProjectItems = new FullyObservableCollection<ProjectItem>();
             this.Update();
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

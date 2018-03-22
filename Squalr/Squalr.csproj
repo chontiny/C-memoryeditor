@@ -12,7 +12,6 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -272,21 +271,6 @@
       <DependentUpon>ChangeLog.tt</DependentUpon>
     </Compile>
     <Compile Include="Content\Images.cs" />
-    <Compile Include="Content\Templates\CodeInjectionTemplate.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Templates\GraphicsInjectionTemplate.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GraphicsInjectionTemplate.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Content\Templates\ScriptTemplate.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ScriptTemplate.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\SettingsViewModel.cs" />
     <Compile Include="Source\ActionScheduler\ActionSchedulerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
@@ -562,18 +546,6 @@
     <Resource Include="Content\Images\Union.png" />
     <Resource Include="Content\Images\UnknownValue.png" />
     <Resource Include="Content\Images\X.png" />
-    <Content Include="Content\Templates\CodeInjectionTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>
-    </Content>
-    <Content Include="Content\Templates\GraphicsInjectionTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>GraphicsInjectionTemplate.cs</LastGenOutput>
-    </Content>
-    <Content Include="Content\Templates\ScriptTemplate.tt">
-      <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
-    </Content>
     <Resource Include="Layout.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -710,9 +682,21 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CompilerService\CompilerService.csproj">
+      <Project>{aee92c34-28eb-49ec-8dd3-2398dacc2dd9}</Project>
+      <Name>CompilerService</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{081e218a-8f7c-430f-81a8-d9950c7e970c}</Project>
       <Name>Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\Internal\SqualrProxy32\SqualrProxy32.csproj">
+      <Project>{a5701dff-97c5-443b-a665-122ea1dc12df}</Project>
+      <Name>SqualrProxy32</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine\Internal\SqualrProxy64\SqualrProxy64.csproj">
+      <Project>{b6bad208-a6ad-4eee-b313-f3bfc1cea6ca}</Project>
+      <Name>SqualrProxy64</Name>
     </ProjectReference>
     <ProjectReference Include="..\Squalr.Wpf.AvalonDock\Squalr.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>

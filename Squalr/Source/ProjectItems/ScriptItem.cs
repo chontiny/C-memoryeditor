@@ -8,9 +8,7 @@
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
-    using System.Reflection;
     using System.Runtime.Serialization;
-    using System.Threading.Tasks;
     using System.Windows.Media.Imaging;
 
     /// <summary>
@@ -29,7 +27,7 @@
         /// The base 64 encoded compiled script.
         /// </summary>
         [Browsable(false)]
-        private Assembly compiledScript;
+        private ModScript modScript;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptItem" /> class.
@@ -46,12 +44,11 @@
         /// <param name="compiled">Whether or not this script is compiled.</param>
         public ScriptItem(String description, String script) : base(description)
         {
-            this.ScriptManager = new ScriptManager();
-
             // Initialize script and bypass setters
             this.script = script;
+            this.modScript = new ModScript();
 
-            Task.Run(() => this.compiledScript = this.ScriptManager.CompileScript(script));
+            this.ModScript.SetScript(script);
         }
 
         /// <summary>
@@ -76,9 +73,9 @@
                     return;
                 }
 
-                Task.Run(() => this.CompiledScript = this.ScriptManager?.CompileScript(value));
-
                 this.script = value;
+                this.ModScript.SetScript(this.Script);
+
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
         }
@@ -86,19 +83,18 @@
         /// <summary>
         /// Gets or sets the base 64 encoded compiled script.
         /// </summary>
-        [DataMember]
         [Browsable(false)]
-        public Assembly CompiledScript
+        public ModScript ModScript
         {
             get
             {
-                return this.compiledScript;
+                return this.modScript;
             }
 
             private set
             {
 
-                this.compiledScript = value;
+                this.modScript = value;
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
@@ -116,12 +112,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the script manager associated with this script.
-        /// </summary>
-        [Browsable(false)]
-        private ScriptManager ScriptManager { get; set; }
-
-        /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
         /// <param name="streamingContext">Streaming context.</param>
@@ -130,11 +120,9 @@
         {
             base.OnDeserialized(streamingContext);
 
-            this.ScriptManager = new ScriptManager();
-
-            if (this.compiledScript == null)
+            if (this.modScript == null)
             {
-                Task.Run(() => this.compiledScript = this.ScriptManager.CompileScript(script));
+                this.modScript = new ModScript();
             }
         }
 
@@ -150,11 +138,10 @@
         /// </summary>
         protected override void OnActivationChanged()
         {
-            /*
             if (this.IsActivated)
             {
                 // Try to run script.
-                if (!this.ScriptManager.RunActivationFunction(this))
+                if (!this.ModScript.RunActivationFunction())
                 {
                     // Script error -- clear activation.
                     this.ResetActivation();
@@ -162,13 +149,13 @@
                 }
 
                 // Run the update loop for the script
-                this.ScriptManager.RunUpdateFunction(this);
+                this.ModScript.RunUpdateFunction();
             }
             else
             {
                 // Try to deactivate script (we do not care if this fails)
-                this.ScriptManager.RunDeactivationFunction(this);
-            }*/
+                this.ModScript.RunDeactivationFunction();
+            }
         }
     }
     //// End class

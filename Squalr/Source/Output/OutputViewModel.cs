@@ -9,7 +9,6 @@
     using System.Linq;
     using System.Text;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Web;
     using System.Windows;
     using System.Windows.Controls;
@@ -72,7 +71,7 @@
             this.ClearOutputCommand = new RelayCommand(() => this.ClearOutput(), () => true);
 
             Output.Subscribe(this);
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

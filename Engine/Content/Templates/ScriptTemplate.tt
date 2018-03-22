@@ -14,7 +14,7 @@ using Squalr.Engine.Scripting.Input;
 using Squalr.Engine.Scripting.Memory;
 	
 // The using statements, if any, will be inserted here:
-<# this.Write(Squalr.Engine.Scripting.ScriptManager.ScriptUsingsInsertionIdentifier); #>
+<# this.Write(Squalr.Engine.Scripting.Compiler.ScriptUsingsInsertionIdentifier); #>
 
 /// <summary>
 /// A script template which includes all necessary engine components by default.
@@ -52,6 +52,6 @@ public class Script
 	public Action Deactivate { get; set; }
 	
 	// The script will be inserted here:
-	<# this.Write(Squalr.Engine.Scripting.ScriptManager.ScriptCodeInsertionIdentifier); #>
+	<# this.Write(Squalr.Engine.Scripting.Compiler.ScriptCodeInsertionIdentifier); #>
 }
 //// End class

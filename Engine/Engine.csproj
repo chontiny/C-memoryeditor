@@ -49,15 +49,15 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Content\Templates\ScriptTemplate.cs">
-      <DependentUpon>ScriptTemplate.tt</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
     <Compile Update="Content\Templates\CodeInjectionTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
+    </Compile>
+    <Compile Update="Content\Templates\ScriptTemplate.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ScriptTemplate.tt</DependentUpon>
     </Compile>
   </ItemGroup>
 

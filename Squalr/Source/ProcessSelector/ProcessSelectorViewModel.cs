@@ -47,8 +47,7 @@
             this.detachProcess = new NormalizedProcess(0, "-- Detach from Process --", DateTime.Now, isSystemProcess: false, hasWindow: false, icon: null);
             ProcessSelectorTask processSelectorTask = new ProcessSelectorTask(this.RefreshProcessList);
 
-            // Subscribe async to avoid a deadlock situation
-            Task.Run(() => { DockingViewModel.GetInstance().RegisterViewModel(this); });
+            DockingViewModel.GetInstance().RegisterViewModel(this);
 
             // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
             Task.Run(() => { Eng.GetInstance().Processes.Subscribe(this); });

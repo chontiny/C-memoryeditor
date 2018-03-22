@@ -49,7 +49,7 @@
             this.UndoSnapshotCommand = new RelayCommand(() => this.UndoSnapshot(), () => true);
             this.RedoSnapshotCommand = new RelayCommand(() => this.RedoSnapshot(), () => true);
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

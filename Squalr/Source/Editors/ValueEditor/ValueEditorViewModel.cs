@@ -3,7 +3,6 @@
     using Squalr.Source.Docking;
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// View model for the Value Editor.
@@ -22,7 +21,7 @@
         /// </summary>
         public ValueEditorViewModel() : base("Value Editor")
         {
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
