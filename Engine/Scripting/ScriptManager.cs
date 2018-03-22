@@ -94,6 +94,7 @@
             try
             {
                 script = this.PrecompileScript(script);
+
                 Assembly assembly = CSScript.RoslynEvaluator.CompileCode(script);
 
                 return assembly;
