@@ -4,9 +4,9 @@
     using Squalr.Engine;
     using Squalr.Engine.ActionScheduler;
     using Squalr.Engine.DataStructures;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Engine.Input.Keyboard;
-    using Squalr.Engine.Types;
     using Squalr.Properties;
     using Squalr.Source.Snapshots;
     using Squalr.Source.Utils.Extensions;
@@ -106,7 +106,7 @@
 
             // Initialize labeled snapshot
             this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.LabelDataType = DataTypes.Int16;
+            this.Snapshot.LabelDataType = DataType.Int16;
 
             if (this.Snapshot == null)
             {

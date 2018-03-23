@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils;
     using System;
     using System.Globalization;
@@ -26,7 +26,7 @@
                 return null;
             }
 
-            return Conversions.ValueToMetricSize((UInt64)System.Convert.ChangeType(value, DataTypes.UInt64));
+            return Conversions.ValueToMetricSize((UInt64)System.Convert.ChangeType(value, DataType.UInt64));
         }
 
         /// <summary>

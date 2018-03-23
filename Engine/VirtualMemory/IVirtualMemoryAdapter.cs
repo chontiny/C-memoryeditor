@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.VirtualMemory
 {
     using Processes;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using System;
     using System.Collections.Generic;
 

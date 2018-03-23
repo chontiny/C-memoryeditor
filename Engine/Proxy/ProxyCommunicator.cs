@@ -16,12 +16,12 @@
         /// <summary>
         /// The 32 bit proxy service executable
         /// </summary>
-        private const String Proxy32Executable = "SqualrProxy32.exe";
+        private const String Proxy32Executable = "Engine.Internal.Proxy32.exe";
 
         /// <summary>
         /// The 64 bit proxy service executable
         /// </summary>
-        private const String Proxy64Executable = "SqualrProxy64.exe";
+        private const String Proxy64Executable = "Engine.Internal.Proxy64.exe";
 
         /// <summary>
         /// Singleton instance of the <see cref="ProxyCommunicator" /> class

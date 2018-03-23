@@ -1,7 +1,7 @@
 ﻿namespace Squalr.View.Editors
 {
     using Squalr.Engine.DataStructures;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Source.Controls;
     using Squalr.Source.Editors.OffsetEditor;
     using Squalr.Source.Mvvm;
@@ -24,7 +24,7 @@
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
-            this.OffsetHexDecBox = new HexDecTextBox(DataTypes.Int32);
+            this.OffsetHexDecBox = new HexDecTextBox(DataType.Int32);
             this.OffsetHexDecBox.IsHex = true;
             this.OffsetHexDecBox.TextChanged += this.ValueUpdated;
             this.offsetHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.OffsetHexDecBox));

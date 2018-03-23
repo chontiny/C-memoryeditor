@@ -2,7 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataStructures;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Properties;
@@ -83,7 +83,7 @@
             this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
-            this.ActiveType = DataTypes.Int32;
+            this.ActiveType = DataType.Int32;
             this.addresses = new FullyObservableCollection<ScanResult>();
 
             SnapshotManagerViewModel.GetInstance().Subscribe(this);

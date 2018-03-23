@@ -3,7 +3,7 @@
     using Native;
     using Output;
     using Processes;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.VirtualMemory.Windows.PEB;
     using System;
     using System.Collections.Generic;
@@ -107,34 +107,34 @@
 
             switch (dataType)
             {
-                case DataType type when type == DataTypes.Byte:
+                case DataType type when type == DataType.Byte:
                     value = this.Read<Byte>(address, out success);
                     break;
-                case DataType type when type == DataTypes.SByte:
+                case DataType type when type == DataType.SByte:
                     value = this.Read<SByte>(address, out success);
                     break;
-                case DataType type when type == DataTypes.Int16:
+                case DataType type when type == DataType.Int16:
                     value = this.Read<Int16>(address, out success);
                     break;
-                case DataType type when type == DataTypes.Int32:
+                case DataType type when type == DataType.Int32:
                     value = this.Read<Int32>(address, out success);
                     break;
-                case DataType type when type == DataTypes.Int64:
+                case DataType type when type == DataType.Int64:
                     value = this.Read<Int64>(address, out success);
                     break;
-                case DataType type when type == DataTypes.UInt16:
+                case DataType type when type == DataType.UInt16:
                     value = this.Read<UInt16>(address, out success);
                     break;
-                case DataType type when type == DataTypes.UInt32:
+                case DataType type when type == DataType.UInt32:
                     value = this.Read<UInt32>(address, out success);
                     break;
-                case DataType type when type == DataTypes.UInt64:
+                case DataType type when type == DataType.UInt64:
                     value = this.Read<UInt64>(address, out success);
                     break;
-                case DataType type when type == DataTypes.Single:
+                case DataType type when type == DataType.Single:
                     value = this.Read<Single>(address, out success);
                     break;
-                case DataType type when type == DataTypes.Double:
+                case DataType type when type == DataType.Double:
                     value = this.Read<Double>(address, out success);
                     break;
                 default:
@@ -211,37 +211,37 @@
 
             switch (elementType)
             {
-                case DataType type when type == DataTypes.Byte || type == typeof(Boolean):
+                case DataType type when type == DataType.Byte || type == typeof(Boolean):
                     bytes = BitConverter.GetBytes((Byte)value);
                     break;
-                case DataType type when type == DataTypes.SByte:
+                case DataType type when type == DataType.SByte:
                     bytes = BitConverter.GetBytes((SByte)value);
                     break;
-                case DataType type when type == DataTypes.Char:
+                case DataType type when type == DataType.Char:
                     bytes = Encoding.UTF8.GetBytes(new Char[] { (Char)value });
                     break;
-                case DataType type when type == DataTypes.Int16:
+                case DataType type when type == DataType.Int16:
                     bytes = BitConverter.GetBytes((Int16)value);
                     break;
-                case DataType type when type == DataTypes.Int32:
+                case DataType type when type == DataType.Int32:
                     bytes = BitConverter.GetBytes((Int32)value);
                     break;
-                case DataType type when type == DataTypes.Int64:
+                case DataType type when type == DataType.Int64:
                     bytes = BitConverter.GetBytes((Int64)value);
                     break;
-                case DataType type when type == DataTypes.UInt16:
+                case DataType type when type == DataType.UInt16:
                     bytes = BitConverter.GetBytes((UInt16)value);
                     break;
-                case DataType type when type == DataTypes.UInt32:
+                case DataType type when type == DataType.UInt32:
                     bytes = BitConverter.GetBytes((UInt32)value);
                     break;
-                case DataType type when type == DataTypes.UInt64:
+                case DataType type when type == DataType.UInt64:
                     bytes = BitConverter.GetBytes((UInt64)value);
                     break;
-                case DataType type when type == DataTypes.Single:
+                case DataType type when type == DataType.Single:
                     bytes = BitConverter.GetBytes((Single)value);
                     break;
-                case DataType type when type == DataTypes.Double:
+                case DataType type when type == DataType.Double:
                     bytes = BitConverter.GetBytes((Double)value);
                     break;
                 default:
@@ -445,11 +445,11 @@
         /// <returns>The maximum address possible in the target process.</returns>
         public IntPtr GetMaximumAddress()
         {
-            if (IntPtr.Size == Conversions.SizeOf(DataTypes.Int32))
+            if (IntPtr.Size == Conversions.SizeOf(DataType.Int32))
             {
                 return unchecked(UInt32.MaxValue.ToIntPtr());
             }
-            else if (IntPtr.Size == Conversions.SizeOf(DataTypes.Int64))
+            else if (IntPtr.Size == Conversions.SizeOf(DataType.Int64))
             {
                 return unchecked(UInt64.MaxValue.ToIntPtr());
             }

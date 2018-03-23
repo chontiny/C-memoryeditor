@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Fasm\Fasm.NET.vcxproj" />
+    <ProjectReference Include="..\Engine\Internal\Fasm\Fasm.NET.vcxproj" />
   </ItemGroup>
 
 </Project>

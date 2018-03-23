@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
     using Squalr.Content;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using System;
     using System.Globalization;
     using System.Windows.Data;
@@ -40,25 +40,25 @@
             {
                 switch (value as DataType)
                 {
-                    case DataType type when type == DataTypes.SByte:
+                    case DataType type when type == DataType.SByte:
                         return Images.BlueBlocks1;
-                    case DataType type when type == DataTypes.Int16:
+                    case DataType type when type == DataType.Int16:
                         return Images.BlueBlocks2;
-                    case DataType type when type == DataTypes.Int32:
+                    case DataType type when type == DataType.Int32:
                         return Images.BlueBlocks4;
-                    case DataType type when type == DataTypes.Int64:
+                    case DataType type when type == DataType.Int64:
                         return Images.BlueBlocks8;
-                    case DataType type when type == DataTypes.Byte:
+                    case DataType type when type == DataType.Byte:
                         return Images.PurpleBlocks1;
-                    case DataType type when type == DataTypes.UInt16:
+                    case DataType type when type == DataType.UInt16:
                         return Images.PurpleBlocks2;
-                    case DataType type when type == DataTypes.UInt32:
+                    case DataType type when type == DataType.UInt32:
                         return Images.PurpleBlocks4;
-                    case DataType type when type == DataTypes.UInt64:
+                    case DataType type when type == DataType.UInt64:
                         return Images.PurpleBlocks8;
-                    case DataType type when type == DataTypes.Single:
+                    case DataType type when type == DataType.Single:
                         return Images.OrangeBlocks4;
-                    case DataType type when type == DataTypes.Double:
+                    case DataType type when type == DataType.Double:
                         return Images.OrangeBlocks8;
                     default:
                         return null;

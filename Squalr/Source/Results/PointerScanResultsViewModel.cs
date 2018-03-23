@@ -2,7 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataStructures;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
@@ -88,7 +88,7 @@
             this.AddAddressCommand = new RelayCommand<PointerItem>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
-            this.ActiveType = DataTypes.Int32;
+            this.ActiveType = DataType.Int32;
             this.pointers = new FullyObservableCollection<PointerItem>();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);

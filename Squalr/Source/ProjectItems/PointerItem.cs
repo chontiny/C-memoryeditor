@@ -3,7 +3,7 @@
     using Editors.OffsetEditor;
     using Squalr.Content;
     using Squalr.Engine;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Source.Controls;
@@ -44,7 +44,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
         /// </summary>
-        public PointerItem() : this(IntPtr.Zero, DataTypes.Int32, "New Address")
+        public PointerItem() : this(IntPtr.Zero, DataType.Int32, "New Address")
         {
         }
 
@@ -201,7 +201,7 @@
                     }
                     else
                     {
-                        return this.ModuleName + " - " + Conversions.ParsePrimitiveAsHexString(DataTypes.IntPtr, this.ModuleOffset, signHex: true).TrimStart('-');
+                        return this.ModuleName + " - " + Conversions.ParsePrimitiveAsHexString(DataType.IntPtr, this.ModuleOffset, signHex: true).TrimStart('-');
                     }
                 }
                 else if (this.IsPointer)

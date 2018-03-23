@@ -686,17 +686,25 @@
       <Project>{aee92c34-28eb-49ec-8dd3-2398dacc2dd9}</Project>
       <Name>CompilerService</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj">
+      <Project>{9ebad60b-23fd-4ca9-b5e4-553c14d302ad}</Project>
+      <Name>Engine.DataTypes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine.Internal.Proxy32\Engine.Internal.Proxy32.csproj">
+      <Project>{c6e853bd-a596-4766-8ff5-846b00d37a75}</Project>
+      <Name>Engine.Internal.Proxy32</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine.Internal.Proxy64\Engine.Internal.Proxy64.csproj">
+      <Project>{282d15e4-b290-4de3-8994-ce35de19f91f}</Project>
+      <Name>Engine.Internal.Proxy64</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Engine.Utils\Engine.Utils.csproj">
+      <Project>{7ad05601-eb5a-4c7c-854a-7024644edc3f}</Project>
+      <Name>Engine.Utils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{081e218a-8f7c-430f-81a8-d9950c7e970c}</Project>
       <Name>Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\Internal\SqualrProxy32\SqualrProxy32.csproj">
-      <Project>{a5701dff-97c5-443b-a665-122ea1dc12df}</Project>
-      <Name>SqualrProxy32</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Engine\Internal\SqualrProxy64\SqualrProxy64.csproj">
-      <Project>{b6bad208-a6ad-4eee-b313-f3bfc1cea6ca}</Project>
-      <Name>SqualrProxy64</Name>
     </ProjectReference>
     <ProjectReference Include="..\Squalr.Wpf.AvalonDock\Squalr.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>

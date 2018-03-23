@@ -2,8 +2,8 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataStructures;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Output;
-    using Squalr.Engine.Types;
     using Squalr.Source.Docking;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
@@ -65,7 +65,7 @@
             this.CurrentScanConstraint = new ScanConstraint(ScanConstraint.ConstraintType.Equal);
             this.ManualScannerModel = new ManualScan();
             this.ScanConstraintManager = new ScanConstraintManager();
-            this.ScanConstraintManager.SetElementType(DataTypes.Int32);
+            this.ScanConstraintManager.SetElementType(DataType.Int32);
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
             DockingViewModel.GetInstance().RegisterViewModel(this);

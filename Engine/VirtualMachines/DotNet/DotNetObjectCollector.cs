@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Engine.VirtualMachines.DotNet
 {
     using Squalr.Engine.ActionScheduler;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Processes;
     using Squalr.Engine.Proxy;
-    using Squalr.Engine.Types;
     using System;
     using System.Collections.Generic;
     using System.Reflection;
@@ -255,9 +255,9 @@
                 case TypeCode.Boolean:
                     return typeof(Boolean);
                 case TypeCode.Byte:
-                    return DataTypes.Byte;
+                    return DataType.Byte;
                 case TypeCode.Char:
-                    return DataTypes.Char;
+                    return DataType.Char;
                 case TypeCode.DateTime:
                     return typeof(DateTime);
                 case TypeCode.DBNull:
@@ -265,27 +265,27 @@
                 case TypeCode.Decimal:
                     return typeof(Decimal);
                 case TypeCode.Double:
-                    return DataTypes.Double;
+                    return DataType.Double;
                 case TypeCode.Int16:
-                    return DataTypes.Int16;
+                    return DataType.Int16;
                 case TypeCode.Int32:
-                    return DataTypes.Int32;
+                    return DataType.Int32;
                 case TypeCode.Int64:
-                    return DataTypes.Int64;
+                    return DataType.Int64;
                 case TypeCode.Object:
                     return typeof(Object);
                 case TypeCode.SByte:
-                    return DataTypes.SByte;
+                    return DataType.SByte;
                 case TypeCode.Single:
-                    return DataTypes.Single;
+                    return DataType.Single;
                 case TypeCode.String:
-                    return DataTypes.String;
+                    return DataType.String;
                 case TypeCode.UInt16:
-                    return DataTypes.UInt16;
+                    return DataType.UInt16;
                 case TypeCode.UInt32:
-                    return DataTypes.UInt32;
+                    return DataType.UInt32;
                 case TypeCode.UInt64:
-                    return DataTypes.UInt64;
+                    return DataType.UInt64;
                 default:
                     break;
             }

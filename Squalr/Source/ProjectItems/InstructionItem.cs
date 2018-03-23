@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.ProjectItems
 {
     using Squalr.Content;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Source.Controls;
@@ -46,7 +46,7 @@
         {
         }
 
-        public InstructionItem(IntPtr BaseAddress, String moduleName, String instruction, Byte[] instructionBytes) : base(DataTypes.ArrayOfBytes, "New Instruction")
+        public InstructionItem(IntPtr BaseAddress, String moduleName, String instruction, Byte[] instructionBytes) : base(DataType.ArrayOfBytes, "New Instruction")
         {
             this.ModuleOffset = BaseAddress;
             this.ModuleName = moduleName;

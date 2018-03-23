@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Source.ProjectItems;
     using Squalr.Source.Utils.Extensions;
@@ -153,7 +153,7 @@
                 {
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(baseAddress, out moduleName);
-                    pointerItem = new PointerItem(address.ToIntPtr(), DataTypes.Int32, "New Pointer", moduleName, offsets.ToArray().Reverse());
+                    pointerItem = new PointerItem(address.ToIntPtr(), DataType.Int32, "New Pointer", moduleName, offsets.ToArray().Reverse());
                 }
                 else
                 {

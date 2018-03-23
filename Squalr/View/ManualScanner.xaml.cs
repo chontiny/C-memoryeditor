@@ -1,6 +1,6 @@
 ﻿namespace Squalr.View
 {
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Source.Controls;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ManualScanner;

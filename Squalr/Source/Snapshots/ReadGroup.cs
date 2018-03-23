@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Squalr.Engine;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.VirtualMemory;
     using Squalr.Properties;
     using Squalr.Source.Results;

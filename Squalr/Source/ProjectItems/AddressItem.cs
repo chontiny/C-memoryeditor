@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.ProjectItems
 {
     using Squalr.Engine;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Output;
-    using Squalr.Engine.Types;
     using Squalr.Engine.Utils;
     using Squalr.Source.Controls;
     using Squalr.Source.Utils;
@@ -44,7 +44,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
         /// </summary>
-        public AddressItem() : this(DataTypes.Int32, "New Address")
+        public AddressItem() : this(DataType.Int32, "New Address")
         {
         }
 

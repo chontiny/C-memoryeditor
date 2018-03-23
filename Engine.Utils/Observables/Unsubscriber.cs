@@ -5,7 +5,7 @@
 
     public class Unsubscriber<T> : IDisposable
     {
-        internal Unsubscriber(HashSet<IObserver<T>> observers, IObserver<T> observer)
+        public Unsubscriber(HashSet<IObserver<T>> observers, IObserver<T> observer)
         {
             this.Observers = observers;
             this.Observer = observer;

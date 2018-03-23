@@ -2,7 +2,7 @@
 {
     using LabelThresholder;
     using Squalr.Engine.ActionScheduler;
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;
     using Squalr.Source.Snapshots;
@@ -76,7 +76,7 @@
         {
             // Initialize labeled snapshot
             this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.LabelDataType = DataTypes.UInt16;
+            this.Snapshot.LabelDataType = DataType.UInt16;
 
             if (this.Snapshot == null)
             {

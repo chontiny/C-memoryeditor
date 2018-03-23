@@ -11,8 +11,11 @@
 
   <ItemGroup>
     <Compile Remove="Internal\**" />
+    <Compile Remove="Utils\**" />
     <EmbeddedResource Remove="Internal\**" />
+    <EmbeddedResource Remove="Utils\**" />
     <None Remove="Internal\**" />
+    <None Remove="Utils\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,9 +41,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\Engine.Internal.Proxy\Engine.Internal.Proxy.csproj" />
+    <ProjectReference Include="..\Engine.Utils\Engine.Utils.csproj" />
     <ProjectReference Include="Internal\SqualrHookClient\SqualrHookClient.csproj" />
     <ProjectReference Include="Internal\SqualrHookServer\SqualrHookServer.csproj" />
-    <ProjectReference Include="Internal\SqualrProxy\SqualrProxy.csproj" />
   </ItemGroup>
 
   <ItemGroup>

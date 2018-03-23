@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Properties;
     using Squalr.Source.Utils.Extensions;
     using System;

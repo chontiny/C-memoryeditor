@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Utils
 {
-    using Squalr.Engine.Types;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils;
     using System;
     using System.Globalization;
@@ -60,25 +60,25 @@
 
             switch (dataType)
             {
-                case DataType type when type == DataTypes.Byte:
+                case DataType type when type == DataType.Byte:
                     return SyntaxChecker.IsByte(value);
-                case DataType type when type == DataTypes.SByte:
+                case DataType type when type == DataType.SByte:
                     return SyntaxChecker.IsSByte(value);
-                case DataType type when type == DataTypes.Int16:
+                case DataType type when type == DataType.Int16:
                     return SyntaxChecker.IsInt16(value);
-                case DataType type when type == DataTypes.Int32:
+                case DataType type when type == DataType.Int32:
                     return SyntaxChecker.IsInt32(value);
-                case DataType type when type == DataTypes.Int64:
+                case DataType type when type == DataType.Int64:
                     return SyntaxChecker.IsInt64(value);
-                case DataType type when type == DataTypes.UInt16:
+                case DataType type when type == DataType.UInt16:
                     return SyntaxChecker.IsUInt16(value);
-                case DataType type when type == DataTypes.UInt32:
+                case DataType type when type == DataType.UInt32:
                     return SyntaxChecker.IsUInt32(value);
-                case DataType type when type == DataTypes.UInt64:
+                case DataType type when type == DataType.UInt64:
                     return SyntaxChecker.IsUInt64(value);
-                case DataType type when type == DataTypes.Single:
+                case DataType type when type == DataType.Single:
                     return SyntaxChecker.IsSingle(value);
-                case DataType type when type == DataTypes.Double:
+                case DataType type when type == DataType.Double:
                     return SyntaxChecker.IsDouble(value);
                 default:
                     return false;
@@ -113,7 +113,7 @@
             // Remove negative sign from signed integer types, as TryParse methods do not handle negative hex values
             switch (dataType)
             {
-                case DataType type when type == DataTypes.Byte || type == DataTypes.Int16 || type == DataTypes.Int32 || type == DataTypes.Int64:
+                case DataType type when type == DataType.Byte || type == DataType.Int16 || type == DataType.Int32 || type == DataType.Int64:
                     if (value.StartsWith("-"))
                     {
                         value = value.Substring(1);
@@ -126,25 +126,25 @@
 
             switch (dataType)
             {
-                case DataType type when type == DataTypes.Byte:
+                case DataType type when type == DataType.Byte:
                     return IsByte(value, true);
-                case DataType type when type == DataTypes.SByte:
+                case DataType type when type == DataType.SByte:
                     return IsSByte(value, true);
-                case DataType type when type == DataTypes.Int16:
+                case DataType type when type == DataType.Int16:
                     return IsInt16(value, true);
-                case DataType type when type == DataTypes.Int32:
+                case DataType type when type == DataType.Int32:
                     return IsInt32(value, true);
-                case DataType type when type == DataTypes.Int64:
+                case DataType type when type == DataType.Int64:
                     return IsInt64(value, true);
-                case DataType type when type == DataTypes.UInt16:
+                case DataType type when type == DataType.UInt16:
                     return IsUInt16(value, true);
-                case DataType type when type == DataTypes.UInt32:
+                case DataType type when type == DataType.UInt32:
                     return IsUInt32(value, true);
-                case DataType type when type == DataTypes.UInt64:
+                case DataType type when type == DataType.UInt64:
                     return IsUInt64(value, true);
-                case DataType type when type == DataTypes.Single:
+                case DataType type when type == DataType.Single:
                     return IsSingle(value, true);
-                case DataType type when type == DataTypes.Double:
+                case DataType type when type == DataType.Double:
                     return IsDouble(value, true);
                 default:
                     return false;
@@ -323,7 +323,7 @@
 
             if (isHex && IsUInt32(value, isHex))
             {
-                return Single.TryParse(Conversions.ParseHexStringAsPrimitiveString(DataTypes.Single, value), out temp);
+                return Single.TryParse(Conversions.ParseHexStringAsPrimitiveString(DataType.Single, value), out temp);
             }
             else
             {
@@ -343,7 +343,7 @@
 
             if (isHex && IsUInt64(value, isHex))
             {
-                return Double.TryParse(Conversions.ParseHexStringAsPrimitiveString(DataTypes.Double, value), out temp);
+                return Double.TryParse(Conversions.ParseHexStringAsPrimitiveString(DataType.Double, value), out temp);
             }
             else
             {
