@@ -62,12 +62,13 @@
             }
         }
 
-        public static Assembly LoadCompiledScript(Byte[] assemblyBytes)
+        public static dynamic LoadCompiledScript(Byte[] assemblyBytes)
         {
             Assembly assembly = Assembly.Load(assemblyBytes);
 
-            return assembly;
+            return assembly.CreateObject("*");
         }
+
         /// <summary>
         /// Takes the classless script written by the user and embeds it in the main script template.
         /// This gives the script access to the engine classes that it will require.

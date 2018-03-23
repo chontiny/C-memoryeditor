@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,17 +10,6 @@ namespace Squalr.Engine.Scripting
     /// </summary>
     public class ModScript
     {
-        public String Text { get; set; }
-
-        public String Name { get; set; }
-
-        public Boolean IsActivated { get; set; }
-
-        /// <summary>
-        /// Gets or sets the compiled assembly object of a script.
-        /// </summary>
-        private dynamic ScriptObject { get; set; }
-
         /// <summary>
         /// Gets or sets a cancelation request for the update loop.
         /// </summary>
@@ -42,25 +30,41 @@ namespace Squalr.Engine.Scripting
         /// </summary>
         private Task Task { get; set; }
 
-        public ModScript()
+        public ModScript() : this(String.Empty)
         {
-            this.SetScript(String.Empty);
         }
 
-        public ModScript(String compressedAssembly)
+        public ModScript(String script)
         {
+            this.SetScript(script);
+        }
+
+        public String Text { get; set; }
+
+        public String Name { get; set; }
+
+        public Boolean IsActivated { get; set; }
+
+        /// <summary>
+        /// Gets or sets the compiled assembly object of a script.
+        /// </summary>
+        private dynamic ScriptObject { get; set; }
+
+        public static ModScript FromCompressedAssembly(String compressedAssembly)
+        {
+            ModScript modScript = new ModScript();
             Byte[] assemblyBytes = Loader.DecompressCompiledScript(compressedAssembly);
-            Assembly assembly = Compiler.LoadCompiledScript(assemblyBytes);
 
-            this.ScriptObject = assembly.CreateObject("*");
+            modScript.ScriptObject = Compiler.LoadCompiledScript(assemblyBytes);
+
+            return modScript;
         }
 
-        public void SetScript(String script)
+        public async void SetScript(String script)
         {
-            Byte[] assemblyBytes = Compiler.CompileScript(script);
-            Assembly assembly = Compiler.LoadCompiledScript(assemblyBytes);
+            Byte[] assemblyBytes = await Task.Run(() => Compiler.CompileScript(script));
 
-            this.ScriptObject = assembly.CreateObject("*");
+            this.ScriptObject = Compiler.LoadCompiledScript(assemblyBytes);
         }
 
         /// <summary>
