@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.VirtualMemory
+﻿namespace Squalr.Engine.Memory
 {
     using System;
 

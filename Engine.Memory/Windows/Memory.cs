@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.VirtualMemory.Windows
+﻿namespace Squalr.Engine.Memory.Windows
 {
     using Native;
     using System;

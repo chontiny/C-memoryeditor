@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Engine.Processes.Windows
 {
-    using Squalr.Engine.ActionScheduler;
     using Squalr.Engine.Output;
     using Squalr.Engine.Processes.Windows.Native;
+    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
@@ -10,7 +10,6 @@
     using System.Drawing;
     using System.Linq;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A class responsible for collecting all running processes on a Windows system.
@@ -47,8 +46,8 @@
             // so putting a TTL on this would cause a memory leak.
             this.IconCache = new TtlCache<Int32, Icon>();
 
-            // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
-            Task.Run((Action)(() => { Eng.GetInstance().Processes.Subscribe(this); }));
+            // Subscribe to process events
+            this.Subscribe(this);
 
             this.Start();
         }
@@ -500,7 +499,7 @@
             {
                 if (this.SystemProcess?.HasExited ?? false)
                 {
-                    Eng.GetInstance().Processes.CloseProcess();
+                    this.CloseProcess();
                     this.SystemProcess = null;
                 }
             }

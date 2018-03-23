@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners.ChangeCounter
 {
     using LabelThresholder;
-    using Squalr.Engine.ActionScheduler;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.TaskScheduler;
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;
     using Squalr.Source.Snapshots;

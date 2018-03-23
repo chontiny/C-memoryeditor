@@ -1,17 +1,16 @@
-﻿namespace Squalr.Engine.VirtualMemory.Windows
+﻿namespace Squalr.Engine.Memory.Windows
 {
     using Native;
     using Output;
     using Processes;
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.VirtualMemory.Windows.PEB;
+    using Squalr.Engine.Memory.Windows.PEB;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Text;
-    using System.Threading.Tasks;
     using Utils;
     using Utils.Extensions;
     using static Native.Enumerations;
@@ -37,8 +36,8 @@
         /// </summary>
         public WindowsAdapter()
         {
-            // Subscribe to process events (async call as to avoid locking on GetInstance() if engine is being constructed)
-            Task.Run((Action)(() => { Eng.GetInstance().Processes.Subscribe(this); }));
+            // Subscribe to process events
+            ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
 
         /// <summary>
@@ -463,7 +462,7 @@
         /// <returns>The maximum usermode address possible in the target process.</returns>
         public UInt64 GetMaxUsermodeAddress()
         {
-            if (Eng.GetInstance().Processes.IsOpenedProcess32Bit())
+            if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
             {
                 return Int32.MaxValue;
             }
@@ -513,7 +512,7 @@
                         NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
                         // Ignore modules in 64-bit address space for WoW64 processes
-                        if (Eng.GetInstance().Processes.IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)
+                        if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)
                         {
                             continue;
                         }
@@ -572,7 +571,7 @@
                 foreach (Int32 offset in offsets.Take(offsets.Count() - 1))
                 {
                     Boolean success;
-                    if (Eng.GetInstance().Processes.IsOpenedProcess32Bit())
+                    if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
                     {
                         finalAddress = (this.Read<UInt32>(finalAddress + offset, out success).ToInt64()).ToIntPtr();
                     }

@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Engine.Input
 {
-    using ActionScheduler;
     using Controller;
     using Keyboard;
     using Mouse;
+    using Squalr.Engine.TaskScheduler;
     using System;
     using System.Threading;
 

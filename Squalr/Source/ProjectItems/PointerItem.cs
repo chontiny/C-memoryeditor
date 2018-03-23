@@ -4,6 +4,8 @@
     using Squalr.Content;
     using Squalr.Engine;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Memory;
+    using Squalr.Engine.Processes;
     using Squalr.Engine.Utils;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Source.Controls;
@@ -257,13 +259,13 @@
 
             foreach (Int32 offset in this.PointerOffsets)
             {
-                if (Eng.GetInstance().Processes.IsOpenedProcess32Bit())
+                if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
                 {
-                    pointer = Eng.GetInstance().VirtualMemory.Read<Int32>(pointer, out successReading).ToIntPtr();
+                    pointer = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<Int32>(pointer, out successReading).ToIntPtr();
                 }
                 else
                 {
-                    pointer = Eng.GetInstance().VirtualMemory.Read<Int64>(pointer, out successReading).ToIntPtr();
+                    pointer = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<Int64>(pointer, out successReading).ToIntPtr();
                 }
 
                 if (pointer == IntPtr.Zero || !successReading)

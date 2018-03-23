@@ -2,7 +2,7 @@
 {
     using ScanConstraints;
     using Snapshots;
-    using Squalr.Engine.ActionScheduler;
+    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Output;
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;

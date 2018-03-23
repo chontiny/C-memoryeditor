@@ -3,7 +3,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine;
     using Squalr.Engine.Output;
-    using Squalr.Engine.VirtualMemory;
+    using Squalr.Engine.Memory;
     using Squalr.Properties;
     using Squalr.Source.Docking;
     using Squalr.Source.Prefilters;
@@ -234,10 +234,10 @@
             MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image;
 
             IntPtr startAddress = IntPtr.Zero;
-            IntPtr endAddress = Eng.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
+            IntPtr endAddress = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetMaxUsermodeAddress().ToIntPtr();
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();
-            IEnumerable<NormalizedRegion> virtualPages = Eng.GetInstance().VirtualMemory.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -267,7 +267,7 @@
             if (SettingsViewModel.GetInstance().IsUserMode)
             {
                 startAddress = IntPtr.Zero;
-                endAddress = Eng.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
+                endAddress = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetMaxUsermodeAddress().ToIntPtr();
             }
             else
             {
@@ -276,7 +276,7 @@
             }
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();
-            IEnumerable<NormalizedRegion> virtualPages = Eng.GetInstance().VirtualMemory.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -298,7 +298,7 @@
         /// <returns>The created snapshot.</returns>
         private Snapshot CreateSnapshotFromModules()
         {
-            IEnumerable<ReadGroup> moduleGroups = Eng.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            IEnumerable<ReadGroup> moduleGroups = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
             Snapshot moduleSnapshot = new Snapshot(null, moduleGroups);
 
             return moduleSnapshot;
@@ -314,7 +314,7 @@
             Snapshot snapshot = this.CreateSnapshotFromUsermodeMemory();
 
             // Remove module regions
-            IEnumerable<ReadGroup> moduleGroups = Eng.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            IEnumerable<ReadGroup> moduleGroups = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
             snapshot.ReadGroups = snapshot.ReadGroups.Where(group => moduleGroups.All(moduleGroup => moduleGroup.BaseAddress != group.BaseAddress));
 
             return snapshot;

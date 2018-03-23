@@ -4,8 +4,9 @@
     using Squalr.Engine;
     using Squalr.Engine.Architecture;
     using Squalr.Engine.Architecture.Disassembler;
-    using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Engine.Memory;
     using Squalr.Engine.Processes;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
@@ -59,7 +60,7 @@
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
-            Task.Run(() => Eng.GetInstance().Processes.Subscribe(this));
+            Task.Run(() => ProcessAdapterFactory.GetProcessAdapter().Subscribe(this));
         }
 
         /// <summary>
@@ -152,7 +153,7 @@
         {
             if (process != null)
             {
-                this.BaseAddress = Eng.GetInstance().VirtualMemory.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
+                this.BaseAddress = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
 
                 this.LoadInstructions();
             }
@@ -186,14 +187,14 @@
         /// </summary>
         private void LoadInstructions()
         {
-            Byte[] bytes = Eng.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
+            Byte[] bytes = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
 
             if (bytes.IsNullOrEmpty())
             {
                 return;
             }
 
-            Boolean isProcess32Bit = Eng.GetInstance().Processes.IsOpenedProcess32Bit();
+            Boolean isProcess32Bit = ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit();
 
             // Disassemble instructions
             IEnumerable<NormalizedInstruction> disassembledInstructions = this.Disassembler.Disassemble(bytes, isProcess32Bit, this.BaseAddress.ToIntPtr());

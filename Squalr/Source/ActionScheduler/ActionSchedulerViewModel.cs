@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.ActionScheduler
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine.ActionScheduler;
+    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Output;
     using Squalr.Source.Docking;
     using Squalr.Source.Utils.Extensions;

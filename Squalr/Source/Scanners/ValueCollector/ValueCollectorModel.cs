@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.ValueCollector
 {
     using Snapshots;
-    using Squalr.Engine.ActionScheduler;
+    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Output;
     using Squalr.Properties;
     using System;

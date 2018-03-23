@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.ActionScheduler
+﻿namespace Squalr.Engine.TaskScheduler
 {
     using Output;
     using Squalr.Engine.Utils.Extensions;

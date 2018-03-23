@@ -11,7 +11,7 @@
     {
         public DebugEngine()
         {
-            Task.Run(() => Eng.GetInstance().Processes.Subscribe(this));
+            ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
 
         private IDebugClient Client { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.LabelThresholder
 {
-    using Squalr.Engine.ActionScheduler;
+    using Squalr.Engine.TaskScheduler;
     using Squalr.Properties;
     using Squalr.Source.Snapshots;
     using System;

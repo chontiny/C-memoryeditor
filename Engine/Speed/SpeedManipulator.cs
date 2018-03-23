@@ -2,7 +2,6 @@
 {
     using Squalr.Engine.Processes;
     using System;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// Manipulates thread speed in a target process.
@@ -11,7 +10,7 @@
     {
         public SpeedManipulator()
         {
-            Task.Run((Action)(() => { Eng.GetInstance().Processes.Subscribe(this); }));
+            ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
 
         /// <summary>

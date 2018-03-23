@@ -1,14 +1,14 @@
-﻿namespace Squalr.Engine.Processes
+﻿namespace Squalr.Engine.Memory
 {
     using Squalr.Engine.Output;
-    using Squalr.Engine.Processes.Windows;
     using System;
     using System.Threading;
+    using Windows;
 
     /// <summary>
-    /// A class responsible for collecting all running processes on the system.
+    /// Factory for obtaining an object that allows access to the underlying virtual memory of a process.
     /// </summary>
-    internal class ProcessAdapterFactory
+    public class VirtualMemoryAdapterFactory
     {
         /// <summary>
         /// Singleton instance of the <see cref="WindowsAdapter"/> class
@@ -18,10 +18,10 @@
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Gets an adapter to process manipulation.
+        /// Gets an adapter to the virtual memory of another process.
         /// </summary>
         /// <returns>An adapter that provides access to the virtual memory of a process.</returns>
-        public static IProcessAdapter GetProcessAdapter()
+        public static IVirtualMemoryAdapter GetVirtualMemoryAdapter()
         {
             OperatingSystem os = Environment.OSVersion;
             PlatformID platformid = os.Platform;

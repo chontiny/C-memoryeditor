@@ -2,7 +2,7 @@
 {
     using Squalr.Engine;
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.VirtualMemory;
+    using Squalr.Engine.Memory;
     using Squalr.Properties;
     using Squalr.Source.Results;
     using System;
@@ -64,7 +64,7 @@
         public Boolean ReadAllMemory()
         {
             Boolean readSuccess;
-            Byte[] newCurrentValues = Eng.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
+            Byte[] newCurrentValues = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
 
             if (readSuccess)
             {

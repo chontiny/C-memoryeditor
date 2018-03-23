@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.ProcessSelector
 {
-    using Squalr.Engine.ActionScheduler;
+    using Squalr.Engine.TaskScheduler;
     using System;
     using System.Threading;
 

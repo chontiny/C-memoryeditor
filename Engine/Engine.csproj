@@ -11,11 +11,17 @@
 
   <ItemGroup>
     <Compile Remove="Internal\**" />
+    <Compile Remove="Processes\**" />
     <Compile Remove="Utils\**" />
+    <Compile Remove="VirtualMemory\**" />
     <EmbeddedResource Remove="Internal\**" />
+    <EmbeddedResource Remove="Processes\**" />
     <EmbeddedResource Remove="Utils\**" />
+    <EmbeddedResource Remove="VirtualMemory\**" />
     <None Remove="Internal\**" />
+    <None Remove="Processes\**" />
     <None Remove="Utils\**" />
+    <None Remove="VirtualMemory\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,24 +48,27 @@
   <ItemGroup>
     <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
     <ProjectReference Include="..\Engine.Internal.Proxy\Engine.Internal.Proxy.csproj" />
+    <ProjectReference Include="..\Engine.Internal.TaskScheduler\Engine.Internal.TaskScheduler.csproj" />
+    <ProjectReference Include="..\Engine.Memory\Engine.Memory.csproj" />
     <ProjectReference Include="..\Engine.Output\Engine.Output.csproj" />
+    <ProjectReference Include="..\Engine.Processes\Engine.Processes.csproj" />
     <ProjectReference Include="..\Engine.Utils\Engine.Utils.csproj" />
     <ProjectReference Include="Internal\SqualrHookClient\SqualrHookClient.csproj" />
     <ProjectReference Include="Internal\SqualrHookServer\SqualrHookServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Content\Templates\GraphicsInjectionTemplate.cs">
+    <Compile Update="Scripting\Templates\GraphicsInjectionTemplate.cs">
       <DependentUpon>GraphicsInjectionTemplate.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Content\Templates\CodeInjectionTemplate.cs">
+    <Compile Update="Scripting\Templates\CodeInjectionTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>CodeInjectionTemplate.tt</DependentUpon>
     </Compile>
-    <Compile Update="Content\Templates\ScriptTemplate.cs">
+    <Compile Update="Scripting\Templates\ScriptTemplate.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>ScriptTemplate.tt</DependentUpon>
@@ -71,15 +80,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Content\Templates\CodeInjectionTemplate.tt">
+    <None Update="Scripting\Templates\CodeInjectionTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>CodeInjectionTemplate.cs</LastGenOutput>
     </None>
-    <None Update="Content\Templates\GraphicsInjectionTemplate.tt">
+    <None Update="Scripting\Templates\GraphicsInjectionTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>GraphicsInjectionTemplate.cs</LastGenOutput>
     </None>
-    <None Update="Content\Templates\ScriptTemplate.tt">
+    <None Update="Scripting\Templates\ScriptTemplate.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
     </None>

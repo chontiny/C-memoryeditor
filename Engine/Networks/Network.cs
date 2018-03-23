@@ -1,13 +1,12 @@
 ﻿namespace Squalr.Engine.Networks
 {
     using Squalr.Engine.Processes;
-    using System.Threading.Tasks;
 
     internal class Network : INetwork, IProcessObserver
     {
         public Network()
         {
-            Task.Run((System.Action)(() => { Eng.GetInstance().Processes.Subscribe(this); }));
+            ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
 
         private Squalr.Engine.Engine.Hook.HookClient HookClient { get; set; }

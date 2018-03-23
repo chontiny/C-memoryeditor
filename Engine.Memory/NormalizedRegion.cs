@@ -1,7 +1,6 @@
-﻿namespace Squalr.Engine.VirtualMemory
+﻿namespace Squalr.Engine.Memory
 {
     using Output;
-    using Squalr.Engine.Output;
     using System;
     using System.Collections.Generic;
     using System.Linq;

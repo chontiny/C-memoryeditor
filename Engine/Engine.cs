@@ -5,7 +5,6 @@
     using Squalr.Engine.Graphics;
     using Squalr.Engine.Input;
     using Squalr.Engine.Networks;
-    using Squalr.Engine.Processes;
     using Squalr.Engine.Proxy;
     using Squalr.Engine.Speed;
     using Squalr.Engine.Unrandomizer;
@@ -13,7 +12,6 @@
     using Squalr.Engine.VirtualMachines.DotNet;
     using System;
     using System.Threading;
-    using VirtualMemory;
 
     /// <summary>
     /// </summary>
@@ -38,8 +36,6 @@
         public Eng()
         {
             this.Architecture = ArchitectureFactory.GetArchitecture();
-            this.Processes = ProcessAdapterFactory.GetProcessAdapter();
-            this.VirtualMemory = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter();
             this.Debugger = DebuggerFactory.GetDebugger();
             this.Input = new InputManager();
             this.SpeedManipulator = new SpeedManipulator();
@@ -60,15 +56,6 @@
         /// </summary>
         public IArchitecture Architecture { get; private set; }
 
-        /// <summary>
-        /// Gets an object that provides access to target process manipulations.
-        /// </summary>
-        public IProcessAdapter Processes { get; private set; }
-
-        /// <summary>
-        /// Gets an object that provides access to target memory manipulations.
-        /// </summary>
-        public IVirtualMemoryAdapter VirtualMemory { get; private set; }
         /// <summary>
         /// Gets an object that enables debugging of a process.
         /// </summary>

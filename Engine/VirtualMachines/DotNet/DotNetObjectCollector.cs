@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Engine.VirtualMachines.DotNet
 {
-    using Squalr.Engine.ActionScheduler;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Processes;
     using Squalr.Engine.Proxy;
+    using Squalr.Engine.TaskScheduler;
     using System;
     using System.Collections.Generic;
     using System.Reflection;
@@ -109,7 +109,7 @@
             this.UpdateInterval = DotNetObjectCollector.PollingTime;
 
             ProxyCommunicator proxyCommunicator = ProxyCommunicator.GetInstance();
-            NormalizedProcess process = Eng.GetInstance()?.Processes?.GetOpenedProcess();
+            NormalizedProcess process = ProcessAdapterFactory.GetProcessAdapter().GetOpenedProcess();
             /*IProxyService proxyService = proxyCommunicator.GetProxyService(Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit());
 
             if (proxyService == null)
