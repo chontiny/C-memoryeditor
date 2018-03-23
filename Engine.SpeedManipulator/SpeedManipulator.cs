@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Speed
 {
+    using Squalr.Engine.Engine.Hook;
     using Squalr.Engine.Processes;
     using System;
 
@@ -22,7 +23,7 @@
 
         }
 
-        private Engine.Hook.HookClient HookClient { get; set; }
+        private HookClient HookClient { get; set; }
 
         private NormalizedProcess TargetProcess { get; set; }
 
@@ -41,7 +42,7 @@
                 return;
             }
 
-            this.HookClient = new Squalr.Engine.Engine.Hook.HookClient();
+            this.HookClient = new HookClient();
             this.HookClient?.Inject(this.TargetProcess.ProcessId);
         }
 

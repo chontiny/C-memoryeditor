@@ -4,8 +4,9 @@
     using Squalr.Engine.Debugger;
     using Squalr.Engine.Graphics;
     using Squalr.Engine.Input;
+    using Squalr.Engine.Memory;
     using Squalr.Engine.Networks;
-    using Squalr.Engine.Proxy;
+    using Squalr.Engine.Processes;
     using Squalr.Engine.Speed;
     using Squalr.Engine.Unrandomizer;
     using Squalr.Engine.VirtualMachines;
@@ -18,43 +19,43 @@
     public class Eng
     {
         /// <summary>
-        /// Singleton instance of the <see cref="Engine" /> class.
+        /// Singleton instance of the <see cref="Eng" /> class.
         /// </summary>
-        private static readonly Lazy<Eng> engineInstance = new Lazy<Eng>(
-            () => { return new Eng(); },
-            LazyThreadSafetyMode.ExecutionAndPublication);
+        private static Lazy<Eng> engineCoreInstance = new Lazy<Eng>(
+                () => { return new Eng(); },
+                LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Gets an instance of the engine.
+        /// Prevents a default instance of the <see cref="EngineCore" /> class from being created.
         /// </summary>
-        /// <returns>An instance of the engine.</returns>
-        public static Eng GetInstance()
+        private Eng()
         {
-            return engineInstance.Value;
-        }
-
-        public Eng()
-        {
-            this.Architecture = ArchitectureFactory.GetArchitecture();
+            this.Processes = ProcessAdapterFactory.GetProcessAdapter();
+            this.VirtualMemory = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter();
             this.Debugger = DebuggerFactory.GetDebugger();
-            this.Input = new InputManager();
-            this.SpeedManipulator = new SpeedManipulator();
             this.Graphics = new GraphicsAdapter();
             this.Network = new Network();
-
-            this.StartBackgroundServices();
+            this.Architecture = ArchitectureFactory.GetArchitecture();
+            this.Input = new InputManager();
 
             if (this.Architecture.HasVectorSupport())
             {
                 Output.Output.Log(Output.LogLevel.Info, "Hardware acceleration enabled");
                 Output.Output.Log(Output.LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
             }
+
+            this.StartBackgroundServices();
         }
 
         /// <summary>
-        /// Gets an object that provides access to an assembler and disassembler.
+        /// Gets an object that provides access to target process manipulations.
         /// </summary>
-        public IArchitecture Architecture { get; private set; }
+        public IProcessAdapter Processes { get; private set; }
+
+        /// <summary>
+        /// Gets an object that provides access to target memory manipulations.
+        /// </summary>
+        public IVirtualMemoryAdapter VirtualMemory { get; private set; }
 
         /// <summary>
         /// Gets an object that enables debugging of a process.
@@ -65,6 +66,11 @@
         /// Gets an object that provides access to the network access for a process.
         /// </summary>
         public INetwork Network { get; private set; }
+
+        /// <summary>
+        /// Gets an object that provides access to an assembler and disassembler.
+        /// </summary>
+        public IArchitecture Architecture { get; private set; }
 
         /// <summary>
         /// Gets an object that provides access to target execution speed manipulations.
@@ -87,13 +93,21 @@
         public IInputManager Input { get; private set; }
 
         /// <summary>
+        /// Gets an instance of the engine.
+        /// </summary>
+        /// <returns>An instance of the engine.</returns>
+        public static Eng GetInstance()
+        {
+            return engineCoreInstance.Value;
+        }
+
+        /// <summary>
         /// Starts useful services that run in the background to assist in various operations.
         /// </summary>
         private void StartBackgroundServices()
         {
             DotNetObjectCollector.GetInstance().Start();
             AddressResolver.GetInstance().Start();
-            ProxyCommunicator.GetInstance();
 
             Output.Output.Log(Output.LogLevel.Info, "Background services started");
         }

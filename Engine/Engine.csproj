@@ -10,14 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Debugger\**" />
     <Compile Remove="Internal\**" />
     <Compile Remove="Processes\**" />
     <Compile Remove="Utils\**" />
     <Compile Remove="VirtualMemory\**" />
+    <EmbeddedResource Remove="Debugger\**" />
     <EmbeddedResource Remove="Internal\**" />
     <EmbeddedResource Remove="Processes\**" />
     <EmbeddedResource Remove="Utils\**" />
     <EmbeddedResource Remove="VirtualMemory\**" />
+    <None Remove="Debugger\**" />
     <None Remove="Internal\**" />
     <None Remove="Processes\**" />
     <None Remove="Utils\**" />
@@ -31,7 +34,6 @@
 
   <ItemGroup>
     <PackageReference Include="CS-Script.Core" Version="1.0.0.2" />
-    <PackageReference Include="CsDebugScript.DbgEng" Version="1.3.0.69" />
     <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="2.7.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0-preview1-26216-02" />
     <PackageReference Include="SharpDisasmStandard" Version="1.0.1" />
@@ -47,14 +49,16 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Engine.DataTypes\Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\Engine.Debugger\Engine.Debugger.csproj" />
+    <ProjectReference Include="..\Engine.Graphics\Engine.Graphics.csproj" />
     <ProjectReference Include="..\Engine.Internal.Proxy\Engine.Internal.Proxy.csproj" />
     <ProjectReference Include="..\Engine.Internal.TaskScheduler\Engine.Internal.TaskScheduler.csproj" />
     <ProjectReference Include="..\Engine.Memory\Engine.Memory.csproj" />
     <ProjectReference Include="..\Engine.Output\Engine.Output.csproj" />
     <ProjectReference Include="..\Engine.Processes\Engine.Processes.csproj" />
+    <ProjectReference Include="..\Engine.SpeedManipulator\Engine.SpeedManipulator.csproj" />
+    <ProjectReference Include="..\Engine.Unrandomizer\Engine.Unrandomizer.csproj" />
     <ProjectReference Include="..\Engine.Utils\Engine.Utils.csproj" />
-    <ProjectReference Include="Internal\SqualrHookClient\SqualrHookClient.csproj" />
-    <ProjectReference Include="Internal\SqualrHookServer\SqualrHookServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

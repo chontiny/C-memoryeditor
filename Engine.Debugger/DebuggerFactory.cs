@@ -8,7 +8,7 @@
     /// <summary>
     /// Factory for obtaining an object that enables debugging of a process.
     /// </summary>
-    internal class DebuggerFactory
+    public class DebuggerFactory
     {
         /// <summary>
         /// Singleton instance of the <see cref="DebugEngine"/> class

@@ -8,9 +8,6 @@
     using SqualrHookServer.Source.Speed;
     using System;
     using System.Reflection;
-    using System.Runtime.Remoting.Channels;
-    using System.Runtime.Remoting.Channels.Ipc;
-    using System.Runtime.Serialization.Formatters;
     using System.Threading;
     using System.Threading.Tasks;
 
@@ -44,11 +41,11 @@
                 properties["name"] = channelName;
                 properties["portName"] = channelName + Guid.NewGuid().ToString("N");
 
-                BinaryServerFormatterSinkProvider binaryProv = new BinaryServerFormatterSinkProvider();
-                binaryProv.TypeFilterLevel = TypeFilterLevel.Full;
+                //// BinaryServerFormatterSinkProvider binaryProv = new BinaryServerFormatterSinkProvider();
+                ////  binaryProv.TypeFilterLevel = TypeFilterLevel.Full;
 
-                IpcServerChannel clientServerChannel = new IpcServerChannel(properties, binaryProv);
-                ChannelServices.RegisterChannel(clientServerChannel, false);
+                ////  IpcServerChannel clientServerChannel = new IpcServerChannel(properties, binaryProv);
+                ////  ChannelServices.RegisterChannel(clientServerChannel, false);
             }
             catch (Exception ex)
             {

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Engine.Hook\Engine.Hook.csproj" />
+    <ProjectReference Include="..\Engine.Processes\Engine.Processes.csproj" />
+  </ItemGroup>
+
+</Project>
