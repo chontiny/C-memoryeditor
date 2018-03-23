@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Scripting
 {
-    using Squalr.Engine.Content.Templates;
+    using Squalr.Engine.Scripting.Templates;
     using System;
     using System.IO;
     using System.Reflection;

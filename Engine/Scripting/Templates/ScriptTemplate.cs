@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace Squalr.Engine.Content.Templates
+namespace Squalr.Engine.Scripting.Templates
 {
     using System.Linq;
     using System.Text;
@@ -20,7 +20,7 @@ namespace Squalr.Engine.Content.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Content\Templates\ScriptTemplate.tt"
+    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Scripting\Templates\ScriptTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "15.0.0.0")]
     public partial class ScriptTemplate : ScriptTemplateBase
     {
@@ -41,7 +41,7 @@ using Squalr.Engine.Scripting.Memory;
 // The using statements, if any, will be inserted here:
 ");
             
-            #line 17 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Content\Templates\ScriptTemplate.tt"
+            #line 17 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Scripting\Templates\ScriptTemplate.tt"
  this.Write(Squalr.Engine.Scripting.Compiler.ScriptUsingsInsertionIdentifier); 
             
             #line default
@@ -85,7 +85,7 @@ public class Script
 	// The script will be inserted here:
 	");
             
-            #line 55 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Content\Templates\ScriptTemplate.tt"
+            #line 55 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Scripting\Templates\ScriptTemplate.tt"
  this.Write(Squalr.Engine.Scripting.Compiler.ScriptCodeInsertionIdentifier); 
             
             #line default

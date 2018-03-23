@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Results
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine.DataStructures;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Properties;
     using Squalr.Source.Docking;

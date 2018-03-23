@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Utils
 {
-    using Squalr.Engine.DataStructures;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Output;
     using Squalr.Source.Utils.Extensions;
     using Svg;

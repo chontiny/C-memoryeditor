@@ -698,6 +698,10 @@
       <Project>{282d15e4-b290-4de3-8994-ce35de19f91f}</Project>
       <Name>Engine.Internal.Proxy64</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Engine.Output\Engine.Output.csproj">
+      <Project>{9c723e37-c519-4675-a697-e357bf932a0b}</Project>
+      <Name>Engine.Output</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Engine.Utils\Engine.Utils.csproj">
       <Project>{7ad05601-eb5a-4c7c-854a-7024644edc3f}</Project>
       <Name>Engine.Utils</Name>

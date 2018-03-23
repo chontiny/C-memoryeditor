@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Output
 {
-    using Squalr.Engine.DataStructures;
+    using Squalr.Engine.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
 
@@ -77,7 +77,7 @@
                 innerMessage = outputMask.ApplyFilter(innerMessage);
             }
 
-            foreach(IOutputObserver observer in Output.observers.ToList())
+            foreach (IOutputObserver observer in Output.observers.ToList())
             {
                 observer.OnLogEvent(logLevel, message, innerMessage);
             }

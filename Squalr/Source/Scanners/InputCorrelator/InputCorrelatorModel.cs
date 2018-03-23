@@ -3,10 +3,10 @@
     using LabelThresholder;
     using Squalr.Engine;
     using Squalr.Engine.ActionScheduler;
-    using Squalr.Engine.DataStructures;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Engine.Input.Keyboard;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
     using Squalr.Source.Snapshots;
     using Squalr.Source.Utils.Extensions;

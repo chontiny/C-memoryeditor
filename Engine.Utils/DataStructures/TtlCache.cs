@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.DataStructures
+﻿namespace Squalr.Engine.Utils.DataStructures
 {
     using System;
     using System.Collections.Concurrent;

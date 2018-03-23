@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.ScanConstraints
 {
-    using Squalr.Engine.DataStructures;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;

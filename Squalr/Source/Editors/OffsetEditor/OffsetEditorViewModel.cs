@@ -2,7 +2,7 @@
 {
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine.DataStructures;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Mvvm;
     using System;
     using System.Collections.Generic;

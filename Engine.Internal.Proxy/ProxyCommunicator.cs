@@ -11,7 +11,7 @@
     /// <summary>
     /// Communicates with proxy services. These issue commands that require 32 or 64 bit specifically.
     /// </summary>
-    internal class ProxyCommunicator
+    public class ProxyCommunicator
     {
         /// <summary>
         /// The 32 bit proxy service executable

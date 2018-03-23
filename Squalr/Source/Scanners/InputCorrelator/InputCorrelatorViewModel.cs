@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine.DataStructures;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Source.Docking;
     using Squalr.Source.Editors.HotkeyEditor;

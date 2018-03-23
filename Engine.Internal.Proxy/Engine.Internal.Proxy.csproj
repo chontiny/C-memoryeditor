@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Engine.Output\Engine.Output.csproj" />
     <ProjectReference Include="..\Engine\Internal\Fasm\Fasm.NET.vcxproj" />
   </ItemGroup>
 

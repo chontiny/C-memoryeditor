@@ -39,13 +39,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Scripting", "Engine.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Utils", "Engine.Utils\Engine.Utils.csproj", "{7AD05601-EB5A-4C7C-854A-7024644EDC3F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.DataTypes", "Engine.DataTypes\Engine.DataTypes.csproj", "{9EBAD60B-23FD-4CA9-B5E4-553C14D302AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.DataTypes", "Engine.DataTypes\Engine.DataTypes.csproj", "{9EBAD60B-23FD-4CA9-B5E4-553C14D302AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Internal.Proxy", "Engine.Internal.Proxy\Engine.Internal.Proxy.csproj", "{3580C2CC-C1FC-4FC3-8136-F2F9DE7F4443}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Engine.Internal.Proxy", "Engine.Internal.Proxy\Engine.Internal.Proxy.csproj", "{3580C2CC-C1FC-4FC3-8136-F2F9DE7F4443}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Internal.Proxy32", "Engine.Internal.Proxy32\Engine.Internal.Proxy32.csproj", "{C6E853BD-A596-4766-8FF5-846B00D37A75}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Internal.Proxy64", "Engine.Internal.Proxy64\Engine.Internal.Proxy64.csproj", "{282D15E4-B290-4DE3-8994-CE35DE19F91F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine.Output", "Engine.Output\Engine.Output.csproj", "{9C723E37-C519-4675-A697-E357BF932A0B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -245,6 +247,18 @@ Global
 		{282D15E4-B290-4DE3-8994-CE35DE19F91F}.Release|x64.Build.0 = Release|Any CPU
 		{282D15E4-B290-4DE3-8994-CE35DE19F91F}.Release|x86.ActiveCfg = Release|Any CPU
 		{282D15E4-B290-4DE3-8994-CE35DE19F91F}.Release|x86.Build.0 = Release|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Debug|x64.Build.0 = Debug|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Debug|x86.Build.0 = Debug|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Release|x64.ActiveCfg = Release|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Release|x64.Build.0 = Release|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Release|x86.ActiveCfg = Release|Any CPU
+		{9C723E37-C519-4675-A697-E357BF932A0B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -267,6 +281,7 @@ Global
 		{3580C2CC-C1FC-4FC3-8136-F2F9DE7F4443} = {F853488B-5AC3-464C-86D7-32B33051E885}
 		{C6E853BD-A596-4766-8FF5-846B00D37A75} = {F853488B-5AC3-464C-86D7-32B33051E885}
 		{282D15E4-B290-4DE3-8994-CE35DE19F91F} = {F853488B-5AC3-464C-86D7-32B33051E885}
+		{9C723E37-C519-4675-A697-E357BF932A0B} = {F853488B-5AC3-464C-86D7-32B33051E885}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B7E0ADC-CE3B-4148-BD30-7F627B4C8D22}

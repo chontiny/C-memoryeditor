@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.Scanners.ManualScanner
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine.DataStructures;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Output;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;

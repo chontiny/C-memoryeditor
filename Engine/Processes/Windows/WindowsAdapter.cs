@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Engine.Processes.Windows
 {
     using Squalr.Engine.ActionScheduler;
-    using Squalr.Engine.DataStructures;
     using Squalr.Engine.Output;
     using Squalr.Engine.Processes.Windows.Native;
+    using Squalr.Engine.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;

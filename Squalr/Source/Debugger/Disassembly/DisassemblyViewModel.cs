@@ -4,7 +4,7 @@
     using Squalr.Engine;
     using Squalr.Engine.Architecture;
     using Squalr.Engine.Architecture.Disassembler;
-    using Squalr.Engine.DataStructures;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Processes;
     using Squalr.Engine.VirtualMachines;
     using Squalr.Source.Docking;

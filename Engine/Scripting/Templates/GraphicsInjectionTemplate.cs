@@ -7,7 +7,7 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace Squalr.Engine.Content.Templates
+namespace Squalr.Engine.Scripting.Templates
 {
     using System.Linq;
     using System.Text;
@@ -18,7 +18,7 @@ namespace Squalr.Engine.Content.Templates
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Content\Templates\GraphicsInjectionTemplate.tt"
+    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine\Scripting\Templates\GraphicsInjectionTemplate.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "15.0.0.0")]
     public partial class GraphicsInjectionTemplate : GraphicsInjectionTemplateBase
     {

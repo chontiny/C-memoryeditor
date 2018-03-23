@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.DataStructures
+﻿namespace Squalr.Engine.Utils.DataStructures
 {
     using System;
     using System.Collections;
@@ -168,7 +168,7 @@
         /// Converts the concurrent hash set to a list.
         /// </summary>
         /// <returns>The collection as a list.</returns>
-        internal List<T> ToList()
+        public List<T> ToList()
         {
             return this.hashSet.ToList();
         }
