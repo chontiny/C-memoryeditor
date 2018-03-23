@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Editors.ScriptEditor
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine.Scripting.Templates;
+    using global::Engine.Scripting.Templates;
     using Squalr.Source.Docking;
     using System;
     using System.Threading;

@@ -1,0 +1,80 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Squalr.Engine</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Architecture\**" />
+    <Compile Remove="Debugger\**" />
+    <Compile Remove="Internal\**" />
+    <Compile Remove="Processes\**" />
+    <Compile Remove="Scripting\**" />
+    <Compile Remove="Utils\**" />
+    <Compile Remove="VirtualMemory\**" />
+    <EmbeddedResource Remove="Architecture\**" />
+    <EmbeddedResource Remove="Debugger\**" />
+    <EmbeddedResource Remove="Internal\**" />
+    <EmbeddedResource Remove="Processes\**" />
+    <EmbeddedResource Remove="Scripting\**" />
+    <EmbeddedResource Remove="Utils\**" />
+    <EmbeddedResource Remove="VirtualMemory\**" />
+    <None Remove="Architecture\**" />
+    <None Remove="Debugger\**" />
+    <None Remove="Internal\**" />
+    <None Remove="Processes\**" />
+    <None Remove="Scripting\**" />
+    <None Remove="Utils\**" />
+    <None Remove="VirtualMemory\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="VirtualMachines\Java\" />
+    <Folder Include="VirtualMachines\Python\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="2.7.0" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0-preview1-26216-02" />
+    <PackageReference Include="SharpDisasmStandard" Version="1.0.1" />
+    <PackageReference Include="SharpDX" Version="4.1.0-ci217" />
+    <PackageReference Include="SharpDX.DirectInput" Version="4.1.0-ci217" />
+    <PackageReference Include="SharpDX.XInput" Version="4.1.0-ci217" />
+    <PackageReference Include="System.CodeDom" Version="4.5.0-preview1-26216-02" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.0-preview1-26216-02" />
+    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
+    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0-preview1-26216-02" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Squalr.Engine.Architecture\Squalr.Engine.Architecture.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debugger.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Graphics\Squalr.Engine.Graphics.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Hook\Squalr.Engine.Hook.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.Fasm\Fasm.NET.vcxproj" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.HookServer\Squalr.Engine.Internal.HookServer.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy32\Squalr.Engine.Internal.Proxy32.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy64\Squalr.Engine.Internal.Proxy64.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy\Squalr.Engine.Internal.Proxy.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Memory\Squalr.Engine.Memory.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Processes\Squalr.Engine.Processes.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Scripting\Squalr.Engine.Scripting.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.SpeedManipulator\Squalr.Engine.SpeedManipulator.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Unrandomizer\Squalr.Engine.Unrandomizer.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Utils\Squalr.Engine.Utils.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+</Project>
