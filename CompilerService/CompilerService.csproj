@@ -168,20 +168,23 @@
   <ItemGroup>
     <Compile Include="CodeDomCompiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scripting.evaluator.cs" />
+    <Compile Include="Scripting.Extensions.cs" />
+    <Compile Include="Scripting.native.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\Squalr.Engine.Scripting\Squalr.Engine.Scripting.csproj">
       <Project>{0612F4DC-E843-4DD6-8856-98DAD0033DE3}</Project>
       <Name>Squalr.Engine.Scripting</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

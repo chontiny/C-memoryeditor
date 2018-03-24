@@ -70,7 +70,6 @@
 
             this.ClearOutputCommand = new RelayCommand(() => this.ClearOutput(), () => true);
 
-            Output.Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 

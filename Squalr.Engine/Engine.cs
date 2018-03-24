@@ -5,12 +5,12 @@
     using Squalr.Engine.Graphics;
     using Squalr.Engine.Input;
     using Squalr.Engine.Memory;
+    using Squalr.Engine.Memory.Clr;
     using Squalr.Engine.Networks;
+    using Squalr.Engine.Output;
     using Squalr.Engine.Processes;
     using Squalr.Engine.Speed;
     using Squalr.Engine.Unrandomizer;
-    using Squalr.Engine.VirtualMachines;
-    using Squalr.Engine.VirtualMachines.DotNet;
     using System;
     using System.Threading;
 
@@ -36,15 +36,7 @@
             this.Graphics = new GraphicsAdapter();
             this.Network = new Network();
             this.Architecture = ArchitectureFactory.GetArchitecture();
-            this.Input = new InputManager();
-
-            if (this.Architecture.HasVectorSupport())
-            {
-                Output.Output.Log(Output.LogLevel.Info, "Hardware acceleration enabled");
-                Output.Output.Log(Output.LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
-            }
-
-            this.StartBackgroundServices();
+            this.Input = InputManager.GetInstance();
         }
 
         /// <summary>
@@ -99,6 +91,19 @@
         public static Eng GetInstance()
         {
             return engineCoreInstance.Value;
+        }
+
+        public void Initialize(IOutputObserver outputObserver)
+        {
+            Output.Output.Subscribe(outputObserver);
+
+            if (this.Architecture.HasVectorSupport())
+            {
+                Output.Output.Log(LogLevel.Info, "Hardware acceleration enabled");
+                Output.Output.Log(LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
+            }
+
+            this.StartBackgroundServices();
         }
 
         /// <summary>

@@ -1,10 +1,10 @@
-﻿using CSScriptLibrary;
-using Squalr.Engine.Scripting;
-using System;
-using System.IO;
-
-namespace CompilerService
+﻿namespace CompilerService
 {
+    using CSScriptLibrary;
+    using Squalr.Engine.Scripting;
+    using System;
+    using System.IO;
+
     /// <summary>
     /// Class for compiling Squalr scripts. Ideally this would be in the Engine, but cannot until:
     /// - Cs-Script for .NET Standard supports compiling to file with Roslyn
@@ -19,4 +19,6 @@ namespace CompilerService
             return compressedScript;
         }
     }
+    //// End class
 }
+//// End namespace

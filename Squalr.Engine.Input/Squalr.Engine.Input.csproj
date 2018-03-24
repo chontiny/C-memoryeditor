@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SharpDX" Version="4.1.0-ci217" />
+    <PackageReference Include="SharpDX.DirectInput" Version="4.1.0-ci217" />
+    <PackageReference Include="SharpDX.XInput" Version="4.1.0-ci217" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -12,6 +12,7 @@
   <ItemGroup>
     <Compile Remove="Architecture\**" />
     <Compile Remove="Debugger\**" />
+    <Compile Remove="Input\**" />
     <Compile Remove="Internal\**" />
     <Compile Remove="Processes\**" />
     <Compile Remove="Scripting\**" />
@@ -19,6 +20,7 @@
     <Compile Remove="VirtualMemory\**" />
     <EmbeddedResource Remove="Architecture\**" />
     <EmbeddedResource Remove="Debugger\**" />
+    <EmbeddedResource Remove="Input\**" />
     <EmbeddedResource Remove="Internal\**" />
     <EmbeddedResource Remove="Processes\**" />
     <EmbeddedResource Remove="Scripting\**" />
@@ -26,6 +28,7 @@
     <EmbeddedResource Remove="VirtualMemory\**" />
     <None Remove="Architecture\**" />
     <None Remove="Debugger\**" />
+    <None Remove="Input\**" />
     <None Remove="Internal\**" />
     <None Remove="Processes\**" />
     <None Remove="Scripting\**" />
@@ -34,30 +37,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="VirtualMachines\Java\" />
-    <Folder Include="VirtualMachines\Python\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.Scripting" Version="2.7.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.5.0-preview1-26216-02" />
-    <PackageReference Include="SharpDisasmStandard" Version="1.0.1" />
-    <PackageReference Include="SharpDX" Version="4.1.0-ci217" />
-    <PackageReference Include="SharpDX.DirectInput" Version="4.1.0-ci217" />
-    <PackageReference Include="SharpDX.XInput" Version="4.1.0-ci217" />
-    <PackageReference Include="System.CodeDom" Version="4.5.0-preview1-26216-02" />
-    <PackageReference Include="System.Drawing.Common" Version="4.5.0-preview1-26216-02" />
-    <PackageReference Include="System.Dynamic.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0-preview1-26216-02" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Squalr.Engine.Architecture\Squalr.Engine.Architecture.csproj" />
     <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debugger.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Graphics\Squalr.Engine.Graphics.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Hook\Squalr.Engine.Hook.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Input\Squalr.Engine.Input.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Internal.Fasm\Fasm.NET.vcxproj" />
     <ProjectReference Include="..\Squalr.Engine.Internal.HookServer\Squalr.Engine.Internal.HookServer.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Internal.Proxy32\Squalr.Engine.Internal.Proxy32.csproj" />
@@ -65,6 +50,7 @@
     <ProjectReference Include="..\Squalr.Engine.Internal.Proxy\Squalr.Engine.Internal.Proxy.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Memory\Squalr.Engine.Memory.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Networking\Squalr.Engine.Networking.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Processes\Squalr.Engine.Processes.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Scripting\Squalr.Engine.Scripting.csproj" />

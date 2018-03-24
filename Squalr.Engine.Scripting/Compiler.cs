@@ -1,10 +1,13 @@
 ﻿namespace Squalr.Engine.Scripting
 {
+    using CSScriptLib;
     using global::Engine.Scripting.Templates;
+    using Squalr.Engine.Utils.Extensions;
     using System;
     using System.IO;
     using System.Reflection;
     using System.Text;
+    using static CSScriptLib.RoslynEvaluator;
 
     /// <summary>
     /// Class for compiling scripts.
@@ -52,7 +55,19 @@
                 }
                 else
                 {
-                    throw new NotImplementedException("This method is not available in .NET Standard yet. Please register a custom compiler.");
+                    String tempFile = Path.GetTempFileName();
+
+                    CompileInfo info = new CompileInfo
+                    {
+                        AssemblyFile = Path.GetTempFileName()
+                    };
+
+                    CSScript.RoslynEvaluator.CompileCode(script, info);
+
+                    String compiledScriptFile = File.ReadAllText(tempFile);
+                    Byte[] compressedScript = File.ReadAllBytes(compiledScriptFile);
+
+                    return compressedScript;
                 }
             }
             catch (Exception ex)
@@ -64,6 +79,11 @@
 
         public static dynamic LoadCompiledScript(Byte[] assemblyBytes)
         {
+            if (assemblyBytes.IsNullOrEmpty())
+            {
+                return null;
+            }
+
             Assembly assembly = Assembly.Load(assemblyBytes);
 
             return assembly.CreateObject("*");

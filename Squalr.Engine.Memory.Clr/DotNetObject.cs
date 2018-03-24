@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.VirtualMachines.DotNet
+﻿namespace Squalr.Engine.Memory.Clr
 {
     using Squalr.Engine.DataTypes;
     using System;

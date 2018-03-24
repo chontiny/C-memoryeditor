@@ -2,7 +2,6 @@
 {
     using Processes;
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.Processes;
     using System;
     using System.Collections.Generic;
 

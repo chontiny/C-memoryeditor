@@ -10,23 +10,35 @@
     /// <summary>
     /// Manages all input devices and is responsible for updating them.
     /// </summary>
-    internal class InputManager : ScheduledTask, IInputManager
+    public class InputManager : ScheduledTask, IInputManager
     {
+        /// <summary>
+        /// Singleton instance of the <see cref="WindowsAdapter"/> class
+        /// </summary>
+        private static Lazy<InputManager> inputManagerInstance = new Lazy<InputManager>(
+            () => { return new InputManager(); },
+            LazyThreadSafetyMode.ExecutionAndPublication);
+
         /// <summary>
         /// The rate at which to collect input in ms. Currently ~60 times per second.
         /// </summary>
         private const Int32 InputCollectionIntervalMs = 1000 / 60;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InputManager" /> class.
+        /// Prevents a default instance of the <see cref="InputManager" /> class.
         /// </summary>
-        public InputManager() : base("Input Manager", isRepeated: true, trackProgress: false)
+        private InputManager() : base("Input Manager", isRepeated: true, trackProgress: false)
         {
             this.ControllerSubject = new ControllerCapture();
             this.KeyboardSubject = new KeyboardCapture();
             this.MouseSubject = new MouseCapture();
 
             this.Start();
+        }
+
+        public static InputManager GetInstance()
+        {
+            return InputManager.inputManagerInstance.Value;
         }
 
         /// <summary>

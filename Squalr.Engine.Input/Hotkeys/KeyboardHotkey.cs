@@ -31,7 +31,7 @@
             this.ActivationDelay = KeyboardHotkey.DefaultActivationDelay;
             this.AccessLock = new object();
 
-            this.Subscription = Eng.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+            this.Subscription = InputManager.GetInstance().GetKeyboardCapture().WeakSubscribe(this);
         }
 
         /// <summary>
@@ -55,12 +55,12 @@
             this.ActivationDelay = KeyboardHotkey.DefaultActivationDelay;
             this.AccessLock = new object();
 
-            this.Subscription = Eng.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+            this.Subscription = InputManager.GetInstance().GetKeyboardCapture().WeakSubscribe(this);
         }
 
         public override void Dispose()
         {
-            Eng.GetInstance().Input?.GetKeyboardCapture().Unsubscribe(this.Subscription);
+            InputManager.GetInstance().GetKeyboardCapture().Unsubscribe(this.Subscription);
         }
 
         public void OnNext(KeyState value)

@@ -2,9 +2,9 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Memory;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
-    using Squalr.Engine.VirtualMachines;
     using Squalr.Properties;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;

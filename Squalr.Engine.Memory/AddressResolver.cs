@@ -1,7 +1,6 @@
-﻿namespace Squalr.Engine.VirtualMachines
+﻿namespace Squalr.Engine.Memory
 {
-    using DotNet;
-    using Squalr.Engine.Memory;
+    using Squalr.Engine.Memory.Clr;
     using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -101,8 +100,9 @@
         /// <returns>The base address as defined by the keyword.</returns>
         public IntPtr ResolveGlobalKeyword(String identifier)
         {
-            Scripting.ScriptEngine scriptEngine = new Scripting.ScriptEngine();
-            return ((dynamic)scriptEngine.MemoryCore.GetGlobalKeyword(identifier))?.ToIntPtr() ?? IntPtr.Zero;
+            // Scripting.ScriptEngine scriptEngine = new Scripting.ScriptEngine();
+            // return ((dynamic)scriptEngine.MemoryCore.GetGlobalKeyword(identifier))?.ToIntPtr() ?? IntPtr.Zero;
+            throw new NotImplementedException();
         }
 
         /// <summary>

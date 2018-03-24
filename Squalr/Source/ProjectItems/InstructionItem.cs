@@ -2,8 +2,8 @@
 {
     using Squalr.Content;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Memory;
     using Squalr.Engine.Utils;
-    using Squalr.Engine.VirtualMachines;
     using Squalr.Source.Controls;
     using Squalr.Source.Utils.Extensions;
     using Squalr.Source.Utils.TypeConverters;

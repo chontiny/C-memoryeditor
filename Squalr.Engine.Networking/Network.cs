@@ -1,8 +1,9 @@
 ﻿namespace Squalr.Engine.Networks
 {
+    using Squalr.Engine.Engine.Hook;
     using Squalr.Engine.Processes;
 
-    internal class Network : INetwork, IProcessObserver
+    public class Network : INetwork, IProcessObserver
     {
         public Network()
         {
@@ -29,7 +30,7 @@
                 return;
             }
 
-            this.HookClient = new Squalr.Engine.Engine.Hook.HookClient();
+            this.HookClient = new HookClient();
             this.HookClient?.Inject(this.TargetProcess.ProcessId);
         }
 

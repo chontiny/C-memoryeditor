@@ -2,11 +2,13 @@
 {
     using CompilerService;
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine;
     using Squalr.Engine.Output;
     using Squalr.Engine.Scripting;
     using Squalr.Properties;
     using Squalr.Source.ChangeLog;
     using Squalr.Source.Docking;
+    using Squalr.Source.Output;
     using Squalr.Source.ProjectExplorer;
     using System;
     using System.Threading;
@@ -30,6 +32,9 @@
         /// </summary>
         private MainViewModel() : base()
         {
+            // Initialize the engine and register any output to our view model
+            Eng.GetInstance().Initialize(OutputViewModel.GetInstance());
+
             Output.Log(LogLevel.Info, "Squalr developer tools started");
 
             // The Engine is .NET Standard and there are no compiler libraries. Squalr compensates for this here by passing in a functional full framework compiler.

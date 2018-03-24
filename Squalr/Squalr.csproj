@@ -98,6 +98,9 @@
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpDX.4.1.0-ci217\lib\net45\SharpDX.dll</HintPath>
     </Reference>
@@ -706,6 +709,10 @@
       <Project>{2d9dae4d-3610-4c41-9c72-ca13d535078d}</Project>
       <Name>Squalr.Engine.Hook</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Squalr.Engine.Input\Squalr.Engine.Input.csproj">
+      <Project>{53a598f0-69ed-4311-848e-5f74b4ae8e3f}</Project>
+      <Name>Squalr.Engine.Input</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Internal.Proxy32\Squalr.Engine.Internal.Proxy32.csproj">
       <Project>{c6e853bd-a596-4766-8ff5-846b00d37a75}</Project>
       <Name>Squalr.Engine.Internal.Proxy32</Name>
@@ -718,9 +725,17 @@
       <Project>{1884cb62-2dc0-4a76-9a77-af61238e29bd}</Project>
       <Name>Squalr.Engine.Internal.TaskScheduler</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Squalr.Engine.Memory.Clr\Squalr.Engine.Memory.Clr.csproj">
+      <Project>{d4a3478b-3e94-4a86-92a9-8dc69117e371}</Project>
+      <Name>Squalr.Engine.Memory.Clr</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Memory\Squalr.Engine.Memory.csproj">
       <Project>{77e64e71-8e26-4311-9c10-61d4cafd4fef}</Project>
       <Name>Squalr.Engine.Memory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Squalr.Engine.Networking\Squalr.Engine.Networking.csproj">
+      <Project>{e4bf8497-1d90-47e4-9e8d-4c1a33eb674c}</Project>
+      <Name>Squalr.Engine.Networking</Name>
     </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj">
       <Project>{9c723e37-c519-4675-a697-e357bf932a0b}</Project>

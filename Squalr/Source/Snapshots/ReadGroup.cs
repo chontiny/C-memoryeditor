@@ -64,7 +64,7 @@
         public Boolean ReadAllMemory()
         {
             Boolean readSuccess;
-            Byte[] newCurrentValues = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
+            Byte[] newCurrentValues = Eng.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
 
             if (readSuccess)
             {
