@@ -1,17 +1,17 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Engine.Output;
     using Squalr.Properties;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Editors.ScriptEditor;
-    using SqualrCore.Source.Editors.ValueEditor;
-    using SqualrCore.Source.Output;
-    using SqualrCore.Source.ProjectItems;
-    using SqualrCore.Source.PropertyViewer;
-    using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.DataStructures;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Controls;
+    using Squalr.Source.Docking;
+    using Squalr.Source.Editors.ScriptEditor;
+    using Squalr.Source.Editors.ValueEditor;
+    using Squalr.Source.ProjectItems;
+    using Squalr.Source.PropertyViewer;
+    using Squalr.Source.Utils;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -84,7 +84,7 @@
             this.ProjectItems = new FullyObservableCollection<ProjectItem>();
             this.Update();
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
@@ -283,7 +283,7 @@
                     this.AddNewProjectItems(true, new InstructionItem());
                     break;
                 default:
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
+                    Output.Log(LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
                     break;
             }
         }

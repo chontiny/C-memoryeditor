@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Results
 {
-    using SqualrCore.Source.ProjectItems;
+    using Squalr.Source.ProjectItems;
     using System;
     using System.ComponentModel;
     using System.Windows.Media.Imaging;

@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
-    using SqualrCore.Source.ProjectItems;
+    using Squalr.Source.ProjectItems;
     using System;
     using System.Collections;
     using System.Collections.Generic;

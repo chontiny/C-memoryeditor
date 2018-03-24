@@ -1,15 +1,15 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
     using LabelThresholder;
+    using Squalr.Engine;
+    using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Input.HotKeys;
+    using Squalr.Engine.Input.Keyboard;
+    using Squalr.Engine.TaskScheduler;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
     using Squalr.Source.Snapshots;
-    using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.Input.HotKeys;
-    using SqualrCore.Source.Engine.Input.Keyboard;
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.Utils.DataStructures;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -106,7 +106,7 @@
 
             // Initialize labeled snapshot
             this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.LabelDataType = DataTypes.Int16;
+            this.Snapshot.LabelDataType = DataType.Int16;
 
             if (this.Snapshot == null)
             {
@@ -229,7 +229,7 @@
 
         private void InitializeObservers()
         {
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+            Eng.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
         }
 
         private Boolean IsInputConditionValid(DateTime updateTime)
@@ -246,7 +246,7 @@
         {
             this.Snapshot = null;
 
-            EngineCore.GetInstance().Input?.GetKeyboardCapture().Unsubscribe(this);
+            Eng.GetInstance().Input?.GetKeyboardCapture().Unsubscribe(this);
         }
     }
     //// End class

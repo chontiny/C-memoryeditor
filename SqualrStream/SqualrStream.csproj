@@ -276,26 +276,6 @@
       <Project>{78010aa2-1ecc-4cf6-87d0-c27578e79698}</Project>
       <Name>SqualrCore</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SqualrHookClient\SqualrHookClient.csproj">
-      <Project>{e9576568-5640-4883-aa5d-0bb2f6853e18}</Project>
-      <Name>SqualrHookClient</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SqualrHook\SqualrHookServer.csproj">
-      <Project>{78c9c399-d9ad-426a-8164-f872745aae3c}</Project>
-      <Name>SqualrHookServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SqualrProxy32\SqualrProxy32.csproj">
-      <Project>{51ac9959-afee-4f91-8a19-03cf0528ab62}</Project>
-      <Name>SqualrProxy32</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SqualrProxy64\SqualrProxy64.csproj">
-      <Project>{65eec6df-ccc8-46ab-b9fb-00d5a624fe94}</Project>
-      <Name>SqualrProxy64</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SqualrProxy\SqualrProxy.csproj">
-      <Project>{2f739124-dda6-45cf-ad05-1b94a04643f1}</Project>
-      <Name>SqualrProxy</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Xceed.Wpf.AvalonDock\Xceed.Wpf.AvalonDock.csproj">
       <Project>{60d1d960-8aae-4f87-8d85-0c2bdd6254b1}</Project>
       <Name>Xceed.Wpf.AvalonDock</Name>

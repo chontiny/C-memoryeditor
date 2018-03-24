@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners.Pointers.Structures
 {
+    using Squalr.Engine.Memory;
     using Squalr.Source.Snapshots;
-    using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Concurrent;

@@ -1,14 +1,14 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine;
+    using Squalr.Engine.Memory;
+    using Squalr.Engine.Output;
     using Squalr.Properties;
+    using Squalr.Source.Docking;
     using Squalr.Source.Prefilters;
     using Squalr.Source.Results;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.VirtualMemory;
-    using SqualrCore.Source.Output;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -49,7 +49,7 @@
             this.UndoSnapshotCommand = new RelayCommand(() => this.UndoSnapshot(), () => true);
             this.RedoSnapshotCommand = new RelayCommand(() => this.RedoSnapshot(), () => true);
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
@@ -178,7 +178,7 @@
                 case SnapshotRetrievalMode.FromStack:
                     throw new NotImplementedException();
                 default:
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unknown snapshot retrieval mode");
+                    Output.Log(LogLevel.Error, "Unknown snapshot retrieval mode");
                     return null;
             }
         }
@@ -234,10 +234,10 @@
             MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image;
 
             IntPtr startAddress = IntPtr.Zero;
-            IntPtr endAddress = EngineCore.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
+            IntPtr endAddress = Eng.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = Eng.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -267,7 +267,7 @@
             if (SettingsViewModel.GetInstance().IsUserMode)
             {
                 startAddress = IntPtr.Zero;
-                endAddress = EngineCore.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
+                endAddress = Eng.GetInstance().VirtualMemory.GetMaxUsermodeAddress().ToIntPtr();
             }
             else
             {
@@ -276,7 +276,7 @@
             }
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();
-            IEnumerable<NormalizedRegion> virtualPages = EngineCore.GetInstance().VirtualMemory.GetVirtualPages(
+            IEnumerable<NormalizedRegion> virtualPages = Eng.GetInstance().VirtualMemory.GetVirtualPages(
                 requiredPageFlags,
                 excludedPageFlags,
                 allowedTypeFlags,
@@ -298,7 +298,7 @@
         /// <returns>The created snapshot.</returns>
         private Snapshot CreateSnapshotFromModules()
         {
-            IEnumerable<ReadGroup> moduleGroups = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            IEnumerable<ReadGroup> moduleGroups = Eng.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
             Snapshot moduleSnapshot = new Snapshot(null, moduleGroups);
 
             return moduleSnapshot;
@@ -314,7 +314,7 @@
             Snapshot snapshot = this.CreateSnapshotFromUsermodeMemory();
 
             // Remove module regions
-            IEnumerable<ReadGroup> moduleGroups = EngineCore.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            IEnumerable<ReadGroup> moduleGroups = Eng.GetInstance().VirtualMemory.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
             snapshot.ReadGroups = snapshot.ReadGroups.Where(group => moduleGroups.All(moduleGroup => moduleGroup.BaseAddress != group.BaseAddress));
 
             return snapshot;

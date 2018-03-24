@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Properties
 {
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine.VirtualMemory;
+    using Squalr.Engine.Memory;
+    using Squalr.Source.Docking;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -83,8 +83,7 @@
         /// </summary>
         private SettingsViewModel() : base("Settings")
         {
-            // Subscribe async to avoid a deadlock situation
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>

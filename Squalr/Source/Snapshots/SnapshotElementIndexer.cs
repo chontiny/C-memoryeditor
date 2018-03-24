@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Engine.DataTypes;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Runtime.CompilerServices;
 
@@ -66,25 +66,25 @@
             {
                 switch (this.Region.ReadGroup.ElementDataType)
                 {
-                    case DataType type when type == DataTypes.Byte:
+                    case DataType type when type == DataType.Byte:
                         return *pointerBase;
-                    case DataType type when type == DataTypes.SByte:
+                    case DataType type when type == DataType.SByte:
                         return *(SByte*)pointerBase;
-                    case DataType type when type == DataTypes.Int16:
+                    case DataType type when type == DataType.Int16:
                         return *(Int16*)pointerBase;
-                    case DataType type when type == DataTypes.Int32:
+                    case DataType type when type == DataType.Int32:
                         return *(Int32*)pointerBase;
-                    case DataType type when type == DataTypes.Int64:
+                    case DataType type when type == DataType.Int64:
                         return *(Int64*)pointerBase;
-                    case DataType type when type == DataTypes.UInt16:
+                    case DataType type when type == DataType.UInt16:
                         return *(UInt16*)pointerBase;
-                    case DataType type when type == DataTypes.UInt32:
+                    case DataType type when type == DataType.UInt32:
                         return *(UInt32*)pointerBase;
-                    case DataType type when type == DataTypes.UInt64:
+                    case DataType type when type == DataType.UInt64:
                         return *(UInt64*)pointerBase;
-                    case DataType type when type == DataTypes.Single:
+                    case DataType type when type == DataType.Single:
                         return *(Single*)pointerBase;
-                    case DataType type when type == DataTypes.Double:
+                    case DataType type when type == DataType.Double:
                         return *(Double*)pointerBase;
                     default:
                         throw new ArgumentException();
@@ -98,25 +98,25 @@
             {
                 switch (this.Region.ReadGroup.ElementDataType)
                 {
-                    case DataType type when type == DataTypes.Byte:
+                    case DataType type when type == DataType.Byte:
                         return *pointerBase;
-                    case DataType type when type == DataTypes.SByte:
+                    case DataType type when type == DataType.SByte:
                         return *(SByte*)pointerBase;
-                    case DataType type when type == DataTypes.Int16:
+                    case DataType type when type == DataType.Int16:
                         return *(Int16*)pointerBase;
-                    case DataType type when type == DataTypes.Int32:
+                    case DataType type when type == DataType.Int32:
                         return *(Int32*)pointerBase;
-                    case DataType type when type == DataTypes.Int64:
+                    case DataType type when type == DataType.Int64:
                         return *(Int64*)pointerBase;
-                    case DataType type when type == DataTypes.UInt16:
+                    case DataType type when type == DataType.UInt16:
                         return *(UInt16*)pointerBase;
-                    case DataType type when type == DataTypes.UInt32:
+                    case DataType type when type == DataType.UInt32:
                         return *(UInt32*)pointerBase;
-                    case DataType type when type == DataTypes.UInt64:
+                    case DataType type when type == DataType.UInt64:
                         return *(UInt64*)pointerBase;
-                    case DataType type when type == DataTypes.Single:
+                    case DataType type when type == DataType.Single:
                         return *(Single*)pointerBase;
-                    case DataType type when type == DataTypes.Double:
+                    case DataType type when type == DataType.Double:
                         return *(Double*)pointerBase;
                     default:
                         throw new ArgumentException();

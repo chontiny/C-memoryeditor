@@ -1,0 +1,32 @@
+﻿<UserControl
+    x:Class="Squalr.View.DataTemplateError"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="SqualrDataTemplateError"
+    d:DesignHeight="256"
+    d:DesignWidth="480"
+    mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public DataTemplateError() { InitializeComponent(); }]]>
+    </x:Code>
+    <Grid>
+        <TextBlock
+            Padding="8"
+            Foreground="Red"
+            TextWrapping="Wrap">
+            Error loading data template!
+            <LineBreak />
+            To display a new panel, be sure to update the following files in either Squalr or SqualrStream:
+            <LineBreak />
+            Create a new ViewModel class that extends ToolViewModel
+            <LineBreak />
+            Update ViewModelLocator.cs to return the singleton instance of the class
+            <LineBreak />
+            Update ViewTemplateSelector.cs to bind the viewmodel to a data template
+            <LineBreak />
+            Update MainWindow.xaml and add the view template under &lt;view:ViewTemplateSelector&gt;
+        </TextBlock>
+    </Grid>
+</UserControl>

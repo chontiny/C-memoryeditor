@@ -1,14 +1,14 @@
 ﻿namespace Squalr.Source.Results
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Utils;
+    using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.ProjectItems;
     using Squalr.Source.Scanners.Pointers.Structures;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.ProjectItems;
-    using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.DataStructures;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -88,7 +88,7 @@
             this.AddAddressCommand = new RelayCommand<PointerItem>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
-            this.ActiveType = DataTypes.Int32;
+            this.ActiveType = DataType.Int32;
             this.pointers = new FullyObservableCollection<PointerItem>();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);

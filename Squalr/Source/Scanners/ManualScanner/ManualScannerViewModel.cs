@@ -1,12 +1,12 @@
 ﻿namespace Squalr.Source.Scanners.ManualScanner
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Output;
+    using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Source.Docking;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.ScanConstraints;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.Output;
-    using SqualrCore.Source.Utils.DataStructures;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -65,10 +65,10 @@
             this.CurrentScanConstraint = new ScanConstraint(ScanConstraint.ConstraintType.Equal);
             this.ManualScannerModel = new ManualScan();
             this.ScanConstraintManager = new ScanConstraintManager();
-            this.ScanConstraintManager.SetElementType(DataTypes.Int32);
+            this.ScanConstraintManager.SetElementType(DataType.Int32);
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
@@ -279,7 +279,7 @@
 
             if (!allScanConstraints.IsValid())
             {
-                OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Warn, "Unable to start scan with given constraints");
+                Output.Log(LogLevel.Warn, "Unable to start scan with given constraints");
                 return;
             }
 

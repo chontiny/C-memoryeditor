@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Results
 {
-    using SqualrCore.Source.Engine.Types;
+    using Squalr.Engine.DataTypes;
 
     /// <summary>
     /// Interface for a class which listens for changes in the active data type.

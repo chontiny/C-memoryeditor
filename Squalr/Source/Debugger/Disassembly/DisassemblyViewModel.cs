@@ -1,16 +1,16 @@
 ﻿namespace Squalr.Source.Debugger.Disassembly
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine;
+    using Squalr.Engine.Architecture;
+    using Squalr.Engine.Architecture.Disassembler;
+    using Squalr.Engine.Memory;
+    using Squalr.Engine.Processes;
+    using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.Architecture;
-    using SqualrCore.Source.Engine.Architecture.Disassembler;
-    using SqualrCore.Source.Engine.Processes;
-    using SqualrCore.Source.Engine.VirtualMachines;
-    using SqualrCore.Source.ProjectItems;
-    using SqualrCore.Source.Utils.DataStructures;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.ProjectItems;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -59,7 +59,7 @@
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
-            Task.Run(() => EngineCore.GetInstance().Processes.Subscribe(this));
+            Task.Run(() => ProcessAdapterFactory.GetProcessAdapter().Subscribe(this));
         }
 
         /// <summary>
@@ -135,7 +135,7 @@
         {
             get
             {
-                return EngineCore.GetInstance().Architecture.GetDisassembler();
+                return Eng.GetInstance().Architecture.GetDisassembler();
             }
         }
 
@@ -152,7 +152,7 @@
         {
             if (process != null)
             {
-                this.BaseAddress = EngineCore.GetInstance().VirtualMemory.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
+                this.BaseAddress = Eng.GetInstance().VirtualMemory.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
 
                 this.LoadInstructions();
             }
@@ -186,14 +186,14 @@
         /// </summary>
         private void LoadInstructions()
         {
-            Byte[] bytes = EngineCore.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
+            Byte[] bytes = Eng.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
 
             if (bytes.IsNullOrEmpty())
             {
                 return;
             }
 
-            Boolean isProcess32Bit = EngineCore.GetInstance().Processes.IsOpenedProcess32Bit();
+            Boolean isProcess32Bit = ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit();
 
             // Disassemble instructions
             IEnumerable<NormalizedInstruction> disassembledInstructions = this.Disassembler.Disassemble(bytes, isProcess32Bit, this.BaseAddress.ToIntPtr());

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="PipeDream" Version="1.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Squalr.Engine.Internal.Fasm\Fasm.NET.vcxproj" />
+    <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,11 +1,11 @@
 ﻿namespace Squalr.Source.Scanners.ChangeCounter
 {
     using LabelThresholder;
+    using Squalr.Engine.DataTypes;
+    using Squalr.Engine.TaskScheduler;
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;
     using Squalr.Source.Snapshots;
-    using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.Engine.Types;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -76,7 +76,7 @@
         {
             // Initialize labeled snapshot
             this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
-            this.Snapshot.LabelDataType = DataTypes.UInt16;
+            this.Snapshot.LabelDataType = DataType.UInt16;
 
             if (this.Snapshot == null)
             {

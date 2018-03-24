@@ -1,11 +1,11 @@
 ﻿namespace Squalr.View
 {
+    using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Utils;
+    using Squalr.Engine.Utils.Extensions;
+    using Squalr.Source.Controls;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.Pointers;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.Extensions;
     using System;
     using System.Threading.Tasks;
     using System.Windows.Controls;
@@ -23,22 +23,22 @@
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
-            this.PointerScanAddressHexDecBox = new HexDecTextBox(DataTypes.UInt64);
+            this.PointerScanAddressHexDecBox = new HexDecTextBox(DataType.UInt64);
             this.PointerScanAddressHexDecBox.IsHex = true;
             this.PointerScanAddressHexDecBox.TextChanged += this.PointerScanAddressUpdated;
             this.pointerScanAddressHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerScanAddressHexDecBox));
 
-            this.DepthHexDecBox = new HexDecTextBox(DataTypes.Int32);
+            this.DepthHexDecBox = new HexDecTextBox(DataType.Int32);
             this.DepthHexDecBox.TextChanged += this.DepthUpdated;
             this.DepthHexDecBox.SetValue(PointerScannerViewModel.DefaultPointerScanDepth);
             this.depthHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.DepthHexDecBox));
 
-            this.PointerRadiusHexDecBox = new HexDecTextBox(DataTypes.Int32);
+            this.PointerRadiusHexDecBox = new HexDecTextBox(DataType.Int32);
             this.PointerRadiusHexDecBox.TextChanged += this.PointerRadiusUpdated;
             this.PointerRadiusHexDecBox.SetValue(PointerScannerViewModel.DefaultPointerScanRadius);
             this.pointerRadiusHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRadiusHexDecBox));
 
-            this.PointerRescanAddressHexDecBox = new HexDecTextBox(DataTypes.UInt64);
+            this.PointerRescanAddressHexDecBox = new HexDecTextBox(DataType.UInt64);
             this.PointerRescanAddressHexDecBox.IsHex = true;
             this.PointerRescanAddressHexDecBox.TextChanged += this.PointerRescanAddressUpdated;
             this.pointerRescanAddressHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRescanAddressHexDecBox));
@@ -136,7 +136,7 @@
         private void DepthUpdated(Object sender, EventArgs e)
         {
             Object value = this.DepthHexDecBox.GetValue();
-            Int32 realValue = value == null ? 0 : (Int32)Conversions.ParsePrimitiveStringAsPrimitive(DataTypes.Int32, value.ToString());
+            Int32 realValue = value == null ? 0 : (Int32)Conversions.ParsePrimitiveStringAsPrimitive(DataType.Int32, value.ToString());
 
             if (this.DepthHexDecBox.IsValid())
             {
@@ -154,7 +154,7 @@
         private void PointerRadiusUpdated(Object sender, EventArgs e)
         {
             Object value = this.PointerRadiusHexDecBox.GetValue();
-            this.PointerScannerViewModel.SetPointerRadiusCommand.Execute(value == null ? 0 : Conversions.ParsePrimitiveStringAsPrimitive(DataTypes.Int32, value.ToString()));
+            this.PointerScannerViewModel.SetPointerRadiusCommand.Execute(value == null ? 0 : Conversions.ParsePrimitiveStringAsPrimitive(DataType.Int32, value.ToString()));
         }
     }
     //// End class

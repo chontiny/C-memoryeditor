@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Snapshots
 {
     using Scanners.ScanConstraints;
-    using SqualrCore.Source.Engine;
-    using SqualrCore.Source.Engine.Types;
-    using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Engine;
+    using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Utils;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -26,10 +26,10 @@
             ScanConstraintManager scanConstraints)
         {
             this.Region = region;
-            this.VectorSize = EngineCore.GetInstance().Architecture.GetVectorSize();
+            this.VectorSize = Eng.GetInstance().Architecture.GetVectorSize();
             this.VectorReadBase = this.Region.ReadGroupOffset - this.Region.ReadGroupOffset % this.VectorSize;
             this.VectorReadIndex = 0;
-            this.DataTypeSize = Conversions.SizeOf(this.Region.ReadGroup.ElementDataType);
+            this.DataTypeize = Conversions.SizeOf(this.Region.ReadGroup.ElementDataType);
 
             // Initialize capacity to 1/16 elements
             this.ResultRegions = new List<SnapshotRegion>(unchecked((Int32)(this.Region.ElementCount)) / 16);
@@ -136,7 +136,7 @@
         /// <summary>
         /// Gets or sets the size of the data type being compared.
         /// </summary>
-        private Int32 DataTypeSize { get; set; }
+        private Int32 DataTypeize { get; set; }
 
         /// <summary>
         /// Gets or sets the list of discovered result regions.
@@ -171,7 +171,7 @@
                 // Otherwise the vector contains a mixture of true and false
                 else
                 {
-                    for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
+                    for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeize)
                     {
                         // Vector result was false
                         if (scanResults[unchecked((Int32)index)] == 0)
@@ -186,7 +186,7 @@
                         // Vector result was true
                         else
                         {
-                            this.RunLength += this.DataTypeSize;
+                            this.RunLength += this.DataTypeize;
                             this.Encoding = true;
                         }
                     }
@@ -301,7 +301,7 @@
         {
             switch (this.Region.ReadGroup.ElementDataType)
             {
-                case DataType type when type == DataTypes.Byte:
+                case DataType type when type == DataType.Byte:
                     this.Changed = () => { return Vector.Equals(this.CurrentValues, this.PreviousValues); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.Equals(this.CurrentValues, this.PreviousValues)); };
                     this.Increased = () => { return Vector.GreaterThan(this.CurrentValues, this.PreviousValues); };
@@ -315,7 +315,7 @@
                     this.IncreasedByValue = (value) => { return Vector.Equals(this.CurrentValues, Vector.Add(this.PreviousValues, new Vector<Byte>(unchecked((Byte)value)))); };
                     this.DecreasedByValue = (value) => { return Vector.Equals(this.CurrentValues, Vector.Subtract(this.PreviousValues, new Vector<Byte>(unchecked((Byte)value)))); };
                     break;
-                case DataType type when type == DataTypes.SByte:
+                case DataType type when type == DataType.SByte:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.AsVectorSByte(this.PreviousValues))); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.AsVectorSByte(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorSByte(this.CurrentValues), Vector.AsVectorSByte(this.PreviousValues))); };
@@ -329,7 +329,7 @@
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.Add(Vector.AsVectorSByte(this.PreviousValues), new Vector<SByte>(unchecked((SByte)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSByte(this.CurrentValues), Vector.Subtract(Vector.AsVectorSByte(this.PreviousValues), new Vector<SByte>(unchecked((SByte)value))))); };
                     break;
-                case DataType type when type == DataTypes.Int16:
+                case DataType type when type == DataType.Int16:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.AsVectorInt16(this.PreviousValues))); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.AsVectorInt16(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorInt16(this.CurrentValues), Vector.AsVectorInt16(this.PreviousValues))); };
@@ -343,7 +343,7 @@
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.Add(Vector.AsVectorInt16(this.PreviousValues), new Vector<Int16>(unchecked((Int16)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt16(this.CurrentValues), Vector.Subtract(Vector.AsVectorInt16(this.PreviousValues), new Vector<Int16>(unchecked((Int16)value))))); };
                     break;
-                case DataType type when type == DataTypes.Int32:
+                case DataType type when type == DataType.Int32:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.AsVectorInt32(this.PreviousValues))); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.AsVectorInt32(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorInt32(this.CurrentValues), Vector.AsVectorInt32(this.PreviousValues))); };
@@ -357,7 +357,7 @@
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.Add(Vector.AsVectorInt32(this.PreviousValues), new Vector<Int32>(unchecked((Int32)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt32(this.CurrentValues), Vector.Subtract(Vector.AsVectorInt32(this.PreviousValues), new Vector<Int32>(unchecked((Int32)value))))); };
                     break;
-                case DataType type when type == DataTypes.Int64:
+                case DataType type when type == DataType.Int64:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.AsVectorInt64(this.PreviousValues))); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.AsVectorInt64(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorInt64(this.CurrentValues), Vector.AsVectorInt64(this.PreviousValues))); };
@@ -371,7 +371,7 @@
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.Add(Vector.AsVectorInt64(this.PreviousValues), new Vector<Int64>(unchecked((Int64)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorInt64(this.CurrentValues), Vector.Subtract(Vector.AsVectorInt64(this.PreviousValues), new Vector<Int64>(unchecked((Int64)value))))); };
                     break;
-                case DataType type when type == DataTypes.UInt16:
+                case DataType type when type == DataType.UInt16:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.AsVectorUInt16(this.PreviousValues))); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.AsVectorUInt16(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorUInt16(this.CurrentValues), Vector.AsVectorUInt16(this.PreviousValues))); };
@@ -385,7 +385,7 @@
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.Add(Vector.AsVectorUInt16(this.PreviousValues), new Vector<UInt16>(unchecked((UInt16)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt16(this.CurrentValues), Vector.Subtract(Vector.AsVectorUInt16(this.PreviousValues), new Vector<UInt16>(unchecked((UInt16)value))))); };
                     break;
-                case DataType type when type == DataTypes.UInt32:
+                case DataType type when type == DataType.UInt32:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.AsVectorUInt32(this.PreviousValues))); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.AsVectorUInt32(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorUInt32(this.CurrentValues), Vector.AsVectorUInt32(this.PreviousValues))); };
@@ -399,7 +399,7 @@
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.Add(Vector.AsVectorUInt32(this.PreviousValues), new Vector<UInt32>(unchecked((UInt32)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt32(this.CurrentValues), Vector.Subtract(Vector.AsVectorUInt32(this.PreviousValues), new Vector<UInt32>(unchecked((UInt32)value))))); };
                     break;
-                case DataType type when type == DataTypes.UInt64:
+                case DataType type when type == DataType.UInt64:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.AsVectorUInt64(this.PreviousValues))); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.AsVectorUInt64(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorUInt64(this.CurrentValues), Vector.AsVectorUInt64(this.PreviousValues))); };
@@ -413,7 +413,7 @@
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.Add(Vector.AsVectorUInt64(this.PreviousValues), new Vector<UInt64>(unchecked((UInt64)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorUInt64(this.CurrentValues), Vector.Subtract(Vector.AsVectorUInt64(this.PreviousValues), new Vector<UInt64>(unchecked((UInt64)value))))); };
                     break;
-                case DataType type when type == DataTypes.Single:
+                case DataType type when type == DataType.Single:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), Vector.AsVectorSingle(this.PreviousValues))); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), Vector.AsVectorSingle(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorSingle(this.CurrentValues), Vector.AsVectorSingle(this.PreviousValues))); };
@@ -427,7 +427,7 @@
                     this.IncreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), Vector.Add(Vector.AsVectorSingle(this.PreviousValues), new Vector<Single>(unchecked((Single)value))))); };
                     this.DecreasedByValue = (value) => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorSingle(this.CurrentValues), Vector.Subtract(Vector.AsVectorSingle(this.PreviousValues), new Vector<Single>(unchecked((Single)value))))); };
                     break;
-                case DataType type when type == DataTypes.Double:
+                case DataType type when type == DataType.Double:
                     this.Changed = () => { return Vector.AsVectorByte(Vector.Equals(Vector.AsVectorDouble(this.CurrentValues), Vector.AsVectorDouble(this.PreviousValues))); };
                     this.Unchanged = () => { return Vector.OnesComplement(Vector.AsVectorByte(Vector.Equals(Vector.AsVectorDouble(this.CurrentValues), Vector.AsVectorDouble(this.PreviousValues)))); };
                     this.Increased = () => { return Vector.AsVectorByte(Vector.GreaterThan(Vector.AsVectorDouble(this.CurrentValues), Vector.AsVectorDouble(this.PreviousValues))); };

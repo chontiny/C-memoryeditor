@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Scanners.ScanConstraints
 {
-    using SqualrCore.Content;
+    using Squalr.Content;
     using System;
     using System.ComponentModel;
     using System.Windows.Media.Imaging;

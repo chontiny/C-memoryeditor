@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
+    using Squalr.Engine.TaskScheduler;
+    using Squalr.Source.ProjectItems;
     using Squalr.Source.Results;
     using Squalr.Source.Scanners.Pointers.Structures;
-    using SqualrCore.Source.ActionScheduler;
-    using SqualrCore.Source.ProjectItems;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Threading;
 
