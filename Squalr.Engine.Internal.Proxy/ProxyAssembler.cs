@@ -1,6 +1,6 @@
 ﻿namespace SqualrProxy
 {
-    using Squalr.Assemblers.Fasm;
+    using Squalr.Engine.Internal.Fasm;
     using System;
 
     /// <summary>
