@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Output;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
     using Squalr.Source.Controls;
     using Squalr.Source.Docking;
@@ -198,6 +198,28 @@
             {
                 this.selectedProjectItems = value;
                 PropertyViewerViewModel.GetInstance().SetTargetObjects(this.SelectedProjectItems?.ToArray());
+                this.RaisePropertyChanged(nameof(this.IsSelectionAddress));
+            }
+        }
+
+        /// <summary>
+        /// Gets a value indicating if there is a single selected project item that is an address.
+        /// </summary>
+        public Boolean IsSelectionAddress
+        {
+            get
+            {
+                ProjectItem projectItem = this.SelectedProjectItems.FirstOrDefault();
+
+                if (projectItem != null)
+                {
+                    if (projectItem is AddressItem || projectItem is PointerItem)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
             }
         }
 

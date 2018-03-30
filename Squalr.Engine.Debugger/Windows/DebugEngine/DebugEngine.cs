@@ -28,6 +28,21 @@
             this.SystemProcess = Process.GetProcessById(process.ProcessId);
         }
 
+        public void FindWhatWrites(UInt64 address, MemoryAccessCallback callback)
+        {
+
+        }
+
+        public void FindWhatReads(UInt64 address, MemoryAccessCallback callback)
+        {
+
+        }
+
+        public void FindWhatAccesses(UInt64 address, MemoryAccessCallback callback)
+        {
+
+        }
+
         public void Attach()
         {
             Task.Run(() =>
@@ -59,7 +74,7 @@
         }
 
 
-        private enum DEBUG_BREAKPOINT_TYPE : uint
+        private enum DEBUG_BREAKPOINT_TYPE : UInt32
         {
             CODE = 0,
             DATA = 1,
@@ -67,7 +82,7 @@
         }
 
         [Flags]
-        private enum DEBUG_BREAKPOINT_FLAG : uint
+        private enum DEBUG_BREAKPOINT_FLAG : UInt32
         {
             GO_ONLY = 1,
             DEFERRED = 2,
@@ -76,7 +91,7 @@
             ONE_SHOT = 0x10,
         }
 
-        private enum DEBUG_STATUS : uint
+        private enum DEBUG_STATUS : UInt32
         {
             NO_CHANGE = 0,
             GO = 1,
@@ -123,7 +138,7 @@
             Control.SetExecutionStatus((UInt32)DEBUG_STATUS.GO_HANDLED);
         }
 
-        public void Exception(ref _EXCEPTION_RECORD64 Exception, uint FirstChance)
+        public void Exception(ref _EXCEPTION_RECORD64 Exception, UInt32 FirstChance)
         {
 
         }
@@ -132,11 +147,11 @@
         {
         }
 
-        public void ExitThread(uint ExitCode)
+        public void ExitThread(UInt32 ExitCode)
         {
         }
 
-        public void CreateProcess(ulong ImageFileHandle, ulong Handle, ulong BaseOffset, uint ModuleSize, string ModuleName = null, string ImageName = null, uint CheckSum = 0, uint TimeDateStamp = 0, ulong InitialThreadHandle = 0, ulong ThreadDataOffset = 0, ulong StartOffset = 0)
+        public void CreateProcess(ulong ImageFileHandle, ulong Handle, ulong BaseOffset, UInt32 ModuleSize, string ModuleName = null, string ImageName = null, UInt32 CheckSum = 0, UInt32 TimeDateStamp = 0, ulong InitialThreadHandle = 0, ulong ThreadDataOffset = 0, ulong StartOffset = 0)
         {
             const Int32 Software = 0;
             const Int32 Hardware = 1;
@@ -148,11 +163,11 @@
             bp.SetFlags((UInt32)DEBUG_BREAKPOINT_FLAG.ENABLED);
         }
 
-        public void ExitProcess(uint ExitCode)
+        public void ExitProcess(UInt32 ExitCode)
         {
         }
 
-        public void LoadModule(ulong ImageFileHandle, ulong BaseOffset, uint ModuleSize, string ModuleName = null, string ImageName = null, uint CheckSum = 0, uint TimeDateStamp = 0)
+        public void LoadModule(ulong ImageFileHandle, ulong BaseOffset, UInt32 ModuleSize, string ModuleName = null, string ImageName = null, uint CheckSum = 0, uint TimeDateStamp = 0)
         {
         }
 
@@ -160,23 +175,23 @@
         {
         }
 
-        public void SystemError(uint Error, uint Level)
+        public void SystemError(UInt32 Error, UInt32 Level)
         {
         }
 
-        public void SessionStatus(uint Status)
+        public void SessionStatus(UInt32 Status)
         {
         }
 
-        public void ChangeDebuggeeState(uint Flags, ulong Argument)
+        public void ChangeDebuggeeState(UInt32 Flags, ulong Argument)
         {
         }
 
-        public void ChangeEngineState(uint Flags, ulong Argument)
+        public void ChangeEngineState(UInt32 Flags, ulong Argument)
         {
         }
 
-        public void ChangeSymbolState(uint Flags, ulong Argument)
+        public void ChangeSymbolState(UInt32 Flags, ulong Argument)
         {
         }
     }
