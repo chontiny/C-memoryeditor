@@ -315,6 +315,8 @@
     <Compile Include="Source\Controls\SortedCategory.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
     <Compile Include="Source\Controls\WinformsHostingHelper.cs" />
+    <Compile Include="Source\Debugger\CodeTraceResult.cs" />
+    <Compile Include="Source\Debugger\CodeTracerViewModel.cs" />
     <Compile Include="Source\Debugger\DebuggerViewModel.cs" />
     <Compile Include="Source\Debugger\Disassembly\DisassemblyViewModel.cs" />
     <Compile Include="Source\Docking\DockingViewModel.cs" />
@@ -588,6 +590,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\DataTemplateError.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CodeTracer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

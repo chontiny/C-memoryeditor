@@ -324,6 +324,17 @@
                 return DisassemblyViewModel.GetInstance();
             }
         }
+
+        /// <summary>
+        /// Gets the Debugger view model.
+        /// </summary>
+        public CodeTracerViewModel CodeTracerViewModel
+        {
+            get
+            {
+                return CodeTracerViewModel.GetInstance();
+            }
+        }
     }
     //// End class
 }

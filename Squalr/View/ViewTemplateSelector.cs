@@ -130,6 +130,11 @@
         private DataTemplate disassemblyViewTemplate;
 
         /// <summary>
+        /// The template for the code.
+        /// </summary>
+        private DataTemplate codeTracerViewTemplate;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ViewTemplateSelector" /> class.
         /// </summary>
         public ViewTemplateSelector()
@@ -500,6 +505,23 @@
             {
                 this.disassemblyViewTemplate = value;
                 this.DataTemplates[typeof(DisassemblyViewModel)] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the template for the Code Tracer.
+        /// </summary>
+        public DataTemplate CodeTracerViewTemplate
+        {
+            get
+            {
+                return this.codeTracerViewTemplate;
+            }
+
+            set
+            {
+                this.codeTracerViewTemplate = value;
+                this.DataTemplates[typeof(CodeTracerViewModel)] = value;
             }
         }
     }

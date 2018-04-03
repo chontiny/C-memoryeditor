@@ -26,21 +26,6 @@
         }
 
         /// <summary>
-        /// Gets a command to find what writes to an address.
-        /// </summary>
-        public ICommand FindWhatWritesCommand { get; private set; }
-
-        /// <summary>
-        /// Gets a command to find what reads from an address.
-        /// </summary>
-        public ICommand FindWhatReadsCommand { get; private set; }
-
-        /// <summary>
-        /// Gets a command to find what accesses an an address.
-        /// </summary>
-        public ICommand FindWhatAccessesCommand { get; private set; }
-
-        /// <summary>
         /// Gets a command to resume execution.
         /// </summary>
         public ICommand Resume { get; private set; }

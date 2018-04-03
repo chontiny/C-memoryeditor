@@ -47,15 +47,18 @@
                 Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <Separator Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <MenuItem
-                Command="{Binding DebuggerViewModel.FindWhatWritesCommand, Source={StaticResource ViewModelLocator}}"
+                Command="{Binding CodeTracerViewModel.FindWhatWritesCommand, Source={StaticResource ViewModelLocator}}"
+                CommandParameter="{Binding .}"
                 Header="Find Code that Writes to this Address"
                 Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <MenuItem
-                Command="{Binding DebuggerViewModel.FindWhatReadsCommand, Source={StaticResource ViewModelLocator}}"
+                Command="{Binding CodeTracerViewModel.FindWhatReadsCommand, Source={StaticResource ViewModelLocator}}"
+                CommandParameter="{Binding .}"
                 Header="Find Code that Reads from this Address"
                 Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <MenuItem
-                Command="{Binding DebuggerViewModel.FindWhatAccessesCommand, Source={StaticResource ViewModelLocator}}"
+                Command="{Binding CodeTracerViewModel.FindWhatAccessesCommand, Source={StaticResource ViewModelLocator}}"
+                CommandParameter="{Binding .}"
                 Header="Find Code that Reads or Writes to this Address"
                 Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <Separator />

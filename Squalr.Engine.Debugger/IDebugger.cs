@@ -2,7 +2,7 @@
 {
     using System;
 
-    public delegate void MemoryAccessCallback();
+    public delegate void MemoryAccessCallback(CodeTraceInfo codeTraceInfo);
 
     public interface IDebugger
     {
