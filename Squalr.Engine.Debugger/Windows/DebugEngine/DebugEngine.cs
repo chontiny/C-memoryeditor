@@ -1,22 +1,43 @@
 ﻿namespace Squalr.Engine.Debugger.Windows.DebugEngine
 {
-    using DbgEng;
-    using Squalr.Engine.Output;
+    using Microsoft.Diagnostics.Runtime.Interop;
     using Squalr.Engine.Processes;
     using System;
     using System.Diagnostics;
+    using System.Runtime.InteropServices;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal class DebugEngine : IDebugger, IProcessObserver
     {
         public DebugEngine()
         {
+            this.DebugRequestCallback = null;
+            this.EventCallBacks = new EventCallBacks();
+            this.OutputCallBacks = new OutputCallBacks();
+            this.CancellationTokenSource = new CancellationTokenSource();
+
             ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
+        /// <summary>
+        /// Gets or sets the debug request callback. This callback will be called before the debugger is attached,
+        /// and will only be attached if the result of the callback is true.
+        /// </summary>
+        public DebugRequestCallback DebugRequestCallback { get; set; }
 
-        private IDebugClient Client { get; set; }
+        public Boolean IsAttached { get; set; }
+
+        private IDebugClient6 Client { get; set; }
+
+        private IDebugControl6 Control { get; set; }
 
         private Process SystemProcess { get; set; }
+
+        private EventCallBacks EventCallBacks { get; set; }
+
+        private OutputCallBacks OutputCallBacks { get; set; }
+
+        private CancellationTokenSource CancellationTokenSource { get; set; }
 
         public void Update(NormalizedProcess process)
         {
@@ -30,178 +51,145 @@
 
         public void FindWhatWrites(UInt64 address, MemoryAccessCallback callback)
         {
+            this.Attach();
 
+            this.EventCallBacks.WriteCallback = callback;
+            this.EventCallBacks.ReadsCallback = null;
+            this.EventCallBacks.AccessesCallback = null;
+
+            // this.SetHardwareBreakpoint(address);
         }
 
         public void FindWhatReads(UInt64 address, MemoryAccessCallback callback)
         {
+            this.Attach();
 
+            this.EventCallBacks.WriteCallback = null;
+            this.EventCallBacks.ReadsCallback = callback;
+            this.EventCallBacks.AccessesCallback = null;
+
+            //  this.SetHardwareBreakpoint(address);
         }
 
         public void FindWhatAccesses(UInt64 address, MemoryAccessCallback callback)
         {
+            this.Attach();
 
+            this.EventCallBacks.WriteCallback = null;
+            this.EventCallBacks.ReadsCallback = null;
+            this.EventCallBacks.AccessesCallback = callback;
+
+            //  this.SetHardwareBreakpoint(address);
         }
 
         public void Attach()
         {
+            // Exit if already attached, or debug request fails
+            if (this.IsAttached || (this.DebugRequestCallback != null && this.DebugRequestCallback()))
+            {
+                return;
+            }
+
+            bool initialized = false;
+
             Task.Run(() =>
             {
-                this.Client = DebugClient.DebugCreate();
-
-                IDebugClient7 client = this.Client as IDebugClient7;
-                IDebugControl6 control = this.Client as IDebugControl6;
-
-                client.SetOutputCallbacksWide(new OutputCallBacks());
-                client.SetEventCallbacksWide(new EventCallBacks(control));
-
-
-                this.Client.AttachProcess(0, unchecked((UInt32)this.SystemProcess.Id), DebugAttach.InvasiveNoInitialBreak);
-
-                while (true)
+                try
                 {
-                    control.WaitForEvent(0, UInt32.MaxValue);
+                    IDebugClient baseClient = DebugEngine.CreateIDebugClient();
+
+                    this.Client = baseClient as IDebugClient6;
+                    this.Control = baseClient as IDebugControl6;
+                    // this.Control.AddEngineOptions(DEBUG_ENGOPT.INITIAL_BREAK);
+
+                    OutputCallBacks outputCallBacks = new OutputCallBacks();
+                    EventCallBacks eventCallBacks = new EventCallBacks();
+
+                    eventCallBacks.Control = this.Control;
+
+                    this.Client.SetOutputCallbacksWide(outputCallBacks);
+                    this.Client.SetEventCallbacksWide(eventCallBacks);
+
+                    this.Client.AttachProcess(0, unchecked((UInt32)this.SystemProcess.Id), DEBUG_ATTACH.DEFAULT);
+
+                    while (true)
+                    {
+                        this.Control.WaitForEvent(0, UInt32.MaxValue);
+
+                        if (!initialized)
+                        {
+                            this.SetSoftwareBreakpoint(0x1002ff5);
+                            //   this.SetHardwareBreakpoint(0x100579c);
+                        }
+
+                        initialized = true;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Output.Output.Log(Output.LogLevel.Error, "Error attaching debugger", ex);
+                    return null;
+                }
+                finally
+                {
+                    initialized = true;
                 }
             });
-        }
-    }
 
-    internal class EventCallBacks : IDebugEventCallbacksWide
-    {
-        public EventCallBacks(IDebugControl6 control)
-        {
-            this.Control = control;
+            while (!initialized)
+            {
+            }
         }
 
-
-        private enum DEBUG_BREAKPOINT_TYPE : UInt32
+        private IDebugBreakpoint2 SetSoftwareBreakpoint(UInt64 address)
         {
-            CODE = 0,
-            DATA = 1,
-            TIME = 2,
+            return this.SetBreakpoint(address, DEBUG_BREAKPOINT_TYPE.CODE);
         }
 
-        [Flags]
-        private enum DEBUG_BREAKPOINT_FLAG : UInt32
+        private IDebugBreakpoint2 SetHardwareBreakpoint(UInt64 address)
         {
-            GO_ONLY = 1,
-            DEFERRED = 2,
-            ENABLED = 4,
-            ADDER_ONLY = 8,
-            ONE_SHOT = 0x10,
+            return this.SetBreakpoint(address, DEBUG_BREAKPOINT_TYPE.DATA);
         }
 
-        private enum DEBUG_STATUS : UInt32
+        private IDebugBreakpoint2 SetBreakpoint(UInt64 address, DEBUG_BREAKPOINT_TYPE breakpointType)
         {
-            NO_CHANGE = 0,
-            GO = 1,
-            GO_HANDLED = 2,
-            GO_NOT_HANDLED = 3,
-            STEP_OVER = 4,
-            STEP_INTO = 5,
-            BREAK = 6,
-            NO_DEBUGGEE = 7,
-            STEP_BRANCH = 8,
-            IGNORE_EVENT = 9,
-            RESTART_REQUESTED = 10,
-            REVERSE_GO = 11,
-            REVERSE_STEP_BRANCH = 12,
-            REVERSE_STEP_OVER = 13,
-            REVERSE_STEP_INTO = 14,
-            OUT_OF_SYNC = 15,
-            WAIT_INPUT = 16,
-            TIMEOUT = 17,
-            MASK = 0x1f,
-        }
-
-        private IDebugControl6 Control { get; set; }
-
-        public uint GetInterestMask()
-        {
-            return (UInt32)(DebugEvent.Breakpoint
-                | DebugEvent.ChangeDebuggeeState
-                | DebugEvent.ChangeEngineState
-                | DebugEvent.ChangeSymbolState
-                | DebugEvent.CreateProcess
-                | DebugEvent.CreateThread
-                | DebugEvent.Exception
-                | DebugEvent.ExitProcess
-                | DebugEvent.ExitThread
-                | DebugEvent.LoadModule
-                | DebugEvent.SessionStatus
-                | DebugEvent.SystemError
-                | DebugEvent.UnloadModule);
-        }
-
-        public void Breakpoint(IDebugBreakpoint2 Bp)
-        {
-            Control.SetExecutionStatus((UInt32)DEBUG_STATUS.GO_HANDLED);
-        }
-
-        public void Exception(ref _EXCEPTION_RECORD64 Exception, UInt32 FirstChance)
-        {
-
-        }
-
-        public void CreateThread(ulong Handle, ulong DataOffset, ulong StartOffset)
-        {
-        }
-
-        public void ExitThread(UInt32 ExitCode)
-        {
-        }
-
-        public void CreateProcess(ulong ImageFileHandle, ulong Handle, ulong BaseOffset, UInt32 ModuleSize, string ModuleName = null, string ImageName = null, UInt32 CheckSum = 0, UInt32 TimeDateStamp = 0, ulong InitialThreadHandle = 0, ulong ThreadDataOffset = 0, ulong StartOffset = 0)
-        {
-            const Int32 Software = 0;
-            const Int32 Hardware = 1;
             const UInt32 AnyId = UInt32.MaxValue;
 
-            IDebugBreakpoint bp = this.Control.AddBreakpoint2(Software, AnyId);
+            try
+            {
+                IDebugBreakpoint2 breakpoint;
 
-            bp.SetOffset(0x1003830);
-            bp.SetFlags((UInt32)DEBUG_BREAKPOINT_FLAG.ENABLED);
+                this.Control.AddBreakpoint2(breakpointType, AnyId, out breakpoint);
+
+                breakpoint.SetOffset(address);
+                breakpoint.SetFlags(DEBUG_BREAKPOINT_FLAG.ENABLED);
+
+                return breakpoint;
+            }
+            catch (Exception ex)
+            {
+                Output.Output.Log(Output.LogLevel.Error, "Error setting breakpoint", ex);
+                return null;
+            }
         }
 
-        public void ExitProcess(UInt32 ExitCode)
+        private static IDebugClient CreateIDebugClient()
         {
+            Guid guid = typeof(IDebugClient).GUID;
+            DebugEngine.DebugCreate(ref guid, out object obj);
+
+            IDebugClient client = (IDebugClient)obj;
+            return client;
         }
 
-        public void LoadModule(ulong ImageFileHandle, ulong BaseOffset, UInt32 ModuleSize, string ModuleName = null, string ImageName = null, uint CheckSum = 0, uint TimeDateStamp = 0)
-        {
-        }
-
-        public void UnloadModule(string ImageBaseName = null, ulong BaseOffset = 0)
-        {
-        }
-
-        public void SystemError(UInt32 Error, UInt32 Level)
-        {
-        }
-
-        public void SessionStatus(UInt32 Status)
-        {
-        }
-
-        public void ChangeDebuggeeState(UInt32 Flags, ulong Argument)
-        {
-        }
-
-        public void ChangeEngineState(UInt32 Flags, ulong Argument)
-        {
-        }
-
-        public void ChangeSymbolState(UInt32 Flags, ulong Argument)
-        {
-        }
-    }
-
-    internal class OutputCallBacks : IDebugOutputCallbacksWide
-    {
-        public void Output(UInt32 mask, String text)
-        {
-            Squalr.Engine.Output.Output.Log(LogLevel.Info, text?.Trim());
-        }
+        /// <summary>
+        /// The DebugCreate function creates a new client object and returns an interface pointer to it.
+        /// </summary>
+        /// <param name="InterfaceId">Specifies the interface identifier (IID) of the desired debugger engine client interface. This is the type of the interface that will be returned in Interface.</param>
+        /// <param name="Interface">Receives an interface pointer for the new client. The type of this interface is specified by InterfaceId.</param>
+        [DefaultDllImportSearchPaths(DllImportSearchPath.LegacyBehavior)]
+        [DllImport("dbgeng.dll")]
+        internal static extern uint DebugCreate(ref Guid InterfaceId, [MarshalAs(UnmanagedType.IUnknown)] out object Interface);
     }
     //// End class
 }
