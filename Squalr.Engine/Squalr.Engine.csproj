@@ -15,7 +15,7 @@ This engine allows for modification of memory, disassembling, assembling, debugg
     <Copyright></Copyright>
     <PackageTags></PackageTags>
     <NeutralLanguage />
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -50,15 +50,6 @@ This engine allows for modification of memory, disassembling, assembling, debugg
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="ILRepack.targets" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="ILRepack.targets" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="ILRepack.Lib.MSBuild.Task" Version="2.0.15.4" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Architecture\Squalr.Engine.Architecture.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debugger.csproj" PrivateAssets="all" />
