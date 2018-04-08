@@ -61,7 +61,7 @@
         {
             Output.Output.Log(Output.LogLevel.Info, "Thread Created");
 
-            return (Int32)DEBUG_STATUS.BREAK;
+            return (Int32)DEBUG_STATUS.NO_CHANGE;
         }
 
         public int ExitThread([In] uint ExitCode)
@@ -76,7 +76,7 @@
             Output.Output.Log(Output.LogLevel.Info, "Debugger attached");
 
 
-            return (Int32)DEBUG_STATUS.BREAK;
+            return (Int32)DEBUG_STATUS.NO_CHANGE;
         }
 
         public int ExitProcess([In] uint ExitCode)

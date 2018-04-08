@@ -3,6 +3,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine;
     using Squalr.Engine.Debugger;
+    using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectItems;
@@ -87,7 +88,8 @@
             {
                 AddressItem addressItem = projectItem as AddressItem;
 
-                Eng.GetInstance().Debugger.FindWhatWrites(addressItem.CalculatedAddress.ToUInt64(), this.CodeTraceEvent);
+                BreakpointSize size = Eng.GetInstance().Debugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
+                Eng.GetInstance().Debugger.FindWhatWrites(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 
@@ -97,7 +99,8 @@
             {
                 AddressItem addressItem = projectItem as AddressItem;
 
-                Eng.GetInstance().Debugger.FindWhatReads(addressItem.CalculatedAddress.ToUInt64(), this.CodeTraceEvent);
+                BreakpointSize size = Eng.GetInstance().Debugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
+                Eng.GetInstance().Debugger.FindWhatReads(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 
@@ -107,7 +110,8 @@
             {
                 AddressItem addressItem = projectItem as AddressItem;
 
-                Eng.GetInstance().Debugger.FindWhatAccesses(addressItem.CalculatedAddress.ToUInt64(), this.CodeTraceEvent);
+                BreakpointSize size = Eng.GetInstance().Debugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
+                Eng.GetInstance().Debugger.FindWhatAccesses(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 

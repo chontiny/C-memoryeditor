@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{282D15E4-B290-4DE3-8994-CE35DE19F91F}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Engine.Internal.Proxy64</RootNamespace>
-    <AssemblyName>Engine.Internal.Proxy64</AssemblyName>
+    <RootNamespace>Squalr.Engine.Internal.Proxy64</RootNamespace>
+    <AssemblyName>Squalr.Engine.Internal.Proxy64</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
