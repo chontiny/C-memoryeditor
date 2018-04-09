@@ -2,7 +2,9 @@
 {
     using Microsoft.Diagnostics.Runtime.Interop;
     using System;
+    using System.Linq;
     using System.Runtime.InteropServices;
+    using System.Text;
 
     internal class EventCallBacks : IDebugEventCallbacksWide
     {
@@ -10,8 +12,8 @@
         {
             this.BaseClient = null;
             this.WriteCallback = null;
-            this.ReadsCallback = null;
-            this.AccessesCallback = null;
+            this.ReadCallback = null;
+            this.AccessCallback = null;
         }
 
         public IDebugClient BaseClient { get; set; }
@@ -50,14 +52,48 @@
 
         public MemoryAccessCallback WriteCallback { get; set; }
 
-        public MemoryAccessCallback ReadsCallback { get; set; }
+        public MemoryAccessCallback ReadCallback { get; set; }
 
-        public MemoryAccessCallback AccessesCallback { get; set; }
+        public MemoryAccessCallback AccessCallback { get; set; }
+
+        private String[] Registers32 =
+        {
+            "eax",
+            "ebx",
+            "ecx",
+            "edx",
+            "edi",
+            "esi",
+            "ebp",
+            "esp",
+            "eip",
+        };
+
+        private String[] Registers64 =
+        {
+            "rax",
+            "rbx",
+            "rcx",
+            "rdx",
+            "rdi",
+            "rsi",
+            "rbp",
+            "rsp",
+            "rip",
+            "r8",
+            "r9",
+            "r10",
+            "r11",
+            "r12",
+            "r13",
+            "r14",
+            "r15",
+        };
 
         public Int32 GetInterestMask([Out] out DEBUG_EVENT mask)
         {
-            mask =// DEBUG_EVENT.BREAKPOINT
-                 DEBUG_EVENT.CHANGE_DEBUGGEE_STATE
+            mask = DEBUG_EVENT.BREAKPOINT
+                | DEBUG_EVENT.CHANGE_DEBUGGEE_STATE
                 | DEBUG_EVENT.CHANGE_ENGINE_STATE
                 | DEBUG_EVENT.CHANGE_SYMBOL_STATE
                 | DEBUG_EVENT.CREATE_PROCESS
@@ -81,26 +117,56 @@
 
             CodeTraceInfo codeTraceInfo = new CodeTraceInfo();
 
-            UInt32[] registerIndicies = new UInt32[9];
-            this.Registers.GetIndexByName("eax", out registerIndicies[0]);
-            this.Registers.GetIndexByName("ebx", out registerIndicies[1]);
-            this.Registers.GetIndexByName("ecx", out registerIndicies[2]);
-            this.Registers.GetIndexByName("edx", out registerIndicies[3]);
-            this.Registers.GetIndexByName("esi", out registerIndicies[4]);
-            this.Registers.GetIndexByName("edi", out registerIndicies[5]);
-            this.Registers.GetIndexByName("esp", out registerIndicies[6]);
-            this.Registers.GetIndexByName("ebp", out registerIndicies[7]);
-            this.Registers.GetIndexByName("eip", out registerIndicies[8]);
+            String[] registers;
 
-            DEBUG_VALUE[] values = new DEBUG_VALUE[9];
-            this.Registers.GetValues(9, registerIndicies, 0, values);
+            if (Processes.ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
+            {
+                registers = this.Registers32;
+            }
+            else
+            {
+                registers = this.Registers64;
+            }
 
-            UInt64 offset;
-            this.Registers.GetInstructionOffset(out offset);
+            // Prepare register indicies for DbgEng register value call call
+            UInt32[] registerIndicies = new UInt32[registers.Length];
 
-            codeTraceInfo.Address = values[8].I64;
+            for (Int32 index = 0; index < registers.Length; index++)
+            {
+                this.Registers.GetIndexByName(registers[index], out registerIndicies[index]);
+            }
 
-            return (Int32)DEBUG_STATUS.GO_NOT_HANDLED;
+            // Get register values
+            DEBUG_VALUE[] values = new DEBUG_VALUE[registers.Length];
+            this.Registers.GetValues((UInt32)registers.Length, registerIndicies, 0, values);
+
+            // Copy to code trace info
+            for (Int32 index = 0; index < registers.Length; index++)
+            {
+                codeTraceInfo.IntRegisters.Add(registers[index], values[index].I64);
+            }
+
+            // Get the current instruction address
+            UInt64 address;
+            this.Registers.GetInstructionOffset(out address);
+            codeTraceInfo.Address = address;
+
+            // TEMP: Correct the traced address
+            // TODO: Remove this once we figure out how to trigger breakpoint callbacks BEFORE EIP is updated
+            codeTraceInfo.Address = this.CorrectAddress(codeTraceInfo.Address);
+
+            // Disassemble instruction
+            StringBuilder buffer = new StringBuilder(256);
+            this.Control.Disassemble(codeTraceInfo.Address, DEBUG_DISASM.EFFECTIVE_ADDRESS, buffer, 256, out _, out _);
+            codeTraceInfo.Instruction = String.Join(" ", buffer.ToString().Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Skip(2));
+
+            // Invoke callbacks
+            this.ReadCallback?.Invoke(codeTraceInfo);
+            this.WriteCallback?.Invoke(codeTraceInfo);
+            this.AccessCallback?.Invoke(codeTraceInfo);
+
+            // Output.Output.Log(Output.LogLevel.Info, "Breakpoint Hit: " + codeTraceInfo.Address);
+            return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 Exception([In] ref EXCEPTION_RECORD64 Exception, [In] uint FirstChance)
@@ -185,6 +251,27 @@
             // Output.Output.Log(Output.LogLevel.Info, "Change symbol State: " + Flags.ToString());
 
             return (Int32)DEBUG_STATUS.BREAK;
+        }
+
+        private UInt64 CorrectAddress(UInt64 address)
+        {
+            const UInt64 MaxInstructionSize = 15;
+
+            UInt32 disassemblySize = 0;
+            UInt64 endAddress = 0;
+            UInt64 effectiveAddress = address - MaxInstructionSize - 1;
+
+            do
+            {
+                effectiveAddress++;
+
+                StringBuilder buffer = new StringBuilder(256);
+                this.Control.Disassemble(effectiveAddress, DEBUG_DISASM.EFFECTIVE_ADDRESS, buffer, 256, out disassemblySize, out endAddress);
+
+            } while (endAddress < address);
+
+
+            return effectiveAddress;
         }
     }
     //// End class
