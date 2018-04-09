@@ -1,8 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <RootNamespace>Squalr.Engine</RootNamespace>
+  </PropertyGroup>
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <RootNamespace>Squalr.Engine</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Zachary Canann</Authors>
+    <Company>Anathena Inc.</Company>
+    <Description>This is the engine that drives Squalr. This supports AnyCPU/x86/x64 Windows platforms.
+This engine allows for modification of memory, disassembling, assembling, debugging, hooking, and other powerful features.
+</Description>
+    <Copyright></Copyright>
+    <PackageTags></PackageTags>
+    <NeutralLanguage />
+    <Version>1.0.5</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -37,26 +50,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Squalr.Engine.Architecture\Squalr.Engine.Architecture.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debugger.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Graphics\Squalr.Engine.Graphics.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Hook\Squalr.Engine.Hook.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Input\Squalr.Engine.Input.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.Fasm\Fasm.NET.vcxproj" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.HookServer\Squalr.Engine.Internal.HookServer.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy32\Squalr.Engine.Internal.Proxy32.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy64\Squalr.Engine.Internal.Proxy64.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy\Squalr.Engine.Internal.Proxy.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Memory\Squalr.Engine.Memory.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Networking\Squalr.Engine.Networking.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Processes\Squalr.Engine.Processes.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Scripting\Squalr.Engine.Scripting.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.SpeedManipulator\Squalr.Engine.SpeedManipulator.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Unrandomizer\Squalr.Engine.Unrandomizer.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Utils\Squalr.Engine.Utils.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Architecture\Squalr.Engine.Architecture.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debugger.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Graphics\Squalr.Engine.Graphics.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Hook\Squalr.Engine.Hook.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Input\Squalr.Engine.Input.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.Fasm\Fasm.NET.vcxproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.HookServer\Squalr.Engine.Internal.HookServer.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy\Squalr.Engine.Internal.Proxy.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy32\Squalr.Engine.Internal.Proxy32.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy64\Squalr.Engine.Internal.Proxy64.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Memory\Squalr.Engine.Memory.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Memory.Clr\Squalr.Engine.Memory.Clr.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Memory.Jvm\Squalr.Engine.Memory.Jvm.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Networking\Squalr.Engine.Networking.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Processes\Squalr.Engine.Processes.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Scripting\Squalr.Engine.Scripting.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.SpeedManipulator\Squalr.Engine.SpeedManipulator.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Unrandomizer\Squalr.Engine.Unrandomizer.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Utils\Squalr.Engine.Utils.csproj" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,10 +1,9 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using Microsoft.Win32;
-    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Output;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
-    using Squalr.Source.Analytics;
     using Squalr.Source.Controls;
     using Squalr.Source.ProjectItems;
     using Squalr.Source.Utils.Extensions;
@@ -149,7 +148,6 @@
             catch (Exception ex)
             {
                 Output.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
         }
@@ -206,7 +204,6 @@
             catch (Exception ex)
             {
                 Output.Log(LogLevel.Error, "Unable to import project", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
 
@@ -230,7 +227,6 @@
             catch (Exception ex)
             {
                 Output.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
 
@@ -276,7 +272,6 @@
             catch (Exception ex)
             {
                 Output.Log(LogLevel.Fatal, "Unable to save project", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
 
@@ -295,7 +290,6 @@
             catch (Exception ex)
             {
                 Output.Log(LogLevel.Error, "Unable to save hotkey profile", ex);
-                AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                 return;
             }
         }
@@ -348,7 +342,6 @@
                 catch (Exception ex)
                 {
                     Output.Log(LogLevel.Fatal, "Unable to complete export project", ex);
-                    AnalyticsService.GetInstance().SendEvent(AnalyticsService.AnalyticsAction.General, ex);
                     return;
                 }
 

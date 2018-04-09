@@ -26,7 +26,7 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Prevents a default instance of the <see cref="EngineCore" /> class from being created.
+        /// Prevents a default instance of the <see cref="Eng" /> class from being created.
         /// </summary>
         private Eng()
         {

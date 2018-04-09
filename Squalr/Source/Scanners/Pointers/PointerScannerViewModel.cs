@@ -58,6 +58,11 @@
         }
 
         /// <summary>
+        /// Gets a command to start the pointer scan on a specific project item.
+        /// </summary>
+        public ICommand PointerScanCommand { get; private set; }
+
+        /// <summary>
         /// Gets a command to start the pointer scan.
         /// </summary>
         public ICommand StartScanCommand { get; private set; }

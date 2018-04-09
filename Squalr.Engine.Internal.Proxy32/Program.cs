@@ -1,4 +1,4 @@
-﻿namespace SqualrProxy32
+﻿namespace Squalr.Engine.Internal.Proxy32
 {
     using System;
 

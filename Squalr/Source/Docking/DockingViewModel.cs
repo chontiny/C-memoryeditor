@@ -2,8 +2,8 @@
 {
     using GalaSoft.MvvmLight;
     using Squalr.Source.Utils.Extensions;
-    using Squalr.Wpf.AvalonDock;
-    using Squalr.Wpf.AvalonDock.Layout.Serialization;
+    using Squalr.Theme;
+    using Squalr.Theme.Layout.Serialization;
     using System;
     using System.Collections.Generic;
     using System.IO;

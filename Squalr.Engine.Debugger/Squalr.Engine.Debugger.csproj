@@ -4,13 +4,27 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="CsDebugScript.DbgEng" Version="1.3.0.69" />
+    <Compile Remove="Windows\DebugEngine\Com\**" />
+    <EmbeddedResource Remove="Windows\DebugEngine\Com\**" />
+    <None Remove="Windows\DebugEngine\Com\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Processes\Squalr.Engine.Processes.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Windows\DebugEngine\Internal\" />
   </ItemGroup>
 
 </Project>

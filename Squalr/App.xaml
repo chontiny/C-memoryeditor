@@ -3,21 +3,21 @@
     <ResourceDictionary>
       <viewModel:ViewModelLocator x:Key="ViewModelLocator" d:IsDataSource="True" />
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/DarkBrushes.xaml">
+        <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/DarkBrushes.xaml">
         </ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/ComboBox.xaml">
+        <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/ComboBox.xaml">
         </ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/ContextMenu.xaml">
+        <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/ContextMenu.xaml">
         </ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/MenuItem.xaml">
+        <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/MenuItem.xaml">
         </ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/ScrollViewer.xaml">
+        <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/ScrollViewer.xaml">
         </ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/Separator.xaml">
+        <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/Separator.xaml">
         </ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/Submenu.xaml">
+        <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/Submenu.xaml">
         </ResourceDictionary>
-        <ResourceDictionary Source="pack://application:,,,/Squalr;component/View/Style/TextBoxPlaceHolder.xaml">
+        <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/TextBoxPlaceHolder.xaml">
           <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:Squalr.ViewModel" />
         </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>

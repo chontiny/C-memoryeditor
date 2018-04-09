@@ -1,22 +1,74 @@
 ﻿namespace Squalr.Engine.Debugger.Windows.DebugEngine
 {
-    using DbgEng;
-    using Squalr.Engine.Output;
+    using Microsoft.Diagnostics.Runtime.Interop;
     using Squalr.Engine.Processes;
     using System;
     using System.Diagnostics;
+    using System.Runtime.InteropServices;
+    using System.Threading;
     using System.Threading.Tasks;
 
     internal class DebugEngine : IDebugger, IProcessObserver
     {
         public DebugEngine()
         {
+            this.DebugRequestCallback = null;
+            this.EventCallBacks = new EventCallBacks();
+            this.OutputCallBacks = new OutputCallBacks();
+            this.Scheduler = new ConcurrentExclusiveSchedulerPair();
+
             ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
 
-        private IDebugClient Client { get; set; }
+        /// <summary>
+        /// Gets or sets the debug request callback. This callback will be called before the debugger is attached,
+        /// and will only be attached if the result of the callback is true.
+        /// </summary>
+        public DebugRequestCallback DebugRequestCallback { get; set; }
+
+        public Boolean IsAttached { get; set; }
+
+        private IDebugClient BaseClient { get; set; }
+
+        private IDebugClient6 Client
+        {
+            get
+            {
+                return this.BaseClient as IDebugClient6;
+            }
+        }
+
+        private IDebugControl6 Control
+        {
+            get
+            {
+                return this.BaseClient as IDebugControl6;
+            }
+        }
+
+        public IDebugRegisters2 Registers
+        {
+            get
+            {
+                return this.BaseClient as IDebugRegisters2;
+            }
+        }
+
+        public IDebugAdvanced3 Advanced
+        {
+            get
+            {
+                return this.BaseClient as IDebugAdvanced3;
+            }
+        }
 
         private Process SystemProcess { get; set; }
+
+        private EventCallBacks EventCallBacks { get; set; }
+
+        private OutputCallBacks OutputCallBacks { get; set; }
+
+        private ConcurrentExclusiveSchedulerPair Scheduler { get; set; }
 
         public void Update(NormalizedProcess process)
         {
@@ -28,165 +80,227 @@
             this.SystemProcess = Process.GetProcessById(process.ProcessId);
         }
 
+        public void FindWhatWrites(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
+        {
+            this.Attach();
+
+            this.EventCallBacks.WriteCallback = callback;
+            this.EventCallBacks.ReadCallback = null;
+            this.EventCallBacks.AccessCallback = null;
+
+            this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
+        }
+
+        public void FindWhatReads(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
+        {
+            this.Attach();
+
+            this.EventCallBacks.WriteCallback = null;
+            this.EventCallBacks.ReadCallback = callback;
+            this.EventCallBacks.AccessCallback = null;
+
+            this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ, size.ToUInt32());
+        }
+
+        public void FindWhatAccesses(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
+        {
+            this.Attach();
+
+            this.EventCallBacks.WriteCallback = null;
+            this.EventCallBacks.ReadCallback = null;
+            this.EventCallBacks.AccessCallback = callback;
+
+            this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ | DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
+        }
+
         public void Attach()
+        {
+            // Exit if already attached, or debug request fails
+            if (this.IsAttached || (this.DebugRequestCallback != null && this.DebugRequestCallback()))
+            {
+                return;
+            }
+
+            // Perform the attach
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    this.BaseClient = DebugEngine.CreateIDebugClient();
+                    this.Client.AddProcessOptions(DEBUG_PROCESS.DETACH_ON_EXIT);
+
+                    this.EventCallBacks.BaseClient = this.BaseClient;
+
+                    this.Client.SetOutputCallbacksWide(this.OutputCallBacks);
+                    this.Client.SetEventCallbacksWide(this.EventCallBacks);
+
+                    this.Client.AttachProcess(0, unchecked((UInt32)this.SystemProcess.Id), DEBUG_ATTACH.DEFAULT);
+                    this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, 0);
+
+                    /*
+                    this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sx", DEBUG_EXECUTE.ECHO);
+
+                    String[] exceptions = "ct et cpr epr ld ud ser ibp iml out av asrt aph bpe bpec eh clr clrn cce cc dm dbce gp ii ip dz iov ch hc lsq isc 3c svh sse ssec sbo sov vs vcpp wkd rto rtt wob wos *".Split(' ');
+
+                    foreach (String exception in exceptions)
+                    {
+                        this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h " + exception, DEBUG_EXECUTE.ECHO);
+                    }
+
+                    String[] exceptions2 = "ssessec bpebpec ccecc".Split(' ');
+
+                    foreach (String exception in exceptions2)
+                    {
+                        this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h " + exception, DEBUG_EXECUTE.ECHO);
+                    }
+
+                    this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h 80000003", DEBUG_EXECUTE.ECHO);
+                    // int a = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe wob", DEBUG_EXECUTE.ECHO);
+                    // int b = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe wos", DEBUG_EXECUTE.ECHO);
+                    // int c = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe 4000001e", DEBUG_EXECUTE.ECHO);
+                    // int d = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe 4000001f", DEBUG_EXECUTE.ECHO);
+                    */
+
+                    /*
+                    List<DEBUG_EXCEPTION_FILTER_PARAMETERS> exceptionFilters = new List<DEBUG_EXCEPTION_FILTER_PARAMETERS>();
+
+                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
+                    {
+                        // WOW64 single step exception
+                        ExceptionCode = 0x4000001e,
+                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
+                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
+                    });
+
+                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
+                    {
+                        // WOW64 breakpoint exception
+                        ExceptionCode = 0x4000001f,
+                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
+                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
+                    });
+
+                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
+                    {
+                        ExceptionCode = 0x80000003,
+                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
+                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
+                    });
+
+                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
+                    {
+                        ExceptionCode = 0x80000004,
+                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
+                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
+                    });
+
+                    this.Control.SetExceptionFilterParameters((UInt32)exceptionFilters.Count, exceptionFilters.ToArray());
+                    */
+                    this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sx", DEBUG_EXECUTE.ECHO);
+
+                    this.IsAttached = true;
+                }
+                catch (Exception ex)
+                {
+                    Output.Output.Log(Output.LogLevel.Error, "Error attaching debugger", ex);
+                }
+            }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
+
+            // Listen for events such as breakpoint hits
+            this.ListenForEvents();
+        }
+
+        private void ListenForEvents()
         {
             Task.Run(() =>
             {
-                this.Client = DebugClient.DebugCreate();
-
-                IDebugClient7 client = this.Client as IDebugClient7;
-                IDebugControl6 control = this.Client as IDebugControl6;
-
-                client.SetOutputCallbacksWide(new OutputCallBacks());
-                client.SetEventCallbacksWide(new EventCallBacks(control));
-
-
-                this.Client.AttachProcess(0, unchecked((UInt32)this.SystemProcess.Id), DebugAttach.InvasiveNoInitialBreak);
-
-                while (true)
+                while (this.IsAttached)
                 {
-                    control.WaitForEvent(0, UInt32.MaxValue);
+                    Task.Factory.StartNew(() =>
+                    {
+                        try
+                        {
+                            DEBUG_STATUS status;
+
+                            this.Control.GetExecutionStatus(out status);
+
+                            if (status == DEBUG_STATUS.NO_DEBUGGEE)
+                            {
+                                return;
+                            }
+
+                            if (status == DEBUG_STATUS.GO || status == DEBUG_STATUS.BREAK || status == DEBUG_STATUS.STEP_BRANCH || status == DEBUG_STATUS.STEP_INTO || status == DEBUG_STATUS.STEP_OVER)
+                            {
+                                Int32 hr = this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, UInt32.MaxValue);
+                                return;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Output.Output.Log(Output.LogLevel.Error, "Error listening for debugger events", ex);
+                        }
+                    }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
                 }
             });
         }
-    }
 
-    internal class EventCallBacks : IDebugEventCallbacksWide
-    {
-        public EventCallBacks(IDebugControl6 control)
+        private IDebugBreakpoint2 SetSoftwareBreakpoint(UInt64 address, DEBUG_BREAKPOINT_ACCESS_TYPE access, UInt32 size)
         {
-            this.Control = control;
+            return this.SetBreakpoint(address, DEBUG_BREAKPOINT_TYPE.CODE, access, size);
         }
 
-
-        private enum DEBUG_BREAKPOINT_TYPE : uint
+        private IDebugBreakpoint2 SetHardwareBreakpoint(UInt64 address, DEBUG_BREAKPOINT_ACCESS_TYPE access, UInt32 size)
         {
-            CODE = 0,
-            DATA = 1,
-            TIME = 2,
+            return this.SetBreakpoint(address, DEBUG_BREAKPOINT_TYPE.DATA, access, size);
         }
 
-        [Flags]
-        private enum DEBUG_BREAKPOINT_FLAG : uint
+        private IDebugBreakpoint2 SetBreakpoint(UInt64 address, DEBUG_BREAKPOINT_TYPE breakpointType, DEBUG_BREAKPOINT_ACCESS_TYPE access, UInt32 size)
         {
-            GO_ONLY = 1,
-            DEFERRED = 2,
-            ENABLED = 4,
-            ADDER_ONLY = 8,
-            ONE_SHOT = 0x10,
-        }
-
-        private enum DEBUG_STATUS : uint
-        {
-            NO_CHANGE = 0,
-            GO = 1,
-            GO_HANDLED = 2,
-            GO_NOT_HANDLED = 3,
-            STEP_OVER = 4,
-            STEP_INTO = 5,
-            BREAK = 6,
-            NO_DEBUGGEE = 7,
-            STEP_BRANCH = 8,
-            IGNORE_EVENT = 9,
-            RESTART_REQUESTED = 10,
-            REVERSE_GO = 11,
-            REVERSE_STEP_BRANCH = 12,
-            REVERSE_STEP_OVER = 13,
-            REVERSE_STEP_INTO = 14,
-            OUT_OF_SYNC = 15,
-            WAIT_INPUT = 16,
-            TIMEOUT = 17,
-            MASK = 0x1f,
-        }
-
-        private IDebugControl6 Control { get; set; }
-
-        public uint GetInterestMask()
-        {
-            return (UInt32)(DebugEvent.Breakpoint
-                | DebugEvent.ChangeDebuggeeState
-                | DebugEvent.ChangeEngineState
-                | DebugEvent.ChangeSymbolState
-                | DebugEvent.CreateProcess
-                | DebugEvent.CreateThread
-                | DebugEvent.Exception
-                | DebugEvent.ExitProcess
-                | DebugEvent.ExitThread
-                | DebugEvent.LoadModule
-                | DebugEvent.SessionStatus
-                | DebugEvent.SystemError
-                | DebugEvent.UnloadModule);
-        }
-
-        public void Breakpoint(IDebugBreakpoint2 Bp)
-        {
-            Control.SetExecutionStatus((UInt32)DEBUG_STATUS.GO_HANDLED);
-        }
-
-        public void Exception(ref _EXCEPTION_RECORD64 Exception, uint FirstChance)
-        {
-
-        }
-
-        public void CreateThread(ulong Handle, ulong DataOffset, ulong StartOffset)
-        {
-        }
-
-        public void ExitThread(uint ExitCode)
-        {
-        }
-
-        public void CreateProcess(ulong ImageFileHandle, ulong Handle, ulong BaseOffset, uint ModuleSize, string ModuleName = null, string ImageName = null, uint CheckSum = 0, uint TimeDateStamp = 0, ulong InitialThreadHandle = 0, ulong ThreadDataOffset = 0, ulong StartOffset = 0)
-        {
-            const Int32 Software = 0;
-            const Int32 Hardware = 1;
             const UInt32 AnyId = UInt32.MaxValue;
 
-            IDebugBreakpoint bp = this.Control.AddBreakpoint2(Software, AnyId);
+            IDebugBreakpoint2 breakpoint = null;
 
-            bp.SetOffset(0x1003830);
-            bp.SetFlags((UInt32)DEBUG_BREAKPOINT_FLAG.ENABLED);
+            Task.Factory.StartNew(() =>
+            {
+                try
+                {
+                    Int32 hResult = this.Control.AddBreakpoint2(breakpointType, AnyId, out breakpoint);
+
+                    if (hResult < 0)
+                    {
+                        throw new Exception("Invalid HRESULT: " + hResult.ToString());
+                    }
+
+                    breakpoint.SetOffset(address);
+                    breakpoint.AddFlags(DEBUG_BREAKPOINT_FLAG.ENABLED);
+                    breakpoint.SetDataParameters(size, access);
+                }
+                catch (Exception ex)
+                {
+                    Output.Output.Log(Output.LogLevel.Error, "Error setting breakpoint", ex);
+                }
+            }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
+
+            return breakpoint;
         }
 
-        public void ExitProcess(uint ExitCode)
+        private static IDebugClient CreateIDebugClient()
         {
+            Guid guid = typeof(IDebugClient).GUID;
+            DebugEngine.DebugCreate(ref guid, out Object obj);
+
+            IDebugClient client = (IDebugClient)obj;
+            return client;
         }
 
-        public void LoadModule(ulong ImageFileHandle, ulong BaseOffset, uint ModuleSize, string ModuleName = null, string ImageName = null, uint CheckSum = 0, uint TimeDateStamp = 0)
-        {
-        }
-
-        public void UnloadModule(string ImageBaseName = null, ulong BaseOffset = 0)
-        {
-        }
-
-        public void SystemError(uint Error, uint Level)
-        {
-        }
-
-        public void SessionStatus(uint Status)
-        {
-        }
-
-        public void ChangeDebuggeeState(uint Flags, ulong Argument)
-        {
-        }
-
-        public void ChangeEngineState(uint Flags, ulong Argument)
-        {
-        }
-
-        public void ChangeSymbolState(uint Flags, ulong Argument)
-        {
-        }
-    }
-
-    internal class OutputCallBacks : IDebugOutputCallbacksWide
-    {
-        public void Output(UInt32 mask, String text)
-        {
-            Squalr.Engine.Output.Output.Log(LogLevel.Info, text?.Trim());
-        }
+        /// <summary>
+        /// The DebugCreate function creates a new client object and returns an interface pointer to it.
+        /// </summary>
+        /// <param name="InterfaceId">Specifies the interface identifier (IID) of the desired debugger engine client interface. This is the type of the interface that will be returned in Interface.</param>
+        /// <param name="Interface">Receives an interface pointer for the new client. The type of this interface is specified by InterfaceId.</param>
+        [DefaultDllImportSearchPaths(DllImportSearchPath.LegacyBehavior)]
+        [DllImport("dbgeng.dll")]
+        internal static extern UInt32 DebugCreate(ref Guid InterfaceId, [MarshalAs(UnmanagedType.IUnknown)] out Object Interface);
     }
     //// End class
 }
