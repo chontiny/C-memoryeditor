@@ -3,6 +3,7 @@
     using Microsoft.Diagnostics.Runtime.Interop;
     using Squalr.Engine.Processes;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using System.Threading;
@@ -137,65 +138,23 @@
                     this.Client.AttachProcess(0, unchecked((UInt32)this.SystemProcess.Id), DEBUG_ATTACH.DEFAULT);
                     this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, 0);
 
-                    /*
-                    this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sx", DEBUG_EXECUTE.ECHO);
-
-                    String[] exceptions = "ct et cpr epr ld ud ser ibp iml out av asrt aph bpe bpec eh clr clrn cce cc dm dbce gp ii ip dz iov ch hc lsq isc 3c svh sse ssec sbo sov vs vcpp wkd rto rtt wob wos *".Split(' ');
-
-                    foreach (String exception in exceptions)
-                    {
-                        this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h " + exception, DEBUG_EXECUTE.ECHO);
-                    }
-
-                    String[] exceptions2 = "ssessec bpebpec ccecc".Split(' ');
-
-                    foreach (String exception in exceptions2)
-                    {
-                        this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h " + exception, DEBUG_EXECUTE.ECHO);
-                    }
-
-                    this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h 80000003", DEBUG_EXECUTE.ECHO);
-                    // int a = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe wob", DEBUG_EXECUTE.ECHO);
-                    // int b = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe wos", DEBUG_EXECUTE.ECHO);
-                    // int c = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe 4000001e", DEBUG_EXECUTE.ECHO);
-                    // int d = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe 4000001f", DEBUG_EXECUTE.ECHO);
-                    */
-
-                    /*
                     List<DEBUG_EXCEPTION_FILTER_PARAMETERS> exceptionFilters = new List<DEBUG_EXCEPTION_FILTER_PARAMETERS>();
 
-                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
+                    foreach (EXCEPTION exception in Enum.GetValues(typeof(EXCEPTION)))
                     {
-                        // WOW64 single step exception
-                        ExceptionCode = 0x4000001e,
-                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
-                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
-                    });
+                        /* exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
+                         {
+                             ExceptionCode = (UInt32)exception,
+                             ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
+                             ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
+                         });
+                         */
 
-                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
-                    {
-                        // WOW64 breakpoint exception
-                        ExceptionCode = 0x4000001f,
-                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
-                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
-                    });
+                        this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe " + ((UInt32)exception).ToString("X"), DEBUG_EXECUTE.ECHO);
+                        // this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h " + ((UInt32)exception).ToString("X"), DEBUG_EXECUTE.ECHO);
+                    }
 
-                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
-                    {
-                        ExceptionCode = 0x80000003,
-                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
-                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
-                    });
-
-                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
-                    {
-                        ExceptionCode = 0x80000004,
-                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
-                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
-                    });
-
-                    this.Control.SetExceptionFilterParameters((UInt32)exceptionFilters.Count, exceptionFilters.ToArray());
-                    */
+                    // this.Control.SetExceptionFilterParameters((UInt32)exceptionFilters.Count, exceptionFilters.ToArray());
                     this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sx", DEBUG_EXECUTE.ECHO);
 
                     this.IsAttached = true;
@@ -272,7 +231,7 @@
                     }
 
                     breakpoint.SetOffset(address);
-                    breakpoint.AddFlags(DEBUG_BREAKPOINT_FLAG.ENABLED);
+                    breakpoint.SetFlags(DEBUG_BREAKPOINT_FLAG.ENABLED);
                     breakpoint.SetDataParameters(size, access);
                 }
                 catch (Exception ex)

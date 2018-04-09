@@ -166,7 +166,7 @@
             this.AccessCallback?.Invoke(codeTraceInfo);
 
             // Output.Output.Log(Output.LogLevel.Info, "Breakpoint Hit: " + codeTraceInfo.Address);
-            return (Int32)DEBUG_STATUS.BREAK;
+            return (Int32)DEBUG_STATUS.GO_NOT_HANDLED;
         }
 
         public Int32 Exception([In] ref EXCEPTION_RECORD64 Exception, [In] uint FirstChance)
