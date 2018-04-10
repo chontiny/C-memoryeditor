@@ -3,6 +3,8 @@
     using Microsoft.Diagnostics.Runtime.Interop;
     using Squalr.Engine.Processes;
     using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
     using System.Threading;
@@ -10,12 +12,22 @@
 
     internal class DebugEngine : IDebugger, IProcessObserver
     {
+        private CancellationTokenSource readCancellationToken;
+
+        private CancellationTokenSource writeCancellationToken;
+
+        private CancellationTokenSource accessCancellationToken;
+
         public DebugEngine()
         {
             this.DebugRequestCallback = null;
             this.EventCallBacks = new EventCallBacks();
             this.OutputCallBacks = new OutputCallBacks();
             this.Scheduler = new ConcurrentExclusiveSchedulerPair();
+            this.BreakPoints = new ConcurrentDictionary<CancellationTokenSource, IDebugBreakpoint2>();
+            this.readCancellationToken = null;
+            this.writeCancellationToken = null;
+            this.accessCancellationToken = null;
 
             ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
@@ -70,6 +82,8 @@
 
         private ConcurrentExclusiveSchedulerPair Scheduler { get; set; }
 
+        private ConcurrentDictionary<CancellationTokenSource, IDebugBreakpoint2> BreakPoints { get; set; }
+
         public void Update(NormalizedProcess process)
         {
             if (process == null)
@@ -80,37 +94,46 @@
             this.SystemProcess = Process.GetProcessById(process.ProcessId);
         }
 
-        public void FindWhatWrites(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
+        public CancellationTokenSource FindWhatReads(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
         {
             this.Attach();
 
-            this.EventCallBacks.WriteCallback = callback;
-            this.EventCallBacks.ReadCallback = null;
-            this.EventCallBacks.AccessCallback = null;
-
-            this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
-        }
-
-        public void FindWhatReads(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
-        {
-            this.Attach();
-
-            this.EventCallBacks.WriteCallback = null;
+            this.readCancellationToken?.Cancel();
             this.EventCallBacks.ReadCallback = callback;
-            this.EventCallBacks.AccessCallback = null;
+            IDebugBreakpoint2 breakpoint = this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ, size.ToUInt32());
 
-            this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ, size.ToUInt32());
+            this.readCancellationToken = this.CreateNewCancellationToken(this.OnAccessTraceCancel);
+            this.BreakPoints.TryAdd(this.readCancellationToken, breakpoint);
+
+            return this.readCancellationToken;
         }
 
-        public void FindWhatAccesses(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
+        public CancellationTokenSource FindWhatWrites(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
         {
             this.Attach();
 
-            this.EventCallBacks.WriteCallback = null;
-            this.EventCallBacks.ReadCallback = null;
-            this.EventCallBacks.AccessCallback = callback;
+            this.writeCancellationToken?.Cancel();
+            this.EventCallBacks.WriteCallback = callback;
+            IDebugBreakpoint2 breakpoint = this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
 
-            this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ | DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
+            this.writeCancellationToken = this.CreateNewCancellationToken(this.OnAccessTraceCancel);
+            this.BreakPoints.TryAdd(this.writeCancellationToken, breakpoint);
+
+            return this.writeCancellationToken;
+        }
+
+        public CancellationTokenSource FindWhatAccesses(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
+        {
+            this.Attach();
+
+            this.accessCancellationToken?.Cancel();
+            this.EventCallBacks.AccessCallback = callback;
+            IDebugBreakpoint2 breakpoint = this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ | DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
+
+            this.accessCancellationToken = this.CreateNewCancellationToken(this.OnAccessTraceCancel);
+            this.BreakPoints.TryAdd(this.accessCancellationToken, breakpoint);
+
+            return this.accessCancellationToken;
         }
 
         public void Attach()
@@ -137,66 +160,25 @@
                     this.Client.AttachProcess(0, unchecked((UInt32)this.SystemProcess.Id), DEBUG_ATTACH.DEFAULT);
                     this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, 0);
 
-                    /*
-                    this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sx", DEBUG_EXECUTE.ECHO);
-
-                    String[] exceptions = "ct et cpr epr ld ud ser ibp iml out av asrt aph bpe bpec eh clr clrn cce cc dm dbce gp ii ip dz iov ch hc lsq isc 3c svh sse ssec sbo sov vs vcpp wkd rto rtt wob wos *".Split(' ');
-
-                    foreach (String exception in exceptions)
-                    {
-                        this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h " + exception, DEBUG_EXECUTE.ECHO);
-                    }
-
-                    String[] exceptions2 = "ssessec bpebpec ccecc".Split(' ');
-
-                    foreach (String exception in exceptions2)
-                    {
-                        this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h " + exception, DEBUG_EXECUTE.ECHO);
-                    }
-
-                    this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h 80000003", DEBUG_EXECUTE.ECHO);
-                    // int a = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe wob", DEBUG_EXECUTE.ECHO);
-                    // int b = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe wos", DEBUG_EXECUTE.ECHO);
-                    // int c = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe 4000001e", DEBUG_EXECUTE.ECHO);
-                    // int d = this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe 4000001f", DEBUG_EXECUTE.ECHO);
-                    */
-
-                    /*
                     List<DEBUG_EXCEPTION_FILTER_PARAMETERS> exceptionFilters = new List<DEBUG_EXCEPTION_FILTER_PARAMETERS>();
 
-                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
+                    foreach (EXCEPTION exception in Enum.GetValues(typeof(EXCEPTION)))
                     {
-                        // WOW64 single step exception
-                        ExceptionCode = 0x4000001e,
-                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
-                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
-                    });
+                        /*
+                        exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
+                        {
+                            ExceptionCode = (UInt32)exception,
+                            ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
+                            ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
+                        });
+                        */
 
-                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
-                    {
-                        // WOW64 breakpoint exception
-                        ExceptionCode = 0x4000001f,
-                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
-                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
-                    });
+                        // this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe " + ((UInt32)exception).ToString("X"), DEBUG_EXECUTE.ECHO);
+                        // this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h " + ((UInt32)exception).ToString("X"), DEBUG_EXECUTE.ECHO);
+                    }
 
-                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
-                    {
-                        ExceptionCode = 0x80000003,
-                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
-                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
-                    });
-
-                    exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
-                    {
-                        ExceptionCode = 0x80000004,
-                        ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
-                        ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
-                    });
-
-                    this.Control.SetExceptionFilterParameters((UInt32)exceptionFilters.Count, exceptionFilters.ToArray());
-                    */
-                    this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sx", DEBUG_EXECUTE.ECHO);
+                    // this.Control.SetExceptionFilterParameters((UInt32)exceptionFilters.Count, exceptionFilters.ToArray());
+                    // this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sx", DEBUG_EXECUTE.ECHO);
 
                     this.IsAttached = true;
                 }
@@ -222,7 +204,7 @@
                         {
                             DEBUG_STATUS status;
 
-                            this.Control.GetExecutionStatus(out status);
+                            this.CheckHandleResult(this.Control.GetExecutionStatus(out status));
 
                             if (status == DEBUG_STATUS.NO_DEBUGGEE)
                             {
@@ -231,7 +213,7 @@
 
                             if (status == DEBUG_STATUS.GO || status == DEBUG_STATUS.BREAK || status == DEBUG_STATUS.STEP_BRANCH || status == DEBUG_STATUS.STEP_INTO || status == DEBUG_STATUS.STEP_OVER)
                             {
-                                Int32 hr = this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, UInt32.MaxValue);
+                                this.CheckHandleResult(this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, UInt32.MaxValue));
                                 return;
                             }
                         }
@@ -264,15 +246,10 @@
             {
                 try
                 {
-                    Int32 hResult = this.Control.AddBreakpoint2(breakpointType, AnyId, out breakpoint);
-
-                    if (hResult < 0)
-                    {
-                        throw new Exception("Invalid HRESULT: " + hResult.ToString());
-                    }
+                    this.CheckHandleResult(this.Control.AddBreakpoint2(breakpointType, AnyId, out breakpoint));
 
                     breakpoint.SetOffset(address);
-                    breakpoint.AddFlags(DEBUG_BREAKPOINT_FLAG.ENABLED);
+                    breakpoint.SetFlags(DEBUG_BREAKPOINT_FLAG.ENABLED);
                     breakpoint.SetDataParameters(size, access);
                 }
                 catch (Exception ex)
@@ -284,12 +261,71 @@
             return breakpoint;
         }
 
+        private void RemoveBreakpoint(CancellationTokenSource source)
+        {
+            Task.Factory.StartNew(() =>
+            {
+                IDebugBreakpoint2 breakpoint;
+
+                if (this.BreakPoints.TryRemove(source, out breakpoint))
+                {
+                    try
+                    {
+                        breakpoint.SetFlags(DEBUG_BREAKPOINT_FLAG.NONE);
+                    }
+                    catch (Exception ex)
+                    {
+                        Output.Output.Log(Output.LogLevel.Error, "Error removing breakpoint", ex);
+                    }
+
+                    Output.Output.Log(Output.LogLevel.Debug, "Breakpoint removed");
+                }
+            }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
+        }
+
+        private CancellationTokenSource CreateNewCancellationToken(Action cancelCallback)
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.Token.Register(this.OnWriteTraceCancel);
+
+            return cancellationTokenSource;
+        }
+
+        private void OnWriteTraceCancel()
+        {
+            this.EventCallBacks.WriteCallback = null;
+            this.RemoveBreakpoint(this.writeCancellationToken);
+            this.writeCancellationToken = null;
+        }
+
+        private void OnReadTraceCancel()
+        {
+            this.EventCallBacks.ReadCallback = null;
+            this.RemoveBreakpoint(this.readCancellationToken);
+            this.readCancellationToken = null;
+        }
+
+        private void OnAccessTraceCancel()
+        {
+            this.EventCallBacks.AccessCallback = null;
+            this.RemoveBreakpoint(this.accessCancellationToken);
+            this.accessCancellationToken = null;
+        }
+
+        private void CheckHandleResult(Int32 hresult)
+        {
+            if (hresult < 0)
+            {
+                throw new Exception("Invalid HRESULT: " + hresult);
+            }
+        }
+
         private static IDebugClient CreateIDebugClient()
         {
             Guid guid = typeof(IDebugClient).GUID;
             DebugEngine.DebugCreate(ref guid, out Object obj);
-
             IDebugClient client = (IDebugClient)obj;
+
             return client;
         }
 

@@ -36,6 +36,8 @@
         /// </summary>
         private IEnumerable<CodeTraceResult> selectedCodeTraceResults;
 
+        private CancellationTokenSource debuggerCancellationTokenSource;
+
         /// <summary>
         /// Prevents a default instance of the <see cref="CodeTracerViewModel" /> class from being created.
         /// </summary>
@@ -48,7 +50,7 @@
             this.FindWhatWritesCommand = new RelayCommand<ProjectItem>((projectItem) => this.FindWhatWrites(projectItem));
             this.FindWhatReadsCommand = new RelayCommand<ProjectItem>((projectItem) => this.FindWhatReads(projectItem));
             this.FindWhatAccessesCommand = new RelayCommand<ProjectItem>((projectItem) => this.FindWhatAccesses(projectItem));
-            this.StopCommand = new RelayCommand(() => this.StopTrace());
+            this.StopTraceCommand = new RelayCommand(() => this.CancelTrace());
             this.SelectInstructionCommand = new RelayCommand<Object>((selectedItems) => this.SelectedCodeTraceResults = (selectedItems as IList)?.Cast<CodeTraceResult>(), (selectedItems) => true);
             this.AddInstructionCommand = new RelayCommand<CodeTraceResult>((codeTraceResult) => this.AddCodeTraceResult(codeTraceResult));
             this.AddInstructionsCommand = new RelayCommand<Object>((selectedItems) => this.AddCodeTraceResults(this.SelectedCodeTraceResults));
@@ -72,7 +74,7 @@
         /// <summary>
         /// Gets a command to stop recording events.
         /// </summary>
-        public ICommand StopCommand { get; private set; }
+        public ICommand StopTraceCommand { get; private set; }
 
         /// <summary>
         /// Gets or sets the command to select scan results.
@@ -102,6 +104,14 @@
             }
         }
 
+        public Boolean IsTracing
+        {
+            get
+            {
+                return this.DebuggerCancellationTokenSource != null;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the selected code trace results.
         /// </summary>
@@ -116,6 +126,20 @@
             {
                 this.selectedCodeTraceResults = value;
                 this.RaisePropertyChanged(nameof(this.SelectedCodeTraceResults));
+            }
+        }
+
+        private CancellationTokenSource DebuggerCancellationTokenSource
+        {
+            get
+            {
+                return this.debuggerCancellationTokenSource;
+            }
+
+            set
+            {
+                this.debuggerCancellationTokenSource = value;
+                this.RaisePropertyChanged(nameof(this.IsTracing));
             }
         }
 
@@ -156,19 +180,17 @@
             ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: projectItems);
         }
 
-        private void StopTrace()
-        {
-
-        }
-
         private void FindWhatWrites(ProjectItem projectItem)
         {
             if (projectItem is AddressItem)
             {
+                this.CancelTrace();
+                this.Results.Clear();
+
                 AddressItem addressItem = projectItem as AddressItem;
 
                 BreakpointSize size = Eng.GetInstance().Debugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                Eng.GetInstance().Debugger.FindWhatWrites(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                this.DebuggerCancellationTokenSource = Eng.GetInstance().Debugger.FindWhatWrites(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 
@@ -176,10 +198,13 @@
         {
             if (projectItem is AddressItem)
             {
+                this.CancelTrace();
+                this.Results.Clear();
+
                 AddressItem addressItem = projectItem as AddressItem;
 
                 BreakpointSize size = Eng.GetInstance().Debugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                Eng.GetInstance().Debugger.FindWhatReads(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                this.DebuggerCancellationTokenSource = Eng.GetInstance().Debugger.FindWhatReads(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 
@@ -187,11 +212,20 @@
         {
             if (projectItem is AddressItem)
             {
+                this.CancelTrace();
+                this.Results.Clear();
+
                 AddressItem addressItem = projectItem as AddressItem;
 
                 BreakpointSize size = Eng.GetInstance().Debugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                Eng.GetInstance().Debugger.FindWhatAccesses(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                this.DebuggerCancellationTokenSource = Eng.GetInstance().Debugger.FindWhatAccesses(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
+        }
+
+        private void CancelTrace()
+        {
+            this.DebuggerCancellationTokenSource?.Cancel();
+            this.DebuggerCancellationTokenSource = null;
         }
 
         private void CodeTraceEvent(CodeTraceInfo codeTraceInfo)

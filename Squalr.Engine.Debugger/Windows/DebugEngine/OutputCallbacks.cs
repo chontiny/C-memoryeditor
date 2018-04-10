@@ -9,7 +9,7 @@
     {
         public Int32 Output([In] DEBUG_OUTPUT Mask, [In, MarshalAs(UnmanagedType.LPWStr)] String text)
         {
-            Engine.Output.Output.Log(LogLevel.Info, text?.Trim());
+            Engine.Output.Output.Log(LogLevel.Debug, text?.Trim());
 
             return 0;
         }

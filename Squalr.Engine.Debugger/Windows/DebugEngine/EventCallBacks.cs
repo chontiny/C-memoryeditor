@@ -112,7 +112,7 @@
 
         public Int32 Breakpoint([In, MarshalAs(UnmanagedType.Interface)] IDebugBreakpoint2 bp)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Breakpoint Hit");
+            // Output.Output.Log(Output.LogLevel.Debug, "Breakpoint Hit");
             this.Control.SetExecutionStatus(DEBUG_STATUS.GO_HANDLED);
 
             CodeTraceInfo codeTraceInfo = new CodeTraceInfo();
@@ -165,90 +165,90 @@
             this.WriteCallback?.Invoke(codeTraceInfo);
             this.AccessCallback?.Invoke(codeTraceInfo);
 
-            // Output.Output.Log(Output.LogLevel.Info, "Breakpoint Hit: " + codeTraceInfo.Address);
+            // Output.Output.Log(Output.LogLevel.Debug, "Breakpoint Hit: " + codeTraceInfo.Address);
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 Exception([In] ref EXCEPTION_RECORD64 Exception, [In] uint FirstChance)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Exception Hit");
+            // Output.Output.Log(Output.LogLevel.Debug, "Exception Hit");
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 CreateThread([In] ulong Handle, [In] ulong DataOffset, [In] ulong StartOffset)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Thread Created");
+            // Output.Output.Log(Output.LogLevel.Debug, "Thread Created");
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 ExitThread([In] uint ExitCode)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Exit Thread");
+            // Output.Output.Log(Output.LogLevel.Debug, "Exit Thread");
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 CreateProcess([In] ulong ImageFileHandle, [In] ulong Handle, [In] ulong BaseOffset, [In] uint ModuleSize, [In, MarshalAs(UnmanagedType.LPWStr)] string ModuleName, [In, MarshalAs(UnmanagedType.LPWStr)] string ImageName, [In] uint CheckSum, [In] uint TimeDateStamp, [In] ulong InitialThreadHandle, [In] ulong ThreadDataOffset, [In] ulong StartOffset)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Debugger attached");
+            // Output.Output.Log(Output.LogLevel.Debug, "Debugger attached");
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 ExitProcess([In] uint ExitCode)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Process exited");
+            // Output.Output.Log(Output.LogLevel.Debug, "Process exited");
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 LoadModule([In] ulong ImageFileHandle, [In] ulong BaseOffset, [In] uint ModuleSize, [In, MarshalAs(UnmanagedType.LPWStr)] string ModuleName, [In, MarshalAs(UnmanagedType.LPWStr)] string ImageName, [In] uint CheckSum, [In] uint TimeDateStamp)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Module loaded");
+            // Output.Output.Log(Output.LogLevel.Debug, "Module loaded");
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 UnloadModule([In, MarshalAs(UnmanagedType.LPWStr)] string ImageBaseName, [In] ulong BaseOffset)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Module unloaded");
+            // Output.Output.Log(Output.LogLevel.Debug, "Module unloaded");
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 SystemError([In] uint Error, [In] uint Level)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "System error");
+            // Output.Output.Log(Output.LogLevel.Debug, "System error");
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 SessionStatus([In] DEBUG_SESSION Status)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Session status: " + Status.ToString());
+            // Output.Output.Log(Output.LogLevel.Debug, "Session status: " + Status.ToString());
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 ChangeDebuggeeState([In] DEBUG_CDS Flags, [In] ulong Argument)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Change debuggee State: " + Flags.ToString());
+            // Output.Output.Log(Output.LogLevel.Debug, "Change debuggee State: " + Flags.ToString());
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 ChangeEngineState([In] DEBUG_CES Flags, [In] ulong Argument)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Change engine State: " + Flags.ToString());
+            // Output.Output.Log(Output.LogLevel.Debug, "Change engine State: " + Flags.ToString());
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
 
         public Int32 ChangeSymbolState([In] DEBUG_CSS Flags, [In] ulong Argument)
         {
-            // Output.Output.Log(Output.LogLevel.Info, "Change symbol State: " + Flags.ToString());
+            // Output.Output.Log(Output.LogLevel.Debug, "Change symbol State: " + Flags.ToString());
 
             return (Int32)DEBUG_STATUS.BREAK;
         }
