@@ -618,6 +618,7 @@ namespace Microsoft.Diagnostics.Runtime.Interop
     [Flags]
     public enum DEBUG_BREAKPOINT_FLAG : uint
     {
+        NONE = 0,
         GO_ONLY = 1,
         DEFERRED = 2,
         ENABLED = 4,

@@ -3,6 +3,7 @@
     using Microsoft.Diagnostics.Runtime.Interop;
     using Squalr.Engine.Processes;
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
@@ -11,12 +12,22 @@
 
     internal class DebugEngine : IDebugger, IProcessObserver
     {
+        private CancellationTokenSource readCancellationToken;
+
+        private CancellationTokenSource writeCancellationToken;
+
+        private CancellationTokenSource accessCancellationToken;
+
         public DebugEngine()
         {
             this.DebugRequestCallback = null;
             this.EventCallBacks = new EventCallBacks();
             this.OutputCallBacks = new OutputCallBacks();
             this.Scheduler = new ConcurrentExclusiveSchedulerPair();
+            this.BreakPoints = new ConcurrentDictionary<CancellationTokenSource, IDebugBreakpoint2>();
+            this.readCancellationToken = null;
+            this.writeCancellationToken = null;
+            this.accessCancellationToken = null;
 
             ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
@@ -71,6 +82,8 @@
 
         private ConcurrentExclusiveSchedulerPair Scheduler { get; set; }
 
+        private ConcurrentDictionary<CancellationTokenSource, IDebugBreakpoint2> BreakPoints { get; set; }
+
         public void Update(NormalizedProcess process)
         {
             if (process == null)
@@ -81,37 +94,46 @@
             this.SystemProcess = Process.GetProcessById(process.ProcessId);
         }
 
-        public void FindWhatWrites(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
+        public CancellationTokenSource FindWhatReads(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
         {
             this.Attach();
 
-            this.EventCallBacks.WriteCallback = callback;
-            this.EventCallBacks.ReadCallback = null;
-            this.EventCallBacks.AccessCallback = null;
-
-            this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
-        }
-
-        public void FindWhatReads(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
-        {
-            this.Attach();
-
-            this.EventCallBacks.WriteCallback = null;
+            this.readCancellationToken?.Cancel();
             this.EventCallBacks.ReadCallback = callback;
-            this.EventCallBacks.AccessCallback = null;
+            IDebugBreakpoint2 breakpoint = this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ, size.ToUInt32());
 
-            this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ, size.ToUInt32());
+            this.readCancellationToken = this.CreateNewCancellationToken(this.OnAccessTraceCancel);
+            this.BreakPoints.TryAdd(this.readCancellationToken, breakpoint);
+
+            return this.readCancellationToken;
         }
 
-        public void FindWhatAccesses(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
+        public CancellationTokenSource FindWhatWrites(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
         {
             this.Attach();
 
-            this.EventCallBacks.WriteCallback = null;
-            this.EventCallBacks.ReadCallback = null;
-            this.EventCallBacks.AccessCallback = callback;
+            this.writeCancellationToken?.Cancel();
+            this.EventCallBacks.WriteCallback = callback;
+            IDebugBreakpoint2 breakpoint = this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
 
-            this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ | DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
+            this.writeCancellationToken = this.CreateNewCancellationToken(this.OnAccessTraceCancel);
+            this.BreakPoints.TryAdd(this.writeCancellationToken, breakpoint);
+
+            return this.writeCancellationToken;
+        }
+
+        public CancellationTokenSource FindWhatAccesses(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
+        {
+            this.Attach();
+
+            this.accessCancellationToken?.Cancel();
+            this.EventCallBacks.AccessCallback = callback;
+            IDebugBreakpoint2 breakpoint = this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ | DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
+
+            this.accessCancellationToken = this.CreateNewCancellationToken(this.OnAccessTraceCancel);
+            this.BreakPoints.TryAdd(this.accessCancellationToken, breakpoint);
+
+            return this.accessCancellationToken;
         }
 
         public void Attach()
@@ -243,12 +265,63 @@
             return breakpoint;
         }
 
+        private void RemoveBreakpoint(CancellationTokenSource source)
+        {
+            Task.Factory.StartNew(() =>
+            {
+                IDebugBreakpoint2 breakpoint;
+
+                if (this.BreakPoints.TryRemove(source, out breakpoint))
+                {
+                    try
+                    {
+                        breakpoint.SetFlags(DEBUG_BREAKPOINT_FLAG.NONE);
+                    }
+                    catch (Exception ex)
+                    {
+                        Output.Output.Log(Output.LogLevel.Error, "Error removing breakpoint", ex);
+                    }
+
+                    Output.Output.Log(Output.LogLevel.Info, "Breakpoint removed");
+                }
+            }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
+        }
+
+        private CancellationTokenSource CreateNewCancellationToken(Action cancelCallback)
+        {
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.Token.Register(this.OnWriteTraceCancel);
+
+            return cancellationTokenSource;
+        }
+
+        private void OnWriteTraceCancel()
+        {
+            this.EventCallBacks.WriteCallback = null;
+            this.RemoveBreakpoint(this.writeCancellationToken);
+            this.writeCancellationToken = null;
+        }
+
+        private void OnReadTraceCancel()
+        {
+            this.EventCallBacks.ReadCallback = null;
+            this.RemoveBreakpoint(this.readCancellationToken);
+            this.readCancellationToken = null;
+        }
+
+        private void OnAccessTraceCancel()
+        {
+            this.EventCallBacks.AccessCallback = null;
+            this.RemoveBreakpoint(this.accessCancellationToken);
+            this.accessCancellationToken = null;
+        }
+
         private static IDebugClient CreateIDebugClient()
         {
             Guid guid = typeof(IDebugClient).GUID;
             DebugEngine.DebugCreate(ref guid, out Object obj);
-
             IDebugClient client = (IDebugClient)obj;
+
             return client;
         }
 

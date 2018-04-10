@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Debugger
 {
     using System;
+    using System.Threading;
 
     public delegate void MemoryAccessCallback(CodeTraceInfo codeTraceInfo);
 
@@ -16,11 +17,11 @@
 
     public interface IDebugger
     {
-        void FindWhatWrites(UInt64 address, BreakpointSize size, MemoryAccessCallback callback);
+        CancellationTokenSource FindWhatReads(UInt64 address, BreakpointSize size, MemoryAccessCallback callback);
 
-        void FindWhatReads(UInt64 address, BreakpointSize size, MemoryAccessCallback callback);
+        CancellationTokenSource FindWhatWrites(UInt64 address, BreakpointSize size, MemoryAccessCallback callback);
 
-        void FindWhatAccesses(UInt64 address, BreakpointSize size, MemoryAccessCallback callback);
+        CancellationTokenSource FindWhatAccesses(UInt64 address, BreakpointSize size, MemoryAccessCallback callback);
 
         Boolean IsAttached { get; }
 
