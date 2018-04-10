@@ -164,20 +164,21 @@
 
                     foreach (EXCEPTION exception in Enum.GetValues(typeof(EXCEPTION)))
                     {
-                        /* exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
-                         {
-                             ExceptionCode = (UInt32)exception,
-                             ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
-                             ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
-                         });
-                         */
+                        /*
+                        exceptionFilters.Add(new DEBUG_EXCEPTION_FILTER_PARAMETERS()
+                        {
+                            ExceptionCode = (UInt32)exception,
+                            ExecutionOption = DEBUG_FILTER_EXEC_OPTION.BREAK,
+                            ContinueOption = DEBUG_FILTER_CONTINUE_OPTION.GO_NOT_HANDLED,
+                        });
+                        */
 
-                        this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe " + ((UInt32)exception).ToString("X"), DEBUG_EXECUTE.ECHO);
+                        // this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe " + ((UInt32)exception).ToString("X"), DEBUG_EXECUTE.ECHO);
                         // this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sxe -h " + ((UInt32)exception).ToString("X"), DEBUG_EXECUTE.ECHO);
                     }
 
                     // this.Control.SetExceptionFilterParameters((UInt32)exceptionFilters.Count, exceptionFilters.ToArray());
-                    this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sx", DEBUG_EXECUTE.ECHO);
+                    // this.Control.ExecuteWide(DEBUG_OUTCTL.THIS_CLIENT, "sx", DEBUG_EXECUTE.ECHO);
 
                     this.IsAttached = true;
                 }
@@ -203,7 +204,7 @@
                         {
                             DEBUG_STATUS status;
 
-                            this.Control.GetExecutionStatus(out status);
+                            this.CheckHandleResult(this.Control.GetExecutionStatus(out status));
 
                             if (status == DEBUG_STATUS.NO_DEBUGGEE)
                             {
@@ -212,7 +213,7 @@
 
                             if (status == DEBUG_STATUS.GO || status == DEBUG_STATUS.BREAK || status == DEBUG_STATUS.STEP_BRANCH || status == DEBUG_STATUS.STEP_INTO || status == DEBUG_STATUS.STEP_OVER)
                             {
-                                Int32 hr = this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, UInt32.MaxValue);
+                                this.CheckHandleResult(this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, UInt32.MaxValue));
                                 return;
                             }
                         }
@@ -245,12 +246,7 @@
             {
                 try
                 {
-                    Int32 hResult = this.Control.AddBreakpoint2(breakpointType, AnyId, out breakpoint);
-
-                    if (hResult < 0)
-                    {
-                        throw new Exception("Invalid HRESULT: " + hResult.ToString());
-                    }
+                    this.CheckHandleResult(this.Control.AddBreakpoint2(breakpointType, AnyId, out breakpoint));
 
                     breakpoint.SetOffset(address);
                     breakpoint.SetFlags(DEBUG_BREAKPOINT_FLAG.ENABLED);
@@ -282,7 +278,7 @@
                         Output.Output.Log(Output.LogLevel.Error, "Error removing breakpoint", ex);
                     }
 
-                    Output.Output.Log(Output.LogLevel.Info, "Breakpoint removed");
+                    Output.Output.Log(Output.LogLevel.Debug, "Breakpoint removed");
                 }
             }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
         }
@@ -314,6 +310,14 @@
             this.EventCallBacks.AccessCallback = null;
             this.RemoveBreakpoint(this.accessCancellationToken);
             this.accessCancellationToken = null;
+        }
+
+        private void CheckHandleResult(Int32 hresult)
+        {
+            if (hresult < 0)
+            {
+                throw new Exception("Invalid HRESULT: " + hresult);
+            }
         }
 
         private static IDebugClient CreateIDebugClient()

@@ -185,6 +185,7 @@
             if (projectItem is AddressItem)
             {
                 this.CancelTrace();
+                this.Results.Clear();
 
                 AddressItem addressItem = projectItem as AddressItem;
 
@@ -198,6 +199,7 @@
             if (projectItem is AddressItem)
             {
                 this.CancelTrace();
+                this.Results.Clear();
 
                 AddressItem addressItem = projectItem as AddressItem;
 
@@ -211,6 +213,7 @@
             if (projectItem is AddressItem)
             {
                 this.CancelTrace();
+                this.Results.Clear();
 
                 AddressItem addressItem = projectItem as AddressItem;
 
