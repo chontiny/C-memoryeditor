@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Scripting.Memory
 {
     using Squalr.Engine.Architecture;
+    using Squalr.Engine.Architecture.Assembler;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Output;
     using Squalr.Engine.Processes;
@@ -112,13 +113,11 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
-            String message;
-            String innerMessage;
-            Byte[] result = ArchitectureFactory.GetArchitecture().GetAssembler().Assemble(ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), assembly, address.ToIntPtr(), out message, out innerMessage);
+            AssemblerResult result = ArchitectureFactory.GetArchitecture().GetAssembler().Assemble(ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
 
-            Output.Log(LogLevel.Info, message, innerMessage);
+            Output.Log(LogLevel.Info, result.Message, result.InnerMessage);
 
-            return result;
+            return result.Data;
         }
 
         /// <summary>

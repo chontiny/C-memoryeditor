@@ -1,18 +1,18 @@
 ﻿namespace Squalr.Engine.TaskScheduler
 {
     using Output;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using System.Windows.Input;
 
     /// <summary>
     /// Class to schedule tasks that are executed.
     /// </summary>
-    public class Scheduler
+    public class Scheduler : ITaskManager
     {
         /// <summary>
         /// The interval between scheduler calls, in milliseconds.
@@ -22,9 +22,14 @@
         /// <summary>
         /// Singleton instance of the <see cref="Scheduler" /> class.
         /// </summary>
-        private static Lazy<Scheduler> actionSchedulerViewModelInstance = new Lazy<Scheduler>(
+        private static Lazy<Scheduler> scheduleInstance = new Lazy<Scheduler>(
             () => { return new Scheduler(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
+
+        /// <summary>
+        /// Thread safe collection of listeners.
+        /// </summary>
+        private ConcurrentHashSet<ITaskManagerObserver> processListeners;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="Scheduler" /> class from being created.
@@ -33,24 +38,9 @@
         {
             this.AccessLock = new Object();
             this.Actions = new LinkedList<ScheduledTask>();
+            this.processListeners = new ConcurrentHashSet<ITaskManagerObserver>();
 
             this.Update();
-        }
-
-        /// <summary>
-        /// Gets a command to cancel a running task.
-        /// </summary>
-        public ICommand CancelTaskCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the tasks that are actively running.
-        /// </summary>
-        public IEnumerable<ScheduledTask> ActiveTasks
-        {
-            get
-            {
-                return this.Actions.Select(x => x).Where(x => !x.IsTaskComplete);
-            }
         }
 
         /// <summary>
@@ -74,7 +64,25 @@
         /// <returns>A singleton instance of the class.</returns>
         public static Scheduler GetInstance()
         {
-            return Scheduler.actionSchedulerViewModelInstance.Value;
+            return Scheduler.scheduleInstance.Value;
+        }
+
+        /// <summary>
+        /// Subscribes the listener to task manager change events.
+        /// </summary>
+        /// <param name="listener">The object that wants to listen to task manager update events.</param>
+        public void Subscribe(ITaskManagerObserver listener)
+        {
+            this.processListeners.Add(listener);
+        }
+
+        /// <summary>
+        /// Unsubscribes the listener from task manager change events.
+        /// </summary>
+        /// <param name="listener">The object that wants to stop listening to task manager update events.</param>
+        public void Unsubscribe(ITaskManagerObserver listener)
+        {
+            this.processListeners.Remove(listener);
         }
 
         /// <summary>
@@ -94,6 +102,7 @@
 
                 scheduledTask.ResetState();
                 this.Actions.AddLast(scheduledTask);
+                this.NotifyObservers();
 
                 foreach (ScheduledTask task in scheduledTask.Dependencies)
                 {
@@ -146,11 +155,23 @@
 
                             // Permanently remove this task
                             this.Actions.Remove(nextTask);
+                            this.NotifyObservers();
                         }
                     }
                 }
                 while (true);
             });
+        }
+
+        /// <summary>
+        /// Notifies observers of changes in the task list.
+        /// </summary>
+        private void NotifyObservers()
+        {
+            foreach (ITaskManagerObserver observer in this.processListeners)
+            {
+                observer.OnTaskListChanged();
+            }
         }
     }
     //// End class

@@ -24,6 +24,7 @@
             this.EventCallBacks = new EventCallBacks();
             this.OutputCallBacks = new OutputCallBacks();
             this.Scheduler = new ConcurrentExclusiveSchedulerPair();
+            this.InterruptScheduler = new ConcurrentExclusiveSchedulerPair();
             this.BreakPoints = new ConcurrentDictionary<CancellationTokenSource, IDebugBreakpoint2>();
             this.readCancellationToken = null;
             this.writeCancellationToken = null;
@@ -82,6 +83,10 @@
 
         private ConcurrentExclusiveSchedulerPair Scheduler { get; set; }
 
+        private ConcurrentExclusiveSchedulerPair InterruptScheduler { get; set; }
+
+        private Boolean Interrupt { get; set; }
+
         private ConcurrentDictionary<CancellationTokenSource, IDebugBreakpoint2> BreakPoints { get; set; }
 
         public void Update(NormalizedProcess process)
@@ -102,6 +107,11 @@
             this.EventCallBacks.ReadCallback = callback;
             IDebugBreakpoint2 breakpoint = this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ, size.ToUInt32());
 
+            if (breakpoint == null)
+            {
+                return null;
+            }
+
             this.readCancellationToken = this.CreateNewCancellationToken(this.OnAccessTraceCancel);
             this.BreakPoints.TryAdd(this.readCancellationToken, breakpoint);
 
@@ -116,6 +126,11 @@
             this.EventCallBacks.WriteCallback = callback;
             IDebugBreakpoint2 breakpoint = this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
 
+            if (breakpoint == null)
+            {
+                return null;
+            }
+
             this.writeCancellationToken = this.CreateNewCancellationToken(this.OnAccessTraceCancel);
             this.BreakPoints.TryAdd(this.writeCancellationToken, breakpoint);
 
@@ -129,6 +144,11 @@
             this.accessCancellationToken?.Cancel();
             this.EventCallBacks.AccessCallback = callback;
             IDebugBreakpoint2 breakpoint = this.SetHardwareBreakpoint(address, DEBUG_BREAKPOINT_ACCESS_TYPE.READ | DEBUG_BREAKPOINT_ACCESS_TYPE.WRITE, size.ToUInt32());
+
+            if (breakpoint == null)
+            {
+                return null;
+            }
 
             this.accessCancellationToken = this.CreateNewCancellationToken(this.OnAccessTraceCancel);
             this.BreakPoints.TryAdd(this.accessCancellationToken, breakpoint);
@@ -198,6 +218,11 @@
             {
                 while (this.IsAttached)
                 {
+                    // Do not listen for events when interrupted
+                    while (this.Interrupt)
+                    {
+                    }
+
                     Task.Factory.StartNew(() =>
                     {
                         try
@@ -211,11 +236,9 @@
                                 return;
                             }
 
-                            if (status == DEBUG_STATUS.GO || status == DEBUG_STATUS.BREAK || status == DEBUG_STATUS.STEP_BRANCH || status == DEBUG_STATUS.STEP_INTO || status == DEBUG_STATUS.STEP_OVER)
-                            {
-                                this.CheckHandleResult(this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, UInt32.MaxValue));
-                                return;
-                            }
+                            this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, UInt32.MaxValue);
+
+                            int test = 45;
                         }
                         catch (Exception ex)
                         {
@@ -242,6 +265,8 @@
 
             IDebugBreakpoint2 breakpoint = null;
 
+            this.BeginInterrupt();
+
             Task.Factory.StartNew(() =>
             {
                 try
@@ -251,6 +276,8 @@
                     breakpoint.SetOffset(address);
                     breakpoint.SetFlags(DEBUG_BREAKPOINT_FLAG.ENABLED);
                     breakpoint.SetDataParameters(size, access);
+
+                    this.Control.SetExecutionStatus(DEBUG_STATUS.GO);
                 }
                 catch (Exception ex)
                 {
@@ -258,29 +285,57 @@
                 }
             }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
 
+            this.EndInterrupt();
+
             return breakpoint;
         }
 
         private void RemoveBreakpoint(CancellationTokenSource source)
         {
+            this.BeginInterrupt();
+
             Task.Factory.StartNew(() =>
             {
-                IDebugBreakpoint2 breakpoint;
-
-                if (this.BreakPoints.TryRemove(source, out breakpoint))
+                try
                 {
-                    try
+                    IDebugBreakpoint2 breakpoint;
+
+                    if (this.BreakPoints.TryRemove(source, out breakpoint))
                     {
                         breakpoint.SetFlags(DEBUG_BREAKPOINT_FLAG.NONE);
-                    }
-                    catch (Exception ex)
-                    {
-                        Output.Output.Log(Output.LogLevel.Error, "Error removing breakpoint", ex);
-                    }
 
-                    Output.Output.Log(Output.LogLevel.Debug, "Breakpoint removed");
+                        Output.Output.Log(Output.LogLevel.Debug, "Breakpoint removed");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Output.Output.Log(Output.LogLevel.Error, "Error removing breakpoint", ex);
                 }
             }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
+
+            this.EndInterrupt();
+        }
+
+        private void BeginInterrupt()
+        {
+            this.Interrupt = true;
+
+            try
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    this.CheckHandleResult(this.Control.SetInterrupt(DEBUG_INTERRUPT.ACTIVE));
+                }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.InterruptScheduler.ExclusiveScheduler).Wait();
+            }
+            catch (Exception ex)
+            {
+                Output.Output.Log(Output.LogLevel.Debug, "Error interrupting events", ex);
+            }
+        }
+
+        private void EndInterrupt()
+        {
+            this.Interrupt = false;
         }
 
         private CancellationTokenSource CreateNewCancellationToken(Action cancelCallback)
@@ -314,9 +369,14 @@
 
         private void CheckHandleResult(Int32 hresult)
         {
+            this.CheckHandleResult((ERROR_CODE)hresult);
+        }
+
+        private void CheckHandleResult(ERROR_CODE hresult)
+        {
             if (hresult < 0)
             {
-                throw new Exception("Invalid HRESULT: " + hresult);
+                throw new Exception("Invalid HRESULT: " + hresult.ToString());
             }
         }
 

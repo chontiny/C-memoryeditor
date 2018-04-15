@@ -17,7 +17,7 @@
             switch (architectureType)
             {
                 case ArchitectureType.x86_64:
-                    return new Fasm32Assembler();
+                    return new NasmAssembler();
                 default:
                     throw new Exception("Assembler not supported for specified architecture");
             }

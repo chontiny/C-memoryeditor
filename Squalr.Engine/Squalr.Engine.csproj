@@ -56,11 +56,7 @@ This engine allows for modification of memory, disassembling, assembling, debugg
     <ProjectReference Include="..\Squalr.Engine.Graphics\Squalr.Engine.Graphics.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Hook\Squalr.Engine.Hook.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Input\Squalr.Engine.Input.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.Fasm\Fasm.NET.vcxproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Internal.HookServer\Squalr.Engine.Internal.HookServer.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy\Squalr.Engine.Internal.Proxy.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy32\Squalr.Engine.Internal.Proxy32.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy64\Squalr.Engine.Internal.Proxy64.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Memory\Squalr.Engine.Memory.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Memory.Clr\Squalr.Engine.Memory.Clr.csproj" PrivateAssets="all" />

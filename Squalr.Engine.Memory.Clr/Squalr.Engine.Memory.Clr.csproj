@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy\Squalr.Engine.Internal.Proxy.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Processes\Squalr.Engine.Processes.csproj" />
   </ItemGroup>
