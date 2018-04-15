@@ -721,14 +721,6 @@
       <Project>{53a598f0-69ed-4311-848e-5f74b4ae8e3f}</Project>
       <Name>Squalr.Engine.Input</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy32\Squalr.Engine.Internal.Proxy32.csproj">
-      <Project>{c6e853bd-a596-4766-8ff5-846b00d37a75}</Project>
-      <Name>Squalr.Engine.Internal.Proxy32</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.Internal.Proxy64\Squalr.Engine.Internal.Proxy64.csproj">
-      <Project>{282d15e4-b290-4de3-8994-ce35de19f91f}</Project>
-      <Name>Squalr.Engine.Internal.Proxy64</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj">
       <Project>{1884cb62-2dc0-4a76-9a77-af61238e29bd}</Project>
       <Name>Squalr.Engine.Internal.TaskScheduler</Name>

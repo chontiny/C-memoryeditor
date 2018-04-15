@@ -1,4 +1,5 @@
-org     0x100
+org 0x100
+[BITS 64]
 
 push rax
 push rax

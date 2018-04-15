@@ -2,7 +2,6 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Processes;
-    using Squalr.Engine.Proxy;
     using Squalr.Engine.TaskScheduler;
     using System;
     using System.Collections.Generic;
@@ -108,7 +107,6 @@
         {
             this.UpdateInterval = DotNetObjectCollector.PollingTime;
 
-            ProxyCommunicator proxyCommunicator = ProxyCommunicator.GetInstance();
             NormalizedProcess process = ProcessAdapterFactory.GetProcessAdapter().GetOpenedProcess();
             /*IProxyService proxyService = proxyCommunicator.GetProxyService(Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit());
 
