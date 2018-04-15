@@ -516,7 +516,7 @@
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>ChangeLog.cs</LastGenOutput>
     </Content>
-    <Resource Include="Content\DefaultLayout.xml" />
+    <EmbeddedResource Include="Content\DefaultLayout.xml" />
     <Resource Include="Content\Images\AppIcon.ico" />
     <Resource Include="Content\Images\BlueBlocks1.png" />
     <Resource Include="Content\Images\BlueBlocks2.png" />
