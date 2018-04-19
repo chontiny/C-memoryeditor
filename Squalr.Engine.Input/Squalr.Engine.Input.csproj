@@ -10,4 +10,8 @@
     <PackageReference Include="SharpDX.XInput" Version="4.1.0-ci217" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Squalr.Engine\Squalr.Engine.csproj" />
+  </ItemGroup>
+
 </Project>

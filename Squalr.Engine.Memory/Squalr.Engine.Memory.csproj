@@ -8,4 +8,12 @@
     <Folder Include="Jvm\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0-preview2-26406-04" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Squalr.Engine\Squalr.Engine.csproj" />
+  </ItemGroup>
+
 </Project>

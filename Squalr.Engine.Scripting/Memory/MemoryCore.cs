@@ -113,7 +113,7 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
-            AssemblerResult result = ArchitectureFactory.GetAssembler().GetAssembler().Assemble(ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
+            AssemblerResult result = Assembler.Default.Assemble(ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
 
             Output.Log(LogLevel.Info, result.Message, result.InnerMessage);
 
@@ -143,7 +143,7 @@
             }
 
             // Grab instructions at code entry point
-            IEnumerable<NormalizedInstruction> instructions = ArchitectureFactory.GetAssembler().GetDisassembler().Disassemble(originalBytes, ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), address.ToIntPtr());
+            IEnumerable<NormalizedInstruction> instructions = Disassembler.Default.Disassemble(originalBytes, ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), address.ToIntPtr());
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;

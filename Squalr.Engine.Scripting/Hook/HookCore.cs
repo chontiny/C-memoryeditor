@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Engine.Scripting.Hook
 {
-    using Squalr.Engine.Speed;
     using System;
 
     /// <summary>
@@ -31,10 +30,10 @@
         /// Gives access to the speed hook in the target process, injecting the hooks if needed.
         /// </summary>
         /// <returns>An interface providing access to the speed hook.</returns>
-        private ISpeedManipulator GetSpeedHackInterface()
-        {
-            return null;
-        }
+        // private ISpeedManipulator GetSpeedHackInterface()
+        // {
+        //     return null;
+        // }
     }
     //// End class
 }

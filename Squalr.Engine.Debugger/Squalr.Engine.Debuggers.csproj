@@ -22,4 +22,8 @@
     <Folder Include="Windows\DebugEngine\Internal\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Squalr.Engine\Squalr.Engine.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -2,7 +2,6 @@
 {
     using Output;
     using SharpDX.DirectInput;
-    using Squalr.Engine.Output;
     using System;
     using System.Collections.Generic;
 
