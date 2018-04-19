@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Debugger
 {
-    using Squalr.Engine.Debugger;
+    using Squalr.Engine.Debuggers;
     using System;
     using System.ComponentModel;
 

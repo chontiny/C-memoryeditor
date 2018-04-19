@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace Squalr.Engine.Debugger
+﻿namespace Squalr.Engine.Debuggers
 {
+    using System;
+
     public static class ExtensionMethods
     {
         public static UInt32 ToUInt32(this BreakpointSize breakPointSize)

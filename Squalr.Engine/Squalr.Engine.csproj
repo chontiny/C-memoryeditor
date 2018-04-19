@@ -52,7 +52,7 @@ This engine allows for modification of memory, disassembling, assembling, debugg
   <ItemGroup>
     <ProjectReference Include="..\Squalr.Engine.Architecture\Squalr.Engine.Architecture.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debugger.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debuggers.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Graphics\Squalr.Engine.Graphics.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Hook\Squalr.Engine.Hook.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\Squalr.Engine.Input\Squalr.Engine.Input.csproj" PrivateAssets="all" />

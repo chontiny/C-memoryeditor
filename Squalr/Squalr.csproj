@@ -705,9 +705,9 @@
       <Project>{EEF17FA4-E4A6-456B-89B7-5DED5C1930AB}</Project>
       <Name>Squalr.Engine.DataTypes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debugger.csproj">
+    <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debuggers.csproj">
       <Project>{930c55ee-a79f-4f06-b843-0ae9cc375217}</Project>
-      <Name>Squalr.Engine.Debugger</Name>
+      <Name>Squalr.Engine.Debuggers</Name>
     </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Graphics\Squalr.Engine.Graphics.csproj">
       <Project>{dccb0fd1-5467-43cd-973c-289cb27ca2dc}</Project>

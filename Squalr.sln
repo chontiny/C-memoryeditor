@@ -45,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squalr.Engine.Internal.Hook
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squalr.Engine", "Squalr.Engine\Squalr.Engine.csproj", "{0B78BEBF-D43F-431C-8A5F-9734C6FDA1B3}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squalr.Engine.Debugger", "Squalr.Engine.Debugger\Squalr.Engine.Debugger.csproj", "{930C55EE-A79F-4F06-B843-0AE9CC375217}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squalr.Engine.Debuggers", "Squalr.Engine.Debugger\Squalr.Engine.Debuggers.csproj", "{930C55EE-A79F-4F06-B843-0AE9CC375217}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squalr.Engine.DataTypes", "Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj", "{EEF17FA4-E4A6-456B-89B7-5DED5C1930AB}"
 EndProject

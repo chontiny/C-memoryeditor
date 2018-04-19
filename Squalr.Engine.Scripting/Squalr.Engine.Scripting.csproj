@@ -16,7 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Squalr.Engine.Architecture\Squalr.Engine.Architecture.csproj" />
     <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debugger.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debuggers.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Graphics\Squalr.Engine.Graphics.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Hook\Squalr.Engine.Hook.csproj" />
     <ProjectReference Include="..\Squalr.Engine.Memory\Squalr.Engine.Memory.csproj" />

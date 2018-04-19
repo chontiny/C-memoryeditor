@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Debugger
+﻿namespace Squalr.Engine.Debuggers
 {
     using System;
     using System.Threading;
