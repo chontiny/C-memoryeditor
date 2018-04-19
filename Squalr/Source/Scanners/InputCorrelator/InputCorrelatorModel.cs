@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners.InputCorrelator
 {
     using LabelThresholder;
-    using Squalr.Engine;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Input;
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Engine.Input.Keyboard;
     using Squalr.Engine.TaskScheduler;
@@ -229,7 +229,7 @@
 
         private void InitializeObservers()
         {
-            Eng.GetInstance().Input?.GetKeyboardCapture().WeakSubscribe(this);
+            InputManager.GetInstance().GetKeyboardCapture().WeakSubscribe(this);
         }
 
         private Boolean IsInputConditionValid(DateTime updateTime)
@@ -246,7 +246,7 @@
         {
             this.Snapshot = null;
 
-            Eng.GetInstance().Input?.GetKeyboardCapture().Unsubscribe(this);
+            InputManager.GetInstance().GetKeyboardCapture().Unsubscribe(this);
         }
     }
     //// End class

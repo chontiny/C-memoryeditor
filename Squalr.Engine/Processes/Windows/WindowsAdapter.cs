@@ -112,6 +112,11 @@
         public void Subscribe(IProcessObserver listener)
         {
             this.processListeners.Add(listener);
+
+            if (this.OpenedProcess != null)
+            {
+                listener.Update(this.OpenedProcess);
+            }
         }
 
         /// <summary>

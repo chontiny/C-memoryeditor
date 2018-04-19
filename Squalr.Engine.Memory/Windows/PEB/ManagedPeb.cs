@@ -101,7 +101,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<Byte>(this.Address.Add(PebStructure32.InheritedAddressSpace), out success);
+                return Reader.Windows.Read<Byte>(this.Address.Add(PebStructure32.InheritedAddressSpace), out success);
             }
         }
 
@@ -110,7 +110,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<Boolean>(this.Address.Add(PebStructure32.BeingDebugged), out success);
+                return Reader.Windows.Read<Boolean>(this.Address.Add(PebStructure32.BeingDebugged), out success);
             }
         }
 
@@ -119,7 +119,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<UInt32>(this.Address.Add(PebStructure32.ProcessHeap), out success).ToIntPtr();
+                return Reader.Windows.Read<UInt32>(this.Address.Add(PebStructure32.ProcessHeap), out success).ToIntPtr();
             }
         }
 
@@ -128,7 +128,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<UInt32>(this.Address.Add(PebStructure32.ReadOnlySharedMemoryBase), out success).ToIntPtr();
+                return Reader.Windows.Read<UInt32>(this.Address.Add(PebStructure32.ReadOnlySharedMemoryBase), out success).ToIntPtr();
             }
         }
 
@@ -137,7 +137,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<UInt32>(this.Address.Add(PebStructure32.HeapSegmentReserve), out success).ToIntPtr();
+                return Reader.Windows.Read<UInt32>(this.Address.Add(PebStructure32.HeapSegmentReserve), out success).ToIntPtr();
             }
         }
 
@@ -146,7 +146,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<UInt32>(this.Address.Add(PebStructure32.HeapSegmentCommit), out success).ToIntPtr();
+                return Reader.Windows.Read<UInt32>(this.Address.Add(PebStructure32.HeapSegmentCommit), out success).ToIntPtr();
             }
         }
 
@@ -155,7 +155,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<UInt32>(this.Address.Add(PebStructure32.HeapDeCommitTotalFreeThreshold), out success).ToIntPtr();
+                return Reader.Windows.Read<UInt32>(this.Address.Add(PebStructure32.HeapDeCommitTotalFreeThreshold), out success).ToIntPtr();
             }
         }
 
@@ -164,7 +164,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<UInt32>(this.Address.Add(PebStructure32.HeapDeCommitFreeBlockThreshold), out success).ToIntPtr();
+                return Reader.Windows.Read<UInt32>(this.Address.Add(PebStructure32.HeapDeCommitFreeBlockThreshold), out success).ToIntPtr();
             }
         }
 
@@ -173,7 +173,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<UInt32>(this.Address.Add(PebStructure32.ProcessHeaps), out success).ToIntPtr();
+                return Reader.Windows.Read<UInt32>(this.Address.Add(PebStructure32.ProcessHeaps), out success).ToIntPtr();
             }
         }
 
@@ -182,7 +182,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<UInt32>(this.Address.Add(PebStructure32.MinimumStackCommit), out success).ToIntPtr();
+                return Reader.Windows.Read<UInt32>(this.Address.Add(PebStructure32.MinimumStackCommit), out success).ToIntPtr();
             }
         }
 
@@ -191,7 +191,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<UInt32>(this.Address.Add(PebStructure32.NumberOfHeaps), out success);
+                return Reader.Windows.Read<UInt32>(this.Address.Add(PebStructure32.NumberOfHeaps), out success);
             }
         }
 
@@ -200,7 +200,7 @@
             get
             {
                 Boolean success;
-                return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<Int32>(this.Address.Add(PebStructure32.MaximumNumberOfHeaps), out success);
+                return Reader.Windows.Read<Int32>(this.Address.Add(PebStructure32.MaximumNumberOfHeaps), out success);
             }
         }
     }

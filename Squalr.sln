@@ -47,6 +47,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Squalr.Engine.Networking", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squalr.Theme", "Squalr.Theme\Squalr.Theme.csproj", "{60D1D960-8AAE-4F87-8D85-0C2BDD6254B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Squalr.Engine.Scanning", "Squalr.Engine.Scanning\Squalr.Engine.Scanning.csproj", "{47FAFF79-44F7-4505-91CA-A2BE28915EE2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -273,6 +275,18 @@ Global
 		{60D1D960-8AAE-4F87-8D85-0C2BDD6254B1}.Release|x64.Build.0 = Release|Any CPU
 		{60D1D960-8AAE-4F87-8D85-0C2BDD6254B1}.Release|x86.ActiveCfg = Release|Any CPU
 		{60D1D960-8AAE-4F87-8D85-0C2BDD6254B1}.Release|x86.Build.0 = Release|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Debug|x64.Build.0 = Debug|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Debug|x86.Build.0 = Debug|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Release|x64.ActiveCfg = Release|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Release|x64.Build.0 = Release|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Release|x86.ActiveCfg = Release|Any CPU
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -296,6 +310,7 @@ Global
 		{53A598F0-69ED-4311-848E-5F74B4AE8E3F} = {F853488B-5AC3-464C-86D7-32B33051E885}
 		{E4BF8497-1D90-47E4-9E8D-4C1A33EB674C} = {F853488B-5AC3-464C-86D7-32B33051E885}
 		{60D1D960-8AAE-4F87-8D85-0C2BDD6254B1} = {B9D21C46-8963-4377-AEAD-A891F3D618A9}
+		{47FAFF79-44F7-4505-91CA-A2BE28915EE2} = {F853488B-5AC3-464C-86D7-32B33051E885}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8B7E0ADC-CE3B-4148-BD30-7F627B4C8D22}

@@ -2,7 +2,6 @@
 {
     using Editors.OffsetEditor;
     using Squalr.Content;
-    using Squalr.Engine;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Processes;
@@ -260,11 +259,11 @@
             {
                 if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
                 {
-                    pointer = Eng.GetInstance().VirtualMemory.Read<Int32>(pointer, out successReading).ToIntPtr();
+                    pointer = Reader.Default.Read<Int32>(pointer, out successReading).ToIntPtr();
                 }
                 else
                 {
-                    pointer = Eng.GetInstance().VirtualMemory.Read<Int64>(pointer, out successReading).ToIntPtr();
+                    pointer = Reader.Default.Read<Int64>(pointer, out successReading).ToIntPtr();
                 }
 
                 if (pointer == IntPtr.Zero || !successReading)

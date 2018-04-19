@@ -41,7 +41,9 @@ This engine allows for modification of memory, disassembling, assembling, debugg
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0-preview2-26406-04" />
     <PackageReference Include="System.Drawing.Common" Version="4.5.0-preview2-26406-04" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0-preview2-26406-04" />
   </ItemGroup>
 
   <ItemGroup>

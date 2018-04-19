@@ -139,7 +139,7 @@
         {
             if (process != null)
             {
-                this.BaseAddress = Eng.GetInstance().VirtualMemory.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
+                this.BaseAddress = Query.Default.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
 
                 this.LoadInstructions();
             }
@@ -173,7 +173,7 @@
         /// </summary>
         private void LoadInstructions()
         {
-            Byte[] bytes = Eng.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
+            Byte[] bytes = Reader.Default.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
 
             if (bytes.IsNullOrEmpty())
             {

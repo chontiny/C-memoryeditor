@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Source.Snapshots
 {
-    using Squalr.Engine;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
     using Squalr.Properties;
@@ -64,7 +63,7 @@
         public Boolean ReadAllMemory()
         {
             Boolean readSuccess;
-            Byte[] newCurrentValues = Eng.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
+            Byte[] newCurrentValues = Reader.Default.ReadBytes(this.BaseAddress, this.RegionSize, out readSuccess);
 
             if (readSuccess)
             {

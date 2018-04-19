@@ -9,8 +9,6 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
-    using System.Linq;
-    using System.Numerics;
     using System.Text;
     using Utils;
     using Utils.Extensions;
@@ -20,7 +18,7 @@
     /// <summary>
     /// Class for memory editing a remote process.
     /// </summary>
-    internal class WindowsAdapter : IVirtualMemoryAdapter
+    internal class WindowsMemoryQuery : IMemoryQuery
     {
         /// <summary>
         /// A reference to target process.
@@ -35,14 +33,8 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="WindowsAdapter"/> class.
         /// </summary>
-        public WindowsAdapter()
+        public WindowsMemoryQuery()
         {
-            if (this.HasVectorSupport())
-            {
-                Output.Log(LogLevel.Info, "Hardware acceleration enabled");
-                Output.Log(LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
-            }
-
             // Subscribe to process events
             ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
@@ -97,198 +89,6 @@
                 // Avoid setter functions
                 this.systemProcess = null;
             }
-        }
-
-        #region Read
-        /// <summary>
-        /// Reads the value of a specified type in the remote process.
-        /// </summary>
-        /// <param name="dataType">Type of value being read.</param>
-        /// <param name="address">The address where the value is read.</param>
-        /// <param name="success">Whether or not the read succeeded.</param>
-        /// <returns>A value.</returns>
-        public Object Read(DataType dataType, IntPtr address, out Boolean success)
-        {
-            Object value;
-
-            switch (dataType)
-            {
-                case DataType type when type == DataType.Byte:
-                    value = this.Read<Byte>(address, out success);
-                    break;
-                case DataType type when type == DataType.SByte:
-                    value = this.Read<SByte>(address, out success);
-                    break;
-                case DataType type when type == DataType.Int16:
-                    value = this.Read<Int16>(address, out success);
-                    break;
-                case DataType type when type == DataType.Int32:
-                    value = this.Read<Int32>(address, out success);
-                    break;
-                case DataType type when type == DataType.Int64:
-                    value = this.Read<Int64>(address, out success);
-                    break;
-                case DataType type when type == DataType.UInt16:
-                    value = this.Read<UInt16>(address, out success);
-                    break;
-                case DataType type when type == DataType.UInt32:
-                    value = this.Read<UInt32>(address, out success);
-                    break;
-                case DataType type when type == DataType.UInt64:
-                    value = this.Read<UInt64>(address, out success);
-                    break;
-                case DataType type when type == DataType.Single:
-                    value = this.Read<Single>(address, out success);
-                    break;
-                case DataType type when type == DataType.Double:
-                    value = this.Read<Double>(address, out success);
-                    break;
-                default:
-                    value = "?";
-                    success = false;
-                    break;
-            }
-
-            if (!success)
-            {
-                value = "?";
-            }
-
-            return value;
-        }
-
-        /// <summary>
-        /// Reads the value of a specified type in the remote process.
-        /// </summary>
-        /// <typeparam name="T">The type of the value.</typeparam>
-        /// <param name="address">The address where the value is read.</param>
-        /// <param name="success">Whether or not the read succeeded.</param>
-        /// <returns>A value.</returns>
-        public T Read<T>(IntPtr address, out Boolean success)
-        {
-            Byte[] byteArray = this.ReadBytes(address, Conversions.SizeOf(typeof(T)), out success);
-            return Conversions.BytesToObject<T>(byteArray);
-        }
-
-        /// <summary>
-        /// Reads an array of bytes in the remote process.
-        /// </summary>
-        /// <param name="address">The address where the array is read.</param>
-        /// <param name="count">The number of cells.</param>
-        /// <param name="success">Whether or not the read succeeded.</param>
-        /// <returns>The array of bytes.</returns>
-        public Byte[] ReadBytes(IntPtr address, Int32 count, out Boolean success)
-        {
-            return Memory.ReadBytes(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, address, count, out success);
-        }
-
-        /// <summary>
-        /// Reads a string with a specified encoding in the remote process.
-        /// </summary>
-        /// <param name="address">The address where the string is read.</param>
-        /// <param name="encoding">The encoding used.</param>
-        /// <param name="success">Whether or not the read succeeded</param>
-        /// <param name="maxLength">[Optional] The number of maximum bytes to read. The string is automatically cropped at this end ('\0' char).</param>
-        /// <returns>The string.</returns>
-        public String ReadString(IntPtr address, Encoding encoding, out Boolean success, Int32 maxLength = 512)
-        {
-            // Read the string
-            String data = encoding.GetString(this.ReadBytes(address, maxLength, out success));
-
-            // Search the end of the string
-            Int32 end = data.IndexOf('\0');
-
-            // Crop the string with this end
-            return data.Substring(0, end);
-        }
-
-        #endregion
-
-        #region Write
-        /// <summary>
-        /// Writes a value to memory in the opened process.
-        /// </summary>
-        /// <param name="elementType">The data type to write.</param>
-        /// <param name="address">The address to write to.</param>
-        /// <param name="value">The value to write.</param>
-        public void Write(DataType elementType, IntPtr address, Object value)
-        {
-            Byte[] bytes;
-
-            switch (elementType)
-            {
-                case DataType type when type == DataType.Byte || type == typeof(Boolean):
-                    bytes = BitConverter.GetBytes((Byte)value);
-                    break;
-                case DataType type when type == DataType.SByte:
-                    bytes = BitConverter.GetBytes((SByte)value);
-                    break;
-                case DataType type when type == DataType.Char:
-                    bytes = Encoding.UTF8.GetBytes(new Char[] { (Char)value });
-                    break;
-                case DataType type when type == DataType.Int16:
-                    bytes = BitConverter.GetBytes((Int16)value);
-                    break;
-                case DataType type when type == DataType.Int32:
-                    bytes = BitConverter.GetBytes((Int32)value);
-                    break;
-                case DataType type when type == DataType.Int64:
-                    bytes = BitConverter.GetBytes((Int64)value);
-                    break;
-                case DataType type when type == DataType.UInt16:
-                    bytes = BitConverter.GetBytes((UInt16)value);
-                    break;
-                case DataType type when type == DataType.UInt32:
-                    bytes = BitConverter.GetBytes((UInt32)value);
-                    break;
-                case DataType type when type == DataType.UInt64:
-                    bytes = BitConverter.GetBytes((UInt64)value);
-                    break;
-                case DataType type when type == DataType.Single:
-                    bytes = BitConverter.GetBytes((Single)value);
-                    break;
-                case DataType type when type == DataType.Double:
-                    bytes = BitConverter.GetBytes((Double)value);
-                    break;
-                default:
-                    throw new ArgumentException("Invalid type provided");
-            }
-
-            this.WriteBytes(address, bytes);
-        }
-
-        /// <summary>
-        /// Writes the values of a specified type in the remote process.
-        /// </summary>
-        /// <typeparam name="T">The type of the value.</typeparam>
-        /// <param name="address">The address where the value is written.</param>
-        /// <param name="value">The value to write.</param>
-        public void Write<T>(IntPtr address, T value)
-        {
-            this.Write(typeof(T), address, (Object)value);
-        }
-
-        /// <summary>
-        /// Write an array of bytes in the remote process.
-        /// </summary>
-        /// <param name="address">The address where the array is written.</param>
-        /// <param name="byteArray">The array of bytes to write.</param>
-        public void WriteBytes(IntPtr address, Byte[] byteArray)
-        {
-            // Write the byte array
-            Memory.WriteBytes(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, address, byteArray);
-        }
-
-        /// <summary>
-        /// Writes a string with a specified encoding in the remote process.
-        /// </summary>
-        /// <param name="address">The address where the string is written.</param>
-        /// <param name="text">The text to write.</param>
-        /// <param name="encoding">The encoding used.</param>
-        public void WriteString(IntPtr address, String text, Encoding encoding)
-        {
-            // Write the text
-            this.WriteBytes(address, encoding.GetBytes(text + '\0'));
         }
 
         /// <summary>
@@ -442,6 +242,7 @@
         public IEnumerable<NormalizedRegion> GetAllVirtualPages()
         {
             MemoryTypeEnum flags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image | MemoryTypeEnum.Mapped;
+
             return this.GetVirtualPages(0, 0, flags, IntPtr.Zero, this.GetMaximumAddress());
         }
 
@@ -537,84 +338,6 @@
 
             return modules;
         }
-
-        /// <summary>
-        /// Searches for an array of bytes in the opened process.
-        /// </summary>
-        /// <param name="bytes">The byte array to search for.</param>
-        /// <returns>The address of the first match.</returns>
-        public IntPtr SearchAob(Byte[] bytes)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Searches for an array of bytes in the opened process.
-        /// </summary>
-        /// <param name="pattern">The string pattern to search for.</param>
-        /// <returns>The address of the first match.</returns>
-        public IntPtr SearchAob(String pattern)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Searches for an array of bytes in the opened process.
-        /// </summary>
-        /// <param name="pattern">The string pattern to search for.</param>
-        /// <returns>The address of all matches.</returns>
-        public IEnumerable<IntPtr> SearchllAob(String pattern)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IntPtr EvaluatePointer(IntPtr address, IEnumerable<Int32> offsets)
-        {
-            IntPtr finalAddress = address;
-
-            if (!offsets.IsNullOrEmpty())
-            {
-                // Add and trace offsets
-                foreach (Int32 offset in offsets.Take(offsets.Count() - 1))
-                {
-                    Boolean success;
-                    if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
-                    {
-                        finalAddress = (this.Read<UInt32>(finalAddress + offset, out success).ToInt64()).ToIntPtr();
-                    }
-                    else
-                    {
-                        finalAddress = (this.Read<UInt64>(finalAddress, out success).ToInt64() + offset).ToIntPtr();
-                    }
-                }
-
-                // The last offset is added, but not traced
-                finalAddress = finalAddress.Add(offsets.Last());
-            }
-
-            return finalAddress;
-        }
-
-        /// <summary>
-        /// Gets a value indicating if the archiecture has vector instruction support.
-        /// </summary>
-        /// <returns>A value indicating if the archiecture has vector instruction support.</returns>
-        public Boolean HasVectorSupport()
-        {
-            return Vector.IsHardwareAccelerated;
-        }
-
-        /// <summary>
-        /// Gets the vector size supported by the current architecture.
-        /// If vectors are not supported, returns the lowest common denominator vector size for the architecture.
-        /// </summary>
-        /// <returns>The vector size.</returns>
-        public Int32 GetVectorSize()
-        {
-            return Vector<Byte>.Count;
-        }
-
-        #endregion
     }
     //// End class
 }

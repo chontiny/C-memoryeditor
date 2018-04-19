@@ -26,7 +26,7 @@
             ScanConstraintManager scanConstraints)
         {
             this.Region = region;
-            this.VectorSize = Eng.GetInstance().Architecture.GetVectorSize();
+            this.VectorSize = SystemInfo.VectorSize;
             this.VectorReadBase = this.Region.ReadGroupOffset - this.Region.ReadGroupOffset % this.VectorSize;
             this.VectorReadIndex = 0;
             this.DataTypeize = Conversions.SizeOf(this.Region.ReadGroup.ElementDataType);
