@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Squalr.Engine.Hook\Squalr.Engine.Hook.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Processes\Squalr.Engine.Processes.csproj" />
+    <ProjectReference Include="..\Squalr.Engine\Squalr.Engine.csproj" />
   </ItemGroup>
 
 </Project>

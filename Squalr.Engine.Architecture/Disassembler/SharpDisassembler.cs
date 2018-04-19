@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Architecture.Disassembler
+﻿namespace Squalr.Engine.Architecture.Disassemblers
 {
     using SharpDisasm;
     using Squalr.Engine.Utils.Extensions;

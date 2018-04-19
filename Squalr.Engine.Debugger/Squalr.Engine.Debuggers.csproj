@@ -13,11 +13,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.4.1" />
+    <Compile Remove="Windows\DebugEngine\Com\**" />
+    <EmbeddedResource Remove="Windows\DebugEngine\Com\**" />
+    <None Remove="Windows\DebugEngine\Com\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj" />
+    <Folder Include="Windows\DebugEngine\Internal\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Squalr.Engine\Squalr.Engine.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace SqualrHookServer.Source.Speed
+﻿namespace Squalr.Engine.HookServer.Speed
 {
     using EasyHook;
     using SqualrHookClient.Source;
@@ -12,7 +12,6 @@
     [Serializable]
     internal class SpeedHook
     {
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SpeedHook" /> class.
         /// </summary>

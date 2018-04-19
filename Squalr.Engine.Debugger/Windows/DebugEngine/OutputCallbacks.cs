@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Debugger.Windows.DebugEngine
+﻿namespace Squalr.Engine.Debuggers.Windows.DebugEngine
 {
     using Microsoft.Diagnostics.Runtime.Interop;
     using Squalr.Engine.Output;

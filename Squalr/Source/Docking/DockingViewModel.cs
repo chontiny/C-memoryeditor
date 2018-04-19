@@ -106,7 +106,7 @@
 
             if (layoutResource.IsNullOrEmpty())
             {
-                Console.WriteLine("Unable to load layout resource.");
+                Squalr.Engine.Output.Output.Log(Squalr.Engine.Output.LogLevel.Warn, "Unable to load layout resource.");
                 return;
             }
 
@@ -124,7 +124,7 @@
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error loading layout resource" + ex.ToString());
+                Squalr.Engine.Output.Output.Log(Squalr.Engine.Output.LogLevel.Warn, "Error loading layout resource.", ex);
             }
         }
 

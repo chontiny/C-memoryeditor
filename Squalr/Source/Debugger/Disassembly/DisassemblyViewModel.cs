@@ -1,9 +1,7 @@
 ﻿namespace Squalr.Source.Debugger.Disassembly
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine;
     using Squalr.Engine.Architecture;
-    using Squalr.Engine.Architecture.Disassembler;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Processes;
     using Squalr.Engine.Utils.DataStructures;
@@ -129,17 +127,6 @@
         }
 
         /// <summary>
-        /// Gets the disassembler.
-        /// </summary>
-        private IDisassembler Disassembler
-        {
-            get
-            {
-                return Eng.GetInstance().Architecture.GetDisassembler();
-            }
-        }
-
-        /// <summary>
         /// Gets a singleton instance of the <see cref="DisassemblyViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -152,7 +139,7 @@
         {
             if (process != null)
             {
-                this.BaseAddress = Eng.GetInstance().VirtualMemory.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
+                this.BaseAddress = Query.Default.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
 
                 this.LoadInstructions();
             }
@@ -186,7 +173,7 @@
         /// </summary>
         private void LoadInstructions()
         {
-            Byte[] bytes = Eng.GetInstance().VirtualMemory.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
+            Byte[] bytes = Reader.Default.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
 
             if (bytes.IsNullOrEmpty())
             {
@@ -196,7 +183,7 @@
             Boolean isProcess32Bit = ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit();
 
             // Disassemble instructions
-            IEnumerable<NormalizedInstruction> disassembledInstructions = this.Disassembler.Disassemble(bytes, isProcess32Bit, this.BaseAddress.ToIntPtr());
+            IEnumerable<NormalizedInstruction> disassembledInstructions = Disassembler.Default.Disassemble(bytes, isProcess32Bit, this.BaseAddress.ToIntPtr());
             IList<InstructionItem> instructions = new List<InstructionItem>();
 
             foreach (NormalizedInstruction disassembledInstruction in disassembledInstructions)

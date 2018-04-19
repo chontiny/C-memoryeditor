@@ -60,7 +60,7 @@
         /// <returns>The module name and address offset. If not contained by a module, the original address is returned.</returns>
         public UInt64 AddressToModule(UInt64 address, out String moduleName)
         {
-            NormalizedModule containingModule = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetModules()
+            NormalizedModule containingModule = Query.Default.GetModules()
                 .Select(module => module)
                 .Where(module => module.ContainsAddress(address))
                 .FirstOrDefault();
@@ -80,7 +80,7 @@
             IntPtr result = IntPtr.Zero;
 
             identifier = identifier?.RemoveSuffixes(true, ".exe", ".dll");
-            IEnumerable<NormalizedModule> modules = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetModules()
+            IEnumerable<NormalizedModule> modules = Query.Default.GetModules()
                 ?.ToList()
                 ?.Select(module => module)
                 ?.Where(module => module.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));

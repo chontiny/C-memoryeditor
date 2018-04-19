@@ -1,8 +1,7 @@
 ﻿namespace Squalr.Source.Debugger
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine;
-    using Squalr.Engine.Debugger;
+    using Squalr.Engine.Debuggers;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
@@ -189,8 +188,8 @@
 
                 AddressItem addressItem = projectItem as AddressItem;
 
-                BreakpointSize size = Eng.GetInstance().Debugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                this.DebuggerCancellationTokenSource = Eng.GetInstance().Debugger.FindWhatWrites(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                BreakpointSize size = Debugger.Default.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
+                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatWrites(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 
@@ -203,8 +202,8 @@
 
                 AddressItem addressItem = projectItem as AddressItem;
 
-                BreakpointSize size = Eng.GetInstance().Debugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                this.DebuggerCancellationTokenSource = Eng.GetInstance().Debugger.FindWhatReads(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                BreakpointSize size = Debugger.Default.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
+                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatReads(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 
@@ -217,8 +216,8 @@
 
                 AddressItem addressItem = projectItem as AddressItem;
 
-                BreakpointSize size = Eng.GetInstance().Debugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                this.DebuggerCancellationTokenSource = Eng.GetInstance().Debugger.FindWhatAccesses(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                BreakpointSize size = Debugger.Default.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
+                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatAccesses(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 

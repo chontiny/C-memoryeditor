@@ -1,4 +1,4 @@
-﻿namespace SqualrHookServer.Source.Random
+﻿namespace Squalr.Engine.HookServer.Random
 {
     using EasyHook;
     using SqualrHookClient.Source;

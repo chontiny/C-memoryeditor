@@ -1,10 +1,11 @@
 ﻿namespace Squalr.Engine.Scripting.Memory
 {
     using Squalr.Engine.Architecture;
-    using Squalr.Engine.Architecture.Assembler;
+    using Squalr.Engine.Architecture.Assemblers;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Output;
     using Squalr.Engine.Processes;
+    using Squalr.Engine.Scanning;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -72,7 +73,7 @@
             moduleName = moduleName?.RemoveSuffixes(true, ".exe", ".dll");
 
             UInt64 address = 0;
-            foreach (NormalizedModule module in VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().GetModules())
+            foreach (NormalizedModule module in Query.Default.GetModules())
             {
                 String targetModuleName = module?.Name?.RemoveSuffixes(true, ".exe", ".dll");
                 if (targetModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
@@ -113,7 +114,7 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
-            AssemblerResult result = ArchitectureFactory.GetArchitecture().GetAssembler().Assemble(ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
+            AssemblerResult result = Assembler.Default.Assemble(ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
 
             Output.Log(LogLevel.Info, result.Message, result.InnerMessage);
 
@@ -135,7 +136,7 @@
             // Read original bytes at code cave jump
             Boolean readSuccess;
 
-            Byte[] originalBytes = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().ReadBytes(address.ToIntPtr(), injectedCodeSize + MemoryCore.Largestx86InstructionSize, out readSuccess);
+            Byte[] originalBytes = Reader.Default.ReadBytes(address.ToIntPtr(), injectedCodeSize + MemoryCore.Largestx86InstructionSize, out readSuccess);
 
             if (!readSuccess || originalBytes == null || originalBytes.Length <= 0)
             {
@@ -143,7 +144,7 @@
             }
 
             // Grab instructions at code entry point
-            IEnumerable<NormalizedInstruction> instructions = ArchitectureFactory.GetArchitecture().GetDisassembler().Disassemble(originalBytes, ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), address.ToIntPtr());
+            IEnumerable<NormalizedInstruction> instructions = Disassembler.Default.Disassemble(originalBytes, ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), address.ToIntPtr());
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;
@@ -176,7 +177,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().AllocateMemory(size).ToUInt64();
+            UInt64 address = Query.Default.AllocateMemory(size).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -192,7 +193,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
+            UInt64 address = Query.Default.AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -210,7 +211,7 @@
             {
                 if (allocationAddress == address)
                 {
-                    VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().DeallocateMemory(allocationAddress.ToIntPtr());
+                    Query.Default.DeallocateMemory(allocationAddress.ToIntPtr());
                     this.RemoteAllocations.Remove(allocationAddress);
                     break;
                 }
@@ -228,7 +229,7 @@
 
             foreach (UInt64 address in this.RemoteAllocations)
             {
-                VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().DeallocateMemory(address.ToIntPtr());
+                Query.Default.DeallocateMemory(address.ToIntPtr());
             }
 
             this.RemoteAllocations.Clear();
@@ -337,7 +338,7 @@
             String noOps = (originalBytes.Length - assemblySize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - assemblySize)).TrimEnd(',');
 
             Byte[] injectionBytes = this.GetAssemblyBytes(assembly + "\n" + noOps, address);
-            VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().WriteBytes(address.ToIntPtr(), injectionBytes);
+            Writer.Default.WriteBytes(address.ToIntPtr(), injectionBytes);
 
             CodeCave codeCave = new CodeCave(address, 0, originalBytes);
             this.CodeCaves.Add(codeCave);
@@ -389,9 +390,9 @@
                     continue;
                 }
 
-                VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
+                Writer.Default.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
 
-                VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                Query.Default.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
         }
 
@@ -404,7 +405,7 @@
 
             foreach (CodeCave codeCave in this.CodeCaves)
             {
-                VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
+                Writer.Default.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
 
                 // If remote allocation address is unset, then it was not allocated.
                 if (codeCave.RemoteAllocationAddress == 0)
@@ -412,7 +413,7 @@
                     continue;
                 }
 
-                VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                Query.Default.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
 
             this.CodeCaves.Clear();
@@ -527,7 +528,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().SearchAob(bytes).ToUInt64();
+            UInt64 address = Scanner.SearchAob(bytes).ToUInt64();
             return address;
         }
 
@@ -540,7 +541,7 @@
         {
             this.PrintDebugTag(pattern);
 
-            return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().SearchAob(pattern).ToUInt64();
+            return Scanner.SearchAob(pattern).ToUInt64();
         }
 
         /// <summary>
@@ -551,7 +552,7 @@
         public UInt64[] SearchAllAob(String pattern)
         {
             this.PrintDebugTag(pattern);
-            List<IntPtr> aobResults = new List<IntPtr>(VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().SearchllAob(pattern));
+            List<IntPtr> aobResults = new List<IntPtr>(Scanner.SearchllAob(pattern));
             List<UInt64> convertedAobs = new List<UInt64>();
             aobResults.ForEach(x => convertedAobs.Add(x.ToUInt64()));
             return convertedAobs.ToArray();
@@ -561,7 +562,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 finalAddress = VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().EvaluatePointer(address.ToIntPtr(), offsets).ToUInt64();
+            UInt64 finalAddress = Reader.Default.EvaluatePointer(address.ToIntPtr(), offsets).ToUInt64();
             return finalAddress;
         }
 
@@ -576,7 +577,7 @@
             this.PrintDebugTag(address.ToString("x"));
 
             Boolean readSuccess;
-            return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Read<T>(address.ToIntPtr(), out readSuccess);
+            return Reader.Default.Read<T>(address.ToIntPtr(), out readSuccess);
         }
 
         /// <summary>
@@ -590,7 +591,7 @@
             this.PrintDebugTag(address.ToString("x"), count.ToString());
 
             Boolean readSuccess;
-            return VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().ReadBytes(address.ToIntPtr(), count, out readSuccess);
+            return Reader.Default.ReadBytes(address.ToIntPtr(), count, out readSuccess);
         }
 
         /// <summary>
@@ -603,7 +604,7 @@
         {
             this.PrintDebugTag(address.ToString("x"), value.ToString());
 
-            VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().Write<T>(address.ToIntPtr(), value);
+            Writer.Default.Write<T>(address.ToIntPtr(), value);
         }
 
         /// <summary>
@@ -615,7 +616,7 @@
         {
             this.PrintDebugTag(address.ToString("x"));
 
-            VirtualMemoryAdapterFactory.GetVirtualMemoryAdapter().WriteBytes(address.ToIntPtr(), values);
+            Writer.Default.WriteBytes(address.ToIntPtr(), values);
         }
 
         /// <summary>

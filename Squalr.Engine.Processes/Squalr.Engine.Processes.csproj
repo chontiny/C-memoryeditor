@@ -8,10 +8,4 @@
     <PackageReference Include="System.Drawing.Common" Version="4.5.0-preview1-26216-02" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Utils\Squalr.Engine.Utils.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -70,9 +70,9 @@
             stopwatch.Start();
 
             Boolean isProcess32Bit = ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit();
-            Int32 vectorSize = Eng.GetInstance().Architecture.GetVectorSize();
+            Int32 vectorSize = SystemInfo.VectorSize;
             UInt64 minValue = UInt16.MaxValue;
-            UInt64 maxValue = Eng.GetInstance().VirtualMemory.GetMaxUsermodeAddress();
+            UInt64 maxValue = Query.Default.GetMaxUsermodeAddress();
             Vector<UInt32> minValueVector = new Vector<UInt32>(minValue.ToUInt32());
             Vector<UInt32> maxValueVector = new Vector<UInt32>(maxValue.ToUInt32());
             Vector<UInt64> minValueVector64 = new Vector<UInt64>(minValue);
