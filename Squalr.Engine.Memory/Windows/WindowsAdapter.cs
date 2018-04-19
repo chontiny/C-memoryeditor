@@ -10,6 +10,7 @@
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
+    using System.Numerics;
     using System.Text;
     using Utils;
     using Utils.Extensions;
@@ -36,6 +37,12 @@
         /// </summary>
         public WindowsAdapter()
         {
+            if (this.HasVectorSupport())
+            {
+                Output.Log(LogLevel.Info, "Hardware acceleration enabled");
+                Output.Log(LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
+            }
+
             // Subscribe to process events
             ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
         }
@@ -586,6 +593,25 @@
             }
 
             return finalAddress;
+        }
+
+        /// <summary>
+        /// Gets a value indicating if the archiecture has vector instruction support.
+        /// </summary>
+        /// <returns>A value indicating if the archiecture has vector instruction support.</returns>
+        public Boolean HasVectorSupport()
+        {
+            return Vector.IsHardwareAccelerated;
+        }
+
+        /// <summary>
+        /// Gets the vector size supported by the current architecture.
+        /// If vectors are not supported, returns the lowest common denominator vector size for the architecture.
+        /// </summary>
+        /// <returns>The vector size.</returns>
+        public Int32 GetVectorSize()
+        {
+            return Vector<Byte>.Count;
         }
 
         #endregion

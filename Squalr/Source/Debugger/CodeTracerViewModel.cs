@@ -188,8 +188,8 @@
 
                 AddressItem addressItem = projectItem as AddressItem;
 
-                BreakpointSize size = Debugger.DefaultDebugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                this.DebuggerCancellationTokenSource = Debugger.DefaultDebugger.FindWhatWrites(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                BreakpointSize size = Debugger.Default.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
+                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatWrites(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 
@@ -202,8 +202,8 @@
 
                 AddressItem addressItem = projectItem as AddressItem;
 
-                BreakpointSize size = Debugger.DefaultDebugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                this.DebuggerCancellationTokenSource = Debugger.DefaultDebugger.FindWhatReads(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                BreakpointSize size = Debugger.Default.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
+                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatReads(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 
@@ -216,8 +216,8 @@
 
                 AddressItem addressItem = projectItem as AddressItem;
 
-                BreakpointSize size = Debugger.DefaultDebugger.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                this.DebuggerCancellationTokenSource = Debugger.DefaultDebugger.FindWhatAccesses(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                BreakpointSize size = Debugger.Default.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
+                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatAccesses(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
             }
         }
 

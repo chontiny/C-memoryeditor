@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Memory.Clr\Squalr.Engine.Memory.Clr.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Processes\Squalr.Engine.Processes.csproj" />
-    <ProjectReference Include="..\Squalr.Engine.Utils\Squalr.Engine.Utils.csproj" />
+    <Folder Include="Jvm\" />
   </ItemGroup>
 
 </Project>

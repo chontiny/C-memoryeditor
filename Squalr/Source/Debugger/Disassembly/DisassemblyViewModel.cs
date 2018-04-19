@@ -3,7 +3,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine;
     using Squalr.Engine.Architecture;
-    using Squalr.Engine.Architecture.Disassembler;
+    using Squalr.Engine.Architecture.Disassemblers;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Processes;
     using Squalr.Engine.Utils.DataStructures;

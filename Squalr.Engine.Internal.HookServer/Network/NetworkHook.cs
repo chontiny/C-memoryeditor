@@ -1,4 +1,4 @@
-﻿namespace SqualrHookServer.Source.Network
+﻿namespace Squalr.Engine.HookServer.Network
 {
     using EasyHook;
     using SqualrHookClient.Source;

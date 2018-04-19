@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Engine.Debuggers
 {
-    public class Debugger
+    public static class Debugger
     {
-        public static IDebugger DefaultDebugger
+        public static IDebugger Default
         {
             get
             {

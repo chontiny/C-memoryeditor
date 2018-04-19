@@ -90,12 +90,6 @@
         {
             Output.Output.Subscribe(outputObserver);
 
-            if (this.Architecture.HasVectorSupport())
-            {
-                Output.Output.Log(LogLevel.Info, "Hardware acceleration enabled");
-                Output.Output.Log(LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
-            }
-
             this.StartBackgroundServices();
         }
 

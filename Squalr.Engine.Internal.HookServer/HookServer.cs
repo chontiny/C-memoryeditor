@@ -1,11 +1,11 @@
-﻿namespace SqualrHookServer.Source
+﻿namespace Squalr.Engine.HookServer
 {
     using EasyHook;
+    using Squalr.Engine.HookServer.Graphics;
+    using Squalr.Engine.HookServer.Network;
+    using Squalr.Engine.HookServer.Random;
+    using Squalr.Engine.HookServer.Speed;
     using SqualrHookClient.Source;
-    using SqualrHookServer.Source.Graphics;
-    using SqualrHookServer.Source.Network;
-    using SqualrHookServer.Source.Random;
-    using SqualrHookServer.Source.Speed;
     using System;
     using System.Reflection;
     using System.Threading;

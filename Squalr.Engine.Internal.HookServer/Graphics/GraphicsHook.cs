@@ -1,4 +1,4 @@
-﻿namespace SqualrHookServer.Source.Graphics
+﻿namespace Squalr.Engine.HookServer.Graphics
 {
     using SqualrHookClient.Source;
     using System;

@@ -155,6 +155,19 @@
         /// <param name="address">The address to write to.</param>
         /// <param name="values">The value to write.</param>
         void WriteBytes(IntPtr address, Byte[] values);
+
+        /// <summary>
+        /// Gets a value indicating if the archiecture has vector instruction support.
+        /// </summary>
+        /// <returns>A value indicating if the archiecture has vector instruction support.</returns>
+        Boolean HasVectorSupport();
+
+        /// <summary>
+        /// Gets the vector size supported by the current architecture.
+        /// If vectors are not supported, returns the lowest common denominator vector size for the architecture.
+        /// </summary>
+        /// <returns>The vector size.</returns>
+        Int32 GetVectorSize();
     }
     //// End interface
 }

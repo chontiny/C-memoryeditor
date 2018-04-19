@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Scripting.Memory
 {
     using Squalr.Engine.Architecture;
-    using Squalr.Engine.Architecture.Assembler;
+    using Squalr.Engine.Architecture.Assemblers;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Output;
     using Squalr.Engine.Processes;
@@ -113,7 +113,7 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
-            AssemblerResult result = ArchitectureFactory.GetArchitecture().GetAssembler().Assemble(ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
+            AssemblerResult result = ArchitectureFactory.GetAssembler().GetAssembler().Assemble(ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
 
             Output.Log(LogLevel.Info, result.Message, result.InnerMessage);
 
@@ -143,7 +143,7 @@
             }
 
             // Grab instructions at code entry point
-            IEnumerable<NormalizedInstruction> instructions = ArchitectureFactory.GetArchitecture().GetDisassembler().Disassemble(originalBytes, ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), address.ToIntPtr());
+            IEnumerable<NormalizedInstruction> instructions = ArchitectureFactory.GetAssembler().GetDisassembler().Disassemble(originalBytes, ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), address.ToIntPtr());
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;

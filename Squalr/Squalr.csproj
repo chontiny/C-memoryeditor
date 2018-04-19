@@ -701,10 +701,6 @@
       <Project>{bf9b9bd8-1ec3-4f09-b90e-9f822ffaf407}</Project>
       <Name>Squalr.Engine.Architecture</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.DataTypes\Squalr.Engine.DataTypes.csproj">
-      <Project>{EEF17FA4-E4A6-456B-89B7-5DED5C1930AB}</Project>
-      <Name>Squalr.Engine.DataTypes</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Debugger\Squalr.Engine.Debuggers.csproj">
       <Project>{930c55ee-a79f-4f06-b843-0ae9cc375217}</Project>
       <Name>Squalr.Engine.Debuggers</Name>
@@ -721,18 +717,6 @@
       <Project>{53a598f0-69ed-4311-848e-5f74b4ae8e3f}</Project>
       <Name>Squalr.Engine.Input</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.Internal.TaskScheduler\Squalr.Engine.Internal.TaskScheduler.csproj">
-      <Project>{1884cb62-2dc0-4a76-9a77-af61238e29bd}</Project>
-      <Name>Squalr.Engine.Internal.TaskScheduler</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.Memory.Clr\Squalr.Engine.Memory.Clr.csproj">
-      <Project>{d4a3478b-3e94-4a86-92a9-8dc69117e371}</Project>
-      <Name>Squalr.Engine.Memory.Clr</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.Memory.Jvm\Squalr.Engine.Memory.Jvm.csproj">
-      <Project>{6b385c23-922a-4d24-a75d-527bff6c3841}</Project>
-      <Name>Squalr.Engine.Memory.Jvm</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Memory\Squalr.Engine.Memory.csproj">
       <Project>{77e64e71-8e26-4311-9c10-61d4cafd4fef}</Project>
       <Name>Squalr.Engine.Memory</Name>
@@ -740,14 +724,6 @@
     <ProjectReference Include="..\Squalr.Engine.Networking\Squalr.Engine.Networking.csproj">
       <Project>{e4bf8497-1d90-47e4-9e8d-4c1a33eb674c}</Project>
       <Name>Squalr.Engine.Networking</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.Output\Squalr.Engine.Output.csproj">
-      <Project>{9c723e37-c519-4675-a697-e357bf932a0b}</Project>
-      <Name>Squalr.Engine.Output</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.Processes\Squalr.Engine.Processes.csproj">
-      <Project>{85b7c94f-c89c-45bd-871a-1f2b6fc41bdd}</Project>
-      <Name>Squalr.Engine.Processes</Name>
     </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Scripting\Squalr.Engine.Scripting.csproj">
       <Project>{0612f4dc-e843-4dd6-8856-98dad0033de3}</Project>
@@ -760,10 +736,6 @@
     <ProjectReference Include="..\Squalr.Engine.Unrandomizer\Squalr.Engine.Unrandomizer.csproj">
       <Project>{21d8d02c-5fe6-4c72-bec2-83b47b83b614}</Project>
       <Name>Squalr.Engine.Unrandomizer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Squalr.Engine.Utils\Squalr.Engine.Utils.csproj">
-      <Project>{7ad05601-eb5a-4c7c-854a-7024644edc3f}</Project>
-      <Name>Squalr.Engine.Utils</Name>
     </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine\Squalr.Engine.csproj">
       <Project>{0b78bebf-d43f-431c-8a5f-9734c6fda1b3}</Project>
