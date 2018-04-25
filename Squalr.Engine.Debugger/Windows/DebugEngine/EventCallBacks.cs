@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Debuggers.Windows.DebugEngine
 {
     using Microsoft.Diagnostics.Runtime.Interop;
+    using Squalr.Engine.Processes;
     using System;
     using System.Linq;
     using System.Runtime.InteropServices;
@@ -119,7 +120,7 @@
 
             String[] registers;
 
-            if (Processes.ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
+            if (ProcessInfo.Default.IsOpenedProcess32Bit())
             {
                 registers = this.Registers32;
             }

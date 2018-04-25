@@ -257,7 +257,7 @@
 
             foreach (Int32 offset in this.PointerOffsets)
             {
-                if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
+                if (ProcessInfo.Default.IsOpenedProcess32Bit())
                 {
                     pointer = Reader.Default.Read<Int32>(pointer, out successReading).ToIntPtr();
                 }

@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.Scanners.Pointers
 {
     using Squalr.Engine;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
-    using Squalr.Engine.Output;
     using Squalr.Engine.Processes;
     using Squalr.Engine.TaskScheduler;
     using Squalr.Source.Scanners.Pointers.Structures;
@@ -69,7 +69,7 @@
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
 
-            Boolean isProcess32Bit = ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit();
+            Boolean isProcess32Bit = ProcessInfo.Default.IsOpenedProcess32Bit();
             Int32 vectorSize = SystemInfo.VectorSize;
             UInt64 minValue = UInt16.MaxValue;
             UInt64 maxValue = Query.Default.GetMaxUsermodeAddress();
@@ -201,7 +201,7 @@
             }
 
             stopwatch.Stop();
-            Output.Log(LogLevel.Info, "Pointers collected in: " + stopwatch.Elapsed);
+            Logger.Log(LogLevel.Info, "Pointers collected in: " + stopwatch.Elapsed);
         }
 
         /// <summary>

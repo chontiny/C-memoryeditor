@@ -2,7 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.Output;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
     using Squalr.Source.Results;
@@ -279,7 +279,7 @@
 
             if (!allScanConstraints.IsValid())
             {
-                Output.Log(LogLevel.Warn, "Unable to start scan with given constraints");
+                Logger.Log(LogLevel.Warn, "Unable to start scan with given constraints");
                 return;
             }
 

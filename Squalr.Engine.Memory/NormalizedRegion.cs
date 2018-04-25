@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Memory
 {
-    using Output;
+    using Logging;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -191,7 +191,7 @@
         {
             if (chunkSize <= 0)
             {
-                Output.Log(LogLevel.Fatal, "Invalid chunk size specified for region");
+                Logger.Log(LogLevel.Fatal, "Invalid chunk size specified for region");
                 yield break;
             }
 

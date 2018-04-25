@@ -2,6 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>2.2.9.0</Version>
+    <Description>Squalr engine component for assemblers and disassemblers. Currently, this supports x86 and x64 processors.</Description>
   </PropertyGroup>
 
   <ItemGroup>

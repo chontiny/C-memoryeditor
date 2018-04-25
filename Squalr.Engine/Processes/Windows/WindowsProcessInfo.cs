@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Processes.Windows
 {
-    using Squalr.Engine.Output;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Processes.Windows.Native;
     using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.DataStructures;
@@ -8,13 +8,12 @@
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Drawing;
-    using System.Linq;
     using System.Threading;
 
     /// <summary>
     /// A class responsible for collecting all running processes on a Windows system.
     /// </summary>
-    internal class WindowsAdapter : ScheduledTask, IProcessAdapter, IProcessObserver
+    internal class WindowsProcessInfo : ScheduledTask, IProcessInfo
     {
         /// <summary>
         /// Thread safe collection of listeners.
@@ -24,30 +23,17 @@
         /// <summary>
         /// A reference to target process.
         /// </summary>
-        private Process systemProcess;
+        private Process openedProcess;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="WindowsAdapter" /> class.
+        /// Initializes a new instance of the <see cref="WindowsProcessInfo" /> class.
         /// </summary>
-        public WindowsAdapter() : base(
+        public WindowsProcessInfo() : base(
             taskName: "Check Process Alive",
             isRepeated: true,
             trackProgress: false)
         {
             this.processListeners = new ConcurrentHashSet<IProcessObserver>();
-
-            this.Results = new List<IntPtr>();
-            this.SystemProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
-            this.NoIconProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
-            this.WindowedProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
-            this.NoWindowProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(5));
-
-            // TODO: For now we will not expire the TTL icons. This may cause cosmetic bugs. Icons are currently not disposed,
-            // so putting a TTL on this would cause a memory leak.
-            this.IconCache = new TtlCache<Int32, Icon>();
-
-            // Subscribe to process events
-            this.Subscribe(this);
 
             this.Start();
         }
@@ -55,50 +41,62 @@
         /// <summary>
         /// Gets a reference to the target process. This is an optimization to minimize accesses to the Processes component of the Engine.
         /// </summary>
-        public Process SystemProcess
+        public Process OpenedProcess
         {
             get
             {
-                return this.systemProcess;
+                return this.openedProcess;
             }
 
-            private set
+            set
             {
-                this.systemProcess = value;
+                this.openedProcess = value;
+
+                if (value != null)
+                {
+                    Logger.Log(LogLevel.Info, "Attached to process: " + value.ProcessName);
+                }
+                else if (this.OpenedProcess != null)
+                {
+                    Logger.Log(LogLevel.Info, "Detached from target process");
+                }
+
+                if (this.processListeners != null)
+                {
+                    foreach (IProcessObserver listener in this.processListeners.ToList())
+                    {
+                        listener.Update(value);
+                    }
+                }
             }
         }
-
-        private List<IntPtr> Results;
 
         /// <summary>
         /// Collection of process ids that have caused access issues.
         /// </summary>
-        private TtlCache<Int32> SystemProcessCache;
+        private static TtlCache<Int32> SystemProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
 
         /// <summary>
         /// Collection of process ids for which an icon could not be fetched.
         /// </summary>
-        private TtlCache<Int32> NoIconProcessCache;
+        private static TtlCache<Int32> NoIconProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
 
         /// <summary>
         /// Collection of icons fetched from processes.
+        // TODO: For now we will not expire the TTL icons. This may cause cosmetic bugs. Icons are currently not disposed,
+        // so putting a TTL on this would cause a memory leak.
         /// </summary>
-        private TtlCache<Int32, Icon> IconCache;
+        private static TtlCache<Int32, Icon> IconCache = new TtlCache<Int32, Icon>();
 
         /// <summary>
         /// Collection of processes with a window.
         /// </summary>
-        private TtlCache<Int32> WindowedProcessCache;
+        private static TtlCache<Int32> WindowedProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(15));
 
         /// <summary>
         /// Collection of processes without a window.
         /// </summary>
-        private TtlCache<Int32> NoWindowProcessCache;
-
-        /// <summary>
-        /// Gets or sets the the opened process.
-        /// </summary>
-        private NormalizedProcess OpenedProcess { get; set; }
+        private static TtlCache<Int32> NoWindowProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(5));
 
         /// <summary>
         /// Represents an empty icon;
@@ -129,70 +127,10 @@
         }
 
         /// <summary>
-        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessAdapter"/> component
-        /// of the <see cref="EngineCore"/> every time we need it, which would be cumbersome when doing hundreds of thousands of memory read/writes.
-        /// </summary>
-        /// <param name="process">The newly selected process.</param>
-        public void Update(NormalizedProcess process)
-        {
-            if (process == null)
-            {
-                // Avoid setter functions
-                this.systemProcess = null;
-                return;
-            }
-
-            try
-            {
-                this.SystemProcess = Process.GetProcessById(process.ProcessId);
-            }
-            catch
-            {
-                // Avoid setter functions
-                this.systemProcess = null;
-            }
-        }
-
-        /// <summary>
-        /// Closes a process for editing.
-        /// </summary>
-        public void CloseProcess()
-        {
-            if (this.OpenedProcess != null)
-            {
-                Output.Log(LogLevel.Info, "Detached from target process");
-            }
-
-            this.OpenProcess(null);
-        }
-
-        /// <summary>
-        /// Opens a process for editing.
-        /// </summary>
-        /// <param name="process">The process to be opened.</param>
-        public void OpenProcess(NormalizedProcess process)
-        {
-            if (process != null)
-            {
-                Output.Log(LogLevel.Info, "Attached to process: " + process.ProcessName);
-            }
-
-            this.OpenedProcess = process;
-
-            if (this.processListeners != null)
-            {
-                foreach (IProcessObserver listener in this.processListeners.ToList())
-                {
-                    listener.Update(process);
-                }
-            }
-        }
-
-        /// <summary>
         /// Gets the process that has been opened.
         /// </summary>
         /// <returns>The opened process.</returns>
-        public NormalizedProcess GetOpenedProcess()
+        public Process GetOpenedProcess()
         {
             return this.OpenedProcess;
         }
@@ -224,49 +162,33 @@
         /// <summary>
         /// Gets all running processes on the system.
         /// </summary>
-        /// <returns>An enumeration of see <see cref="NormalizedProcess" />.</returns>
-        public IEnumerable<NormalizedProcess> GetProcesses()
+        /// <returns>An enumeration of see <see cref="Process" />.</returns>
+        public IEnumerable<Process> GetProcesses()
         {
-            return Process.GetProcesses()
-                .Select(process =>
-                    new
-                    {
-                        baseProcess = process,
-                        isSystemProcess = this.IsProcessSystemProcess(process),
-                        isProcessWindowed = this.isProcessWindowed(process),
-                        icon = this.GetIcon(process),
-                    })
-                .Select(intermediateProcess => new NormalizedProcess(
-                        intermediateProcess.baseProcess.Id,
-                        intermediateProcess.baseProcess.ProcessName,
-                        intermediateProcess.isSystemProcess ? DateTime.MinValue : intermediateProcess.baseProcess.StartTime,
-                        intermediateProcess.isSystemProcess,
-                        intermediateProcess.isProcessWindowed,
-                        intermediateProcess.icon))
-                .OrderByDescending(normalizedProcess => normalizedProcess.StartTime);
+            return Process.GetProcesses();
         }
 
         /// <summary>
         /// Determines if the provided process is a system process.
         /// </summary>
-        /// <param name="externalProcess">The process to check.</param>
+        /// <param name="process">The process to check.</param>
         /// <returns>A value indicating whether or not the given process is a system process.</returns>
-        private Boolean IsProcessSystemProcess(Process externalProcess)
+        public static Boolean IsProcessSystemProcess(Process process)
         {
-            if (this.SystemProcessCache.Contains(externalProcess.Id))
+            if (WindowsProcessInfo.SystemProcessCache.Contains(process.Id))
             {
                 return true;
             }
 
-            if (externalProcess.SessionId == 0 || externalProcess.BasePriority == 13)
+            if (process.SessionId == 0 || process.BasePriority == 13)
             {
-                this.SystemProcessCache.Add(externalProcess.Id);
+                WindowsProcessInfo.SystemProcessCache.Add(process.Id);
                 return true;
             }
 
             try
             {
-                if (externalProcess.PriorityBoostEnabled)
+                if (process.PriorityBoostEnabled)
                 {
                     // Accessing this field will cause an access exception for system processes. This saves
                     // time because handling the exception is faster than failing to fetch the icon later
@@ -275,7 +197,7 @@
             }
             catch
             {
-                this.SystemProcessCache.Add(externalProcess.Id);
+                WindowsProcessInfo.SystemProcessCache.Add(process.Id);
                 return true;
             }
 
@@ -285,38 +207,38 @@
         /// <summary>
         /// Determines if a process has a window.
         /// </summary>
-        /// <param name="externalProcess">The process to check.</param>
+        /// <param name="process">The process to check.</param>
         /// <returns>A value indicating whether or not the given process has a window.</returns>
-        private Boolean isProcessWindowed(Process externalProcess)
+        public static Boolean IsProcessWindowed(Process process)
         {
-            if (this.WindowedProcessCache.Contains(externalProcess.Id))
+            if (WindowsProcessInfo.WindowedProcessCache.Contains(process.Id))
             {
                 return true;
             }
 
-            if (this.NoWindowProcessCache.Contains(externalProcess.Id))
+            if (WindowsProcessInfo.NoWindowProcessCache.Contains(process.Id))
             {
                 return false;
             }
 
             // Check if the window handle is set
-            if (externalProcess.MainWindowHandle != IntPtr.Zero)
+            if (process.MainWindowHandle != IntPtr.Zero)
             {
-                this.WindowedProcessCache.Add(externalProcess.Id);
+                WindowsProcessInfo.WindowedProcessCache.Add(process.Id);
                 return true;
             }
 
             // Ignore system processes
-            if (this.IsProcessSystemProcess(externalProcess))
+            if (WindowsProcessInfo.IsProcessSystemProcess(process))
             {
-                this.NoWindowProcessCache.Add(externalProcess.Id);
+                WindowsProcessInfo.NoWindowProcessCache.Add(process.Id);
                 return false;
             }
 
             // Window handle was not set, so to be certain we must enumerate the process threads, looking for window threads
-            foreach (ProcessThread threadInfo in externalProcess.Threads)
+            foreach (ProcessThread threadInfo in process.Threads)
             {
-                IntPtr[] windows = this.GetWindowHandlesForThread(threadInfo.Id);
+                IntPtr[] windows = WindowsProcessInfo.GetWindowHandlesForThread(threadInfo.Id);
 
                 if (windows != null)
                 {
@@ -324,82 +246,78 @@
                     {
                         if (NativeMethods.IsWindowVisible(handle))
                         {
-                            this.WindowedProcessCache.Add(externalProcess.Id);
+                            WindowsProcessInfo.WindowedProcessCache.Add(process.Id);
                             return true;
                         }
                     }
                 }
             }
 
-            this.NoWindowProcessCache.Add(externalProcess.Id);
+            WindowsProcessInfo.NoWindowProcessCache.Add(process.Id);
             return false;
         }
 
-        private IntPtr[] GetWindowHandlesForThread(Int32 threadHandle)
+        private static IntPtr[] GetWindowHandlesForThread(Int32 threadHandle)
         {
-            this.Results.Clear();
-            NativeMethods.EnumWindows(WindowEnum, threadHandle);
+            List<IntPtr> results = new List<IntPtr>();
 
-            return Results.ToArray();
-        }
-
-        private Int32 WindowEnum(IntPtr hWnd, Int32 lParam)
-        {
-            Int32 processID = 0;
-            Int32 threadID = NativeMethods.GetWindowThreadProcessId(hWnd, out processID);
-
-            if (threadID == lParam)
+            NativeMethods.EnumWindows((IntPtr hWnd, Int32 lParam) =>
             {
-                this.Results.Add(hWnd);
-            }
+                if (NativeMethods.GetWindowThreadProcessId(hWnd, out _) == lParam)
+                {
+                    results.Add(hWnd);
+                }
 
-            return 1;
+                return 1;
+            }, threadHandle);
+
+            return results.ToArray();
         }
 
         /// <summary>
         /// Fetches the icon associated with the provided process.
         /// </summary>
-        /// <param name="intermediateProcess">An intermediate process structure.</param>
+        /// <param name="process">The process to check.</param>
         /// <returns>An Icon associated with the given process. Returns null if there is no icon.</returns>
-        private Icon GetIcon(Process externalProcess)
+        public static Icon GetIcon(Process process)
         {
             Icon icon = null;
 
-            if (this.NoIconProcessCache.Contains(externalProcess.Id))
+            if (WindowsProcessInfo.NoIconProcessCache.Contains(process.Id))
             {
-                return WindowsAdapter.NoIcon;
+                return WindowsProcessInfo.NoIcon;
             }
 
-            if (this.IconCache.TryGetValue(externalProcess.Id, out icon))
+            if (WindowsProcessInfo.IconCache.TryGetValue(process.Id, out icon))
             {
                 return icon;
             }
 
-            if (this.IsProcessSystemProcess(externalProcess))
+            if (WindowsProcessInfo.IsProcessSystemProcess(process))
             {
-                this.NoIconProcessCache.Add(externalProcess.Id);
-                return WindowsAdapter.NoIcon;
+                WindowsProcessInfo.NoIconProcessCache.Add(process.Id);
+                return WindowsProcessInfo.NoIcon;
             }
 
             try
             {
-                IntPtr iconHandle = NativeMethods.ExtractIcon(externalProcess.Handle, externalProcess.MainModule.FileName, 0);
+                IntPtr iconHandle = NativeMethods.ExtractIcon(process.Handle, process.MainModule.FileName, 0);
 
                 if (iconHandle == IntPtr.Zero)
                 {
-                    this.NoIconProcessCache.Add(externalProcess.Id);
-                    return WindowsAdapter.NoIcon;
+                    WindowsProcessInfo.NoIconProcessCache.Add(process.Id);
+                    return WindowsProcessInfo.NoIcon;
                 }
 
                 icon = Icon.FromHandle(iconHandle);
-                this.IconCache.Add(externalProcess.Id, icon);
+                WindowsProcessInfo.IconCache.Add(process.Id, icon);
 
                 return icon;
             }
             catch
             {
-                this.NoIconProcessCache.Add(externalProcess.Id);
-                return WindowsAdapter.NoIcon;
+                WindowsProcessInfo.NoIconProcessCache.Add(process.Id);
+                return WindowsProcessInfo.NoIcon;
             }
         }
 
@@ -426,7 +344,7 @@
         /// </summary>
         /// <param name="process">The process to check</param>
         /// <returns>Returns true if the process is 32 bit, otherwise false</returns>
-        public Boolean IsProcess32Bit(NormalizedProcess process)
+        public Boolean IsProcess32Bit(Process process)
         {
             Boolean isWow64;
 
@@ -444,7 +362,7 @@
 
             try
             {
-                if (this.SystemProcess == null || !NativeMethods.IsWow64Process(this.SystemProcess.Handle, out isWow64))
+                if (this.OpenedProcess == null || !NativeMethods.IsWow64Process(this.OpenedProcess.Handle, out isWow64))
                 {
                     // Error, assume 32 bit
                     return true;
@@ -464,7 +382,7 @@
         /// </summary>
         /// <param name="process">The process to check</param>
         /// <returns>Returns true if the process is 64 bit, otherwise false</returns>
-        public Boolean IsProcess64Bit(NormalizedProcess process)
+        public Boolean IsProcess64Bit(Process process)
         {
             return !this.IsProcess32Bit(process);
         }
@@ -502,10 +420,9 @@
         {
             try
             {
-                if (this.SystemProcess?.HasExited ?? false)
+                if (this.OpenedProcess?.HasExited ?? false)
                 {
-                    this.CloseProcess();
-                    this.SystemProcess = null;
+                    this.OpenedProcess = null;
                 }
             }
             catch

@@ -3,6 +3,7 @@
     using Squalr.Engine.Engine.Hook;
     using Squalr.Engine.Processes;
     using System;
+    using System.Diagnostics;
 
     /// <summary>
     /// Manipulates thread speed in a target process.
@@ -11,7 +12,7 @@
     {
         public SpeedManipulator()
         {
-            ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
+            ProcessInfo.Default.Subscribe(this);
         }
 
         /// <summary>
@@ -25,9 +26,9 @@
 
         private HookClient HookClient { get; set; }
 
-        private NormalizedProcess TargetProcess { get; set; }
+        private Process TargetProcess { get; set; }
 
-        public void Update(NormalizedProcess process)
+        public void Update(Process process)
         {
             this.TargetProcess = process;
 
@@ -43,7 +44,7 @@
             }
 
             this.HookClient = new HookClient();
-            this.HookClient?.Inject(this.TargetProcess.ProcessId);
+            this.HookClient?.Inject(this.TargetProcess.Id);
         }
 
         public void UninstallHook()

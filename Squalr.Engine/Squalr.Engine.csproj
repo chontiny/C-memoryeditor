@@ -9,16 +9,19 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Zachary Canann</Authors>
     <Company>Anathena Inc.</Company>
-    <Description>This is the engine that drives Squalr. This supports AnyCPU/x86/x64 Windows platforms.
-This engine allows for modification of memory, disassembling, assembling, debugging, hooking, and other powerful features.
-</Description>
+    <Description>Core assembly for all Squalr assemblies. For specific functionality (scripting, scanning, debugging, etc), be sure to include the relevant package.</Description>
     <Copyright></Copyright>
     <PackageTags></PackageTags>
     <NeutralLanguage />
-    <Version>1.0.5</Version>
+    <Version>2.2.2.0</Version>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 

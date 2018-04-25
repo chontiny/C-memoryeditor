@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Debuggers
 {
     using Squalr.Engine.Debuggers.Windows.DebugEngine;
-    using Squalr.Engine.Output;
+    using Squalr.Engine.Logging;
     using System;
     using System.Threading;
 
@@ -57,9 +57,8 @@
                             break;
                     }
 
-                    Output.Log(LogLevel.Fatal, "Unsupported Operating System", ex);
+                    Logger.Log(LogLevel.Fatal, "Unsupported Operating System", ex);
                     throw ex;
-                    break;
             }
         }
     }

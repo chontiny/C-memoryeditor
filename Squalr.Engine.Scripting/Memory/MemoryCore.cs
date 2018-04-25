@@ -2,8 +2,8 @@
 {
     using Squalr.Engine.Architecture;
     using Squalr.Engine.Architecture.Assemblers;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
-    using Squalr.Engine.Output;
     using Squalr.Engine.Processes;
     using Squalr.Engine.Scanning;
     using System;
@@ -114,9 +114,9 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
-            AssemblerResult result = Assembler.Default.Assemble(ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
+            AssemblerResult result = Assembler.Default.Assemble(ProcessInfo.Default.IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
 
-            Output.Log(LogLevel.Info, result.Message, result.InnerMessage);
+            Logger.Log(LogLevel.Info, result.Message, result.InnerMessage);
 
             return result.Data;
         }
@@ -144,7 +144,7 @@
             }
 
             // Grab instructions at code entry point
-            IEnumerable<NormalizedInstruction> instructions = Disassembler.Default.Disassemble(originalBytes, ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit(), address.ToIntPtr());
+            IEnumerable<NormalizedInstruction> instructions = Disassembler.Default.Disassemble(originalBytes, ProcessInfo.Default.IsOpenedProcess32Bit(), address.ToIntPtr());
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;
@@ -287,7 +287,7 @@
 
                 // Allocate memory
                 UInt64 remoteAllocation;
-                if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
+                if (ProcessInfo.Default.IsOpenedProcess32Bit())
                 {
                     remoteAllocation = this.Allocate(assemblySize);
                 }

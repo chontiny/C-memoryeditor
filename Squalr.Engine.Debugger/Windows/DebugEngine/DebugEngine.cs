@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Debuggers.Windows.DebugEngine
 {
     using Microsoft.Diagnostics.Runtime.Interop;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Processes;
     using System;
     using System.Collections.Concurrent;
@@ -30,7 +31,7 @@
             this.writeCancellationToken = null;
             this.accessCancellationToken = null;
 
-            ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
+            ProcessInfo.Default.Subscribe(this);
         }
 
         /// <summary>
@@ -75,7 +76,7 @@
             }
         }
 
-        private Process SystemProcess { get; set; }
+        private Process ExternalProcess { get; set; }
 
         private EventCallBacks EventCallBacks { get; set; }
 
@@ -89,14 +90,14 @@
 
         private ConcurrentDictionary<CancellationTokenSource, IDebugBreakpoint2> BreakPoints { get; set; }
 
-        public void Update(NormalizedProcess process)
+        public void Update(Process process)
         {
             if (process == null)
             {
                 return;
             }
 
-            this.SystemProcess = Process.GetProcessById(process.ProcessId);
+            this.ExternalProcess = process;
         }
 
         public CancellationTokenSource FindWhatReads(UInt64 address, BreakpointSize size, MemoryAccessCallback callback)
@@ -177,7 +178,7 @@
                     this.Client.SetOutputCallbacksWide(this.OutputCallBacks);
                     this.Client.SetEventCallbacksWide(this.EventCallBacks);
 
-                    this.Client.AttachProcess(0, unchecked((UInt32)this.SystemProcess.Id), DEBUG_ATTACH.DEFAULT);
+                    this.Client.AttachProcess(0, unchecked((UInt32)this.ExternalProcess.Id), DEBUG_ATTACH.DEFAULT);
                     this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, 0);
 
                     List<DEBUG_EXCEPTION_FILTER_PARAMETERS> exceptionFilters = new List<DEBUG_EXCEPTION_FILTER_PARAMETERS>();
@@ -204,7 +205,7 @@
                 }
                 catch (Exception ex)
                 {
-                    Output.Output.Log(Output.LogLevel.Error, "Error attaching debugger", ex);
+                    Logger.Log(LogLevel.Error, "Error attaching debugger", ex);
                 }
             }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
 
@@ -237,12 +238,10 @@
                             }
 
                             this.Control.WaitForEvent(DEBUG_WAIT.DEFAULT, UInt32.MaxValue);
-
-                            int test = 45;
                         }
                         catch (Exception ex)
                         {
-                            Output.Output.Log(Output.LogLevel.Error, "Error listening for debugger events", ex);
+                            Logger.Log(LogLevel.Error, "Error listening for debugger events", ex);
                         }
                     }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
                 }
@@ -281,7 +280,7 @@
                 }
                 catch (Exception ex)
                 {
-                    Output.Output.Log(Output.LogLevel.Error, "Error setting breakpoint", ex);
+                    Logger.Log(LogLevel.Error, "Error setting breakpoint", ex);
                 }
             }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
 
@@ -304,12 +303,12 @@
                     {
                         breakpoint.SetFlags(DEBUG_BREAKPOINT_FLAG.NONE);
 
-                        Output.Output.Log(Output.LogLevel.Debug, "Breakpoint removed");
+                        Logger.Log(LogLevel.Debug, "Breakpoint removed");
                     }
                 }
                 catch (Exception ex)
                 {
-                    Output.Output.Log(Output.LogLevel.Error, "Error removing breakpoint", ex);
+                    Logger.Log(LogLevel.Error, "Error removing breakpoint", ex);
                 }
             }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, this.Scheduler.ExclusiveScheduler).Wait();
 
@@ -329,7 +328,7 @@
             }
             catch (Exception ex)
             {
-                Output.Output.Log(Output.LogLevel.Debug, "Error interrupting events", ex);
+                Logger.Log(LogLevel.Debug, "Error interrupting events", ex);
             }
         }
 

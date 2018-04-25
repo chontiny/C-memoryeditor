@@ -2,8 +2,8 @@
 {
     using ScanConstraints;
     using Snapshots;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.TaskScheduler;
-    using Squalr.Engine.Output;
     using Squalr.Properties;
     using Squalr.Source.Scanners.ValueCollector;
     using Squalr.Source.Utils.Extensions;
@@ -112,7 +112,7 @@
             this.Snapshot = new Snapshot(this.TaskName, regions.SelectMany(region => region));
 
             stopwatch.Stop();
-            Output.Log(LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
+            Logger.Log(LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
         }
 
         /// <summary>

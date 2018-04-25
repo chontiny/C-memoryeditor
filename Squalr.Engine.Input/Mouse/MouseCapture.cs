@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Input.Mouse
 {
-    using Output;
+    using Logging;
     using SharpDX;
     using SharpDX.DirectInput;
     using System;
@@ -181,11 +181,11 @@
                 this.Mouse = new Mouse(this.DirectInput);
                 this.Mouse.Acquire();
 
-                Output.Log(LogLevel.Info, "Mouse device found");
+                Logger.Log(LogLevel.Info, "Mouse device found");
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Warn, "No (optional) mouse found", ex);
+                Logger.Log(LogLevel.Warn, "No (optional) mouse found", ex);
             }
         }
     }

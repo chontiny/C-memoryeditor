@@ -2,6 +2,7 @@
 {
     using CSScriptLib;
     using global::Engine.Scripting.Templates;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.IO;
@@ -72,7 +73,7 @@
             }
             catch (Exception ex)
             {
-                Output.Output.Log(Output.LogLevel.Error, "Error compiling script", ex);
+                Logger.Log(LogLevel.Error, "Error compiling script", ex);
                 return null;
             }
         }
