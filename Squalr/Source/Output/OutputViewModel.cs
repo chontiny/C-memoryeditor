@@ -20,7 +20,7 @@
     /// <summary>
     /// View model for the Output.
     /// </summary>
-    public class OutputViewModel : ToolViewModel, IOutputObserver
+    public class OutputViewModel : ToolViewModel, ILoggerObserver
     {
 
         /// <summary>

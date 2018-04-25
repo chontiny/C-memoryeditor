@@ -177,7 +177,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = Query.Default.AllocateMemory(size).ToUInt64();
+            UInt64 address = Allocator.Default.AllocateMemory(size).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -193,7 +193,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = Query.Default.AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
+            UInt64 address = Allocator.Default.AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -211,7 +211,7 @@
             {
                 if (allocationAddress == address)
                 {
-                    Query.Default.DeallocateMemory(allocationAddress.ToIntPtr());
+                    Allocator.Default.DeallocateMemory(allocationAddress.ToIntPtr());
                     this.RemoteAllocations.Remove(allocationAddress);
                     break;
                 }
@@ -229,7 +229,7 @@
 
             foreach (UInt64 address in this.RemoteAllocations)
             {
-                Query.Default.DeallocateMemory(address.ToIntPtr());
+                Allocator.Default.DeallocateMemory(address.ToIntPtr());
             }
 
             this.RemoteAllocations.Clear();
@@ -392,7 +392,7 @@
 
                 Writer.Default.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
 
-                Query.Default.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                Allocator.Default.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
         }
 
@@ -413,7 +413,7 @@
                     continue;
                 }
 
-                Query.Default.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                Allocator.Default.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
             }
 
             this.CodeCaves.Clear();

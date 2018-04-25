@@ -6,14 +6,14 @@
     /// <summary>
     /// Masks sensitive data from appearing in the output.
     /// </summary>
-    public class OutputMask
+    public class LoggingMask
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="OutputMask" /> class.
+        /// Initializes a new instance of the <see cref="LoggingMask" /> class.
         /// </summary>
         /// <param name="filterRegex">The regular expression used to filter output text.</param>
         /// <param name="replacementText">The text that replaces the redacted text.</param>
-        public OutputMask(String filterRegex, String replacementText = "{{REDACTED}}")
+        public LoggingMask(String filterRegex, String replacementText = "{{REDACTED}}")
         {
             this.ReplacementText = replacementText;
 

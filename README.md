@@ -28,8 +28,6 @@ Library | Description
 --- | ---
 [EasyHook](https://github.com/EasyHook/EasyHook) | Managed/Unmanaged API Hooking
 [SharpDisasm](https://github.com/spazzarama/SharpDisasm) | Udis86 Assembler Ported to C#
-[MemorySharp](https://github.com/ZenLulz/MemorySharp) | Memory Editing Library
-[FASM](https://flatassembler.net/) | Flat Assembler (C# Invocation done via MemorySharp)
 [CsScript](https://github.com/oleg-shilo/cs-script) | C# Scripting Library
 [AvalonEdit](https://github.com/icsharpcode/AvalonEdit) | Code Editing Library
 [SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper
@@ -44,8 +42,6 @@ Library | Description | Purpose
 [AsmJit](https://github.com/hypeartist/AsmJit) | x86/x64 Assembler | Replace FASM, improve scripting drastically
 [AsmJit](https://github.com/asmjit/asmjit) | x86/x64 Assembler | Original C++ project. May port/interop this if the above version does not work (Neither may fully work, and something custom may be needed)
 [WpfHexEditorControl](https://github.com/abbaye/WpfHexEditorControl) | Hex Editor | Hex editor / Memory Hex Editor
-[Ninject](https://github.com/ninject/Ninject) | Dependency Injection Framework | (Option #1) Fixing my abuse of singletons
-[AutoFac](https://github.com/autofac/Autofac) | Dependency Injection Framework | (Option #2) Fixing my abuse of singletons
 [OpenTK](https://github.com/opentk/opentk) | OpenGL Wrapper | Graphics Injection
 [SharpDX](https://github.com/sharpdx/SharpDX) | DirectX Wrapper | Graphics Injection (Currently using SharpDX just for input)
 [SharpPCap](https://github.com/chmorgan/sharppcap) | Packet Capture | Packet Editor

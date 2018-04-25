@@ -50,8 +50,6 @@
 
             set
             {
-                this.openedProcess = value;
-
                 if (value != null)
                 {
                     Logger.Log(LogLevel.Info, "Attached to process: " + value.ProcessName);
@@ -60,6 +58,8 @@
                 {
                     Logger.Log(LogLevel.Info, "Detached from target process");
                 }
+
+                this.openedProcess = value;
 
                 if (this.processListeners != null)
                 {

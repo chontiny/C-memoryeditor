@@ -28,12 +28,17 @@
         /// <summary>
         /// A dummy process that detaches from the target process when selected.
         /// </summary>
-        private Process detachProcess;
+        private ProcessDecorator detachProcess;
+
+        /// <summary>
+        /// The selected process.
+        /// </summary>
+        private ProcessDecorator selectedProcess;
 
         /// <summary>
         /// The list of running processes.
         /// </summary>
-        private IEnumerable<Process> processList;
+        private IEnumerable<ProcessDecorator> processList;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="ProcessSelectorViewModel" /> class from being created.
@@ -42,9 +47,9 @@
         {
             this.IconSource = Images.SelectProcess;
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
-            this.SelectProcessCommand = new RelayCommand<Process>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
+            this.SelectProcessCommand = new RelayCommand<ProcessDecorator>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
 
-            // this.detachProcess = new Process(0, "-- Detach from Process --", DateTime.Now, isSystemProcess: false, hasWindow: false, icon: null);
+            this.detachProcess = new ProcessDecorator("-- Detach from Process --");
             ProcessSelectorTask processSelectorTask = new ProcessSelectorTask(this.RefreshProcessList);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
@@ -66,7 +71,7 @@
         /// <summary>
         /// Gets or sets the list of processes running on the machine.
         /// </summary>
-        public IEnumerable<Process> ProcessList
+        public IEnumerable<ProcessDecorator> ProcessList
         {
             get
             {
@@ -85,11 +90,12 @@
         /// <summary>
         /// Gets the processes with a window running on the machine, as well as the selected process.
         /// </summary>
-        public IEnumerable<Process> WindowedProcessList
+        public IEnumerable<ProcessDecorator> WindowedProcessList
         {
             get
             {
-                return this.ProcessList?.Where(process => process.HasWindow()).Select(process => process)
+                // Process list with the selected process at the top, and a detach option as the 2nd element
+                return this.ProcessList?.Where(process => process.HasWindow && (process?.ProcessId ?? 0) != (this.SelectedProcess?.ProcessId ?? 0)).Select(process => process)
                     .PrependIfNotNull(this.SelectedProcess != null ? this.DetachProcess : null)
                     .PrependIfNotNull(this.SelectedProcess)
                     .Distinct();
@@ -99,30 +105,26 @@
         /// <summary>
         /// Gets or sets the selected process.
         /// </summary>
-        public Process SelectedProcess
+        public ProcessDecorator SelectedProcess
         {
             get
             {
-                return ProcessInfo.Default.OpenedProcess;
+                return this.selectedProcess;
             }
 
             set
             {
-                Boolean selectedDetatchProcess = value == this.DetachProcess;
-
-                if (selectedDetatchProcess)
+                if (value == this.DetachProcess)
                 {
-                    value = null;
+                    this.selectedProcess = null;
+                    ProcessInfo.Default.OpenedProcess = null;
+                    this.RaisePropertyChanged(nameof(this.WindowedProcessList));
                 }
-
-                if (value != this.SelectedProcess)
+                else if (value != this.SelectedProcess)
                 {
-                    ProcessInfo.Default.OpenedProcess = value;
+                    this.selectedProcess = value;
+                    ProcessInfo.Default.OpenedProcess = value.Process;
                     this.RaisePropertyChanged(nameof(this.SelectedProcess));
-                }
-
-                if (selectedDetatchProcess)
-                {
                     this.RaisePropertyChanged(nameof(this.WindowedProcessList));
                 }
             }
@@ -131,7 +133,7 @@
         /// <summary>
         /// Gets or sets a dummy process that detaches from the target process when selected.
         /// </summary>
-        public Process DetachProcess
+        public ProcessDecorator DetachProcess
         {
             get
             {
@@ -194,14 +196,14 @@
         /// </summary>
         private void RefreshProcessList()
         {
-            this.ProcessList = ProcessInfo.Default.GetProcesses();
+            this.ProcessList = ProcessInfo.Default.GetProcesses().Select(process => new ProcessDecorator(process));
         }
 
         /// <summary>
         /// Makes the target process selection.
         /// </summary>
         /// <param name="process">The process being selected.</param>
-        private void SelectProcess(Process process)
+        private void SelectProcess(ProcessDecorator process)
         {
             this.SelectedProcess = process;
             this.IsVisible = false;
