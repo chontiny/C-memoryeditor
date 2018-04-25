@@ -10,7 +10,7 @@
         /// <summary>
         /// Singleton instance of the <see cref="WindowsMemoryReader"/> class.
         /// </summary>
-        private static Lazy<WindowsMemoryReader> windowsMemoryReaderInstance = new Lazy<WindowsMemoryReader>(
+        private static Lazy<IMemoryReader> windowsMemoryReaderInstance = new Lazy<IMemoryReader>(
             () => { return new WindowsMemoryReader(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 

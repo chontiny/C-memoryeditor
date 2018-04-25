@@ -10,12 +10,12 @@
         /// <summary>
         /// Singleton instance of the <see cref="WindowsMemoryQuery"/> class.
         /// </summary>
-        private static Lazy<WindowsMemoryQuery> windowsMemoryQueryInstance = new Lazy<WindowsMemoryQuery>(
+        private static Lazy<IMemoryQuery> windowsMemoryQueryInstance = new Lazy<IMemoryQuery>(
             () => { return new WindowsMemoryQuery(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Gets the default memory reader for the current operating system.
+        /// Gets the default memory querent for the current operating system.
         /// </summary>
         public static IMemoryQuery Default
         {

@@ -21,11 +21,6 @@
     internal class WindowsMemoryQuery : IMemoryQuery
     {
         /// <summary>
-        /// A reference to target process.
-        /// </summary>
-        private Process systemProcess;
-
-        /// <summary>
         /// The chunk size for memory regions. Prevents large allocations.
         /// </summary>
         private const Int32 ChunkSize = 2000000000;
@@ -42,29 +37,7 @@
         /// <summary>
         /// Gets a reference to the target process. This is an optimization to minimize accesses to the Processes component of the Engine.
         /// </summary>
-        public Process SystemProcess
-        {
-            get
-            {
-                try
-                {
-                    if (this.systemProcess?.HasExited == true)
-                    {
-                        this.systemProcess = null;
-                    }
-                }
-                catch
-                {
-                }
-
-                return this.systemProcess;
-            }
-
-            private set
-            {
-                this.systemProcess = value;
-            }
-        }
+        public Process ExternalProcess { get; set; }
 
         /// <summary>
         /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessInfo"/> component
@@ -73,22 +46,7 @@
         /// <param name="process">The newly selected process.</param>
         public void Update(Process process)
         {
-            if (process == null)
-            {
-                // Avoid setter functions
-                this.systemProcess = null;
-                return;
-            }
-
-            try
-            {
-                this.SystemProcess = Process.GetProcessById(process.Id);
-            }
-            catch
-            {
-                // Avoid setter functions
-                this.systemProcess = null;
-            }
+            this.ExternalProcess = process;
         }
 
         /// <summary>
@@ -106,39 +64,9 @@
         /// <returns>The heap addresses in the target process.</returns>
         public IEnumerable<NormalizedRegion> GetHeapAddresses()
         {
-            ManagedPeb peb = new ManagedPeb(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle);
+            ManagedPeb peb = new ManagedPeb(this.ExternalProcess == null ? IntPtr.Zero : this.ExternalProcess.Handle);
 
-            return null;
-        }
-
-        /// <summary>
-        /// Allocates memory in the opened process.
-        /// </summary>
-        /// <param name="size">The size of the memory allocation.</param>
-        /// <returns>A pointer to the location of the allocated memory.</returns>
-        public IntPtr AllocateMemory(Int32 size)
-        {
-            return Memory.Allocate(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, IntPtr.Zero, size);
-        }
-
-        /// <summary>
-        /// Allocates memory in the opened process.
-        /// </summary>
-        /// <param name="size">The size of the memory allocation.</param>
-        /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
-        /// <returns>A pointer to the location of the allocated memory.</returns>
-        public IntPtr AllocateMemory(Int32 size, IntPtr allocAddress)
-        {
-            return Memory.Allocate(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, allocAddress, size);
-        }
-
-        /// <summary>
-        /// Deallocates memory in the opened process.
-        /// </summary>
-        /// <param name="address">The address to perform the region wide deallocation.</param>
-        public void DeallocateMemory(IntPtr address)
-        {
-            Memory.Free(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, address);
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -200,7 +128,7 @@
                 excludedFlags |= MemoryProtectionFlags.ExecuteWriteCopy;
             }
 
-            IEnumerable<MemoryBasicInformation64> memoryInfo = Memory.VirtualPages(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, startAddress, endAddress, requiredFlags, excludedFlags, allowedTypes);
+            IEnumerable<MemoryBasicInformation64> memoryInfo = Memory.VirtualPages(this.ExternalProcess == null ? IntPtr.Zero : this.ExternalProcess.Handle, startAddress, endAddress, requiredFlags, excludedFlags, allowedTypes);
 
             IList<NormalizedRegion> regions = new List<NormalizedRegion>();
 
@@ -292,7 +220,7 @@
 
             List<NormalizedModule> modules = new List<NormalizedModule>();
 
-            if (this.SystemProcess == null)
+            if (this.ExternalProcess == null)
             {
                 return modules;
             }
@@ -300,7 +228,7 @@
             try
             {
                 // Determine number of modules
-                if (!NativeMethods.EnumProcessModulesEx(this.SystemProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
+                if (!NativeMethods.EnumProcessModulesEx(this.ExternalProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
                 {
                     return modules;
                 }
@@ -308,16 +236,16 @@
                 Int32 totalNumberofModules = bytesNeeded / IntPtr.Size;
                 modulePointers = new IntPtr[totalNumberofModules];
 
-                if (NativeMethods.EnumProcessModulesEx(this.SystemProcess.Handle, modulePointers, bytesNeeded, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
+                if (NativeMethods.EnumProcessModulesEx(this.ExternalProcess.Handle, modulePointers, bytesNeeded, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
                 {
                     for (Int32 index = 0; index < totalNumberofModules; index++)
                     {
                         StringBuilder moduleFilePath = new StringBuilder(1024);
-                        NativeMethods.GetModuleFileNameEx(this.SystemProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)moduleFilePath.Capacity);
+                        NativeMethods.GetModuleFileNameEx(this.ExternalProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)moduleFilePath.Capacity);
 
                         String moduleName = Path.GetFileName(moduleFilePath.ToString());
                         ModuleInformation moduleInformation = new ModuleInformation();
-                        NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
+                        NativeMethods.GetModuleInformation(this.ExternalProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
                         // Ignore modules in 64-bit address space for WoW64 processes
                         if (ProcessInfo.Default.IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)

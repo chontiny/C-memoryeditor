@@ -5,19 +5,19 @@
     using System;
     using System.Threading;
 
-    public static class Writer
+    public static class Allocator
     {
         /// <summary>
-        /// Singleton instance of the <see cref="WindowsMemoryWriter"/> class.
+        /// Singleton instance of the <see cref="WindowsMemoryAllocator"/> class.
         /// </summary>
-        private static Lazy<IMemoryWriter> windowsMemoryWriterInstance = new Lazy<IMemoryWriter>(
-            () => { return new WindowsMemoryWriter(); },
+        private static Lazy<IMemoryAllocator> allocatorImpl = new Lazy<IMemoryAllocator>(
+            () => { return new WindowsMemoryAllocator(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Gets the default memory writer for the current operating system.
+        /// Gets the default memory allocator for the current operating system.
         /// </summary>
-        public static IMemoryWriter Default
+        public static IMemoryAllocator Default
         {
             get
             {
@@ -31,7 +31,7 @@
                     case PlatformID.Win32S:
                     case PlatformID.Win32Windows:
                     case PlatformID.WinCE:
-                        return windowsMemoryWriterInstance.Value;
+                        return allocatorImpl.Value;
                     case PlatformID.Unix:
                         ex = new Exception("Unix operating system is not supported");
                         break;

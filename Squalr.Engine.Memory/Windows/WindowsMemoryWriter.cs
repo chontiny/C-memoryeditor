@@ -28,7 +28,7 @@
         /// <summary>
         /// Gets or sets a reference to the target process.
         /// </summary>
-        public Process SystemProcess { get; set; }
+        public Process ExternalProcess { get; set; }
 
         /// <summary>
         /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessInfo"/> component
@@ -37,7 +37,7 @@
         /// <param name="process">The newly selected process.</param>
         public void Update(Process process)
         {
-            this.SystemProcess = process;
+            this.ExternalProcess = process;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@
         public void WriteBytes(IntPtr address, Byte[] byteArray)
         {
             // Write the byte array
-            Memory.WriteBytes(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, address, byteArray);
+            Memory.WriteBytes(this.ExternalProcess == null ? IntPtr.Zero : this.ExternalProcess.Handle, address, byteArray);
         }
 
         /// <summary>

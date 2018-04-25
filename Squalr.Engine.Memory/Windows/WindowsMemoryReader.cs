@@ -16,11 +16,6 @@
     internal class WindowsMemoryReader : IMemoryReader
     {
         /// <summary>
-        /// A reference to target process.
-        /// </summary>
-        private Process systemProcess;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="WindowsAdapter"/> class.
         /// </summary>
         public WindowsMemoryReader()
@@ -32,29 +27,7 @@
         /// <summary>
         /// Gets a reference to the target process. This is an optimization to minimize accesses to the Processes component of the Engine.
         /// </summary>
-        public Process SystemProcess
-        {
-            get
-            {
-                try
-                {
-                    if (this.systemProcess?.HasExited == true)
-                    {
-                        this.systemProcess = null;
-                    }
-                }
-                catch
-                {
-                }
-
-                return this.systemProcess;
-            }
-
-            private set
-            {
-                this.systemProcess = value;
-            }
-        }
+        public Process TargetProcess { get; set; }
 
         /// <summary>
         /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessInfo"/> component
@@ -63,22 +36,7 @@
         /// <param name="process">The newly selected process.</param>
         public void Update(Process process)
         {
-            if (process == null)
-            {
-                // Avoid setter functions
-                this.systemProcess = null;
-                return;
-            }
-
-            try
-            {
-                this.SystemProcess = Process.GetProcessById(process.Id);
-            }
-            catch
-            {
-                // Avoid setter functions
-                this.systemProcess = null;
-            }
+            this.TargetProcess = process;
         }
 
         /// <summary>
@@ -160,7 +118,7 @@
         /// <returns>The array of bytes.</returns>
         public Byte[] ReadBytes(IntPtr address, Int32 count, out Boolean success)
         {
-            return Memory.ReadBytes(this.SystemProcess == null ? IntPtr.Zero : this.SystemProcess.Handle, address, count, out success);
+            return Memory.ReadBytes(this.TargetProcess == null ? IntPtr.Zero : this.TargetProcess.Handle, address, count, out success);
         }
 
         /// <summary>

@@ -368,6 +368,7 @@
     <Compile Include="Source\Prefilters\ISnapshotPrefilter.cs" />
     <Compile Include="Source\Prefilters\Prefilter.cs" />
     <Compile Include="Source\Prefilters\SystemModulePrefilter.cs" />
+    <Compile Include="Source\ProcessSelector\ProcessDecorator.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorTask.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
