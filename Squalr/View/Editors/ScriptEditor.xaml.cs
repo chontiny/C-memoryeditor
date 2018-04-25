@@ -6,7 +6,7 @@
     using ICSharpCode.AvalonEdit.Highlighting;
     using ICSharpCode.AvalonEdit.Highlighting.Xshd;
     using Source.Editors.ScriptEditor;
-    using Squalr.Engine.Output;
+    using Squalr.Engine.Logging;
     using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -86,7 +86,7 @@
 
             if (highlightingResource.IsNullOrEmpty())
             {
-                Output.Log(LogLevel.Error, "Unable to load code highlighting rules. Scripts will be affected");
+                Logger.Log(LogLevel.Error, "Unable to load code highlighting rules. Scripts will be affected");
                 return;
             }
 

@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.TaskScheduler
 {
-    using Squalr.Engine.Output;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -8,7 +8,6 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
-    using Utils.Extensions;
 
     /// <summary>
     /// A task that repeatedly performs an action.
@@ -368,7 +367,7 @@
                 if (!this.IsBusy)
                 {
                     String error = "Error in task scheduler. Attempting to start before flagging action as busy.";
-                    Output.Log(LogLevel.Fatal, error);
+                    Logger.Log(LogLevel.Fatal, error);
                     throw new Exception(error);
                 }
 
@@ -387,7 +386,7 @@
                 if (!this.IsBusy)
                 {
                     String error = "Error in task scheduler. Attempting to update before flagging action as busy.";
-                    Output.Log(LogLevel.Fatal, error);
+                    Logger.Log(LogLevel.Fatal, error);
                     throw new Exception(error);
                 }
 
@@ -402,7 +401,7 @@
                     }
                     catch (OperationCanceledException)
                     {
-                        Output.Log(LogLevel.Info, "Task cancelled: " + this.TaskName);
+                        Logger.Log(LogLevel.Info, "Task cancelled: " + this.TaskName);
                     }
                 },
                 this.CancelRequest.Token);

@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Engine.Hook
 {
-    using Squalr.Engine.Output;
+    using Squalr.Engine.Logging;
     using SqualrHookClient.Source;
     using System;
 
@@ -51,7 +51,7 @@
         /// </summary>
         public override void Ping()
         {
-            Output.Log(LogLevel.Debug, "Hook pinged client");
+            Logger.Log(LogLevel.Debug, "Hook pinged client");
         }
 
         /// <summary>
@@ -61,7 +61,7 @@
         /// <param name="innerMessage">The inner log message.</param>
         public override void Log(String message, String innerMessage = null)
         {
-            Output.Log(LogLevel.Info, "[Hook] " + message, innerMessage);
+            Logger.Log(LogLevel.Info, "[Hook] " + message, innerMessage);
         }
 
         /// <summary>

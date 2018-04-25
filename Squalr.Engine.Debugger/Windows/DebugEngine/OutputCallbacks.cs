@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Debuggers.Windows.DebugEngine
 {
     using Microsoft.Diagnostics.Runtime.Interop;
-    using Squalr.Engine.Output;
+    using Squalr.Engine.Logging;
     using System;
     using System.Runtime.InteropServices;
 
@@ -9,7 +9,7 @@
     {
         public Int32 Output([In] DEBUG_OUTPUT Mask, [In, MarshalAs(UnmanagedType.LPWStr)] String text)
         {
-            Engine.Output.Output.Log(LogLevel.Debug, text?.Trim());
+            Logging.Logger.Log(LogLevel.Debug, text?.Trim());
 
             return 0;
         }

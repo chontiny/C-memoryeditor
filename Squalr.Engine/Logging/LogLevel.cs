@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Output
+﻿namespace Squalr.Engine.Logging
 {
     /// <summary>
     /// The possible channels to which we can log messages.

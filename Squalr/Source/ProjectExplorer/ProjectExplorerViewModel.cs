@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine.Output;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
     using Squalr.Source.Controls;
@@ -305,7 +305,7 @@
                     this.AddNewProjectItems(true, new InstructionItem());
                     break;
                 default:
-                    Output.Log(LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
+                    Logger.Log(LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
                     break;
             }
         }

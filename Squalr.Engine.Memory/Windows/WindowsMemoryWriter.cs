@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Memory.Windows
 {
-    using Processes;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Processes;
     using System;
     using System.Diagnostics;
     using System.Text;
@@ -11,11 +11,6 @@
     /// </summary>
     internal class WindowsMemoryWriter : IMemoryWriter
     {
-        /// <summary>
-        /// A reference to target process.
-        /// </summary>
-        private Process systemProcess;
-
         /// <summary>
         /// The chunk size for memory regions. Prevents large allocations.
         /// </summary>
@@ -27,59 +22,22 @@
         public WindowsMemoryWriter()
         {
             // Subscribe to process events
-            ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
+            ProcessInfo.Default.Subscribe(this);
         }
 
         /// <summary>
-        /// Gets a reference to the target process. This is an optimization to minimize accesses to the Processes component of the Engine.
+        /// Gets or sets a reference to the target process.
         /// </summary>
-        public Process SystemProcess
-        {
-            get
-            {
-                try
-                {
-                    if (this.systemProcess?.HasExited == true)
-                    {
-                        this.systemProcess = null;
-                    }
-                }
-                catch
-                {
-                }
-
-                return this.systemProcess;
-            }
-
-            private set
-            {
-                this.systemProcess = value;
-            }
-        }
+        public Process SystemProcess { get; set; }
 
         /// <summary>
-        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessAdapter"/> component
+        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessInfo"/> component
         /// of the <see cref="EngineCore"/> every time we need it, which would be cumbersome when doing hundreds of thousands of memory read/writes.
         /// </summary>
         /// <param name="process">The newly selected process.</param>
-        public void Update(NormalizedProcess process)
+        public void Update(Process process)
         {
-            if (process == null)
-            {
-                // Avoid setter functions
-                this.systemProcess = null;
-                return;
-            }
-
-            try
-            {
-                this.SystemProcess = Process.GetProcessById(process.ProcessId);
-            }
-            catch
-            {
-                // Avoid setter functions
-                this.systemProcess = null;
-            }
+            this.SystemProcess = process;
         }
 
         /// <summary>

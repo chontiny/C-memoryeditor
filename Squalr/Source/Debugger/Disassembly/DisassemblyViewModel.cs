@@ -12,6 +12,7 @@
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -57,7 +58,7 @@
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
-            Task.Run(() => ProcessAdapterFactory.GetProcessAdapter().Subscribe(this));
+            Task.Run(() => ProcessInfo.Default.Subscribe(this));
         }
 
         /// <summary>
@@ -135,7 +136,7 @@
             return disassemblyViewModelInstance.Value;
         }
 
-        public void Update(NormalizedProcess process)
+        public void Update(Process process)
         {
             if (process != null)
             {
@@ -180,7 +181,7 @@
                 return;
             }
 
-            Boolean isProcess32Bit = ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit();
+            Boolean isProcess32Bit = ProcessInfo.Default.IsOpenedProcess32Bit();
 
             // Disassemble instructions
             IEnumerable<NormalizedInstruction> disassembledInstructions = Disassembler.Default.Disassemble(bytes, isProcess32Bit, this.BaseAddress.ToIntPtr());

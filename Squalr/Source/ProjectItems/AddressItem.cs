@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.ProjectItems
 {
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
-    using Squalr.Engine.Output;
     using Squalr.Engine.Utils;
     using Squalr.Source.Controls;
     using Squalr.Source.Utils;
@@ -130,7 +130,7 @@
                 {
                     if (!SyntaxChecker.CanParseValue(this.dataType, value as String))
                     {
-                        Output.Log(LogLevel.Error, "Error setting new value: " + (value as String));
+                        Logger.Log(LogLevel.Error, "Error setting new value: " + (value as String));
                         return;
                     }
 

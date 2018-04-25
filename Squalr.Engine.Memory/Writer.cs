@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Memory
 {
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Memory.Windows;
     using System;
     using System.Threading;
@@ -42,7 +43,7 @@
                         break;
                 }
 
-                Output.Output.Log(Output.LogLevel.Fatal, "Unsupported Operating System", ex);
+                Logger.Log(LogLevel.Fatal, "Unsupported Operating System", ex);
                 throw ex;
             }
         }

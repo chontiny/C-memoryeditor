@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.TaskScheduler
 {
-    using Output;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -96,7 +96,7 @@
                 // Do not schedule actions of the same type
                 if (this.Actions.Select(x => x.GetType()).Any(x => x == scheduledTask.GetType()))
                 {
-                    Output.Log(LogLevel.Warn, "Action not scheduled. This action is already queued.");
+                    Logger.Log(LogLevel.Warn, "Action not scheduled. This action is already queued.");
                     return;
                 }
 

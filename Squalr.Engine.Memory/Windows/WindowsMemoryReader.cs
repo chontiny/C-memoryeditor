@@ -26,7 +26,7 @@
         public WindowsMemoryReader()
         {
             // Subscribe to process events
-            ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
+            ProcessInfo.Default.Subscribe(this);
         }
 
         /// <summary>
@@ -57,11 +57,11 @@
         }
 
         /// <summary>
-        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessAdapter"/> component
+        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessInfo"/> component
         /// of the <see cref="EngineCore"/> every time we need it, which would be cumbersome when doing hundreds of thousands of memory read/writes.
         /// </summary>
         /// <param name="process">The newly selected process.</param>
-        public void Update(NormalizedProcess process)
+        public void Update(Process process)
         {
             if (process == null)
             {
@@ -72,7 +72,7 @@
 
             try
             {
-                this.SystemProcess = Process.GetProcessById(process.ProcessId);
+                this.SystemProcess = Process.GetProcessById(process.Id);
             }
             catch
             {
@@ -192,7 +192,7 @@
                 // Add and trace offsets
                 foreach (Int32 offset in offsets.Take(offsets.Count() - 1))
                 {
-                    if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
+                    if (ProcessInfo.Default.IsOpenedProcess32Bit())
                     {
                         finalAddress = (this.Read<UInt32>(finalAddress + offset, out _).ToInt64()).ToIntPtr();
                     }

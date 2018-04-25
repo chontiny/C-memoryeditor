@@ -1,23 +1,20 @@
-﻿namespace Squalr.Engine.Memory
+﻿namespace Squalr.Engine.Processes
 {
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Memory.Windows;
+    using Squalr.Engine.Processes.Windows;
     using System;
     using System.Threading;
 
-    public static class Reader
+    public class ProcessInfo
     {
         /// <summary>
-        /// Singleton instance of the <see cref="WindowsMemoryReader"/> class.
+        /// Singleton instance of the <see cref="WindowsProcessInfo"/> class.
         /// </summary>
-        private static Lazy<WindowsMemoryReader> windowsMemoryReaderInstance = new Lazy<WindowsMemoryReader>(
-            () => { return new WindowsMemoryReader(); },
+        private static Lazy<IProcessInfo> windowsProcessInfoInstance = new Lazy<IProcessInfo>(
+            () => { return new WindowsProcessInfo(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
-        /// <summary>
-        /// Gets the default memory reader for the current operating system.
-        /// </summary>
-        public static IMemoryReader Default
+        public static IProcessInfo Default
         {
             get
             {
@@ -31,7 +28,7 @@
                     case PlatformID.Win32S:
                     case PlatformID.Win32Windows:
                     case PlatformID.WinCE:
-                        return windowsMemoryReaderInstance.Value;
+                        return windowsProcessInfoInstance.Value;
                     case PlatformID.Unix:
                         ex = new Exception("Unix operating system is not supported");
                         break;
@@ -48,14 +45,11 @@
             }
         }
 
-        /// <summary>
-        /// Gets the memory reader for the windows operating system.
-        /// </summary>
-        public static IMemoryReader Windows
+        public static IProcessInfo Windows
         {
             get
             {
-                return windowsMemoryReaderInstance.Value;
+                return windowsProcessInfoInstance.Value;
             }
         }
     }

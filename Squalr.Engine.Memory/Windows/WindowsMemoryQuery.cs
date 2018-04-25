@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Engine.Memory.Windows
 {
     using Native;
-    using Output;
     using Processes;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Memory.Windows.PEB;
     using System;
     using System.Collections.Generic;
@@ -36,7 +36,7 @@
         public WindowsMemoryQuery()
         {
             // Subscribe to process events
-            ProcessAdapterFactory.GetProcessAdapter().Subscribe(this);
+            ProcessInfo.Default.Subscribe(this);
         }
 
         /// <summary>
@@ -67,11 +67,11 @@
         }
 
         /// <summary>
-        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessAdapter"/> component
+        /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessInfo"/> component
         /// of the <see cref="EngineCore"/> every time we need it, which would be cumbersome when doing hundreds of thousands of memory read/writes.
         /// </summary>
         /// <param name="process">The newly selected process.</param>
-        public void Update(NormalizedProcess process)
+        public void Update(Process process)
         {
             if (process == null)
             {
@@ -82,7 +82,7 @@
 
             try
             {
-                this.SystemProcess = Process.GetProcessById(process.ProcessId);
+                this.SystemProcess = Process.GetProcessById(process.Id);
             }
             catch
             {
@@ -270,7 +270,7 @@
         /// <returns>The maximum usermode address possible in the target process.</returns>
         public UInt64 GetMaxUsermodeAddress()
         {
-            if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit())
+            if (ProcessInfo.Default.IsOpenedProcess32Bit())
             {
                 return Int32.MaxValue;
             }
@@ -320,7 +320,7 @@
                         NativeMethods.GetModuleInformation(this.SystemProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
                         // Ignore modules in 64-bit address space for WoW64 processes
-                        if (ProcessAdapterFactory.GetProcessAdapter().IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)
+                        if (ProcessInfo.Default.IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)
                         {
                             continue;
                         }
@@ -333,7 +333,7 @@
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Error, "Unable to fetch modules from selected process", ex);
+                Logger.Log(LogLevel.Error, "Unable to fetch modules from selected process", ex);
             }
 
             return modules;

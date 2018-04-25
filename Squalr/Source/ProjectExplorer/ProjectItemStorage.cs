@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using Microsoft.Win32;
-    using Squalr.Engine.Output;
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
     using Squalr.Source.Controls;
@@ -111,7 +111,7 @@
             {
                 if (!File.Exists(this.ProjectFilePath))
                 {
-                    Output.Log(LogLevel.Error, "Unable to locate project.");
+                    Logger.Log(LogLevel.Error, "Unable to locate project.");
                     return;
                 }
 
@@ -125,7 +125,7 @@
             catch (Exception ex)
             {
                 this.ProjectFilePath = String.Empty;
-                Output.Log(LogLevel.Error, "Unable to open project", ex.ToString());
+                Logger.Log(LogLevel.Error, "Unable to open project", ex.ToString());
                 return;
             }
 
@@ -147,7 +147,7 @@
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
+                Logger.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
                 return;
             }
         }
@@ -183,7 +183,7 @@
             {
                 if (!File.Exists(filename))
                 {
-                    Output.Log(LogLevel.Error, "Unable to locate project.");
+                    Logger.Log(LogLevel.Error, "Unable to locate project.");
                     return;
                 }
 
@@ -203,7 +203,7 @@
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Error, "Unable to import project", ex);
+                Logger.Log(LogLevel.Error, "Unable to import project", ex);
                 return;
             }
 
@@ -226,7 +226,7 @@
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
+                Logger.Log(LogLevel.Warn, "Unable to open hotkey profile", ex);
                 return;
             }
 
@@ -271,7 +271,7 @@
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Fatal, "Unable to save project", ex);
+                Logger.Log(LogLevel.Fatal, "Unable to save project", ex);
                 return;
             }
 
@@ -289,7 +289,7 @@
             }
             catch (Exception ex)
             {
-                Output.Log(LogLevel.Error, "Unable to save hotkey profile", ex);
+                Logger.Log(LogLevel.Error, "Unable to save hotkey profile", ex);
                 return;
             }
         }
@@ -306,11 +306,11 @@
                 {
                     if (String.IsNullOrEmpty(this.ProjectFilePath) || !Directory.Exists(Path.GetDirectoryName(this.ProjectFilePath)))
                     {
-                        Output.Log(LogLevel.Info, "Please save the project before exporting");
+                        Logger.Log(LogLevel.Info, "Please save the project before exporting");
                         return;
                     }
 
-                    Output.Log(LogLevel.Info, "Project export starting");
+                    Logger.Log(LogLevel.Info, "Project export starting");
 
                     String folderPath = Path.Combine(Path.GetDirectoryName(this.ProjectFilePath), "Export");
                     Directory.CreateDirectory(folderPath);
@@ -341,11 +341,11 @@
                 }
                 catch (Exception ex)
                 {
-                    Output.Log(LogLevel.Fatal, "Unable to complete export project", ex);
+                    Logger.Log(LogLevel.Fatal, "Unable to complete export project", ex);
                     return;
                 }
 
-                Output.Log(LogLevel.Info, "Project export complete");
+                Logger.Log(LogLevel.Info, "Project export complete");
             });
         }
 
