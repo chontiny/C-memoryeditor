@@ -12,6 +12,7 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -22,10 +23,18 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
+    <InstallUrl>https://www.squalr.com/release/developer/</InstallUrl>
+    <SupportUrl>https://www.squalr.com/</SupportUrl>
+    <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
+    <ProductName>Squalr Developer Tools</ProductName>
+    <PublisherName>Squalr Developer Tools</PublisherName>
+    <MinimumRequiredVersion>2.2.0.0</MinimumRequiredVersion>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ApplicationVersion>2.3.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <CreateDesktopShortcut>true</CreateDesktopShortcut>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -51,21 +60,7 @@
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup>
-    <InstallUrl>https://www.squalr.com/release/developer/</InstallUrl>
-    <SupportUrl>https://www.squalr.com/</SupportUrl>
-    <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
-    <ProductName>Squalr Developer Tools</ProductName>
-    <PublisherName>Squalr Developer Tools</PublisherName>
-    <MinimumRequiredVersion>2.2.0.0</MinimumRequiredVersion>
-    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.2.0.0</ApplicationVersion>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <CreateDesktopShortcut>true</CreateDesktopShortcut>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <StartupObject>Squalr.App</StartupObject>
   </PropertyGroup>
@@ -329,7 +324,7 @@
     <Compile Include="Source\Debugger\CodeTraceResult.cs" />
     <Compile Include="Source\Debugger\CodeTracerViewModel.cs" />
     <Compile Include="Source\Debugger\DebuggerViewModel.cs" />
-    <Compile Include="Source\Debugger\Disassembly\DisassemblyViewModel.cs" />
+    <Compile Include="Source\Debugger\DisassemblyViewModel.cs" />
     <Compile Include="Source\Docking\DockingViewModel.cs" />
     <Compile Include="Source\Docking\PanesStyleSelector.cs" />
     <Compile Include="Source\Docking\PaneViewModel.cs" />
@@ -364,10 +359,6 @@
     <Compile Include="Source\Mvvm\PrimitiveBinding.cs" />
     <Compile Include="Source\Output\OutputViewModel.cs" />
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
-    <Compile Include="Source\Prefilters\HeapPrefilter.cs" />
-    <Compile Include="Source\Prefilters\ISnapshotPrefilter.cs" />
-    <Compile Include="Source\Prefilters\Prefilter.cs" />
-    <Compile Include="Source\Prefilters\SystemModulePrefilter.cs" />
     <Compile Include="Source\ProcessSelector\ProcessDecorator.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorTask.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs" />
@@ -387,40 +378,13 @@
     <Compile Include="Source\Results\PointerScanResultsViewModel.cs" />
     <Compile Include="Source\Results\ScanResult.cs" />
     <Compile Include="Source\Results\ScanResultsViewModel.cs" />
-    <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterModel.cs" />
-    <Compile Include="Source\Scanners\ChangeCounter\ChangeCounterViewModel.cs" />
-    <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorModel.cs" />
-    <Compile Include="Source\Scanners\InputCorrelator\InputCorrelatorViewModel.cs" />
-    <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderModel.cs" />
-    <Compile Include="Source\Scanners\LabelThresholder\LabelThresholderViewModel.cs" />
-    <Compile Include="Source\Scanners\ManualScanner\ManualScan.cs" />
-    <Compile Include="Source\Scanners\ManualScanner\ManualScannerViewModel.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerBackTracer.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerCollector.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerRescan.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerScan.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerScannerViewModel.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerValidationScan.cs" />
-    <Compile Include="Source\Scanners\Pointers\PointerValueRescan.cs" />
-    <Compile Include="Source\Scanners\Pointers\Structures\DiscoveredPointers.cs" />
-    <Compile Include="Source\Scanners\Pointers\Structures\LevelPointers.cs" />
-    <Compile Include="Source\Scanners\Pointers\Structures\PointerBranch.cs" />
-    <Compile Include="Source\Scanners\Pointers\Structures\PointerPool.cs" />
-    <Compile Include="Source\Scanners\Pointers\Structures\PointerRoot.cs" />
-    <Compile Include="Source\Scanners\Pointers\Structures\ScannedPointers.cs" />
-    <Compile Include="Source\Scanners\Pointers\Structures\ValidatedPointers.cs" />
-    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraint.cs" />
-    <Compile Include="Source\Scanners\ScanConstraints\ScanConstraintManager.cs" />
-    <Compile Include="Source\Scanners\ValueCollector\ValueCollectorModel.cs" />
-    <Compile Include="Source\Scanners\ValueCollector\ValueCollectorViewModel.cs" />
-    <Compile Include="Source\Snapshots\ISnapshotObserver.cs" />
-    <Compile Include="Source\Snapshots\ReadGroup.cs" />
-    <Compile Include="Source\Snapshots\Snapshot.cs" />
-    <Compile Include="Source\Snapshots\SnapshotElementComparer.cs" />
-    <Compile Include="Source\Snapshots\SnapshotElementIndexer.cs" />
-    <Compile Include="Source\Snapshots\SnapshotElementVectorComparer.cs" />
+    <Compile Include="Source\Scanners\ChangeCounterViewModel.cs" />
+    <Compile Include="Source\Scanners\InputCorrelatorViewModel.cs" />
+    <Compile Include="Source\Scanners\LabelThresholderViewModel.cs" />
+    <Compile Include="Source\Scanners\ManualScannerViewModel.cs" />
+    <Compile Include="Source\Scanners\PointerScannerViewModel.cs" />
+    <Compile Include="Source\Scanners\ValueCollectorViewModel.cs" />
     <Compile Include="Source\Snapshots\SnapshotManagerViewModel.cs" />
-    <Compile Include="Source\Snapshots\SnapshotRegion.cs" />
     <Compile Include="Source\Utils\Browser\NativeBrowser.cs" />
     <Compile Include="Source\Utils\Browser\WebBrowserHelper.cs" />
     <Compile Include="Source\Utils\Extensions\ArrayExtensions.cs" />
@@ -725,6 +689,10 @@
     <ProjectReference Include="..\Squalr.Engine.Networking\Squalr.Engine.Networking.csproj">
       <Project>{e4bf8497-1d90-47e4-9e8d-4c1a33eb674c}</Project>
       <Name>Squalr.Engine.Networking</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Squalr.Engine.Scanning\Squalr.Engine.Scanning.csproj">
+      <Project>{47faff79-44f7-4505-91ca-a2be28915ee2}</Project>
+      <Name>Squalr.Engine.Scanning</Name>
     </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Scripting\Squalr.Engine.Scripting.csproj">
       <Project>{0612f4dc-e843-4dd6-8856-98dad0033de3}</Project>

@@ -5,7 +5,6 @@
     using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Processes;
-    using Squalr.Engine.Scanning;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -528,8 +527,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = Scanner.SearchAob(bytes).ToUInt64();
-            return address;
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -541,7 +539,7 @@
         {
             this.PrintDebugTag(pattern);
 
-            return Scanner.SearchAob(pattern).ToUInt64();
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -552,10 +550,8 @@
         public UInt64[] SearchAllAob(String pattern)
         {
             this.PrintDebugTag(pattern);
-            List<IntPtr> aobResults = new List<IntPtr>(Scanner.SearchllAob(pattern));
-            List<UInt64> convertedAobs = new List<UInt64>();
-            aobResults.ForEach(x => convertedAobs.Add(x.ToUInt64()));
-            return convertedAobs.ToArray();
+
+            throw new NotImplementedException();
         }
 
         public UInt64 EvaluatePointer(UInt64 address, IEnumerable<Int32> offsets)

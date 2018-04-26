@@ -110,18 +110,6 @@
         /// </summary>
         private List<ISnapshotObserver> SnapshotObservers { get; set; }
 
-        [Flags]
-        internal enum SnapshotRetrievalMode
-        {
-            FromActiveSnapshot,
-            FromActiveSnapshotOrPrefilter,
-            FromSettings,
-            FromUserModeMemory,
-            FromHeap,
-            FromStack,
-            FromModules,
-        }
-
         /// <summary>
         /// Subscribes the given object to changes in the active snapshot.
         /// </summary>
