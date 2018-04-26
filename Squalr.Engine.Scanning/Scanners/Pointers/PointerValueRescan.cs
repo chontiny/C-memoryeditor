@@ -2,6 +2,7 @@
 {
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.TaskScheduler;
+    using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Threading;
 

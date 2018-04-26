@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
+    using Squalr.Engine.Config;
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
@@ -91,7 +92,7 @@
                 // Check if any pointers point to the previous level
                 Parallel.ForEach(
                     isModuleLevel ? this.ModulePointers : this.HeapPointers,
-                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                    ParallelSettings.ParallelSettingsFastest,
                     (pointer) =>
                     {
                         // Accept this pointer if it is points to the previous level snapshot

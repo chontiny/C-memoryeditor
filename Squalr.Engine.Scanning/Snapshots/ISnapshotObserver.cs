@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface for a class which listens for changes in the active snapshot.
     /// </summary>
-    internal interface ISnapshotObserver
+    public interface ISnapshotObserver
     {
         /// <summary>
         /// Recieves an update of the active snapshot.

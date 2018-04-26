@@ -1,9 +1,9 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using Microsoft.Win32;
+    using Squalr.Engine.Config;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
-    using Squalr.Properties;
     using Squalr.Source.Controls;
     using Squalr.Source.ProjectItems;
     using Squalr.Source.Utils.Extensions;
@@ -317,7 +317,7 @@
 
                     Parallel.ForEach(
                         ProjectExplorerViewModel.GetInstance().ProjectItems,
-                        SettingsViewModel.GetInstance().ParallelSettingsFast,
+                        ParallelSettings.ParallelSettingsFast,
                         (projectItem) =>
                     {
                         ProjectItem targetProjectItem = projectItem;

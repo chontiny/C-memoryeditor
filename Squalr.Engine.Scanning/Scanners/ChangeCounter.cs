@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
+    using Squalr.Engine.Config;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
@@ -98,7 +99,7 @@
             {
                 Parallel.ForEach(
                     this.Snapshot.OptimizedSnapshotRegions,
-                    SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                    ParallelSettings.ParallelSettingsFastest,
                     (region) =>
                     {
                         if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))

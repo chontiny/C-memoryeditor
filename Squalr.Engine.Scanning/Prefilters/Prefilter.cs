@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Prefilters
 {
-    using Snapshots;
+    using Squalr.Engine.Snapshots;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -8,7 +8,7 @@
     /// <summary>
     /// Filters the initial search space of a snapshot by filtering out unwanted sections.
     /// </summary>
-    internal class Prefilter
+    public class Prefilter
     {
         /// <summary>
         /// Singleton instance of the <see cref="Prefilter"/> class.

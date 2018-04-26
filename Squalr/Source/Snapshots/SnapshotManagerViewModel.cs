@@ -3,6 +3,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
+    using Squalr.Engine.Snapshots;
     using Squalr.Properties;
     using Squalr.Source.Docking;
     using Squalr.Source.Prefilters;
@@ -121,7 +122,7 @@
                 if (!this.SnapshotObservers.Contains(snapshotObserver))
                 {
                     this.SnapshotObservers.Add(snapshotObserver);
-                    snapshotObserver.Update(this.GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot));
+                    snapshotObserver.Update(this.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot));
                 }
             }
         }
@@ -146,23 +147,23 @@
         /// </summary>
         /// <param name="snapshotCreationMode">The method of snapshot retrieval.</param>
         /// <returns>The collected snapshot.</returns>
-        public Snapshot GetSnapshot(SnapshotRetrievalMode snapshotCreationMode)
+        public Snapshot GetSnapshot(Snapshot.SnapshotRetrievalMode snapshotCreationMode)
         {
             switch (snapshotCreationMode)
             {
-                case SnapshotRetrievalMode.FromActiveSnapshot:
+                case Snapshot.SnapshotRetrievalMode.FromActiveSnapshot:
                     return this.GetActiveSnapshot();
-                case SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter:
+                case Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter:
                     return this.GetActiveSnapshotCreateIfNone();
-                case SnapshotRetrievalMode.FromSettings:
+                case Snapshot.SnapshotRetrievalMode.FromSettings:
                     return this.CreateSnapshotFromSettings();
-                case SnapshotRetrievalMode.FromUserModeMemory:
+                case Snapshot.SnapshotRetrievalMode.FromUserModeMemory:
                     return this.CreateSnapshotFromUsermodeMemory();
-                case SnapshotRetrievalMode.FromModules:
+                case Snapshot.SnapshotRetrievalMode.FromModules:
                     return this.CreateSnapshotFromModules();
-                case SnapshotRetrievalMode.FromHeap:
+                case Snapshot.SnapshotRetrievalMode.FromHeap:
                     return this.CreateSnapshotFromHeaps();
-                case SnapshotRetrievalMode.FromStack:
+                case Snapshot.SnapshotRetrievalMode.FromStack:
                     throw new NotImplementedException();
                 default:
                     Logger.Log(LogLevel.Error, "Unknown snapshot retrieval mode");
@@ -396,7 +397,7 @@
         {
             lock (this.ObserverLock)
             {
-                Snapshot activeSnapshot = this.GetSnapshot(SnapshotRetrievalMode.FromActiveSnapshot);
+                Snapshot activeSnapshot = this.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot);
 
                 foreach (ISnapshotObserver observer in this.SnapshotObservers)
                 {

@@ -1,9 +1,14 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
+    using Squalr.Engine.Config;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Input;
+    using Squalr.Engine.Input.HotKeys;
+    using Squalr.Engine.Input.Keyboard;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -130,7 +135,7 @@
             {
                 Parallel.ForEach(
                 this.Snapshot.SnapshotRegions,
-                SettingsViewModel.GetInstance().ParallelSettingsFast,
+                ParallelSettings.ParallelSettingsFast,
                 (region) =>
                 {
                     if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
@@ -158,7 +163,7 @@
             {
                 Parallel.ForEach(
                 this.Snapshot.SnapshotRegions,
-                SettingsViewModel.GetInstance().ParallelSettingsFast,
+                ParallelSettings.ParallelSettingsFast,
                 (region) =>
                 {
                     if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))

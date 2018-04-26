@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
+    using Squalr.Engine.Config;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
@@ -17,7 +18,7 @@
         /// Initializes a new instance of the <see cref="ValueCollector" /> class.
         /// </summary>
         public ValueCollector(
-            SnapshotManagerViewModel.SnapshotRetrievalMode snapshotRetrievalMode = SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter,
+            Snapshot.SnapshotRetrievalMode snapshotRetrievalMode = Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter,
             Snapshot defaultSnapshot = null,
             Action<Snapshot> callback = null) : base(
             taskName: "Value Collector",
@@ -41,7 +42,7 @@
         /// <summary>
         /// Gets or sets the method of snapshot retrieval.
         /// </summary>
-        private SnapshotManagerViewModel.SnapshotRetrievalMode SnapshotRetrievalMode { get; set; }
+        private Snapshot.SnapshotRetrievalMode SnapshotRetrievalMode { get; set; }
 
         /// <summary>
         /// Gets or sets the snapshot on which we perform the value collection.
@@ -84,7 +85,7 @@
             // Read memory to get current values for each region
             Parallel.ForEach(
                 this.Snapshot.OptimizedReadGroups,
-                SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                ParallelSettings.ParallelSettingsFastest,
                 (readGroup) =>
                 {
                     // Read the memory for this region

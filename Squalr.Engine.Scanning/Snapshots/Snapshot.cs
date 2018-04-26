@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Snapshots
 {
+    using Squalr.Engine.Config;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -229,7 +230,7 @@
 
             Parallel.ForEach(
             this.OptimizedReadGroups,
-            SettingsViewModel.GetInstance().ParallelSettingsFastest,
+            ParallelSettings.ParallelSettingsFastest,
             (readGroup) =>
             {
                 readGroup.ReadAllMemory();

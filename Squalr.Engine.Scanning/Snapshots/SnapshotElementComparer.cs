@@ -9,7 +9,7 @@
     /// <summary>
     /// Defines a reference to an element within a snapshot region.
     /// </summary>
-    internal class SnapshotElementComparer
+    public class SnapshotElementComparer
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SnapshotElementComparer" /> class.

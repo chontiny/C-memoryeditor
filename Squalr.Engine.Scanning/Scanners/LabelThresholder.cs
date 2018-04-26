@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
+    using Squalr.Engine.Config;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
     using System;
@@ -186,7 +187,7 @@
 
                 Parallel.ForEach(
                     this.Snapshot.SnapshotRegions,
-                    SettingsViewModel.GetInstance().ParallelSettingsFast,
+                    ParallelSettings.ParallelSettingsFast,
                     (region) =>
                 {
                     if (region.ReadGroup.ElementLabels == null || region.ElementCount <= 0)
