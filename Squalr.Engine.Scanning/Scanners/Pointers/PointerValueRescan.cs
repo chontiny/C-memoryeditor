@@ -37,7 +37,7 @@
         /// </summary>
         protected override void OnBegin()
         {
-            this.DiscoveredPointers = PointerScanResultsViewModel.GetInstance().DiscoveredPointers;
+            throw new NotImplementedException(); //// this.DiscoveredPointers = PointerScanResultsViewModel.GetInstance().DiscoveredPointers;
         }
 
         /// <summary>
@@ -52,18 +52,18 @@
             Int64 processedPointers = 0;
 
             // Enumerate all discovered pointers and determine if they have a valid target address
-            foreach (PointerItem pointerItem in this.DiscoveredPointers)
+            foreach (Pointer pointer in this.DiscoveredPointers)
             {
-                pointerItem.Update();
+                pointer.Update();
 
                 // TODO: This is not particularly sustainable/performant. This will fall apart for floats/doubles where we want nearly-equal values (ie 3.4444 and 3.4443)
                 // Ideally we want something similar to how we do scans with the SnapShotElementIterator with the call to Compare().
                 // One solution would be to create a snapshot from all of the discovered pointers so that we could leverage the SnapshotElementIterator compare functions,
                 // But this creates the technical challenge of associating the pointer item with an element in the snapshot.
                 // Also, we need to update the data type of these pointer items to match the current pointer scan results data times.
-                if (pointerItem.AddressValue?.Equals(this.Value) ?? false)
+                if (pointer.AddressValue?.Equals(this.Value) ?? false)
                 {
-                    validatedPointers.Pointers.Add(pointerItem);
+                    validatedPointers.Pointers.Add(pointer);
                 }
 
                 // Update scan progress
@@ -81,7 +81,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.DiscoveredPointers;
+            throw new NotImplementedException(); //// PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.DiscoveredPointers;
         }
     }
     //// End class

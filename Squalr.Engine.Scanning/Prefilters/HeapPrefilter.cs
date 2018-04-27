@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Prefilters
 {
-    using Snapshots;
+    using Squalr.Engine.Snapshots;
 
     /// <summary>
     /// A prefilter to only include regions within heaps.

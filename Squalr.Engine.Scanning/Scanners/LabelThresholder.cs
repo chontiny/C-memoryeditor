@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
-    using Squalr.Engine.Config;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
     using System;
@@ -25,7 +25,7 @@
             this.SnapshotLock = new Object();
             this.ProgressLock = new Object();
             this.OnUpdateHistogram = onUpdateHistogram;
-            Task.Run(() => SnapshotManagerViewModel.GetInstance().Subscribe(this));
+            Task.Run(() => SnapshotManager.Subscribe(this));
         }
 
         public Double LowerThreshold
@@ -160,7 +160,7 @@
                 //// this.Snapshot.DiscardInvalidRegions();
             }
 
-            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManager.SaveSnapshot(this.Snapshot);
             this.UpdateHistogram(forceUpdate: true);
         }
 

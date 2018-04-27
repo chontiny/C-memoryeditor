@@ -5,6 +5,7 @@
     using Squalr.Engine.Memory;
     using Squalr.Engine.Processes;
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.Extensions;
@@ -78,8 +79,8 @@
             Vector<UInt64> minValueVector64 = new Vector<UInt64>(minValue);
             Vector<UInt64> maxValueVector64 = new Vector<UInt64>(maxValue);
 
-            Snapshot moduleSnapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromModules);
-            Snapshot heapSnapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromHeap);
+            Snapshot moduleSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromModules);
+            Snapshot heapSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromHeap);
             List<Snapshot> snapshots = new List<Snapshot>(new Snapshot[] { moduleSnapshot, heapSnapshot });
 
             moduleSnapshot.ReadAllMemory();

@@ -1,7 +1,8 @@
-﻿namespace Squalr.Source.Scanners.ValueCollector
+﻿namespace Squalr.Source.Scanners
 {
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Scanning.Scanners;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -24,7 +25,7 @@
         /// </summary>
         public ValueCollectorViewModel()
         {
-            this.ValueCollectorModel = new ValueCollectorModel();
+            this.ValueCollector = new ValueCollector();
             this.CollectValuesCommand = new RelayCommand(() => Task.Run(() => this.CollectValues()), () => true);
         }
 
@@ -36,7 +37,7 @@
         /// <summary>
         /// Gets or sets the model for the value collector scan.
         /// </summary>
-        private ValueCollectorModel ValueCollectorModel { get; set; }
+        private ValueCollector ValueCollector { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ValueCollectorViewModel"/> class.
@@ -52,7 +53,7 @@
         /// </summary>
         private void CollectValues()
         {
-            this.ValueCollectorModel.Start();
+            this.ValueCollector.Start();
         }
     }
     //// End class

@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
-    using Squalr.Engine.Config;
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
     using System;
@@ -62,7 +62,7 @@
             else
             {
                 // Otherwise retrieve it using the settings
-                this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(this.SnapshotRetrievalMode)?.Clone(this.TaskName);
+                this.Snapshot = SnapshotManager.GetSnapshot(this.SnapshotRetrievalMode)?.Clone(this.TaskName);
             }
         }
 
@@ -117,7 +117,7 @@
         {
             if (this.CallBack == null)
             {
-                SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
+                SnapshotManager.SaveSnapshot(this.Snapshot);
             }
             else
             {

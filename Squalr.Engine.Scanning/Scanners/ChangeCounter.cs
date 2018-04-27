@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
-    using Squalr.Engine.Config;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
     using System;
@@ -73,7 +73,7 @@
         protected override void OnBegin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
             this.Snapshot.LabelDataType = DataType.UInt16;
 
             if (this.Snapshot == null)
@@ -143,8 +143,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
-            LabelThresholderViewModel.GetInstance().OpenLabelThresholder();
+            SnapshotManager.SaveSnapshot(this.Snapshot);
             this.Snapshot = null;
         }
     }

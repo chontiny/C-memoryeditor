@@ -5,7 +5,7 @@
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Controls;
     using Squalr.Source.Results;
-    using Squalr.Source.Scanners.Pointers;
+    using Squalr.Source.Scanners;
     using System;
     using System.Threading.Tasks;
     using System.Windows.Controls;

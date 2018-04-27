@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Properties
 {
-    using Squalr.Engine.Config;
-    using Squalr.Engine.Memory;
+    using Squalr.Engine.Scanning;
     using Squalr.Source.Docking;
     using System;
     using System.Threading;
@@ -375,89 +374,6 @@
         public static SettingsViewModel GetInstance()
         {
             return SettingsViewModel.settingsViewModelInstance.Value;
-        }
-
-        /// <summary>
-        /// Gets the allowed type settings for virtual memory queries based on the set type flags.
-        /// </summary>
-        /// <returns>The flags of the allowed types for virtual memory queries.</returns>
-        public MemoryTypeEnum GetAllowedTypeSettings()
-        {
-            MemoryTypeEnum result = 0;
-
-            if (Settings.Default.MemoryTypeNone)
-            {
-                result |= MemoryTypeEnum.None;
-            }
-
-            if (Settings.Default.MemoryTypePrivate)
-            {
-                result |= MemoryTypeEnum.Private;
-            }
-
-            if (Settings.Default.MemoryTypeImage)
-            {
-                result |= MemoryTypeEnum.Image;
-            }
-
-            if (Settings.Default.MemoryTypeMapped)
-            {
-                result |= MemoryTypeEnum.Mapped;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Gets the required protection settings for virtual memory queries based on the set type flags.
-        /// </summary>
-        /// <returns>The flags of the required protections for virtual memory queries.</returns>
-        public MemoryProtectionEnum GetRequiredProtectionSettings()
-        {
-            MemoryProtectionEnum result = 0;
-
-            if (Settings.Default.RequiredWrite)
-            {
-                result |= MemoryProtectionEnum.Write;
-            }
-
-            if (Settings.Default.RequiredExecute)
-            {
-                result |= MemoryProtectionEnum.Execute;
-            }
-
-            if (Settings.Default.RequiredCopyOnWrite)
-            {
-                result |= MemoryProtectionEnum.CopyOnWrite;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Gets the excluded protection settings for virtual memory queries based on the set type flags.
-        /// </summary>
-        /// <returns>The flags of the excluded protections for virtual memory queries.</returns>
-        public MemoryProtectionEnum GetExcludedProtectionSettings()
-        {
-            MemoryProtectionEnum result = 0;
-
-            if (Settings.Default.ExcludedWrite)
-            {
-                result |= MemoryProtectionEnum.Write;
-            }
-
-            if (Settings.Default.ExcludedExecute)
-            {
-                result |= MemoryProtectionEnum.Execute;
-            }
-
-            if (Settings.Default.ExcludedCopyOnWrite)
-            {
-                result |= MemoryProtectionEnum.CopyOnWrite;
-            }
-
-            return result;
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
 {
     using Squalr.Engine.Logging;
     using Squalr.Engine.Scanning.Constraints;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.Extensions;
@@ -26,7 +27,7 @@
             isRepeated: false,
             trackProgress: true)
         {
-            this.Dependencies.Enqueue(new ValueCollector(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, callback: this.SetSnapshot));
+            this.Dependencies.Enqueue(new ValueCollector(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, callback: this.SetSnapshot));
         }
 
         /// <summary>
@@ -79,7 +80,7 @@
 
             Parallel.ForEach(
                 this.Snapshot.OptimizedSnapshotRegions,
-                SettingsViewModel.GetInstance().ParallelSettingsFastest,
+                ParallelSettings.ParallelSettingsFastest,
                 (region) =>
                 {
                     // Perform comparisons
@@ -118,7 +119,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManager.SaveSnapshot(this.Snapshot);
             this.Snapshot = null;
 
             this.UpdateProgress(ScheduledTask.MaximumProgress);

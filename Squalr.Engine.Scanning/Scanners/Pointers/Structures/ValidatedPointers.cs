@@ -15,13 +15,13 @@
         /// </summary>
         public ValidatedPointers()
         {
-            this.Pointers = new List<PointerItem>();
+            this.Pointers = new List<Pointer>();
         }
 
         /// <summary>
         /// Gets or sets the discovered pointer roots.
         /// </summary>
-        public IList<PointerItem> Pointers { get; set; }
+        public IList<Pointer> Pointers { get; set; }
 
         /// <summary>
         /// Gets the number of discovered pointers.
@@ -40,7 +40,7 @@
         /// <param name="startIndex">The start index.</param>
         /// <param name="endIndex">The end index.</param>
         /// <returns>The pointers between the specified indicies.</returns>
-        public override IEnumerable<PointerItem> GetPointers(UInt64 startIndex, UInt64 endIndex)
+        public override IEnumerable<Pointer> GetPointers(UInt64 startIndex, UInt64 endIndex)
         {
             return this.Pointers.Skip(startIndex.ToInt32()).Take((endIndex - startIndex).ToInt32());
         }
@@ -49,7 +49,7 @@
         /// Gets the enumerator for the discovered pointers.
         /// </summary>
         /// <returns>The enumerator for the discovered pointers.</returns>
-        public override IEnumerator<PointerItem> GetEnumerator()
+        public override IEnumerator<Pointer> GetEnumerator()
         {
             return this.Pointers.GetEnumerator();
         }

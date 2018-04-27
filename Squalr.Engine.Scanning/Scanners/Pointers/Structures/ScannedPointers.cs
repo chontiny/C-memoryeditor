@@ -48,9 +48,9 @@
         /// <param name="startIndex">The start index.</param>
         /// <param name="endIndex">The end index.</param>
         /// <returns>The pointers between the specified indicies.</returns>
-        public override IEnumerable<PointerItem> GetPointers(UInt64 startIndex, UInt64 endIndex)
+        public override IEnumerable<Pointer> GetPointers(UInt64 startIndex, UInt64 endIndex)
         {
-            IEnumerator<PointerItem> enumerator = this.EnumeratePointers(startIndex, endIndex);
+            IEnumerator<Pointer> enumerator = this.EnumeratePointers(startIndex, endIndex);
 
             while (enumerator.MoveNext())
             {
@@ -96,7 +96,7 @@
         /// Gets the enumerator for the discovered pointers.
         /// </summary>
         /// <returns>The enumerator for the discovered pointers.</returns>
-        public override IEnumerator<PointerItem> GetEnumerator()
+        public override IEnumerator<Pointer> GetEnumerator()
         {
             return this.EnumeratePointers();
         }
@@ -107,7 +107,7 @@
         /// <param name="startIndex">The start index at which to return non-null values.</param>
         /// <param name="endIndex">The end index at which to return non-null values.</param>
         /// <returns>The enumerator for the discovered pointers.</returns>
-        private IEnumerator<PointerItem> EnumeratePointers(UInt64? startIndex = null, UInt64? endIndex = null)
+        private IEnumerator<Pointer> EnumeratePointers(UInt64? startIndex = null, UInt64? endIndex = null)
         {
             PointerIndicies indicies = new PointerIndicies(startIndex, endIndex);
 
@@ -117,9 +117,9 @@
                 {
                     Stack<Int32> offsets = new Stack<Int32>();
 
-                    foreach (PointerItem pointerItem in this.EnumerateBranches(root.BaseAddress, offsets, branch, indicies))
+                    foreach (Pointer pointer in this.EnumerateBranches(root.BaseAddress, offsets, branch, indicies))
                     {
-                        yield return pointerItem;
+                        yield return pointer;
                     }
                 }
             }
@@ -133,7 +133,7 @@
         /// <param name="branch">The current branch.</param>
         /// <param name="pointerIndicies">The indicies at which to return non-null values.</param>
         /// <returns>The full pointer path to the branch.</returns>
-        private IEnumerable<PointerItem> EnumerateBranches(UInt64 baseAddress, Stack<Int32> offsets, PointerBranch branch, PointerIndicies pointerIndicies)
+        private IEnumerable<Pointer> EnumerateBranches(UInt64 baseAddress, Stack<Int32> offsets, PointerBranch branch, PointerIndicies pointerIndicies)
         {
             offsets.Push(branch.Offset);
 
@@ -145,29 +145,29 @@
 
             if (branch.Branches.Count <= 0)
             {
-                PointerItem pointerItem;
+                Pointer pointer;
 
                 // Only create pointer items when in the range of the selection indicies. This is an optimization to prevent creating unneeded objects.
                 if (pointerIndicies.IterateNext())
                 {
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(baseAddress, out moduleName);
-                    pointerItem = new PointerItem(address.ToIntPtr(), DataType.Int32, "New Pointer", moduleName, offsets.ToArray().Reverse());
+                    pointer = new Pointer(address.ToIntPtr(), DataType.Int32, "New Pointer", moduleName, offsets.ToArray().Reverse());
                 }
                 else
                 {
-                    pointerItem = null;
+                    pointer = null;
                 }
 
-                yield return pointerItem;
+                yield return pointer;
             }
             else
             {
                 foreach (PointerBranch childBranch in branch)
                 {
-                    foreach (PointerItem pointerItem in this.EnumerateBranches(baseAddress, offsets, childBranch, pointerIndicies))
+                    foreach (Pointer pointer in this.EnumerateBranches(baseAddress, offsets, childBranch, pointerIndicies))
                     {
-                        yield return pointerItem;
+                        yield return pointer;
                     }
                 }
             }

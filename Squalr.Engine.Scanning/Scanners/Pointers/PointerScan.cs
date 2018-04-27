@@ -175,7 +175,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.ScannedPointers;
+            throw new NotImplementedException(); ////PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.ScannedPointers;
 
             this.LevelPointers = null;
             this.ScannedPointers = null;

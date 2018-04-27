@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Config
+﻿namespace Squalr.Engine
 {
     using System;
     using System.Threading;

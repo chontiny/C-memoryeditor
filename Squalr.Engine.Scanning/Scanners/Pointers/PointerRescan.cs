@@ -37,7 +37,7 @@
         /// </summary>
         protected override void OnBegin()
         {
-            this.DiscoveredPointers = PointerScanResultsViewModel.GetInstance().DiscoveredPointers;
+            throw new NotImplementedException(); ////this.DiscoveredPointers = PointerScanResultsViewModel.GetInstance().DiscoveredPointers;
         }
 
         /// <summary>
@@ -52,13 +52,13 @@
             Int64 processedPointers = 0;
 
             // Enumerate all discovered pointers and determine if they have a valid target address
-            foreach (PointerItem pointerItem in this.DiscoveredPointers)
+            foreach (Pointer pointer in this.DiscoveredPointers)
             {
-                pointerItem.Update();
+                pointer.Update();
 
-                if (pointerItem.CalculatedAddress.ToUInt64() == this.TargetAddress)
+                if (pointer.CalculatedAddress.ToUInt64() == this.TargetAddress)
                 {
-                    validatedPointers.Pointers.Add(pointerItem);
+                    validatedPointers.Pointers.Add(pointer);
                 }
 
                 // Update scan progress
@@ -76,7 +76,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.DiscoveredPointers;
+            throw new NotImplementedException(); ////PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.DiscoveredPointers;
         }
     }
     //// End class

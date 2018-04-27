@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
-    using Squalr.Engine.Config;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Input;
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Engine.Input.Keyboard;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.DataStructures;
@@ -104,7 +104,7 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
             this.Snapshot.LabelDataType = DataType.Int16;
 
             if (this.Snapshot == null)
@@ -115,7 +115,7 @@
 
             // Initialize with no correlation
             this.Snapshot.SetElementLabels<Int16>(0);
-            this.TimeOutIntervalMs = SettingsViewModel.GetInstance().InputCorrelatorTimeOutInterval;
+            this.TimeOutIntervalMs = Settings.Default.InputCorrelatorTimeOutInterval;
         }
 
         /// <summary>
@@ -214,10 +214,9 @@
 
             ////  this.Snapshot.DiscardInvalidRegions();
 
-            SnapshotManagerViewModel.GetInstance().SaveSnapshot(this.Snapshot);
+            SnapshotManager.SaveSnapshot(this.Snapshot);
 
             this.CleanUp();
-            LabelThresholderViewModel.GetInstance().OpenLabelThresholder();
         }
 
         private void InitializeObjects()

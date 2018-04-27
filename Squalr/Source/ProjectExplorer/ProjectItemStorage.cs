@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using Microsoft.Win32;
-    using Squalr.Engine.Config;
+    using Squalr.Engine;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Controls;

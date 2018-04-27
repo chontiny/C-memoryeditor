@@ -3,13 +3,14 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
+    using Squalr.Engine.Scanning.Snapshots;
+    using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectItems;
-    using Squalr.Source.Snapshots;
     using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
@@ -86,7 +87,7 @@
             this.ActiveType = DataType.Int32;
             this.addresses = new FullyObservableCollection<ScanResult>();
 
-            SnapshotManagerViewModel.GetInstance().Subscribe(this);
+            SnapshotManager.Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
             this.UpdateScanResults();
@@ -378,7 +379,7 @@
         /// </summary>
         private void LoadScanResults()
         {
-            Snapshot snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromActiveSnapshot);
+            Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot);
             IList<ScanResult> newAddresses = new List<ScanResult>();
 
             if (snapshot != null)

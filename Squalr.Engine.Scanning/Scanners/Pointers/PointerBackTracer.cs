@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
-    using Squalr.Engine.Config;
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;

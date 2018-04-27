@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Prefilters
 {
-    using Squalr.Source.Snapshots;
+    using Squalr.Engine.Snapshots;
 
     /// <summary>
     /// Interface defining methods that a snapshot prefilter must implement.

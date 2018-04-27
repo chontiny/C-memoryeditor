@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Engine.Snapshots
 {
-    using Squalr.Engine.Config;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils.Extensions;
     using System;

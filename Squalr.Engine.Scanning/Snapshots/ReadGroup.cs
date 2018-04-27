@@ -18,8 +18,8 @@
         /// <param name="regionSize">The size of this memory region.</param>
         public ReadGroup(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
         {
-            this.Alignment = SettingsViewModel.GetInstance().Alignment;
-            this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
+            this.Alignment = Settings.Default.Alignment;
+            throw new NotImplementedException(); //// this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
 
             this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, regionSize) };
         }

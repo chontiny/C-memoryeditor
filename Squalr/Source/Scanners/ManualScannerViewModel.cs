@@ -236,7 +236,8 @@
         {
             get
             {
-                return this.CurrentScanConstraint.ConstraintImage;
+                return null;
+                //// return this.CurrentScanConstraint.ConstraintImage;
             }
         }
 

@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.Extensions;
@@ -33,7 +34,7 @@
         /// </summary>
         protected override void OnBegin()
         {
-            this.DiscoveredPointers = PointerScanResultsViewModel.GetInstance().DiscoveredPointers;
+            throw new NotImplementedException(); ////this.DiscoveredPointers = PointerScanResultsViewModel.GetInstance().DiscoveredPointers;
         }
 
         /// <summary>
@@ -47,16 +48,16 @@
             ValidatedPointers validatedPointers = new ValidatedPointers();
             Int32 processedPointers = 0;
 
-            Snapshot snapshot = SnapshotManagerViewModel.GetInstance().GetSnapshot(SnapshotManagerViewModel.SnapshotRetrievalMode.FromUserModeMemory);
+            Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory);
 
             // Enumerate all discovered pointers and determine if they have a valid target address
-            foreach (PointerItem pointerItem in this.DiscoveredPointers)
+            foreach (Pointer pointer in this.DiscoveredPointers)
             {
-                pointerItem.Update();
+                pointer.Update();
 
-                if (pointerItem.CalculatedAddress != IntPtr.Zero && snapshot.ContainsAddress(pointerItem.CalculatedAddress.ToUInt64()))
+                if (pointer.CalculatedAddress != IntPtr.Zero && snapshot.ContainsAddress(pointer.CalculatedAddress.ToUInt64()))
                 {
-                    validatedPointers.Pointers.Add(pointerItem);
+                    validatedPointers.Pointers.Add(pointer);
                 }
 
                 // Update scan progress
@@ -74,7 +75,7 @@
         /// </summary>
         protected override void OnEnd()
         {
-            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.DiscoveredPointers;
+            throw new NotImplementedException(); ////PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.DiscoveredPointers;
         }
     }
     //// End class
