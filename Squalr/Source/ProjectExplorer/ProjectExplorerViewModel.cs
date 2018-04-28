@@ -209,7 +209,7 @@
         {
             get
             {
-                ProjectItem projectItem = this.SelectedProjectItems.FirstOrDefault();
+                ProjectItem projectItem = this.SelectedProjectItems?.FirstOrDefault();
 
                 if (projectItem != null)
                 {

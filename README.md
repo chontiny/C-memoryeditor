@@ -10,6 +10,8 @@ Join us on our [Discord Channel](https://discord.gg/Pq2msTx)
 
 How does Squalr achieve fast memory scans in .NET? Multi-threading combined with single-core parallelism via SIMD instructions. See this article: [SIMD in .NET](https://instil.co/2016/03/21/parallelism-on-a-single-core-simd-with-c/). To take advantage of these gains, your CPU needs to have support for SSE, AVX, or AVX-512.
 
+![SqualrGUI](https://raw.githubusercontent.com/Squalr/Squalr/develop/Documentation/Squalr.png)
+
 ## Documentation
 
 You can find detailed documentation on the [Wiki](https://squalr.github.io/SqualrDocs/). There are three ways to use Squalr:

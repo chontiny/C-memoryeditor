@@ -217,7 +217,7 @@
         /// <returns>The result of the operation.</returns>
         public static Int64 Add(this Int64 left, dynamic right, Boolean wrapAround = true)
         {
-            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Add, wrapAround);
+            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Add, wrapAround).ToInt64();
         }
 
         /// <summary>
@@ -229,7 +229,7 @@
         /// <returns>The result of the operation.</returns>
         public static UInt64 Add(this UInt64 left, dynamic right, Boolean wrapAround = true)
         {
-            return IntegerExtensions.DoOperation(left, right, ExpressionType.Add, wrapAround).ToUInt64();
+            return IntegerExtensions.DoOperation(left, right, ExpressionType.Add, wrapAround);
         }
 
         /// <summary>
@@ -241,7 +241,7 @@
         /// <returns>The result of the operation.</returns>
         public static Int64 Subtract(this Int64 left, dynamic right, Boolean wrapAround = true)
         {
-            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Subtract, wrapAround);
+            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Subtract, wrapAround).ToInt64();
         }
 
         /// <summary>
@@ -253,7 +253,7 @@
         /// <returns>The result of the operation.</returns>
         public static UInt64 Subtract(this UInt64 left, dynamic right, Boolean wrapAround = true)
         {
-            return IntegerExtensions.DoOperation(left, right, ExpressionType.Subtract, wrapAround).ToUInt64();
+            return IntegerExtensions.DoOperation(left, right, ExpressionType.Subtract, wrapAround);
         }
 
         /// <summary>
@@ -265,7 +265,7 @@
         /// <returns>The result of the operation.</returns>
         public static Int64 Multiply(this Int64 left, dynamic right, Boolean wrapAround = true)
         {
-            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Multiply, wrapAround);
+            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Multiply, wrapAround).ToInt64();
         }
 
         /// <summary>
@@ -277,7 +277,7 @@
         /// <returns>The result of the operation.</returns>
         public static UInt64 Multiply(this UInt64 left, dynamic right, Boolean wrapAround = true)
         {
-            return IntegerExtensions.DoOperation(left, right, ExpressionType.Multiply, wrapAround).ToUInt64();
+            return IntegerExtensions.DoOperation(left, right, ExpressionType.Multiply, wrapAround);
         }
 
         /// <summary>
@@ -288,7 +288,7 @@
         /// <returns>The result of the operation.</returns>
         public static Int64 Divide(this Int64 left, dynamic right)
         {
-            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Multiply);
+            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Multiply).ToInt64();
         }
 
         /// <summary>
@@ -299,7 +299,7 @@
         /// <returns>The result of the operation.</returns>
         public static UInt64 Divide(this UInt64 left, dynamic right)
         {
-            return IntegerExtensions.DoOperation(left, right, ExpressionType.Multiply).ToUInt64();
+            return IntegerExtensions.DoOperation(left, right, ExpressionType.Multiply);
         }
 
         /// <summary>
@@ -310,7 +310,7 @@
         /// <returns>The result of the operation.</returns>
         public static Int64 Mod(this Int64 left, dynamic right)
         {
-            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Modulo);
+            return IntegerExtensions.DoOperation(left.ToUInt64(), right, ExpressionType.Modulo).ToInt64();
         }
 
         /// <summary>
@@ -321,26 +321,28 @@
         /// <returns>The result of the operation.</returns>
         public static UInt64 Mod(this UInt64 left, dynamic right)
         {
-            return IntegerExtensions.DoOperation(left, right, ExpressionType.Modulo).ToUInt64();
+            return IntegerExtensions.DoOperation(left, right, ExpressionType.Modulo);
         }
 
         /// <summary>
         /// Performs the given mathematical operation on the given left and right values.
         /// </summary>
         /// <param name="left">The left side value.</param>
-        /// <param name="right">The right side value.</param>
+        /// <param name="rightDynamic">The right side value.</param>
         /// <param name="expression">The mathematical operation to perform.</param>
         /// <param name="wrapAround">Whether or not values will wrap if the operation overflows. Otherwise, cap out at Int64.MaxValue or Int64.MinValue.</param>
         /// <returns>The result of the operation.</returns>
-        private static UInt32 DoOperation(UInt32 left, dynamic right, ExpressionType expression, Boolean wrapAround = true)
+        private static UInt32 DoOperation(UInt32 left, dynamic rightDynamic, ExpressionType expression, Boolean wrapAround = true)
         {
+            UInt32 right;
+
             if (wrapAround)
             {
-                right = (UInt32)right;
+                right = (UInt32)rightDynamic;
             }
             else
             {
-                right = unchecked((UInt32)right);
+                right = unchecked((UInt32)rightDynamic);
             }
 
             try
@@ -348,15 +350,15 @@
                 switch (expression)
                 {
                     case ExpressionType.Add:
-                        return wrapAround ? unchecked((UInt32)(left + right)) : checked((UInt32)(left + right));
+                        return wrapAround ? unchecked(left + right) : checked(left + right);
                     case ExpressionType.Subtract:
-                        return wrapAround ? unchecked((UInt32)(left - right)) : checked((UInt32)(left - right));
+                        return wrapAround ? unchecked(left - right) : checked(left - right);
                     case ExpressionType.Multiply:
-                        return wrapAround ? unchecked((UInt32)(left * right)) : checked((UInt32)(left * right));
+                        return wrapAround ? unchecked(left * right) : checked(left * right);
                     case ExpressionType.Divide:
-                        return unchecked((UInt32)(left / right));
+                        return unchecked(left / right);
                     case ExpressionType.Modulo:
-                        return unchecked((UInt32)(left % right));
+                        return unchecked(left % right);
                     default:
                         throw new Exception("Unknown operation");
                 }
@@ -381,19 +383,21 @@
         /// Performs the given mathematical operation on the given left and right values.
         /// </summary>
         /// <param name="left">The left side value.</param>
-        /// <param name="right">The right side value.</param>
+        /// <param name="rightDynamic">The right side value.</param>
         /// <param name="expression">The mathematical operation to perform.</param>
         /// <param name="wrapAround">Whether or not values will wrap if the operation overflows. Otherwise, cap out at Int64.MaxValue or Int64.MinValue.</param>
         /// <returns>The result of the operation.</returns>
-        private static UInt64 DoOperation(UInt64 left, dynamic right, ExpressionType expression, Boolean wrapAround = true)
+        private static UInt64 DoOperation(UInt64 left, dynamic rightDynamic, ExpressionType expression, Boolean wrapAround = true)
         {
+            UInt64 right;
+
             if (wrapAround)
             {
-                right = (UInt64)right;
+                right = (UInt64)rightDynamic;
             }
             else
             {
-                right = unchecked((UInt64)right);
+                right = unchecked((UInt64)rightDynamic);
             }
 
             try
@@ -401,15 +405,15 @@
                 switch (expression)
                 {
                     case ExpressionType.Add:
-                        return wrapAround ? unchecked((Int64)(left + right)).ToUInt64() : checked((Int64)(left + right)).ToUInt64();
+                        return wrapAround ? unchecked(left + right) : checked(left + right);
                     case ExpressionType.Subtract:
-                        return wrapAround ? unchecked((Int64)(left - right)).ToUInt64() : checked((Int64)(left - right)).ToUInt64();
+                        return wrapAround ? unchecked(left - right) : checked(left - right);
                     case ExpressionType.Multiply:
-                        return wrapAround ? unchecked((Int64)(left * right)).ToUInt64() : checked((Int64)(left * right)).ToUInt64();
+                        return wrapAround ? unchecked(left * right) : checked(left * right);
                     case ExpressionType.Divide:
-                        return unchecked((Int64)(left / right)).ToUInt64();
+                        return unchecked(left / right);
                     case ExpressionType.Modulo:
-                        return unchecked((Int64)(left % right)).ToUInt64();
+                        return unchecked(left % right);
                     default:
                         throw new Exception("Unknown operation");
                 }
