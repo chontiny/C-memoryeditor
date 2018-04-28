@@ -119,8 +119,9 @@
             CodeTraceInfo codeTraceInfo = new CodeTraceInfo();
 
             String[] registers;
+            Boolean isProcess32Bit = ProcessInfo.Default.IsOpenedProcess32Bit();
 
-            if (ProcessInfo.Default.IsOpenedProcess32Bit())
+            if (isProcess32Bit)
             {
                 registers = this.Registers32;
             }
@@ -150,16 +151,14 @@
             // Get the current instruction address
             UInt64 address;
             this.Registers.GetInstructionOffset(out address);
-            codeTraceInfo.Address = address;
 
             // TEMP: Correct the traced address
             // TODO: Remove this once we figure out how to trigger breakpoint callbacks BEFORE EIP is updated
-            codeTraceInfo.Address = this.CorrectAddress(codeTraceInfo.Address);
+            address = this.CorrectAddress(address);
 
             // Disassemble instruction
-            StringBuilder buffer = new StringBuilder(256);
-            this.Control.Disassemble(codeTraceInfo.Address, DEBUG_DISASM.EFFECTIVE_ADDRESS, buffer, 256, out _, out _);
-            codeTraceInfo.Instruction = String.Join(" ", buffer.ToString().Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Skip(2));
+            Byte[] bytes = Memory.Reader.Default.ReadBytes((IntPtr)address, 15, out _);
+            codeTraceInfo.Instruction = Engine.Architecture.Disassembler.Default.Disassemble(bytes, isProcess32Bit, (IntPtr)address).FirstOrDefault();
 
             // Invoke callbacks
             this.ReadCallback?.Invoke(codeTraceInfo);

@@ -26,6 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Squalr.Engine.Architecture\Squalr.Engine.Architecture.csproj" />
+    <ProjectReference Include="..\Squalr.Engine.Memory\Squalr.Engine.Memory.csproj" />
     <ProjectReference Include="..\Squalr.Engine\Squalr.Engine.csproj" />
   </ItemGroup>
 

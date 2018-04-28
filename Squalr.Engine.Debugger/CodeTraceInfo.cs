@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Debuggers
 {
+    using Squalr.Engine.Architecture;
     using System;
     using System.Collections.Generic;
 
@@ -10,9 +11,7 @@
             this.IntRegisters = new Dictionary<String, UInt64>();
         }
 
-        public UInt64 Address { get; set; }
-
-        public String Instruction { get; set; }
+        public Instruction Instruction { get; set; }
 
         public Dictionary<String, UInt64> IntRegisters { get; set; }
     }

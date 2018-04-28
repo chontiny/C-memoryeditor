@@ -281,6 +281,8 @@
                 return;
             }
 
+            SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory);
+
             SnapshotManager.SaveSnapshot(
                 ManualScanner.Scan(
                     SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),

@@ -231,7 +231,7 @@
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                CodeTraceResult result = this.Results.FirstOrDefault(results => results.Address == codeTraceInfo.Address);
+                CodeTraceResult result = this.Results.FirstOrDefault(results => results.Address == codeTraceInfo.Instruction.Address);
 
                 // Insert or increment
                 if (result != null)

@@ -184,15 +184,15 @@
             Boolean isProcess32Bit = ProcessInfo.Default.IsOpenedProcess32Bit();
 
             // Disassemble instructions
-            IEnumerable<NormalizedInstruction> disassembledInstructions = Disassembler.Default.Disassemble(bytes, isProcess32Bit, this.BaseAddress.ToIntPtr());
+            IEnumerable<Instruction> disassembledInstructions = Disassembler.Default.Disassemble(bytes, isProcess32Bit, this.BaseAddress.ToIntPtr());
             IList<InstructionItem> instructions = new List<InstructionItem>();
 
-            foreach (NormalizedInstruction disassembledInstruction in disassembledInstructions)
+            foreach (Instruction disassembledInstruction in disassembledInstructions)
             {
                 String moduleName;
                 UInt64 address = AddressResolver.GetInstance().AddressToModule(disassembledInstruction.Address, out moduleName);
 
-                instructions.Add(new InstructionItem(address.ToIntPtr(), moduleName, disassembledInstruction.Instruction, disassembledInstruction.Bytes));
+                instructions.Add(new InstructionItem(address.ToIntPtr(), moduleName, disassembledInstruction.Mnemonic, disassembledInstruction.Bytes));
             }
 
             this.Instructions = new FullyObservableCollection<InstructionItem>(instructions);

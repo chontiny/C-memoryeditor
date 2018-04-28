@@ -6,7 +6,7 @@
     /// <summary>
     /// Object that represents a platform agnostic instruction.
     /// </summary>
-    public class NormalizedInstruction : INotifyPropertyChanged
+    public class Instruction : INotifyPropertyChanged
     {
         /// <summary>
         /// The instruction address.
@@ -14,9 +14,9 @@
         private UInt64 address;
 
         /// <summary>
-        /// The instruction string.
+        /// The string representation of the instruction.
         /// </summary>
-        private String instruction;
+        private String mnemonic;
 
         /// <summary>
         /// The instruction bytes.
@@ -29,16 +29,16 @@
         private Int32 size;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="NormalizedInstruction" /> class.
+        /// Initializes a new instance of the <see cref="Instruction" /> class.
         /// </summary>
         /// <param name="address">The instruction address.</param>
-        /// <param name="instruction">The instruction string.</param>
+        /// <param name="mnemonic">The instruction string.</param>
         /// <param name="bytes">The bytes of the instruction.</param>
         /// <param name="size">The instruction size.</param>
-        public NormalizedInstruction(UInt64 address, String instruction, Byte[] bytes, Int32 size)
+        public Instruction(UInt64 address, String mnemonic, Byte[] bytes, Int32 size)
         {
             this.Address = address;
-            this.Instruction = instruction;
+            this.Mnemonic = mnemonic;
             this.Bytes = bytes;
             this.Size = size;
         }
@@ -61,19 +61,19 @@
         }
 
         /// <summary>
-        /// Gets the instruction string.
+        /// Gets the string representation of the instruction.
         /// </summary>
-        public String Instruction
+        public String Mnemonic
         {
             get
             {
-                return this.instruction;
+                return this.mnemonic;
             }
 
             set
             {
-                this.instruction = value;
-                this.RaisePropertyChanged(nameof(this.Instruction));
+                this.mnemonic = value;
+                this.RaisePropertyChanged(nameof(this.Mnemonic));
             }
         }
 

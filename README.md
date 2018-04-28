@@ -10,10 +10,110 @@ Join us on our [Discord Channel](https://discord.gg/Pq2msTx)
 
 How does Squalr achieve fast memory scans in .NET? Multi-threading combined with single-core parallelism via SIMD instructions. See this article: [SIMD in .NET](https://instil.co/2016/03/21/parallelism-on-a-single-core-simd-with-c/). To take advantage of these gains, your CPU needs to have support for SSE, AVX, or AVX-512.
 
-## Wiki Documentation
+## Documentation
 
-You can find more documentation on the [Wiki](https://github.com/Squalr/Squalr/wiki)
+You can find detailed documentation on the [Wiki](https://squalr.github.io/SqualrDocs/). There are three ways to use Squalr:
+- Front end GUI
+- Scripting API
+- Back end NuGet packages
 
+Below is some brief documentation on the NuGet package APIs
+
+### Receiving Engine Output:
+It is important to hook into the engine's output to receive logs of events. These are invaluable for debugging.
+
+    using Squalr.Engine.Output;
+	
+	...
+	
+	// Receive output from the engine
+	Output.Subscribe(new EngineLogEvents());
+	
+	...
+	
+    class EngineLogEvents : IOutputObserver
+    {
+        public void OnLogEvent(LogLevel logLevel, string message, string innerMessage)
+        {
+            Console.WriteLine(message);
+            Console.WriteLine(innerMessage);
+        }
+    }
+
+### Manipulating Memory:
+    using Squalr.Engine.Memory;
+	
+	...
+	
+	Reader.Default.Read<Int32>(address);
+	Writer.Default.Write<Int32>(address);
+	Allocator.Alloc(address, 256);
+	IEnumerable<NormalizedRegion> regions = Query.GetVirtualPages(requiredProtection, excludedProtection, allowedTypes, startAddress, endAddress);
+	IEnumerable<NormalizedModule> modules = Query.GetModules();
+
+### Assembling/Disassembling:
+    using Squalr.Engine.Architecture;
+    using Squalr.Engine.Architecture.Assemblers;
+	
+	...
+	
+	// Perform assembly
+	AssemblerResult result = Assembler.Default.Assemble(assembly: "mov eax, 5", isProcess32Bit: true, baseAddress: 0x10000);
+
+	Console.WriteLine(BitConverter.ToString(result.Data).Replace("-", " "));
+
+	// Disassemble the result (we will get the same instructions back)
+	IEnumerable<NormalizedInstruction> instructions = Disassembler.Default.Disassemble(bytes: result.Data, isProcess32Bit: true, baseAddress: 0x10000);
+
+	Console.WriteLine(instructions[0].Mnemonic);
+
+### Scanning:
+    using Squalr.Engine.Scanning;
+    using Squalr.Engine.Scanning.Scanners;
+    using Squalr.Engine.Scanning.Scanners.Constraints;
+    using Squalr.Engine.Scanning.Snapshots;
+	
+	...
+	
+	Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory);
+	
+	snapshot = ValueCollector.CollectValues(snapshot, dataType, null, out _).Result;
+	
+	ManualScanner.Scan(
+		SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
+		DataType.Int32,
+		allScanConstraints,
+		null,
+		out _).Result
+		
+		
+	for (UInt64 index = 0; index < snapshot.ElementCount; index++)
+	{
+		SnapshotElementIndexer element = snapshot[index];
+
+		Object currentValue = element.HasCurrentValue() ? element.LoadCurrentValue() : null;
+		Object previousValue = element.HasPreviousValue() ? element.LoadPreviousValue() : null;
+	}
+
+### Debugging:
+
+	// Example: Tracing write events on a float
+	BreakpointSize size = Debugger.Default.SizeToBreakpointSize(sizeof(float));
+	CancellationTokenSource cancellationTokenSource = Debugger.Default.FindWhatWrites(0x10000, size, this.CodeTraceEvent);
+	
+	...
+	
+	// When finished, cancel the instruction collection
+	cancellationTokenSource.cancel();
+	
+	...
+	
+	private void CodeTraceEvent(CodeTraceInfo codeTraceInfo)
+	{
+		Console.WriteLine(codeTraceInfo.Instruction.Address.ToString("X"));
+		Console.WriteLine(codeTraceInfo.Instruction.Mnemonic);
+	}
+	
 ## Recommended Visual Studio Extensions
 Reference | Description 
 --- | ---
@@ -35,7 +135,7 @@ Library | Description
 [AvalonDock](https://avalondock.codeplex.com/) | Docking Library
 [LiveCharts](https://github.com/beto-rodriguez/Live-Charts) | WPF Charts
 
-Intending to Use (Eventually):
+## Planned Features
 
 Library | Description | Purpose
 --- | --- | ---

@@ -23,7 +23,7 @@
         /// <param name="isProcess32Bit">Whether or not the assembly is in the context of a 32 bit program.</param>
         /// <param name="baseAddress">The address where the code is rebased.</param>
         /// <returns>An array of bytes containing the assembly code.</returns>
-        public IEnumerable<NormalizedInstruction> Disassemble(Byte[] bytes, Boolean isProcess32Bit, IntPtr baseAddress)
+        public Architecture.Instruction[] Disassemble(Byte[] bytes, Boolean isProcess32Bit, IntPtr baseAddress)
         {
             this.disassembler = new Disassembler(
                 code: bytes,
@@ -34,7 +34,7 @@
             IEnumerable<Instruction> instructions = this.disassembler.Disassemble();
 
             return instructions.Select(instruction =>
-                new NormalizedInstruction(
+                new Architecture.Instruction(
                     instruction.Offset,
                     instruction.ToString(),
                     instruction.Bytes,

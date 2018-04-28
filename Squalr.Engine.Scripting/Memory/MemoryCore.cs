@@ -113,11 +113,11 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
-            AssemblerResult result = Assembler.Default.Assemble(ProcessInfo.Default.IsOpenedProcess32Bit(), assembly, address.ToIntPtr());
+            AssemblerResult result = Assembler.Default.Assemble(assembly, ProcessInfo.Default.IsOpenedProcess32Bit(), address.ToIntPtr());
 
             Logger.Log(LogLevel.Info, result.Message, result.InnerMessage);
 
-            return result.Data;
+            return result.Bytes;
         }
 
         /// <summary>
@@ -143,11 +143,11 @@
             }
 
             // Grab instructions at code entry point
-            IEnumerable<NormalizedInstruction> instructions = Disassembler.Default.Disassemble(originalBytes, ProcessInfo.Default.IsOpenedProcess32Bit(), address.ToIntPtr());
+            IEnumerable<Instruction> instructions = Disassembler.Default.Disassemble(originalBytes, ProcessInfo.Default.IsOpenedProcess32Bit(), address.ToIntPtr());
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;
-            foreach (NormalizedInstruction instruction in instructions)
+            foreach (Instruction instruction in instructions)
             {
                 replacedInstructionSize += instruction.Size;
                 if (replacedInstructionSize >= injectedCodeSize)
