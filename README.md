@@ -22,97 +22,112 @@ Below is some brief documentation on the NuGet package APIs
 ### Receiving Engine Output:
 It is important to hook into the engine's output to receive logs of events. These are invaluable for debugging.
 
-    using Squalr.Engine.Output;
-	
-	...
-	
-	// Receive output from the engine
-	Output.Subscribe(new EngineLogEvents());
-	
-	...
-	
-    class EngineLogEvents : IOutputObserver
-    {
-        public void OnLogEvent(LogLevel logLevel, string message, string innerMessage)
-        {
-            Console.WriteLine(message);
-            Console.WriteLine(innerMessage);
-        }
-    }
+```csharp
+using Squalr.Engine.Output;
+
+...
+
+// Receive output from the engine
+Output.Subscribe(new EngineLogEvents());
+
+...
+
+class EngineLogEvents : IOutputObserver
+{
+	public void OnLogEvent(LogLevel logLevel, string message, string innerMessage)
+	{
+		Console.WriteLine(message);
+		Console.WriteLine(innerMessage);
+	}
+}
+```
 
 ### Manipulating Memory:
-    using Squalr.Engine.Memory;
-	
-	...
-	
-	Reader.Default.Read<Int32>(address);
-	Writer.Default.Write<Int32>(address);
-	Allocator.Alloc(address, 256);
-	IEnumerable<NormalizedRegion> regions = Query.GetVirtualPages(requiredProtection, excludedProtection, allowedTypes, startAddress, endAddress);
-	IEnumerable<NormalizedModule> modules = Query.GetModules();
+
+```csharp
+using Squalr.Engine.Memory;
+
+...
+
+Reader.Default.Read<Int32>(address);
+Writer.Default.Write<Int32>(address);
+Allocator.Alloc(address, 256);
+IEnumerable<NormalizedRegion> regions = Query.GetVirtualPages(requiredProtection, excludedProtection, allowedTypes, startAddress, endAddress);
+IEnumerable<NormalizedModule> modules = Query.GetModules();
+```
 
 ### Assembling/Disassembling:
-    using Squalr.Engine.Architecture;
-    using Squalr.Engine.Architecture.Assemblers;
-	
-	...
-	
-	// Perform assembly
-	AssemblerResult result = Assembler.Default.Assemble(assembly: "mov eax, 5", isProcess32Bit: true, baseAddress: 0x10000);
+Squalr can assemble and disassemble x86/x64 instructions, leveraging NASM.
 
-	Console.WriteLine(BitConverter.ToString(result.Data).Replace("-", " "));
+```csharp
+using Squalr.Engine.Architecture;
+using Squalr.Engine.Architecture.Assemblers;
 
-	// Disassemble the result (we will get the same instructions back)
-	IEnumerable<NormalizedInstruction> instructions = Disassembler.Default.Disassemble(bytes: result.Data, isProcess32Bit: true, baseAddress: 0x10000);
+...
 
-	Console.WriteLine(instructions[0].Mnemonic);
+// Perform assembly
+AssemblerResult result = Assembler.Default.Assemble(assembly: "mov eax, 5", isProcess32Bit: true, baseAddress: 0x10000);
+
+Console.WriteLine(BitConverter.ToString(result.Data).Replace("-", " "));
+
+// Disassemble the result (we will get the same instructions back)
+IEnumerable<NormalizedInstruction> instructions = Disassembler.Default.Disassemble(bytes: result.Data, isProcess32Bit: true, baseAddress: 0x10000);
+
+Console.WriteLine(instructions[0].Mnemonic);
+```
 
 ### Scanning:
-    using Squalr.Engine.Scanning;
-    using Squalr.Engine.Scanning.Scanners;
-    using Squalr.Engine.Scanning.Scanners.Constraints;
-    using Squalr.Engine.Scanning.Snapshots;
-	
-	...
-	
-	Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory);
-	
-	snapshot = ValueCollector.CollectValues(snapshot, dataType, null, out _).Result;
-	
-	ManualScanner.Scan(
-		SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
-		DataType.Int32,
-		allScanConstraints,
-		null,
-		out _).Result
-		
-		
-	for (UInt64 index = 0; index < snapshot.ElementCount; index++)
-	{
-		SnapshotElementIndexer element = snapshot[index];
+Squalr has an API for performing high performance memory scanning:
 
-		Object currentValue = element.HasCurrentValue() ? element.LoadCurrentValue() : null;
-		Object previousValue = element.HasPreviousValue() ? element.LoadPreviousValue() : null;
-	}
+```csharp
+using Squalr.Engine.Scanning;
+using Squalr.Engine.Scanning.Scanners;
+using Squalr.Engine.Scanning.Scanners.Constraints;
+using Squalr.Engine.Scanning.Snapshots;
+
+...
+
+Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory);
+
+snapshot = ValueCollector.CollectValues(snapshot, dataType, null, out _).Result;
+
+ManualScanner.Scan(
+	SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
+	DataType.Int32,
+	allScanConstraints,
+	null,
+	out _).Result
+	
+	
+for (UInt64 index = 0; index < snapshot.ElementCount; index++)
+{
+	SnapshotElementIndexer element = snapshot[index];
+
+	Object currentValue = element.HasCurrentValue() ? element.LoadCurrentValue() : null;
+	Object previousValue = element.HasPreviousValue() ? element.LoadPreviousValue() : null;
+}
+```
 
 ### Debugging:
 
-	// Example: Tracing write events on a float
-	BreakpointSize size = Debugger.Default.SizeToBreakpointSize(sizeof(float));
-	CancellationTokenSource cancellationTokenSource = Debugger.Default.FindWhatWrites(0x10000, size, this.CodeTraceEvent);
-	
-	...
-	
-	// When finished, cancel the instruction collection
-	cancellationTokenSource.cancel();
-	
-	...
-	
-	private void CodeTraceEvent(CodeTraceInfo codeTraceInfo)
-	{
-		Console.WriteLine(codeTraceInfo.Instruction.Address.ToString("X"));
-		Console.WriteLine(codeTraceInfo.Instruction.Mnemonic);
-	}
+```csharp
+// Example: Tracing write events on a float
+BreakpointSize size = Debugger.Default.SizeToBreakpointSize(sizeof(float));
+CancellationTokenSource cancellationTokenSource = Debugger.Default.FindWhatWrites(0x10000, size, this.CodeTraceEvent);
+
+...
+
+// When finished, cancel the instruction collection
+cancellationTokenSource.cancel();
+
+...
+
+private void CodeTraceEvent(CodeTraceInfo codeTraceInfo)
+{
+	Console.WriteLine(codeTraceInfo.Instruction.Address.ToString("X"));
+	Console.WriteLine(codeTraceInfo.Instruction.Mnemonic);
+}
+```
 	
 ## Recommended Visual Studio Extensions
 Reference | Description 
