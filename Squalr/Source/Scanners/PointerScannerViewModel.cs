@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners
+﻿namespace Squalr.Source.Scanning
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Scanning.Scanners.Pointers;
@@ -227,7 +227,7 @@
         /// </summary>
         private void StartScan()
         {
-            this.PointerScan.Start();
+            //// this.PointerScan.Start();
         }
 
         /// <summary>
@@ -235,7 +235,7 @@
         /// </summary>
         private void StartPointerRescan()
         {
-            this.PointerRescan.Start();
+            //// this.PointerRescan.Start();
         }
 
         /// <summary>
@@ -243,7 +243,7 @@
         /// </summary>
         private void StartPointerValueRescan()
         {
-            this.PointerValueRescan.Start();
+            //// this.PointerValueRescan.Start();
         }
 
         /// <summary>
@@ -251,7 +251,7 @@
         /// </summary>
         private void StartPointerValidationScan()
         {
-            this.PointerValidationScan.Start();
+            //// this.PointerValidationScan.Start();
         }
     }
     //// End class

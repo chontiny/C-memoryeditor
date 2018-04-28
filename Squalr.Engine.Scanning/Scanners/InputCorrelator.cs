@@ -6,7 +6,6 @@
     using Squalr.Engine.Input.Keyboard;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
-    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -15,7 +14,7 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class InputCorrelator : ScheduledTask, IObserver<KeyState>
+    public class InputCorrelator : IObserver<KeyState>
     {
         private FullyObservableCollection<Hotkey> hotKeys;
 
@@ -24,10 +23,7 @@
         /// </summary>
         private Int32 scanCount;
 
-        public InputCorrelator(Action updateScanCount) : base(
-            taskName: "Input Correlator",
-            isRepeated: true,
-            trackProgress: true)
+        public InputCorrelator(Action updateScanCount)
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();
@@ -73,7 +69,7 @@
             private set
             {
                 this.scanCount = value;
-                this.RaisePropertyChanged(nameof(this.ScanCount));
+                //// this.RaisePropertyChanged(nameof(this.ScanCount));
             }
         }
 
@@ -99,17 +95,17 @@
         {
         }
 
-        protected override void OnBegin()
+        protected void OnBegin()
         {
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone("Input Correlator");
             this.Snapshot.LabelDataType = DataType.Int16;
 
             if (this.Snapshot == null)
             {
-                this.Cancel();
+                //// this.Cancel();
                 return;
             }
 
@@ -122,7 +118,7 @@
         /// Called when the scan updates.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        protected void OnUpdate(CancellationToken cancellationToken)
         {
             // Read memory to update previous and current values
             this.Snapshot.ReadAllMemory();
@@ -155,7 +151,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
+                        //// this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                 });
             }
@@ -183,7 +179,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
+                        //// this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                 });
             }
@@ -194,7 +190,7 @@
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected override void OnEnd()
+        protected void OnEnd()
         {
             // Prefilter items with negative penalties (ie constantly changing variables)
             //// this.Snapshot.SetAllValidBits(false);

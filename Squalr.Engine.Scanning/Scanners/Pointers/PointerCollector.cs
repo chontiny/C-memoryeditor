@@ -7,7 +7,6 @@
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
-    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -19,7 +18,7 @@
     /// <summary>
     /// Collects all module and heap pointers in the running process.
     /// </summary>
-    public class PointerCollector : ScheduledTask
+    public class PointerCollector
     {
         /// <summary>
         /// The rounding size for pointer destinations.
@@ -29,10 +28,7 @@
         /// <summary>
         /// Creates an instance of the <see cref="PointerCollector" /> class.
         /// </summary>
-        public PointerCollector(Action<PointerPool, PointerPool> collectedPointersCallback) : base(
-            taskName: "Pointer Collector",
-            isRepeated: false,
-            trackProgress: true)
+        public PointerCollector(Action<PointerPool, PointerPool> collectedPointersCallback)
         {
             this.CollectedPointersCallback = collectedPointersCallback;
         }
@@ -55,7 +51,7 @@
         /// <summary>
         /// Called when the scheduled task starts.
         /// </summary>
-        protected override void OnBegin()
+        protected void OnBegin()
         {
             this.ModulePointers = new PointerPool();
             this.HeapPointers = new PointerPool();
@@ -65,7 +61,7 @@
         /// Called when the scan updates.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        protected void OnUpdate(CancellationToken cancellationToken)
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -196,7 +192,7 @@
                     // Update scan progress
                     if (Interlocked.Increment(ref processedRegions) % 32 == 0)
                     {
-                        this.UpdateProgress(processedRegions, regionCount, canFinalize: false);
+                        //// this.UpdateProgress(processedRegions, regionCount, canFinalize: false);
                     }
                 }
             }
@@ -208,11 +204,9 @@
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected override void OnEnd()
+        protected void OnEnd()
         {
             this.CollectedPointersCallback?.Invoke(this.ModulePointers, this.HeapPointers);
-
-            this.UpdateProgress(ScheduledTask.MaximumProgress);
 
             this.ModulePointers = null;
             this.HeapPointers = null;

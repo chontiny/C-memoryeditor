@@ -2,24 +2,19 @@
 {
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
-    using Squalr.Engine.TaskScheduler;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class LabelThresholder : ScheduledTask, ISnapshotObserver
+    public class LabelThresholder : ISnapshotObserver
     {
         private Double upperThreshold;
 
         private Double lowerThreshold;
 
-        public LabelThresholder(Action onUpdateHistogram) : base(
-            taskName: "Label Thresholder",
-            isRepeated: false,
-            trackProgress: true
-            )
+        public LabelThresholder(Action onUpdateHistogram)
         {
             this.ItemLock = new Object();
             this.SnapshotLock = new Object();
@@ -100,7 +95,7 @@
                 }
             }
 
-            this.Start();
+            //// this.Start();
         }
 
         public void ApplyThreshold()
@@ -164,7 +159,7 @@
             this.UpdateHistogram(forceUpdate: true);
         }
 
-        protected override void OnBegin()
+        protected void OnBegin()
         {
         }
 
@@ -172,7 +167,7 @@
         /// Called when the scan updates.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        protected void OnUpdate(CancellationToken cancellationToken)
         {
             ConcurrentDictionary<Object, Int64> histogram = new ConcurrentDictionary<Object, Int64>();
             Int32 processedPages = 0;
@@ -181,7 +176,7 @@
             {
                 if (this.Snapshot == null)
                 {
-                    this.Cancel();
+                    //// this.Cancel();
                     return;
                 }
 
@@ -218,7 +213,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
+                        //// this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
                     }
                     //// End foreach element
                 });
@@ -229,7 +224,7 @@
             this.UpdateHistogram();
         }
 
-        protected override void OnEnd()
+        protected void OnEnd()
         {
         }
 

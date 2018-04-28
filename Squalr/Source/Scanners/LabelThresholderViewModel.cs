@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners
+﻿namespace Squalr.Source.Scanning
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using LiveCharts;

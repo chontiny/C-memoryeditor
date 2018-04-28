@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners
+﻿namespace Squalr.Source.Scanning
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Input.HotKeys;
@@ -97,12 +97,12 @@
 
         private void StartScan()
         {
-            this.InputCorrelator.Start();
+            //// this.InputCorrelator.Start();
         }
 
         private void StopScan()
         {
-            this.InputCorrelator.Cancel();
+            //// this.InputCorrelator.Cancel();
         }
     }
     //// End class

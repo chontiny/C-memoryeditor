@@ -13,7 +13,7 @@
     using Squalr.Source.ProcessSelector;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.PropertyViewer;
-    using Squalr.Source.Scanners;
+    using Squalr.Source.Scanning;
     using System;
     using System.Collections.Generic;
     using System.Windows;

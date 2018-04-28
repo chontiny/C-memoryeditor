@@ -18,7 +18,7 @@
     using Squalr.Source.ProcessSelector;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.PropertyViewer;
-    using Squalr.Source.Scanners;
+    using Squalr.Source.Scanning;
 
     /// <summary>
     /// This class contains static references to all the view models in the

@@ -2,7 +2,6 @@
 {
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Snapshots;
-    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -12,7 +11,7 @@
     /// <summary>
     /// Implements an algorithm which starts from the pointer destination, and works backwards finding each level of possible pointers.
     /// </summary>
-    public class PointerBackTracer : ScheduledTask
+    public class PointerBackTracer
     {
         /// <summary>
         /// Time in milliseconds between scans.
@@ -22,14 +21,9 @@
         /// <summary>
         /// Creates an instance of the <see cref="PointerBackTracer" /> class.
         /// </summary>
-        public PointerBackTracer(Action<LevelPointers> levelPointersCallback) : base(
-            taskName: "Pointer Back Trace",
-            isRepeated: false,
-            trackProgress: true)
+        public PointerBackTracer(Action<LevelPointers> levelPointersCallback)
         {
             this.LevelPointersCallback = levelPointersCallback;
-
-            this.Dependencies.Enqueue(new PointerCollector(this.SetCollectedPointers));
         }
 
         /// <summary>
@@ -64,9 +58,9 @@
         /// <summary>
         /// Called when the scheduled task starts.
         /// </summary>
-        protected override void OnBegin()
+        protected void OnBegin()
         {
-            this.UpdateInterval = PointerBackTracer.RescanTime;
+            //// this.UpdateInterval = PointerBackTracer.RescanTime;
 
             this.LevelPointers = new LevelPointers();
         }
@@ -75,7 +69,7 @@
         /// Called when the scan updates.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        protected void OnUpdate(CancellationToken cancellationToken)
         {
             Int64 processedPointers = 0;
 
@@ -103,7 +97,7 @@
                         // Update scan progress
                         if (Interlocked.Increment(ref processedPointers) % 1024 == 0)
                         {
-                            this.UpdateProgress((processedPointers / unchecked((UInt32)this.PointerDepth)).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
+                            //// this.UpdateProgress((processedPointers / unchecked((UInt32)this.PointerDepth)).ToInt32(), this.HeapPointers.Count + this.ModulePointers.Count, canFinalize: false);
                         }
                     });
 
@@ -128,14 +122,14 @@
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected override void OnEnd()
+        protected void OnEnd()
         {
             this.LevelPointersCallback?.Invoke(this.LevelPointers);
 
             this.HeapPointers = null;
             this.LevelPointers = null;
 
-            this.UpdateProgress(ScheduledTask.MaximumProgress);
+            //// this.UpdateProgress(ScheduledTask.MaximumProgress);
         }
 
         /// <summary>

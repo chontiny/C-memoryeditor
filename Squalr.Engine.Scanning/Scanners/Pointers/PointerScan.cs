@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
-    using Squalr.Engine.TaskScheduler;
     using System;
     using System.Linq;
     using System.Threading;
@@ -9,23 +8,20 @@
     /// <summary>
     /// Implements an algorithm which finds all possible paths between pointer levels, once they are discovered by the back trace algorithm.
     /// </summary>
-    public class PointerScan : ScheduledTask
+    public class PointerScan
     {
         /// <summary>
         /// Creates an instance of the <see cref="PointerScan" /> class.
         /// </summary>
         /// <param name="targetAddress">The target address of the poitner scan.</param>
-        public PointerScan() : base(
-            taskName: "Pointer Scan",
-            isRepeated: false,
-            trackProgress: true)
+        public PointerScan()
         {
             this.PointerBackTracer = new PointerBackTracer(this.SetLevelPointers);
 
             this.PointerDepth = 1;
             this.PointerRadius = 1024;
 
-            this.Dependencies.Enqueue(PointerBackTracer);
+            ////  this.Dependencies.Enqueue(PointerBackTracer);
         }
 
         /// <summary>
@@ -94,13 +90,13 @@
         /// <summary>
         /// Called when the scheduled task starts.
         /// </summary>
-        protected override void OnBegin()
+        protected void OnBegin()
         {
             this.ScannedPointers = new ScannedPointers();
 
             if (this.LevelPointers == null || this.LevelPointers.Count <= 0)
             {
-                this.Cancel();
+                //// this.Cancel();
             }
         }
 
@@ -108,7 +104,7 @@
         /// Called when the scan updates.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        protected void OnUpdate(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
             Int32 processedPointerRoots = 0;
@@ -138,7 +134,7 @@
                 // Update scan progress
                 if (Interlocked.Increment(ref processedPointerRoots) % 32 == 0)
                 {
-                    this.UpdateProgress(processedPointerRoots, this.ScannedPointers.PointerRoots.Count(), canFinalize: false);
+                    ////  this.UpdateProgress(processedPointerRoots, this.ScannedPointers.PointerRoots.Count(), canFinalize: false);
                 }
             }
 
@@ -173,7 +169,7 @@
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected override void OnEnd()
+        protected void OnEnd()
         {
             throw new NotImplementedException(); ////PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.ScannedPointers;
 

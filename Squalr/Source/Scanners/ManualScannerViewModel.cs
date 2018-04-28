@@ -1,10 +1,10 @@
-﻿namespace Squalr.Source.Scanners
+﻿namespace Squalr.Source.Scanning
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Scanning.Constraints;
     using Squalr.Engine.Scanning.Scanners;
+    using Squalr.Engine.Scanning.Scanners.Constraints;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils.DataStructures;

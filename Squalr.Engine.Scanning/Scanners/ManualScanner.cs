@@ -2,7 +2,7 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Scanning.Constraints;
+    using Squalr.Engine.Scanning.Scanners.Constraints;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;

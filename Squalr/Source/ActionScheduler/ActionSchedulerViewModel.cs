@@ -1,18 +1,16 @@
 ﻿namespace Squalr.Source.ActionScheduler
 {
-    using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine.TaskScheduler;
     using Squalr.Source.Docking;
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows.Input;
 
     /// <summary>
     /// Class to schedule tasks that are executed.
     /// </summary>
-    public class ActionSchedulerViewModel : ToolViewModel, ITaskManagerObserver
+    public class ActionSchedulerViewModel : ToolViewModel
     {
         /// <summary>
         /// The interval between scheduler calls, in milliseconds.
@@ -31,9 +29,7 @@
         /// </summary>
         private ActionSchedulerViewModel() : base("Action Scheduler")
         {
-            this.CancelTaskCommand = new RelayCommand<ScheduledTask>(task => task.Cancel(), (task) => true);
-
-            Scheduler.GetInstance().Subscribe(this);
+            //// this.CancelTaskCommand = new RelayCommand<Task>(task => task.Cancel(), (task) => true);
         }
 
         /// <summary>
@@ -44,11 +40,11 @@
         /// <summary>
         /// Gets the tasks that are actively running.
         /// </summary>
-        public IEnumerable<ScheduledTask> ActiveTasks
+        public IEnumerable<Task> ActiveTasks
         {
             get
             {
-                return Scheduler.GetInstance().Actions.Select(x => x).Where(x => !x.IsTaskComplete);
+                return null; // return Scheduler.GetInstance().Actions.Select(x => x).Where(x => !x.IsTaskComplete);
             }
         }
 

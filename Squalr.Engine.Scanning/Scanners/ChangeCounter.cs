@@ -3,23 +3,19 @@
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
-    using Squalr.Engine.TaskScheduler;
     using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class ChangeCounter : ScheduledTask
+    public class ChangeCounter
     {
         /// <summary>
         /// The number of scans completed.
         /// </summary>
         private Int32 scanCount;
 
-        public ChangeCounter(Action updateScanCount) : base(
-            taskName: "Change Counter",
-            isRepeated: true,
-            trackProgress: true)
+        public ChangeCounter(Action updateScanCount)
         {
             this.UpdateScanCount = updateScanCount;
             this.ProgressLock = new Object();
@@ -38,7 +34,7 @@
             private set
             {
                 this.scanCount = value;
-                this.RaisePropertyChanged(nameof(this.ScanCount));
+                //// this.RaisePropertyChanged(nameof(this.ScanCount));
             }
         }
 
@@ -67,13 +63,13 @@
 
         public void Stop()
         {
-            this.EndUpdateLoop();
+            ////   this.EndUpdateLoop();
         }
 
-        protected override void OnBegin()
+        protected void OnBegin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone(this.TaskName);
+            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone("Change Counter");
             this.Snapshot.LabelDataType = DataType.UInt16;
 
             if (this.Snapshot == null)
@@ -91,7 +87,7 @@
         /// Called when the scan updates.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        protected void OnUpdate(CancellationToken cancellationToken)
         {
             Int32 processedPages = 0;
 
@@ -123,7 +119,7 @@
                     lock (this.ProgressLock)
                     {
                         processedPages++;
-                        this.UpdateProgress(processedPages, snapshot.RegionCount, canFinalize: false);
+                        //// this.UpdateProgress(processedPages, snapshot.RegionCount, canFinalize: false);
                     }
                 });
 
@@ -134,7 +130,7 @@
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected override void OnEnd()
+        protected void OnEnd()
         {
             SnapshotManager.SaveSnapshot(this.Snapshot);
             this.Snapshot = null;

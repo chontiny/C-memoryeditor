@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Scanning.Constraints
+﻿namespace Squalr.Engine.Scanning.Scanners.Constraints
 {
     using System;
     using System.ComponentModel;

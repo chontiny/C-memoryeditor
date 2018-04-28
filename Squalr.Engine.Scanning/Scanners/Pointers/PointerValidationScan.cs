@@ -3,7 +3,6 @@
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
-    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Threading;
@@ -11,16 +10,13 @@
     /// <summary>
     /// Enumerates existing discovered pointers to produce a set of validated discovered pointers.
     /// </summary>
-    public class PointerValidationScan : ScheduledTask
+    public class PointerValidationScan
     {
         /// <summary>
         /// Creates an instance of the <see cref="PointerValidationScan" /> class.
         /// </summary>
         /// <param name="targetAddress">The target address of the poitner scan.</param>
-        public PointerValidationScan() : base(
-            taskName: "Pointer Validation",
-            isRepeated: false,
-            trackProgress: true)
+        public PointerValidationScan()
         {
         }
 
@@ -32,7 +28,7 @@
         /// <summary>
         /// Called when the scheduled task starts.
         /// </summary>
-        protected override void OnBegin()
+        protected void OnBegin()
         {
             throw new NotImplementedException(); ////this.DiscoveredPointers = PointerScanResultsViewModel.GetInstance().DiscoveredPointers;
         }
@@ -41,7 +37,7 @@
         /// Called when the scan updates.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        protected void OnUpdate(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -63,7 +59,7 @@
                 // Update scan progress
                 if (Interlocked.Increment(ref processedPointers) % 1024 == 0)
                 {
-                    this.UpdateProgress(processedPointers, this.DiscoveredPointers.Count.ToInt32(), canFinalize: false);
+                    //// this.UpdateProgress(processedPointers, this.DiscoveredPointers.Count.ToInt32(), canFinalize: false);
                 }
             }
 
@@ -73,7 +69,7 @@
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected override void OnEnd()
+        protected void OnEnd()
         {
             throw new NotImplementedException(); ////PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.DiscoveredPointers;
         }

@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.Scanners
+﻿namespace Squalr.Source.Scanning
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Scanning.Scanners;
@@ -61,7 +61,7 @@
 
         private void StartScan()
         {
-            this.ChangeCounterScan.Start();
+            //// this.ChangeCounterScan.Start();
         }
 
         private void StopScan()
