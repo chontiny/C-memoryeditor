@@ -23,7 +23,7 @@
         /// <param name="scanConstraints">The set of constraints to use for the element comparisons.</param>
         public unsafe SnapshotElementVectorComparer(
             SnapshotRegion region,
-            ScanConstraintManager scanConstraints)
+            ScanConstraintCollection scanConstraints)
         {
             this.Region = region;
             this.VectorSize = SystemInfo.VectorSize;
@@ -451,7 +451,7 @@
         /// </summary>
         /// <param name="scanConstraints">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
-        private void SetCompareAction(ScanConstraintManager scanConstraints)
+        private void SetCompareAction(ScanConstraintCollection scanConstraints)
         {
             foreach (ScanConstraint scanConstraint in scanConstraints)
             {

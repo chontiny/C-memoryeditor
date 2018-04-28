@@ -95,47 +95,40 @@
         {
             Int32 processedPages = 0;
 
-            ValueCollector valueCollectorModel = new ValueCollector(defaultSnapshot: this.Snapshot, callback: (snapshot) =>
-            {
-                Parallel.ForEach(
-                    this.Snapshot.OptimizedSnapshotRegions,
-                    ParallelSettings.ParallelSettingsFastest,
-                    (region) =>
+            CancellationTokenSource cancellationTokenSource;
+            Snapshot snapshot = ValueCollector.CollectValues(this.Snapshot, DataType.Int32, null, out cancellationTokenSource).Result;
+
+            Parallel.ForEach(
+                snapshot.OptimizedSnapshotRegions,
+                ParallelSettings.ParallelSettingsFastest,
+                (region) =>
+                {
+                    if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
                     {
-                        if (!region.ReadGroup.CanCompare(hasRelativeConstraint: true))
+                        return;
+                    }
+
+                    for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.ValuesOnly, null); enumerator.MoveNext();)
+                    {
+                        SnapshotElementComparer element = enumerator.Current;
+
+                        // Perform the comparison based on the current scan constraint
+                        if (element.Compare())
                         {
-                            return;
+                            element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
                         }
+                    }
 
-                        for (IEnumerator<SnapshotElementComparer> enumerator = region.IterateComparer(SnapshotElementComparer.PointerIncrementMode.ValuesOnly, null); enumerator.MoveNext();)
-                        {
-                            SnapshotElementComparer element = enumerator.Current;
+                    // Update progress
+                    lock (this.ProgressLock)
+                    {
+                        processedPages++;
+                        this.UpdateProgress(processedPages, snapshot.RegionCount, canFinalize: false);
+                    }
+                });
 
-                            // Perform the comparison based on the current scan constraint
-                            if (element.Compare())
-                            {
-                                element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
-                            }
-                        }
-
-                        // Update progress
-                        lock (this.ProgressLock)
-                        {
-                            processedPages++;
-                            this.UpdateProgress(processedPages, this.Snapshot.RegionCount, canFinalize: false);
-                        }
-                    });
-
-                this.ScanCount++;
-
-                this.UpdateScanCount?.Invoke();
-            });
-
-            // TODO: Figure out a better way
-            while (!valueCollectorModel.IsTaskComplete)
-            {
-                Thread.Sleep(100);
-            }
+            this.ScanCount++;
+            this.UpdateScanCount?.Invoke();
         }
 
         /// <summary>

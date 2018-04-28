@@ -4,8 +4,6 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine;
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Memory;
-    using Squalr.Engine.Memory.Clr;
     using Squalr.Engine.Scripting;
     using Squalr.Properties;
     using Squalr.Source.ChangeLog;
@@ -45,11 +43,6 @@
 
 
             Logger.Log(LogLevel.Info, "Squalr developer tools started");
-
-            DotNetObjectCollector.GetInstance().Start();
-            AddressResolver.GetInstance().Start();
-
-            Logger.Log(LogLevel.Info, "Background services started");
 
             // The Engine is .NET Standard and there are no compiler libraries. Squalr compensates for this here by passing in a functional full framework compiler.
             Compiler.OverrideCompiler(new CodeDomCompiler());

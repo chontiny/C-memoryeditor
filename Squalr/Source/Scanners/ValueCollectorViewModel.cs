@@ -2,7 +2,9 @@
 {
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Scanning.Scanners;
+    using Squalr.Engine.Scanning.Snapshots;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -25,7 +27,6 @@
         /// </summary>
         public ValueCollectorViewModel()
         {
-            this.ValueCollector = new ValueCollector();
             this.CollectValuesCommand = new RelayCommand(() => Task.Run(() => this.CollectValues()), () => true);
         }
 
@@ -33,11 +34,6 @@
         /// Gets the command to collect values.
         /// </summary>
         public ICommand CollectValuesCommand { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the model for the value collector scan.
-        /// </summary>
-        private ValueCollector ValueCollector { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ValueCollectorViewModel"/> class.
@@ -53,7 +49,13 @@
         /// </summary>
         private void CollectValues()
         {
-            this.ValueCollector.Start();
+            SnapshotManager.SaveSnapshot(
+                ValueCollector.CollectValues(SnapshotManager.GetSnapshot(Squalr.Engine.Snapshots.Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
+                    DataType.Int32,
+                    null,
+                    out _
+                ).Result
+            );
         }
     }
     //// End class

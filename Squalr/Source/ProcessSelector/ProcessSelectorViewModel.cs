@@ -48,9 +48,9 @@
             this.IconSource = Images.SelectProcess;
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<ProcessDecorator>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
-
             this.detachProcess = new ProcessDecorator("-- Detach from Process --");
-            ProcessSelectorTask processSelectorTask = new ProcessSelectorTask(this.RefreshProcessList);
+
+            this.StartAutomaticProcessListRefresh();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
@@ -192,14 +192,6 @@
         }
 
         /// <summary>
-        /// Refreshes the process list.
-        /// </summary>
-        private void RefreshProcessList()
-        {
-            this.ProcessList = ProcessInfo.Default.GetProcesses().Select(process => new ProcessDecorator(process));
-        }
-
-        /// <summary>
         /// Makes the target process selection.
         /// </summary>
         /// <param name="process">The process being selected.</param>
@@ -207,6 +199,26 @@
         {
             this.SelectedProcess = process;
             this.IsVisible = false;
+        }
+
+        private void StartAutomaticProcessListRefresh()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    this.RefreshProcessList();
+                    await Task.Delay(5000);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Refreshes the process list.
+        /// </summary>
+        private void RefreshProcessList()
+        {
+            this.ProcessList = ProcessInfo.Default.GetProcesses().Select(process => new ProcessDecorator(process));
         }
     }
     //// End class

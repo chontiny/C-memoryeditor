@@ -2,18 +2,17 @@
 {
     using Squalr.Engine.Logging;
     using Squalr.Engine.Processes.Windows.Native;
-    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Drawing;
-    using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// A class responsible for collecting all running processes on a Windows system.
     /// </summary>
-    internal class WindowsProcessInfo : ScheduledTask, IProcessInfo
+    internal class WindowsProcessInfo : IProcessInfo
     {
         /// <summary>
         /// Thread safe collection of listeners.
@@ -28,14 +27,11 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="WindowsProcessInfo" /> class.
         /// </summary>
-        public WindowsProcessInfo() : base(
-            taskName: "Check Process Alive",
-            isRepeated: true,
-            trackProgress: false)
+        public WindowsProcessInfo()
         {
             this.processListeners = new ConcurrentHashSet<IProcessObserver>();
 
-            this.Start();
+            this.ListenForProcessDeath();
         }
 
         /// <summary>
@@ -406,35 +402,28 @@
         }
 
         /// <summary>
-        /// Called when the scheduled task starts.
+        /// Listens for process death and detaches from the process if it closes.
         /// </summary>
-        protected override void OnBegin()
+        private void ListenForProcessDeath()
         {
-        }
-
-        /// <summary>
-        /// Called when the scheduled task is updated.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
-        {
-            try
+            Task.Run(async () =>
             {
-                if (this.OpenedProcess?.HasExited ?? false)
+                while (true)
                 {
-                    this.OpenedProcess = null;
-                }
-            }
-            catch
-            {
-            }
-        }
+                    try
+                    {
+                        if (this.OpenedProcess?.HasExited ?? false)
+                        {
+                            this.OpenedProcess = null;
+                        }
+                    }
+                    catch
+                    {
+                    }
 
-        /// <summary>
-        /// Called when the repeated task completes.
-        /// </summary>
-        protected override void OnEnd()
-        {
+                    await Task.Delay(200);
+                }
+            });
         }
     }
     //// End class

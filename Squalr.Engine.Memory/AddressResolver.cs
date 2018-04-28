@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Engine.Memory
 {
     using Squalr.Engine.Memory.Clr;
-    using Squalr.Engine.TaskScheduler;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -11,7 +10,7 @@
     /// <summary>
     /// Singleton class to resolve the address of managed objects in an external process.
     /// </summary>
-    public class AddressResolver : ScheduledTask
+    public class AddressResolver
     {
         /// <summary>
         /// Time in ms of how often to poll and resolve addresses initially.
@@ -33,7 +32,7 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="AddressResolver" /> class from being created.
         /// </summary>
-        private AddressResolver() : base("Address Resolver", isRepeated: true, trackProgress: false)
+        private AddressResolver()
         {
             this.DotNetNameMap = new Dictionary<String, DotNetObject>();
         }
@@ -131,16 +130,15 @@
         /// <summary>
         /// Begins polling the external process for information needed to resolve addresses.
         /// </summary>
-        protected override void OnBegin()
+        protected void OnBegin()
         {
-            this.UpdateInterval = AddressResolver.ResolveIntervalInitial;
         }
 
         /// <summary>
         /// Polls the external process, gathering object information from the managed heap.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        protected void OnUpdate(CancellationToken cancellationToken)
         {
             Dictionary<String, DotNetObject> nameMap = new Dictionary<String, DotNetObject>();
             List<DotNetObject> objectTrees = DotNetObjectCollector.GetInstance().ObjectTrees;
@@ -152,14 +150,14 @@
             // After we have successfully grabbed information from the process, slow the update interval
             if (objectTrees != null)
             {
-                this.UpdateInterval = AddressResolver.ResolveInterval;
+                //// this.UpdateInterval = AddressResolver.ResolveInterval;
             }
         }
 
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected override void OnEnd()
+        protected void OnEnd()
         {
 
         }

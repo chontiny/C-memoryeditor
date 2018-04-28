@@ -19,7 +19,7 @@
         public ReadGroup(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
         {
             this.Alignment = Settings.Default.Alignment;
-            throw new NotImplementedException(); //// this.ElementDataType = ScanResultsViewModel.GetInstance().ActiveType;
+            this.ElementDataType = DataType.Int32; // ScanResultsViewModel.GetInstance().ActiveType;
 
             this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, regionSize) };
         }

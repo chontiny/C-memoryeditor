@@ -15,14 +15,12 @@
         /// Initializes a new instance of the <see cref="SnapshotElementComparer" /> class.
         /// </summary>
         /// <param name="region">The parent region that contains this element.</param>
-        /// <param name="elementIndex">The index of the element to begin pointing to.</param>
-        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
-        /// <param name="compareActionValue">The value to use for the element quick action.</param>
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
+        /// <param name="scanConstraintCollection">The constraints to use for the element comparisons.</param>
         public unsafe SnapshotElementComparer(
             SnapshotRegion region,
             PointerIncrementMode pointerIncrementMode,
-            ScanConstraintManager scanConstraintManager)
+            ScanConstraintCollection scanConstraintCollection)
         {
             this.Region = region;
 
@@ -33,7 +31,7 @@
             this.InitializePointers();
             this.SetConstraintFunctions();
             this.SetPointerFunction(pointerIncrementMode);
-            this.SetCompareAction(scanConstraintManager);
+            this.SetCompareConstraints(scanConstraintCollection);
         }
 
         /// <summary>
@@ -593,7 +591,7 @@
         /// </summary>
         /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
         /// <param name="compareActionValue">The value to use for the element quick action.</param>
-        private void SetCompareAction(ScanConstraintManager scanConstraintManager)
+        private void SetCompareConstraints(ScanConstraintCollection scanConstraintManager)
         {
             foreach (ScanConstraint scanConstraint in scanConstraintManager)
             {

@@ -5,6 +5,8 @@
     using Squalr.Engine.Logging;
     using Squalr.Engine.Scanning.Constraints;
     using Squalr.Engine.Scanning.Scanners;
+    using Squalr.Engine.Scanning.Snapshots;
+    using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
     using Squalr.Source.Results;
@@ -32,9 +34,9 @@
         private ScanConstraint currentScanConstraint;
 
         /// <summary>
-        /// Manager for all active scan constraints.
+        /// Collection of all active scan constraints.
         /// </summary>
-        private ScanConstraintManager scanConstraintManager;
+        private ScanConstraintCollection scanConstraintCollection;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="ManualScannerViewModel" /> class from being created.
@@ -64,9 +66,8 @@
             this.EditConstraintCommand = new RelayCommand<ScanConstraint>((ScanConstraint) => this.EditConstraint(ScanConstraint), (ScanConstraint) => true);
             this.ClearConstraintsCommand = new RelayCommand(() => this.ClearConstraints(), () => true);
             this.CurrentScanConstraint = new ScanConstraint(ScanConstraint.ConstraintType.Equal);
-            this.ManualScan = new ManualScan();
-            this.ScanConstraintManager = new ScanConstraintManager();
-            this.ScanConstraintManager.SetElementType(DataType.Int32);
+            this.ScanConstraintCollection = new ScanConstraintCollection();
+            this.ScanConstraintCollection.SetElementType(DataType.Int32);
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
             DockingViewModel.GetInstance().RegisterViewModel(this);
@@ -169,24 +170,24 @@
         {
             get
             {
-                return this.ScanConstraintManager.ValueConstraints;
+                return this.ScanConstraintCollection.ValueConstraints;
             }
         }
 
         /// <summary>
-        /// Gets or sets the scan constraint manager.
+        /// Gets or sets the collection of all active scan constraints.
         /// </summary>
-        public ScanConstraintManager ScanConstraintManager
+        public ScanConstraintCollection ScanConstraintCollection
         {
             get
             {
-                return this.scanConstraintManager;
+                return this.scanConstraintCollection;
             }
 
             set
             {
-                this.scanConstraintManager = value;
-                this.RaisePropertyChanged(nameof(this.ScanConstraintManager));
+                this.scanConstraintCollection = value;
+                this.RaisePropertyChanged(nameof(this.ScanConstraintCollection));
             }
         }
 
@@ -242,11 +243,6 @@
         }
 
         /// <summary>
-        /// Gets or sets the manual scanner model.
-        /// </summary>
-        private ManualScan ManualScan { get; set; }
-
-        /// <summary>
         /// Gets a singleton instance of the <see cref="ManualScannerViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -262,11 +258,11 @@
         public void Update(DataType activeType)
         {
             // Create a temporary manager to update our current constraint
-            ScanConstraintManager manager = new ScanConstraintManager();
-            manager.AddConstraint(this.CurrentScanConstraint);
-            manager.SetElementType(activeType);
+            ScanConstraintCollection scanConstraintCollection = new ScanConstraintCollection();
+            scanConstraintCollection.AddConstraint(this.CurrentScanConstraint);
+            scanConstraintCollection.SetElementType(activeType);
 
-            this.ScanConstraintManager.SetElementType(activeType);
+            this.ScanConstraintCollection.SetElementType(activeType);
             this.UpdateAllProperties();
         }
 
@@ -276,7 +272,7 @@
         private void StartScan()
         {
             // Create a constraint manager that includes the current active constraint
-            ScanConstraintManager allScanConstraints = this.ScanConstraintManager.Clone();
+            ScanConstraintCollection allScanConstraints = this.ScanConstraintCollection.Clone();
             allScanConstraints.AddConstraint(this.CurrentScanConstraint);
 
             if (!allScanConstraints.IsValid())
@@ -285,8 +281,14 @@
                 return;
             }
 
-            ManualScan.SetScanConstraintManager(allScanConstraints);
-            ManualScan.Start();
+            SnapshotManager.SaveSnapshot(
+                ManualScanner.Scan(
+                    SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
+                    DataType.Int32,
+                    allScanConstraints,
+                    null,
+                    out _).Result
+                );
         }
 
         /// <summary>
@@ -294,7 +296,7 @@
         /// </summary>
         private void AddCurrentConstraint()
         {
-            this.ScanConstraintManager.AddConstraint(this.CurrentScanConstraint);
+            this.ScanConstraintCollection.AddConstraint(this.CurrentScanConstraint);
             this.CurrentScanConstraint = new ScanConstraint(this.CurrentScanConstraint.Constraint, this.CurrentScanConstraint.ConstraintValue);
             this.UpdateAllProperties();
         }
@@ -315,7 +317,7 @@
         /// <param name="scanConstraint">The constraint to edit.</param>
         private void EditConstraint(ScanConstraint scanConstraint)
         {
-            this.ScanConstraintManager.RemoveConstraints(scanConstraint);
+            this.ScanConstraintCollection.RemoveConstraints(scanConstraint);
             this.CurrentScanConstraint = scanConstraint;
             this.UpdateAllProperties();
         }
@@ -326,7 +328,7 @@
         /// <param name="scanConstraint">The constraint to remove.</param>
         private void RemoveConstraint(ScanConstraint scanConstraint)
         {
-            this.ScanConstraintManager.RemoveConstraints(scanConstraint);
+            this.ScanConstraintCollection.RemoveConstraints(scanConstraint);
             this.UpdateAllProperties();
         }
 
@@ -335,7 +337,7 @@
         /// </summary>
         private void ClearConstraints()
         {
-            this.ScanConstraintManager.ClearConstraints();
+            this.ScanConstraintCollection.ClearConstraints();
             this.UpdateAllProperties();
         }
 

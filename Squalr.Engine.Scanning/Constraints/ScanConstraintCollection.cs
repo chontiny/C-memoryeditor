@@ -9,12 +9,12 @@
     /// <summary>
     /// Class for storing a collection of constraints to be used in a scan that applies more than one constraint per update.
     /// </summary>
-    public class ScanConstraintManager : IEnumerable
+    public class ScanConstraintCollection : IEnumerable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScanConstraintManager" /> class.
+        /// Initializes a new instance of the <see cref="ScanConstraintCollection" /> class.
         /// </summary>
-        public ScanConstraintManager()
+        public ScanConstraintCollection()
         {
             this.ValueConstraints = new FullyObservableCollection<ScanConstraint>();
         }
@@ -46,13 +46,13 @@
         /// Creates a shallow clone of the scan constraint manager.
         /// </summary>
         /// <returns>A shallow clone of the scan constraint manager.</returns>
-        public ScanConstraintManager Clone()
+        public ScanConstraintCollection Clone()
         {
-            ScanConstraintManager scanConstraintManager = new ScanConstraintManager();
-            scanConstraintManager.SetElementType(this.ElementType);
-            this.ValueConstraints.ForEach(constraint => scanConstraintManager.AddConstraint(constraint.Clone()));
+            ScanConstraintCollection scanConstraintCollection = new ScanConstraintCollection();
+            scanConstraintCollection.SetElementType(this.ElementType);
+            this.ValueConstraints.ForEach(constraint => scanConstraintCollection.AddConstraint(constraint.Clone()));
 
-            return scanConstraintManager;
+            return scanConstraintCollection;
         }
 
         /// <summary>
