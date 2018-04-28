@@ -3,7 +3,6 @@
     using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Snapshots;
-    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Prefilters;
     using System;
     using System.Collections.Generic;
@@ -161,8 +160,8 @@
             MemoryProtectionEnum excludedPageFlags = 0;
             MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image;
 
-            IntPtr startAddress = IntPtr.Zero;
-            IntPtr endAddress = Query.Default.GetMaxUsermodeAddress().ToIntPtr();
+            UInt64 startAddress = 0;
+            UInt64 endAddress = Query.Default.GetMaxUsermodeAddress();
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();
             IEnumerable<NormalizedRegion> virtualPages = Query.Default.GetVirtualPages(
@@ -190,17 +189,18 @@
             MemoryProtectionEnum excludedPageFlags = SnapshotManager.GetExcludedProtectionSettings();
             MemoryTypeEnum allowedTypeFlags = SnapshotManager.GetAllowedTypeSettings();
 
-            IntPtr startAddress, endAddress;
+            UInt64 startAddress;
+            UInt64 endAddress;
 
             if (Settings.Default.IsUserMode)
             {
-                startAddress = IntPtr.Zero;
-                endAddress = Query.Default.GetMaxUsermodeAddress().ToIntPtr();
+                startAddress = 0;
+                endAddress = Query.Default.GetMaxUsermodeAddress();
             }
             else
             {
-                startAddress = Settings.Default.StartAddress.ToIntPtr();
-                endAddress = Settings.Default.EndAddress.ToIntPtr();
+                startAddress = Settings.Default.StartAddress;
+                endAddress = Settings.Default.EndAddress;
             }
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();

@@ -27,7 +27,7 @@
         /// Resolves the address of this object.
         /// </summary>
         /// <returns>The base address of this object.</returns>
-        protected override IntPtr ResolveAddress()
+        protected override UInt64 ResolveAddress()
         {
             return AddressResolver.GetInstance().ResolveDotNetObject(this.Identifier);
         }

@@ -4,8 +4,8 @@
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Utils;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Controls;
-    using Squalr.Source.Utils.Extensions;
     using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.ComponentModel;
@@ -31,7 +31,7 @@
         /// The base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
         [Browsable(false)]
-        private IntPtr moduleOffset;
+        private UInt64 moduleOffset;
 
         [Browsable(false)]
         private Byte[] precedingBytes;
@@ -42,11 +42,11 @@
         [Browsable(false)]
         private Byte[] followingBytes;
 
-        public InstructionItem() : this(IntPtr.Zero, null, null, null)
+        public InstructionItem() : this(0, null, null, null)
         {
         }
 
-        public InstructionItem(IntPtr BaseAddress, String moduleName, String instruction, Byte[] instructionBytes) : base(DataType.ArrayOfBytes, "New Instruction")
+        public InstructionItem(UInt64 BaseAddress, String moduleName, String instruction, Byte[] instructionBytes) : base(DataType.ArrayOfBytes, "New Instruction")
         {
             this.ModuleOffset = BaseAddress;
             this.ModuleName = moduleName;
@@ -249,7 +249,7 @@
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(AddressConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Offset"), Description("The offset from the module address. If no module address, then this is the base address.")]
-        public IntPtr ModuleOffset
+        public UInt64 ModuleOffset
         {
             get
             {
@@ -293,7 +293,7 @@
         /// Resolves the address of this instruction.
         /// </summary>
         /// <returns>The base address of this instruction.</returns>
-        protected override IntPtr ResolveAddress()
+        protected override UInt64 ResolveAddress()
         {
             return AddressResolver.GetInstance().ResolveModule(this.ModuleName).Add(this.ModuleOffset);
         }

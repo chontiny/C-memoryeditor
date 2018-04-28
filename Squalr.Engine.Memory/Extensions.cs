@@ -12,7 +12,7 @@ namespace Squalr.Engine.Memory
         /// <param name="address">The address to read from.</param>
         /// <param name="success">Whether or not the read succeeded.</param>
         /// <returns>The value read from memory.</returns>
-        public static Object Read(this IMemoryReader memory, DataType elementType, IntPtr address, out Boolean success)
+        public static Object Read(this IMemoryReader memory, DataType elementType, UInt64 address, out Boolean success)
         {
             return Reader.Default.Read(elementType, address, out success);
         }
@@ -24,7 +24,7 @@ namespace Squalr.Engine.Memory
         /// <param name="address">The address to read from.</param>
         /// <param name="success">Whether or not the read succeeded.</param>
         /// <returns>The value read from memory.</returns>
-        public static T Read<T>(this IMemoryReader memory, IntPtr address, out Boolean success)
+        public static T Read<T>(this IMemoryReader memory, UInt64 address, out Boolean success)
         {
             return Reader.Default.Read<T>(address, out success);
         }

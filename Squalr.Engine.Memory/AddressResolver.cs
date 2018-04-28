@@ -66,7 +66,7 @@
 
             moduleName = containingModule?.Name ?? String.Empty;
 
-            return containingModule == null ? address : address - containingModule.BaseAddress.ToUInt64();
+            return containingModule == null ? address : address - containingModule.BaseAddress;
         }
 
         /// <summary>
@@ -74,9 +74,9 @@
         /// </summary>
         /// <param name="identifier">The module identifier, or name.</param>
         /// <returns>The base address of the module.</returns>
-        public IntPtr ResolveModule(String identifier)
+        public UInt64 ResolveModule(String identifier)
         {
-            IntPtr result = IntPtr.Zero;
+            UInt64 result = 0;
 
             identifier = identifier?.RemoveSuffixes(true, ".exe", ".dll");
             IEnumerable<NormalizedModule> modules = Query.Default.GetModules()
@@ -109,9 +109,9 @@
         /// </summary>
         /// <param name="identifier">The .Net object identifier, which is the full namespace path to the object.</param>
         /// <returns>The base address of the .Net object.</returns>
-        public IntPtr ResolveDotNetObject(String identifier)
+        public UInt64 ResolveDotNetObject(String identifier)
         {
-            IntPtr result = IntPtr.Zero;
+            UInt64 result = 0;
             DotNetObject dotNetObject;
 
             if (identifier == null)
@@ -121,7 +121,7 @@
 
             if (this.DotNetNameMap.TryGetValue(identifier, out dotNetObject))
             {
-                result = dotNetObject.ObjectReference.ToIntPtr();
+                result = dotNetObject.ObjectReference;
             }
 
             return result;

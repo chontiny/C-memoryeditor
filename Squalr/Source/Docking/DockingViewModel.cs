@@ -2,7 +2,7 @@
 {
     using GalaSoft.MvvmLight;
     using Squalr.Engine.Logging;
-    using Squalr.Source.Utils.Extensions;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Theme;
     using Squalr.Theme.Layout.Serialization;
     using System;

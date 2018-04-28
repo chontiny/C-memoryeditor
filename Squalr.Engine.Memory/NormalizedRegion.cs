@@ -26,7 +26,7 @@
         /// </summary>
         /// <param name="baseAddress">The base address of the region.</param>
         /// <param name="regionSize">The size of the region.</param>
-        public NormalizedRegion(IntPtr baseAddress, Int32 regionSize)
+        public NormalizedRegion(UInt64 baseAddress, Int32 regionSize)
         {
             this.Alignment = 1;
             this.BaseAddress = baseAddress;
@@ -36,7 +36,7 @@
         /// <summary>
         /// Gets or sets the base address of the region.
         /// </summary>
-        public IntPtr BaseAddress { get; set; }
+        public UInt64 BaseAddress { get; set; }
 
         /// <summary>
         /// Gets or sets the size of the region.
@@ -69,7 +69,7 @@
         /// <summary>
         /// Gets or sets the end address of the region.
         /// </summary>
-        public IntPtr EndAddress
+        public UInt64 EndAddress
         {
             get
             {
@@ -96,7 +96,7 @@
             {
                 this.alignment = value.Clamp(1, Int32.MaxValue);
 
-                if (this.BaseAddress.Mod(this.alignment).ToUInt64() == 0)
+                if (this.BaseAddress.Mod(this.alignment) == 0)
                 {
                     return;
                 }
@@ -104,7 +104,7 @@
                 // Enforce alignment constraint on base address
                 unchecked
                 {
-                    IntPtr endAddress = this.EndAddress;
+                    UInt64 endAddress = this.EndAddress;
                     this.BaseAddress = this.BaseAddress.Subtract(this.BaseAddress.Mod(this.alignment), wrapAround: false);
                     this.BaseAddress = this.BaseAddress.Add(this.alignment);
                     this.EndAddress = endAddress;
@@ -120,7 +120,7 @@
         /// <returns>The result of the comparison.</returns>
         public static Boolean operator >(NormalizedRegion first, NormalizedRegion second)
         {
-            return first.BaseAddress.ToUInt64() > second.BaseAddress.ToUInt64();
+            return first.BaseAddress > second.BaseAddress;
         }
 
         /// <summary>
@@ -131,7 +131,7 @@
         /// <returns>The result of the comparison.</returns>
         public static Boolean operator <(NormalizedRegion first, NormalizedRegion second)
         {
-            return first.BaseAddress.ToUInt64() < second.BaseAddress.ToUInt64();
+            return first.BaseAddress < second.BaseAddress;
         }
 
         /// <summary>
@@ -142,7 +142,7 @@
         /// <returns>The result of the comparison.</returns>
         public static Boolean operator >=(NormalizedRegion first, NormalizedRegion second)
         {
-            return first.BaseAddress.ToUInt64() >= second.BaseAddress.ToUInt64();
+            return first.BaseAddress >= second.BaseAddress;
         }
 
         /// <summary>
@@ -153,7 +153,7 @@
         /// <returns>The result of the comparison.</returns>
         public static Boolean operator <=(NormalizedRegion first, NormalizedRegion second)
         {
-            return first.BaseAddress.ToUInt64() <= second.BaseAddress.ToUInt64();
+            return first.BaseAddress <= second.BaseAddress;
         }
 
         /// <summary>
@@ -163,7 +163,7 @@
         /// <returns>True if the address is contained.</returns>
         public virtual Boolean ContainsAddress(UInt64 address)
         {
-            if (address >= this.BaseAddress.ToUInt64() && address <= this.EndAddress.ToUInt64())
+            if (address >= this.BaseAddress && address <= this.EndAddress)
             {
                 return true;
             }
@@ -221,7 +221,7 @@
             }
 
             // First, sort by start address
-            IList<NormalizedRegion> sortedRegions = regions.OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
+            IList<NormalizedRegion> sortedRegions = regions.OrderBy(x => x.BaseAddress).ToList();
 
             // Create and initialize the stack with the first region
             Stack<NormalizedRegion> combinedRegions = new Stack<NormalizedRegion>();
@@ -232,24 +232,24 @@
             {
                 NormalizedRegion top = combinedRegions.Peek();
 
-                if (top.EndAddress.ToUInt64() < sortedRegions[index].BaseAddress.ToUInt64())
+                if (top.EndAddress < sortedRegions[index].BaseAddress)
                 {
                     // If the interval does not overlap, put it on the top of the stack
                     combinedRegions.Push(sortedRegions[index]);
                 }
-                else if (top.EndAddress.ToUInt64() == sortedRegions[index].BaseAddress.ToUInt64())
+                else if (top.EndAddress == sortedRegions[index].BaseAddress)
                 {
                     // The regions are adjacent; merge them
                     top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
                 }
-                else if (top.EndAddress.ToUInt64() <= sortedRegions[index].EndAddress.ToUInt64())
+                else if (top.EndAddress <= sortedRegions[index].EndAddress)
                 {
                     // The regions overlap
                     top.RegionSize = sortedRegions[index].EndAddress.Subtract(top.BaseAddress).ToInt32();
                 }
             }
 
-            return combinedRegions.ToList().OrderBy(x => x.BaseAddress.ToUInt64()).ToList();
+            return combinedRegions.ToList().OrderBy(x => x.BaseAddress).ToList();
         }
     }
     //// End interface

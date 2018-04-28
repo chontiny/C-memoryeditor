@@ -46,7 +46,7 @@
         /// <param name="elementType">The data type to write.</param>
         /// <param name="address">The address to write to.</param>
         /// <param name="value">The value to write.</param>
-        public void Write(DataType elementType, IntPtr address, Object value)
+        public void Write(DataType elementType, UInt64 address, Object value)
         {
             Byte[] bytes;
 
@@ -98,7 +98,7 @@
         /// <typeparam name="T">The type of the value.</typeparam>
         /// <param name="address">The address where the value is written.</param>
         /// <param name="value">The value to write.</param>
-        public void Write<T>(IntPtr address, T value)
+        public void Write<T>(UInt64 address, T value)
         {
             this.Write(typeof(T), address, (Object)value);
         }
@@ -108,7 +108,7 @@
         /// </summary>
         /// <param name="address">The address where the array is written.</param>
         /// <param name="byteArray">The array of bytes to write.</param>
-        public void WriteBytes(IntPtr address, Byte[] byteArray)
+        public void WriteBytes(UInt64 address, Byte[] byteArray)
         {
             // Write the byte array
             Memory.WriteBytes(this.ExternalProcess == null ? IntPtr.Zero : this.ExternalProcess.Handle, address, byteArray);
@@ -120,7 +120,7 @@
         /// <param name="address">The address where the string is written.</param>
         /// <param name="text">The text to write.</param>
         /// <param name="encoding">The encoding used.</param>
-        public void WriteString(IntPtr address, String text, Encoding encoding)
+        public void WriteString(UInt64 address, String text, Encoding encoding)
         {
             // Write the text
             this.WriteBytes(address, encoding.GetBytes(text + '\0'));

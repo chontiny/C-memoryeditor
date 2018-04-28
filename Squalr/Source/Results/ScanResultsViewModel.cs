@@ -7,11 +7,11 @@
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Properties;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectItems;
-    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -398,7 +398,7 @@
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress, out moduleName);
 
-                    PointerItem pointerItem = new PointerItem(baseAddress: address.ToIntPtr(), dataType: this.ActiveType, moduleName: moduleName, value: currentValue);
+                    PointerItem pointerItem = new PointerItem(baseAddress: address, dataType: this.ActiveType, moduleName: moduleName, value: currentValue);
                     newAddresses.Add(new ScanResult(pointerItem, previousValue, label));
                 }
             }

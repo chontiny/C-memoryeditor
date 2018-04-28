@@ -268,7 +268,7 @@
                 group.Key.SnapshotRegions = group.OrderBy(region => region.ReadGroupOffset);
             }
 
-            this.ReadGroups = snapshotsByReadGroup.Select(x => x.Key).OrderBy(group => group.BaseAddress.ToUInt64());
+            this.ReadGroups = snapshotsByReadGroup.Select(x => x.Key).OrderBy(group => group.BaseAddress);
         }
 
         /// <summary>
@@ -327,11 +327,11 @@
                 return false;
             }
 
-            if (address < this.SnapshotRegions[middle].BaseAddress.ToUInt64())
+            if (address < this.SnapshotRegions[middle].BaseAddress)
             {
                 return this.ContainsAddressHelper(address, (min + middle - 1) / 2, min, middle - 1);
             }
-            else if (address > this.SnapshotRegions[middle].EndAddress.ToUInt64())
+            else if (address > this.SnapshotRegions[middle].EndAddress)
             {
                 return this.ContainsAddressHelper(address, (middle + 1 + max) / 2, middle + 1, max);
             }

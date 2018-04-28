@@ -41,7 +41,7 @@
         /// <summary>
         /// Gets the base address of the region.
         /// </summary>
-        public IntPtr BaseAddress
+        public UInt64 BaseAddress
         {
             get
             {
@@ -52,7 +52,7 @@
         /// <summary>
         /// Gets the end address of the region.
         /// </summary>
-        public IntPtr EndAddress
+        public UInt64 EndAddress
         {
             get
             {

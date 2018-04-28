@@ -2,7 +2,7 @@
 {
     using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
-    using Squalr.Source.Utils.Extensions;
+    using Squalr.Engine.Utils.Extensions;
     using Svg;
     using System;
     using System.Drawing;

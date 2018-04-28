@@ -82,8 +82,8 @@
             MemoryProtectionEnum requiredProtection,
             MemoryProtectionEnum excludedProtection,
             MemoryTypeEnum allowedTypes,
-            IntPtr startAddress,
-            IntPtr endAddress)
+            UInt64 startAddress,
+            UInt64 endAddress)
         {
             MemoryProtectionFlags requiredFlags = 0;
             MemoryProtectionFlags excludedFlags = 0;
@@ -137,13 +137,13 @@
 
                 if (next.RegionSize < ChunkSize)
                 {
-                    regions.Add(new NormalizedRegion(next.BaseAddress, next.RegionSize.ToInt32()));
+                    regions.Add(new NormalizedRegion(next.BaseAddress.ToUInt64(), next.RegionSize.ToInt32()));
                 }
                 else
                 {
                     // This region requires chunking
                     Int64 remaining = next.RegionSize;
-                    IntPtr currentBaseAddress = next.BaseAddress;
+                    UInt64 currentBaseAddress = next.BaseAddress.ToUInt64();
 
                     while (remaining >= ChunkSize)
                     {
@@ -171,22 +171,22 @@
         {
             MemoryTypeEnum flags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image | MemoryTypeEnum.Mapped;
 
-            return this.GetVirtualPages(0, 0, flags, IntPtr.Zero, this.GetMaximumAddress());
+            return this.GetVirtualPages(0, 0, flags, 0, this.GetMaximumAddress());
         }
 
         /// <summary>
         /// Gets the maximum address possible in the target process.
         /// </summary>
         /// <returns>The maximum address possible in the target process.</returns>
-        public IntPtr GetMaximumAddress()
+        public UInt64 GetMaximumAddress()
         {
             if (IntPtr.Size == Conversions.SizeOf(DataType.Int32))
             {
-                return unchecked(UInt32.MaxValue.ToIntPtr());
+                return unchecked(UInt32.MaxValue);
             }
             else if (IntPtr.Size == Conversions.SizeOf(DataType.Int64))
             {
-                return unchecked(UInt64.MaxValue.ToIntPtr());
+                return unchecked(UInt64.MaxValue);
             }
 
             throw new Exception("Unable to determine maximum address");
@@ -254,7 +254,7 @@
                         }
 
                         // Convert to a normalized module and add it to our list
-                        NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase, (Int32)moduleInformation.SizeOfImage);
+                        NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase.ToUInt64(), (Int32)moduleInformation.SizeOfImage);
                         modules.Add(module);
                     }
                 }

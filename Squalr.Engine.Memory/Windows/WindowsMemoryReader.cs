@@ -46,7 +46,7 @@
         /// <param name="address">The address where the value is read.</param>
         /// <param name="success">Whether or not the read succeeded.</param>
         /// <returns>A value.</returns>
-        public Object Read(DataType dataType, IntPtr address, out Boolean success)
+        public Object Read(DataType dataType, UInt64 address, out Boolean success)
         {
             Object value;
 
@@ -103,7 +103,7 @@
         /// <param name="address">The address where the value is read.</param>
         /// <param name="success">Whether or not the read succeeded.</param>
         /// <returns>A value.</returns>
-        public T Read<T>(IntPtr address, out Boolean success)
+        public T Read<T>(UInt64 address, out Boolean success)
         {
             Byte[] byteArray = this.ReadBytes(address, Conversions.SizeOf(typeof(T)), out success);
             return Conversions.BytesToObject<T>(byteArray);
@@ -116,7 +116,7 @@
         /// <param name="count">The number of cells.</param>
         /// <param name="success">Whether or not the read succeeded.</param>
         /// <returns>The array of bytes.</returns>
-        public Byte[] ReadBytes(IntPtr address, Int32 count, out Boolean success)
+        public Byte[] ReadBytes(UInt64 address, Int32 count, out Boolean success)
         {
             return Memory.ReadBytes(this.TargetProcess == null ? IntPtr.Zero : this.TargetProcess.Handle, address, count, out success);
         }
@@ -129,7 +129,7 @@
         /// <param name="success">Whether or not the read succeeded</param>
         /// <param name="maxLength">[Optional] The number of maximum bytes to read. The string is automatically cropped at this end ('\0' char).</param>
         /// <returns>The string.</returns>
-        public String ReadString(IntPtr address, Encoding encoding, out Boolean success, Int32 maxLength = 512)
+        public String ReadString(UInt64 address, Encoding encoding, out Boolean success, Int32 maxLength = 512)
         {
             // Read the string
             String data = encoding.GetString(this.ReadBytes(address, maxLength, out success));
@@ -141,9 +141,9 @@
             return data.Substring(0, end);
         }
 
-        public IntPtr EvaluatePointer(IntPtr address, IEnumerable<int> offsets)
+        public UInt64 EvaluatePointer(UInt64 address, IEnumerable<int> offsets)
         {
-            IntPtr finalAddress = address;
+            UInt64 finalAddress = address;
 
             if (!offsets.IsNullOrEmpty())
             {
@@ -152,11 +152,11 @@
                 {
                     if (ProcessInfo.Default.IsOpenedProcess32Bit())
                     {
-                        finalAddress = (this.Read<UInt32>(finalAddress + offset, out _).ToInt64()).ToIntPtr();
+                        finalAddress = this.Read<UInt32>(finalAddress.Add(offset), out _);
                     }
                     else
                     {
-                        finalAddress = (this.Read<UInt64>(finalAddress, out _).ToInt64() + offset).ToIntPtr();
+                        finalAddress = this.Read<UInt64>(finalAddress, out _).Add(offset);
                     }
                 }
 

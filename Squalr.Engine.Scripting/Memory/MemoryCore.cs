@@ -77,7 +77,7 @@
                 String targetModuleName = module?.Name?.RemoveSuffixes(true, ".exe", ".dll");
                 if (targetModuleName.Equals(moduleName, StringComparison.OrdinalIgnoreCase))
                 {
-                    address = module.BaseAddress.ToUInt64();
+                    address = module.BaseAddress;
                     break;
                 }
             }
@@ -135,7 +135,7 @@
             // Read original bytes at code cave jump
             Boolean readSuccess;
 
-            Byte[] originalBytes = Reader.Default.ReadBytes(address.ToIntPtr(), injectedCodeSize + MemoryCore.Largestx86InstructionSize, out readSuccess);
+            Byte[] originalBytes = Reader.Default.ReadBytes(address, injectedCodeSize + MemoryCore.Largestx86InstructionSize, out readSuccess);
 
             if (!readSuccess || originalBytes == null || originalBytes.Length <= 0)
             {
@@ -143,7 +143,7 @@
             }
 
             // Grab instructions at code entry point
-            IEnumerable<Instruction> instructions = Disassembler.Default.Disassemble(originalBytes, ProcessInfo.Default.IsOpenedProcess32Bit(), address.ToIntPtr());
+            IEnumerable<Instruction> instructions = Disassembler.Default.Disassemble(originalBytes, ProcessInfo.Default.IsOpenedProcess32Bit(), address);
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;
@@ -176,7 +176,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = Allocator.Default.AllocateMemory(size).ToUInt64();
+            UInt64 address = Allocator.Default.AllocateMemory(size);
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -192,7 +192,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 address = Allocator.Default.AllocateMemory(size, allocAddress.ToIntPtr()).ToUInt64();
+            UInt64 address = Allocator.Default.AllocateMemory(size, allocAddress);
             this.RemoteAllocations.Add(address);
 
             return address;
@@ -210,7 +210,7 @@
             {
                 if (allocationAddress == address)
                 {
-                    Allocator.Default.DeallocateMemory(allocationAddress.ToIntPtr());
+                    Allocator.Default.DeallocateMemory(allocationAddress);
                     this.RemoteAllocations.Remove(allocationAddress);
                     break;
                 }
@@ -228,7 +228,7 @@
 
             foreach (UInt64 address in this.RemoteAllocations)
             {
-                Allocator.Default.DeallocateMemory(address.ToIntPtr());
+                Allocator.Default.DeallocateMemory(address);
             }
 
             this.RemoteAllocations.Clear();
@@ -337,7 +337,7 @@
             String noOps = (originalBytes.Length - assemblySize > 0 ? "db " : String.Empty) + String.Join(" ", Enumerable.Repeat("0x90,", originalBytes.Length - assemblySize)).TrimEnd(',');
 
             Byte[] injectionBytes = this.GetAssemblyBytes(assembly + "\n" + noOps, address);
-            Writer.Default.WriteBytes(address.ToIntPtr(), injectionBytes);
+            Writer.Default.WriteBytes(address, injectionBytes);
 
             CodeCave codeCave = new CodeCave(address, 0, originalBytes);
             this.CodeCaves.Add(codeCave);
@@ -368,7 +368,7 @@
                 originalByteSize = MemoryCore.JumpSize;
             }
 
-            address = address.ToIntPtr().Add(originalByteSize).ToUInt64();
+            address = address.Add(originalByteSize);
 
             return address;
         }
@@ -389,9 +389,9 @@
                     continue;
                 }
 
-                Writer.Default.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
+                Writer.Default.WriteBytes(codeCave.Address, codeCave.OriginalBytes);
 
-                Allocator.Default.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                Allocator.Default.DeallocateMemory(codeCave.RemoteAllocationAddress);
             }
         }
 
@@ -404,7 +404,7 @@
 
             foreach (CodeCave codeCave in this.CodeCaves)
             {
-                Writer.Default.WriteBytes(codeCave.Address.ToIntPtr(), codeCave.OriginalBytes);
+                Writer.Default.WriteBytes(codeCave.Address, codeCave.OriginalBytes);
 
                 // If remote allocation address is unset, then it was not allocated.
                 if (codeCave.RemoteAllocationAddress == 0)
@@ -412,7 +412,7 @@
                     continue;
                 }
 
-                Allocator.Default.DeallocateMemory(codeCave.RemoteAllocationAddress.ToIntPtr());
+                Allocator.Default.DeallocateMemory(codeCave.RemoteAllocationAddress);
             }
 
             this.CodeCaves.Clear();
@@ -558,7 +558,7 @@
         {
             this.PrintDebugTag();
 
-            UInt64 finalAddress = Reader.Default.EvaluatePointer(address.ToIntPtr(), offsets).ToUInt64();
+            UInt64 finalAddress = Reader.Default.EvaluatePointer(address, offsets);
             return finalAddress;
         }
 
@@ -573,7 +573,7 @@
             this.PrintDebugTag(address.ToString("x"));
 
             Boolean readSuccess;
-            return Reader.Default.Read<T>(address.ToIntPtr(), out readSuccess);
+            return Reader.Default.Read<T>(address, out readSuccess);
         }
 
         /// <summary>
@@ -587,7 +587,7 @@
             this.PrintDebugTag(address.ToString("x"), count.ToString());
 
             Boolean readSuccess;
-            return Reader.Default.ReadBytes(address.ToIntPtr(), count, out readSuccess);
+            return Reader.Default.ReadBytes(address, count, out readSuccess);
         }
 
         /// <summary>
@@ -600,7 +600,7 @@
         {
             this.PrintDebugTag(address.ToString("x"), value.ToString());
 
-            Writer.Default.Write<T>(address.ToIntPtr(), value);
+            Writer.Default.Write<T>(address, value);
         }
 
         /// <summary>
@@ -612,7 +612,7 @@
         {
             this.PrintDebugTag(address.ToString("x"));
 
-            Writer.Default.WriteBytes(address.ToIntPtr(), values);
+            Writer.Default.WriteBytes(address, values);
         }
 
         /// <summary>

@@ -1,8 +1,8 @@
 ﻿namespace Squalr.View
 {
     using Source.PropertyViewer;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Controls;
-    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Drawing;

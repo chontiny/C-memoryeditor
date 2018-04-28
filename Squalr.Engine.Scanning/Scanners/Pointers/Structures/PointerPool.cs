@@ -94,7 +94,7 @@
 
             foreach (KeyValuePair<UInt64, UInt64> pointer in this)
             {
-                levelRegions.Add(new NormalizedRegion(pointer.Key.ToIntPtr().Subtract(pointerRadius, wrapAround: false), pointerRadius));
+                levelRegions.Add(new NormalizedRegion(pointer.Key.Subtract(pointerRadius, wrapAround: false), pointerRadius));
             }
 
             foreach (NormalizedRegion region in NormalizedRegion.MergeAndSortRegions(levelRegions))

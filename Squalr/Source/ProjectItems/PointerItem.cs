@@ -6,8 +6,8 @@
     using Squalr.Engine.Memory;
     using Squalr.Engine.Processes;
     using Squalr.Engine.Utils;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Controls;
-    using Squalr.Source.Utils.Extensions;
     using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.Collections.Generic;
@@ -33,7 +33,7 @@
         /// The base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
         [Browsable(false)]
-        private IntPtr moduleOffset;
+        private UInt64 moduleOffset;
 
         /// <summary>
         /// The pointer offsets of this address item.
@@ -44,7 +44,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
         /// </summary>
-        public PointerItem() : this(IntPtr.Zero, DataType.Int32, "New Address")
+        public PointerItem() : this(0, DataType.Int32, "New Address")
         {
         }
 
@@ -60,7 +60,7 @@
         /// <param name="isValueHex">A value indicating whether the value at this address should be displayed as hex.</param>
         /// <param name="value">The value at this address. If none provided, it will be figured out later. Used here to allow immediate view updates upon creation.</param>
         public PointerItem(
-            IntPtr baseAddress,
+            UInt64 baseAddress,
             Type dataType,
             String description = "New Address",
             String moduleName = null,
@@ -111,7 +111,7 @@
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(AddressConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Offset"), Description("The offset from the module address. If no module address, then this is the base address.")]
-        public IntPtr ModuleOffset
+        public UInt64 ModuleOffset
         {
             get
             {
@@ -243,9 +243,9 @@
         /// Resolves the address of an address, pointer, or managed object.
         /// </summary>
         /// <returns>The base address of this object.</returns>
-        protected override IntPtr ResolveAddress()
+        protected override UInt64 ResolveAddress()
         {
-            IntPtr pointer = AddressResolver.GetInstance().ResolveModule(this.ModuleName);
+            UInt64 pointer = AddressResolver.GetInstance().ResolveModule(this.ModuleName);
             Boolean successReading = true;
 
             pointer = pointer.Add(this.ModuleOffset);
@@ -259,16 +259,16 @@
             {
                 if (ProcessInfo.Default.IsOpenedProcess32Bit())
                 {
-                    pointer = Reader.Default.Read<Int32>(pointer, out successReading).ToIntPtr();
+                    pointer = Reader.Default.Read<Int32>(pointer, out successReading).ToUInt64();
                 }
                 else
                 {
-                    pointer = Reader.Default.Read<Int64>(pointer, out successReading).ToIntPtr();
+                    pointer = Reader.Default.Read<UInt64>(pointer, out successReading);
                 }
 
-                if (pointer == IntPtr.Zero || !successReading)
+                if (pointer == 0 || !successReading)
                 {
-                    pointer = IntPtr.Zero;
+                    pointer = 0;
                     break;
                 }
 

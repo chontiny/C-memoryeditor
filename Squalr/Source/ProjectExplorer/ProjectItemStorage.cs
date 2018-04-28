@@ -4,9 +4,9 @@
     using Squalr.Engine;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Controls;
     using Squalr.Source.ProjectItems;
-    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.IO;

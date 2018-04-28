@@ -5,10 +5,10 @@
     using Squalr.Engine.Memory;
     using Squalr.Engine.Processes;
     using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectItems;
-    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -140,7 +140,7 @@
         {
             if (process != null)
             {
-                this.BaseAddress = Query.Default.GetModules().FirstOrDefault()?.BaseAddress.ToUInt64() ?? 0UL;
+                this.BaseAddress = Query.Default.GetModules().FirstOrDefault()?.BaseAddress ?? 0UL;
 
                 this.LoadInstructions();
             }
@@ -174,7 +174,7 @@
         /// </summary>
         private void LoadInstructions()
         {
-            Byte[] bytes = Reader.Default.ReadBytes(this.BaseAddress.ToIntPtr(), 200, out _);
+            Byte[] bytes = Reader.Default.ReadBytes(this.BaseAddress, 200, out _);
 
             if (bytes.IsNullOrEmpty())
             {
@@ -184,7 +184,7 @@
             Boolean isProcess32Bit = ProcessInfo.Default.IsOpenedProcess32Bit();
 
             // Disassemble instructions
-            IEnumerable<Instruction> disassembledInstructions = Disassembler.Default.Disassemble(bytes, isProcess32Bit, this.BaseAddress.ToIntPtr());
+            IEnumerable<Instruction> disassembledInstructions = Disassembler.Default.Disassemble(bytes, isProcess32Bit, this.BaseAddress);
             IList<InstructionItem> instructions = new List<InstructionItem>();
 
             foreach (Instruction disassembledInstruction in disassembledInstructions)
@@ -192,7 +192,7 @@
                 String moduleName;
                 UInt64 address = AddressResolver.GetInstance().AddressToModule(disassembledInstruction.Address, out moduleName);
 
-                instructions.Add(new InstructionItem(address.ToIntPtr(), moduleName, disassembledInstruction.Mnemonic, disassembledInstruction.Bytes));
+                instructions.Add(new InstructionItem(address, moduleName, disassembledInstruction.Mnemonic, disassembledInstruction.Bytes));
             }
 
             this.Instructions = new FullyObservableCollection<InstructionItem>(instructions);

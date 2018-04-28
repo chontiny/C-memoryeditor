@@ -148,7 +148,7 @@
         /// <summary>
         /// Gets the base address of this element.
         /// </summary>
-        public IntPtr BaseAddress
+        public UInt64 BaseAddress
         {
             get
             {

@@ -74,7 +74,7 @@
             Int64 processedPointers = 0;
 
             // Create a snapshot only containing the destination (as this is a back-tracing algorithm, we work backwards from the destination)
-            Snapshot previousLevelSnapshot = new Snapshot(null, new ReadGroup[] { new ReadGroup(this.TargetAddress.ToIntPtr().Subtract(this.PointerRadius, wrapAround: false), this.PointerRadius) });
+            Snapshot previousLevelSnapshot = new Snapshot(null, new ReadGroup[] { new ReadGroup(this.TargetAddress.Subtract(this.PointerRadius, wrapAround: false), this.PointerRadius) });
 
             // Find all pointers that point to the previous level
             for (Int32 level = 0; level < this.PointerDepth; level++)

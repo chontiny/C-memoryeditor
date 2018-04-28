@@ -22,12 +22,12 @@
         {
             this.Handle = handle;
 
-            this.Address = this.FindPebs(this.Handle).First();
+            this.Address = this.FindPebs(this.Handle).First().ToUInt64();
         }
 
         private IntPtr Handle { get; set; }
 
-        private IntPtr Address { get; set; }
+        private UInt64 Address { get; set; }
 
         /// <summary>
         /// Finds the Process Environment Block address of a specified process.

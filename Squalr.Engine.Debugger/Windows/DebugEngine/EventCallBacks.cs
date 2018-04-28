@@ -157,8 +157,8 @@
             address = this.CorrectAddress(address);
 
             // Disassemble instruction
-            Byte[] bytes = Memory.Reader.Default.ReadBytes((IntPtr)address, 15, out _);
-            codeTraceInfo.Instruction = Engine.Architecture.Disassembler.Default.Disassemble(bytes, isProcess32Bit, (IntPtr)address).FirstOrDefault();
+            Byte[] bytes = Memory.Reader.Default.ReadBytes(address, 15, out _);
+            codeTraceInfo.Instruction = Engine.Architecture.Disassembler.Default.Disassemble(bytes, isProcess32Bit, address).FirstOrDefault();
 
             // Invoke callbacks
             this.ReadCallback?.Invoke(codeTraceInfo);

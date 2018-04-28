@@ -3,8 +3,8 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Content;
     using Squalr.Engine.Processes;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
-    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;

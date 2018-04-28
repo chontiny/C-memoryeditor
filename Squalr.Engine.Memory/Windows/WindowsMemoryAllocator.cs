@@ -43,9 +43,9 @@
         /// </summary>
         /// <param name="size">The size of the memory allocation.</param>
         /// <returns>A pointer to the location of the allocated memory.</returns>
-        public IntPtr AllocateMemory(Int32 size)
+        public UInt64 AllocateMemory(Int32 size)
         {
-            return Memory.Allocate(this.ExternalProcess == null ? IntPtr.Zero : this.ExternalProcess.Handle, IntPtr.Zero, size);
+            return Memory.Allocate(this.ExternalProcess == null ? IntPtr.Zero : this.ExternalProcess.Handle, 0, size);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@
         /// <param name="size">The size of the memory allocation.</param>
         /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
         /// <returns>A pointer to the location of the allocated memory.</returns>
-        public IntPtr AllocateMemory(Int32 size, IntPtr allocAddress)
+        public UInt64 AllocateMemory(Int32 size, UInt64 allocAddress)
         {
             return Memory.Allocate(this.ExternalProcess == null ? IntPtr.Zero : this.ExternalProcess.Handle, allocAddress, size);
         }
@@ -63,7 +63,7 @@
         /// Deallocates memory in the opened process.
         /// </summary>
         /// <param name="address">The address to perform the region wide deallocation.</param>
-        public void DeallocateMemory(IntPtr address)
+        public void DeallocateMemory(UInt64 address)
         {
             Memory.Free(this.ExternalProcess == null ? IntPtr.Zero : this.ExternalProcess.Handle, address);
         }

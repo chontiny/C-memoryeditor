@@ -39,7 +39,7 @@
         /// The effective address after tracing all pointer offsets.
         /// </summary>
         [Browsable(false)]
-        protected IntPtr calculatedAddress;
+        protected UInt64 calculatedAddress;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
@@ -177,7 +177,7 @@
         [ReadOnly(true)]
         [TypeConverter(typeof(AddressConverter))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Calculated Address"), Description("The final computed address of this variable")]
-        public IntPtr CalculatedAddress
+        public UInt64 CalculatedAddress
         {
             get
             {
@@ -249,7 +249,7 @@
         /// Resolves the address of this object.
         /// </summary>
         /// <returns>The base address of this object.</returns>
-        protected abstract IntPtr ResolveAddress();
+        protected abstract UInt64 ResolveAddress();
 
         /// <summary>
         /// Writes a value to the computed address of this item.

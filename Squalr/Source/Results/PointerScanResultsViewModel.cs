@@ -5,10 +5,10 @@
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectItems;
-    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;

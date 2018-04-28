@@ -16,7 +16,7 @@
         /// </summary>
         /// <param name="baseAddress">The base address of this memory region.</param>
         /// <param name="regionSize">The size of this memory region.</param>
-        public ReadGroup(IntPtr baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
+        public ReadGroup(UInt64 baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
         {
             this.Alignment = Settings.Default.Alignment;
             this.ElementDataType = DataType.Int32; // ScanResultsViewModel.GetInstance().ActiveType;

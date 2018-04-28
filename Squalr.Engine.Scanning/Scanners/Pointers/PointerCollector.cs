@@ -170,7 +170,7 @@
                                     // Check if it is possible that this pointer is valid -- if so keep it
                                     if (heapSnapshot.ContainsAddress(pointerDestination))
                                     {
-                                        UInt64 pointerAddress = region.BaseAddress.ToUInt64() + (vectorReadIndex + index * sizeof(UInt64)).ToUInt64();
+                                        UInt64 pointerAddress = region.BaseAddress.Add((vectorReadIndex + index * sizeof(UInt64)));
 
                                         if (isModule)
                                         {

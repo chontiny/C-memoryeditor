@@ -248,12 +248,12 @@
             while (lastRegion != null)
             {
                 // Exit if not overreading
-                if (lastRegion.EndAddress.ToUInt64() <= this.Region.EndAddress.ToUInt64())
+                if (lastRegion.EndAddress <= this.Region.EndAddress)
                 {
                     break;
                 }
 
-                Int32 overread = (lastRegion.EndAddress.ToUInt64() - this.Region.EndAddress.ToUInt64()).ToInt32();
+                Int32 overread = (lastRegion.EndAddress - this.Region.EndAddress).ToInt32();
 
                 if (lastRegion.RegionSize <= overread)
                 {

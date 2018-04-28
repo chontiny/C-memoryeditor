@@ -13,7 +13,7 @@
         /// <param name="name">The name of the module.</param>
         /// <param name="baseAddress">The base address of the module.</param>
         /// <param name="size">The total size of the module.</param>
-        public NormalizedModule(String name, IntPtr baseAddress, Int32 size) : base(baseAddress, size)
+        public NormalizedModule(String name, UInt64 baseAddress, Int32 size) : base(baseAddress, size)
         {
             this.Name = name;
         }
