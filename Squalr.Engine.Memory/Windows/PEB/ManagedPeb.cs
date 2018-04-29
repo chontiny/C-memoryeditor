@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Memory.Windows.PEB
 {
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -44,7 +44,7 @@
             Int32 queryStatus = NtQueryInformationProcess(processHandle, ProcessInformationClass.ProcessBasicInformation, ref processBasicInformation, processBasicInformation.Size, out sizeInfoReturned);
             pebs.Add(processBasicInformation.PebBaseAddress);
 
-            if (ProcessInfo.Default.IsSelf64Bit() && ProcessInfo.Default.IsOpenedProcess32Bit())
+            if (Processes.Default.IsSelf64Bit() && Processes.Default.IsOpenedProcess32Bit())
             {
                 // When a 32 bit process runs on a 64 bit OS (also known as a WoW64 process), two PEB blocks are loaded.
                 // Apparently the only solution is to navigate the TEB to find the PEB. So TODO: Port this code to C#:

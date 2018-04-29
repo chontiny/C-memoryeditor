@@ -1,10 +1,10 @@
 ﻿namespace Squalr.Engine.Memory.Windows
 {
     using Native;
-    using Processes;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Memory.Windows.PEB;
+    using Squalr.Engine.OS;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -31,7 +31,7 @@
         public WindowsMemoryQuery()
         {
             // Subscribe to process events
-            ProcessInfo.Default.Subscribe(this);
+            Processes.Default.Subscribe(this);
         }
 
         /// <summary>
@@ -198,7 +198,7 @@
         /// <returns>The maximum usermode address possible in the target process.</returns>
         public UInt64 GetMaxUsermodeAddress()
         {
-            if (ProcessInfo.Default.IsOpenedProcess32Bit())
+            if (Processes.Default.IsOpenedProcess32Bit())
             {
                 return Int32.MaxValue;
             }
@@ -248,7 +248,7 @@
                         NativeMethods.GetModuleInformation(this.ExternalProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
                         // Ignore modules in 64-bit address space for WoW64 processes
-                        if (ProcessInfo.Default.IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)
+                        if (Processes.Default.IsOpenedProcess32Bit() && moduleInformation.ModuleBase.ToUInt64() > Int32.MaxValue)
                         {
                             continue;
                         }

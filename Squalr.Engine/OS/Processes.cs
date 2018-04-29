@@ -1,20 +1,20 @@
-﻿namespace Squalr.Engine.Processes
+﻿namespace Squalr.Engine.OS
 {
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Processes.Windows;
+    using Squalr.Engine.OS.Windows;
     using System;
     using System.Threading;
 
-    public class ProcessInfo
+    public class Processes
     {
         /// <summary>
         /// Singleton instance of the <see cref="WindowsProcessInfo"/> class.
         /// </summary>
-        private static Lazy<IProcessInfo> windowsProcessInfoInstance = new Lazy<IProcessInfo>(
+        private static Lazy<IProcesses> windowsProcessInfoInstance = new Lazy<IProcesses>(
             () => { return new WindowsProcessInfo(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
-        public static IProcessInfo Default
+        public static IProcesses Default
         {
             get
             {
@@ -45,7 +45,7 @@
             }
         }
 
-        public static IProcessInfo Windows
+        public static IProcesses Windows
         {
             get
             {

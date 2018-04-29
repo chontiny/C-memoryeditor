@@ -1,9 +1,9 @@
-﻿namespace Squalr.Engine
+﻿namespace Squalr.Engine.OS
 {
     using System;
     using System.Numerics;
 
-    public static class SystemInfo
+    public static class Vectors
     {
         /// <summary>
         /// Gets a value indicating if the archiecture has vector instruction support.

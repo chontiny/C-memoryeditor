@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Processes
+﻿namespace Squalr.Engine.OS
 {
     using System.Diagnostics;
 

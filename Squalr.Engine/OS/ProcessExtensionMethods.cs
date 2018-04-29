@@ -1,6 +1,6 @@
-﻿namespace Squalr.Engine.Processes
+﻿namespace Squalr.Engine.OS
 {
-    using Squalr.Engine.Processes.Windows;
+    using Squalr.Engine.OS.Windows;
     using System;
     using System.Diagnostics;
     using System.Drawing;

@@ -2,8 +2,8 @@
 {
     using CompilerService;
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine;
     using Squalr.Engine.Logging;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Scripting;
     using Squalr.Properties;
     using Squalr.Source.ChangeLog;
@@ -35,7 +35,7 @@
             // Attach our view model to the engine's output
             Logger.Subscribe(OutputViewModel.GetInstance());
 
-            if (SystemInfo.HasVectorSupport)
+            if (Vectors.HasVectorSupport)
             {
                 Logger.Log(LogLevel.Info, "Hardware acceleration enabled");
                 Logger.Log(LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);

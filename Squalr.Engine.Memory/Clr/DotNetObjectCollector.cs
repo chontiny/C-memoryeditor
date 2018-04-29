@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Memory.Clr
 {
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -107,7 +107,7 @@
         {
             ////  this.UpdateInterval = DotNetObjectCollector.PollingTime;
 
-            Process process = ProcessInfo.Default.GetOpenedProcess();
+            Process process = Processes.Default.GetOpenedProcess();
             /*IProxyService proxyService = proxyCommunicator.GetProxyService(Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit());
 
             if (proxyService == null)

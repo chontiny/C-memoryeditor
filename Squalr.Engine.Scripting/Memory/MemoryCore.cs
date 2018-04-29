@@ -4,7 +4,7 @@
     using Squalr.Engine.Architecture.Assemblers;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -113,7 +113,7 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
-            AssemblerResult result = Assembler.Default.Assemble(assembly, ProcessInfo.Default.IsOpenedProcess32Bit(), address.ToIntPtr());
+            AssemblerResult result = Assembler.Default.Assemble(assembly, Processes.Default.IsOpenedProcess32Bit(), address.ToIntPtr());
 
             Logger.Log(LogLevel.Info, result.Message, result.InnerMessage);
 
@@ -143,7 +143,7 @@
             }
 
             // Grab instructions at code entry point
-            IEnumerable<Instruction> instructions = Disassembler.Default.Disassemble(originalBytes, ProcessInfo.Default.IsOpenedProcess32Bit(), address);
+            IEnumerable<Instruction> instructions = Disassembler.Default.Disassemble(originalBytes, Processes.Default.IsOpenedProcess32Bit(), address);
 
             // Determine size of instructions we need to overwrite
             Int32 replacedInstructionSize = 0;
@@ -286,7 +286,8 @@
 
                 // Allocate memory
                 UInt64 remoteAllocation;
-                if (ProcessInfo.Default.IsOpenedProcess32Bit())
+
+                if (Processes.Default.IsOpenedProcess32Bit())
                 {
                     remoteAllocation = this.Allocate(assemblySize);
                 }

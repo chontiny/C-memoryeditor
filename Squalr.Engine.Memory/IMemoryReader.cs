@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Memory
 {
-    using Processes;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.OS;
     using System;
     using System.Collections.Generic;
 

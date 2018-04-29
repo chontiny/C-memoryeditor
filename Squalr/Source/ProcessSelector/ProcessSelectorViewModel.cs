@@ -2,7 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Content;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
     using System;
@@ -55,7 +55,7 @@
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
             // Subscribe to process events
-            ProcessInfo.Default.Subscribe(this);
+            Processes.Default.Subscribe(this);
         }
 
         /// <summary>
@@ -117,13 +117,13 @@
                 if (value == this.DetachProcess)
                 {
                     this.selectedProcess = null;
-                    ProcessInfo.Default.OpenedProcess = null;
+                    Processes.Default.OpenedProcess = null;
                     this.RaisePropertyChanged(nameof(this.WindowedProcessList));
                 }
                 else if (value != this.SelectedProcess)
                 {
                     this.selectedProcess = value;
-                    ProcessInfo.Default.OpenedProcess = value.Process;
+                    Processes.Default.OpenedProcess = value.Process;
                     this.RaisePropertyChanged(nameof(this.SelectedProcess));
                     this.RaisePropertyChanged(nameof(this.WindowedProcessList));
                 }
@@ -154,7 +154,7 @@
         {
             get
             {
-                String processName = ProcessInfo.Default.OpenedProcess.ProcessName;
+                String processName = Processes.Default.OpenedProcess.ProcessName;
                 return String.IsNullOrEmpty(processName) ? "Please Select a Process" : processName;
             }
         }
@@ -218,7 +218,7 @@
         /// </summary>
         private void RefreshProcessList()
         {
-            this.ProcessList = ProcessInfo.Default.GetProcesses().Select(process => new ProcessDecorator(process));
+            this.ProcessList = Processes.Default.GetProcesses().Select(process => new ProcessDecorator(process));
         }
     }
     //// End class

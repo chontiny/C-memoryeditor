@@ -4,7 +4,7 @@
     using Squalr.Content;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Controls;
@@ -257,7 +257,7 @@
 
             foreach (Int32 offset in this.PointerOffsets)
             {
-                if (ProcessInfo.Default.IsOpenedProcess32Bit())
+                if (Processes.Default.IsOpenedProcess32Bit())
                 {
                     pointer = Reader.Default.Read<Int32>(pointer, out successReading).ToUInt64();
                 }

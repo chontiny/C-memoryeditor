@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Debuggers.Windows.DebugEngine
 {
     using Microsoft.Diagnostics.Runtime.Interop;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using System;
     using System.Linq;
     using System.Runtime.InteropServices;
@@ -119,7 +119,7 @@
             CodeTraceInfo codeTraceInfo = new CodeTraceInfo();
 
             String[] registers;
-            Boolean isProcess32Bit = ProcessInfo.Default.IsOpenedProcess32Bit();
+            Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
 
             if (isProcess32Bit)
             {

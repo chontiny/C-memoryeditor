@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.ProcessSelector
 {
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using System;
     using System.Diagnostics;
     using System.Drawing;

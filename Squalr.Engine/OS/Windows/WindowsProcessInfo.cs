@@ -1,7 +1,7 @@
-﻿namespace Squalr.Engine.Processes.Windows
+﻿namespace Squalr.Engine.OS.Windows
 {
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Processes.Windows.Native;
+    using Squalr.Engine.OS.Windows.Native;
     using Squalr.Engine.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
@@ -12,7 +12,7 @@
     /// <summary>
     /// A class responsible for collecting all running processes on a Windows system.
     /// </summary>
-    internal class WindowsProcessInfo : IProcessInfo
+    internal class WindowsProcessInfo : IProcesses
     {
         /// <summary>
         /// Thread safe collection of listeners.

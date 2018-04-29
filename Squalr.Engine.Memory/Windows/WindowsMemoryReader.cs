@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Memory.Windows
 {
-    using Processes;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
@@ -21,7 +21,7 @@
         public WindowsMemoryReader()
         {
             // Subscribe to process events
-            ProcessInfo.Default.Subscribe(this);
+            Processes.Default.Subscribe(this);
         }
 
         /// <summary>
@@ -150,7 +150,7 @@
                 // Add and trace offsets
                 foreach (Int32 offset in offsets.Take(offsets.Count() - 1))
                 {
-                    if (ProcessInfo.Default.IsOpenedProcess32Bit())
+                    if (Processes.Default.IsOpenedProcess32Bit())
                     {
                         finalAddress = this.Read<UInt32>(finalAddress.Add(offset), out _);
                     }

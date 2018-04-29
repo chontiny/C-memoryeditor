@@ -3,7 +3,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Architecture;
     using Squalr.Engine.Memory;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
@@ -58,7 +58,7 @@
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
-            Task.Run(() => ProcessInfo.Default.Subscribe(this));
+            Task.Run(() => Processes.Default.Subscribe(this));
         }
 
         /// <summary>
@@ -181,7 +181,7 @@
                 return;
             }
 
-            Boolean isProcess32Bit = ProcessInfo.Default.IsOpenedProcess32Bit();
+            Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
 
             // Disassemble instructions
             IEnumerable<Instruction> disassembledInstructions = Disassembler.Default.Disassemble(bytes, isProcess32Bit, this.BaseAddress);

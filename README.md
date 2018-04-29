@@ -44,6 +44,21 @@ class EngineLogEvents : IOutputObserver
 }
 ```
 
+### Attaching The Engine
+```csharp
+using Squalr.Engine.OS;
+...
+
+IEnumerable<Process> processes = Processes.Default.GetProcesses();
+
+// Pick a process. For this example, we are just grabbing the first one.
+Process process = processes.FirstOrDefault();
+
+Processes.Default.OpenedProcess = process;
+
+```
+
+
 ### Manipulating Memory:
 
 ```csharp

@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Memory.Windows
 {
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using System;
     using System.Diagnostics;
     using System.Text;
@@ -22,7 +22,7 @@
         public WindowsMemoryWriter()
         {
             // Subscribe to process events
-            ProcessInfo.Default.Subscribe(this);
+            Processes.Default.Subscribe(this);
         }
 
         /// <summary>

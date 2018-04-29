@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Speed
 {
     using Squalr.Engine.Engine.Hook;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using System;
     using System.Diagnostics;
 
@@ -12,7 +12,7 @@
     {
         public SpeedManipulator()
         {
-            ProcessInfo.Default.Subscribe(this);
+            Processes.Default.Subscribe(this);
         }
 
         /// <summary>

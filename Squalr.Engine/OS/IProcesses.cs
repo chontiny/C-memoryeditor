@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Processes
+﻿namespace Squalr.Engine.OS
 {
     using System;
     using System.Collections.Generic;
@@ -7,7 +7,7 @@
     /// <summary>
     /// An interface for manipulations and queries to processes on the system.
     /// </summary>
-    public interface IProcessInfo
+    public interface IProcesses
     {
         /// <summary>
         /// Subscribes the listener to process change events.
