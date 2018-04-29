@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Engine.Architecture.Assemblers
 {
-    using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Diagnostics;
@@ -68,8 +67,6 @@
             }
 
             assembly = preamble + assembly;
-
-            Logger.Log(LogLevel.Info, "Path:" + this.nasmPath.Value);
 
             try
             {
