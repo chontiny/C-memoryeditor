@@ -22,7 +22,7 @@ You can find detailed documentation on the [Wiki](https://squalr.github.io/Squal
 Below is some brief documentation on the NuGet package APIs
 
 ### Receiving Engine Output:
-It is important to hook into the engine's output to receive logs of events. These are invaluable for debugging.
+If using the NuGet packages, it is important to hook into the engine's output to receive logs of events. These are invaluable for diagnosing issues.
 
 ```csharp
 using Squalr.Engine.Output;
