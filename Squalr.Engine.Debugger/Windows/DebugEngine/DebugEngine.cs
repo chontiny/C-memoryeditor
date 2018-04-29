@@ -2,7 +2,7 @@
 {
     using Microsoft.Diagnostics.Runtime.Interop;
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
@@ -31,7 +31,7 @@
             this.writeCancellationToken = null;
             this.accessCancellationToken = null;
 
-            ProcessInfo.Default.Subscribe(this);
+            Processes.Default.Subscribe(this);
         }
 
         /// <summary>

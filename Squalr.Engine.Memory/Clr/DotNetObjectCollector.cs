@@ -1,8 +1,7 @@
 ﻿namespace Squalr.Engine.Memory.Clr
 {
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.Processes;
-    using Squalr.Engine.TaskScheduler;
+    using Squalr.Engine.OS;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -13,7 +12,7 @@
     /// Class to walk through the managed heap of a .NET process, allowing for the easy retrieval.
     /// of fully labeled objects.
     /// </summary>
-    public class DotNetObjectCollector : ScheduledTask
+    public class DotNetObjectCollector
     {
         /// <summary>
         /// Duration in ms to poll the target process for .Net objects initially.
@@ -73,7 +72,7 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="DotNetObjectCollector" /> class from being created.
         /// </summary>
-        private DotNetObjectCollector() : base(".Net Object Collector", isRepeated: true, trackProgress: false)
+        private DotNetObjectCollector()
         {
             // TODO: Temporarily set trackProgress to false while this is in development
         }
@@ -95,20 +94,20 @@
         /// <summary>
         /// Called before the collection of .Net objects.
         /// </summary>
-        protected override void OnBegin()
+        protected void OnBegin()
         {
-            this.UpdateInterval = DotNetObjectCollector.InitialPollingTime;
+            ////  this.UpdateInterval = DotNetObjectCollector.InitialPollingTime;
         }
 
         /// <summary>
         /// Collects .Net objects in the external process.
         /// </summary>
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        protected void OnUpdate(CancellationToken cancellationToken)
         {
-            this.UpdateInterval = DotNetObjectCollector.PollingTime;
+            ////  this.UpdateInterval = DotNetObjectCollector.PollingTime;
 
-            Process process = ProcessInfo.Default.GetOpenedProcess();
+            Process process = Processes.Default.GetOpenedProcess();
             /*IProxyService proxyService = proxyCommunicator.GetProxyService(Squalr.Engine.Engine.GetInstance().Processes.IsOpenedProcess32Bit());
 
             if (proxyService == null)
@@ -187,7 +186,7 @@
         /// <summary>
         /// Called when the repeated task completes.
         /// </summary>
-        protected override void OnEnd()
+        protected void OnEnd()
         {
         }
 

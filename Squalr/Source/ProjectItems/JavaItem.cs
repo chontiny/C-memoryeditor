@@ -11,7 +11,7 @@
 
         }
 
-        protected override IntPtr ResolveAddress()
+        protected override UInt64 ResolveAddress()
         {
             throw new NotImplementedException();
         }

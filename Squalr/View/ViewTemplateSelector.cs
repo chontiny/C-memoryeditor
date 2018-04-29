@@ -2,15 +2,9 @@
 {
     using Source.DotNetExplorer;
     using Source.Results;
-    using Source.Scanners.ChangeCounter;
-    using Source.Scanners.InputCorrelator;
-    using Source.Scanners.LabelThresholder;
-    using Source.Scanners.ManualScanner;
-    using Source.Scanners.Pointers;
     using Source.Snapshots;
     using Squalr.Properties;
     using Squalr.Source.Debugger;
-    using Squalr.Source.Debugger.Disassembly;
     using Squalr.Source.Editors.HotkeyEditor;
     using Squalr.Source.Editors.OffsetEditor;
     using Squalr.Source.Editors.ScriptEditor;
@@ -19,6 +13,7 @@
     using Squalr.Source.ProcessSelector;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.PropertyViewer;
+    using Squalr.Source.Scanning;
     using System;
     using System.Collections.Generic;
     using System.Windows;

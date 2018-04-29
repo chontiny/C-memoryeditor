@@ -3,6 +3,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Properties;
     using Squalr.Source.Controls;
     using Squalr.Source.Docking;
@@ -11,7 +12,6 @@
     using Squalr.Source.ProjectItems;
     using Squalr.Source.PropertyViewer;
     using Squalr.Source.Utils;
-    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -209,7 +209,7 @@
         {
             get
             {
-                ProjectItem projectItem = this.SelectedProjectItems.FirstOrDefault();
+                ProjectItem projectItem = this.SelectedProjectItems?.FirstOrDefault();
 
                 if (projectItem != null)
                 {

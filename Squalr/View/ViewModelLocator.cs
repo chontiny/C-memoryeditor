@@ -3,18 +3,11 @@
     using Source.DotNetExplorer;
     using Source.Main;
     using Source.Results;
-    using Source.Scanners.ChangeCounter;
-    using Source.Scanners.InputCorrelator;
-    using Source.Scanners.LabelThresholder;
-    using Source.Scanners.ManualScanner;
-    using Source.Scanners.Pointers;
-    using Source.Scanners.ValueCollector;
     using Source.Snapshots;
     using Squalr.Properties;
     using Squalr.Source.ActionScheduler;
     using Squalr.Source.ChangeLog;
     using Squalr.Source.Debugger;
-    using Squalr.Source.Debugger.Disassembly;
     using Squalr.Source.Docking;
     using Squalr.Source.Editors.HotkeyEditor;
     using Squalr.Source.Editors.OffsetEditor;
@@ -25,6 +18,7 @@
     using Squalr.Source.ProcessSelector;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.PropertyViewer;
+    using Squalr.Source.Scanning;
 
     /// <summary>
     /// This class contains static references to all the view models in the

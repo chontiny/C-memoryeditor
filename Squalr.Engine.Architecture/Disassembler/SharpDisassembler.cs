@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Engine.Architecture.Disassemblers
 {
     using SharpDisasm;
-    using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -23,18 +22,18 @@
         /// <param name="isProcess32Bit">Whether or not the assembly is in the context of a 32 bit program.</param>
         /// <param name="baseAddress">The address where the code is rebased.</param>
         /// <returns>An array of bytes containing the assembly code.</returns>
-        public IEnumerable<NormalizedInstruction> Disassemble(Byte[] bytes, Boolean isProcess32Bit, IntPtr baseAddress)
+        public Architecture.Instruction[] Disassemble(Byte[] bytes, Boolean isProcess32Bit, UInt64 baseAddress)
         {
             this.disassembler = new Disassembler(
                 code: bytes,
                 architecture: isProcess32Bit ? ArchitectureMode.x86_32 : ArchitectureMode.x86_64,
-                address: baseAddress.ToUInt64(),
+                address: baseAddress,
                 copyBinaryToInstruction: true);
 
             IEnumerable<Instruction> instructions = this.disassembler.Disassemble();
 
             return instructions.Select(instruction =>
-                new NormalizedInstruction(
+                new Architecture.Instruction(
                     instruction.Offset,
                     instruction.ToString(),
                     instruction.Bytes,

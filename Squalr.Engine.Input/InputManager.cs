@@ -3,14 +3,14 @@
     using Controller;
     using Keyboard;
     using Mouse;
-    using Squalr.Engine.TaskScheduler;
     using System;
     using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// Manages all input devices and is responsible for updating them.
     /// </summary>
-    public class InputManager : ScheduledTask, IInputManager
+    public class InputManager : IInputManager
     {
         /// <summary>
         /// Singleton instance of the <see cref="WindowsAdapter"/> class
@@ -20,20 +20,20 @@
             LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// The rate at which to collect input in ms. Currently ~60 times per second.
+        /// The rate at which to collect input in ms. Currently 60 times per second.
         /// </summary>
-        private const Int32 InputCollectionIntervalMs = 1000 / 60;
+        private static TimeSpan InputCollectionInterval = TimeSpan.FromMilliseconds(1000.0 / 60.0);
 
         /// <summary>
         /// Prevents a default instance of the <see cref="InputManager" /> class.
         /// </summary>
-        private InputManager() : base("Input Manager", isRepeated: true, trackProgress: false)
+        private InputManager()
         {
             this.ControllerSubject = new ControllerCapture();
             this.KeyboardSubject = new KeyboardCapture();
             this.MouseSubject = new MouseCapture();
 
-            this.Start();
+            this.PollUpdates();
         }
 
         public static InputManager GetInstance()
@@ -84,29 +84,21 @@
         }
 
         /// <summary>
-        /// Begins input capture.
-        /// </summary>
-        protected override void OnBegin()
-        {
-            this.UpdateInterval = InputManager.InputCollectionIntervalMs;
-        }
-
-        /// <summary>
         /// Updates the input capture devices, polling the system for changes on each device.
         /// </summary>
-        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected override void OnUpdate(CancellationToken cancellationToken)
+        private void PollUpdates()
         {
-            this.ControllerSubject.Update();
-            this.KeyboardSubject.Update();
-            this.MouseSubject.Update();
-        }
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    this.ControllerSubject.Update();
+                    this.KeyboardSubject.Update();
+                    this.MouseSubject.Update();
 
-        /// <summary>
-        /// Called when the repeated task completes.
-        /// </summary>
-        protected override void OnEnd()
-        {
+                    await Task.Delay(InputManager.InputCollectionInterval);
+                }
+            });
         }
     }
     //// End class

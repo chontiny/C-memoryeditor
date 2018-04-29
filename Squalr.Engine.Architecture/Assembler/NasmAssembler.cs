@@ -18,13 +18,13 @@
         /// <summary>
         /// Assemble the specified assembly code.
         /// </summary>
-        /// <param name="isProcess32Bit">Whether or not the assembly is in the context of a 32 bit program.</param>
         /// <param name="assembly">The assembly code.</param>
+        /// <param name="isProcess32Bit">Whether or not the assembly is in the context of a 32 bit program.</param>
         /// <returns>An array of bytes containing the assembly code.</returns>
-        public AssemblerResult Assemble(Boolean isProcess32Bit, String assembly)
+        public AssemblerResult Assemble(String assembly, Boolean isProcess32Bit)
         {
             // Assemble and return the code
-            return this.Assemble(isProcess32Bit, assembly, IntPtr.Zero);
+            return this.Assemble(assembly, isProcess32Bit, IntPtr.Zero);
         }
 
         /// <summary>
@@ -49,11 +49,11 @@
         /// <summary>
         /// Assemble the specified assembly code at a base address.
         /// </summary>
-        /// <param name="isProcess32Bit">Whether or not the assembly is in the context of a 32 bit program.</param>
         /// <param name="assembly">The assembly code.</param>
+        /// <param name="isProcess32Bit">Whether or not the assembly is in the context of a 32 bit program.</param>
         /// <param name="baseAddress">The address where the code is rebased.</param>
         /// <returns>An array of bytes containing the assembly code.</returns>
-        public AssemblerResult Assemble(Boolean isProcess32Bit, String assembly, IntPtr baseAddress)
+        public AssemblerResult Assemble(String assembly, Boolean isProcess32Bit, IntPtr baseAddress)
         {
             AssemblerResult result = new AssemblerResult();
             String preamble = "org 0x" + baseAddress.ToString("X") + Environment.NewLine;
@@ -99,7 +99,7 @@
 
                 if (File.Exists(outputFilePath))
                 {
-                    result.Data = File.ReadAllBytes(outputFilePath);
+                    result.Bytes = File.ReadAllBytes(outputFilePath);
                 }
             }
             catch (Exception ex)

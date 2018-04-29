@@ -1,10 +1,9 @@
 ﻿namespace Squalr.Properties
 {
-    using Squalr.Engine.Memory;
+    using Squalr.Engine.Scanning;
     using Squalr.Source.Docking;
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// View model for the Settings.
@@ -19,115 +18,11 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Settings that control the degree of parallelism for multithreaded tasks.
-        /// </summary>
-        private static Lazy<ParallelOptions> parallelSettingsFullCpu = new Lazy<ParallelOptions>(
-                () =>
-                {
-                    ParallelOptions parallelOptions = new ParallelOptions()
-                    {
-                        // Full throttle; all processors used
-                        MaxDegreeOfParallelism = Environment.ProcessorCount
-                    };
-                    return parallelOptions;
-                },
-                LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
-        /// Settings that control the degree of parallelism for multithreaded tasks.
-        /// </summary>
-        private static Lazy<ParallelOptions> parallelSettingsFast = new Lazy<ParallelOptions>(
-                () =>
-                {
-                    ParallelOptions parallelOptions = new ParallelOptions()
-                    {
-                        // Only use 75% of available processing power, as not to interfere with other programs
-                        MaxDegreeOfParallelism = (Environment.ProcessorCount * 3) / 4
-                    };
-                    return parallelOptions;
-                },
-                LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
-        /// Settings that control the degree of parallelism for multithreaded tasks.
-        /// </summary>
-        private static Lazy<ParallelOptions> parallelSettingsMedium = new Lazy<ParallelOptions>(
-                () =>
-                {
-                    ParallelOptions parallelOptions = new ParallelOptions()
-                    {
-                        // Only use 25% of available processing power
-                        MaxDegreeOfParallelism = (Environment.ProcessorCount * 1) / 4
-                    };
-                    return parallelOptions;
-                },
-                LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
-        /// Settings that control the degree of parallelism for multithreaded tasks.
-        /// </summary>
-        private static Lazy<ParallelOptions> parallelSettingsNone = new Lazy<ParallelOptions>(
-                () =>
-                {
-                    ParallelOptions parallelOptions = new ParallelOptions()
-                    {
-                        // Only use 1 CPU
-                        MaxDegreeOfParallelism = 1
-                    };
-                    return parallelOptions;
-                },
-                LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="SettingsViewModel"/> class from being created.
         /// </summary>
         private SettingsViewModel() : base("Settings")
         {
             DockingViewModel.GetInstance().RegisterViewModel(this);
-        }
-
-        /// <summary>
-        /// Gets the parallelism settings which use all CPUs available.
-        /// </summary>
-        public ParallelOptions ParallelSettingsFastest
-        {
-            get
-            {
-                return parallelSettingsFullCpu.Value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the parallelism settings which use most of the CPUs available.
-        /// </summary>
-        public ParallelOptions ParallelSettingsFast
-        {
-            get
-            {
-                return parallelSettingsFast.Value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the parallelism settings which use some of the CPUs available.
-        /// </summary>
-        public ParallelOptions ParallelSettingsMedium
-        {
-            get
-            {
-                return parallelSettingsMedium.Value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the parallelism settings which use only one CPU. This should only be used for debugging.
-        /// </summary>
-        public ParallelOptions ParallelSettingsNone
-        {
-            get
-            {
-                return parallelSettingsNone.Value;
-            }
         }
 
         /// <summary>
@@ -479,89 +374,6 @@
         public static SettingsViewModel GetInstance()
         {
             return SettingsViewModel.settingsViewModelInstance.Value;
-        }
-
-        /// <summary>
-        /// Gets the allowed type settings for virtual memory queries based on the set type flags.
-        /// </summary>
-        /// <returns>The flags of the allowed types for virtual memory queries.</returns>
-        public MemoryTypeEnum GetAllowedTypeSettings()
-        {
-            MemoryTypeEnum result = 0;
-
-            if (Settings.Default.MemoryTypeNone)
-            {
-                result |= MemoryTypeEnum.None;
-            }
-
-            if (Settings.Default.MemoryTypePrivate)
-            {
-                result |= MemoryTypeEnum.Private;
-            }
-
-            if (Settings.Default.MemoryTypeImage)
-            {
-                result |= MemoryTypeEnum.Image;
-            }
-
-            if (Settings.Default.MemoryTypeMapped)
-            {
-                result |= MemoryTypeEnum.Mapped;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Gets the required protection settings for virtual memory queries based on the set type flags.
-        /// </summary>
-        /// <returns>The flags of the required protections for virtual memory queries.</returns>
-        public MemoryProtectionEnum GetRequiredProtectionSettings()
-        {
-            MemoryProtectionEnum result = 0;
-
-            if (Settings.Default.RequiredWrite)
-            {
-                result |= MemoryProtectionEnum.Write;
-            }
-
-            if (Settings.Default.RequiredExecute)
-            {
-                result |= MemoryProtectionEnum.Execute;
-            }
-
-            if (Settings.Default.RequiredCopyOnWrite)
-            {
-                result |= MemoryProtectionEnum.CopyOnWrite;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Gets the excluded protection settings for virtual memory queries based on the set type flags.
-        /// </summary>
-        /// <returns>The flags of the excluded protections for virtual memory queries.</returns>
-        public MemoryProtectionEnum GetExcludedProtectionSettings()
-        {
-            MemoryProtectionEnum result = 0;
-
-            if (Settings.Default.ExcludedWrite)
-            {
-                result |= MemoryProtectionEnum.Write;
-            }
-
-            if (Settings.Default.ExcludedExecute)
-            {
-                result |= MemoryProtectionEnum.Execute;
-            }
-
-            if (Settings.Default.ExcludedCopyOnWrite)
-            {
-                result |= MemoryProtectionEnum.CopyOnWrite;
-            }
-
-            return result;
         }
 
         /// <summary>

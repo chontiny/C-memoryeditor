@@ -1,14 +1,14 @@
 ﻿namespace Squalr.Engine.Networks
 {
     using Squalr.Engine.Engine.Hook;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
     using System.Diagnostics;
 
     public class Network : INetwork, IProcessObserver
     {
         public Network()
         {
-            ProcessInfo.Default.Subscribe(this);
+            Processes.Default.Subscribe(this);
         }
 
         private HookClient HookClient { get; set; }

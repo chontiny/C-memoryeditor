@@ -2,9 +2,9 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Content;
-    using Squalr.Engine.Processes;
+    using Squalr.Engine.OS;
+    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
-    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -48,14 +48,14 @@
             this.IconSource = Images.SelectProcess;
             this.RefreshProcessListCommand = new RelayCommand(() => Task.Run(() => this.RefreshProcessList()), () => true);
             this.SelectProcessCommand = new RelayCommand<ProcessDecorator>((process) => Task.Run(() => this.SelectProcess(process)), (process) => true);
-
             this.detachProcess = new ProcessDecorator("-- Detach from Process --");
-            ProcessSelectorTask processSelectorTask = new ProcessSelectorTask(this.RefreshProcessList);
+
+            this.StartAutomaticProcessListRefresh();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
 
             // Subscribe to process events
-            ProcessInfo.Default.Subscribe(this);
+            Processes.Default.Subscribe(this);
         }
 
         /// <summary>
@@ -117,13 +117,13 @@
                 if (value == this.DetachProcess)
                 {
                     this.selectedProcess = null;
-                    ProcessInfo.Default.OpenedProcess = null;
+                    Processes.Default.OpenedProcess = null;
                     this.RaisePropertyChanged(nameof(this.WindowedProcessList));
                 }
                 else if (value != this.SelectedProcess)
                 {
                     this.selectedProcess = value;
-                    ProcessInfo.Default.OpenedProcess = value.Process;
+                    Processes.Default.OpenedProcess = value.Process;
                     this.RaisePropertyChanged(nameof(this.SelectedProcess));
                     this.RaisePropertyChanged(nameof(this.WindowedProcessList));
                 }
@@ -154,7 +154,7 @@
         {
             get
             {
-                String processName = ProcessInfo.Default.OpenedProcess.ProcessName;
+                String processName = Processes.Default.OpenedProcess.ProcessName;
                 return String.IsNullOrEmpty(processName) ? "Please Select a Process" : processName;
             }
         }
@@ -192,14 +192,6 @@
         }
 
         /// <summary>
-        /// Refreshes the process list.
-        /// </summary>
-        private void RefreshProcessList()
-        {
-            this.ProcessList = ProcessInfo.Default.GetProcesses().Select(process => new ProcessDecorator(process));
-        }
-
-        /// <summary>
         /// Makes the target process selection.
         /// </summary>
         /// <param name="process">The process being selected.</param>
@@ -207,6 +199,26 @@
         {
             this.SelectedProcess = process;
             this.IsVisible = false;
+        }
+
+        private void StartAutomaticProcessListRefresh()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    this.RefreshProcessList();
+                    await Task.Delay(5000);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Refreshes the process list.
+        /// </summary>
+        private void RefreshProcessList()
+        {
+            this.ProcessList = Processes.Default.GetProcesses().Select(process => new ProcessDecorator(process));
         }
     }
     //// End class

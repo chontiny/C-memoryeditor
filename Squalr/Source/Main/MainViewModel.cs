@@ -2,10 +2,8 @@
 {
     using CompilerService;
     using GalaSoft.MvvmLight.CommandWpf;
-    using Squalr.Engine;
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Memory;
-    using Squalr.Engine.Memory.Clr;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Scripting;
     using Squalr.Properties;
     using Squalr.Source.ChangeLog;
@@ -37,7 +35,7 @@
             // Attach our view model to the engine's output
             Logger.Subscribe(OutputViewModel.GetInstance());
 
-            if (SystemInfo.HasVectorSupport)
+            if (Vectors.HasVectorSupport)
             {
                 Logger.Log(LogLevel.Info, "Hardware acceleration enabled");
                 Logger.Log(LogLevel.Info, "Vector size: " + System.Numerics.Vector<Byte>.Count);
@@ -45,11 +43,6 @@
 
 
             Logger.Log(LogLevel.Info, "Squalr developer tools started");
-
-            DotNetObjectCollector.GetInstance().Start();
-            AddressResolver.GetInstance().Start();
-
-            Logger.Log(LogLevel.Info, "Background services started");
 
             // The Engine is .NET Standard and there are no compiler libraries. Squalr compensates for this here by passing in a functional full framework compiler.
             Compiler.OverrideCompiler(new CodeDomCompiler());

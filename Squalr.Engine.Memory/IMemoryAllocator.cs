@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Memory
 {
-    using Processes;
+    using Squalr.Engine.OS;
     using System;
 
     /// <summary>
@@ -13,7 +13,7 @@
         /// </summary>
         /// <param name="size">The size of the memory allocation.</param>
         /// <returns>A pointer to the location of the allocated memory.</returns>
-        IntPtr AllocateMemory(Int32 size);
+        UInt64 AllocateMemory(Int32 size);
 
         /// <summary>
         /// Allocates memory in the opened process.
@@ -21,13 +21,13 @@
         /// <param name="size">The size of the memory allocation.</param>
         /// <param name="allocAddress">The rough address of where the allocation should take place.</param>
         /// <returns>A pointer to the location of the allocated memory.</returns>
-        IntPtr AllocateMemory(Int32 size, IntPtr allocAddress);
+        UInt64 AllocateMemory(Int32 size, UInt64 allocAddress);
 
         /// <summary>
         /// Deallocates memory in the opened process.
         /// </summary>
         /// <param name="address">The address to perform the region wide deallocation.</param>
-        void DeallocateMemory(IntPtr address);
+        void DeallocateMemory(UInt64 address);
     }
     //// End interface
 }

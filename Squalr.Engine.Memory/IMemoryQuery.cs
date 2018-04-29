@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Engine.Memory
 {
-    using Processes;
+    using Squalr.Engine.OS;
     using System;
     using System.Collections.Generic;
 
@@ -22,8 +22,8 @@
             MemoryProtectionEnum requiredProtection,
             MemoryProtectionEnum excludedProtection,
             MemoryTypeEnum allowedTypes,
-            IntPtr startAddress,
-            IntPtr endAddress);
+            UInt64 startAddress,
+            UInt64 endAddress);
 
         /// <summary>
         /// Gets all virtual pages in the opened process.
@@ -35,7 +35,7 @@
         /// Gets the maximum address possible in the target process.
         /// </summary>
         /// <returns>The maximum address possible in the target process.</returns>
-        IntPtr GetMaximumAddress();
+        UInt64 GetMaximumAddress();
 
         /// <summary>
         /// Gets the maximum usermode address possible in the target process.

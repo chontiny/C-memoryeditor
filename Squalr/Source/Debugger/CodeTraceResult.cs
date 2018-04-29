@@ -18,8 +18,8 @@
         {
             this.codeTraceInfo = codeTraceInfo;
 
-            this.Address = codeTraceInfo.Address;
-            this.Instruction = codeTraceInfo.Instruction;
+            this.Address = codeTraceInfo.Instruction.Address;
+            this.Instruction = codeTraceInfo.Instruction.Mnemonic;
             this.Count = 1;
         }
 

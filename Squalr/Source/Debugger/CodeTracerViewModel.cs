@@ -7,7 +7,6 @@
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectItems;
-    using Squalr.Source.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -157,7 +156,7 @@
         /// <param name="codeTraceResult">The code trace result to add to the project explorer.</param>
         private void AddCodeTraceResult(CodeTraceResult codeTraceResult)
         {
-            InstructionItem instructionItem = new InstructionItem(codeTraceResult.Address.ToIntPtr(), "", "nop", new Byte[] { 0x90 });
+            InstructionItem instructionItem = new InstructionItem(codeTraceResult.Address, "", "nop", new Byte[] { 0x90 });
 
             ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: instructionItem);
         }
@@ -174,7 +173,7 @@
             }
 
             IEnumerable<InstructionItem> projectItems = codeTraceResults.Select(
-                codeTraceEvent => new InstructionItem(codeTraceEvent.Address.ToIntPtr(), "", "nop", new Byte[] { 0x90 }));
+                codeTraceEvent => new InstructionItem(codeTraceEvent.Address, "", "nop", new Byte[] { 0x90 }));
 
             ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: projectItems);
         }
@@ -189,7 +188,7 @@
                 AddressItem addressItem = projectItem as AddressItem;
 
                 BreakpointSize size = Debugger.Default.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatWrites(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatWrites(addressItem.CalculatedAddress, size, this.CodeTraceEvent);
             }
         }
 
@@ -203,7 +202,7 @@
                 AddressItem addressItem = projectItem as AddressItem;
 
                 BreakpointSize size = Debugger.Default.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatReads(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatReads(addressItem.CalculatedAddress, size, this.CodeTraceEvent);
             }
         }
 
@@ -217,7 +216,7 @@
                 AddressItem addressItem = projectItem as AddressItem;
 
                 BreakpointSize size = Debugger.Default.SizeToBreakpointSize((UInt32)Conversions.SizeOf(addressItem.DataType));
-                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatAccesses(addressItem.CalculatedAddress.ToUInt64(), size, this.CodeTraceEvent);
+                this.DebuggerCancellationTokenSource = Debugger.Default.FindWhatAccesses(addressItem.CalculatedAddress, size, this.CodeTraceEvent);
             }
         }
 
@@ -231,7 +230,7 @@
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                CodeTraceResult result = this.Results.FirstOrDefault(results => results.Address == codeTraceInfo.Address);
+                CodeTraceResult result = this.Results.FirstOrDefault(results => results.Address == codeTraceInfo.Instruction.Address);
 
                 // Insert or increment
                 if (result != null)

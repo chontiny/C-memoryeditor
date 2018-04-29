@@ -33,14 +33,14 @@
         /// <param name="size">The number of bytes to be read from the specified process.</param>
         /// <param name="success">Whether or not the read operation succeeded.</param>
         /// <returns>The bytes read from the target, can be null or empty on failure.</returns>
-        public static Byte[] ReadBytes(IntPtr processHandle, IntPtr address, Int32 size, out Boolean success)
+        public static Byte[] ReadBytes(IntPtr processHandle, UInt64 address, Int32 size, out Boolean success)
         {
             // Allocate the buffer
             Byte[] buffer = new Byte[size];
             Int32 bytesRead;
 
             // Read the data from the target process
-            success = NativeMethods.ReadProcessMemory(processHandle, address, buffer, size, out bytesRead) && size == bytesRead;
+            success = NativeMethods.ReadProcessMemory(processHandle, address.ToIntPtr(), buffer, size, out bytesRead) && size == bytesRead;
 
             return buffer;
         }
@@ -52,17 +52,17 @@
         /// <param name="address">A pointer to the base address in the specified process to which data is written.</param>
         /// <param name="byteArray">A buffer that contains data to be written in the address space of the specified process.</param>
         /// <returns>The number of bytes written.</returns>
-        public static Int32 WriteBytes(IntPtr processHandle, IntPtr address, Byte[] byteArray)
+        public static Int32 WriteBytes(IntPtr processHandle, UInt64 address, Byte[] byteArray)
         {
             MemoryProtectionFlags oldProtection;
             Int32 bytesWritten;
 
             try
             {
-                NativeMethods.VirtualProtectEx(processHandle, (IntPtr)address, byteArray.Length, MemoryProtectionFlags.ExecuteReadWrite, out oldProtection);
+                NativeMethods.VirtualProtectEx(processHandle, address.ToIntPtr(), byteArray.Length, MemoryProtectionFlags.ExecuteReadWrite, out oldProtection);
 
                 // Write the data to the target process
-                if (NativeMethods.WriteProcessMemory(processHandle, address, byteArray, byteArray.Length, out bytesWritten))
+                if (NativeMethods.WriteProcessMemory(processHandle, address.ToIntPtr(), byteArray, byteArray.Length, out bytesWritten))
                 {
                     // Check whether all bytes were written
                     if (bytesWritten == byteArray.Length)
@@ -71,7 +71,7 @@
                     }
                 }
 
-                NativeMethods.VirtualProtectEx(processHandle, (IntPtr)address, byteArray.Length, oldProtection, out oldProtection);
+                NativeMethods.VirtualProtectEx(processHandle, address.ToIntPtr(), byteArray.Length, oldProtection, out oldProtection);
             }
             catch
             {
@@ -90,14 +90,14 @@
         /// <param name="protectionFlags">The memory protection for the region of pages to be allocated.</param>
         /// <param name="allocationFlags">The type of memory allocation.</param>
         /// <returns>The base address of the allocated region</returns>
-        public static IntPtr Allocate(
+        public static UInt64 Allocate(
             IntPtr processHandle,
-            IntPtr allocAddress,
+            UInt64 allocAddress,
             Int32 size,
             MemoryProtectionFlags protectionFlags = MemoryProtectionFlags.ExecuteReadWrite,
             MemoryAllocationFlags allocationFlags = MemoryAllocationFlags.Commit | MemoryAllocationFlags.Reserve)
         {
-            if (allocAddress != IntPtr.Zero)
+            if (allocAddress != 0)
             {
                 /* A specific address has been given. We will modify it to support the following constraints:
                  *  - Aligned by 0x10000 / 65536
@@ -106,7 +106,7 @@
                  * Note: A retry count has been put in place because VirtualAllocEx with an allocAddress specified may be invalid by the time we request the allocation.
                  */
 
-                IntPtr result = IntPtr.Zero;
+                UInt64 result = 0;
                 Int32 retryCount = 0;
 
                 // Request all chunks of unallocated memory. These will be very large in a 64-bit process.
@@ -116,7 +116,7 @@
                     allocAddress.Add(Int32.MaxValue >> 1, wrapAround: false));
 
                 // Convert to normalized regions
-                IEnumerable<NormalizedRegion> regions = freeMemory.Select(x => new NormalizedRegion(x.BaseAddress, x.RegionSize.ToInt32()));
+                IEnumerable<NormalizedRegion> regions = freeMemory.Select(x => new NormalizedRegion(x.BaseAddress.ToUInt64(), x.RegionSize.ToInt32()));
 
                 // Chunk the large regions into smaller regions based on the allocation size (minimum size is the alloc alignment to prevent creating too many chunks)
                 List<NormalizedRegion> subRegions = new List<NormalizedRegion>();
@@ -131,23 +131,23 @@
                 {
                     // Sample a random chunk and attempt to allocate the memory
                     result = subRegions.ElementAt(StaticRandom.Next(0, subRegions.Count())).BaseAddress;
-                    result = NativeMethods.VirtualAllocEx(processHandle, result, size, allocationFlags, protectionFlags);
+                    result = NativeMethods.VirtualAllocEx(processHandle, result.ToIntPtr(), size, allocationFlags, protectionFlags).ToUInt64();
 
-                    if (result != IntPtr.Zero || retryCount >= Memory.AllocateRetryCount)
+                    if (result != 0 || retryCount >= Memory.AllocateRetryCount)
                     {
                         break;
                     }
 
                     retryCount++;
                 }
-                while (result == IntPtr.Zero);
+                while (result == 0);
 
                 return result;
             }
             else
             {
                 // Allocate a memory page
-                return NativeMethods.VirtualAllocEx(processHandle, allocAddress, size, allocationFlags, protectionFlags);
+                return NativeMethods.VirtualAllocEx(processHandle, allocAddress.ToIntPtr(), size, allocationFlags, protectionFlags).ToUInt64();
             }
         }
 
@@ -156,10 +156,10 @@
         /// </summary>
         /// <param name="processHandle">A handle to a process.</param>
         /// <param name="address">A pointer to the starting address of the region of memory to be freed.</param>
-        public static void Free(IntPtr processHandle, IntPtr address)
+        public static void Free(IntPtr processHandle, UInt64 address)
         {
             // Free the memory
-            NativeMethods.VirtualFreeEx(processHandle, address, 0, MemoryReleaseFlags.Release);
+            NativeMethods.VirtualFreeEx(processHandle, address.ToIntPtr(), 0, MemoryReleaseFlags.Release);
         }
 
         /// <summary>
@@ -192,10 +192,10 @@
         /// </returns>
         public static IEnumerable<MemoryBasicInformation64> QueryUnallocatedMemory(
             IntPtr processHandle,
-            IntPtr startAddress,
-            IntPtr endAddress)
+            UInt64 startAddress,
+            UInt64 endAddress)
         {
-            if (startAddress.ToUInt64() >= endAddress.ToUInt64())
+            if (startAddress >= endAddress)
             {
                 yield return new MemoryBasicInformation64();
             }
@@ -215,7 +215,7 @@
                     MemoryBasicInformation32 memoryInfo32 = new MemoryBasicInformation32();
 
                     // Query the memory region (32 bit native method)
-                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress, out memoryInfo32, Marshal.SizeOf(memoryInfo32));
+                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress.ToIntPtr(), out memoryInfo32, Marshal.SizeOf(memoryInfo32));
 
                     // Copy from the 32 bit struct to the 64 bit struct
                     memoryInfo.AllocationBase = memoryInfo32.AllocationBase;
@@ -229,14 +229,14 @@
                 else
                 {
                     // Query the memory region (64 bit native method)
-                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress, out memoryInfo, Marshal.SizeOf(memoryInfo));
+                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress.ToIntPtr(), out memoryInfo, Marshal.SizeOf(memoryInfo));
                 }
 
                 // Increment the starting address with the size of the page
-                IntPtr previousFrom = startAddress;
+                UInt64 previousFrom = startAddress;
                 startAddress = startAddress.Add(memoryInfo.RegionSize);
 
-                if (previousFrom.ToUInt64() > startAddress.ToUInt64())
+                if (previousFrom > startAddress)
                 {
                     wrappedAround = true;
                 }
@@ -252,7 +252,7 @@
                     continue;
                 }
             }
-            while (startAddress.ToUInt64() < endAddress.ToUInt64() && queryResult != 0 && !wrappedAround);
+            while (startAddress < endAddress && queryResult != 0 && !wrappedAround);
         }
 
         /// <summary>
@@ -269,13 +269,13 @@
         /// </returns>
         public static IEnumerable<MemoryBasicInformation64> VirtualPages(
             IntPtr processHandle,
-            IntPtr startAddress,
-            IntPtr endAddress,
+            UInt64 startAddress,
+            UInt64 endAddress,
             MemoryProtectionFlags requiredProtection,
             MemoryProtectionFlags excludedProtection,
             MemoryTypeEnum allowedTypes)
         {
-            if (startAddress.ToUInt64() >= endAddress.ToUInt64())
+            if (startAddress >= endAddress)
             {
                 yield return new MemoryBasicInformation64();
             }
@@ -295,7 +295,7 @@
                     MemoryBasicInformation32 memoryInfo32 = new MemoryBasicInformation32();
 
                     // Query the memory region (32 bit native method)
-                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress, out memoryInfo32, Marshal.SizeOf(memoryInfo32));
+                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress.ToIntPtr(), out memoryInfo32, Marshal.SizeOf(memoryInfo32));
 
                     // Copy from the 32 bit struct to the 64 bit struct
                     memoryInfo.AllocationBase = memoryInfo32.AllocationBase;
@@ -309,14 +309,14 @@
                 else
                 {
                     // Query the memory region (64 bit native method)
-                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress, out memoryInfo, Marshal.SizeOf(memoryInfo));
+                    queryResult = NativeMethods.VirtualQueryEx(processHandle, startAddress.ToIntPtr(), out memoryInfo, Marshal.SizeOf(memoryInfo));
                 }
 
                 // Increment the starting address with the size of the page
-                IntPtr previousFrom = startAddress;
+                UInt64 previousFrom = startAddress;
                 startAddress = startAddress.Add(memoryInfo.RegionSize);
 
-                if (previousFrom.ToUInt64() > startAddress.ToUInt64())
+                if (previousFrom > startAddress)
                 {
                     wrappedAround = true;
                 }
@@ -388,7 +388,7 @@
                 // Return the memory page
                 yield return memoryInfo;
             }
-            while (startAddress.ToUInt64() < endAddress.ToUInt64() && queryResult != 0 && !wrappedAround);
+            while (startAddress < endAddress && queryResult != 0 && !wrappedAround);
         }
     }
     //// End class
