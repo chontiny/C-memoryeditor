@@ -54,6 +54,7 @@
         {
             return ChangeCounterViewModel.changeCounterViewModelInstance.Value;
         }
+
         private void ScanCountUpdated()
         {
             this.RaisePropertyChanged(nameof(this.ScanCount));

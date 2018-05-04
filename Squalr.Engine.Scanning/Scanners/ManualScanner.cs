@@ -27,14 +27,15 @@
         /// <param name="onProgressUpdate">The progress update callback.</param>
         /// <param name="cancellationTokenSource">A token for canceling the scan.</param>
         /// <returns></returns>
-        public static Task<Snapshot> Scan(Snapshot snapshot, DataType dataType, ScanConstraintCollection scanConstraintCollection, OnProgressUpdate onProgressUpdate, out CancellationTokenSource cancellationTokenSource)
+        public static TrackableTask<Snapshot> Scan(Snapshot snapshot, DataType dataType, ScanConstraintCollection scanConstraintCollection)
         {
-            cancellationTokenSource = new CancellationTokenSource();
+            TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>("Manual Scan");
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
-            snapshot = ValueCollector.CollectValues(snapshot, dataType, null, out _).Result;
+            snapshot = ValueCollector.CollectValues(snapshot, dataType).Result;
 
-            return Task.Factory.StartNew<Snapshot>(() =>
+            Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -45,31 +46,30 @@
                 Int32 regionCount = snapshot.RegionCount;
                 ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
                 Parallel.ForEach(
-
-                snapshot.OptimizedSnapshotRegions,
-                ParallelSettings.ParallelSettingsFastest,
-                (region) =>
-                {
-                    // Perform comparisons
-                    IList<SnapshotRegion> results = region.CompareAll(scanConstraintCollection);
-
-                    if (!results.IsNullOrEmpty())
+                    snapshot.OptimizedSnapshotRegions,
+                    ParallelSettings.ParallelSettingsFastest,
+                    (region) =>
                     {
-                        regions.Add(results);
-                    }
+                        // Perform comparisons
+                        IList<SnapshotRegion> results = region.CompareAll(scanConstraintCollection);
 
-                    // Update progress every N regions
-                    if (onProgressUpdate != null && Interlocked.Increment(ref processedPages) % 32 == 0)
-                    {
-                        // Check for canceled scan
-                        if (cancellationToken.IsCancellationRequested)
+                        if (!results.IsNullOrEmpty())
                         {
-                            return;
+                            regions.Add(results);
                         }
 
-                        onProgressUpdate(processedPages / regionCount);
-                    }
-                });
+                        // Update progress every N regions
+                        if (Interlocked.Increment(ref processedPages) % 32 == 0)
+                        {
+                            // Check for canceled scan
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                return;
+                            }
+
+                            trackedScanTask.UpdateProgress((float)processedPages / (float)snapshot.RegionCount * 100.0f);
+                        }
+                    });
                 //// End foreach Region
 
                 // Exit if canceled
@@ -81,6 +81,10 @@
 
                 return result;
             }, cancellationTokenSource.Token);
+
+            trackedScanTask.SetTrackedTask(scanTask);
+
+            return trackedScanTask;
         }
     }
     //// End class

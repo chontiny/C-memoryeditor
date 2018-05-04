@@ -91,8 +91,7 @@
         {
             Int32 processedPages = 0;
 
-            CancellationTokenSource cancellationTokenSource;
-            Snapshot snapshot = ValueCollector.CollectValues(this.Snapshot, DataType.Int32, null, out cancellationTokenSource).Result;
+            Snapshot snapshot = ValueCollector.CollectValues(this.Snapshot, DataType.Int32).Result;
 
             Parallel.ForEach(
                 snapshot.OptimizedSnapshotRegions,

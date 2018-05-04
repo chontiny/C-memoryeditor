@@ -517,17 +517,17 @@
                 Grid.Row="4"
                 Height="24"
                 Background="{StaticResource SqualrColorBlue}"
-                DataContext="{Binding ActionSchedulerViewModel, Source={StaticResource ViewModelLocator}}">
+                DataContext="{Binding TaskTrackerViewModel, Source={StaticResource ViewModelLocator}}">
                 <shell:Grid>
-                    <shell:ItemsControl HorizontalAlignment="Right" ItemsSource="{Binding Path=ActiveTasks}">
+                    <shell:ItemsControl HorizontalAlignment="Right" ItemsSource="{Binding Path=TrackedTasks}">
                         <shell:ItemsControl.ItemTemplate>
                             <shell:DataTemplate>
-                                <shell:WrapPanel VerticalAlignment="Center" Visibility="{Binding Path=TrackProgress, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <shell:WrapPanel VerticalAlignment="Center">
                                     <shell:TextBlock
                                         Padding="4,0,4,0"
                                         VerticalAlignment="Center"
                                         Foreground="{StaticResource SqualrColorWhite}"
-                                        Text="{Binding Path=TaskName}" />
+                                        Text="{Binding Path=Name}" />
                                     <shell:Grid>
                                         <shell:ProgressBar Width="96" Value="{Binding Path=Progress, Mode=OneWay}" />
                                         <shell:TextBlock
@@ -540,7 +540,7 @@
                                     <shell:Button
                                         VerticalAlignment="Center"
                                         Background="Transparent"
-                                        Command="{Binding ActionSchedulerViewModel.CancelTaskCommand, Source={StaticResource ViewModelLocator}}"
+                                        Command="{Binding TaskTrackerViewModel.CancelTaskCommand, Source={StaticResource ViewModelLocator}}"
                                         CommandParameter="{Binding .}"
                                         ToolTip="Cancel Action">
                                         <shell:Image

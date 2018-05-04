@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Scanning
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Scanning.Scanners;
@@ -10,6 +11,7 @@
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
     using Squalr.Source.Results;
+    using Squalr.Source.Tasks;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -282,15 +284,13 @@
             }
 
             SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory);
-
-            SnapshotManager.SaveSnapshot(
-                ManualScanner.Scan(
+            TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
                     SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
                     DataType.Int32,
-                    allScanConstraints,
-                    null,
-                    out _).Result
-                );
+                    allScanConstraints);
+
+            TaskTrackerViewModel.GetInstance().TrackTask(scanTask);
+            SnapshotManager.SaveSnapshot(scanTask.Result);
         }
 
         /// <summary>

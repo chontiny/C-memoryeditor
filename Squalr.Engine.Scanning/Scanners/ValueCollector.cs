@@ -13,14 +13,15 @@
     /// </summary>
     public static class ValueCollector
     {
-        public static Task<Snapshot> CollectValues(Snapshot snapshot, DataType dataType, OnProgressUpdate onProgressUpdate, out CancellationTokenSource cancellationTokenSource)
+        public static TrackableTask<Snapshot> CollectValues(Snapshot snapshot, DataType dataType)
         {
-            cancellationTokenSource = new CancellationTokenSource();
+            TrackableTask<Snapshot> trackableValueCollectTask = new TrackableTask<Snapshot>("Value Collector");
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             snapshot = snapshot.Clone("Value Collector");
 
-            return Task.Factory.StartNew<Snapshot>(() =>
+            Task<Snapshot> valueCollectTask = Task.Factory.StartNew<Snapshot>(() =>
             {
                 Int32 processedRegions = 0;
 
@@ -37,7 +38,7 @@
                         readGroup.ReadAllMemory();
 
                         // Update progress every N regions
-                        if (onProgressUpdate != null && Interlocked.Increment(ref processedRegions) % 32 == 0)
+                        if (Interlocked.Increment(ref processedRegions) % 32 == 0)
                         {
                             // Check for canceled scan
                             if (cancellationToken.IsCancellationRequested)
@@ -45,7 +46,7 @@
                                 return;
                             }
 
-                            onProgressUpdate(processedRegions / snapshot.RegionCount);
+                            trackableValueCollectTask.UpdateProgress((float)processedRegions / (float)snapshot.RegionCount * 100.0f);
                         }
                     });
 
@@ -55,6 +56,10 @@
 
                 return snapshot;
             }, cancellationTokenSource.Token);
+
+            trackableValueCollectTask.SetTrackedTask(valueCollectTask);
+
+            return trackableValueCollectTask;
         }
     }
     //// End class

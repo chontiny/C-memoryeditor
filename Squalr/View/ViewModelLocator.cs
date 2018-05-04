@@ -5,7 +5,6 @@
     using Source.Results;
     using Source.Snapshots;
     using Squalr.Properties;
-    using Squalr.Source.ActionScheduler;
     using Squalr.Source.ChangeLog;
     using Squalr.Source.Debugger;
     using Squalr.Source.Docking;
@@ -19,6 +18,7 @@
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.PropertyViewer;
     using Squalr.Source.Scanning;
+    using Squalr.Source.Tasks;
 
     /// <summary>
     /// This class contains static references to all the view models in the
@@ -47,11 +47,11 @@
         /// <summary>
         /// Gets the Action Scheduler view model.
         /// </summary>
-        public ActionSchedulerViewModel ActionSchedulerViewModel
+        public TaskTrackerViewModel TaskTrackerViewModel
         {
             get
             {
-                return ActionSchedulerViewModel.GetInstance();
+                return TaskTrackerViewModel.GetInstance();
             }
         }
 
