@@ -2,9 +2,11 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public delegate void OnProgressUpdate(Single progress);
+    public delegate void OnTaskCanceled(TrackableTask task);
     public delegate void OnTaskCompleted(TrackableTask task);
 
     public class TrackableTask : INotifyPropertyChanged
@@ -21,7 +23,9 @@
         {
         }
 
-        public OnTaskCompleted TaskCompletedCallback { get; set; }
+        public OnTaskCanceled CanceledCallback { get; set; }
+
+        public OnTaskCompleted CompletedCallback { get; set; }
 
         public Single Progress
         {
@@ -62,6 +66,7 @@
             {
                 this.isCanceled = value;
                 this.RaisePropertyChanged(nameof(this.IsCanceled));
+                this.CanceledCallback?.Invoke(this);
             }
         }
 
@@ -76,8 +81,17 @@
             {
                 this.isCompleted = value;
                 this.RaisePropertyChanged(nameof(this.IsCompleted));
-                this.TaskCompletedCallback?.Invoke(this);
+                this.CompletedCallback?.Invoke(this);
             }
+        }
+
+        protected CancellationTokenSource CancellationTokenSource { get; set; }
+
+        public void Cancel()
+        {
+            this.CancellationTokenSource.Cancel();
+
+            this.IsCanceled = true;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -109,9 +123,10 @@
 
         private Task<T> Task { get; set; }
 
-        public void SetTrackedTask(Task<T> task)
+        public void SetTrackedTask(Task<T> task, CancellationTokenSource cancellationTokenSource)
         {
             this.Task = task;
+            this.CancellationTokenSource = cancellationTokenSource;
 
             this.AwaitCompletion();
         }

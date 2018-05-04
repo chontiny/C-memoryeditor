@@ -31,58 +31,71 @@
         {
             TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>("Manual Scan");
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             snapshot = ValueCollector.CollectValues(snapshot, dataType).Result;
 
             Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
             {
-                cancellationToken.ThrowIfCancellationRequested();
+                Snapshot result = null;
 
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
+                try
+                {
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-                Int32 processedPages = 0;
-                Int32 regionCount = snapshot.RegionCount;
-                ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
-                Parallel.ForEach(
-                    snapshot.OptimizedSnapshotRegions,
-                    ParallelSettings.ParallelSettingsFastest,
-                    (region) =>
-                    {
-                        // Perform comparisons
-                        IList<SnapshotRegion> results = region.CompareAll(scanConstraintCollection);
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
 
-                        if (!results.IsNullOrEmpty())
-                        {
-                            regions.Add(results);
-                        }
+                    Int32 processedPages = 0;
+                    Int32 regionCount = snapshot.RegionCount;
+                    ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
 
-                        // Update progress every N regions
-                        if (Interlocked.Increment(ref processedPages) % 32 == 0)
+                    ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
+                    options.CancellationToken = cancellationTokenSource.Token;
+
+                    Parallel.ForEach(
+                        snapshot.OptimizedSnapshotRegions,
+                        options,
+                        (region) =>
                         {
                             // Check for canceled scan
-                            if (cancellationToken.IsCancellationRequested)
+                            cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                            // Perform comparisons
+                            IList<SnapshotRegion> results = region.CompareAll(scanConstraintCollection);
+
+                            if (!results.IsNullOrEmpty())
                             {
-                                return;
+                                regions.Add(results);
                             }
 
-                            trackedScanTask.UpdateProgress((float)processedPages / (float)snapshot.RegionCount * 100.0f);
-                        }
-                    });
-                //// End foreach Region
+                            // Update progress every N regions
+                            if (Interlocked.Increment(ref processedPages) % 32 == 0)
+                            {
+                                trackedScanTask.UpdateProgress((float)processedPages / (float)snapshot.RegionCount * 100.0f);
+                            }
+                        });
+                    //// End foreach Region
 
-                // Exit if canceled
-                cancellationToken.ThrowIfCancellationRequested();
+                    // Exit if canceled
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-                Snapshot result = new Snapshot("Manual Scan", regions.SelectMany(region => region));
-                stopwatch.Stop();
-                Logger.Log(LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
+                    result = new Snapshot("Manual Scan", regions.SelectMany(region => region));
+                    stopwatch.Stop();
+                    Logger.Log(LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
+                }
+                catch (OperationCanceledException ex)
+                {
+                    Logger.Log(LogLevel.Warn, "Scan canceled", ex);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Error performing scan", ex);
+                }
 
                 return result;
             }, cancellationTokenSource.Token);
 
-            trackedScanTask.SetTrackedTask(scanTask);
+            trackedScanTask.SetTrackedTask(scanTask, cancellationTokenSource);
 
             return trackedScanTask;
         }

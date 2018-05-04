@@ -17,7 +17,6 @@
         {
             TrackableTask<Snapshot> trackableValueCollectTask = new TrackableTask<Snapshot>("Value Collector");
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            CancellationToken cancellationToken = cancellationTokenSource.Token;
 
             snapshot = snapshot.Clone("Value Collector");
 
@@ -41,7 +40,7 @@
                         if (Interlocked.Increment(ref processedRegions) % 32 == 0)
                         {
                             // Check for canceled scan
-                            if (cancellationToken.IsCancellationRequested)
+                            if (cancellationTokenSource.Token.IsCancellationRequested)
                             {
                                 return;
                             }
@@ -50,14 +49,14 @@
                         }
                     });
 
-                cancellationToken.ThrowIfCancellationRequested();
+                cancellationTokenSource.Token.ThrowIfCancellationRequested();
                 stopwatch.Stop();
                 Logger.Log(LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
 
                 return snapshot;
             }, cancellationTokenSource.Token);
 
-            trackableValueCollectTask.SetTrackedTask(valueCollectTask);
+            trackableValueCollectTask.SetTrackedTask(valueCollectTask, cancellationTokenSource);
 
             return trackableValueCollectTask;
         }

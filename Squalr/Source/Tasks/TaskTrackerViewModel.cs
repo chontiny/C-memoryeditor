@@ -6,7 +6,6 @@
     using Squalr.Source.Docking;
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
 
@@ -31,7 +30,7 @@
         {
             this.trackedTasks = new FullyObservableCollection<TrackableTask>();
 
-            this.CancelTaskCommand = new RelayCommand<Task>(task => { }, (task) => true);
+            this.CancelTaskCommand = new RelayCommand<TrackableTask>(task => task.Cancel(), (task) => true);
         }
 
         /// <summary>
@@ -63,12 +62,13 @@
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                task.TaskCompletedCallback = this.OnTaskComplete;
+                task.CanceledCallback = this.RemoveTask;
+                task.CompletedCallback = this.RemoveTask;
                 this.TrackedTasks.Add(task);
             }));
         }
 
-        private void OnTaskComplete(TrackableTask task)
+        private void RemoveTask(TrackableTask task)
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
