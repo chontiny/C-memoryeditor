@@ -464,7 +464,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="Content\CSharp.xshd" />
+    <EmbeddedResource Include="Content\CSharp.xshd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

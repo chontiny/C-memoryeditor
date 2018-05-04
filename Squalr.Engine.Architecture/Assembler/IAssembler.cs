@@ -22,7 +22,7 @@
         /// <param name="isProcess32Bit">Whether or not the assembly is in the context of a 32 bit program.</param>
         /// <param name="baseAddress">The address where the code is rebased.</param>
         /// <returns>An array of bytes containing the assembly code.</returns>
-        AssemblerResult Assemble(String assembly, Boolean isProcess32Bit, IntPtr baseAddress);
+        AssemblerResult Assemble(String assembly, Boolean isProcess32Bit, UInt64 baseAddress);
     }
     //// End interface
 }

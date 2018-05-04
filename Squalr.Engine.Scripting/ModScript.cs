@@ -46,26 +46,30 @@ namespace Squalr.Engine.Scripting
 
         public Boolean IsActivated { get; set; }
 
+        public String CompiledAssembly { get; private set; }
+
         /// <summary>
         /// Gets or sets the compiled assembly object of a script.
         /// </summary>
         private dynamic ScriptObject { get; set; }
 
-        public static ModScript FromCompressedAssembly(String compressedAssembly)
+        public static ModScript Load(String compiledAssembly)
         {
             ModScript modScript = new ModScript();
-            Byte[] assemblyBytes = Loader.DecompressCompiledScript(compressedAssembly);
+            Byte[] compiledAssemblyBytes = Loader.DecompressCompiledScript(compiledAssembly);
 
-            modScript.ScriptObject = Compiler.LoadCompiledScript(assemblyBytes);
+            modScript.CompiledAssembly = compiledAssembly;
+            modScript.ScriptObject = Compiler.LoadCompiledScript(compiledAssemblyBytes);
 
             return modScript;
         }
 
         public async void SetScript(String script)
         {
-            Byte[] assemblyBytes = await Task.Run(() => Compiler.CompileScript(script));
+            Byte[] compiledAssemblyBytes = await Task.Run(() => Compiler.CompileScript(script));
 
-            this.ScriptObject = Compiler.LoadCompiledScript(assemblyBytes);
+            this.CompiledAssembly = Loader.CompressCompiledScript(compiledAssemblyBytes);
+            this.ScriptObject = Compiler.LoadCompiledScript(compiledAssemblyBytes);
         }
 
         /// <summary>
