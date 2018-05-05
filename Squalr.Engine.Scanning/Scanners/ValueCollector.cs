@@ -13,47 +13,64 @@
     /// </summary>
     public static class ValueCollector
     {
+        /// <summary>
+        /// The name of this scan.
+        /// </summary>
+        private const String Name = "Value Collector";
+
         public static TrackableTask<Snapshot> CollectValues(Snapshot snapshot, DataType dataType)
         {
-            TrackableTask<Snapshot> trackableValueCollectTask = new TrackableTask<Snapshot>("Value Collector");
+            TrackableTask<Snapshot> trackableValueCollectTask = new TrackableTask<Snapshot>(ValueCollector.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-            snapshot = snapshot.Clone("Value Collector");
+            snapshot = snapshot.Clone(ValueCollector.Name);
 
             Task<Snapshot> valueCollectTask = Task.Factory.StartNew<Snapshot>(() =>
             {
-                Int32 processedRegions = 0;
+                try
+                {
+                    Int32 processedRegions = 0;
 
-                Stopwatch stopwatch = new Stopwatch();
-                stopwatch.Start();
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
 
-                // Read memory to get current values for each region
-                Parallel.ForEach(
-                    snapshot.OptimizedReadGroups,
-                    ParallelSettings.ParallelSettingsFastest,
-                    (readGroup) =>
-                    {
-                        // Read the memory for this region
-                        readGroup.ReadAllMemory();
+                    ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
+                    options.CancellationToken = cancellationTokenSource.Token;
 
-                        // Update progress every N regions
-                        if (Interlocked.Increment(ref processedRegions) % 32 == 0)
+                    // Read memory to get current values for each region
+                    Parallel.ForEach(
+                        snapshot.OptimizedReadGroups,
+                        options,
+                        (readGroup) =>
                         {
                             // Check for canceled scan
-                            if (cancellationTokenSource.Token.IsCancellationRequested)
+                            cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                            // Read the memory for this region
+                            readGroup.ReadAllMemory();
+
+                            // Update progress every N regions
+                            if (Interlocked.Increment(ref processedRegions) % 32 == 0)
                             {
-                                return;
+                                trackableValueCollectTask.Progress = (float)processedRegions / (float)snapshot.RegionCount * 100.0f;
                             }
+                        });
 
-                            trackableValueCollectTask.UpdateProgress((float)processedRegions / (float)snapshot.RegionCount * 100.0f);
-                        }
-                    });
-
-                cancellationTokenSource.Token.ThrowIfCancellationRequested();
-                stopwatch.Stop();
-                Logger.Log(LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
-
-                return snapshot;
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    stopwatch.Stop();
+                    Logger.Log(LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
+                    return snapshot;
+                }
+                catch (OperationCanceledException ex)
+                {
+                    Logger.Log(LogLevel.Warn, "Scan canceled", ex);
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Error performing scan", ex);
+                    return null;
+                }
             }, cancellationTokenSource.Token);
 
             trackableValueCollectTask.SetTrackedTask(valueCollectTask, cancellationTokenSource);

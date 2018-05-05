@@ -5,12 +5,20 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public delegate void OnProgressUpdate(Single progress);
-    public delegate void OnTaskCanceled(TrackableTask task);
-    public delegate void OnTaskCompleted(TrackableTask task);
-
-    public class TrackableTask : INotifyPropertyChanged
+    public class TrackableTask<T> : INotifyPropertyChanged
     {
+        public delegate void OnTaskCanceled(TrackableTask<T> task);
+
+        public delegate void OnTaskCompleted(TrackableTask<T> task);
+
+        public delegate void OnProgressUpdate(Single progress);
+
+        public event OnTaskCanceled OnCanceledEvent;
+
+        public event OnTaskCompleted OnCompletedEvent;
+
+        public event OnProgressUpdate OnProgressUpdatedEvent;
+
         private Single progress;
 
         private String name;
@@ -23,10 +31,6 @@
         {
         }
 
-        public OnTaskCanceled CanceledCallback { get; set; }
-
-        public OnTaskCompleted CompletedCallback { get; set; }
-
         public Single Progress
         {
             get
@@ -38,6 +42,7 @@
             {
                 this.progress = value;
                 this.RaisePropertyChanged(nameof(this.Progress));
+                this.OnProgressUpdatedEvent?.Invoke(value);
             }
         }
 
@@ -66,7 +71,7 @@
             {
                 this.isCanceled = value;
                 this.RaisePropertyChanged(nameof(this.IsCanceled));
-                this.CanceledCallback?.Invoke(this);
+                this.OnCanceledEvent?.Invoke(this);
             }
         }
 
@@ -81,7 +86,7 @@
             {
                 this.isCompleted = value;
                 this.RaisePropertyChanged(nameof(this.IsCompleted));
-                this.CompletedCallback?.Invoke(this);
+                this.OnCompletedEvent?.Invoke(this);
             }
         }
 
@@ -104,10 +109,7 @@
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
 
-    public class TrackableTask<T> : TrackableTask
-    {
         public TrackableTask(String name)
         {
             this.Name = name;
@@ -129,11 +131,6 @@
             this.CancellationTokenSource = cancellationTokenSource;
 
             this.AwaitCompletion();
-        }
-
-        public void UpdateProgress(Single progress)
-        {
-            this.Progress = progress;
         }
 
         private async void AwaitCompletion()

@@ -19,6 +19,11 @@
     public static class ManualScanner
     {
         /// <summary>
+        /// The name of this scan.
+        /// </summary>
+        private const String Name = "Manual Scanner";
+
+        /// <summary>
         /// Begins the manual scan based on the provided snapshot and parameters.
         /// </summary>
         /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
@@ -29,10 +34,8 @@
         /// <returns></returns>
         public static TrackableTask<Snapshot> Scan(Snapshot snapshot, DataType dataType, ScanConstraintCollection scanConstraintCollection)
         {
-            TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>("Manual Scan");
+            TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(ManualScanner.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-            snapshot = ValueCollector.CollectValues(snapshot, dataType).Result;
 
             Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
             {
@@ -71,7 +74,7 @@
                             // Update progress every N regions
                             if (Interlocked.Increment(ref processedPages) % 32 == 0)
                             {
-                                trackedScanTask.UpdateProgress((float)processedPages / (float)snapshot.RegionCount * 100.0f);
+                                trackedScanTask.Progress = (float)processedPages / (float)snapshot.RegionCount * 100.0f;
                             }
                         });
                     //// End foreach Region
@@ -79,7 +82,7 @@
                     // Exit if canceled
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-                    result = new Snapshot("Manual Scan", regions.SelectMany(region => region));
+                    result = new Snapshot(ManualScanner.Name, regions.SelectMany(region => region));
                     stopwatch.Stop();
                     Logger.Log(LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
                 }

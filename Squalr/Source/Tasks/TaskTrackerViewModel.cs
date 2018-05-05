@@ -2,6 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine;
+    using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
     using System;
@@ -21,16 +22,16 @@
             () => { return new TaskTrackerViewModel(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
-        private FullyObservableCollection<TrackableTask> trackedTasks;
+        private FullyObservableCollection<TrackableTask<Snapshot>> trackedTasks;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="TaskTrackerViewModel" /> class from being created.
         /// </summary>
-        private TaskTrackerViewModel() : base("Action Scheduler")
+        private TaskTrackerViewModel() : base("Task Tracker")
         {
-            this.trackedTasks = new FullyObservableCollection<TrackableTask>();
+            this.trackedTasks = new FullyObservableCollection<TrackableTask<Snapshot>>();
 
-            this.CancelTaskCommand = new RelayCommand<TrackableTask>(task => task.Cancel(), (task) => true);
+            this.CancelTaskCommand = new RelayCommand<TrackableTask<Snapshot>>(task => task.Cancel(), (task) => true);
         }
 
         /// <summary>
@@ -50,7 +51,7 @@
         /// <summary>
         /// Gets the tasks that are actively running.
         /// </summary>
-        public FullyObservableCollection<TrackableTask> TrackedTasks
+        public FullyObservableCollection<TrackableTask<Snapshot>> TrackedTasks
         {
             get
             {
@@ -58,17 +59,17 @@
             }
         }
 
-        public void TrackTask(TrackableTask task)
+        public void TrackTask(TrackableTask<Snapshot> task)
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
-                task.CanceledCallback = this.RemoveTask;
-                task.CompletedCallback = this.RemoveTask;
+                task.OnCanceledEvent += this.RemoveTask;
+                task.OnCompletedEvent += this.RemoveTask;
                 this.TrackedTasks.Add(task);
             }));
         }
 
-        private void RemoveTask(TrackableTask task)
+        private void RemoveTask(TrackableTask<Snapshot> task)
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
