@@ -32,6 +32,12 @@
         /// </summary>
         private MainViewModel() : base()
         {
+            /*
+            using (UpdateManager manager = new UpdateManager("C:\\Projects\\MyApp\\Releases"))
+            {
+                ReleaseEntry result = manager.UpdateApp().Result;
+            }*/
+
             // Attach our view model to the engine's output
             Logger.Subscribe(OutputViewModel.GetInstance());
 

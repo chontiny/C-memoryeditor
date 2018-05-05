@@ -109,6 +109,14 @@
                 return parallelSettingsNone.Value;
             }
         }
+
+        public static ParallelOptions Clone(this ParallelOptions parallelOptions)
+        {
+            ParallelOptions options = new ParallelOptions();
+            options.MaxDegreeOfParallelism = parallelOptions.MaxDegreeOfParallelism;
+
+            return options;
+        }
     }
     //// End class
 }

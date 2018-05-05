@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Engine.Architecture.Assemblers
 {
-    using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Diagnostics;
@@ -24,7 +23,7 @@
         public AssemblerResult Assemble(String assembly, Boolean isProcess32Bit)
         {
             // Assemble and return the code
-            return this.Assemble(assembly, isProcess32Bit, IntPtr.Zero);
+            return this.Assemble(assembly, isProcess32Bit, 0);
         }
 
         /// <summary>
@@ -53,7 +52,7 @@
         /// <param name="isProcess32Bit">Whether or not the assembly is in the context of a 32 bit program.</param>
         /// <param name="baseAddress">The address where the code is rebased.</param>
         /// <returns>An array of bytes containing the assembly code.</returns>
-        public AssemblerResult Assemble(String assembly, Boolean isProcess32Bit, IntPtr baseAddress)
+        public AssemblerResult Assemble(String assembly, Boolean isProcess32Bit, UInt64 baseAddress)
         {
             AssemblerResult result = new AssemblerResult();
             String preamble = "org 0x" + baseAddress.ToString("X") + Environment.NewLine;
@@ -68,8 +67,6 @@
             }
 
             assembly = preamble + assembly;
-
-            Logger.Log(LogLevel.Info, "Path:" + this.nasmPath.Value);
 
             try
             {

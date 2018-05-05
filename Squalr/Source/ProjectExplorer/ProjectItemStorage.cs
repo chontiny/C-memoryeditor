@@ -321,22 +321,15 @@
                         (projectItem) =>
                     {
                         ProjectItem targetProjectItem = projectItem;
+                        ScriptItem scriptItem = targetProjectItem as ScriptItem;
 
-                        if (targetProjectItem == null)
+                        if (scriptItem == null)
                         {
                             return;
                         }
 
                         String filePath = Path.Combine(folderPath, targetProjectItem.Name + ProjectItemStorage.ProjectFileExtension);
-
-                        using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
-                        {
-                            List<ProjectItem> newProjectRoot = new List<ProjectItem>();
-                            newProjectRoot.Add(targetProjectItem);
-
-                            DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem[]));
-                            serializer.WriteObject(fileStream, newProjectRoot.ToArray());
-                        }
+                        File.WriteAllText(filePath, scriptItem.ModScript.CompiledAssembly);
                     });
                 }
                 catch (Exception ex)

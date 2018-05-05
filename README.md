@@ -25,16 +25,16 @@ Below is some brief documentation on the NuGet package APIs
 If using the NuGet packages, it is important to hook into the engine's output to receive logs of events. These are invaluable for diagnosing issues.
 
 ```csharp
-using Squalr.Engine.Output;
+using Squalr.Engine.Logging;
 
 ...
 
-// Receive output from the engine
-Output.Subscribe(new EngineLogEvents());
+// Receive logs from the engine
+Logger.Subscribe(new EngineLogEvents());
 
 ...
 
-class EngineLogEvents : IOutputObserver
+class EngineLogEvents : ILoggerObserver
 {
 	public void OnLogEvent(LogLevel logLevel, string message, string innerMessage)
 	{
@@ -85,10 +85,10 @@ using Squalr.Engine.Architecture.Assemblers;
 // Perform assembly
 AssemblerResult result = Assembler.Default.Assemble(assembly: "mov eax, 5", isProcess32Bit: true, baseAddress: 0x10000);
 
-Console.WriteLine(BitConverter.ToString(result.Data).Replace("-", " "));
+Console.WriteLine(BitConverter.ToString(result.Bytes).Replace("-", " "));
 
 // Disassemble the result (we will get the same instructions back)
-IEnumerable<NormalizedInstruction> instructions = Disassembler.Default.Disassemble(bytes: result.Data, isProcess32Bit: true, baseAddress: 0x10000);
+Instruction[] instructions = Disassembler.Default.Disassemble(bytes: result.Bytes, isProcess32Bit: true, baseAddress: 0x10000);
 
 Console.WriteLine(instructions[0].Mnemonic);
 ```
@@ -104,16 +104,31 @@ using Squalr.Engine.Scanning.Snapshots;
 
 ...
 
-Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory);
-
-snapshot = ValueCollector.CollectValues(snapshot, dataType, null, out _).Result;
-
-ManualScanner.Scan(
+// Collect values
+TrackableTask<Snapshot> valueCollectorTask = ValueCollector.CollectValues(
 	SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
-	DataType.Int32,
-	allScanConstraints,
-	null,
-	out _).Result
+	DataType.Int32);
+
+TaskTrackerViewModel.GetInstance().TrackTask(valueCollectorTask);
+
+// Perform manual scan on value collection complete
+valueCollectorTask.CompletedCallback += ((completedValueCollection) =>
+{
+	Snapshot values = completedValueCollection.Result;
+	
+	// Constraints
+	ScanConstraintCollection scanConstraints = new ScanConstraintCollection();
+	scanConstraints.AddConstraint(new ScanConstraint(ScanConstraint.ConstraintType.Equal, 25));
+	DataType dataType = DataType.Int32;
+
+	TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
+		values,
+		DataType.Int32,
+		allScanConstraints);
+
+	TaskTrackerViewModel.GetInstance().TrackTask(scanTask);
+	SnapshotManager.SaveSnapshot(scanTask.Result);
+});
 	
 	
 for (UInt64 index = 0; index < snapshot.ElementCount; index++)

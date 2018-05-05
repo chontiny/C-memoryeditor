@@ -113,7 +113,7 @@
             this.PrintDebugTag();
 
             assembly = this.ResolveKeywords(assembly);
-            AssemblerResult result = Assembler.Default.Assemble(assembly, Processes.Default.IsOpenedProcess32Bit(), address.ToIntPtr());
+            AssemblerResult result = Assembler.Default.Assemble(assembly, Processes.Default.IsOpenedProcess32Bit(), address);
 
             Logger.Log(LogLevel.Info, result.Message, result.InnerMessage);
 
