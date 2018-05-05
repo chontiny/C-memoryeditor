@@ -59,6 +59,10 @@
             }
         }
 
+        /// <summary>
+        /// Tracks a given task until it is canceled or completed.
+        /// </summary>
+        /// <param name="task">The task to track.</param>
         public void TrackTask(TrackableTask<Snapshot> task)
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
@@ -69,6 +73,10 @@
             }));
         }
 
+        /// <summary>
+        /// Removes a tracked task from the list of tracked tasks.
+        /// </summary>
+        /// <param name="task">The task to remove.</param>
         private void RemoveTask(TrackableTask<Snapshot> task)
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>

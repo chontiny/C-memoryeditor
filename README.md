@@ -104,12 +104,12 @@ using Squalr.Engine.Scanning.Snapshots;
 
 ...
 
+DataType dataType = DataType.Int32;
+
 // Collect values
 TrackableTask<Snapshot> valueCollectorTask = ValueCollector.CollectValues(
 	SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
-	DataType.Int32);
-
-TaskTrackerViewModel.GetInstance().TrackTask(valueCollectorTask);
+	dataType);
 
 // Perform manual scan on value collection complete
 valueCollectorTask.CompletedCallback += ((completedValueCollection) =>
@@ -119,14 +119,12 @@ valueCollectorTask.CompletedCallback += ((completedValueCollection) =>
 	// Constraints
 	ScanConstraintCollection scanConstraints = new ScanConstraintCollection();
 	scanConstraints.AddConstraint(new ScanConstraint(ScanConstraint.ConstraintType.Equal, 25));
-	DataType dataType = DataType.Int32;
 
 	TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
 		values,
-		DataType.Int32,
+		dataType,
 		allScanConstraints);
 
-	TaskTrackerViewModel.GetInstance().TrackTask(scanTask);
 	SnapshotManager.SaveSnapshot(scanTask.Result);
 });
 	
