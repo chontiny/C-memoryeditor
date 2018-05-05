@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>2.3.0.1</Version>
+    <Version>2.3.1</Version>
     <Description>Squalr engine component for performant memory scanning. Squalr achieves fast memory scanning (often faster than Cheat Engine) by leveraging multi-threaded parallelism along with single core parallelism via SIMD instructions.
 
 Scanners are JIT compiled into SSE, AVX, or AVX-512 instructions via RyuJIT through the System.Numerics.Vectors library.</Description>
