@@ -29,7 +29,7 @@
             this.VectorSize = Vectors.VectorSize;
             this.VectorReadBase = this.Region.ReadGroupOffset - this.Region.ReadGroupOffset % this.VectorSize;
             this.VectorReadIndex = 0;
-            this.DataTypeize = Conversions.SizeOf(this.Region.ReadGroup.ElementDataType);
+            this.DataTypeSize = Conversions.SizeOf(this.Region.ReadGroup.ElementDataType);
 
             // Initialize capacity to 1/16 elements
             this.ResultRegions = new List<SnapshotRegion>(unchecked((Int32)(this.Region.ElementCount)) / 16);
@@ -136,7 +136,7 @@
         /// <summary>
         /// Gets or sets the size of the data type being compared.
         /// </summary>
-        private Int32 DataTypeize { get; set; }
+        private Int32 DataTypeSize { get; set; }
 
         /// <summary>
         /// Gets or sets the list of discovered result regions.
@@ -171,7 +171,7 @@
                 // Otherwise the vector contains a mixture of true and false
                 else
                 {
-                    for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeize)
+                    for (Int32 index = 0; index < this.VectorSize; index += this.DataTypeSize)
                     {
                         // Vector result was false
                         if (scanResults[unchecked((Int32)index)] == 0)
@@ -186,7 +186,7 @@
                         // Vector result was true
                         else
                         {
-                            this.RunLength += this.DataTypeize;
+                            this.RunLength += this.DataTypeSize;
                             this.Encoding = true;
                         }
                     }

@@ -1,6 +1,8 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
 {
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -89,6 +91,8 @@
 
         public Snapshot ToSnapshot(Int32 pointerRadius)
         {
+            Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
+
             IList<NormalizedRegion> levelRegions = new List<NormalizedRegion>();
             IList<ReadGroup> levelReadGroups = new List<ReadGroup>();
 
@@ -99,7 +103,7 @@
 
             foreach (NormalizedRegion region in NormalizedRegion.MergeAndSortRegions(levelRegions))
             {
-                levelReadGroups.Add(new ReadGroup(region.BaseAddress, region.RegionSize));
+                levelReadGroups.Add(new ReadGroup(region.BaseAddress, region.RegionSize, isProcess32Bit ? DataType.Int32 : DataType.Int64, Settings.Default.Alignment));
             }
 
             Snapshot pointerPoolSnapshot = new Snapshot(null, levelReadGroups);

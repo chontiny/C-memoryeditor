@@ -379,7 +379,7 @@
         /// </summary>
         private void LoadScanResults()
         {
-            Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot);
+            Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot, this.ActiveType);
             IList<ScanResult> newAddresses = new List<ScanResult>();
 
             if (snapshot != null)

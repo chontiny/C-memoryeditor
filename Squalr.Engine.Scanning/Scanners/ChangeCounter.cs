@@ -69,7 +69,7 @@
         protected void OnBegin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone("Change Counter");
+            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, DataType.Int32).Clone("Change Counter");
             this.Snapshot.LabelDataType = DataType.UInt16;
 
             if (this.Snapshot == null)

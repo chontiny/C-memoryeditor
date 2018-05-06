@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Scanning.Snapshots
 {
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Snapshots;
@@ -61,7 +62,7 @@
                 if (!SnapshotManager.SnapshotObservers.Contains(snapshotObserver))
                 {
                     SnapshotManager.SnapshotObservers.Add(snapshotObserver);
-                    snapshotObserver.Update(SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot));
+                    snapshotObserver.Update(SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot, null));
                 }
             }
         }
@@ -86,22 +87,22 @@
         /// </summary>
         /// <param name="snapshotCreationMode">The method of snapshot retrieval.</param>
         /// <returns>The collected snapshot.</returns>
-        public static Snapshot GetSnapshot(Snapshot.SnapshotRetrievalMode snapshotCreationMode)
+        public static Snapshot GetSnapshot(Snapshot.SnapshotRetrievalMode snapshotCreationMode, DataType dataType)
         {
             switch (snapshotCreationMode)
             {
                 case Snapshot.SnapshotRetrievalMode.FromActiveSnapshot:
                     return SnapshotManager.GetActiveSnapshot();
                 case Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter:
-                    return SnapshotManager.GetActiveSnapshotCreateIfNone();
+                    return SnapshotManager.GetActiveSnapshotCreateIfNone(dataType);
                 case Snapshot.SnapshotRetrievalMode.FromSettings:
-                    return SnapshotManager.CreateSnapshotFromSettings();
+                    return SnapshotManager.CreateSnapshotFromSettings(dataType);
                 case Snapshot.SnapshotRetrievalMode.FromUserModeMemory:
-                    return SnapshotManager.CreateSnapshotFromUsermodeMemory();
+                    return SnapshotManager.CreateSnapshotFromUsermodeMemory(dataType);
                 case Snapshot.SnapshotRetrievalMode.FromModules:
-                    return SnapshotManager.CreateSnapshotFromModules();
+                    return SnapshotManager.CreateSnapshotFromModules(dataType);
                 case Snapshot.SnapshotRetrievalMode.FromHeap:
-                    return SnapshotManager.CreateSnapshotFromHeaps();
+                    return SnapshotManager.CreateSnapshotFromHeaps(dataType);
                 case Snapshot.SnapshotRetrievalMode.FromStack:
                     throw new NotImplementedException();
                 default:
@@ -114,15 +115,14 @@
         /// Returns the memory regions associated with the current snapshot. If none exist, a query will be done. Will not read any memory.
         /// </summary>
         /// <returns>The current active snapshot of memory in the target process.</returns>
-        private static Snapshot GetActiveSnapshotCreateIfNone()
+        private static Snapshot GetActiveSnapshotCreateIfNone(DataType dataType)
         {
             lock (SnapshotManager.AccessLock)
             {
                 if (SnapshotManager.Snapshots.Count == 0 || SnapshotManager.Snapshots.Peek() == null || SnapshotManager.Snapshots.Peek().ElementCount == 0)
                 {
-                    Snapshot snapshot = Prefilter.GetInstance().GetPrefilteredSnapshot();
+                    Snapshot snapshot = Prefilter.GetInstance().GetPrefilteredSnapshot(dataType);
                     snapshot.Alignment = Settings.Default.Alignment;
-                    //// snapshot.ElementDataType = Settings.Default.ActiveType;
                     return snapshot;
                 }
 
@@ -154,7 +154,7 @@
         /// Creates a snapshot from all usermode memory. Will not read any memory.
         /// </summary>
         /// <returns>A snapshot created from usermode memory.</returns>
-        private static Snapshot CreateSnapshotFromUsermodeMemory()
+        private static Snapshot CreateSnapshotFromUsermodeMemory(DataType dataType)
         {
             MemoryProtectionEnum requiredPageFlags = 0;
             MemoryProtectionEnum excludedPageFlags = 0;
@@ -173,7 +173,7 @@
 
             foreach (NormalizedRegion virtualPage in virtualPages)
             {
-                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize));
+                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize, dataType, Settings.Default.Alignment));
             }
 
             return new Snapshot(null, memoryRegions);
@@ -183,7 +183,7 @@
         /// Creates a new snapshot of memory in the target process. Will not read any memory.
         /// </summary>
         /// <returns>The snapshot of memory taken in the target process.</returns>
-        private static Snapshot CreateSnapshotFromSettings()
+        private static Snapshot CreateSnapshotFromSettings(DataType dataType)
         {
             MemoryProtectionEnum requiredPageFlags = SnapshotManager.GetRequiredProtectionSettings();
             MemoryProtectionEnum excludedPageFlags = SnapshotManager.GetExcludedProtectionSettings();
@@ -214,7 +214,7 @@
             // Convert each virtual page to a snapshot region
             foreach (NormalizedRegion virtualPage in virtualPages)
             {
-                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize));
+                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize, dataType, Settings.Default.Alignment));
             }
 
             return new Snapshot(null, memoryRegions);
@@ -224,9 +224,9 @@
         /// Creates a snapshot from modules in the selected process.
         /// </summary>
         /// <returns>The created snapshot.</returns>
-        private static Snapshot CreateSnapshotFromModules()
+        private static Snapshot CreateSnapshotFromModules(DataType dataType)
         {
-            IEnumerable<ReadGroup> moduleGroups = Query.Default.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            IEnumerable<ReadGroup> moduleGroups = Query.Default.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize, dataType, Settings.Default.Alignment));
             Snapshot moduleSnapshot = new Snapshot(null, moduleGroups);
 
             return moduleSnapshot;
@@ -236,13 +236,13 @@
         /// Creates a snapshot from modules in the selected process.
         /// </summary>
         /// <returns>The created snapshot.</returns>
-        private static Snapshot CreateSnapshotFromHeaps()
+        private static Snapshot CreateSnapshotFromHeaps(DataType dataType)
         {
             // TODO: Implement an actual heap collection function. In the mean time, just grab usermode memory and remove the modules.
-            Snapshot snapshot = SnapshotManager.CreateSnapshotFromUsermodeMemory();
+            Snapshot snapshot = SnapshotManager.CreateSnapshotFromUsermodeMemory(dataType);
 
             // Remove module regions
-            IEnumerable<ReadGroup> moduleGroups = Query.Default.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize));
+            IEnumerable<ReadGroup> moduleGroups = Query.Default.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize, dataType, Settings.Default.Alignment));
             snapshot.ReadGroups = snapshot.ReadGroups.Where(group => moduleGroups.All(moduleGroup => moduleGroup.BaseAddress != group.BaseAddress));
 
             return snapshot;
@@ -337,7 +337,7 @@
         {
             lock (SnapshotManager.ObserverLock)
             {
-                Snapshot activeSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot);
+                Snapshot activeSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot, null);
 
                 foreach (ISnapshotObserver observer in SnapshotManager.SnapshotObservers)
                 {

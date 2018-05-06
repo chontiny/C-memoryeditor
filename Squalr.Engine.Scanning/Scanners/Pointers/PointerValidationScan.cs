@@ -1,5 +1,7 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
+    using Squalr.Engine.DataTypes;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Snapshots;
@@ -41,10 +43,11 @@
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
             ValidatedPointers validatedPointers = new ValidatedPointers();
             Int32 processedPointers = 0;
 
-            Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory);
+            Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, isProcess32Bit ? DataType.Int32 : DataType.Int64);
 
             // Enumerate all discovered pointers and determine if they have a valid target address
             foreach (Pointer pointer in this.DiscoveredPointers)

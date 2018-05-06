@@ -16,10 +16,10 @@
         /// </summary>
         /// <param name="baseAddress">The base address of this memory region.</param>
         /// <param name="regionSize">The size of this memory region.</param>
-        public ReadGroup(UInt64 baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
+        public ReadGroup(UInt64 baseAddress, Int32 regionSize, DataType dataType, Int32 alignment) : base(baseAddress, regionSize)
         {
-            this.Alignment = Settings.Default.Alignment;
-            this.ElementDataType = DataType.Int32; // ScanResultsViewModel.GetInstance().ActiveType;
+            this.Alignment = alignment;
+            this.ElementDataType = dataType;
 
             this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, regionSize) };
         }

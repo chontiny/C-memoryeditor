@@ -270,10 +270,12 @@
                 return;
             }
 
+            DataType dataType = ScanResultsViewModel.GetInstance().ActiveType;
+
             // Collect values
             TrackableTask<Snapshot> valueCollectorTask = ValueCollector.CollectValues(
-                SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
-                DataType.Int32);
+                SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType),
+                dataType);
 
             TaskTrackerViewModel.GetInstance().TrackTask(valueCollectorTask);
 
@@ -283,7 +285,7 @@
                 Snapshot values = completedValueCollection.Result;
                 TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
                     values,
-                    DataType.Int32,
+                    dataType,
                     allScanConstraints);
 
                 TaskTrackerViewModel.GetInstance().TrackTask(scanTask);

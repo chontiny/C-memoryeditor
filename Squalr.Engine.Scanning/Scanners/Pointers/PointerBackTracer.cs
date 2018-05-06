@@ -1,5 +1,7 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
+    using Squalr.Engine.DataTypes;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils.Extensions;
@@ -71,10 +73,14 @@
         /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
         protected void OnUpdate(CancellationToken cancellationToken)
         {
+            Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
             Int64 processedPointers = 0;
 
             // Create a snapshot only containing the destination (as this is a back-tracing algorithm, we work backwards from the destination)
-            Snapshot previousLevelSnapshot = new Snapshot(null, new ReadGroup[] { new ReadGroup(this.TargetAddress.Subtract(this.PointerRadius, wrapAround: false), this.PointerRadius) });
+            Snapshot previousLevelSnapshot = new Snapshot(null,
+                new ReadGroup[] {
+                    new ReadGroup(this.TargetAddress.Subtract(this.PointerRadius, wrapAround: false), this.PointerRadius, isProcess32Bit ? DataType.Int32 : DataType.Int64, Settings.Default.Alignment)
+                });
 
             // Find all pointers that point to the previous level
             for (Int32 level = 0; level < this.PointerDepth; level++)
