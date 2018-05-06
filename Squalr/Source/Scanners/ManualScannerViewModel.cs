@@ -274,18 +274,16 @@
 
             // Collect values
             TrackableTask<Snapshot> valueCollectorTask = ValueCollector.CollectValues(
-                SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType),
-                dataType);
+                SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType));
 
             TaskTrackerViewModel.GetInstance().TrackTask(valueCollectorTask);
 
             // Perform manual scan on value collection complete
             valueCollectorTask.OnCompletedEvent += ((completedValueCollection) =>
             {
-                Snapshot values = completedValueCollection.Result;
+                Snapshot snapshot = completedValueCollection.Result;
                 TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
-                    values,
-                    dataType,
+                    snapshot,
                     allScanConstraints);
 
                 TaskTrackerViewModel.GetInstance().TrackTask(scanTask);

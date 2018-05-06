@@ -91,7 +91,7 @@
         {
             Int32 processedPages = 0;
 
-            Snapshot snapshot = ValueCollector.CollectValues(this.Snapshot, DataType.Int32).Result;
+            Snapshot snapshot = ValueCollector.CollectValues(this.Snapshot).Result;
 
             Parallel.ForEach(
                 snapshot.OptimizedSnapshotRegions,

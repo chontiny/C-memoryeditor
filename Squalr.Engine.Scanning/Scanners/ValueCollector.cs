@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
-    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Snapshots;
     using System;
@@ -18,7 +17,7 @@
         /// </summary>
         private const String Name = "Value Collector";
 
-        public static TrackableTask<Snapshot> CollectValues(Snapshot snapshot, DataType dataType)
+        public static TrackableTask<Snapshot> CollectValues(Snapshot snapshot)
         {
             TrackableTask<Snapshot> trackableValueCollectTask = new TrackableTask<Snapshot>(ValueCollector.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();

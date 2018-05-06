@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
-    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Scanning.Scanners.Constraints;
     using Squalr.Engine.Snapshots;
@@ -27,12 +26,11 @@
         /// Begins the manual scan based on the provided snapshot and parameters.
         /// </summary>
         /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
-        /// <param name="dataType">The data type for which to scan.</param>
         /// <param name="scanConstraintCollection">The collection of scan constraints to use in the manual scan.</param>
         /// <param name="onProgressUpdate">The progress update callback.</param>
         /// <param name="cancellationTokenSource">A token for canceling the scan.</param>
         /// <returns></returns>
-        public static TrackableTask<Snapshot> Scan(Snapshot snapshot, DataType dataType, ScanConstraintCollection scanConstraintCollection)
+        public static TrackableTask<Snapshot> Scan(Snapshot snapshot, ScanConstraintCollection scanConstraintCollection)
         {
             TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(ManualScanner.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();

@@ -56,9 +56,7 @@
             DataType dataType = ScanResultsViewModel.GetInstance().ActiveType;
 
             TrackableTask<Snapshot> valueCollectTask = ValueCollector.CollectValues(
-                    SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType),
-                    dataType
-                );
+                    SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType));
 
             TaskTrackerViewModel.GetInstance().TrackTask(valueCollectTask);
             SnapshotManager.SaveSnapshot(valueCollectTask.Result);

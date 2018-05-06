@@ -108,21 +108,19 @@ DataType dataType = DataType.Int32;
 
 // Collect values
 TrackableTask<Snapshot> valueCollectorTask = ValueCollector.CollectValues(
-	SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
-	dataType);
+	SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType));
 
 // Perform manual scan on value collection complete
 valueCollectorTask.CompletedCallback += ((completedValueCollection) =>
 {
-	Snapshot values = completedValueCollection.Result;
+	Snapshot snapshot = completedValueCollection.Result;
 	
 	// Constraints
 	ScanConstraintCollection scanConstraints = new ScanConstraintCollection();
 	scanConstraints.AddConstraint(new ScanConstraint(ScanConstraint.ConstraintType.Equal, 25));
 
 	TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
-		values,
-		dataType,
+		snapshot,
 		allScanConstraints);
 
 	SnapshotManager.SaveSnapshot(scanTask.Result);
