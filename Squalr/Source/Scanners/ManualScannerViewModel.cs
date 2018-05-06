@@ -16,7 +16,6 @@
     using System.Threading;
     using System.Threading.Tasks;
     using System.Windows.Input;
-    using System.Windows.Media.Imaging;
 
     /// <summary>
     /// View model for the Manual Scanner.
@@ -233,18 +232,6 @@
         }
 
         /// <summary>
-        /// Gets the image associated with the current scan constraint.
-        /// </summary>
-        public BitmapSource ScanConstraintImage
-        {
-            get
-            {
-                return null;
-                //// return this.CurrentScanConstraint.ConstraintImage;
-            }
-        }
-
-        /// <summary>
         /// Gets a singleton instance of the <see cref="ManualScannerViewModel"/> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
@@ -370,7 +357,6 @@
         private void UpdateAllProperties()
         {
             this.RaisePropertyChanged(nameof(this.CurrentScanConstraint));
-            this.RaisePropertyChanged(nameof(this.ScanConstraintImage));
             this.RaisePropertyChanged(nameof(this.ActiveScanConstraint));
             this.RaisePropertyChanged(nameof(this.IsActiveScanConstraintValued));
         }

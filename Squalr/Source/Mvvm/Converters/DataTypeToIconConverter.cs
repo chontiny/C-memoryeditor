@@ -26,46 +26,42 @@
                 value = parameter;
             }
 
-            if (value == null)
-            {
-                return null;
-            }
-
             if (value is Type)
             {
                 value = new DataType(value as Type);
             }
 
-            if (value is DataType)
+            switch (value)
             {
-                switch (value as DataType)
-                {
-                    case DataType type when type == DataType.SByte:
-                        return Images.BlueBlocks1;
-                    case DataType type when type == DataType.Int16:
-                        return Images.BlueBlocks2;
-                    case DataType type when type == DataType.Int32:
-                        return Images.BlueBlocks4;
-                    case DataType type when type == DataType.Int64:
-                        return Images.BlueBlocks8;
-                    case DataType type when type == DataType.Byte:
-                        return Images.PurpleBlocks1;
-                    case DataType type when type == DataType.UInt16:
-                        return Images.PurpleBlocks2;
-                    case DataType type when type == DataType.UInt32:
-                        return Images.PurpleBlocks4;
-                    case DataType type when type == DataType.UInt64:
-                        return Images.PurpleBlocks8;
-                    case DataType type when type == DataType.Single:
-                        return Images.OrangeBlocks4;
-                    case DataType type when type == DataType.Double:
-                        return Images.OrangeBlocks8;
-                    default:
-                        return null;
-                }
+                case DataType type when type == DataType.Byte:
+                    return Images.PurpleBlocks1;
+                case DataType type when type == DataType.Char:
+                    return Images.PurpleBlocks1;
+                case DataType type when type == DataType.SByte:
+                    return Images.BlueBlocks1;
+                case DataType type when type == DataType.Int16:
+                    return Images.BlueBlocks2;
+                case DataType type when type == DataType.Int32:
+                    return Images.BlueBlocks4;
+                case DataType type when type == DataType.Int64:
+                    return Images.BlueBlocks4;
+                case DataType type when type == DataType.UInt16:
+                    return Images.PurpleBlocks2;
+                case DataType type when type == DataType.UInt32:
+                    return Images.PurpleBlocks4;
+                case DataType type when type == DataType.UInt64:
+                    return Images.PurpleBlocks8;
+                case DataType type when type == DataType.Single:
+                    return Images.OrangeBlocks4;
+                case DataType type when type == DataType.Double:
+                    return Images.OrangeBlocks8;
+                case DataType type when type == DataType.IntPtr:
+                    return !Environment.Is64BitProcess ? Images.BlueBlocks4 : Images.BlueBlocks8;
+                case DataType type when type == DataType.UIntPtr:
+                    return !Environment.Is64BitProcess ? Images.PurpleBlocks4 : Images.PurpleBlocks8;
+                default:
+                    return null;
             }
-
-            return null;
         }
 
         /// <summary>

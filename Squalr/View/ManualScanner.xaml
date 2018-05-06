@@ -14,6 +14,7 @@
     mc:Ignorable="d">
     <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
+            <converters:ConstraintToIconConverter x:Key="ConstraintToIconConverter" />
             <converters:IconConverter x:Key="IconConverter" />
             <converters:BooleanToVisibilityConverter
                 x:Key="BooleanToHiddenConverter"
@@ -106,7 +107,7 @@
                                         Width="16"
                                         Height="16"
                                         Margin="8,0,0,0"
-                                        Source="{Binding Path=ConstraintImage}" />
+                                        Source="{Binding ConverterParameter=Constraint, Converter={StaticResource ConstraintToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource SqualrColorWhite}"
@@ -180,7 +181,7 @@
                                         Width="16"
                                         Height="16"
                                         Margin="8,0,0,0"
-                                        Source="{Binding Path=ConstraintImage}" />
+                                        Source="{Binding ConverterParameter=Constraint, Converter={StaticResource ConstraintToIconConverter}}" />
                                     <TextBlock
                                         Padding="4,0,0,0"
                                         Foreground="{StaticResource SqualrColorWhite}"
@@ -225,7 +226,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{Binding ScanConstraintImage}" />
+                                        Source="{Binding Path=CurrentScanConstraint.Constraint, Converter={StaticResource ConstraintToIconConverter}}" />
                                     <Grid
                                         x:Name="arrowGlyph"
                                         Grid.Column="1"

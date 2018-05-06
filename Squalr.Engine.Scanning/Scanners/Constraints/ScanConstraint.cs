@@ -127,46 +127,6 @@
         }
 
         /// <summary>
-        /// Gets the image associated with this constraint.
-        /// </summary>
-        /* TODO: Move to MVVM converter
-        public BitmapSource ConstraintImage
-        {
-            get
-            {
-                switch (this.Constraint)
-                {
-                    case ConstraintType.Equal:
-                        return Images.Equal;
-                    case ConstraintType.NotEqual:
-                        return Images.NotEqual;
-                    case ConstraintType.GreaterThan:
-                        return Images.GreaterThan;
-                    case ConstraintType.GreaterThanOrEqual:
-                        return Images.GreaterThanOrEqual;
-                    case ConstraintType.LessThan:
-                        return Images.LessThan;
-                    case ConstraintType.LessThanOrEqual:
-                        return Images.LessThanOrEqual;
-                    case ConstraintType.Changed:
-                        return Images.Changed;
-                    case ConstraintType.Unchanged:
-                        return Images.Unchanged;
-                    case ConstraintType.Increased:
-                        return Images.Increased;
-                    case ConstraintType.Decreased:
-                        return Images.Decreased;
-                    case ConstraintType.IncreasedByX:
-                        return Images.PlusX;
-                    case ConstraintType.DecreasedByX:
-                        return Images.MinusX;
-                    default:
-                        throw new Exception("Unrecognized Constraint");
-                }
-            }
-        }*/
-
-        /// <summary>
         /// Clones this scan constraint.
         /// </summary>
         /// <returns>The cloned scan constraint.</returns>
