@@ -141,6 +141,12 @@
     <Reference Include="NuGet.Squirrel, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\squirrel.windows.1.8.0\lib\Net45\NuGet.Squirrel.dll</HintPath>
     </Reference>
+    <Reference Include="PeNet, Version=0.6.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PeNet.0.6.8\lib\net461\PeNet.dll</HintPath>
+    </Reference>
+    <Reference Include="PeNet.Asn1, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PeNet.Asn1.1.0.8\lib\net461\PeNet.Asn1.dll</HintPath>
+    </Reference>
     <Reference Include="PipeDream, Version=1.0.1.0, Culture=neutral, PublicKeyToken=ea175fe44ea20b64, processorArchitecture=MSIL">
       <HintPath>..\packages\PipeDream.1.0.1\lib\netstandard2.0\PipeDream.dll</HintPath>
     </Reference>

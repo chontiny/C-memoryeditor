@@ -8,7 +8,6 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.IO;
     using System.Text;
     using Utils;
     using Utils.Extensions;
@@ -243,7 +242,6 @@
                         StringBuilder moduleFilePath = new StringBuilder(1024);
                         NativeMethods.GetModuleFileNameEx(this.ExternalProcess.Handle, modulePointers[index], moduleFilePath, (UInt32)moduleFilePath.Capacity);
 
-                        String moduleName = Path.GetFileName(moduleFilePath.ToString());
                         ModuleInformation moduleInformation = new ModuleInformation();
                         NativeMethods.GetModuleInformation(this.ExternalProcess.Handle, modulePointers[index], out moduleInformation, (UInt32)(IntPtr.Size * modulePointers.Length));
 
@@ -254,7 +252,7 @@
                         }
 
                         // Convert to a normalized module and add it to our list
-                        NormalizedModule module = new NormalizedModule(moduleName, moduleInformation.ModuleBase.ToUInt64(), (Int32)moduleInformation.SizeOfImage);
+                        NormalizedModule module = new NormalizedModule(moduleFilePath.ToString(), moduleInformation.ModuleBase.ToUInt64(), (Int32)moduleInformation.SizeOfImage);
                         modules.Add(module);
                     }
                 }
