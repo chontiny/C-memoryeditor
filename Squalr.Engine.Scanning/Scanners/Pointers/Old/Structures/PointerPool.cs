@@ -3,7 +3,7 @@
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
     using Squalr.Engine.OS;
-    using Squalr.Engine.Snapshots;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections;

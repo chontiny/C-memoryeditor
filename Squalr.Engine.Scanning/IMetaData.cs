@@ -1,15 +1,16 @@
-﻿namespace Squalr.Engine.Memory
+﻿namespace Squalr.Engine.Scanning
 {
     using Squalr.Engine.OS;
+    using Squalr.Engine.Scanning.Snapshots;
     using System;
     using System.Collections.Generic;
 
     /// <summary>
     /// An interface for accessing statically available metadata.
     /// </summary>
-    internal interface IMetaData : IProcessObserver
+    public interface IMetaData : IProcessObserver
     {
-        IList<NormalizedRegion> GetDataSegments(UInt64 moduleBase, String modulePath);
+        IList<SnapshotRegion> GetDataSegments(UInt64 moduleBase, String modulePath);
     }
     //// End interface
 }

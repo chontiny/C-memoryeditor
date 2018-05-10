@@ -2,7 +2,6 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Scanning.Snapshots;
-    using Squalr.Engine.Snapshots;
     using Squalr.Source.Docking;
     using System;
     using System.Collections.Generic;

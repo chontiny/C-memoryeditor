@@ -13,8 +13,12 @@
 
   <ItemGroup>
     <PackageReference Include="PeNet" Version="0.6.8" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0-rc1" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Squalr.Engine\Squalr.Engine.csproj" />

@@ -1,7 +1,6 @@
 ﻿namespace Squalr.Engine.Memory
 {
     using System;
-    using System.Collections.Generic;
     using System.IO;
 
     /// <summary>
@@ -19,19 +18,6 @@
         {
             this.Name = Path.GetFileName(fullPath);
             this.FullPath = fullPath;
-
-            DirectoryInfo modulePathInfo = new DirectoryInfo(fullPath);
-            DirectoryInfo systemPathInfo = new DirectoryInfo(Environment.SystemDirectory);
-
-            // Ignore system paths
-            if (modulePathInfo.Parent == systemPathInfo)
-            {
-                this.DataSegments = MetaData.Default.GetDataSegments(baseAddress, fullPath);
-            }
-            else
-            {
-                this.DataSegments = new List<NormalizedRegion>();
-            }
         }
 
         /// <summary>
@@ -43,11 +29,6 @@
         /// Gets the full path of the module.
         /// </summary>
         public String FullPath { get; private set; }
-
-        /// <summary>
-        /// Gets the list of data segments in the module in the scope of the current virtual memory layout.
-        /// </summary>
-        public IList<NormalizedRegion> DataSegments { get; private set; }
     }
     //// End interface
 }

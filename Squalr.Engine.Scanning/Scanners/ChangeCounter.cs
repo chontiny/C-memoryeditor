@@ -2,7 +2,6 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Scanning.Snapshots;
-    using Squalr.Engine.Snapshots;
     using System;
     using System.Collections.Generic;
     using System.Threading;

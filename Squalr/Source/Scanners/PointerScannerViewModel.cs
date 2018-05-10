@@ -40,7 +40,7 @@
         /// </summary>
         private PointerScannerViewModel() : base("Pointer Scanner")
         {
-            this.PointerScan = new PointerScan();
+            this.PointerScanOld = new PointerScanOld();
             this.PointerRescan = new PointerRescan();
             this.PointerValueRescan = new PointerValueRescan();
             this.PointerValidationScan = new PointerValidationScan();
@@ -115,12 +115,12 @@
         {
             get
             {
-                return this.PointerScan.TargetAddress;
+                return this.PointerScanOld.TargetAddress;
             }
 
             set
             {
-                this.PointerScan.TargetAddress = value;
+                this.PointerScanOld.TargetAddress = value;
                 this.RaisePropertyChanged(nameof(this.TargetAddress));
             }
         }
@@ -166,12 +166,12 @@
         {
             get
             {
-                return this.PointerScan.PointerDepth;
+                return this.PointerScanOld.PointerDepth;
             }
 
             set
             {
-                this.PointerScan.PointerDepth = value;
+                this.PointerScanOld.PointerDepth = value;
                 this.RaisePropertyChanged(nameof(this.PointerDepth));
             }
         }
@@ -183,12 +183,12 @@
         {
             get
             {
-                return this.PointerScan.PointerRadius;
+                return this.PointerScanOld.PointerRadius;
             }
 
             set
             {
-                this.PointerScan.PointerRadius = value;
+                this.PointerScanOld.PointerRadius = value;
                 this.RaisePropertyChanged(nameof(this.PointerRadius));
             }
         }
@@ -196,7 +196,7 @@
         /// <summary>
         /// Gets or sets the pointer scan task.
         /// </summary>
-        private PointerScan PointerScan { get; set; }
+        private PointerScanOld PointerScanOld { get; set; }
 
         /// <summary>
         /// Gets or sets the pointer rescan task.
@@ -227,7 +227,7 @@
         /// </summary>
         private void StartScan()
         {
-            //// this.PointerScan.Start();
+            PointerScan.Scan();
         }
 
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Snapshots
+﻿namespace Squalr.Engine.Scanning.Snapshots
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.OS;

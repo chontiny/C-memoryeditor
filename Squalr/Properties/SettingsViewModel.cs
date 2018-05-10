@@ -381,7 +381,6 @@
         /// </summary>
         public void Save()
         {
-            Settings.Default.Save();
         }
     }
     //// End class

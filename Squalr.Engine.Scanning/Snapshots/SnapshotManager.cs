@@ -3,7 +3,6 @@
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
-    using Squalr.Engine.Snapshots;
     using Squalr.Source.Prefilters;
     using System;
     using System.Collections.Generic;

@@ -1,8 +1,9 @@
-﻿namespace Squalr.Engine.Scanning.Scanners
+﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Logging;
+    using Squalr.Engine.OS;
     using Squalr.Engine.Scanning.Scanners.Constraints;
-    using Squalr.Engine.Snapshots;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Concurrent;
@@ -13,7 +14,7 @@
     using System.Threading.Tasks;
 
     /// <summary>
-    /// A memory scanning class for classic manual memory scanning techniques.
+    /// Collects static pointers in the target process.
     /// </summary>
     public static class StaticPointercollector
     {
@@ -30,7 +31,7 @@
         /// <param name="onProgressUpdate">The progress update callback.</param>
         /// <param name="cancellationTokenSource">A token for canceling the scan.</param>
         /// <returns></returns>
-        public static TrackableTask<Snapshot> Scan(Snapshot snapshot, ScanConstraintCollection scanConstraintCollection)
+        public static TrackableTask<Snapshot> Scan()
         {
             TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(StaticPointercollector.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -46,9 +47,22 @@
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
+                    Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
+
+                    // Collect static data segments
+                    TrackableTask<Snapshot> dataSegmentCollector = DataSegmentCollector.CollectDataSegments(ignoreSystemModules: true);
+                    Snapshot snapshot = dataSegmentCollector.Result;
+
+                    // Collect new values so we can perform a diff
+                    TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(snapshot);
+                    snapshot = valueCollector.Result;
+
                     Int32 processedPages = 0;
                     Int32 regionCount = snapshot.RegionCount;
                     ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
+
+                    ScanConstraintCollection scanConstraintCollection = new ScanConstraintCollection();
+                    scanConstraintCollection.AddConstraint(new ScanConstraint(ScanConstraint.ConstraintType.Changed));
 
                     ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
                     options.CancellationToken = cancellationTokenSource.Token;

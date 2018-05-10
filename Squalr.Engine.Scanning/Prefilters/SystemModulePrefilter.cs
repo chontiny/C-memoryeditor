@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Prefilters
 {
-    using Squalr.Engine.Snapshots;
+    using Squalr.Engine.Scanning.Snapshots;
 
     /// <summary>
     /// A prefilter to remove system modules from a snapshot.

@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Snapshots;
+    using Squalr.Engine.Scanning.Snapshots;
     using System;
     using System.Diagnostics;
     using System.Threading;

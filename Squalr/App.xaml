@@ -18,12 +18,7 @@
                 <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/ScrollViewer.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/Separator.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/Submenu.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/TextBoxPlaceHolder.xaml">
-                    <vm:ViewModelLocator
-                        xmlns:vm="clr-namespace:Squalr.ViewModel"
-                        x:Key="Locator"
-                        d:IsDataSource="True" />
-                </ResourceDictionary>
+                <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/TextBoxPlaceHolder.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

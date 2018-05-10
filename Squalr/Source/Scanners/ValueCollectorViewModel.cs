@@ -6,7 +6,6 @@
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Scanning.Scanners;
     using Squalr.Engine.Scanning.Snapshots;
-    using Squalr.Engine.Snapshots;
     using Squalr.Source.Results;
     using Squalr.Source.Tasks;
     using System;

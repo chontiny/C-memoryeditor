@@ -1,9 +1,11 @@
-﻿namespace Squalr.Engine.Memory.Windows
+﻿namespace Squalr.Engine.Scanning.Windows
 {
     using PeNet;
     using PeNet.Structures;
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
     using Squalr.Engine.OS;
+    using Squalr.Engine.Scanning.Snapshots;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -42,9 +44,9 @@
             this.ExternalProcess = process;
         }
 
-        public IList<NormalizedRegion> GetDataSegments(UInt64 moduleBase, String modulePath)
+        public IList<SnapshotRegion> GetDataSegments(UInt64 moduleBase, String modulePath)
         {
-            List<NormalizedRegion> regions = new List<NormalizedRegion>();
+            List<SnapshotRegion> regions = new List<SnapshotRegion>();
 
             // Normalize module path format to avoid caching on variants
             DirectoryInfo modulePathInfo = new DirectoryInfo(modulePath);
@@ -80,7 +82,16 @@
                         (section.Characteristics & IMAGE_SCN_LNK_COMDAT) != 0 ||
                         (section.Characteristics & IMAGE_SCN_GPREL) != 0)
                     {
-                        regions.Add(new NormalizedRegion(moduleBase + section.VirtualAddress, (Int32)section.VirtualSize));
+                        Byte[] data = new Byte[section.SizeOfRawData];
+
+                        using (BinaryReader reader = new BinaryReader(new FileStream(modulePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+                        {
+                            reader.BaseStream.Seek(section.PointerToRawData, SeekOrigin.Begin);
+                            reader.Read(data, 0, (Int32)section.SizeOfRawData);
+                        }
+
+                        ReadGroup readGroup = new ReadGroup(moduleBase + section.VirtualAddress, data, file.Is32Bit ? DataType.UInt32 : DataType.UInt64, file.Is32Bit ? 4 : 8);
+                        regions.Add(new SnapshotRegion(readGroup, 0, data.Length));
                     }
                 }
             }

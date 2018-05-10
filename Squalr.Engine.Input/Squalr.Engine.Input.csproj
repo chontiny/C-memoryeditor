@@ -7,6 +7,11 @@
     <Description>Squalr engine component for input management.</Description>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="SharpDX" Version="4.1.0-ci217" />
     <PackageReference Include="SharpDX.DirectInput" Version="4.1.0-ci217" />

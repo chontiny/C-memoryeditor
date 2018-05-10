@@ -1,11 +1,11 @@
-﻿namespace Squalr.Engine.Memory
+﻿namespace Squalr.Engine.Scanning
 {
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Memory.Windows;
+    using Squalr.Engine.Scanning.Windows;
     using System;
     using System.Threading;
 
-    internal static class MetaData
+    public static class MetaData
     {
         /// <summary>
         /// Singleton instance of the <see cref="IMetaData"/> class.

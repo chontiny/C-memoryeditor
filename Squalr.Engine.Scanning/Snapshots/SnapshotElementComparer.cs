@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Snapshots
+﻿namespace Squalr.Engine.Scanning.Snapshots
 {
     using Squalr.Engine.Scanning.Scanners.Constraints;
     using Squalr.Engine.Utils.Extensions;
