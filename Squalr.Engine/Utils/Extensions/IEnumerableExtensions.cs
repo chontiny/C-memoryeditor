@@ -141,23 +141,6 @@
         }
 
         /// <summary>
-        /// Adds a single element to the end of an IEnumerable.
-        /// </summary>
-        /// <typeparam name="T">Type of enumerable to return.</typeparam>
-        /// <param name="source">The source enumerable.</param>
-        /// <param name="element">The element to append.</param>
-        /// <returns>IEnumerable containing all the input elements, followed by the specified additional element.</returns>
-        public static IEnumerable<T> Append<T>(this IEnumerable<T> source, T element)
-        {
-            if (source == null)
-            {
-                return source;
-            }
-
-            return ConcatIterator(element, source, false);
-        }
-
-        /// <summary>
         /// Adds a single element to the start of an IEnumerable.
         /// </summary>
         /// <typeparam name="T">Type of enumerable to return.</typeparam>
@@ -188,7 +171,7 @@
                 return source;
             }
 
-            return Append<T>(source, element);
+            return source.Append(element);
         }
 
         /// <summary>

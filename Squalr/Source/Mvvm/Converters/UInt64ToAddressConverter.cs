@@ -8,7 +8,7 @@
     /// <summary>
     /// Converts IntPtrs to an address with leading 0s.
     /// </summary>
-    public class IntPtrToAddressConverter : IValueConverter
+    public class UInt64ToAddressConverter : IValueConverter
     {
         /// <summary>
         /// Converts an IntPtr to an address string.
@@ -25,9 +25,9 @@
                 return null;
             }
 
-            if (value is IntPtr)
+            if (value is UInt64)
             {
-                return Conversions.ToHex((IntPtr)value, formatAsAddress: true, includePrefix: false);
+                return Conversions.ToHex((UInt64)value, formatAsAddress: true, includePrefix: false);
             }
 
             return null;

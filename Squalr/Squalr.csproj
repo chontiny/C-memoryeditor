@@ -257,7 +257,7 @@
     <Compile Include="Source\Mvvm\Converters\DataTypeToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\HotkeyToStringConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IconConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\IntPtrToAddressConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\UInt64ToAddressConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IntToHexConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ListViewIndexConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\OffsetsToStringConverter.cs" />

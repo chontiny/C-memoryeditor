@@ -15,7 +15,7 @@
         /// <summary>
         /// The read groups of this snapshot.
         /// </summary>
-        private IEnumerable<ReadGroup> readGroups;
+        private IList<ReadGroup> readGroups;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
@@ -31,7 +31,7 @@
         /// Initializes a new instance of the <see cref="Snapshot" /> class.
         /// </summary>
         /// <param name="memoryRegions">The regions with which to initialize this snapshot.</param>
-        public Snapshot(String snapshotName, IEnumerable<ReadGroup> memoryRegions)
+        public Snapshot(String snapshotName, IList<ReadGroup> memoryRegions)
         {
             this.SnapshotName = snapshotName == null ? String.Empty : snapshotName;
             this.ReadGroups = memoryRegions?.ToList();
@@ -148,7 +148,7 @@
         /// <summary>
         /// Gets or sets the read groups of this snapshot.
         /// </summary>
-        public IEnumerable<ReadGroup> ReadGroups
+        public IList<ReadGroup> ReadGroups
         {
             get
             {
@@ -268,7 +268,7 @@
                 group.Key.SnapshotRegions = group.OrderBy(region => region.ReadGroupOffset);
             }
 
-            this.ReadGroups = snapshotsByReadGroup.Select(x => x.Key).OrderBy(group => group.BaseAddress);
+            this.ReadGroups = snapshotsByReadGroup.Select(x => x.Key).OrderBy(group => group.BaseAddress).ToList();
         }
 
         /// <summary>

@@ -1,0 +1,149 @@
+﻿using Squalr.Engine.DataTypes;
+
+namespace Squalr.Engine.Scanning.Scanners.Pointers
+{
+    using Squalr.Engine.Logging;
+    using Squalr.Engine.OS;
+    using Squalr.Engine.Scanning.Snapshots;
+    using Squalr.Engine.Utils.Extensions;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Numerics;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// Validates a snapshot of pointers.
+    /// </summary>
+    public static class PointerFilter
+    {
+        /// <summary>
+        /// The name of this scan.
+        /// </summary>
+        private const String Name = "Pointer Validator";
+
+        /// <summary>
+        /// Filters the given snapshot to find all values that are valid pointers.
+        /// </summary>
+        /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
+        /// <returns></returns>
+        public static TrackableTask<Snapshot> Filter(Snapshot snapshot, DataType dataType)
+        {
+            TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(PointerFilter.Name);
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            Task<Snapshot> filterTask = Task.Factory.StartNew<Snapshot>(() =>
+            {
+                try
+                {
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                    Stopwatch stopwatch = new Stopwatch();
+                    stopwatch.Start();
+
+                    Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
+                    Int32 vectorSize = Vectors.VectorSize;
+
+                    // This snapshot is just to get the bounds of the process memory for determining if a pointer is valid
+                    Snapshot userModeSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, dataType);
+
+                    IEnumerable<UInt32> tempLowerBound = userModeSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.BaseAddress));
+                    IEnumerable<UInt32> tempUpperBound = userModeSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.EndAddress));
+
+                    while (tempLowerBound.Count() % vectorSize != 0)
+                    {
+                        tempLowerBound = tempLowerBound.Append<UInt32>(UInt32.MaxValue);
+                        tempUpperBound = tempUpperBound.Append<UInt32>(UInt32.MaxValue);
+                    }
+
+                    UInt32[] userModeLowerBound = tempLowerBound.ToArray();
+                    UInt32[] userModeUpperBound = tempUpperBound.ToArray();
+
+                    Int32 processedPages = 0;
+                    ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
+
+                    ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
+                    options.CancellationToken = cancellationTokenSource.Token;
+
+                    Parallel.ForEach(
+                        snapshot.OptimizedSnapshotRegions,
+                        options,
+                        (region) =>
+                        {
+                            // Check for canceled scan
+                            cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                            if (!region.ReadGroup.CanCompare(hasRelativeConstraint: false))
+                            {
+                                return;
+                            }
+
+                            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: region);
+
+                            vectorComparer.SetCustomCompareAction(new Func<Vector<Byte>>(() =>
+                            {
+                                Vector<UInt32> result = Vector<UInt32>.Zero;
+
+                                // Perform vectorized linear search. This is why you should not trust big O notation -- this severely beats scalar binary search
+                                for (Int32 boundsIndex = 0; boundsIndex < userModeLowerBound.Length; boundsIndex += vectorSize)
+                                {
+                                    Vector<UInt32> nextLowerBounds = new Vector<UInt32>(userModeLowerBound, boundsIndex);
+                                    Vector<UInt32> nextUpperBounds = new Vector<UInt32>(userModeUpperBound, boundsIndex);
+
+                                    result = Vector.BitwiseOr(
+                                        result,
+                                        Vector.BitwiseAnd(
+                                            Vector.GreaterThanOrEqual(Vector.AsVectorUInt32(vectorComparer.CurrentValues), nextLowerBounds),
+                                            Vector.LessThanOrEqual(Vector.AsVectorUInt32(vectorComparer.CurrentValues), nextUpperBounds)));
+                                }
+
+                                return Vector.AsVectorByte(result);
+                            }));
+
+                            IList<SnapshotRegion> results = vectorComparer.Compare();
+
+                            if (!results.IsNullOrEmpty())
+                            {
+                                regions.Add(results);
+                            }
+
+                            // Update progress every N regions
+                            if (Interlocked.Increment(ref processedPages) % 32 == 0)
+                            {
+                                trackedScanTask.Progress = (float)processedPages / (float)snapshot.RegionCount * 100.0f;
+                            }
+                        });
+
+                    // Exit if canceled
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
+                    snapshot = new Snapshot(PointerFilter.Name, regions.SelectMany(region => region));
+
+                    stopwatch.Stop();
+                    Logger.Log(LogLevel.Info, "Pointer filtering complete in: " + stopwatch.Elapsed);
+                }
+                catch (OperationCanceledException ex)
+                {
+                    Logger.Log(LogLevel.Warn, "Pointer filtering canceled", ex);
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Error performing pointer filtering", ex);
+                    return null;
+                }
+
+                return snapshot;
+            }, cancellationTokenSource.Token);
+
+            trackedScanTask.SetTrackedTask(filterTask, cancellationTokenSource);
+
+            return trackedScanTask;
+        }
+    }
+    //// End class
+}
+//// End namespace

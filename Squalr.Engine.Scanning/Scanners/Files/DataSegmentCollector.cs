@@ -75,7 +75,7 @@
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Error, "Error performing scan", ex);
+                    Logger.Log(LogLevel.Error, "Error performing data segment collection", ex);
                     return null;
                 }
             }, cancellationTokenSource.Token);

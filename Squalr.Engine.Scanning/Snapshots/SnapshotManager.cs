@@ -225,7 +225,7 @@
         /// <returns>The created snapshot.</returns>
         private static Snapshot CreateSnapshotFromModules(DataType dataType)
         {
-            IEnumerable<ReadGroup> moduleGroups = Query.Default.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize, dataType, Settings.Default.Alignment));
+            IList<ReadGroup> moduleGroups = Query.Default.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize, dataType, Settings.Default.Alignment)).ToList();
             Snapshot moduleSnapshot = new Snapshot(null, moduleGroups);
 
             return moduleSnapshot;
@@ -237,12 +237,8 @@
         /// <returns>The created snapshot.</returns>
         private static Snapshot CreateSnapshotFromHeaps(DataType dataType)
         {
-            // TODO: Implement an actual heap collection function. In the mean time, just grab usermode memory and remove the modules.
+            // TODO: Implement an actual heap collection function. In the mean time, just grab usermode memory.
             Snapshot snapshot = SnapshotManager.CreateSnapshotFromUsermodeMemory(dataType);
-
-            // Remove module regions
-            IEnumerable<ReadGroup> moduleGroups = Query.Default.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize, dataType, Settings.Default.Alignment));
-            snapshot.ReadGroups = snapshot.ReadGroups.Where(group => moduleGroups.All(moduleGroup => moduleGroup.BaseAddress != group.BaseAddress));
 
             return snapshot;
         }

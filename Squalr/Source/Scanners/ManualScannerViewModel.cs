@@ -36,7 +36,7 @@
         /// <summary>
         /// Collection of all active scan constraints.
         /// </summary>
-        private ScanConstraintCollection scanConstraintCollection;
+        private ConstraintNode scanConstraintCollection;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="ManualScannerViewModel" /> class from being created.
@@ -66,7 +66,7 @@
             this.EditConstraintCommand = new RelayCommand<ScanConstraint>((ScanConstraint) => this.EditConstraint(ScanConstraint), (ScanConstraint) => true);
             this.ClearConstraintsCommand = new RelayCommand(() => this.ClearConstraints(), () => true);
             this.CurrentScanConstraint = new ScanConstraint(ScanConstraint.ConstraintType.Equal);
-            this.ScanConstraintCollection = new ScanConstraintCollection();
+            this.ScanConstraintCollection = new ConstraintNode();
             this.ScanConstraintCollection.SetElementType(DataType.Int32);
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
@@ -170,14 +170,14 @@
         {
             get
             {
-                return this.ScanConstraintCollection.ValueConstraints;
+                return null; //// this.ScanConstraintCollection.Constraint;
             }
         }
 
         /// <summary>
         /// Gets or sets the collection of all active scan constraints.
         /// </summary>
-        public ScanConstraintCollection ScanConstraintCollection
+        public ConstraintNode ScanConstraintCollection
         {
             get
             {
@@ -246,8 +246,8 @@
         public void Update(DataType activeType)
         {
             // Create a temporary manager to update our current constraint
-            ScanConstraintCollection scanConstraintCollection = new ScanConstraintCollection();
-            scanConstraintCollection.AddConstraint(this.CurrentScanConstraint);
+            ConstraintNode scanConstraintCollection = new ConstraintNode();
+            //   scanConstraintCollection.AddConstraint(this.CurrentScanConstraint);
             scanConstraintCollection.SetElementType(activeType);
 
             this.ScanConstraintCollection.SetElementType(activeType);
@@ -260,8 +260,8 @@
         private void StartScan()
         {
             // Create a constraint manager that includes the current active constraint
-            ScanConstraintCollection allScanConstraints = this.ScanConstraintCollection.Clone();
-            allScanConstraints.AddConstraint(this.CurrentScanConstraint);
+            ConstraintNode allScanConstraints = null; //// this.ScanConstraintCollection.Clone();
+            ////  allScanConstraints.AddConstraint(this.CurrentScanConstraint);
 
             if (!allScanConstraints.IsValid())
             {
@@ -295,7 +295,7 @@
         /// </summary>
         private void AddCurrentConstraint()
         {
-            this.ScanConstraintCollection.AddConstraint(this.CurrentScanConstraint);
+            //   this.ScanConstraintCollection.AddConstraint(this.CurrentScanConstraint);
             this.CurrentScanConstraint = new ScanConstraint(this.CurrentScanConstraint.Constraint, this.CurrentScanConstraint.ConstraintValue);
             this.UpdateAllProperties();
         }
@@ -316,7 +316,7 @@
         /// <param name="scanConstraint">The constraint to edit.</param>
         private void EditConstraint(ScanConstraint scanConstraint)
         {
-            this.ScanConstraintCollection.RemoveConstraints(scanConstraint);
+            ///  this.ScanConstraintCollection.RemoveConstraints(scanConstraint);
             this.CurrentScanConstraint = scanConstraint;
             this.UpdateAllProperties();
         }
@@ -327,7 +327,7 @@
         /// <param name="scanConstraint">The constraint to remove.</param>
         private void RemoveConstraint(ScanConstraint scanConstraint)
         {
-            this.ScanConstraintCollection.RemoveConstraints(scanConstraint);
+            ///   this.ScanConstraintCollection.RemoveConstraints(scanConstraint);
             this.UpdateAllProperties();
         }
 
@@ -336,7 +336,7 @@
         /// </summary>
         private void ClearConstraints()
         {
-            this.ScanConstraintCollection.ClearConstraints();
+            //  this.ScanConstraintCollection.ClearConstraints();
             this.UpdateAllProperties();
         }
 

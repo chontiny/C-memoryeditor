@@ -192,6 +192,15 @@
         }
 
         /// <summary>
+        /// Gets the minimum usermode address possible in the target process.
+        /// </summary>
+        /// <returns>The minimum usermode address possible in the target process.</returns>
+        public UInt64 GetMinUsermodeAddress()
+        {
+            return UInt16.MaxValue;
+        }
+
+        /// <summary>
         /// Gets the maximum usermode address possible in the target process.
         /// </summary>
         /// <returns>The maximum usermode address possible in the target process.</returns>

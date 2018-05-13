@@ -116,33 +116,16 @@
         /// <returns>The enumerator for an element reference within this snapshot region.</returns>
         public IEnumerator<SnapshotElementComparer> IterateComparer(
             SnapshotElementComparer.PointerIncrementMode pointerIncrementMode,
-            ScanConstraintCollection scanConstraintManager)
+            ConstraintNode constraints)
         {
             Int32 elementCount = this.ElementCount;
-            SnapshotElementComparer snapshotElement = new SnapshotElementComparer(region: this, pointerIncrementMode: pointerIncrementMode, scanConstraintCollection: scanConstraintManager);
+            SnapshotElementComparer snapshotElement = new SnapshotElementComparer(region: this, pointerIncrementMode: pointerIncrementMode, constraints: constraints);
 
             for (Int32 elementIndex = 0; elementIndex < elementCount; elementIndex++)
             {
                 yield return snapshotElement;
                 snapshotElement.IncrementPointers();
             }
-        }
-
-        /// <summary>
-        /// Compares this snapshot region against the given
-        /// </summary>
-        /// <param name="scanConstraints"></param>
-        /// <returns></returns>
-        public IList<SnapshotRegion> CompareAll(ScanConstraintCollection scanConstraints)
-        {
-            if (!this.ReadGroup.CanCompare(scanConstraints.HasRelativeConstraint()))
-            {
-                return null;
-            }
-
-            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: this, scanConstraints: scanConstraints);
-
-            return vectorComparer.Compare();
         }
     }
     //// End class

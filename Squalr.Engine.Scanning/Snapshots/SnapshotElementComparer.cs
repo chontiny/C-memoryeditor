@@ -16,11 +16,11 @@
         /// </summary>
         /// <param name="region">The parent region that contains this element.</param>
         /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
-        /// <param name="scanConstraintCollection">The constraints to use for the element comparisons.</param>
+        /// <param name="constraints">The constraints to use for the element comparisons.</param>
         public unsafe SnapshotElementComparer(
             SnapshotRegion region,
             PointerIncrementMode pointerIncrementMode,
-            ScanConstraintCollection scanConstraintCollection)
+            ConstraintNode constraints)
         {
             this.Region = region;
 
@@ -31,7 +31,7 @@
             this.InitializePointers();
             this.SetConstraintFunctions();
             this.SetPointerFunction(pointerIncrementMode);
-            this.SetCompareConstraints(scanConstraintCollection);
+            this.Compare = this.BuildCompareActions(constraints);
         }
 
         /// <summary>
@@ -589,52 +589,62 @@
         /// <summary>
         /// Sets the default compare action to use for this element.
         /// </summary>
-        /// <param name="compareActionConstraint">The constraint to use for the element quick action.</param>
-        /// <param name="compareActionValue">The value to use for the element quick action.</param>
-        private void SetCompareConstraints(ScanConstraintCollection scanConstraintManager)
+        /// <param name="constraints">The constraints to use for the element quick action.</param>
+        private Func<Boolean> BuildCompareActions(ConstraintNode constraints)
         {
-            foreach (ScanConstraint scanConstraint in scanConstraintManager)
+            if (constraints is Operation)
             {
+                if (constraints.Left == null || constraints.Right == null)
+                {
+                    throw new ArgumentException("An operation constraint must have both a left and right child");
+                }
+
+                switch ((constraints as Operation).BinaryOperation)
+                {
+                    case Operation.OperationType.AND:
+                        return () => this.BuildCompareActions(constraints.Left).Invoke() && this.BuildCompareActions(constraints.Right).Invoke();
+                    case Operation.OperationType.OR:
+                        return () => this.BuildCompareActions(constraints.Left).Invoke() || this.BuildCompareActions(constraints.Right).Invoke();
+                    default:
+                        throw new ArgumentException("Unkown operation type");
+                }
+            }
+            else if (constraints is ScanConstraint)
+            {
+                ScanConstraint scanConstraint = (constraints as ScanConstraint);
+
                 switch (scanConstraint.Constraint)
                 {
                     case ScanConstraint.ConstraintType.Unchanged:
-                        this.Compare = this.Unchanged;
-                        break;
+                        return this.Unchanged;
                     case ScanConstraint.ConstraintType.Changed:
-                        this.Compare = this.Changed;
-                        break;
+                        return this.Changed;
                     case ScanConstraint.ConstraintType.Increased:
-                        this.Compare = this.Increased;
-                        break;
+                        return this.Increased;
                     case ScanConstraint.ConstraintType.Decreased:
-                        this.Compare = this.Decreased;
-                        break;
+                        return this.Decreased;
                     case ScanConstraint.ConstraintType.IncreasedByX:
-                        this.Compare = () => this.IncreasedByValue(scanConstraint.ConstraintValue);
-                        break;
+                        return () => this.IncreasedByValue(scanConstraint.ConstraintValue);
                     case ScanConstraint.ConstraintType.DecreasedByX:
-                        this.Compare = () => this.DecreasedByValue(scanConstraint.ConstraintValue);
-                        break;
+                        return () => this.DecreasedByValue(scanConstraint.ConstraintValue);
                     case ScanConstraint.ConstraintType.Equal:
-                        this.Compare = () => this.EqualToValue(scanConstraint.ConstraintValue);
-                        break;
+                        return () => this.EqualToValue(scanConstraint.ConstraintValue);
                     case ScanConstraint.ConstraintType.NotEqual:
-                        this.Compare = () => this.NotEqualToValue(scanConstraint.ConstraintValue);
-                        break;
+                        return () => this.NotEqualToValue(scanConstraint.ConstraintValue);
                     case ScanConstraint.ConstraintType.GreaterThan:
-                        this.Compare = () => this.GreaterThanValue(scanConstraint.ConstraintValue);
-                        break;
+                        return () => this.GreaterThanValue(scanConstraint.ConstraintValue);
                     case ScanConstraint.ConstraintType.GreaterThanOrEqual:
-                        this.Compare = () => this.GreaterThanOrEqualToValue(scanConstraint.ConstraintValue);
-                        break;
+                        return () => this.GreaterThanOrEqualToValue(scanConstraint.ConstraintValue);
                     case ScanConstraint.ConstraintType.LessThan:
-                        this.Compare = () => this.LessThanValue(scanConstraint.ConstraintValue);
-                        break;
+                        return () => this.LessThanValue(scanConstraint.ConstraintValue);
                     case ScanConstraint.ConstraintType.LessThanOrEqual:
-                        this.Compare = () => this.LessThanValue(scanConstraint.ConstraintValue);
-                        break;
+                        return () => this.LessThanOrEqualToValue(scanConstraint.ConstraintValue);
+                    default:
+                        throw new Exception("Unknown constraint type");
                 }
             }
+
+            throw new ArgumentException("Invalid constraint node");
         }
 
         /// <summary>

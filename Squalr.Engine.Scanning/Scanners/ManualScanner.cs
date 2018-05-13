@@ -26,11 +26,11 @@
         /// Begins the manual scan based on the provided snapshot and parameters.
         /// </summary>
         /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
-        /// <param name="scanConstraintCollection">The collection of scan constraints to use in the manual scan.</param>
+        /// <param name="constraints">The collection of scan constraints to use in the manual scan.</param>
         /// <param name="onProgressUpdate">The progress update callback.</param>
         /// <param name="cancellationTokenSource">A token for canceling the scan.</param>
         /// <returns></returns>
-        public static TrackableTask<Snapshot> Scan(Snapshot snapshot, ScanConstraintCollection scanConstraintCollection)
+        public static TrackableTask<Snapshot> Scan(Snapshot snapshot, ConstraintNode constraints)
         {
             TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(ManualScanner.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -47,7 +47,6 @@
                     stopwatch.Start();
 
                     Int32 processedPages = 0;
-                    Int32 regionCount = snapshot.RegionCount;
                     ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
 
                     ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
@@ -61,8 +60,13 @@
                             // Check for canceled scan
                             cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-                            // Perform comparisons
-                            IList<SnapshotRegion> results = region.CompareAll(scanConstraintCollection);
+                            if (!region.ReadGroup.CanCompare(constraints.HasRelativeConstraint()))
+                            {
+                                return;
+                            }
+
+                            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: region, constraints: constraints);
+                            IList<SnapshotRegion> results = vectorComparer.Compare();
 
                             if (!results.IsNullOrEmpty())
                             {

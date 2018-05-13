@@ -6,7 +6,7 @@
     /// <summary>
     /// Class to define a constraint for certain types of scans.
     /// </summary>
-    public class ScanConstraint : INotifyPropertyChanged
+    public class ScanConstraint : ConstraintNode, INotifyPropertyChanged
     {
         /// <summary>
         /// The constraint type.
@@ -126,6 +126,41 @@
             }
         }
 
+        public override void SetElementType(Type elementType)
+        {
+            base.SetElementType(elementType);
+
+            if (this.ConstraintValue == null)
+            {
+                return;
+            }
+
+            try
+            {
+                // Attempt to cast the value to the new type.
+                this.ConstraintValue = Convert.ChangeType(this.ConstraintValue, elementType);
+            }
+            catch
+            {
+                this.ConstraintValue = null;
+            }
+        }
+
+        public override Boolean IsValid()
+        {
+            if (!base.IsValid())
+            {
+                return false;
+            }
+
+            if (!ScanConstraint.IsValuedConstraint(this.Constraint))
+            {
+                return true;
+            }
+
+            return this.ConstraintValue != null;
+        }
+
         /// <summary>
         /// Clones this scan constraint.
         /// </summary>
@@ -237,16 +272,6 @@
                 default:
                     throw new ArgumentException();
             }
-        }
-
-        public Boolean IsValid()
-        {
-            if (!ScanConstraint.IsValuedConstraint(this.Constraint))
-            {
-                return true;
-            }
-
-            return this.ConstraintValue != null;
         }
 
         /// <summary>

@@ -227,7 +227,7 @@
         /// </summary>
         private void StartScan()
         {
-            PointerScan.Scan();
+            PointerScan.Scan(this.TargetAddress);
         }
 
         /// <summary>

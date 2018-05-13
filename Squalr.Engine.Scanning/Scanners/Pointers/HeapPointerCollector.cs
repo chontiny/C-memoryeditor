@@ -3,7 +3,6 @@
 namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Scanning.Scanners.Constraints;
     using Squalr.Engine.Scanning.Snapshots;
     using System;
     using System.Diagnostics;
@@ -13,12 +12,12 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
     /// <summary>
     /// Collects static pointers in the target process.
     /// </summary>
-    public static class StaticPointercollector
+    public static class HeapPointercollector
     {
         /// <summary>
         /// The name of this scan.
         /// </summary>
-        private const String Name = "Static Pointer Collector";
+        private const String Name = "Heap Pointer Collector";
 
         /// <summary>
         /// Begins the manual scan based on the provided snapshot and parameters.
@@ -26,7 +25,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
         /// <returns></returns>
         public static TrackableTask<Snapshot> Collect(DataType dataType)
         {
-            TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(StaticPointercollector.Name);
+            TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(HeapPointercollector.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
             Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
@@ -40,33 +39,27 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    // Collect static data segments from the binary file header
-                    TrackableTask<Snapshot> dataSegmentCollector = DataSegmentCollector.CollectDataSegments(ignoreSystemModules: true);
-                    Snapshot snapshot = dataSegmentCollector.Result;
-
-                    // Collect the in-memory values so we can perform a diff
+                    Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromHeap, dataType);
                     TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(snapshot);
                     snapshot = valueCollector.Result;
 
-                    // Perform a changed value scan against the data segments and the in-memory values
-                    TrackableTask<Snapshot> changedScan = ManualScanner.Scan(snapshot, new ScanConstraint(ScanConstraint.ConstraintType.Changed));
-                    result = changedScan.Result;
-                    result.ElementDataType = dataType;
-
                     // Filter out valid pointers from the result
-                    TrackableTask<Snapshot> filterTask = PointerFilter.Filter(result, dataType);
+                    TrackableTask<Snapshot> filterTask = PointerFilter.Filter(snapshot, dataType);
                     result = filterTask.Result;
 
+                    // Exit if canceled
+                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+
                     stopwatch.Stop();
-                    Logger.Log(LogLevel.Info, "Static pointer collection complete in: " + stopwatch.Elapsed);
+                    Logger.Log(LogLevel.Info, "Heap pointer collection complete in: " + stopwatch.Elapsed);
                 }
                 catch (OperationCanceledException ex)
                 {
-                    Logger.Log(LogLevel.Warn, "Static pointer collection canceled", ex);
+                    Logger.Log(LogLevel.Warn, "Heap pointer collection canceled", ex);
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Error, "Error performing static pointer collection", ex);
+                    Logger.Log(LogLevel.Error, "Error performing heap pointer collection", ex);
                 }
 
                 return result;

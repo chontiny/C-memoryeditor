@@ -2,7 +2,6 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils;
-    using Squalr.Engine.Utils.Extensions;
     using System;
     using System.ComponentModel;
     using System.Globalization;
@@ -41,7 +40,7 @@
         {
             if (SyntaxChecker.CanParseAddress(value?.ToString()))
             {
-                return Conversions.AddressToValue(value?.ToString()).ToIntPtr();
+                return Conversions.AddressToValue(value?.ToString());
             }
 
             return base.ConvertFrom(context, culture, value);

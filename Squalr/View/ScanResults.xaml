@@ -20,7 +20,7 @@
     </x:Code>
     <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
-            <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
+            <converters:UInt64ToAddressConverter x:Key="IntPtrToAddressConverter" />
             <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
             <converters:BooleanToVisibilityConverter
                 x:Key="BooleanToHiddenConverter"

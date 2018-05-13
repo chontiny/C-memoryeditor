@@ -20,7 +20,7 @@
     <UserControl.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:OffsetsToStringConverter x:Key="OffsetsToStringConverter" />
-        <converters:IntPtrToAddressConverter x:Key="IntPtrToAddressConverter" />
+        <converters:UInt64ToAddressConverter x:Key="IntPtrToAddressConverter" />
         <converters:DataTypeToIconConverter x:Key="DataTypeToIconConverter" />
         <converters:BooleanToVisibilityConverter
             x:Key="BooleanToHiddenConverter"

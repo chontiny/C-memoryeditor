@@ -1,4 +1,7 @@
-﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
+﻿using Squalr.Engine.DataTypes;
+using Squalr.Engine.OS;
+
+namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Logging;
     using Squalr.Engine.Scanning.Snapshots;
@@ -25,10 +28,22 @@
         /// <param name="onProgressUpdate">The progress update callback.</param>
         /// <param name="cancellationTokenSource">A token for canceling the scan.</param>
         /// <returns></returns>
-        public static TrackableTask<Snapshot> Scan()
+        public static TrackableTask<Snapshot> Scan(UInt64 address)
         {
             TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(PointerScan.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+
+            Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
+            DataType dataType;
+
+            if (isProcess32Bit)
+            {
+                dataType = DataType.UInt32;
+            }
+            else
+            {
+                dataType = DataType.UInt64;
+            }
 
             Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
             {
@@ -41,9 +56,17 @@
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    TrackableTask<Snapshot> staticPointerCollectorTask = StaticPointercollector.Scan();
-
+                    // Step 1) Collect static pointers
+                    TrackableTask<Snapshot> staticPointerCollectorTask = StaticPointercollector.Collect(dataType);
                     Snapshot staticPointers = staticPointerCollectorTask.Result;
+
+                    // Step 2) Collect heap pointers
+                    TrackableTask<Snapshot> heapPointerCollectorTask = HeapPointercollector.Collect(dataType);
+                    Snapshot heapPointers = heapPointerCollectorTask.Result;
+
+                    // Step 3) Build levels
+
+                    // Step 4) Build pointer trees
 
                     stopwatch.Stop();
                     Logger.Log(LogLevel.Info, "Pointer scan complete in: " + stopwatch.Elapsed);
