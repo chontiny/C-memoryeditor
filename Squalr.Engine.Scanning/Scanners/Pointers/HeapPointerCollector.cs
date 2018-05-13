@@ -30,7 +30,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
 
             Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
             {
-                Snapshot result = null;
+                Snapshot snapshot = null;
 
                 try
                 {
@@ -39,13 +39,13 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromHeap, dataType);
+                    // This snapshot is just to get the bounds of the process memory for determining if a pointer is valid
+                    Snapshot userModeSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, dataType);
+
+                    // Collect heaps
+                    snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromHeap, dataType);
                     TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(snapshot);
                     snapshot = valueCollector.Result;
-
-                    // Filter out valid pointers from the result
-                    TrackableTask<Snapshot> filterTask = PointerFilter.Filter(snapshot, dataType);
-                    result = filterTask.Result;
 
                     // Exit if canceled
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
@@ -56,13 +56,15 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                 catch (OperationCanceledException ex)
                 {
                     Logger.Log(LogLevel.Warn, "Heap pointer collection canceled", ex);
+                    return null;
                 }
                 catch (Exception ex)
                 {
                     Logger.Log(LogLevel.Error, "Error performing heap pointer collection", ex);
+                    return null;
                 }
 
-                return result;
+                return snapshot;
             }, cancellationTokenSource.Token);
 
             trackedScanTask.SetTrackedTask(scanTask, cancellationTokenSource);

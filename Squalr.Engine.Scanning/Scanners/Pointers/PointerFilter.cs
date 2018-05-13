@@ -30,7 +30,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
         /// </summary>
         /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
         /// <returns></returns>
-        public static TrackableTask<Snapshot> Filter(Snapshot snapshot, DataType dataType)
+        public static TrackableTask<Snapshot> Filter(Snapshot snapshot, Snapshot boundsSnapshot, DataType dataType)
         {
             TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(PointerFilter.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -47,20 +47,17 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
                     Int32 vectorSize = Vectors.VectorSize;
 
-                    // This snapshot is just to get the bounds of the process memory for determining if a pointer is valid
-                    Snapshot userModeSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, dataType);
+                    IEnumerable<UInt32> tempLowerBounds = boundsSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.BaseAddress));
+                    IEnumerable<UInt32> tempUpperBounds = boundsSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.EndAddress));
 
-                    IEnumerable<UInt32> tempLowerBound = userModeSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.BaseAddress));
-                    IEnumerable<UInt32> tempUpperBound = userModeSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.EndAddress));
-
-                    while (tempLowerBound.Count() % vectorSize != 0)
+                    while (tempLowerBounds.Count() % vectorSize != 0)
                     {
-                        tempLowerBound = tempLowerBound.Append<UInt32>(UInt32.MaxValue);
-                        tempUpperBound = tempUpperBound.Append<UInt32>(UInt32.MaxValue);
+                        tempLowerBounds = tempLowerBounds.Append<UInt32>(UInt32.MaxValue);
+                        tempUpperBounds = tempUpperBounds.Append<UInt32>(UInt32.MinValue);
                     }
 
-                    UInt32[] userModeLowerBound = tempLowerBound.ToArray();
-                    UInt32[] userModeUpperBound = tempUpperBound.ToArray();
+                    UInt32[] lowerBounds = tempLowerBounds.ToArray();
+                    UInt32[] upperBounds = tempUpperBounds.ToArray();
 
                     Int32 processedPages = 0;
                     ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
@@ -88,10 +85,10 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                                 Vector<UInt32> result = Vector<UInt32>.Zero;
 
                                 // Perform vectorized linear search. This is why you should not trust big O notation -- this severely beats scalar binary search
-                                for (Int32 boundsIndex = 0; boundsIndex < userModeLowerBound.Length; boundsIndex += vectorSize)
+                                for (Int32 boundsIndex = 0; boundsIndex < lowerBounds.Length; boundsIndex += vectorSize)
                                 {
-                                    Vector<UInt32> nextLowerBounds = new Vector<UInt32>(userModeLowerBound, boundsIndex);
-                                    Vector<UInt32> nextUpperBounds = new Vector<UInt32>(userModeUpperBound, boundsIndex);
+                                    Vector<UInt32> nextLowerBounds = new Vector<UInt32>(lowerBounds, boundsIndex);
+                                    Vector<UInt32> nextUpperBounds = new Vector<UInt32>(upperBounds, boundsIndex);
 
                                     result = Vector.BitwiseOr(
                                         result,

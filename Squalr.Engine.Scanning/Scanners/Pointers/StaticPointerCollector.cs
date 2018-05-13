@@ -31,7 +31,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
 
             Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
             {
-                Snapshot result = null;
+                Snapshot snapshot = null;
 
                 try
                 {
@@ -40,9 +40,12 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
+                    // This snapshot is just to get the bounds of the process memory for determining if a pointer is valid
+                    Snapshot userModeSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, dataType);
+
                     // Collect static data segments from the binary file header
                     TrackableTask<Snapshot> dataSegmentCollector = DataSegmentCollector.CollectDataSegments(ignoreSystemModules: true);
-                    Snapshot snapshot = dataSegmentCollector.Result;
+                    snapshot = dataSegmentCollector.Result;
 
                     // Collect the in-memory values so we can perform a diff
                     TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(snapshot);
@@ -50,12 +53,8 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
 
                     // Perform a changed value scan against the data segments and the in-memory values
                     TrackableTask<Snapshot> changedScan = ManualScanner.Scan(snapshot, new ScanConstraint(ScanConstraint.ConstraintType.Changed));
-                    result = changedScan.Result;
-                    result.ElementDataType = dataType;
-
-                    // Filter out valid pointers from the result
-                    TrackableTask<Snapshot> filterTask = PointerFilter.Filter(result, dataType);
-                    result = filterTask.Result;
+                    snapshot = changedScan.Result;
+                    snapshot.ElementDataType = dataType;
 
                     stopwatch.Stop();
                     Logger.Log(LogLevel.Info, "Static pointer collection complete in: " + stopwatch.Elapsed);
@@ -63,13 +62,15 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                 catch (OperationCanceledException ex)
                 {
                     Logger.Log(LogLevel.Warn, "Static pointer collection canceled", ex);
+                    return null;
                 }
                 catch (Exception ex)
                 {
                     Logger.Log(LogLevel.Error, "Error performing static pointer collection", ex);
+                    return null;
                 }
 
-                return result;
+                return snapshot;
             }, cancellationTokenSource.Token);
 
             trackedScanTask.SetTrackedTask(scanTask, cancellationTokenSource);

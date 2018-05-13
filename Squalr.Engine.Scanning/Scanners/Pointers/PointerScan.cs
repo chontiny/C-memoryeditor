@@ -5,7 +5,9 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Logging;
     using Squalr.Engine.Scanning.Snapshots;
+    using Squalr.Engine.Utils.Extensions;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
@@ -21,29 +23,23 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
         private const String Name = "Pointer Scan";
 
         /// <summary>
-        /// Begins the manual scan based on the provided snapshot and parameters.
+        /// Performs a pointer scan for a given address.
         /// </summary>
-        /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
-        /// <param name="scanConstraintCollection">The collection of scan constraints to use in the manual scan.</param>
-        /// <param name="onProgressUpdate">The progress update callback.</param>
-        /// <param name="cancellationTokenSource">A token for canceling the scan.</param>
-        /// <returns></returns>
-        public static TrackableTask<Snapshot> Scan(UInt64 address)
+        /// <param name="address">The address for which to perform a pointer scan.</param>
+        /// <param name="radius">The maximum pointer search depth.</param>
+        /// <param name="depth">The maximum pointer search depth.</param>
+        /// <param name="alignment">The pointer scan alignment.</param>
+        /// <returns>Atrackable task that returns the scan results.</returns>
+        public static TrackableTask<Snapshot> Scan(UInt64 address, UInt32 radius, Int32 depth, Int32 alignment)
         {
             TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(PointerScan.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
             Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
-            DataType dataType;
-
-            if (isProcess32Bit)
-            {
-                dataType = DataType.UInt32;
-            }
-            else
-            {
-                dataType = DataType.UInt64;
-            }
+            DataType dataType = isProcess32Bit ? DataType.UInt32 : DataType.UInt64;
+            Int32 size = isProcess32Bit ? 4 : 8;
+            Int32 vectorSize = Vectors.VectorSize;
+            Int32 targetSize = unchecked((Int32)(radius * 2 + (vectorSize - (radius * 2) % vectorSize)));
 
             Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
             {
@@ -56,6 +52,9 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
+                    // Step 0) Create a snapshot of the target address
+                    Snapshot targetAddress = new Snapshot(new SnapshotRegion[] { new SnapshotRegion(new ReadGroup(address.Subtract(radius, wrapAround: false), targetSize, dataType, alignment), 0, targetSize) });
+
                     // Step 1) Collect static pointers
                     TrackableTask<Snapshot> staticPointerCollectorTask = StaticPointercollector.Collect(dataType);
                     Snapshot staticPointers = staticPointerCollectorTask.Result;
@@ -65,6 +64,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Snapshot heapPointers = heapPointerCollectorTask.Result;
 
                     // Step 3) Build levels
+                    TrackableTask<IList<Snapshot>> levels = LevelBuilder.Build(staticPointers, heapPointers, targetAddress, dataType, depth);
 
                     // Step 4) Build pointer trees
 
