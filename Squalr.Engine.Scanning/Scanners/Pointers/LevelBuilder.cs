@@ -24,12 +24,11 @@
         /// Filters the given snapshot to find all values that are valid pointers.
         /// </summary>
         /// <param name="snapshotFrom">The snapshot from which the algorithm begins. Generally a snapshot of static memory.</param>
-        /// <param name="snapshotThrough">The snapshot through which to search. Generally a snapshot of heap memory.</param>
         /// <param name="snapshotTo">The destination snapshot. Generally contains one address.</param>
         /// <param name="dataType">The data type of the pointers.</param>
         /// <param name="depth">The search depth.</param>
         /// <returns></returns>
-        public static TrackableTask<IList<Snapshot>> Build(Snapshot snapshotFrom, Snapshot snapshotThrough, Snapshot snapshotTo, DataType dataType, Int32 depth)
+        public static TrackableTask<IList<Snapshot>> Build(Snapshot snapshotFrom, Snapshot snapshotTo, DataType dataType, Int32 depth)
         {
             TrackableTask<IList<Snapshot>> trackedScanTask = new TrackableTask<IList<Snapshot>>(LevelBuilder.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -45,39 +44,45 @@
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
+                    // Collect all values in the target process
+                    Snapshot snapshotAll = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, dataType);
+                    TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(snapshotAll);
+                    snapshotAll = valueCollector.Result;
+
                     // Counter-intuitively, we begin at the destination and work our way backwards, as it is significantly faster and results in less dead-end pointers
                     IList<Snapshot> backTraceLevels = new List<Snapshot>();
-                    Snapshot targetSnapshot = snapshotTo;
-                    Snapshot sourceSnapshot = snapshotThrough;
+                    Snapshot currentTargetSnapshot = snapshotTo;
+                    Snapshot currentSourceSnapshot = snapshotAll;
 
-                    backTraceLevels.Add(targetSnapshot);
-
-                    // Step 1) Back trace
+                    // Step 1) Back trace (we do not care about static/heap at this point)
                     for (Int32 currentDepth = 0; currentDepth < depth; currentDepth++)
                     {
-                        // For the last level use static snapshot
-                        if (currentDepth == depth - 1)
+                        TrackableTask<Snapshot> filterTask = PointerFilter.Filter(currentSourceSnapshot, currentTargetSnapshot, dataType);
+                        Snapshot pointers = filterTask.Result;
+
+                        if (pointers.ByteCount <= 0)
                         {
-                            sourceSnapshot = snapshotFrom;
+                            break;
                         }
 
-                        TrackableTask<Snapshot> filterTask = PointerFilter.Filter(sourceSnapshot, targetSnapshot, dataType);
-                        Snapshot nextLevel = filterTask.Result;
-                        backTraceLevels.Add(nextLevel);
-
-                        targetSnapshot = nextLevel;
+                        backTraceLevels.Add(pointers);
+                        currentTargetSnapshot = pointers;
                     }
 
-                    targetSnapshot = snapshotFrom;
+                    currentSourceSnapshot = snapshotFrom;
 
-                    // Step 2) Front trace
-                    foreach (Snapshot backTraceLevel in backTraceLevels.Reverse())
+                    // Step 2) Front trace, starting from static
+                    foreach (Snapshot nextSnapshot in backTraceLevels.Reverse())
                     {
-                        TrackableTask<Snapshot> filterTask = PointerFilter.Filter(targetSnapshot, backTraceLevel, dataType);
-                        Snapshot nextLevel = filterTask.Result;
-                        levels.Add(nextLevel);
+                        TrackableTask<Snapshot> heapFilterTask = PointerFilter.Filter(currentSourceSnapshot, nextSnapshot, dataType);
+                        Snapshot pointers = heapFilterTask.Result;
 
-                        targetSnapshot = nextLevel;
+                        if (pointers.ByteCount <= 0)
+                        {
+                            break;
+                        }
+
+                        levels.Add(pointers);
                     }
 
                     // Exit if canceled
@@ -89,10 +94,12 @@
                 catch (OperationCanceledException ex)
                 {
                     Logger.Log(LogLevel.Warn, "Level builder canceled", ex);
+                    return null;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Error, "Error building levels filtering", ex);
+                    Logger.Log(LogLevel.Error, "Error building levels", ex);
+                    return null;
                 }
 
                 return levels;

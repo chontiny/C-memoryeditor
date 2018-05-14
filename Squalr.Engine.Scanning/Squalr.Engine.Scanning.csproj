@@ -42,8 +42,4 @@ Scanners are JIT compiled into SSE, AVX, or AVX-512 instructions via RyuJIT thro
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Scanners\Pointers\Structures\" />
-  </ItemGroup>
-
 </Project>

@@ -2,15 +2,15 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
-    using Squalr.Engine.Utils.Extensions;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
     /// A class to contain the discovered pointers from a pointer scan.
     /// </summary>
-    public class ScannedPointers : DiscoveredPointers
+    public class PointerCollection : IEnumerable<Pointer>
     {
         /// <summary>
         /// The number of discovered pointers.
@@ -18,9 +18,9 @@
         private UInt64 count;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ScannedPointers" /> class.
+        /// Initializes a new instance of the <see cref="PointerCollection" /> class.
         /// </summary>
-        public ScannedPointers()
+        public PointerCollection()
         {
             this.PointerRoots = new List<PointerRoot>();
             this.count = 0;
@@ -34,7 +34,7 @@
         /// <summary>
         /// Gets the number of discovered pointers.
         /// </summary>
-        public override UInt64 Count
+        public UInt64 Count
         {
             get
             {
@@ -48,7 +48,7 @@
         /// <param name="startIndex">The start index.</param>
         /// <param name="endIndex">The end index.</param>
         /// <returns>The pointers between the specified indicies.</returns>
-        public override IEnumerable<Pointer> GetPointers(UInt64 startIndex, UInt64 endIndex)
+        public IEnumerable<Pointer> GetPointers(UInt64 startIndex, UInt64 endIndex)
         {
             IEnumerator<Pointer> enumerator = this.EnumeratePointers(startIndex, endIndex);
 
@@ -96,7 +96,7 @@
         /// Gets the enumerator for the discovered pointers.
         /// </summary>
         /// <returns>The enumerator for the discovered pointers.</returns>
-        public override IEnumerator<Pointer> GetEnumerator()
+        public IEnumerator<Pointer> GetEnumerator()
         {
             return this.EnumeratePointers();
         }
@@ -152,7 +152,7 @@
                 {
                     String moduleName;
                     UInt64 address = AddressResolver.GetInstance().AddressToModule(baseAddress, out moduleName);
-                    pointer = new Pointer(address.ToIntPtr(), DataType.Int32, "New Pointer", moduleName, offsets.ToArray().Reverse());
+                    pointer = new Pointer(address, DataType.Int32, offsets.ToArray().Reverse());
                 }
                 else
                 {
@@ -212,6 +212,15 @@
                     this.CountLeaves(ref count, childBranch);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the enumerator for the discovered pointers.
+        /// </summary>
+        /// <returns>The enumerator for the discovered pointers.</returns>
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
 
         /// <summary>

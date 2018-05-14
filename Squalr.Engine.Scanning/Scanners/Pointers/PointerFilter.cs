@@ -90,8 +90,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                                     Vector<UInt32> nextLowerBounds = new Vector<UInt32>(lowerBounds, boundsIndex);
                                     Vector<UInt32> nextUpperBounds = new Vector<UInt32>(upperBounds, boundsIndex);
 
-                                    result = Vector.BitwiseOr(
-                                        result,
+                                    result = Vector.BitwiseOr(result,
                                         Vector.BitwiseAnd(
                                             Vector.GreaterThanOrEqual(Vector.AsVectorUInt32(vectorComparer.CurrentValues), nextLowerBounds),
                                             Vector.LessThanOrEqual(Vector.AsVectorUInt32(vectorComparer.CurrentValues), nextUpperBounds)));

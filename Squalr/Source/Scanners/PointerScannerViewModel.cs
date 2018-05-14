@@ -28,6 +28,12 @@
         /// </summary>
         public const Int32 MaximumPointerScanDepth = 7;
 
+        private UInt64 rescanAddress;
+        private UInt64 targetAddress;
+        private Int32 pointerRadius;
+        private Object rescanValue;
+        private Int32 pointerDepth;
+
         /// <summary>
         /// Singleton instance of the <see cref="PointerScannerViewModel" /> class.
         /// </summary>
@@ -40,11 +46,6 @@
         /// </summary>
         private PointerScannerViewModel() : base("Pointer Scanner")
         {
-            this.PointerScanOld = new PointerScanOld();
-            this.PointerRescan = new PointerRescan();
-            this.PointerValueRescan = new PointerValueRescan();
-            this.PointerValidationScan = new PointerValidationScan();
-
             this.SetPointerScanAddressCommand = new RelayCommand<UInt64>((newValue) => this.TargetAddress = newValue, (newValue) => true);
             this.SetPointerRescanAddressCommand = new RelayCommand<UInt64>((newValue) => this.RescanAddress = newValue, (newValue) => true);
             this.SetPointerRescanValueCommand = new RelayCommand<Object>((newValue) => this.RescanValue = newValue, (newValue) => true);
@@ -115,12 +116,12 @@
         {
             get
             {
-                return this.PointerScanOld.TargetAddress;
+                return this.targetAddress;
             }
 
             set
             {
-                this.PointerScanOld.TargetAddress = value;
+                this.targetAddress = value;
                 this.RaisePropertyChanged(nameof(this.TargetAddress));
             }
         }
@@ -132,13 +133,13 @@
         {
             get
             {
-                return this.PointerRescan.TargetAddress;
+                return this.rescanAddress;
             }
 
             set
             {
-                this.PointerRescan.TargetAddress = value;
-                this.RaisePropertyChanged(nameof(this.PointerRescan));
+                this.rescanAddress = value;
+                this.RaisePropertyChanged(nameof(this.RescanAddress));
             }
         }
 
@@ -149,12 +150,12 @@
         {
             get
             {
-                return this.PointerValueRescan.Value;
+                return this.rescanValue;
             }
 
             set
             {
-                this.PointerValueRescan.Value = value;
+                this.rescanValue = value;
                 this.RaisePropertyChanged(nameof(this.RescanValue));
             }
         }
@@ -166,12 +167,12 @@
         {
             get
             {
-                return this.PointerScanOld.PointerDepth;
+                return this.pointerDepth;
             }
 
             set
             {
-                this.PointerScanOld.PointerDepth = value;
+                this.pointerDepth = value;
                 this.RaisePropertyChanged(nameof(this.PointerDepth));
             }
         }
@@ -183,35 +184,15 @@
         {
             get
             {
-                return this.PointerScanOld.PointerRadius;
+                return this.pointerRadius;
             }
 
             set
             {
-                this.PointerScanOld.PointerRadius = value;
+                this.pointerRadius = value;
                 this.RaisePropertyChanged(nameof(this.PointerRadius));
             }
         }
-
-        /// <summary>
-        /// Gets or sets the pointer scan task.
-        /// </summary>
-        private PointerScanOld PointerScanOld { get; set; }
-
-        /// <summary>
-        /// Gets or sets the pointer rescan task.
-        /// </summary>
-        private PointerRescan PointerRescan { get; set; }
-
-        /// <summary>
-        /// Gets or sets the pointer value rescan task.
-        /// </summary>
-        private PointerValueRescan PointerValueRescan { get; set; }
-
-        /// <summary>
-        /// Gets or sets the pointer validation scan task.
-        /// </summary>
-        private PointerValidationScan PointerValidationScan { get; set; }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="ChangeCounterViewModel"/> class.

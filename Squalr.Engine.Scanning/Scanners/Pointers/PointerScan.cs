@@ -4,6 +4,7 @@ using Squalr.Engine.OS;
 namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -39,7 +40,13 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
             DataType dataType = isProcess32Bit ? DataType.UInt32 : DataType.UInt64;
             Int32 size = isProcess32Bit ? 4 : 8;
             Int32 vectorSize = Vectors.VectorSize;
-            Int32 targetSize = unchecked((Int32)(radius * 2 + (vectorSize - (radius * 2) % vectorSize)));
+            Int32 targetSize = unchecked((Int32)(radius * 2));
+
+            // Round to vector size
+            if ((radius * 2) % vectorSize != 0)
+            {
+                targetSize += unchecked((Int32)(vectorSize - (radius * 2) % vectorSize));
+            }
 
             Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
             {
@@ -52,21 +59,22 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    // Step 0) Create a snapshot of the target address
+                    Snapshot userModeMemory = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, dataType);
+
+                    // Step 1) Create a snapshot of the target address
                     Snapshot targetAddress = new Snapshot(new SnapshotRegion[] { new SnapshotRegion(new ReadGroup(address.Subtract(radius, wrapAround: false), targetSize, dataType, alignment), 0, targetSize) });
 
-                    // Step 1) Collect static pointers
+                    // Step 2) Collect static pointers
                     TrackableTask<Snapshot> staticPointerCollectorTask = StaticPointercollector.Collect(dataType);
                     Snapshot staticPointers = staticPointerCollectorTask.Result;
 
-                    // Step 2) Collect heap pointers
-                    TrackableTask<Snapshot> heapPointerCollectorTask = HeapPointercollector.Collect(dataType);
-                    Snapshot heapPointers = heapPointerCollectorTask.Result;
-
                     // Step 3) Build levels
-                    TrackableTask<IList<Snapshot>> levels = LevelBuilder.Build(staticPointers, heapPointers, targetAddress, dataType, depth);
+                    TrackableTask<IList<Snapshot>> levelBuilderTask = LevelBuilder.Build(staticPointers, targetAddress, dataType, depth);
+                    IList<Snapshot> levels = levelBuilderTask.Result;
 
                     // Step 4) Build pointer trees
+                    TrackableTask<PointerCollection> treeBuilderTask = TreeBuilder.Build(levels, dataType);
+                    PointerCollection pointers = treeBuilderTask.Result;
 
                     stopwatch.Stop();
                     Logger.Log(LogLevel.Info, "Pointer scan complete in: " + stopwatch.Elapsed);
