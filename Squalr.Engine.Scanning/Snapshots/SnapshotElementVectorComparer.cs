@@ -51,6 +51,17 @@
         /// <summary>
         /// Gets the current values at the current vector read index.
         /// </summary>
+        public UInt64 CurrentAddress
+        {
+            get
+            {
+                return Region.ReadGroup.BaseAddress + unchecked((UInt32)(this.VectorReadBase + this.VectorReadIndex));
+            }
+        }
+
+        /// <summary>
+        /// Gets the current values at the current vector read index.
+        /// </summary>
         public Vector<Byte> CurrentValues
         {
             get

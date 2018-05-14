@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
 {
-    using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -14,7 +13,7 @@
         /// Initializes a new instance of the <see cref="PointerBranch" /> class.
         /// </summary>
         /// <param name="offset">The offset of this branch.</param>
-        public PointerBranch(Int32 offset)
+        public PointerBranch(Int32 offset, UInt64 pointer)
         {
             this.Offset = offset;
             this.Branches = new List<PointerBranch>();
@@ -26,26 +25,14 @@
         public Int32 Offset { get; set; }
 
         /// <summary>
-        /// Gets or sets the list of child branches to this branch.
+        /// Gets or sets the address to which this branch points
         /// </summary>
-        public IList<PointerBranch> Branches { get; set; }
+        public UInt64 Pointer { get; set; }
 
         /// <summary>
-        /// Takes the given offsets and creates branches from them.
+        /// Gets or sets the list of child branches to this branch.
         /// </summary>
-        /// <param name="offsets">The pointer offsets.</param>
-        public void AddOffsets(IEnumerable<Int32> offsets)
-        {
-            if (offsets.IsNullOrEmpty())
-            {
-                return;
-            }
-
-            foreach (Int32 offset in offsets)
-            {
-                this.Branches.Add(new PointerBranch(offset));
-            }
-        }
+        public IEnumerable<PointerBranch> Branches { get; set; }
 
         /// <summary>
         /// Returns an interator to the branches in this collection.

@@ -25,10 +25,10 @@
         /// </summary>
         /// <param name="snapshotFrom">The snapshot from which the algorithm begins. Generally a snapshot of static memory.</param>
         /// <param name="snapshotTo">The destination snapshot. Generally contains one address.</param>
-        /// <param name="dataType">The data type of the pointers.</param>
         /// <param name="depth">The search depth.</param>
+        /// <param name="dataType">The data type of the pointers.</param>
         /// <returns></returns>
-        public static TrackableTask<IList<Snapshot>> Build(Snapshot snapshotFrom, Snapshot snapshotTo, DataType dataType, Int32 depth)
+        public static TrackableTask<IList<Snapshot>> Build(Snapshot snapshotFrom, Snapshot snapshotTo, Int32 depth, UInt32 radius, DataType dataType)
         {
             TrackableTask<IList<Snapshot>> trackedScanTask = new TrackableTask<IList<Snapshot>>(LevelBuilder.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -57,7 +57,7 @@
                     // Step 1) Back trace (we do not care about static/heap at this point)
                     for (Int32 currentDepth = 0; currentDepth < depth; currentDepth++)
                     {
-                        TrackableTask<Snapshot> filterTask = PointerFilter.Filter(currentSourceSnapshot, currentTargetSnapshot, dataType);
+                        TrackableTask<Snapshot> filterTask = PointerFilter.Filter(currentSourceSnapshot, currentTargetSnapshot, radius, dataType);
                         Snapshot pointers = filterTask.Result;
 
                         if (pointers.ByteCount <= 0)
@@ -74,7 +74,7 @@
                     // Step 2) Front trace, starting from static
                     foreach (Snapshot nextSnapshot in backTraceLevels.Reverse())
                     {
-                        TrackableTask<Snapshot> heapFilterTask = PointerFilter.Filter(currentSourceSnapshot, nextSnapshot, dataType);
+                        TrackableTask<Snapshot> heapFilterTask = PointerFilter.Filter(currentSourceSnapshot, nextSnapshot, radius, dataType);
                         Snapshot pointers = heapFilterTask.Result;
 
                         if (pointers.ByteCount <= 0)

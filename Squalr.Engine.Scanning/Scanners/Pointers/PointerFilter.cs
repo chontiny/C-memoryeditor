@@ -30,7 +30,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
         /// </summary>
         /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
         /// <returns></returns>
-        public static TrackableTask<Snapshot> Filter(Snapshot snapshot, Snapshot boundsSnapshot, DataType dataType)
+        public static TrackableTask<Snapshot> Filter(Snapshot snapshot, Snapshot boundsSnapshot, UInt32 radius, DataType dataType)
         {
             TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(PointerFilter.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -47,8 +47,8 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
                     Int32 vectorSize = Vectors.VectorSize;
 
-                    IEnumerable<UInt32> tempLowerBounds = boundsSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.BaseAddress));
-                    IEnumerable<UInt32> tempUpperBounds = boundsSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.EndAddress));
+                    IEnumerable<UInt32> tempLowerBounds = boundsSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.BaseAddress.Subtract(radius, wrapAround: false)));
+                    IEnumerable<UInt32> tempUpperBounds = boundsSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.EndAddress.Add(radius, wrapAround: false)));
 
                     while (tempLowerBounds.Count() % vectorSize != 0)
                     {

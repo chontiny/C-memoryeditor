@@ -1,6 +1,5 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
 {
-    using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -14,38 +13,27 @@
         /// Initializes a new instance of the <see cref="PointerRoot" /> class.
         /// </summary>
         /// <param name="baseAddress">The base address of this pointer tree.</param>
-        public PointerRoot(UInt64 baseAddress)
+        public PointerRoot(UInt64 baseAddress, UInt64 pointer)
         {
             this.BaseAddress = baseAddress;
+            this.Pointer = pointer;
             this.Branches = new List<PointerBranch>();
         }
 
         /// <summary>
         /// Gets or sets the base address of this pointer tree.
         /// </summary>
-        public UInt64 BaseAddress { get; set; }
+        public UInt64 BaseAddress { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the base address of this pointer tree.
+        /// </summary>
+        public UInt64 Pointer { get; private set; }
 
         /// <summary>
         /// Gets or sets the list of pointer branches stemming from this root.
         /// </summary>
-        private IList<PointerBranch> Branches { get; set; }
-
-        /// <summary>
-        /// Takes the given offsets and creates branches from them.
-        /// </summary>
-        /// <param name="offsets">The pointer offsets.</param>
-        public void AddOffsets(IEnumerable<Int32> offsets)
-        {
-            if (offsets.IsNullOrEmpty())
-            {
-                return;
-            }
-
-            foreach (Int32 offset in offsets)
-            {
-                this.Branches.Add(new PointerBranch(offset));
-            }
-        }
+        public IEnumerable<PointerBranch> Branches { get; set; }
 
         /// <summary>
         /// Returns an interator to the branches in this collection.

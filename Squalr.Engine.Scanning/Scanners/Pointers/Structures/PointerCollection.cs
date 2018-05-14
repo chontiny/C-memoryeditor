@@ -4,6 +4,7 @@
     using Squalr.Engine.Memory;
     using System;
     using System.Collections;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -22,14 +23,14 @@
         /// </summary>
         public PointerCollection()
         {
-            this.PointerRoots = new List<PointerRoot>();
+            this.PointerRoots = new ConcurrentBag<PointerRoot>();
             this.count = 0;
         }
 
         /// <summary>
         /// Gets the discovered pointer roots.
         /// </summary>
-        public IEnumerable<PointerRoot> PointerRoots { get; private set; }
+        public ConcurrentBag<PointerRoot> PointerRoots { get; private set; }
 
         /// <summary>
         /// Gets the number of discovered pointers.
@@ -74,22 +75,6 @@
         public void BuildCount()
         {
             this.count = this.CountLeaves();
-        }
-
-        /// <summary>
-        /// Adds a new pointer root to the discovered pointers.
-        /// </summary>
-        /// <param name="pointerRoot">The pointer root.</param>
-        public void CreatePointerRoots(IEnumerable<UInt64> pointerRoots)
-        {
-            IList<PointerRoot> newPointerRoots = new List<PointerRoot>();
-
-            foreach (UInt64 pointerRoot in pointerRoots)
-            {
-                newPointerRoots.Add(new PointerRoot(pointerRoot));
-            }
-
-            this.PointerRoots = newPointerRoots.OrderBy(root => root.BaseAddress);
         }
 
         /// <summary>
@@ -143,7 +128,7 @@
                 yield break;
             }
 
-            if (branch.Branches.Count <= 0)
+            if (branch.Branches.Count() <= 0)
             {
                 Pointer pointer;
 
@@ -201,7 +186,7 @@
         /// <param name="branch">The current pointer tree branch.</param>
         private void CountLeaves(ref UInt64 count, PointerBranch branch)
         {
-            if (branch.Branches.Count <= 0)
+            if (branch.Branches.Count() <= 0)
             {
                 count = count + 1;
             }
