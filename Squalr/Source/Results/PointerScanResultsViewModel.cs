@@ -57,7 +57,7 @@
         /// <summary>
         /// The list of discovered pointers.
         /// </summary>
-        private PointerCollection discoveredPointers;
+        private PageData discoveredPointers;
 
         /// <summary>
         /// The pointer read interval in milliseconds
@@ -313,7 +313,7 @@
         /// <summary>
         /// Gets or sets the list of discovered pointers.
         /// </summary>
-        public PointerCollection DiscoveredPointers
+        public PageData DiscoveredPointers
         {
             get
             {
@@ -324,7 +324,7 @@
             {
                 this.discoveredPointers = value;
 
-                this.ResultCount = discoveredPointers == null ? 0 : discoveredPointers.Count;
+                this.ResultCount = 0;
                 this.CurrentPage = 0;
 
                 this.RaisePropertyChanged(nameof(this.DiscoveredPointers));
@@ -409,6 +409,7 @@
         /// </summary>
         private void LoadPointerScanResults()
         {
+            /*
             UInt64 count = this.DiscoveredPointers == null ? 0 : this.DiscoveredPointers.Count;
             UInt64 startIndex = Math.Min(PointerScanResultsViewModel.PageSize * this.CurrentPage, count);
             UInt64 endIndex = Math.Min((PointerScanResultsViewModel.PageSize * this.CurrentPage) + PointerScanResultsViewModel.PageSize, count);
@@ -428,7 +429,7 @@
             // Ensure results are visible
             this.IsVisible = true;
             this.IsSelected = true;
-            this.IsActive = true;
+            this.IsActive = true;*/
         }
 
         /// <summary>

@@ -26,9 +26,7 @@
             this.VectorReadBase = this.Region.ReadGroupOffset - this.Region.ReadGroupOffset % this.VectorSize;
             this.VectorReadIndex = 0;
             this.DataTypeSize = Conversions.SizeOf(this.Region.ReadGroup.ElementDataType);
-
-            // Initialize capacity to 1/16 elements
-            this.ResultRegions = new List<SnapshotRegion>(unchecked((Int32)(this.Region.ElementCount)) / 16);
+            this.ResultRegions = new List<SnapshotRegion>();
 
             this.SetConstraintFunctions();
         }

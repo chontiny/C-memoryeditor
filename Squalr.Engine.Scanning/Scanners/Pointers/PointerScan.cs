@@ -4,6 +4,7 @@ using Squalr.Engine.OS;
 namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Scanning.Snapshots;
     using System;
     using System.Collections.Generic;
@@ -64,8 +65,8 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     IList<Snapshot> levels = levelBuilderTask.Result;
 
                     // Step 4) Build pointer trees
-                    //TrackableTask<PointerCollection> treeBuilderTask = TreeBuilder.Build(levels, radius, dataType);
-                    //PointerCollection pointers = treeBuilderTask.Result;
+                    TrackableTask<PageData> paginationBuilderTask = PaginationBuilder.Build(levels, radius, dataType);
+                    PageData pointers = paginationBuilderTask.Result;
 
                     stopwatch.Stop();
                     Logger.Log(LogLevel.Info, "Pointer scan complete in: " + stopwatch.Elapsed);

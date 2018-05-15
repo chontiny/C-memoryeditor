@@ -37,6 +37,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
 
             Task<Snapshot> filterTask = Task.Factory.StartNew<Snapshot>(() =>
             {
+                int hits = 0;
                 try
                 {
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
@@ -103,6 +104,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
 
                             if (!results.IsNullOrEmpty())
                             {
+                                Interlocked.Increment(ref hits);
                                 regions.Add(results);
                             }
 

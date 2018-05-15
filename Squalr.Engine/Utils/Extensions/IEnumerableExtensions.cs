@@ -34,6 +34,11 @@
             }
         }
 
+        public static Stack<T> Clone<T>(this Stack<T> stack)
+        {
+            return new Stack<T>(stack.Reverse());
+        }
+
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source)
         {
             return source.ShuffleIterator(new Random());
@@ -141,23 +146,6 @@
         }
 
         /// <summary>
-        /// Adds a single element to the start of an IEnumerable.
-        /// </summary>
-        /// <typeparam name="T">Type of enumerable to return.</typeparam>
-        /// <param name="tail">The source enumerable.</param>
-        /// <param name="head">The element to prepend.</param>
-        /// <returns>IEnumerable containing the specified additional element, followed by all the input elements.</returns>
-        public static IEnumerable<T> Prepend<T>(this IEnumerable<T> tail, T head)
-        {
-            if (tail == null)
-            {
-                return tail;
-            }
-
-            return ConcatIterator(head, tail, true);
-        }
-
-        /// <summary>
         /// Adds a single element to the end of an IEnumerable, if it is not null.
         /// </summary>
         /// <typeparam name="T">Type of enumerable to return.</typeparam>
@@ -188,7 +176,7 @@
                 return tail;
             }
 
-            return Prepend<T>(tail, head);
+            return tail.Prepend<T>(head);
         }
 
         /// <summary>
