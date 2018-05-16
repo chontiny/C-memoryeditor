@@ -71,11 +71,22 @@
 
                     currentSourceSnapshot = snapshotFrom;
 
+                    /* if (backTraceLevels.Count > 0)
+                     {
+                         TrackableTask<Snapshot> staticFilter = PointerFilter.Filter(snapshotFrom, backTraceLevels.Last(), radius, dataType);
+                         Snapshot pointers = staticFilter.Result;
+
+                         levels = backTraceLevels.Reverse().ToList();
+                     }*/
+
+                    levels = backTraceLevels.Reverse().ToList();
+
+                    /*
                     // Step 2) Front trace, starting from static
                     foreach (Snapshot nextSnapshot in backTraceLevels.Reverse())
                     {
-                        TrackableTask<Snapshot> heapFilterTask = PointerFilter.Filter(currentSourceSnapshot, nextSnapshot, radius, dataType);
-                        Snapshot pointers = heapFilterTask.Result;
+                        TrackableTask<Snapshot> filterTask = PointerFilter.Filter(currentSourceSnapshot, nextSnapshot, radius, dataType);
+                        Snapshot pointers = filterTask.Result;
 
                         if (pointers.ByteCount <= 0)
                         {
@@ -83,7 +94,8 @@
                         }
 
                         levels.Add(pointers);
-                    }
+                        currentSourceSnapshot = pointers;
+                    }*/
 
                     // Exit if canceled
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();

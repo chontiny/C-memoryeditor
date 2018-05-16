@@ -31,14 +31,14 @@
         /// <param name="dataType">The data type of the pointers.</param>
         /// <param name="depth">The search depth.</param>
         /// <returns></returns>
-        public static TrackableTask<PageData> Build(IList<Snapshot> levels, UInt32 radius, DataType dataType)
+        public static TrackableTask<PointerCollection> Build(IList<Snapshot> levels, UInt32 radius, DataType dataType)
         {
-            TrackableTask<PageData> trackedPointerTreeTask = new TrackableTask<PageData>(PaginationBuilder.Name);
+            TrackableTask<PointerCollection> trackedPointerTreeTask = new TrackableTask<PointerCollection>(PaginationBuilder.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-            Task<PageData> builderTask = Task.Factory.StartNew(() =>
+            Task<PointerCollection> builderTask = Task.Factory.StartNew(() =>
             {
-                PageData pointerCollection = null;
+                PointerCollection pointerCollection = null;
 
                 try
                 {

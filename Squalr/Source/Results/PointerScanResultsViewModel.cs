@@ -57,7 +57,7 @@
         /// <summary>
         /// The list of discovered pointers.
         /// </summary>
-        private PageData discoveredPointers;
+        private PointerCollection discoveredPointers;
 
         /// <summary>
         /// The pointer read interval in milliseconds
@@ -313,7 +313,7 @@
         /// <summary>
         /// Gets or sets the list of discovered pointers.
         /// </summary>
-        public PageData DiscoveredPointers
+        public PointerCollection DiscoveredPointers
         {
             get
             {

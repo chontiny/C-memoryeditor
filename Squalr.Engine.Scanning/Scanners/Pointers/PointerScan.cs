@@ -64,9 +64,12 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     TrackableTask<IList<Snapshot>> levelBuilderTask = LevelBuilder.Build(staticPointers, targetAddress, depth, radius, dataType);
                     IList<Snapshot> levels = levelBuilderTask.Result;
 
-                    // Step 4) Build pointer trees
-                    TrackableTask<PageData> paginationBuilderTask = PaginationBuilder.Build(levels, radius, dataType);
-                    PageData pointers = paginationBuilderTask.Result;
+                    PointerCollection collection = new PointerCollection(levels, radius, dataType);
+
+                    Pointer debug = collection.GetRandomPointer();
+                    Pointer debug2 = collection.GetRandomPointer();
+                    Pointer debug3 = collection.GetRandomPointer();
+                    Pointer debug4 = collection.GetRandomPointer();
 
                     stopwatch.Stop();
                     Logger.Log(LogLevel.Info, "Pointer scan complete in: " + stopwatch.Elapsed);
