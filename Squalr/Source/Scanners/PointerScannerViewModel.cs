@@ -16,7 +16,7 @@
         /// <summary>
         /// Gets the default pointer scan depth.
         /// </summary>
-        public const Int32 DefaultPointerScanDepth = 3;
+        public const Int32 DefaultPointerScanDepth = 2;
 
         /// <summary>
         /// Gets the default pointer scan radius.

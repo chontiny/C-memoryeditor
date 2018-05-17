@@ -37,7 +37,6 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
 
             Task<Snapshot> filterTask = Task.Factory.StartNew<Snapshot>(() =>
             {
-                int hits = 0;
                 try
                 {
                     cancellationTokenSource.Token.ThrowIfCancellationRequested();
@@ -48,8 +47,8 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
                     Int32 vectorSize = Vectors.VectorSize;
 
-                    IEnumerable<UInt32> tempLowerBounds = boundsSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.BaseAddress.Subtract(radius, wrapAround: false)));
-                    IEnumerable<UInt32> tempUpperBounds = boundsSnapshot.ReadGroups.Select(x => unchecked((UInt32)x.EndAddress.Add(radius, wrapAround: false)));
+                    IEnumerable<UInt32> tempLowerBounds = boundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.BaseAddress.Subtract(radius, wrapAround: false)));
+                    IEnumerable<UInt32> tempUpperBounds = boundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.EndAddress.Add(radius, wrapAround: false)));
 
                     while (tempLowerBounds.Count() % vectorSize != 0)
                     {
@@ -104,7 +103,6 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
 
                             if (!results.IsNullOrEmpty())
                             {
-                                Interlocked.Increment(ref hits);
                                 regions.Add(results);
                             }
 

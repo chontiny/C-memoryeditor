@@ -2,11 +2,9 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Scanning.Snapshots;
-    using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Numerics;
 
     /// <summary>
     /// A class to contain the discovered pointers from a pointer scan.
@@ -51,79 +49,81 @@
         /// <returns>A random discovered pointer, or null if unable to find one.</returns>
         public Pointer GetRandomPointer()
         {
-            Snapshot rootSnapshot = this.Levels?.FirstOrDefault();
+            Snapshot currentSnapshot = this.Levels?.LastOrDefault();
 
-            if (rootSnapshot == null)
+            if (currentSnapshot == null)
             {
                 return null;
             }
 
-            SnapshotElementIndexer randomPointerRoot = rootSnapshot[PointerCollection.RandomUInt64(0, rootSnapshot.ElementCount)];
+            Int32 pointerSize = this.DataType == DataType.UInt32 ? 4 : 8;
+            SnapshotRegion destinationPointerRegion = currentSnapshot.SnapshotRegions[Random.Next(0, currentSnapshot.SnapshotRegions.Length)];
+            SnapshotElementIndexer destinationPointerElement = destinationPointerRegion[Random.Next(0, destinationPointerRegion.ElementCount)];
 
-            UInt64 pointerBase = this.DataType == DataType.UInt32 ? (UInt32)randomPointerRoot.LoadCurrentValue() : (UInt64)randomPointerRoot.LoadCurrentValue();
+            UInt64 pointerBase = destinationPointerElement.BaseAddress;
             List<Int32> offsets = new List<Int32>();
 
-            UInt64 currentPointer = pointerBase;
-            Snapshot currentSnapshot = rootSnapshot;
-
-            foreach (Snapshot nextSnapshot in this.Levels.Skip(1))
+            foreach (Snapshot previousLevel in this.Levels.Reverse().Skip(1))
             {
-                UInt64 lowerBoundAddress = unchecked((UInt32)currentPointer.Subtract(this.Radius, wrapAround: false));
-                UInt64 upperBoundAddress = unchecked((UInt32)currentPointer.Add(this.Radius, wrapAround: false));
+                TrackableTask<Snapshot> filter = PointerFilter.Filter(previousLevel, currentSnapshot, this.Radius, this.DataType);
+                Snapshot connectedPointerSnapshot = filter.Result;
 
-                // Shuffle to randomize the next pointer path (note this is non-uniformly random and not ideal because regions can have multiple pointers)
-                foreach (SnapshotRegion region in nextSnapshot.SnapshotRegions.Shuffle())
+                // Shouldnt happen, but safety check
+                if (connectedPointerSnapshot.ByteCount <= 0)
                 {
-                    IList<SnapshotRegion> childRegions = PointerCollection.FindChildRegions(lowerBoundAddress, upperBoundAddress, region);
-
-                    if (childRegions.IsNullOrEmpty())
-                    {
-                        continue;
-                    }
-
-                    // Again randomly take pointer paths
-                    SnapshotRegion childRegion = childRegions.Shuffle().First();
-                    SnapshotElementIndexer randomPointerTarget = childRegion[Random.Next(0, childRegion.ElementCount)];
-
-                    Int32 offset = currentPointer > randomPointerTarget.BaseAddress ? unchecked((Int32)(currentPointer - randomPointerTarget.BaseAddress)) : unchecked((Int32)(randomPointerTarget.BaseAddress - currentPointer));
-
-                    offsets.Add(offset);
-                    currentPointer = this.DataType == DataType.UInt32 ? (UInt32)randomPointerTarget.LoadCurrentValue() : (UInt64)randomPointerTarget.LoadCurrentValue();
-
                     break;
                 }
+
+                // Again randomly take pointer paths
+                SnapshotRegion connectedPointerRegion = connectedPointerSnapshot.SnapshotRegions[Random.Next(0, connectedPointerSnapshot.SnapshotRegions.Length)];
+                SnapshotElementIndexer connectedPointer = connectedPointerRegion[Random.Next(0, connectedPointerRegion.ElementCount)];
+
+                UInt64 currentPointer = this.DataType == DataType.UInt32 ? (UInt32)connectedPointer.LoadCurrentValue() : (UInt64)connectedPointer.LoadCurrentValue();
+                Int32 offset = pointerBase > currentPointer ? unchecked((Int32)(pointerBase - currentPointer)) : unchecked((Int32)(currentPointer - pointerBase));
+
+                offsets.Add(offset);
+
+                pointerBase = connectedPointer.BaseAddress;
+                currentSnapshot = new Snapshot(new SnapshotRegion(connectedPointerRegion.ReadGroup, connectedPointerRegion.ReadGroupOffset + connectedPointer.ElementIndex, pointerSize));
             }
 
-            return new Pointer(pointerBase, this.DataType, offsets);
-        }
+            /*
+            Int32 pointerSize = this.DataType == DataType.UInt32 ? 4 : 8;
+            // Randomly select a pointer from the 1st level (static)
+            SnapshotRegion randomRootRegion = destinationSnapshot.SnapshotRegions[Random.Next(0, destinationSnapshot.SnapshotRegions.Length)];
+            SnapshotElementIndexer randomPointerRoot = randomRootRegion[Random.Next(0, randomRootRegion.ElementCount)];
+            Snapshot currentSnapshot = new Snapshot(new SnapshotRegion(randomRootRegion.ReadGroup, randomRootRegion.ReadGroupOffset + randomPointerRoot.ElementIndex, pointerSize));
+            UInt64 currentPointer = this.DataType == DataType.UInt32 ? (UInt32)randomPointerRoot.LoadCurrentValue() : (UInt64)randomPointerRoot.LoadCurrentValue();
 
-        private static IList<SnapshotRegion> FindChildRegions(UInt64 lowerBoundAddress, UInt64 upperBoundAddress, SnapshotRegion region)
-        {
-            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: region);
+            // Prepare results
+            UInt64 pointerBase = randomPointerRoot.BaseAddress;
+            List<Int32> offsets = new List<Int32>();
 
-            Vector<UInt32> lowerBound = new Vector<UInt32>(unchecked((UInt32)lowerBoundAddress));
-            Vector<UInt32> upperBound = new Vector<UInt32>(unchecked((UInt32)upperBoundAddress));
-
-            // Determines if the addess of an element falls within pointer range
-            vectorComparer.SetCustomCompareAction(new Func<Vector<Byte>>(() =>
+            foreach (Snapshot nextLevelSnapshot in this.Levels.Skip(1))
             {
-                Vector<UInt32> currentAddress = new Vector<UInt32>(unchecked((UInt32)vectorComparer.CurrentAddress));
+                TrackableTask<Snapshot> filter = PointerFilter.Filter(currentSnapshot, nextLevelSnapshot, this.Radius, this.DataType);
+                Snapshot connectedPointerSnapshot = filter.Result;
 
-                return Vector.AsVectorByte(Vector.BitwiseAnd(
-                        Vector.GreaterThanOrEqual(currentAddress, lowerBound),
-                        Vector.LessThanOrEqual(currentAddress, upperBound)));
-            }));
+                // Shouldnt happen, but safety check
+                if (connectedPointerSnapshot.ByteCount <= 0)
+                {
+                    break;
+                }
 
-            return vectorComparer.Compare();
-        }
+                // Again randomly take pointer paths
+                SnapshotRegion connectedPointerRegion = connectedPointerSnapshot.SnapshotRegions[Random.Next(0, connectedPointerSnapshot.SnapshotRegions.Length)];
+                SnapshotElementIndexer connectedPointer = connectedPointerRegion[Random.Next(0, connectedPointerRegion.ElementCount)];
 
-        private static UInt64 RandomUInt64(UInt64 min, UInt64 max)
-        {
-            Byte[] buffer = new Byte[8];
+                Int32 offset = currentPointer > connectedPointer.BaseAddress ? unchecked((Int32)(currentPointer - connectedPointer.BaseAddress)) : unchecked((Int32)(connectedPointer.BaseAddress - currentPointer));
 
-            PointerCollection.Random.NextBytes(buffer);
+                offsets.Add(offset);
+                currentPointer = this.DataType == DataType.UInt32 ? (UInt32)connectedPointer.LoadCurrentValue() : (UInt64)connectedPointer.LoadCurrentValue();
 
-            return BitConverter.ToUInt64(buffer, 0) % (max - min) + min;
+                currentSnapshot = nextLevelSnapshot;
+            }
+            */
+
+            return new Pointer(pointerBase, this.DataType, offsets);
         }
     }
     //// End class

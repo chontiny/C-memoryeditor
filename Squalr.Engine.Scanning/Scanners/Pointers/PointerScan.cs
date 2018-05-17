@@ -57,8 +57,11 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Snapshot targetAddress = new Snapshot(new SnapshotRegion[] { new SnapshotRegion(new ReadGroup(address, size, dataType, alignment), 0, size) });
 
                     // Step 2) Collect static pointers
-                    TrackableTask<Snapshot> staticPointerCollectorTask = StaticPointercollector.Collect(dataType);
-                    Snapshot staticPointers = staticPointerCollectorTask.Result;
+                    Snapshot staticPointers = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromModules, dataType);
+                    TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(staticPointers);
+                    staticPointers = valueCollector.Result;
+                    //  TrackableTask<Snapshot> staticPointerCollectorTask = StaticPointercollector.Collect(dataType);
+                    // Snapshot staticPointers = staticPointerCollectorTask.Result;
 
                     // Step 3) Build levels
                     TrackableTask<IList<Snapshot>> levelBuilderTask = LevelBuilder.Build(staticPointers, targetAddress, depth, radius, dataType);

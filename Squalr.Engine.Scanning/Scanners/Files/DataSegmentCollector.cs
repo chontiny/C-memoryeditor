@@ -20,7 +20,7 @@
         /// <summary>
         /// The name of this scan.
         /// </summary>
-        private const String Name = "Value Collector";
+        private const String Name = "Data Segment Collector";
 
         public static TrackableTask<Snapshot> CollectDataSegments(Boolean ignoreSystemModules = true)
         {
