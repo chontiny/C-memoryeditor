@@ -51,8 +51,6 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Stopwatch stopwatch = new Stopwatch();
                     stopwatch.Start();
 
-                    Snapshot userModeMemory = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, dataType);
-
                     // Step 1) Create a snapshot of the target address
                     Snapshot targetAddress = new Snapshot(new SnapshotRegion[] { new SnapshotRegion(new ReadGroup(address, size, dataType, alignment), 0, size) });
 
@@ -60,19 +58,17 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Snapshot staticPointers = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromModules, dataType);
                     TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(staticPointers);
                     staticPointers = valueCollector.Result;
-                    //  TrackableTask<Snapshot> staticPointerCollectorTask = StaticPointercollector.Collect(dataType);
-                    // Snapshot staticPointers = staticPointerCollectorTask.Result;
 
-                    // Step 3) Build levels
-                    TrackableTask<IList<Snapshot>> levelBuilderTask = LevelBuilder.Build(staticPointers, targetAddress, depth, radius, dataType);
+                    // Step 3) Collect heap pointers
+                    Snapshot snapshotHeaps = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromHeaps, dataType);
+                    TrackableTask<Snapshot> heapValueCollector = ValueCollector.CollectValues(snapshotHeaps);
+                    snapshotHeaps = heapValueCollector.Result;
+
+                    // Step 4) Build levels
+                    TrackableTask<IList<Snapshot>> levelBuilderTask = LevelBuilder.Build(staticPointers, snapshotHeaps, targetAddress, depth, radius, dataType);
                     IList<Snapshot> levels = levelBuilderTask.Result;
 
                     PointerCollection collection = new PointerCollection(levels, radius, dataType);
-
-                    Pointer debug = collection.GetRandomPointer();
-                    Pointer debug2 = collection.GetRandomPointer();
-                    Pointer debug3 = collection.GetRandomPointer();
-                    Pointer debug4 = collection.GetRandomPointer();
 
                     stopwatch.Stop();
                     Logger.Log(LogLevel.Info, "Pointer scan complete in: " + stopwatch.Elapsed);

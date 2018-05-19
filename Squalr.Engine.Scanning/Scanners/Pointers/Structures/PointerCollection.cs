@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
 {
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Scanning.Scanners.Pointers.SearchKernels;
     using Squalr.Engine.Scanning.Snapshots;
     using System;
     using System.Collections.Generic;
@@ -65,7 +66,8 @@
 
             foreach (Snapshot previousLevel in this.Levels.Reverse().Skip(1))
             {
-                TrackableTask<Snapshot> filter = PointerFilter.Filter(previousLevel, currentSnapshot, this.Radius, this.DataType);
+                ISearchKernel searchKernel = SearchKernelFactory.GetSearchKernel(currentSnapshot, this.Radius);
+                TrackableTask<Snapshot> filter = PointerFilter.Filter(previousLevel, searchKernel, currentSnapshot, this.Radius);
                 Snapshot connectedPointerSnapshot = filter.Result;
 
                 // Shouldnt happen, but safety check
@@ -79,7 +81,7 @@
                 SnapshotElementIndexer connectedPointer = connectedPointerRegion[Random.Next(0, connectedPointerRegion.ElementCount)];
 
                 UInt64 currentPointer = this.DataType == DataType.UInt32 ? (UInt32)connectedPointer.LoadCurrentValue() : (UInt64)connectedPointer.LoadCurrentValue();
-                Int32 offset = pointerBase > currentPointer ? unchecked((Int32)(pointerBase - currentPointer)) : unchecked((Int32)(currentPointer - pointerBase));
+                Int32 offset = pointerBase > currentPointer ? unchecked((Int32)(pointerBase - currentPointer)) : -unchecked((Int32)(currentPointer - pointerBase));
 
                 offsets.Add(offset);
 
@@ -87,43 +89,7 @@
                 currentSnapshot = new Snapshot(new SnapshotRegion(connectedPointerRegion.ReadGroup, connectedPointerRegion.ReadGroupOffset + connectedPointer.ElementIndex, pointerSize));
             }
 
-            /*
-            Int32 pointerSize = this.DataType == DataType.UInt32 ? 4 : 8;
-            // Randomly select a pointer from the 1st level (static)
-            SnapshotRegion randomRootRegion = destinationSnapshot.SnapshotRegions[Random.Next(0, destinationSnapshot.SnapshotRegions.Length)];
-            SnapshotElementIndexer randomPointerRoot = randomRootRegion[Random.Next(0, randomRootRegion.ElementCount)];
-            Snapshot currentSnapshot = new Snapshot(new SnapshotRegion(randomRootRegion.ReadGroup, randomRootRegion.ReadGroupOffset + randomPointerRoot.ElementIndex, pointerSize));
-            UInt64 currentPointer = this.DataType == DataType.UInt32 ? (UInt32)randomPointerRoot.LoadCurrentValue() : (UInt64)randomPointerRoot.LoadCurrentValue();
-
-            // Prepare results
-            UInt64 pointerBase = randomPointerRoot.BaseAddress;
-            List<Int32> offsets = new List<Int32>();
-
-            foreach (Snapshot nextLevelSnapshot in this.Levels.Skip(1))
-            {
-                TrackableTask<Snapshot> filter = PointerFilter.Filter(currentSnapshot, nextLevelSnapshot, this.Radius, this.DataType);
-                Snapshot connectedPointerSnapshot = filter.Result;
-
-                // Shouldnt happen, but safety check
-                if (connectedPointerSnapshot.ByteCount <= 0)
-                {
-                    break;
-                }
-
-                // Again randomly take pointer paths
-                SnapshotRegion connectedPointerRegion = connectedPointerSnapshot.SnapshotRegions[Random.Next(0, connectedPointerSnapshot.SnapshotRegions.Length)];
-                SnapshotElementIndexer connectedPointer = connectedPointerRegion[Random.Next(0, connectedPointerRegion.ElementCount)];
-
-                Int32 offset = currentPointer > connectedPointer.BaseAddress ? unchecked((Int32)(currentPointer - connectedPointer.BaseAddress)) : unchecked((Int32)(connectedPointer.BaseAddress - currentPointer));
-
-                offsets.Add(offset);
-                currentPointer = this.DataType == DataType.UInt32 ? (UInt32)connectedPointer.LoadCurrentValue() : (UInt64)connectedPointer.LoadCurrentValue();
-
-                currentSnapshot = nextLevelSnapshot;
-            }
-            */
-
-            return new Pointer(pointerBase, this.DataType, offsets);
+            return new Pointer(pointerBase, this.DataType, offsets.ToArray());
         }
     }
     //// End class

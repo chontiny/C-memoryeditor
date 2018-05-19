@@ -2,7 +2,7 @@
 {
     using Squalr.Engine.Scanning.Snapshots;
 
-    public class Level
+    internal class Level
     {
         public Level(Snapshot heapPointers, Snapshot staticPointers)
         {

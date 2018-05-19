@@ -80,7 +80,7 @@
             FromActiveSnapshotOrPrefilter,
             FromSettings,
             FromUserModeMemory,
-            FromHeap,
+            FromHeaps,
             FromStack,
             FromModules,
         }

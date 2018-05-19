@@ -107,7 +107,7 @@
                         SnapshotElementComparer element = enumerator.Current;
 
                         // Perform the comparison based on the current scan constraint
-                        if (element.Compare())
+                        if (element.ElementCompare())
                         {
                             element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
                         }

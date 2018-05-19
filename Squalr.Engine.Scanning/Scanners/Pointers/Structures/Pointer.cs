@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
+﻿namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
 {
+    using System;
+
     public class Pointer
     {
         public Pointer(
             UInt64 baseAddress,
             Type dataType,
-            IEnumerable<Int32> offsets = null)
+            Int32[] offsets = null)
         {
             this.BaseAddress = baseAddress;
             this.Offsets = offsets;
@@ -16,7 +15,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
 
         public UInt64 BaseAddress { get; set; }
 
-        public IEnumerable<Int32> Offsets { get; private set; }
+        public Int32[] Offsets { get; private set; }
 
         public void Update()
         {

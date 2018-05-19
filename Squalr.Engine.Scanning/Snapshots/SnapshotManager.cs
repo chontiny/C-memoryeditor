@@ -100,7 +100,7 @@
                     return SnapshotManager.CreateSnapshotFromUsermodeMemory(dataType);
                 case Snapshot.SnapshotRetrievalMode.FromModules:
                     return SnapshotManager.CreateSnapshotFromModules(dataType);
-                case Snapshot.SnapshotRetrievalMode.FromHeap:
+                case Snapshot.SnapshotRetrievalMode.FromHeaps:
                     return SnapshotManager.CreateSnapshotFromHeaps(dataType);
                 case Snapshot.SnapshotRetrievalMode.FromStack:
                     throw new NotImplementedException();
@@ -237,10 +237,36 @@
         /// <returns>The created snapshot.</returns>
         private static Snapshot CreateSnapshotFromHeaps(DataType dataType)
         {
-            // TODO: Implement an actual heap collection function. In the mean time, just grab usermode memory.
+            // TODO: This currently grabs all usermode memory and excludes modules. A better implementation would involve actually grabbing heaps.
             Snapshot snapshot = SnapshotManager.CreateSnapshotFromUsermodeMemory(dataType);
+            IEnumerable<NormalizedModule> modules = Query.Default.GetModules();
 
-            return snapshot;
+            MemoryProtectionEnum requiredPageFlags = 0;
+            MemoryProtectionEnum excludedPageFlags = 0;
+            MemoryTypeEnum allowedTypeFlags = MemoryTypeEnum.None | MemoryTypeEnum.Private | MemoryTypeEnum.Image;
+
+            UInt64 startAddress = 0;
+            UInt64 endAddress = Query.Default.GetMaxUsermodeAddress();
+
+            List<ReadGroup> memoryRegions = new List<ReadGroup>();
+            IEnumerable<NormalizedRegion> virtualPages = Query.Default.GetVirtualPages(
+                requiredPageFlags,
+                excludedPageFlags,
+                allowedTypeFlags,
+                startAddress,
+                endAddress);
+
+            foreach (NormalizedRegion virtualPage in virtualPages)
+            {
+                if (modules.Any(x => x.BaseAddress == virtualPage.BaseAddress))
+                {
+                    continue;
+                }
+
+                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize, dataType, Settings.Default.Alignment));
+            }
+
+            return new Snapshot(null, memoryRegions);
         }
 
         /// <summary>

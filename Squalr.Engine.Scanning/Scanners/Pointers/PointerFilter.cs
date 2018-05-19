@@ -1,9 +1,8 @@
-﻿using Squalr.Engine.DataTypes;
-
-namespace Squalr.Engine.Scanning.Scanners.Pointers
+﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Logging;
     using Squalr.Engine.OS;
+    using Squalr.Engine.Scanning.Scanners.Pointers.SearchKernels;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -11,14 +10,13 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
-    using System.Numerics;
     using System.Threading;
     using System.Threading.Tasks;
 
     /// <summary>
     /// Validates a snapshot of pointers.
     /// </summary>
-    public static class PointerFilter
+    internal static class PointerFilter
     {
         /// <summary>
         /// The name of this scan.
@@ -30,7 +28,7 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
         /// </summary>
         /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
         /// <returns></returns>
-        public static TrackableTask<Snapshot> Filter(Snapshot snapshot, Snapshot boundsSnapshot, UInt32 radius, DataType dataType)
+        public static TrackableTask<Snapshot> Filter(Snapshot snapshot, ISearchKernel searchKernel, Snapshot DEBUG, UInt32 RADIUS_DEBUG)
         {
             TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(PointerFilter.Name);
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
@@ -47,23 +45,13 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                     Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
                     Int32 vectorSize = Vectors.VectorSize;
 
-                    IEnumerable<UInt32> tempLowerBounds = boundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.BaseAddress.Subtract(radius, wrapAround: false)));
-                    IEnumerable<UInt32> tempUpperBounds = boundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.EndAddress.Add(radius, wrapAround: false)));
-
-                    while (tempLowerBounds.Count() % vectorSize != 0)
-                    {
-                        tempLowerBounds = tempLowerBounds.Append<UInt32>(UInt32.MaxValue);
-                        tempUpperBounds = tempUpperBounds.Append<UInt32>(UInt32.MinValue);
-                    }
-
-                    UInt32[] lowerBounds = tempLowerBounds.ToArray();
-                    UInt32[] upperBounds = tempUpperBounds.ToArray();
-
                     Int32 processedPages = 0;
                     ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
 
                     ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
                     options.CancellationToken = cancellationTokenSource.Token;
+
+                    // ISearchKernel DEBUG_KERNEL = new SpanSearchKernel(DEBUG, RADIUS_DEBUG);
 
                     Parallel.ForEach(
                         snapshot.OptimizedSnapshotRegions,
@@ -79,27 +67,13 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                             }
 
                             SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: region);
+                            vectorComparer.SetCustomCompareAction(searchKernel.GetSearchKernel(vectorComparer));
 
-                            vectorComparer.SetCustomCompareAction(new Func<Vector<Byte>>(() =>
-                            {
-                                Vector<UInt32> result = Vector<UInt32>.Zero;
-
-                                // Perform vectorized linear search. This is why you should not trust big O notation -- this severely beats scalar binary search
-                                for (Int32 boundsIndex = 0; boundsIndex < lowerBounds.Length; boundsIndex += vectorSize)
-                                {
-                                    Vector<UInt32> nextLowerBounds = new Vector<UInt32>(lowerBounds, boundsIndex);
-                                    Vector<UInt32> nextUpperBounds = new Vector<UInt32>(upperBounds, boundsIndex);
-
-                                    result = Vector.BitwiseOr(result,
-                                        Vector.BitwiseAnd(
-                                            Vector.GreaterThanOrEqual(Vector.AsVectorUInt32(vectorComparer.CurrentValues), nextLowerBounds),
-                                            Vector.LessThanOrEqual(Vector.AsVectorUInt32(vectorComparer.CurrentValues), nextUpperBounds)));
-                                }
-
-                                return Vector.AsVectorByte(result);
-                            }));
+                            // SnapshotElementVectorComparer DEBUG_COMPARER = new SnapshotElementVectorComparer(region: region);
+                            // DEBUG_COMPARER.SetCustomCompareAction(DEBUG_KERNEL.GetSearchKernel(DEBUG_COMPARER));
 
                             IList<SnapshotRegion> results = vectorComparer.Compare();
+                            // IList<SnapshotRegion> DEBUG_RESULTS = vectorComparer.Compare();
 
                             if (!results.IsNullOrEmpty())
                             {

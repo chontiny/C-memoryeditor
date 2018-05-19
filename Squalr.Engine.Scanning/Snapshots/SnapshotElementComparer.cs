@@ -19,8 +19,7 @@
         /// <param name="constraints">The constraints to use for the element comparisons.</param>
         public unsafe SnapshotElementComparer(
             SnapshotRegion region,
-            PointerIncrementMode pointerIncrementMode,
-            ConstraintNode constraints)
+            PointerIncrementMode pointerIncrementMode)
         {
             this.Region = region;
 
@@ -31,7 +30,20 @@
             this.InitializePointers();
             this.SetConstraintFunctions();
             this.SetPointerFunction(pointerIncrementMode);
-            this.Compare = this.BuildCompareActions(constraints);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SnapshotElementComparer" /> class.
+        /// </summary>
+        /// <param name="region">The parent region that contains this element.</param>
+        /// <param name="pointerIncrementMode">The method by which to increment element pointers.</param>
+        /// <param name="constraints">The constraints to use for the element comparisons.</param>
+        public unsafe SnapshotElementComparer(
+            SnapshotRegion region,
+            PointerIncrementMode pointerIncrementMode,
+            ConstraintNode constraints) : this(region, pointerIncrementMode)
+        {
+            this.ElementCompare = this.BuildCompareActions(constraints);
         }
 
         /// <summary>
@@ -52,7 +64,7 @@
         /// <summary>
         /// Gets an action based on the element iterator scan constraint.
         /// </summary>
-        public Func<Boolean> Compare { get; set; }
+        public Func<Boolean> ElementCompare { get; private set; }
 
         /// <summary>
         /// Gets a function which determines if this element has changed.
@@ -240,6 +252,15 @@
         /// Gets or sets the type code associated with the data type of this element.
         /// </summary>
         private TypeCode CurrentTypeCode { get; set; }
+
+        /// <summary>
+        /// Sets a custom comparison function to use in scanning.
+        /// </summary>
+        /// <param name="customCompare"></param>
+        public void SetCustomCompareAction(Func<Boolean> customCompare)
+        {
+            this.ElementCompare = customCompare;
+        }
 
         /// <summary>
         /// Gets the current value of this element.

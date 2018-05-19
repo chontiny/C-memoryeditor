@@ -142,7 +142,7 @@
 
                     while (enumerator.MoveNext())
                     {
-                        enumerator.Current.Compare();
+                        enumerator.Current.ElementCompare();
 
                         ((dynamic)enumerator).ElementLabel++;
                     }
@@ -170,7 +170,7 @@
 
                     while (enumerator.MoveNext())
                     {
-                        enumerator.Current.Compare();
+                        enumerator.Current.ElementCompare();
 
                         ((dynamic)enumerator).ElementLabel--;
                     }
