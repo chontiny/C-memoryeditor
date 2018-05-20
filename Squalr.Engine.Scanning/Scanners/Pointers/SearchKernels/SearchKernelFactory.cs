@@ -5,9 +5,9 @@
 
     internal class SearchKernelFactory
     {
-        public static ISearchKernel GetSearchKernel(Snapshot boundsSnapshot, UInt32 radius)
+        public static IVectorSearchKernel GetSearchKernel(Snapshot boundsSnapshot, UInt32 radius)
         {
-            if (boundsSnapshot.SnapshotRegions.Length < 1024)
+            if (boundsSnapshot.SnapshotRegions.Length < 64)
             {
                 // Linear is fast for small region sizes
                 return new LinearSearchKernel(boundsSnapshot, radius);

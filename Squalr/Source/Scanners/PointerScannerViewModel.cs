@@ -1,8 +1,11 @@
 ﻿namespace Squalr.Source.Scanning
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine;
     using Squalr.Engine.Scanning.Scanners.Pointers;
+    using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Source.Docking;
+    using Squalr.Source.Tasks;
     using System;
     using System.Threading;
     using System.Threading.Tasks;
@@ -16,7 +19,7 @@
         /// <summary>
         /// Gets the default pointer scan depth.
         /// </summary>
-        public const Int32 DefaultPointerScanDepth = 2;
+        public const Int32 DefaultPointerScanDepth = 3;
 
         /// <summary>
         /// Gets the default pointer scan radius.
@@ -26,12 +29,16 @@
         /// <summary>
         /// Gets the maximum pointer scan depth.
         /// </summary>
-        public const Int32 MaximumPointerScanDepth = 7;
+        public const Int32 MaximumPointerScanDepth = 15;
 
         private UInt64 rescanAddress;
+
         private UInt64 targetAddress;
+
         private Int32 pointerRadius;
+
         private Object rescanValue;
+
         private Int32 pointerDepth;
 
         /// <summary>
@@ -208,7 +215,10 @@
         /// </summary>
         private void StartScan()
         {
-            PointerScan.Scan(this.TargetAddress, (UInt32)this.PointerRadius, this.PointerDepth, 4);
+            TrackableTask<PointerBag> pointerScanTask = PointerScan.Scan(this.TargetAddress, (UInt32)this.PointerRadius, this.PointerDepth, 4);
+
+            TaskTrackerViewModel.GetInstance().TrackTask(pointerScanTask);
+            ;
         }
 
         /// <summary>

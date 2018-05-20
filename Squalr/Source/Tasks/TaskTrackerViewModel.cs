@@ -22,16 +22,16 @@
             () => { return new TaskTrackerViewModel(); },
             LazyThreadSafetyMode.ExecutionAndPublication);
 
-        private FullyObservableCollection<TrackableTask<Snapshot>> trackedTasks;
+        private FullyObservableCollection<TrackableTask> trackedTasks;
 
         /// <summary>
         /// Prevents a default instance of the <see cref="TaskTrackerViewModel" /> class from being created.
         /// </summary>
         private TaskTrackerViewModel() : base("Task Tracker")
         {
-            this.trackedTasks = new FullyObservableCollection<TrackableTask<Snapshot>>();
+            this.trackedTasks = new FullyObservableCollection<TrackableTask>();
 
-            this.CancelTaskCommand = new RelayCommand<TrackableTask<Snapshot>>(task => task.Cancel(), (task) => true);
+            this.CancelTaskCommand = new RelayCommand<TrackableTask>(task => task.Cancel(), (task) => true);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@
         /// <summary>
         /// Gets the tasks that are actively running.
         /// </summary>
-        public FullyObservableCollection<TrackableTask<Snapshot>> TrackedTasks
+        public FullyObservableCollection<TrackableTask> TrackedTasks
         {
             get
             {
@@ -63,7 +63,7 @@
         /// Tracks a given task until it is canceled or completed.
         /// </summary>
         /// <param name="task">The task to track.</param>
-        public void TrackTask(TrackableTask<Snapshot> task)
+        public void TrackTask(TrackableTask task)
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {
@@ -77,7 +77,7 @@
         /// Removes a tracked task from the list of tracked tasks.
         /// </summary>
         /// <param name="task">The task to remove.</param>
-        private void RemoveTask(TrackableTask<Snapshot> task)
+        private void RemoveTask(TrackableTask task)
         {
             Application.Current.Dispatcher.Invoke(new Action(() =>
             {

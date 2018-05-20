@@ -62,7 +62,7 @@
 
         public void Stop()
         {
-            ////   this.EndUpdateLoop();
+            //// this.EndUpdateLoop();
         }
 
         protected void OnBegin()

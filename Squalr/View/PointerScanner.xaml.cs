@@ -43,10 +43,6 @@
             this.PointerRescanAddressHexDecBox.TextChanged += this.PointerRescanAddressUpdated;
             this.pointerRescanAddressHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRescanAddressHexDecBox));
 
-            this.PointerRescanValueHexDecBox = new HexDecTextBox();
-            this.PointerRescanValueHexDecBox.TextChanged += this.PointerRescanValueUpdated;
-            this.pointerRescanValueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRescanValueHexDecBox));
-
             Task.Run(() => PointerScanResultsViewModel.GetInstance().Subscribe(this));
         }
 
@@ -72,11 +68,6 @@
         private HexDecTextBox PointerRescanAddressHexDecBox { get; set; }
 
         /// <summary>
-        /// Gets or sets the value hex dec box used to display the current pointer rescan value being edited.
-        /// </summary>
-        private HexDecTextBox PointerRescanValueHexDecBox { get; set; }
-
-        /// <summary>
         /// Gets or sets the value hex dec box used to display the current depth being edited.
         /// </summary>
         private HexDecTextBox DepthHexDecBox { get; set; }
@@ -92,7 +83,7 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(DataType activeType)
         {
-            this.PointerRescanValueHexDecBox.ElementType = activeType;
+            //// this.PointerRescanValueHexDecBox.ElementType = activeType;
         }
 
         /// <summary>
@@ -124,8 +115,8 @@
         /// <param name="e">Event args.</param>
         private void PointerRescanValueUpdated(Object sender, EventArgs e)
         {
-            Object value = this.PointerRescanValueHexDecBox.GetValue();
-            this.PointerScannerViewModel.SetPointerRescanValueCommand.Execute(value);
+            //// Object value = this.PointerRescanValueHexDecBox.GetValue();
+            //// this.PointerScannerViewModel.SetPointerRescanValueCommand.Execute(value);
         }
 
         /// <summary>

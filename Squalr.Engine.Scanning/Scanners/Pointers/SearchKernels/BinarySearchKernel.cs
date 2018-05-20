@@ -8,7 +8,7 @@
     using System.Linq;
     using System.Numerics;
 
-    internal class BinarySearchKernel : ISearchKernel
+    internal class BinarySearchKernel : IVectorSearchKernel
     {
         public BinarySearchKernel(Snapshot boundsSnapshot, UInt32 radius)
         {

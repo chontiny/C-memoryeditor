@@ -7,7 +7,7 @@
     using System.Linq;
     using System.Numerics;
 
-    internal class LinearSearchKernel : ISearchKernel
+    internal class LinearSearchKernel : IVectorSearchKernel
     {
         public LinearSearchKernel(Snapshot boundsSnapshot, UInt32 radius)
         {

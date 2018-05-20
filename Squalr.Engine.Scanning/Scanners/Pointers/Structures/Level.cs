@@ -4,15 +4,24 @@
 
     internal class Level
     {
+        public Level()
+        {
+        }
+
+        public Level(Snapshot heapPointers)
+        {
+            this.HeapPointers = heapPointers;
+        }
+
         public Level(Snapshot heapPointers, Snapshot staticPointers)
         {
             this.HeapPointers = heapPointers;
             this.StaticPointers = staticPointers;
         }
 
-        public Snapshot HeapPointers { get; private set; }
+        public Snapshot HeapPointers { get; set; }
 
-        public Snapshot StaticPointers { get; private set; }
+        public Snapshot StaticPointers { get; set; }
     }
     //// End class
 }

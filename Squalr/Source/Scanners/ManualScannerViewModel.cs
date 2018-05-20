@@ -280,7 +280,7 @@
             // Perform manual scan on value collection complete
             valueCollectorTask.OnCompletedEvent += ((completedValueCollection) =>
             {
-                Snapshot snapshot = completedValueCollection.Result;
+                Snapshot snapshot = valueCollectorTask.Result;
                 TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
                     snapshot,
                     allScanConstraints);

@@ -8,7 +8,7 @@
     using System.Linq;
     using System.Numerics;
 
-    internal class SpanSearchKernel : ISearchKernel
+    internal class SpanSearchKernel : IVectorSearchKernel
     {
         public SpanSearchKernel(Snapshot boundsSnapshot, UInt32 radius)
         {

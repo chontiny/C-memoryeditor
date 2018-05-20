@@ -8,7 +8,7 @@
     using System.Linq;
     using System.Numerics;
 
-    internal class EytzingerSearchKernel : ISearchKernel
+    internal class EytzingerSearchKernel : IVectorSearchKernel
     {
         public EytzingerSearchKernel(Snapshot boundsSnapshot, UInt32 radius)
         {

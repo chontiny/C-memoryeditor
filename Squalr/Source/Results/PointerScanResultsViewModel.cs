@@ -57,7 +57,7 @@
         /// <summary>
         /// The list of discovered pointers.
         /// </summary>
-        private PointerCollection discoveredPointers;
+        private PointerBag discoveredPointers;
 
         /// <summary>
         /// The pointer read interval in milliseconds
@@ -313,7 +313,7 @@
         /// <summary>
         /// Gets or sets the list of discovered pointers.
         /// </summary>
-        public PointerCollection DiscoveredPointers
+        public PointerBag DiscoveredPointers
         {
             get
             {

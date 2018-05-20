@@ -4,7 +4,7 @@
     using System;
     using System.Numerics;
 
-    internal interface ISearchKernel
+    internal interface IVectorSearchKernel
     {
         Func<Vector<Byte>> GetSearchKernel(SnapshotElementVectorComparer snapshotElementVectorComparer);
     }

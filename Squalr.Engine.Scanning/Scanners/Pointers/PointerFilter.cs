@@ -1,17 +1,16 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Logging;
-    using Squalr.Engine.OS;
     using Squalr.Engine.Scanning.Scanners.Pointers.SearchKernels;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Concurrent;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using static Squalr.Engine.TrackableTask;
 
     /// <summary>
     /// Validates a snapshot of pointers.
@@ -21,97 +20,78 @@
         /// <summary>
         /// The name of this scan.
         /// </summary>
-        private const String Name = "Pointer Validator";
+        private const String Name = "Pointer Filter";
 
         /// <summary>
         /// Filters the given snapshot to find all values that are valid pointers.
         /// </summary>
         /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
         /// <returns></returns>
-        public static TrackableTask<Snapshot> Filter(Snapshot snapshot, ISearchKernel searchKernel, Snapshot DEBUG, UInt32 RADIUS_DEBUG)
+        public static TrackableTask<Snapshot> Filter(TrackableTask parentTask, Snapshot snapshot, IVectorSearchKernel searchKernel, Snapshot DEBUG, UInt32 RADIUS_DEBUG)
         {
-            TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(PointerFilter.Name);
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-            Task<Snapshot> filterTask = Task.Factory.StartNew<Snapshot>(() =>
-            {
-                try
+            return TrackableTask<Snapshot>
+                .Create(PointerFilter.Name, out UpdateProgress updateProgress, out CancellationToken cancellationToken)
+                .With(Task.Factory.StartNew<Snapshot>(() =>
                 {
-                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    try
+                    {
+                        parentTask.CancellationToken.ThrowIfCancellationRequested();
 
-                    Stopwatch stopwatch = new Stopwatch();
-                    stopwatch.Start();
+                        ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
 
-                    Boolean isProcess32Bit = Processes.Default.IsOpenedProcess32Bit();
-                    Int32 vectorSize = Vectors.VectorSize;
+                        ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
+                        options.CancellationToken = parentTask.CancellationToken;
 
-                    Int32 processedPages = 0;
-                    ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
+                        // ISearchKernel DEBUG_KERNEL = new SpanSearchKernel(DEBUG, RADIUS_DEBUG);
 
-                    ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
-                    options.CancellationToken = cancellationTokenSource.Token;
-
-                    // ISearchKernel DEBUG_KERNEL = new SpanSearchKernel(DEBUG, RADIUS_DEBUG);
-
-                    Parallel.ForEach(
-                        snapshot.OptimizedSnapshotRegions,
-                        options,
-                        (region) =>
-                        {
-                            // Check for canceled scan
-                            cancellationTokenSource.Token.ThrowIfCancellationRequested();
-
-                            if (!region.ReadGroup.CanCompare(hasRelativeConstraint: false))
+                        Parallel.ForEach(
+                            snapshot.OptimizedSnapshotRegions,
+                            options,
+                            (region) =>
                             {
-                                return;
-                            }
+                                // Check for canceled scan
+                                parentTask.CancellationToken.ThrowIfCancellationRequested();
 
-                            SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: region);
-                            vectorComparer.SetCustomCompareAction(searchKernel.GetSearchKernel(vectorComparer));
+                                if (!region.ReadGroup.CanCompare(hasRelativeConstraint: false))
+                                {
+                                    return;
+                                }
 
-                            // SnapshotElementVectorComparer DEBUG_COMPARER = new SnapshotElementVectorComparer(region: region);
-                            // DEBUG_COMPARER.SetCustomCompareAction(DEBUG_KERNEL.GetSearchKernel(DEBUG_COMPARER));
+                                SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: region);
+                                vectorComparer.SetCustomCompareAction(searchKernel.GetSearchKernel(vectorComparer));
 
-                            IList<SnapshotRegion> results = vectorComparer.Compare();
-                            // IList<SnapshotRegion> DEBUG_RESULTS = vectorComparer.Compare();
+                                // SnapshotElementVectorComparer DEBUG_COMPARER = new SnapshotElementVectorComparer(region: region);
+                                // DEBUG_COMPARER.SetCustomCompareAction(DEBUG_KERNEL.GetSearchKernel(DEBUG_COMPARER));
 
-                            if (!results.IsNullOrEmpty())
-                            {
-                                regions.Add(results);
-                            }
+                                IList<SnapshotRegion> results = vectorComparer.Compare();
 
-                            // Update progress every N regions
-                            if (Interlocked.Increment(ref processedPages) % 32 == 0)
-                            {
-                                trackedScanTask.Progress = (float)processedPages / (float)snapshot.RegionCount * 100.0f;
-                            }
-                        });
+                                // When debugging, these results should be the same as the results above
+                                // IList<SnapshotRegion> DEBUG_RESULTS = vectorComparer.Compare();
 
-                    // Exit if canceled
-                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                                if (!results.IsNullOrEmpty())
+                                {
+                                    regions.Add(results);
+                                }
+                            });
 
-                    snapshot = new Snapshot(PointerFilter.Name, regions.SelectMany(region => region));
+                        // Exit if canceled
+                        parentTask.CancellationToken.ThrowIfCancellationRequested();
 
-                    stopwatch.Stop();
-                    Logger.Log(LogLevel.Info, "Pointer filtering complete in: " + stopwatch.Elapsed);
-                }
-                catch (OperationCanceledException ex)
-                {
-                    Logger.Log(LogLevel.Warn, "Pointer filtering canceled", ex);
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(LogLevel.Error, "Error performing pointer filtering", ex);
-                    return null;
-                }
+                        snapshot = new Snapshot(PointerFilter.Name, regions.SelectMany(region => region));
+                    }
+                    catch (OperationCanceledException ex)
+                    {
+                        Logger.Log(LogLevel.Warn, "Pointer filtering canceled", ex);
+                        throw ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Error, "Error performing pointer filtering", ex);
+                        return null;
+                    }
 
-                return snapshot;
-            }, cancellationTokenSource.Token);
-
-            trackedScanTask.SetTrackedTask(filterTask, cancellationTokenSource);
-
-            return trackedScanTask;
+                    return snapshot;
+                }, parentTask.CancellationToken));
         }
     }
     //// End class

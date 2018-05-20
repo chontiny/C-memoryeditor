@@ -9,11 +9,12 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
     using System.Diagnostics;
     using System.Threading;
     using System.Threading.Tasks;
+    using static Squalr.Engine.TrackableTask;
 
     /// <summary>
     /// Collects static pointers in the target process.
     /// </summary>
-    public static class StaticPointercollector
+    public static class StaticPointerCollector
     {
         /// <summary>
         /// The name of this scan.
@@ -26,56 +27,51 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
         /// <returns></returns>
         public static TrackableTask<Snapshot> Collect(DataType dataType)
         {
-            TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(StaticPointercollector.Name);
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-            Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
-            {
-                Snapshot snapshot = null;
-
-                try
+            return TrackableTask<Snapshot>
+                .Create(StaticPointerCollector.Name, out UpdateProgress updateProgress, out CancellationToken cancellationToken)
+                .With(Task.Factory.StartNew<Snapshot>(() =>
                 {
-                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    Snapshot snapshot = null;
 
-                    Stopwatch stopwatch = new Stopwatch();
-                    stopwatch.Start();
+                    try
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
 
-                    // This snapshot is just to get the bounds of the process memory for determining if a pointer is valid
-                    Snapshot userModeSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, dataType);
+                        Stopwatch stopwatch = new Stopwatch();
+                        stopwatch.Start();
 
-                    // Collect static data segments from the binary file header
-                    TrackableTask<Snapshot> dataSegmentCollector = DataSegmentCollector.CollectDataSegments(ignoreSystemModules: true);
-                    snapshot = dataSegmentCollector.Result;
+                        // This snapshot is just to get the bounds of the process memory for determining if a pointer is valid
+                        Snapshot userModeSnapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromUserModeMemory, dataType);
 
-                    // Collect the in-memory values so we can perform a diff
-                    TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(snapshot);
-                    snapshot = valueCollector.Result;
+                        // Collect static data segments from the binary file header
+                        TrackableTask<Snapshot> dataSegmentCollector = DataSegmentCollector.CollectDataSegments(ignoreSystemModules: true);
+                        snapshot = dataSegmentCollector.Result;
 
-                    // Perform a changed value scan against the data segments and the in-memory values
-                    TrackableTask<Snapshot> changedScan = ManualScanner.Scan(snapshot, new ScanConstraint(ScanConstraint.ConstraintType.Changed));
-                    snapshot = changedScan.Result;
-                    snapshot.ElementDataType = dataType;
+                        // Collect the in-memory values so we can perform a diff
+                        TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(snapshot);
+                        snapshot = valueCollector.Result;
 
-                    stopwatch.Stop();
-                    Logger.Log(LogLevel.Info, "Static pointer collection complete in: " + stopwatch.Elapsed);
-                }
-                catch (OperationCanceledException ex)
-                {
-                    Logger.Log(LogLevel.Warn, "Static pointer collection canceled", ex);
-                    return null;
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(LogLevel.Error, "Error performing static pointer collection", ex);
-                    return null;
-                }
+                        // Perform a changed value scan against the data segments and the in-memory values
+                        TrackableTask<Snapshot> changedScan = ManualScanner.Scan(snapshot, new ScanConstraint(ScanConstraint.ConstraintType.Changed));
+                        snapshot = changedScan.Result;
+                        snapshot.ElementDataType = dataType;
 
-                return snapshot;
-            }, cancellationTokenSource.Token);
+                        stopwatch.Stop();
+                        Logger.Log(LogLevel.Info, "Static pointer collection complete in: " + stopwatch.Elapsed);
+                    }
+                    catch (OperationCanceledException ex)
+                    {
+                        Logger.Log(LogLevel.Warn, "Static pointer collection canceled", ex);
+                        return null;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Error, "Error performing static pointer collection", ex);
+                        return null;
+                    }
 
-            trackedScanTask.SetTrackedTask(scanTask, cancellationTokenSource);
-
-            return trackedScanTask;
+                    return snapshot;
+                }, cancellationToken));
         }
     }
     //// End class
