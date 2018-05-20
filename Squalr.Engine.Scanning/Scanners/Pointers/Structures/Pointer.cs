@@ -6,20 +6,19 @@
     {
         public Pointer(
             UInt64 baseAddress,
-            Type dataType,
+            PointerSize pointerSize,
             Int32[] offsets = null)
         {
             this.BaseAddress = baseAddress;
+            this.PointerSize = pointerSize;
             this.Offsets = offsets;
         }
 
-        public UInt64 BaseAddress { get; set; }
+        public UInt64 BaseAddress { get; private set; }
 
         public Int32[] Offsets { get; private set; }
 
-        public void Update()
-        {
-        }
+        public PointerSize PointerSize { get; private set; }
     }
     //// End class
 }

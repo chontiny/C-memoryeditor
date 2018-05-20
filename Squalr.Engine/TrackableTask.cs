@@ -147,7 +147,6 @@
     {
         private TrackableTask(String name) : base(name)
         {
-            this.AwaitCompletion();
         }
 
         public static TrackableTask<T> Create(String name, out UpdateProgress progressUpdater, out CancellationToken cancellationToken)
@@ -168,6 +167,8 @@
             {
                 Task<T>.Run(() => task.RunSynchronously());
             }
+
+            this.AwaitCompletion();
 
             return this;
         }

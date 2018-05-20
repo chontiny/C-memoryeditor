@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers.SearchKernels
 {
     using Squalr.Engine.OS;
+    using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -10,10 +11,10 @@
 
     internal class BinarySearchKernel : IVectorSearchKernel
     {
-        public BinarySearchKernel(Snapshot boundsSnapshot, UInt32 radius)
+        public BinarySearchKernel(Snapshot boundsSnapshot, UInt32 maxOffset, PointerSize pointerSize)
         {
             this.BoundsSnapshot = boundsSnapshot;
-            this.Radius = radius;
+            this.MaxOffset = maxOffset;
 
             this.PowerOf2Padding = this.Log2((UInt32)this.BoundsSnapshot.SnapshotRegions.Length) << 1;
 
@@ -26,7 +27,7 @@
 
         private Snapshot BoundsSnapshot { get; set; }
 
-        private UInt32 Radius { get; set; }
+        private UInt32 MaxOffset { get; set; }
 
         private UInt32[] LowerBounds { get; set; }
 
@@ -70,7 +71,7 @@
 
         public UInt32[] GetLowerBounds()
         {
-            IEnumerable<UInt32> lowerBounds = this.BoundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.BaseAddress.Subtract(this.Radius, wrapAround: false)));
+            IEnumerable<UInt32> lowerBounds = this.BoundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.BaseAddress.Subtract(this.MaxOffset, wrapAround: false)));
 
             while (lowerBounds.Count() < PowerOf2Padding)
             {
@@ -82,7 +83,7 @@
 
         public UInt32[] GetUpperBounds()
         {
-            IEnumerable<UInt32> upperBounds = this.BoundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.EndAddress.Add(this.Radius, wrapAround: false)));
+            IEnumerable<UInt32> upperBounds = this.BoundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.EndAddress.Add(this.MaxOffset, wrapAround: false)));
 
             while (upperBounds.Count() < PowerOf2Padding)
             {

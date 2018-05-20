@@ -310,6 +310,14 @@
             }
         }
 
+        public IEnumerable<UInt64> StaticBaseCounts
+        {
+            get
+            {
+                return this.DiscoveredPointers?.BasePointerCounts;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the list of discovered pointers.
         /// </summary>

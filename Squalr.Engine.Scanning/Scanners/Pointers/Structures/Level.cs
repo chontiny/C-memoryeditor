@@ -2,26 +2,26 @@
 {
     using Squalr.Engine.Scanning.Snapshots;
 
-    internal class Level
+    public class Level
     {
-        public Level()
+        internal Level()
         {
         }
 
-        public Level(Snapshot heapPointers)
+        internal Level(Snapshot heapPointers)
         {
             this.HeapPointers = heapPointers;
         }
 
-        public Level(Snapshot heapPointers, Snapshot staticPointers)
+        internal Level(Snapshot heapPointers, Snapshot staticPointers)
         {
             this.HeapPointers = heapPointers;
             this.StaticPointers = staticPointers;
         }
 
-        public Snapshot HeapPointers { get; set; }
+        internal Snapshot HeapPointers { get; set; }
 
-        public Snapshot StaticPointers { get; set; }
+        internal Snapshot StaticPointers { get; set; }
     }
     //// End class
 }

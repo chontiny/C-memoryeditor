@@ -5,6 +5,7 @@
     using Squalr.Engine.Scanning.Scanners.Pointers;
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Source.Docking;
+    using Squalr.Source.Results;
     using Squalr.Source.Tasks;
     using System;
     using System.Threading;
@@ -29,7 +30,7 @@
         /// <summary>
         /// Gets the maximum pointer scan depth.
         /// </summary>
-        public const Int32 MaximumPointerScanDepth = 15;
+        public const Int32 MaximumPointerScanDepth = 25;
 
         private UInt64 rescanAddress;
 
@@ -44,7 +45,7 @@
         /// <summary>
         /// Singleton instance of the <see cref="PointerScannerViewModel" /> class.
         /// </summary>
-        private static Lazy<PointerScannerViewModel> inputCorrelatorViewModelInstance = new Lazy<PointerScannerViewModel>(
+        private static Lazy<PointerScannerViewModel> pointerScannerViewModelInstance = new Lazy<PointerScannerViewModel>(
                 () => { return new PointerScannerViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
@@ -80,6 +81,11 @@
         /// Gets a command to start the pointer rescan.
         /// </summary>
         public ICommand StartPointerRescanCommand { get; private set; }
+
+        /// <summary>
+        /// Gets a command to start the pointer rescan.
+        /// </summary>
+        public ICommand StartPointerRebaseCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to start the pointer value rescan.
@@ -207,7 +213,7 @@
         /// <returns>A singleton instance of the class.</returns>
         public static PointerScannerViewModel GetInstance()
         {
-            return inputCorrelatorViewModelInstance.Value;
+            return pointerScannerViewModelInstance.Value;
         }
 
         /// <summary>
@@ -216,9 +222,8 @@
         private void StartScan()
         {
             TrackableTask<PointerBag> pointerScanTask = PointerScan.Scan(this.TargetAddress, (UInt32)this.PointerRadius, this.PointerDepth, 4);
-
             TaskTrackerViewModel.GetInstance().TrackTask(pointerScanTask);
-            ;
+            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = pointerScanTask.Result;
         }
 
         /// <summary>

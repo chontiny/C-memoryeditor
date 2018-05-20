@@ -22,6 +22,7 @@
         <converters:OffsetsToStringConverter x:Key="OffsetsToStringConverter" />
         <converters:UInt64ToAddressConverter x:Key="IntPtrToAddressConverter" />
         <converters:DataTypeToIconConverter x:Key="DataTypeToIconConverter" />
+        <converters:DataGridIndexConverter x:Key="DataGridIndexConverter" />
         <converters:BooleanToVisibilityConverter
             x:Key="BooleanToHiddenConverter"
             False="Hidden"
@@ -270,31 +271,6 @@
                         </MenuItem.Header>
                     </MenuItem>
                 </MenuItem>
-                <Separator Style="{DynamicResource VerticalSeparator}" />
-                <MenuItem Command="{Binding PointerScannerViewModel.StartPointerValidationScanCommand, Source={StaticResource ViewModelLocator}}" ToolTip="Remove Invalid Pointers">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="{x:Static content:Images.LetterP}" />
-                    </MenuItem.Header>
-                </MenuItem>
-            </Menu>
-            <Menu
-                Grid.Column="1"
-                Padding="4"
-                Background="{StaticResource SqualrColorGray27}"
-                BorderBrush="{StaticResource SqualrColorWhite}"
-                Foreground="{StaticResource SqualrColorWhite}">
-                <MenuItem VerticalAlignment="Center" Command="{Binding AddScanResultsCommand}">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="{x:Static content:Images.Increased}"
-                            ToolTip="Add Selected Items" />
-                    </MenuItem.Header>
-                </MenuItem>
             </Menu>
         </Grid>
         <DataGrid
@@ -305,19 +281,10 @@
             CanUserAddRows="False"
             ColumnWidth="*"
             HeadersVisibility="Column"
-            ItemsSource="{Binding Path=Pointers}"
+            ItemsSource="{Binding Path=StaticBaseCounts}"
             RowHeaderWidth="0"
             SelectionMode="Extended"
             SelectionUnit="FullRow">
-            <!--  Click and Selection events  -->
-            <intr:Interaction.Triggers>
-                <intr:EventTrigger EventName="SelectionChanged">
-                    <intr:InvokeCommandAction Command="{Binding SelectScanResultsCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItems}" />
-                </intr:EventTrigger>
-                <intr:EventTrigger EventName="MouseDoubleClick">
-                    <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItem}" />
-                </intr:EventTrigger>
-            </intr:Interaction.Triggers>
             <DataGrid.Resources>
                 <Style x:Key="NoFocus" TargetType="{x:Type DataGridCell}">
                     <Style.Triggers>
@@ -358,33 +325,24 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTemplateColumn
-                    MinWidth="16"
-                    MaxWidth="16"
-                    IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <Image Source="{Binding Path=Icon}" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTextColumn
-                    MinWidth="64"
-                    Binding="{Binding Path=DisplayValue}"
-                    Header="Value" />
                 <DataGridTextColumn
                     Width="SizeToCells"
-                    MinWidth="96"
-                    Binding="{Binding Path=AddressSpecifier}"
+                    MinWidth="64"
+                    Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridCell}}, Converter={StaticResource DataGridIndexConverter}, Mode=OneWay}"
                     CellStyle="{StaticResource NoFocus}"
-                    Header="Address"
+                    Header="Depth" />
+                <DataGridTextColumn
+                    Width="*"
+                    MinWidth="96"
+                    Binding="{Binding .}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Base Count"
                     IsReadOnly="True" />
                 <DataGridTextColumn
                     Width="SizeToCells"
-                    MinWidth="64"
-                    Binding="{Binding Path=PointerOffsets, Converter={StaticResource OffsetsToStringConverter}}"
-                    CellStyle="{StaticResource NoFocus}"
-                    Header="Offsets"
+                    MinWidth="128"
+                    Binding="{Binding .}"
+                    Header="Extract Random Pointer"
                     IsReadOnly="True" />
             </DataGrid.Columns>
             <DataGrid.ItemTemplate>

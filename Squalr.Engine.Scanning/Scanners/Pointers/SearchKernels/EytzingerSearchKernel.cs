@@ -10,10 +10,10 @@
 
     internal class EytzingerSearchKernel : IVectorSearchKernel
     {
-        public EytzingerSearchKernel(Snapshot boundsSnapshot, UInt32 radius)
+        public EytzingerSearchKernel(Snapshot boundsSnapshot, UInt32 maxOffset, PointerSize pointerSize)
         {
             this.BoundsSnapshot = boundsSnapshot;
-            this.Radius = radius;
+            this.MaxOffset = maxOffset;
 
             this.L = 1 + this.Log2(2 + this.BoundsSnapshot.SnapshotRegions.Length + 1); // Final +1 due to inversion
             this.M = new Vector<UInt32>(unchecked((UInt32)(~(2 * this.L))));
@@ -30,7 +30,7 @@
 
         private Snapshot BoundsSnapshot { get; set; }
 
-        private UInt32 Radius { get; set; }
+        private UInt32 MaxOffset { get; set; }
 
         private UInt32[] LowerBounds { get; set; }
 
@@ -90,7 +90,7 @@
         {
             BinaryHeap<UInt32> lowerBoundsHeap = new BinaryHeap<UInt32>();
 
-            foreach (UInt32 next in this.BoundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.EndAddress.Subtract(this.Radius, wrapAround: false))).Prepend(UInt32.MinValue))
+            foreach (UInt32 next in this.BoundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.EndAddress.Subtract(this.MaxOffset, wrapAround: false))).Prepend(UInt32.MinValue))
             {
                 lowerBoundsHeap.Insert(next);
             }
@@ -108,7 +108,7 @@
         {
             BinaryHeap<UInt32> upperBoundsHeap = new BinaryHeap<UInt32>();
 
-            foreach (UInt32 next in this.BoundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.BaseAddress.Add(this.Radius, wrapAround: false))).Append(UInt32.MaxValue))
+            foreach (UInt32 next in this.BoundsSnapshot.SnapshotRegions.Select(region => unchecked((UInt32)region.BaseAddress.Add(this.MaxOffset, wrapAround: false))).Append(UInt32.MaxValue))
             {
                 upperBoundsHeap.Insert(next);
             }

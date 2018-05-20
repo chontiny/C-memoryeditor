@@ -1,71 +1,93 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
 {
-    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
     /// <summary>
     /// A class to contain the discovered pointers from a pointer scan.
     /// </summary>
-    public class PointerBag
+    public class PointerBag : IEnumerable<Level>
     {
         private static Random Random = new Random();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PointerBag" /> class.
         /// </summary>
-        internal PointerBag(IList<Level> levels, UInt32 radius, DataType dataType)
+        internal PointerBag(IList<Level> levels, UInt32 maxOffset, PointerSize pointerSize)
         {
             this.Levels = levels;
-            this.Radius = radius;
-            this.DataType = dataType;
+            this.MaxOffset = maxOffset;
+            this.PointerSize = pointerSize;
         }
 
-        private IList<Level> Levels { get; set; }
+        /// <summary>
+        /// Gets or sets the list of levels in this pointer bag.
+        /// </summary>
+        internal IList<Level> Levels { get; private set; }
 
         /// <summary>
-        /// Gets the minimum number of pointers in the collection. In actuality there may be significantly more.
+        /// Gets or sets the maximum pointer offset.
         /// </summary>
-        public UInt64 AtLeastCount
+        public UInt32 MaxOffset { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the pointer size.
+        /// </summary>
+        internal PointerSize PointerSize { get; private set; }
+
+        /// <summary>
+        /// Gets the depth of the highest pointer level in this bag.
+        /// </summary>
+        public Int32 Depth
         {
             get
             {
-                return 0;
+                return this.Levels.Count;
             }
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private UInt32 Radius { get; set; }
+        public IEnumerable<UInt64> BasePointerCounts
+        {
+            get
+            {
+                return this.Levels.Select(level => level.StaticPointers.ElementCount);
+            }
+        }
 
-        private DataType DataType { get; set; }
+        public UInt64 GetLevelStaticBaseCount(Int32 levelIndex)
+        {
+            if (levelIndex >= this.Levels.Count)
+            {
+                return 0;
+            }
+
+            return this.Levels[levelIndex].StaticPointers.ElementCount;
+        }
 
         /// <summary>
         /// Gets a random pointer from the pointer collection.
         /// </summary>
         /// <returns>A random discovered pointer, or null if unable to find one.</returns>
-        public Pointer GetRandomPointer()
+        public Pointer GetRandomPointer(Int32 levelIndex)
         {
-            Snapshot currentSnapshot = this.Levels?.FirstOrDefault()?.StaticPointers;
-
-            if (currentSnapshot == null)
+            if (levelIndex >= this.Levels.Count || this.Levels[levelIndex].StaticPointers == null)
             {
                 return null;
             }
 
+            Snapshot currentSnapshot = this.Levels[levelIndex].StaticPointers;
             ExtractedPointer pointer = this.ExtractRandomPointer(currentSnapshot);
 
-            UInt64 pointerSize = (UInt64)(this.DataType == DataType.UInt32 ? 4 : 8);
             UInt64 pointerBase = pointer.BaseAddress;
             List<Int32> offsets = new List<Int32>();
 
             foreach (Level level in this.Levels.Skip(1))
             {
-                IEnumerable<Int32> shuffledOffsets = Enumerable.Range(-(Int32)this.Radius, (Int32)(this.Radius * 2) + 1).Shuffle();
+                IEnumerable<Int32> shuffledOffsets = Enumerable.Range(-(Int32)this.MaxOffset, (Int32)(this.MaxOffset * 2) + 1).Shuffle();
 
                 // Brute force all possible offsets in a random order to find the next path (this guarantees uniform path probabilities)
                 foreach (Int32 nextRandomOffset in shuffledOffsets)
@@ -86,7 +108,7 @@
                 }
             }
 
-            return new Pointer(pointerBase, this.DataType, offsets.ToArray());
+            return new Pointer(pointerBase, this.PointerSize, offsets.ToArray());
         }
 
         private ExtractedPointer ExtractRandomPointer(Snapshot snapshot)
@@ -99,10 +121,20 @@
 
         private ExtractedPointer ExtractPointerFromElement(SnapshotElementIndexer element)
         {
-            return new ExtractedPointer(element.BaseAddress, element.HasCurrentValue() ? (this.DataType == DataType.UInt32 ? (UInt32)element.LoadCurrentValue() : (UInt64)element.LoadCurrentValue()) : 0);
+            return new ExtractedPointer(element.BaseAddress, element.HasCurrentValue() ? (this.PointerSize == PointerSize.Byte4 ? (UInt32)element.LoadCurrentValue() : (UInt64)element.LoadCurrentValue()) : 0);
         }
 
-        private class ExtractedPointer
+        public IEnumerator<Level> GetEnumerator()
+        {
+            return Levels.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return Levels.GetEnumerator();
+        }
+
+        private struct ExtractedPointer
         {
             public ExtractedPointer(UInt64 address, UInt64 destination)
             {

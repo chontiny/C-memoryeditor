@@ -95,7 +95,7 @@
                 Grid.Row="1"
                 Padding="4"
                 Foreground="{StaticResource SqualrColorWhite}"
-                Header="Same Session Validation">
+                Header="Same Process Validation">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -112,7 +112,7 @@
                         Grid.Column="0"
                         Padding="4"
                         Background="Transparent">
-                        <MenuItem Command="{Binding StartPointerRescanCommand}" ToolTip="Start Pointer Address Rescan">
+                        <MenuItem Command="{Binding StartPointerRescanCommand}" ToolTip="Remove Invalid Pointers">
                             <MenuItem.Header>
                                 <Image
                                     Width="16"
@@ -135,7 +135,7 @@
                 Grid.Row="2"
                 Padding="4"
                 Foreground="{StaticResource SqualrColorWhite}"
-                Header="New Session Validation">
+                Header="New Process Validation">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -165,7 +165,7 @@
                         Background="{StaticResource SqualrColorGray20}"
                         BorderThickness="0">
                         <Grid
-                            x:Name="pointerRescanAddressHexDecBox"
+                            x:Name="pointerRebaseAddressHexDecBox"
                             Width="180"
                             Height="16" />
                     </Border>
@@ -173,7 +173,7 @@
                         Grid.Column="2"
                         Padding="4"
                         Background="Transparent">
-                        <MenuItem Command="{Binding StartPointerRescanCommand}" ToolTip="Start Pointer Address Rescan">
+                        <MenuItem Command="{Binding StartPointerRebaseCommand}" ToolTip="Rebase Target Address">
                             <MenuItem.Header>
                                 <Image
                                     Width="16"
