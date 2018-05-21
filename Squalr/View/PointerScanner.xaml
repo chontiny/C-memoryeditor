@@ -165,7 +165,7 @@
                         Background="{StaticResource SqualrColorGray20}"
                         BorderThickness="0">
                         <Grid
-                            x:Name="pointerRebaseAddressHexDecBox"
+                            x:Name="pointerRetargetAddressHexDecBox"
                             Width="180"
                             Height="16" />
                     </Border>
@@ -173,7 +173,7 @@
                         Grid.Column="2"
                         Padding="4"
                         Background="Transparent">
-                        <MenuItem Command="{Binding StartPointerRebaseCommand}" ToolTip="Rebase Target Address">
+                        <MenuItem Command="{Binding StartPointerRetargetScanCommand}" ToolTip="Retarget Target Address">
                             <MenuItem.Header>
                                 <Image
                                     Width="16"

@@ -2,6 +2,7 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
+    using Squalr.Engine.OS;
     using System;
     using System.Collections.Generic;
 
@@ -21,7 +22,7 @@
             this.Alignment = alignment;
             this.ElementDataType = dataType;
 
-            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, regionSize) };
+            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, Math.Max(Vectors.VectorSize, regionSize)) };
         }
 
         /// <summary>

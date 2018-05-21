@@ -280,8 +280,9 @@
             Background="{StaticResource SqualrColorBlack}"
             CanUserAddRows="False"
             ColumnWidth="*"
+            EnableRowVirtualization="False"
             HeadersVisibility="Column"
-            ItemsSource="{Binding Path=StaticBaseCounts}"
+            ItemsSource="{Binding Path=DiscoveredLevels}"
             RowHeaderWidth="0"
             SelectionMode="Extended"
             SelectionUnit="FullRow">
@@ -334,16 +335,45 @@
                 <DataGridTextColumn
                     Width="*"
                     MinWidth="96"
-                    Binding="{Binding .}"
+                    Binding="{Binding Path=BaseCount}"
                     CellStyle="{StaticResource NoFocus}"
                     Header="Base Count"
                     IsReadOnly="True" />
                 <DataGridTextColumn
+                    Width="*"
+                    MinWidth="96"
+                    Binding="{Binding Path=PointerCount}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Min Pointer Count"
+                    IsReadOnly="True" />
+                <DataGridTemplateColumn
                     Width="SizeToCells"
                     MinWidth="128"
-                    Binding="{Binding .}"
                     Header="Extract Random Pointer"
-                    IsReadOnly="True" />
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <MenuItem
+                                Command="{Binding PointerScanResultsViewModel.ExtractPointerCommand, Source={StaticResource ViewModelLocator}}"
+                                CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridCell}}, Converter={StaticResource DataGridIndexConverter}, Mode=OneWay}"
+                                ToolTip="Extract Pointer">
+                                <MenuItem.Header>
+                                    <WrapPanel Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=ActualWidth}">
+                                        <Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.New}" />
+                                        <TextBlock
+                                            Padding="4,0,0,0"
+                                            Background="Transparent"
+                                            Foreground="{StaticResource SqualrColorWhite}"
+                                            Text="Extract" />
+                                    </WrapPanel>
+                                </MenuItem.Header>
+                            </MenuItem>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
             <DataGrid.ItemTemplate>
                 <DataTemplate>
@@ -353,84 +383,5 @@
                 </DataTemplate>
             </DataGrid.ItemTemplate>
         </DataGrid>
-        <Border Grid.Row="2" Background="{StaticResource SqualrColorGray27}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="196" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <Menu
-                    Grid.Column="0"
-                    HorizontalAlignment="Right"
-                    Background="Transparent">
-                    <MenuItem
-                        Command="{Binding FirstPageCommand}"
-                        ToolTip="First Page"
-                        Visibility="{Binding CanNavigateFirst, Converter={StaticResource BooleanToHiddenConverter}}">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="{x:Static content:Images.LeftArrows}"
-                                ToolTip="First Page" />
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Command="{Binding PreviousPageCommand}"
-                        ToolTip="Previous Page"
-                        Visibility="{Binding CanNavigatePrevious, Converter={StaticResource BooleanToHiddenConverter}}">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="{x:Static content:Images.LeftArrow}"
-                                ToolTip="Previous Page" />
-                        </MenuItem.Header>
-                    </MenuItem>
-                </Menu>
-                <WrapPanel Grid.Column="1" HorizontalAlignment="Center">
-                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Page: " />
-                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding CurrentPage}" />
-                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" of " />
-                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding PageCount}" />
-                </WrapPanel>
-                <Menu
-                    Grid.Column="2"
-                    HorizontalAlignment="Left"
-                    Background="Transparent">
-                    <MenuItem
-                        Command="{Binding NextPageCommand}"
-                        ToolTip="Next Page"
-                        Visibility="{Binding CanNavigateNext, Converter={StaticResource BooleanToHiddenConverter}}">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="{x:Static content:Images.RightArrow}"
-                                ToolTip="Next Page" />
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem
-                        Command="{Binding LastPageCommand}"
-                        ToolTip="Last Page"
-                        Visibility="{Binding CanNavigateLast, Converter={StaticResource BooleanToHiddenConverter}}">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="{x:Static content:Images.RightArrows}"
-                                ToolTip="Last Page" />
-                        </MenuItem.Header>
-                    </MenuItem>
-                </Menu>
-            </Grid>
-        </Border>
-        <Border Grid.Row="3" Background="{StaticResource SqualrColorGray27}">
-            <WrapPanel HorizontalAlignment="Center">
-                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Count: " />
-                <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ResultCount}" />
-            </WrapPanel>
-        </Border>
     </Grid>
 </UserControl>

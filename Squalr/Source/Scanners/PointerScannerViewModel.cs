@@ -32,7 +32,7 @@
         /// </summary>
         public const Int32 MaximumPointerScanDepth = 25;
 
-        private UInt64 rescanAddress;
+        private UInt64 retargetAddress;
 
         private UInt64 targetAddress;
 
@@ -54,15 +54,14 @@
         /// </summary>
         private PointerScannerViewModel() : base("Pointer Scanner")
         {
+            this.StartPointerRetargetScanCommand = new RelayCommand<UInt64>((newValue) => this.StartPointerRetargetScan(), (newValue) => true);
+            this.StartPointerRebaseCommand = new RelayCommand(() => Task.Run(() => this.StartPointerRebase()), () => true);
+            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
+
             this.SetPointerScanAddressCommand = new RelayCommand<UInt64>((newValue) => this.TargetAddress = newValue, (newValue) => true);
-            this.SetPointerRescanAddressCommand = new RelayCommand<UInt64>((newValue) => this.RescanAddress = newValue, (newValue) => true);
-            this.SetPointerRescanValueCommand = new RelayCommand<Object>((newValue) => this.RescanValue = newValue, (newValue) => true);
+            this.SetPointerRetargetScanAddressCommand = new RelayCommand<UInt64>((newValue) => this.RetargetAddress = newValue, (newValue) => true);
             this.SetDepthCommand = new RelayCommand<Int32>((newValue) => this.PointerDepth = newValue, (newValue) => true);
             this.SetPointerRadiusCommand = new RelayCommand<Int32>((newValue) => this.PointerRadius = newValue, (newValue) => true);
-            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
-            this.StartPointerRescanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerRescan()), () => true);
-            this.StartPointerValueRescanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerValueRescan()), () => true);
-            this.StartPointerValidationScanCommand = new RelayCommand(() => Task.Run(() => this.StartPointerValidationScan()), () => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -80,22 +79,12 @@
         /// <summary>
         /// Gets a command to start the pointer rescan.
         /// </summary>
-        public ICommand StartPointerRescanCommand { get; private set; }
+        public ICommand StartPointerRebaseCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to start the pointer rescan.
         /// </summary>
-        public ICommand StartPointerRebaseCommand { get; private set; }
-
-        /// <summary>
-        /// Gets a command to start the pointer value rescan.
-        /// </summary>
-        public ICommand StartPointerValueRescanCommand { get; private set; }
-
-        /// <summary>
-        /// Gets a command to start the scan to remove invalid pointers.
-        /// </summary>
-        public ICommand StartPointerValidationScanCommand { get; private set; }
+        public ICommand StartPointerRetargetScanCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to set the pointer scan address.
@@ -105,12 +94,7 @@
         /// <summary>
         /// Gets a command to set the pointer rescan address.
         /// </summary>
-        public ICommand SetPointerRescanAddressCommand { get; private set; }
-
-        /// <summary>
-        /// Gets a command to set the pointer rescan value.
-        /// </summary>
-        public ICommand SetPointerRescanValueCommand { get; private set; }
+        public ICommand SetPointerRetargetScanAddressCommand { get; private set; }
 
         /// <summary>
         /// Gets a command to set the scan depth.
@@ -140,19 +124,19 @@
         }
 
         /// <summary>
-        /// Gets or sets the target rescan address.
+        /// Gets or sets the retarget scan address.
         /// </summary>
-        public UInt64 RescanAddress
+        public UInt64 RetargetAddress
         {
             get
             {
-                return this.rescanAddress;
+                return this.retargetAddress;
             }
 
             set
             {
-                this.rescanAddress = value;
-                this.RaisePropertyChanged(nameof(this.RescanAddress));
+                this.retargetAddress = value;
+                this.RaisePropertyChanged(nameof(this.RetargetAddress));
             }
         }
 
@@ -227,27 +211,23 @@
         }
 
         /// <summary>
-        /// Starts the pointer address rescan.
+        /// Starts the pointer address rebase.
         /// </summary>
-        private void StartPointerRescan()
+        private void StartPointerRebase()
         {
-            //// this.PointerRescan.Start();
+            TrackableTask<PointerBag> pointerRebaseTask = PointerRebase.Scan(PointerScanResultsViewModel.GetInstance().DiscoveredPointers, readMemory: true, performUnchangedScan: true);
+            TaskTrackerViewModel.GetInstance().TrackTask(pointerRebaseTask);
+            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = pointerRebaseTask.Result;
         }
 
         /// <summary>
         /// Starts the pointer value rescan.
         /// </summary>
-        private void StartPointerValueRescan()
+        private void StartPointerRetargetScan()
         {
-            //// this.PointerValueRescan.Start();
-        }
-
-        /// <summary>
-        /// Starts the pointer validation scan.
-        /// </summary>
-        private void StartPointerValidationScan()
-        {
-            //// this.PointerValidationScan.Start();
+            TrackableTask<PointerBag> pointerRetargetScanTask = PointerRetargetScan.Scan(this.RetargetAddress, 4, PointerScanResultsViewModel.GetInstance().DiscoveredPointers);
+            TaskTrackerViewModel.GetInstance().TrackTask(pointerRetargetScanTask);
+            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = pointerRetargetScanTask.Result;
         }
     }
     //// End class

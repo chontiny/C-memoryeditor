@@ -3,13 +3,11 @@
 namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Scanning.Scanners.Pointers.SearchKernels;
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Scanning.Snapshots;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
     using static Squalr.Engine.TrackableTask;
@@ -51,75 +49,45 @@ namespace Squalr.Engine.Scanning.Scanners.Pointers
                         Snapshot targetAddress = new Snapshot(new SnapshotRegion[] { new SnapshotRegion(new ReadGroup(address, pointerSize.ToSize(), pointerSize.ToDataType(), alignment), 0, pointerSize.ToSize()) });
 
                         // Step 2) Collect static pointers
-                        Snapshot snapshotStatic = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromModules, pointerSize.ToDataType());
-                        TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(snapshotStatic);
-                        snapshotStatic = valueCollector.Result;
+                        Snapshot staticPointers = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromModules, pointerSize.ToDataType());
+                        TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(staticPointers);
+                        staticPointers = valueCollector.Result;
 
                         // Step 3) Collect heap pointers
-                        Snapshot snapshotHeaps = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromHeaps, pointerSize.ToDataType());
-                        TrackableTask<Snapshot> heapValueCollector = ValueCollector.CollectValues(snapshotHeaps);
-                        snapshotHeaps = heapValueCollector.Result;
+                        Snapshot heapPointers = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromHeaps, pointerSize.ToDataType());
+                        TrackableTask<Snapshot> heapValueCollector = ValueCollector.CollectValues(heapPointers);
+                        heapPointers = heapValueCollector.Result;
 
-                        // Step 4) Build levels
-                        IList<Level> levels = new List<Level>
+                        // Step 3) Build levels
+                        IList<Level> levels = new List<Level>();
+
+                        if (depth > 0)
                         {
-                            new Level(targetAddress)
-                        };
+                            // Create 1st level with target address and static pointers
+                            levels.Add(new Level(targetAddress, staticPointers));
 
-                        // Counter-intuitively, we begin at the destination and work our way backwards, as it results in less dead-end pointers
-                        for (Int32 currentDepth = 0; currentDepth < depth; currentDepth++)
-                        {
-                            // Exit if canceled
-                            cancellationToken.ThrowIfCancellationRequested();
-
-                            Stopwatch levelStopwatch = new Stopwatch();
-                            levelStopwatch.Start();
-
-                            Level previousLevel = levels.Last();
-
-                            // Build static pointers
-                            IVectorSearchKernel staticSearchKernel = SearchKernelFactory.GetSearchKernel(previousLevel.HeapPointers, maxOffset, pointerSize);
-                            TrackableTask<Snapshot> staticFilterTask = PointerFilter.Filter(pointerScanTask, snapshotStatic, staticSearchKernel, previousLevel.HeapPointers, maxOffset);
-
-                            // Build the heap pointers for the next level for all but the last level
-                            if (currentDepth < depth - 1)
+                            // Initialize each level with all static addresses and all heap addresses
+                            for (Int32 index = 0; index < depth - 1; index++)
                             {
-                                IVectorSearchKernel heapSearchKernel = SearchKernelFactory.GetSearchKernel(previousLevel.HeapPointers, maxOffset, pointerSize);
-                                TrackableTask<Snapshot> heapFilterTask = PointerFilter.Filter(pointerScanTask, snapshotHeaps, heapSearchKernel, previousLevel.HeapPointers, maxOffset);
-
-                                heapFilterTask.OnCompletedEvent += ((snapshot) =>
-                                {
-                                    levelStopwatch.Stop();
-                                    Logger.Log(LogLevel.Info, "Level " + (depth - currentDepth - 1) + " => " + (depth - currentDepth) + " built in: " + levelStopwatch.Elapsed);
-                                });
-
-                                levels.Add(new Level(heapFilterTask.Result));
+                                levels.Add(new Level(heapPointers, staticPointers));
                             }
-                            else
-                            {
-                                staticFilterTask.OnCompletedEvent += ((snapshot) =>
-                                {
-                                    levelStopwatch.Stop();
-                                    Logger.Log(LogLevel.Info, "Final static level built in: " + levelStopwatch.Elapsed);
-                                });
-                            }
-
-                            previousLevel.StaticPointers = staticFilterTask.Result;
-
-                            // Update progress
-                            updateProgress(((float)(currentDepth + 1)) / (float)depth * 100.0f);
                         }
 
                         // Exit if canceled
                         cancellationToken.ThrowIfCancellationRequested();
 
-                        // Step 5) Store results in a bag from which pointers can be retrieved
-                        PointerBag pointerBag = new PointerBag(levels, maxOffset, pointerSize);
+                        // Step 4) Rebase to filter out unwanted pointers
+                        PointerBag newPointerBag = new PointerBag(levels, maxOffset, pointerSize);
+                        TrackableTask<PointerBag> pointerRebaseTask = PointerRebase.Scan(newPointerBag, readMemory: false, performUnchangedScan: false);
+                        PointerBag rebasedPointerBag = pointerRebaseTask.Result;
+
+                        // Exit if canceled
+                        cancellationToken.ThrowIfCancellationRequested();
 
                         stopwatch.Stop();
                         Logger.Log(LogLevel.Info, "Pointer scan complete in: " + stopwatch.Elapsed);
 
-                        return pointerBag;
+                        return rebasedPointerBag;
                     }
                     catch (OperationCanceledException ex)
                     {

@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
 {
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -19,15 +20,22 @@
         /// </summary>
         internal PointerBag(IList<Level> levels, UInt32 maxOffset, PointerSize pointerSize)
         {
-            this.Levels = levels;
             this.MaxOffset = maxOffset;
             this.PointerSize = pointerSize;
+
+            // Add levels, removing invalid ones
+            this.Levels = levels.TakeWhile(level => level.HeapPointers.ElementCount > 0).ToList();
+
+            if (this.Levels.Count > 0 && this.Levels.Last().StaticPointers.ElementCount <= 0)
+            {
+                this.Levels.Remove(this.Levels.Last());
+            }
         }
 
         /// <summary>
         /// Gets or sets the list of levels in this pointer bag.
         /// </summary>
-        internal IList<Level> Levels { get; private set; }
+        public IList<Level> Levels { get; private set; }
 
         /// <summary>
         /// Gets or sets the maximum pointer offset.
@@ -50,24 +58,6 @@
             }
         }
 
-        public IEnumerable<UInt64> BasePointerCounts
-        {
-            get
-            {
-                return this.Levels.Select(level => level.StaticPointers.ElementCount);
-            }
-        }
-
-        public UInt64 GetLevelStaticBaseCount(Int32 levelIndex)
-        {
-            if (levelIndex >= this.Levels.Count)
-            {
-                return 0;
-            }
-
-            return this.Levels[levelIndex].StaticPointers.ElementCount;
-        }
-
         /// <summary>
         /// Gets a random pointer from the pointer collection.
         /// </summary>
@@ -85,9 +75,11 @@
             UInt64 pointerBase = pointer.BaseAddress;
             List<Int32> offsets = new List<Int32>();
 
-            foreach (Level level in this.Levels.Skip(1))
+            foreach (Level level in this.Levels.Take(levelIndex + 1).Reverse())
             {
                 IEnumerable<Int32> shuffledOffsets = Enumerable.Range(-(Int32)this.MaxOffset, (Int32)(this.MaxOffset * 2) + 1).Shuffle();
+
+                Boolean found = false;
 
                 // Brute force all possible offsets in a random order to find the next path (this guarantees uniform path probabilities)
                 foreach (Int32 nextRandomOffset in shuffledOffsets)
@@ -103,8 +95,15 @@
 
                         pointer = this.ExtractPointerFromElement(randomElement);
                         offsets.Add(alignedOffset);
+                        found = true;
                         break;
                     }
+                }
+
+                if (!found)
+                {
+                    Logger.Log(LogLevel.Error, "Unable to collect a pointer, encountered dead end path");
+                    return null;
                 }
             }
 

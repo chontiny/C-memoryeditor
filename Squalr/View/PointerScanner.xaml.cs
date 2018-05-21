@@ -38,10 +38,10 @@
             this.PointerRadiusHexDecBox.SetValue(PointerScannerViewModel.DefaultPointerScanRadius);
             this.pointerRadiusHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRadiusHexDecBox));
 
-            this.PointerRebaseAddressHexDecBox = new HexDecTextBox(DataType.UInt64);
-            this.PointerRebaseAddressHexDecBox.IsHex = true;
-            this.PointerRebaseAddressHexDecBox.TextChanged += this.PointerRescanAddressUpdated;
-            this.pointerRebaseAddressHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRebaseAddressHexDecBox));
+            this.PointerRetargetAddressHexDecBox = new HexDecTextBox(DataType.UInt64);
+            this.PointerRetargetAddressHexDecBox.IsHex = true;
+            this.PointerRetargetAddressHexDecBox.TextChanged += this.PointerRescanAddressUpdated;
+            this.pointerRetargetAddressHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRetargetAddressHexDecBox));
 
             Task.Run(() => PointerScanResultsViewModel.GetInstance().Subscribe(this));
         }
@@ -65,7 +65,7 @@
         /// <summary>
         /// Gets or sets the value hex dec box used to display the current pointer rescan address being edited.
         /// </summary>
-        private HexDecTextBox PointerRebaseAddressHexDecBox { get; set; }
+        private HexDecTextBox PointerRetargetAddressHexDecBox { get; set; }
 
         /// <summary>
         /// Gets or sets the value hex dec box used to display the current depth being edited.
@@ -104,8 +104,8 @@
         /// <param name="e">Event args.</param>
         private void PointerRescanAddressUpdated(Object sender, EventArgs e)
         {
-            Object value = this.PointerRebaseAddressHexDecBox.GetValue();
-            this.PointerScannerViewModel.SetPointerRescanAddressCommand.Execute(value);
+            Object value = this.PointerRetargetAddressHexDecBox.GetValue();
+            this.PointerScannerViewModel.SetPointerRetargetScanAddressCommand.Execute(value);
         }
 
         /// <summary>

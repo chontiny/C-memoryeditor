@@ -27,7 +27,7 @@
             DataGrid dataGrid = dataGridRow?.Ancestors().OfType<DataGrid>().FirstOrDefault();
             Int32 index = dataGrid?.ItemContainerGenerator.IndexFromContainer(dataGridRow) ?? -1;
 
-            return index.ToString();
+            return index;
         }
 
         /// <summary>

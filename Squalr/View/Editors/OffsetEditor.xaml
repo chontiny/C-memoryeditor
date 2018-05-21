@@ -79,6 +79,7 @@
             AutoGenerateColumns="False"
             Background="{StaticResource SqualrColorBlack}"
             ColumnWidth="*"
+            EnableRowVirtualization="False"
             HeadersVisibility="Column"
             ItemsSource="{Binding Path=Offsets}"
             RowHeaderWidth="0"

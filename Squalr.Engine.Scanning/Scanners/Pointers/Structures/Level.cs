@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Pointers.Structures
 {
     using Squalr.Engine.Scanning.Snapshots;
+    using System;
 
     public class Level
     {
@@ -17,6 +18,22 @@
         {
             this.HeapPointers = heapPointers;
             this.StaticPointers = staticPointers;
+        }
+
+        public UInt64 BaseCount
+        {
+            get
+            {
+                return this.StaticPointers?.ElementCount ?? 0;
+            }
+        }
+
+        public UInt64 PointerCount
+        {
+            get
+            {
+                return this.HeapPointers?.ElementCount ?? 0;
+            }
         }
 
         internal Snapshot HeapPointers { get; set; }
