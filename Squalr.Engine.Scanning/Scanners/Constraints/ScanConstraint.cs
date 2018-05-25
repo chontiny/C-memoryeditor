@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Constraints
 {
+    using Squalr.Engine.DataTypes;
     using System;
     using System.ComponentModel;
 
@@ -32,10 +33,11 @@
         /// </summary>
         /// <param name="valueConstraint">The constraint type.</param>
         /// <param name="addressValue">The value associated with this constraint.</param>
-        public ScanConstraint(ConstraintType valueConstraint, Object addressValue = null)
+        public ScanConstraint(ConstraintType valueConstraint, Object addressValue = null, DataType elementType = null)
         {
             this.Constraint = valueConstraint;
             this.ConstraintValue = addressValue;
+            this.SetElementType(elementType);
         }
 
         /// <summary>
@@ -167,7 +169,7 @@
         /// <returns>The cloned scan constraint.</returns>
         public ScanConstraint Clone()
         {
-            return new ScanConstraint(this.Constraint, this.ConstraintValue);
+            return new ScanConstraint(this.Constraint, this.ConstraintValue, this.ElementType);
         }
 
         /// <summary>

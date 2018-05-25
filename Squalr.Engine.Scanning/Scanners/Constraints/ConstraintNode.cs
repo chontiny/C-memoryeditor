@@ -31,7 +31,7 @@
 
         public virtual Boolean IsValid()
         {
-            return (this.Left?.IsValid() ?? false) && (this.Right?.IsValid() ?? false);
+            return (this.Left?.IsValid() ?? true) && (this.Right?.IsValid() ?? true);
         }
 
         /// <summary>

@@ -112,7 +112,7 @@
                         Grid.Column="0"
                         Padding="4"
                         Background="Transparent">
-                        <MenuItem Command="{Binding StartPointerRescanCommand}" ToolTip="Remove Invalid Pointers">
+                        <MenuItem Command="{Binding StartPointerRebaseCommand}" ToolTip="Remove Invalid Pointers">
                             <MenuItem.Header>
                                 <Image
                                     Width="16"
