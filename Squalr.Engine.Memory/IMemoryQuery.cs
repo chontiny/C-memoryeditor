@@ -41,6 +41,12 @@
         /// Gets the maximum usermode address possible in the target process.
         /// </summary>
         /// <returns>The maximum usermode address possible in the target process.</returns>
+        UInt64 GetMinUsermodeAddress();
+
+        /// <summary>
+        /// Gets the maximum usermode address possible in the target process.
+        /// </summary>
+        /// <returns>The maximum usermode address possible in the target process.</returns>
         UInt64 GetMaxUsermodeAddress();
 
         /// <summary>

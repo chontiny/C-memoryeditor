@@ -15,6 +15,7 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <GroupBox
@@ -86,7 +87,7 @@
                         <TextBlock
                             Padding="0,0,4,0"
                             Foreground="{StaticResource SqualrColorWhite}"
-                            Text="Pointer Radius" />
+                            Text="Max Offset" />
                     </WrapPanel>
                 </Grid>
             </GroupBox>
@@ -94,80 +95,93 @@
                 Grid.Row="1"
                 Padding="4"
                 Foreground="{StaticResource SqualrColorWhite}"
-                Header="Rescan">
+                Header="Same Process Validation">
                 <Grid>
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="17*" />
+                        <RowDefinition Height="28*" />
+                    </Grid.RowDefinitions>
+                    <Menu
+                        Grid.Column="0"
+                        Padding="4"
+                        Background="Transparent">
+                        <MenuItem Command="{Binding StartPointerRebaseCommand}" ToolTip="Remove Invalid Pointers">
+                            <MenuItem.Header>
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Source="{x:Static content:Images.RightArrow}" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </Menu>
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        Margin="0,7,0,5"
+                        Padding="0,0,4,0"
+                        VerticalAlignment="Center"
+                        Foreground="{StaticResource SqualrColorWhite}"
+                        Text="Remove Invalid Pointers" />
+                </Grid>
+            </GroupBox>
+            <GroupBox
+                Grid.Row="2"
+                Padding="4"
+                Foreground="{StaticResource SqualrColorWhite}"
+                Header="New Process Validation">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="17*" />
+                        <RowDefinition Height="28*" />
                     </Grid.RowDefinitions>
                     <TextBlock
                         Grid.Row="0"
                         Grid.Column="0"
+                        Margin="0,7,0,5"
                         Padding="0,0,4,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Center"
                         Foreground="{StaticResource SqualrColorWhite}"
-                        Text="Address" />
-                    <WrapPanel
+                        Text="New Address" />
+                    <Border
                         Grid.Row="0"
                         Grid.Column="1"
+                        Height="20"
+                        Margin="0,4"
+                        Background="{StaticResource SqualrColorGray20}"
+                        BorderThickness="0">
+                        <Grid
+                            x:Name="pointerRetargetAddressHexDecBox"
+                            Width="180"
+                            Height="16" />
+                    </Border>
+                    <Menu
+                        Grid.Column="2"
+                        Padding="4"
                         Background="Transparent">
-                        <Border
-                            Height="20"
-                            Background="{StaticResource SqualrColorGray20}"
-                            BorderThickness="0">
-                            <Grid
-                                x:Name="pointerRescanAddressHexDecBox"
-                                Width="196"
-                                Height="16" />
-                        </Border>
-                        <Menu Padding="4" Background="Transparent">
-                            <MenuItem Command="{Binding StartPointerRescanCommand}" ToolTip="Start Pointer Address Rescan">
-                                <MenuItem.Header>
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="{x:Static content:Images.RightArrow}" />
-                                </MenuItem.Header>
-                            </MenuItem>
-                        </Menu>
-                    </WrapPanel>
-                    <TextBlock
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Padding="0,0,4,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Foreground="{StaticResource SqualrColorWhite}"
-                        Text="Value" />
-                    <WrapPanel
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Background="Transparent">
-                        <Border
-                            Height="20"
-                            Background="{StaticResource SqualrColorGray20}"
-                            BorderThickness="0">
-                            <Grid
-                                x:Name="pointerRescanValueHexDecBox"
-                                Width="196"
-                                Height="16" />
-                        </Border>
-                        <Menu Padding="4" Background="Transparent">
-                            <MenuItem Command="{Binding StartPointerValueRescanCommand}" ToolTip="Start Pointer Value Rescan">
-                                <MenuItem.Header>
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Source="{x:Static content:Images.RightArrow}" />
-                                </MenuItem.Header>
-                            </MenuItem>
-                        </Menu>
-                    </WrapPanel>
+                        <MenuItem Command="{Binding StartPointerRetargetScanCommand}" ToolTip="Retarget Target Address">
+                            <MenuItem.Header>
+                                <Image
+                                    Width="16"
+                                    Height="16"
+                                    Source="{x:Static content:Images.RightArrow}" />
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </Menu>
                 </Grid>
             </GroupBox>
         </Grid>

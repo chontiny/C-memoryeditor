@@ -1,185 +1,105 @@
-﻿namespace Squalr.Engine.Scanning.Scanners.Pointers
+﻿using Squalr.Engine.OS;
+
+namespace Squalr.Engine.Scanning.Scanners.Pointers
 {
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
+    using Squalr.Engine.Scanning.Snapshots;
     using System;
-    using System.Linq;
+    using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Threading;
+    using System.Threading.Tasks;
+    using static Squalr.Engine.TrackableTask;
 
     /// <summary>
-    /// Implements an algorithm which finds all possible paths between pointer levels, once they are discovered by the back trace algorithm.
+    /// Scans for pointers in the target process.
     /// </summary>
-    public class PointerScan
+    public static class PointerScan
     {
         /// <summary>
-        /// Creates an instance of the <see cref="PointerScan" /> class.
+        /// The name of this scan.
         /// </summary>
-        /// <param name="targetAddress">The target address of the poitner scan.</param>
-        public PointerScan()
+        private const String Name = "Pointer Scan";
+
+        /// <summary>
+        /// Performs a pointer scan for a given address.
+        /// </summary>
+        /// <param name="address">The address for which to perform a pointer scan.</param>
+        /// <param name="maxOffset">The maximum pointer offset.</param>
+        /// <param name="depth">The maximum pointer search depth.</param>
+        /// <param name="alignment">The pointer scan alignment.</param>
+        /// <returns>Atrackable task that returns the scan results.</returns>
+        public static TrackableTask<PointerBag> Scan(UInt64 address, UInt32 maxOffset, Int32 depth, Int32 alignment)
         {
-            this.PointerBackTracer = new PointerBackTracer(this.SetLevelPointers);
+            TrackableTask<PointerBag> pointerScanTask = TrackableTask<PointerBag>.Create(PointerScan.Name, out UpdateProgress updateProgress, out CancellationToken cancellationToken);
 
-            this.PointerDepth = 1;
-            this.PointerRadius = 1024;
-
-            ////  this.Dependencies.Enqueue(PointerBackTracer);
-        }
-
-        /// <summary>
-        /// Gets or sets the pointer back tracer task.
-        /// </summary>
-        private PointerBackTracer PointerBackTracer { get; set; }
-
-        /// <summary>
-        /// Gets or sets the collection of pointers at each depth.
-        /// </summary>
-        private LevelPointers LevelPointers { get; set; }
-
-        /// <summary>
-        /// Gets or sets the target address of the pointer scan.
-        /// </summary>
-        public UInt64 TargetAddress
-        {
-            get
-            {
-                return this.PointerBackTracer.TargetAddress;
-            }
-
-            set
-            {
-                this.PointerBackTracer.TargetAddress = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the pointer depth of the scan.
-        /// </summary>
-        public Int32 PointerDepth
-        {
-            get
-            {
-                return this.PointerBackTracer.PointerDepth;
-            }
-
-            set
-            {
-                this.PointerBackTracer.PointerDepth = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the pointer radius of the scan.
-        /// </summary>
-        public Int32 PointerRadius
-        {
-            get
-            {
-                return this.PointerBackTracer.PointerRadius;
-            }
-
-            set
-            {
-                this.PointerBackTracer.PointerRadius = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the discovered pointers from the pointer scan.
-        /// </summary>
-        private ScannedPointers ScannedPointers { get; set; }
-
-        /// <summary>
-        /// Called when the scheduled task starts.
-        /// </summary>
-        protected void OnBegin()
-        {
-            this.ScannedPointers = new ScannedPointers();
-
-            if (this.LevelPointers == null || this.LevelPointers.Count <= 0)
-            {
-                //// this.Cancel();
-            }
-        }
-
-        /// <summary>
-        /// Called when the scan updates.
-        /// </summary>
-        /// <param name="cancellationToken">The cancellation token for handling canceled tasks.</param>
-        protected void OnUpdate(CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            Int32 processedPointerRoots = 0;
-
-            // We start from modules and build paths to the destination. Create the roots from our found module pointers.
-            this.ScannedPointers.CreatePointerRoots(this.LevelPointers.ModulePointerPool.PointerAddresses);
-
-            // Build out pointer paths via a DFS
-            foreach (PointerRoot pointerRoot in this.ScannedPointers.PointerRoots)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                PointerPool nextLevel = this.LevelPointers.DynamicPointerPools.First();
-                UInt64 pointerDestination = this.LevelPointers.ModulePointerPool[pointerRoot.BaseAddress];
-
-                pointerRoot.AddOffsets(nextLevel.FindOffsets(pointerDestination, this.PointerRadius));
-
-                // Recurse on the branches
-                if (this.LevelPointers.IsMultiLevel)
+            return pointerScanTask.With(Task.Factory.StartNew<PointerBag>(() =>
                 {
-                    foreach (PointerBranch branch in pointerRoot)
+                    try
                     {
-                        this.BuildPointerPaths(this.ApplyOffset(pointerDestination, branch.Offset), branch);
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        PointerSize pointerSize = Processes.Default.IsOpenedProcess32Bit() ? PointerSize.Byte4 : PointerSize.Byte8;
+
+                        Stopwatch stopwatch = new Stopwatch();
+                        stopwatch.Start();
+
+                        // Step 1) Create a snapshot of the target address
+                        Snapshot targetAddress = new Snapshot(new SnapshotRegion[] { new SnapshotRegion(new ReadGroup(address, pointerSize.ToSize(), pointerSize.ToDataType(), alignment), 0, pointerSize.ToSize()) });
+
+                        // Step 2) Collect static pointers
+                        Snapshot staticPointers = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromModules, pointerSize.ToDataType());
+                        TrackableTask<Snapshot> valueCollector = ValueCollector.CollectValues(staticPointers);
+                        staticPointers = valueCollector.Result;
+
+                        // Step 3) Collect heap pointers
+                        Snapshot heapPointers = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromHeaps, pointerSize.ToDataType());
+                        TrackableTask<Snapshot> heapValueCollector = ValueCollector.CollectValues(heapPointers);
+                        heapPointers = heapValueCollector.Result;
+
+                        // Step 3) Build levels
+                        IList<Level> levels = new List<Level>();
+
+                        if (depth > 0)
+                        {
+                            // Create 1st level with target address and static pointers
+                            levels.Add(new Level(targetAddress, staticPointers));
+
+                            // Initialize each level with all static addresses and all heap addresses
+                            for (Int32 index = 0; index < depth - 1; index++)
+                            {
+                                levels.Add(new Level(heapPointers, staticPointers));
+                            }
+                        }
+
+                        // Exit if canceled
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        // Step 4) Rebase to filter out unwanted pointers
+                        PointerBag newPointerBag = new PointerBag(levels, maxOffset, pointerSize);
+                        TrackableTask<PointerBag> pointerRebaseTask = PointerRebase.Scan(newPointerBag, readMemory: false, performUnchangedScan: false);
+                        PointerBag rebasedPointerBag = pointerRebaseTask.Result;
+
+                        // Exit if canceled
+                        cancellationToken.ThrowIfCancellationRequested();
+
+                        stopwatch.Stop();
+                        Logger.Log(LogLevel.Info, "Pointer scan complete in: " + stopwatch.Elapsed);
+
+                        return rebasedPointerBag;
                     }
-                }
+                    catch (OperationCanceledException ex)
+                    {
+                        Logger.Log(LogLevel.Warn, "Pointer scan canceled", ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Error, "Error performing pointer scan", ex);
+                    }
 
-                // Update scan progress
-                if (Interlocked.Increment(ref processedPointerRoots) % 32 == 0)
-                {
-                    ////  this.UpdateProgress(processedPointerRoots, this.ScannedPointers.PointerRoots.Count(), canFinalize: false);
-                }
-            }
-
-            this.ScannedPointers.BuildCount();
-        }
-
-        private void BuildPointerPaths(UInt64 currentPointer, PointerBranch pointerBranch, Int32 levelIndex = 0)
-        {
-            PointerPool currentLevel = this.LevelPointers.DynamicPointerPools.ElementAt(levelIndex);
-            PointerPool nextLevel = this.LevelPointers.DynamicPointerPools.ElementAt(levelIndex + 1);
-            UInt64 pointerDestination = currentLevel[currentPointer];
-
-            pointerBranch.AddOffsets(nextLevel.FindOffsets(pointerDestination, this.PointerRadius));
-
-            // Stop recursing if no more levels
-            if (levelIndex + 1 >= this.LevelPointers.DynamicPointerPools.Count() - 1)
-            {
-                return;
-            }
-
-            foreach (PointerBranch branch in pointerBranch)
-            {
-                this.BuildPointerPaths(this.ApplyOffset(pointerDestination, branch.Offset), branch, levelIndex + 1);
-            }
-        }
-
-        private UInt64 ApplyOffset(UInt64 address, Int32 offset)
-        {
-            return (offset < 0 ? address - unchecked((UInt32)(-offset)) : address + unchecked((UInt32)(offset)));
-        }
-
-        /// <summary>
-        /// Called when the repeated task completes.
-        /// </summary>
-        protected void OnEnd()
-        {
-            throw new NotImplementedException(); ////PointerScanResultsViewModel.GetInstance().DiscoveredPointers = this.ScannedPointers;
-
-            this.LevelPointers = null;
-            this.ScannedPointers = null;
-        }
-
-        private void SetLevelPointers(LevelPointers levelPointers)
-        {
-            this.LevelPointers = levelPointers;
+                    return null;
+                }, cancellationToken));
         }
     }
     //// End class

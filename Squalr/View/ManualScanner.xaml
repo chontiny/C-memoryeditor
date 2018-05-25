@@ -14,6 +14,7 @@
     mc:Ignorable="d">
     <Grid Background="{StaticResource SqualrColorBlack}">
         <Grid.Resources>
+            <converters:ConstraintToIconConverter x:Key="ConstraintToIconConverter" />
             <converters:IconConverter x:Key="IconConverter" />
             <converters:BooleanToVisibilityConverter
                 x:Key="BooleanToHiddenConverter"
@@ -24,196 +25,15 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!--  Column titles  -->
-            <ListView Grid.Row="2" BorderThickness="0">
-                <ListView.Template>
-                    <ControlTemplate>
-                        <Grid HorizontalAlignment="Left">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                            <Grid
-                                Grid.Row="0"
-                                Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"
-                                VerticalAlignment="Center">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition SharedSizeGroup="Constraints" />
-                                    <ColumnDefinition SharedSizeGroup="Values" />
-                                    <ColumnDefinition Width="96" SharedSizeGroup="Edits" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Margin" Value="5,0" />
-                                        <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Padding" Value="8,4,8,4" />
-                                        <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
-                                    </Style>
-                                </Grid.Resources>
-                                <Border Grid.Column="0">
-                                    <TextBlock Text="Active Constraints" />
-                                </Border>
-                                <Border Grid.Column="1">
-                                    <TextBlock Text="Value" />
-                                </Border>
-                                <Border Grid.Column="2" />
-                            </Grid>
-                        </Grid>
-                    </ControlTemplate>
-                </ListView.Template>
-            </ListView>
-
-            <!--  Added constraints  -->
-            <ScrollViewer Grid.Row="3" VerticalScrollBarVisibility="Auto">
-                <ListView BorderThickness="0" ItemsSource="{Binding Constraints}">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Focusable" Value="false" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.Template>
-                        <ControlTemplate>
-                            <Grid HorizontalAlignment="Left">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <ItemsPresenter Grid.Row="1" />
-                            </Grid>
-                        </ControlTemplate>
-                    </ListView.Template>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition SharedSizeGroup="Constraints" />
-                                    <ColumnDefinition SharedSizeGroup="Values" />
-                                    <ColumnDefinition Width="96" SharedSizeGroup="Edits" />
-                                </Grid.ColumnDefinitions>
-                                <WrapPanel Grid.Column="0">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Margin="8,0,0,0"
-                                        Source="{Binding Path=ConstraintImage}" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource SqualrColorWhite}"
-                                        Text="{Binding Path=ConstraintName}" />
-                                </WrapPanel>
-                                <TextBlock
-                                    Grid.Column="1"
-                                    Foreground="{StaticResource SqualrColorWhite}"
-                                    Text="{Binding Path=ConstraintValue}" />
-                                <WrapPanel Grid.Column="2">
-                                    <Menu Background="{StaticResource SqualrColorBlack}">
-                                        <MenuItem
-                                            Command="{Binding ElementName=SqualrManualScanner, Path=DataContext.RemoveConstraintCommand}"
-                                            CommandParameter="{Binding .}"
-                                            ToolTip="Remove Constraint">
-                                            <MenuItem.Header>
-                                                <Image
-                                                    Width="16"
-                                                    Height="16"
-                                                    Source="{x:Static content:Images.X}" />
-                                            </MenuItem.Header>
-                                        </MenuItem>
-                                        <MenuItem
-                                            Command="{Binding ElementName=SqualrManualScanner, Path=DataContext.EditConstraintCommand}"
-                                            CommandParameter="{Binding .}"
-                                            ToolTip="Edit Constraint">
-                                            <MenuItem.Header>
-                                                <Image
-                                                    Width="16"
-                                                    Height="16"
-                                                    Source="{x:Static content:Images.MoveDown}" />
-                                            </MenuItem.Header>
-                                        </MenuItem>
-                                    </Menu>
-                                </WrapPanel>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </ScrollViewer>
-
-            <!--  Pending constraint, visible if no constraints added  -->
-            <ScrollViewer Grid.Row="4" VerticalScrollBarVisibility="Auto">
-                <ListView BorderThickness="0" ItemsSource="{Binding ActiveScanConstraint}">
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Focusable" Value="false" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <ListView.Template>
-                        <ControlTemplate>
-                            <Grid HorizontalAlignment="Left">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-                                <ItemsPresenter />
-                            </Grid>
-                        </ControlTemplate>
-                    </ListView.Template>
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListView}}}">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition SharedSizeGroup="Constraints" />
-                                    <ColumnDefinition SharedSizeGroup="Values" />
-                                    <ColumnDefinition Width="96" SharedSizeGroup="Edits" />
-                                </Grid.ColumnDefinitions>
-                                <WrapPanel Grid.Column="0">
-                                    <Image
-                                        Width="16"
-                                        Height="16"
-                                        Margin="8,0,0,0"
-                                        Source="{Binding Path=ConstraintImage}" />
-                                    <TextBlock
-                                        Padding="4,0,0,0"
-                                        Foreground="{StaticResource SqualrColorWhite}"
-                                        Text="{Binding Path=ConstraintName}" />
-                                </WrapPanel>
-                                <WrapPanel Grid.Column="1">
-                                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding Path=ConstraintValue}" />
-                                </WrapPanel>
-                                <Border Grid.Column="2" />
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </ScrollViewer>
-
             <!--  Scan bar  -->
-            <Grid Grid.Row="5" Margin="0,4,0,0">
+            <Grid Grid.Row="0" Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <WrapPanel Background="{StaticResource SqualrColorGray27}">
-                    <MenuItem
-                        Grid.Row="6"
-                        Command="{Binding AddCurrentConstraintCommand}"
-                        ToolTip="Add Constraint">
-                        <MenuItem.Header>
-                            <Image
-                                Width="16"
-                                Height="16"
-                                Source="{x:Static content:Images.Increased}" />
-                        </MenuItem.Header>
-                    </MenuItem>
                     <Menu
                         VerticalAlignment="Center"
                         Background="{StaticResource SqualrColorGray27}"
@@ -225,7 +45,7 @@
                                     <Image
                                         Width="16"
                                         Height="16"
-                                        Source="{Binding ScanConstraintImage}" />
+                                        Source="{Binding Path=ActiveConstraint.Constraint, Converter={StaticResource ConstraintToIconConverter}}" />
                                     <Grid
                                         x:Name="arrowGlyph"
                                         Grid.Column="1"
@@ -468,19 +288,6 @@
                         </MenuItem.Header>
                     </MenuItem>
                 </WrapPanel>
-                <MenuItem
-                    Grid.Column="1"
-                    HorizontalAlignment="Right"
-                    Background="{StaticResource SqualrColorGray27}"
-                    Command="{Binding ClearConstraintsCommand}"
-                    ToolTip="Clear Constraints">
-                    <MenuItem.Header>
-                        <Image
-                            Width="16"
-                            Height="16"
-                            Source="{x:Static content:Images.Cancel}" />
-                    </MenuItem.Header>
-                </MenuItem>
             </Grid>
         </Grid>
     </Grid>

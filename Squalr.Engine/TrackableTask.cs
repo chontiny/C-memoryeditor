@@ -5,13 +5,15 @@
     using System.Threading;
     using System.Threading.Tasks;
 
-    public class TrackableTask<T> : INotifyPropertyChanged
+    public abstract class TrackableTask : INotifyPropertyChanged
     {
-        public delegate void OnTaskCanceled(TrackableTask<T> task);
+        public delegate void OnTaskCanceled(TrackableTask task);
 
-        public delegate void OnTaskCompleted(TrackableTask<T> task);
+        public delegate void OnTaskCompleted(TrackableTask task);
 
         public delegate void OnProgressUpdate(Single progress);
+
+        public delegate void UpdateProgress(Single progress);
 
         public event OnTaskCanceled OnCanceledEvent;
 
@@ -27,8 +29,23 @@
 
         private Boolean isCompleted;
 
-        protected TrackableTask()
+        public TrackableTask(String name)
         {
+            this.Name = name;
+
+            this.AccessLock = new Object();
+            this.CancellationTokenSource = new CancellationTokenSource();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Indicates that a given property in this project item has changed.
+        /// </summary>
+        /// <param name="propertyName">The name of the changed property.</param>
+        protected void RaisePropertyChanged(String propertyName)
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public Single Progress
@@ -69,9 +86,17 @@
 
             protected set
             {
-                this.isCanceled = value;
-                this.RaisePropertyChanged(nameof(this.IsCanceled));
-                this.OnCanceledEvent?.Invoke(this);
+                lock (this.AccessLock)
+                {
+                    if (this.isCanceled == value)
+                    {
+                        return;
+                    }
+
+                    this.isCanceled = value;
+                    this.RaisePropertyChanged(nameof(this.IsCanceled));
+                    this.OnCanceledEvent?.Invoke(this);
+                }
             }
         }
 
@@ -84,13 +109,31 @@
 
             protected set
             {
-                this.isCompleted = value;
-                this.RaisePropertyChanged(nameof(this.IsCompleted));
-                this.OnCompletedEvent?.Invoke(this);
+                lock (this.AccessLock)
+                {
+                    if (this.isCompleted == value)
+                    {
+                        return;
+                    }
+
+                    this.isCompleted = value;
+                    this.RaisePropertyChanged(nameof(this.IsCompleted));
+                    this.OnCompletedEvent?.Invoke(this);
+                }
+            }
+        }
+
+        public CancellationToken CancellationToken
+        {
+            get
+            {
+                return this.CancellationTokenSource.Token;
             }
         }
 
         protected CancellationTokenSource CancellationTokenSource { get; set; }
+
+        private Object AccessLock { get; set; }
 
         public void Cancel()
         {
@@ -98,40 +141,56 @@
 
             this.IsCanceled = true;
         }
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
-        /// Indicates that a given property in this project item has changed.
-        /// </summary>
-        /// <param name="propertyName">The name of the changed property.</param>
-        protected void RaisePropertyChanged(String propertyName)
+    public class TrackableTask<T> : TrackableTask
+    {
+        private TrackableTask(String name) : base(name)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public TrackableTask(String name)
+        public static TrackableTask<T> Create(String name, out UpdateProgress progressUpdater, out CancellationToken cancellationToken)
         {
-            this.Name = name;
+            TrackableTask<T> instance = new TrackableTask<T>(name);
+
+            progressUpdater = instance.UpdateProgressCallback;
+            cancellationToken = instance.CancellationTokenSource.Token;
+
+            return instance;
+        }
+
+        public TrackableTask<T> With(Task<T> task)
+        {
+            this.Task = task;
+
+            if (task.Status == TaskStatus.Created)
+            {
+                Task<T>.Run(() => task.RunSynchronously());
+            }
+
+            this.AwaitCompletion();
+
+            return this;
         }
 
         public T Result
         {
             get
             {
-                return this.Task.Result;
+                T result = this.Task.Result;
+
+                this.IsCompleted = true;
+
+                return result;
             }
         }
 
-        private Task<T> Task { get; set; }
-
-        public void SetTrackedTask(Task<T> task, CancellationTokenSource cancellationTokenSource)
+        private void UpdateProgressCallback(Single progress)
         {
-            this.Task = task;
-            this.CancellationTokenSource = cancellationTokenSource;
-
-            this.AwaitCompletion();
+            this.Progress = progress;
         }
+
+        private Task<T> Task { get; set; }
 
         private async void AwaitCompletion()
         {

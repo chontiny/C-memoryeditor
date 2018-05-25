@@ -1,12 +1,13 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners.Constraints
 {
+    using Squalr.Engine.DataTypes;
     using System;
     using System.ComponentModel;
 
     /// <summary>
     /// Class to define a constraint for certain types of scans.
     /// </summary>
-    public class ScanConstraint : INotifyPropertyChanged
+    public class ScanConstraint : ConstraintNode, INotifyPropertyChanged
     {
         /// <summary>
         /// The constraint type.
@@ -32,10 +33,11 @@
         /// </summary>
         /// <param name="valueConstraint">The constraint type.</param>
         /// <param name="addressValue">The value associated with this constraint.</param>
-        public ScanConstraint(ConstraintType valueConstraint, Object addressValue = null)
+        public ScanConstraint(ConstraintType valueConstraint, Object addressValue = null, DataType elementType = null)
         {
             this.Constraint = valueConstraint;
             this.ConstraintValue = addressValue;
+            this.SetElementType(elementType);
         }
 
         /// <summary>
@@ -126,45 +128,40 @@
             }
         }
 
-        /// <summary>
-        /// Gets the image associated with this constraint.
-        /// </summary>
-        /* TODO: Move to MVVM converter
-        public BitmapSource ConstraintImage
+        public override void SetElementType(Type elementType)
         {
-            get
+            base.SetElementType(elementType);
+
+            if (this.ConstraintValue == null)
             {
-                switch (this.Constraint)
-                {
-                    case ConstraintType.Equal:
-                        return Images.Equal;
-                    case ConstraintType.NotEqual:
-                        return Images.NotEqual;
-                    case ConstraintType.GreaterThan:
-                        return Images.GreaterThan;
-                    case ConstraintType.GreaterThanOrEqual:
-                        return Images.GreaterThanOrEqual;
-                    case ConstraintType.LessThan:
-                        return Images.LessThan;
-                    case ConstraintType.LessThanOrEqual:
-                        return Images.LessThanOrEqual;
-                    case ConstraintType.Changed:
-                        return Images.Changed;
-                    case ConstraintType.Unchanged:
-                        return Images.Unchanged;
-                    case ConstraintType.Increased:
-                        return Images.Increased;
-                    case ConstraintType.Decreased:
-                        return Images.Decreased;
-                    case ConstraintType.IncreasedByX:
-                        return Images.PlusX;
-                    case ConstraintType.DecreasedByX:
-                        return Images.MinusX;
-                    default:
-                        throw new Exception("Unrecognized Constraint");
-                }
+                return;
             }
-        }*/
+
+            try
+            {
+                // Attempt to cast the value to the new type.
+                this.ConstraintValue = Convert.ChangeType(this.ConstraintValue, elementType);
+            }
+            catch
+            {
+                this.ConstraintValue = null;
+            }
+        }
+
+        public override Boolean IsValid()
+        {
+            if (!base.IsValid())
+            {
+                return false;
+            }
+
+            if (!ScanConstraint.IsValuedConstraint(this.Constraint))
+            {
+                return true;
+            }
+
+            return this.ConstraintValue != null;
+        }
 
         /// <summary>
         /// Clones this scan constraint.
@@ -172,7 +169,7 @@
         /// <returns>The cloned scan constraint.</returns>
         public ScanConstraint Clone()
         {
-            return new ScanConstraint(this.Constraint, this.ConstraintValue);
+            return new ScanConstraint(this.Constraint, this.ConstraintValue, this.ElementType);
         }
 
         /// <summary>
@@ -277,16 +274,6 @@
                 default:
                     throw new ArgumentException();
             }
-        }
-
-        public Boolean IsValid()
-        {
-            if (!ScanConstraint.IsValuedConstraint(this.Constraint))
-            {
-                return true;
-            }
-
-            return this.ConstraintValue != null;
         }
 
         /// <summary>

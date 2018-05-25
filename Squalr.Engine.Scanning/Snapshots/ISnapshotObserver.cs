@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Snapshots
+﻿namespace Squalr.Engine.Scanning.Snapshots
 {
     /// <summary>
     /// Interface for a class which listens for changes in the active snapshot.

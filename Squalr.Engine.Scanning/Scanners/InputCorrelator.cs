@@ -5,7 +5,6 @@
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Engine.Input.Keyboard;
     using Squalr.Engine.Scanning.Snapshots;
-    using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using System;
@@ -100,7 +99,7 @@
             this.InitializeObjects();
 
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone("Input Correlator");
+            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, DataType.Int32).Clone("Input Correlator");
             this.Snapshot.LabelDataType = DataType.Int16;
 
             if (this.Snapshot == null)
@@ -143,7 +142,7 @@
 
                     while (enumerator.MoveNext())
                     {
-                        enumerator.Current.Compare();
+                        enumerator.Current.ElementCompare();
 
                         ((dynamic)enumerator).ElementLabel++;
                     }
@@ -171,7 +170,7 @@
 
                     while (enumerator.MoveNext())
                     {
-                        enumerator.Current.Compare();
+                        enumerator.Current.ElementCompare();
 
                         ((dynamic)enumerator).ElementLabel--;
                     }

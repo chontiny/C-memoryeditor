@@ -1,7 +1,8 @@
-﻿namespace Squalr.Engine.Snapshots
+﻿namespace Squalr.Engine.Scanning.Snapshots
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
+    using Squalr.Engine.OS;
     using System;
     using System.Collections.Generic;
 
@@ -16,12 +17,26 @@
         /// </summary>
         /// <param name="baseAddress">The base address of this memory region.</param>
         /// <param name="regionSize">The size of this memory region.</param>
-        public ReadGroup(UInt64 baseAddress, Int32 regionSize) : base(baseAddress, regionSize)
+        public ReadGroup(UInt64 baseAddress, Int32 regionSize, DataType dataType, Int32 alignment) : base(baseAddress, regionSize)
         {
-            this.Alignment = Settings.Default.Alignment;
-            this.ElementDataType = DataType.Int32; // ScanResultsViewModel.GetInstance().ActiveType;
+            this.Alignment = alignment;
+            this.ElementDataType = dataType;
 
-            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, regionSize) };
+            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, Math.Max(Vectors.VectorSize, regionSize)) };
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReadGroup" /> class.
+        /// </summary>
+        /// <param name="baseAddress">The base address of this memory region.</param>
+        /// <param name="regionSize">The size of this memory region.</param>
+        public ReadGroup(UInt64 baseAddress, Byte[] initialBytes, DataType dataType, Int32 alignment) : base(baseAddress, initialBytes.Length)
+        {
+            this.Alignment = alignment;
+            this.ElementDataType = dataType;
+            this.CurrentValues = initialBytes;
+
+            this.SnapshotRegions = new List<SnapshotRegion>() { new SnapshotRegion(this, 0, initialBytes.Length) };
         }
 
         /// <summary>

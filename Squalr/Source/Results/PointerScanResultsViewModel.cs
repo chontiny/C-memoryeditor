@@ -5,7 +5,6 @@
     using Squalr.Engine.Scanning.Scanners.Pointers.Structures;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
-    using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.ProjectItems;
@@ -57,7 +56,7 @@
         /// <summary>
         /// The list of discovered pointers.
         /// </summary>
-        private DiscoveredPointers discoveredPointers;
+        private PointerBag discoveredPointers;
 
         /// <summary>
         /// The pointer read interval in milliseconds
@@ -76,25 +75,23 @@
         {
             this.ObserverLock = new Object();
 
+            this.ExtractPointerCommand = new RelayCommand<Int32>((levelIndex) => this.ExtractPointer(levelIndex), (levelIndex) => true);
             this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<PointerItem>(), (selectedItems) => true);
-            this.AddScanResultCommand = new RelayCommand<PointerItem>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
-            this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
+
             this.ChangeTypeCommand = new RelayCommand<DataType>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
             this.NewPointerScanCommand = new RelayCommand(() => Task.Run(() => this.DiscoveredPointers = null), () => true);
-            this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
-            this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
-            this.PreviousPageCommand = new RelayCommand(() => Task.Run(() => this.PreviousPage()), () => true);
-            this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
-            this.AddAddressCommand = new RelayCommand<PointerItem>((address) => Task.Run(() => this.AddAddress(address)), (address) => true);
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = DataType.Int32;
             this.pointers = new FullyObservableCollection<PointerItem>();
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
-
-            this.UpdateScanResults();
         }
+
+        /// <summary>
+        /// Gets or sets the command to extract a pointer.
+        /// </summary>
+        public ICommand ExtractPointerCommand { get; private set; }
 
         /// <summary>
         /// Gets or sets the command to select scan results.
@@ -177,9 +174,6 @@
             {
                 this.activeType = value;
 
-                // Update data type of pointers
-                this.Pointers?.ToArray().ForEach(pointer => pointer.DataType = this.ActiveType);
-
                 this.NotifyObservers();
                 this.RaisePropertyChanged(nameof(this.ActiveType));
                 this.RaisePropertyChanged(nameof(this.ActiveTypeName));
@@ -197,123 +191,12 @@
             }
         }
 
-        /// <summary>
-        /// Gets or sets the total number of addresses found.
-        /// </summary>
-        public UInt64 CurrentPage
-        {
-            get
-            {
-                return this.currentPage;
-            }
-
-            set
-            {
-                this.currentPage = value;
-                this.LoadPointerScanResults();
-                this.RaisePropertyChanged(nameof(this.CurrentPage));
-                this.RaisePropertyChanged(nameof(this.CanNavigateFirst));
-                this.RaisePropertyChanged(nameof(this.CanNavigatePrevious));
-                this.RaisePropertyChanged(nameof(this.CanNavigateNext));
-                this.RaisePropertyChanged(nameof(this.CanNavigateLast));
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether first page navigation is available.
-        /// </summary>
-        public Boolean CanNavigateFirst
-        {
-            get
-            {
-                return this.PageCount > 0 && this.CurrentPage > 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether next page navigation is available.
-        /// </summary>
-        public Boolean CanNavigateNext
-        {
-            get
-            {
-                return this.CurrentPage < this.PageCount;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether previous page navigation is available.
-        /// </summary>
-        public Boolean CanNavigatePrevious
-        {
-            get
-            {
-                return this.CurrentPage > 0;
-            }
-        }
-
-        /// <summary>
-        /// Gets a value indicating whether last page navigation is available.
-        /// </summary>
-        public Boolean CanNavigateLast
-        {
-            get
-            {
-                return this.PageCount > 0 && this.CurrentPage != this.PageCount;
-            }
-        }
-
-        /// <summary>
-        /// Gets the total number of addresses found.
-        /// </summary>
-        public UInt64 PageCount
-        {
-            get
-            {
-                return this.ResultCount / PointerScanResultsViewModel.PageSize;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the total number of addresses found.
-        /// </summary>
-        public UInt64 ResultCount
-        {
-            get
-            {
-                return this.addressCount;
-            }
-
-            set
-            {
-                this.addressCount = value;
-                this.RaisePropertyChanged(nameof(this.ResultCount));
-                this.RaisePropertyChanged(nameof(this.PageCount));
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the address elements.
-        /// </summary>
-        public FullyObservableCollection<PointerItem> Pointers
-        {
-            get
-            {
-                return this.pointers;
-            }
-
-            set
-            {
-                this.pointers = value;
-
-                this.RaisePropertyChanged(nameof(this.Pointers));
-            }
-        }
+        public IEnumerable<Level> DiscoveredLevels { get; set; }
 
         /// <summary>
         /// Gets or sets the list of discovered pointers.
         /// </summary>
-        public DiscoveredPointers DiscoveredPointers
+        public PointerBag DiscoveredPointers
         {
             get
             {
@@ -323,11 +206,10 @@
             set
             {
                 this.discoveredPointers = value;
-
-                this.ResultCount = discoveredPointers == null ? 0 : discoveredPointers.Count;
-                this.CurrentPage = 0;
+                this.DiscoveredLevels = this.DiscoveredPointers?.Levels;
 
                 this.RaisePropertyChanged(nameof(this.DiscoveredPointers));
+                this.RaisePropertyChanged(nameof(this.DiscoveredLevels));
             }
         }
 
@@ -381,73 +263,15 @@
             return PointerScanResultsViewModel.pointerScanResultsViewModelInstance.Value;
         }
 
-        /// <summary>
-        /// Adds the given scan result to the project explorer.
-        /// </summary>
-        /// <param name="scanResult">The scan result to add to the project explorer.</param>
-        private void AddScanResult(PointerItem scanResult)
+        private void ExtractPointer(Int32 levelIndex)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResult);
-        }
+            Pointer pointer = this.DiscoveredPointers.GetRandomPointer(levelIndex);
 
-        /// <summary>
-        /// Adds the given scan results to the project explorer.
-        /// </summary>
-        /// <param name="scanResults">The scan results to add to the project explorer.</param>
-        private void AddScanResults(IEnumerable<PointerItem> scanResults)
-        {
-            if (scanResults == null)
+            if (pointer != null)
             {
-                return;
+                PointerItem pointerItem = new PointerItem(pointer.BaseAddress, this.ActiveType, "New Pointer", null, pointer.Offsets);
+                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: pointerItem);
             }
-
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResults);
-        }
-
-        /// <summary>
-        /// Loads the results for the current page.
-        /// </summary>
-        private void LoadPointerScanResults()
-        {
-            UInt64 count = this.DiscoveredPointers == null ? 0 : this.DiscoveredPointers.Count;
-            UInt64 startIndex = Math.Min(PointerScanResultsViewModel.PageSize * this.CurrentPage, count);
-            UInt64 endIndex = Math.Min((PointerScanResultsViewModel.PageSize * this.CurrentPage) + PointerScanResultsViewModel.PageSize, count);
-
-            if (this.DiscoveredPointers != null)
-            {
-                IEnumerable<PointerItem> newPointers = this.DiscoveredPointers.GetPointers(startIndex, endIndex).Select(x => new PointerItem());
-                newPointers.ForEach(x => x.DataType = this.ActiveType);
-
-                this.Pointers = new FullyObservableCollection<PointerItem>(newPointers);
-            }
-            else
-            {
-                this.Pointers = new FullyObservableCollection<PointerItem>();
-            }
-
-            // Ensure results are visible
-            this.IsVisible = true;
-            this.IsSelected = true;
-            this.IsActive = true;
-        }
-
-        /// <summary>
-        /// Updates the values for the current scan results.
-        /// </summary>
-        private void UpdateScanResults()
-        {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    foreach (PointerItem pointer in this.Pointers.ToArray())
-                    {
-                        pointer.Update();
-                    }
-
-                    Thread.Sleep(PointerScanResultsViewModel.PointerReadIntervalMs);
-                }
-            });
         }
 
         /// <summary>
@@ -457,47 +281,6 @@
         private void ChangeType(DataType newType)
         {
             this.ActiveType = newType;
-        }
-
-        /// <summary>
-        /// Goes to the first page of results.
-        /// </summary>
-        private void FirstPage()
-        {
-            this.CurrentPage = 0;
-        }
-
-        /// <summary>
-        /// Goes to the last page of results.
-        /// </summary>
-        private void LastPage()
-        {
-            this.CurrentPage = this.PageCount;
-        }
-
-        /// <summary>
-        /// Goes to the previous page of results.
-        /// </summary>
-        private void PreviousPage()
-        {
-            this.CurrentPage = this.CurrentPage == 0 ? this.CurrentPage : this.CurrentPage - 1;
-        }
-
-        /// <summary>
-        /// Goes to the next page of results.
-        /// </summary>
-        private void NextPage()
-        {
-            this.CurrentPage = this.CurrentPage >= this.PageCount ? this.CurrentPage : this.CurrentPage + 1;
-        }
-
-        /// <summary>
-        /// Adds the given scan result address to the project explorer.
-        /// </summary>
-        /// <param name="scanResult">The scan result to add to the project explorer.</param>
-        private void AddAddress(PointerItem scanResult)
-        {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: scanResult);
         }
 
         /// <summary>

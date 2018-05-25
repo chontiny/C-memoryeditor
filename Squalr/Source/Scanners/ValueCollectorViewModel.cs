@@ -6,7 +6,7 @@
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Scanning.Scanners;
     using Squalr.Engine.Scanning.Snapshots;
-    using Squalr.Engine.Snapshots;
+    using Squalr.Source.Results;
     using Squalr.Source.Tasks;
     using System;
     using System.Threading;
@@ -52,10 +52,10 @@
         /// </summary>
         private void CollectValues()
         {
+            DataType dataType = ScanResultsViewModel.GetInstance().ActiveType;
+
             TrackableTask<Snapshot> valueCollectTask = ValueCollector.CollectValues(
-                    SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter),
-                    DataType.Int32
-                );
+                    SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType));
 
             TaskTrackerViewModel.GetInstance().TrackTask(valueCollectTask);
             SnapshotManager.SaveSnapshot(valueCollectTask.Result);

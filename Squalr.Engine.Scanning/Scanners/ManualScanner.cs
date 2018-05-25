@@ -1,9 +1,8 @@
 ﻿namespace Squalr.Engine.Scanning.Scanners
 {
-    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Scanning.Scanners.Constraints;
-    using Squalr.Engine.Snapshots;
+    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Concurrent;
@@ -12,6 +11,7 @@
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
+    using static Squalr.Engine.TrackableTask;
 
     /// <summary>
     /// A memory scanning class for classic manual memory scanning techniques.
@@ -27,80 +27,78 @@
         /// Begins the manual scan based on the provided snapshot and parameters.
         /// </summary>
         /// <param name="snapshot">The snapshot on which to perfrom the scan.</param>
-        /// <param name="dataType">The data type for which to scan.</param>
-        /// <param name="scanConstraintCollection">The collection of scan constraints to use in the manual scan.</param>
+        /// <param name="constraints">The collection of scan constraints to use in the manual scan.</param>
         /// <param name="onProgressUpdate">The progress update callback.</param>
         /// <param name="cancellationTokenSource">A token for canceling the scan.</param>
         /// <returns></returns>
-        public static TrackableTask<Snapshot> Scan(Snapshot snapshot, DataType dataType, ScanConstraintCollection scanConstraintCollection)
+        public static TrackableTask<Snapshot> Scan(Snapshot snapshot, ConstraintNode constraints)
         {
-            TrackableTask<Snapshot> trackedScanTask = new TrackableTask<Snapshot>(ManualScanner.Name);
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-
-            Task<Snapshot> scanTask = Task.Factory.StartNew<Snapshot>(() =>
-            {
-                Snapshot result = null;
-
-                try
+            return TrackableTask<Snapshot>
+                .Create(ManualScanner.Name, out UpdateProgress updateProgress, out CancellationToken cancellationToken)
+                .With(Task.Factory.StartNew<Snapshot>(() =>
                 {
-                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    Snapshot result = null;
 
-                    Stopwatch stopwatch = new Stopwatch();
-                    stopwatch.Start();
+                    try
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
 
-                    Int32 processedPages = 0;
-                    Int32 regionCount = snapshot.RegionCount;
-                    ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
+                        Stopwatch stopwatch = new Stopwatch();
+                        stopwatch.Start();
 
-                    ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
-                    options.CancellationToken = cancellationTokenSource.Token;
+                        Int32 processedPages = 0;
+                        ConcurrentBag<IList<SnapshotRegion>> regions = new ConcurrentBag<IList<SnapshotRegion>>();
 
-                    Parallel.ForEach(
-                        snapshot.OptimizedSnapshotRegions,
-                        options,
-                        (region) =>
-                        {
-                            // Check for canceled scan
-                            cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                        ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
+                        options.CancellationToken = cancellationToken;
 
-                            // Perform comparisons
-                            IList<SnapshotRegion> results = region.CompareAll(scanConstraintCollection);
-
-                            if (!results.IsNullOrEmpty())
+                        Parallel.ForEach(
+                            snapshot.OptimizedSnapshotRegions,
+                            options,
+                            (region) =>
                             {
-                                regions.Add(results);
-                            }
+                                // Check for canceled scan
+                                cancellationToken.ThrowIfCancellationRequested();
 
-                            // Update progress every N regions
-                            if (Interlocked.Increment(ref processedPages) % 32 == 0)
-                            {
-                                trackedScanTask.Progress = (float)processedPages / (float)snapshot.RegionCount * 100.0f;
-                            }
-                        });
-                    //// End foreach Region
+                                if (!region.ReadGroup.CanCompare(constraints.HasRelativeConstraint()))
+                                {
+                                    return;
+                                }
 
-                    // Exit if canceled
-                    cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                                SnapshotElementVectorComparer vectorComparer = new SnapshotElementVectorComparer(region: region, constraints: constraints);
+                                IList<SnapshotRegion> results = vectorComparer.Compare();
 
-                    result = new Snapshot(ManualScanner.Name, regions.SelectMany(region => region));
-                    stopwatch.Stop();
-                    Logger.Log(LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
-                }
-                catch (OperationCanceledException ex)
-                {
-                    Logger.Log(LogLevel.Warn, "Scan canceled", ex);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log(LogLevel.Error, "Error performing scan", ex);
-                }
+                                if (!results.IsNullOrEmpty())
+                                {
+                                    regions.Add(results);
+                                }
 
-                return result;
-            }, cancellationTokenSource.Token);
+                                // Update progress every N regions
+                                if (Interlocked.Increment(ref processedPages) % 32 == 0)
+                                {
+                                    updateProgress((float)processedPages / (float)snapshot.RegionCount * 100.0f);
+                                }
+                            });
+                        //// End foreach Region
 
-            trackedScanTask.SetTrackedTask(scanTask, cancellationTokenSource);
+                        // Exit if canceled
+                        cancellationToken.ThrowIfCancellationRequested();
 
-            return trackedScanTask;
+                        result = new Snapshot(ManualScanner.Name, regions.SelectMany(region => region));
+                        stopwatch.Stop();
+                        Logger.Log(LogLevel.Info, "Scan complete in: " + stopwatch.Elapsed);
+                    }
+                    catch (OperationCanceledException ex)
+                    {
+                        Logger.Log(LogLevel.Warn, "Scan canceled", ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Error, "Error performing scan", ex);
+                    }
+
+                    return result;
+                }, cancellationToken));
         }
     }
     //// End class

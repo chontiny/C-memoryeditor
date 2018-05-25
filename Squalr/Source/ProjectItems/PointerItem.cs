@@ -201,7 +201,7 @@
                     }
                     else
                     {
-                        return this.ModuleName + " - " + Conversions.ParsePrimitiveAsHexString(DataType.IntPtr, this.ModuleOffset, signHex: true).TrimStart('-');
+                        return this.ModuleName + " - " + Conversions.ParsePrimitiveAsHexString(DataType.UInt64, this.ModuleOffset, signHex: true).TrimStart('-');
                     }
                 }
                 else if (this.IsPointer)

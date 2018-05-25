@@ -4,7 +4,6 @@
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
     using Squalr.Engine.Scanning.Snapshots;
-    using Squalr.Engine.Snapshots;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
@@ -379,7 +378,7 @@
         /// </summary>
         private void LoadScanResults()
         {
-            Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot);
+            Snapshot snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshot, this.ActiveType);
             IList<ScanResult> newAddresses = new List<ScanResult>();
 
             if (snapshot != null)

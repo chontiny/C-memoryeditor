@@ -2,7 +2,6 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Scanning.Snapshots;
-    using Squalr.Engine.Snapshots;
     using System;
     using System.Collections.Generic;
     using System.Threading;
@@ -63,13 +62,13 @@
 
         public void Stop()
         {
-            ////   this.EndUpdateLoop();
+            //// this.EndUpdateLoop();
         }
 
         protected void OnBegin()
         {
             // Initialize labeled snapshot
-            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter).Clone("Change Counter");
+            this.Snapshot = SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, DataType.Int32).Clone("Change Counter");
             this.Snapshot.LabelDataType = DataType.UInt16;
 
             if (this.Snapshot == null)
@@ -91,7 +90,7 @@
         {
             Int32 processedPages = 0;
 
-            Snapshot snapshot = ValueCollector.CollectValues(this.Snapshot, DataType.Int32).Result;
+            Snapshot snapshot = ValueCollector.CollectValues(this.Snapshot).Result;
 
             Parallel.ForEach(
                 snapshot.OptimizedSnapshotRegions,
@@ -108,7 +107,7 @@
                         SnapshotElementComparer element = enumerator.Current;
 
                         // Perform the comparison based on the current scan constraint
-                        if (element.Compare())
+                        if (element.ElementCompare())
                         {
                             element.ElementLabel = (UInt16)((UInt16)element.ElementLabel + 1);
                         }

@@ -38,14 +38,10 @@
             this.PointerRadiusHexDecBox.SetValue(PointerScannerViewModel.DefaultPointerScanRadius);
             this.pointerRadiusHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRadiusHexDecBox));
 
-            this.PointerRescanAddressHexDecBox = new HexDecTextBox(DataType.UInt64);
-            this.PointerRescanAddressHexDecBox.IsHex = true;
-            this.PointerRescanAddressHexDecBox.TextChanged += this.PointerRescanAddressUpdated;
-            this.pointerRescanAddressHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRescanAddressHexDecBox));
-
-            this.PointerRescanValueHexDecBox = new HexDecTextBox();
-            this.PointerRescanValueHexDecBox.TextChanged += this.PointerRescanValueUpdated;
-            this.pointerRescanValueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRescanValueHexDecBox));
+            this.PointerRetargetAddressHexDecBox = new HexDecTextBox(DataType.UInt64);
+            this.PointerRetargetAddressHexDecBox.IsHex = true;
+            this.PointerRetargetAddressHexDecBox.TextChanged += this.PointerRescanAddressUpdated;
+            this.pointerRetargetAddressHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.PointerRetargetAddressHexDecBox));
 
             Task.Run(() => PointerScanResultsViewModel.GetInstance().Subscribe(this));
         }
@@ -69,12 +65,7 @@
         /// <summary>
         /// Gets or sets the value hex dec box used to display the current pointer rescan address being edited.
         /// </summary>
-        private HexDecTextBox PointerRescanAddressHexDecBox { get; set; }
-
-        /// <summary>
-        /// Gets or sets the value hex dec box used to display the current pointer rescan value being edited.
-        /// </summary>
-        private HexDecTextBox PointerRescanValueHexDecBox { get; set; }
+        private HexDecTextBox PointerRetargetAddressHexDecBox { get; set; }
 
         /// <summary>
         /// Gets or sets the value hex dec box used to display the current depth being edited.
@@ -92,7 +83,7 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(DataType activeType)
         {
-            this.PointerRescanValueHexDecBox.ElementType = activeType;
+            //// this.PointerRescanValueHexDecBox.ElementType = activeType;
         }
 
         /// <summary>
@@ -113,8 +104,8 @@
         /// <param name="e">Event args.</param>
         private void PointerRescanAddressUpdated(Object sender, EventArgs e)
         {
-            Object value = this.PointerRescanAddressHexDecBox.GetValue();
-            this.PointerScannerViewModel.SetPointerRescanAddressCommand.Execute(value);
+            Object value = this.PointerRetargetAddressHexDecBox.GetValue();
+            this.PointerScannerViewModel.SetPointerRetargetScanAddressCommand.Execute(value);
         }
 
         /// <summary>
@@ -124,8 +115,8 @@
         /// <param name="e">Event args.</param>
         private void PointerRescanValueUpdated(Object sender, EventArgs e)
         {
-            Object value = this.PointerRescanValueHexDecBox.GetValue();
-            this.PointerScannerViewModel.SetPointerRescanValueCommand.Execute(value);
+            //// Object value = this.PointerRescanValueHexDecBox.GetValue();
+            //// this.PointerScannerViewModel.SetPointerRescanValueCommand.Execute(value);
         }
 
         /// <summary>
