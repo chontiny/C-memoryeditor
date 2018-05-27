@@ -18,6 +18,7 @@
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.PropertyViewer;
     using Squalr.Source.Scanning;
+    using Squalr.Source.SolutionExplorer;
     using Squalr.Source.Tasks;
 
     /// <summary>
@@ -232,13 +233,13 @@
         }
 
         /// <summary>
-        /// Gets the Project Explorer view model.
+        /// Gets the Solution Explorer view model.
         /// </summary>
-        public ProjectExplorerViewModel ProjectExplorerViewModel
+        public SolutionExplorerViewModel SolutionExplorerViewModel
         {
             get
             {
-                return ProjectExplorerViewModel.GetInstance();
+                return SolutionExplorerViewModel.GetInstance();
             }
         }
 

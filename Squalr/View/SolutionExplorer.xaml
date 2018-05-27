@@ -1,0 +1,39 @@
+﻿<UserControl
+    x:Class="Squalr.View.SolutionExplorer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:content="clr-namespace:Squalr.Content"
+    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:se="clr-namespace:Squalr.Source.SolutionExplorer"
+    x:Name="SqualrSolutionExplorer"
+    d:DesignHeight="256"
+    d:DesignWidth="256"
+    x:ClassModifier="internal"
+    DataContext="{Binding SolutionExplorerViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public SolutionExplorer() { InitializeComponent(); }]]>
+    </x:Code>
+    <UserControl.Resources>
+        <converters:GetFileSysemInformationConverter x:Key="GetFileSysemInformationConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <TreeView Name="GroupView" ItemsSource="{Binding SystemDirectorySource}">
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type se:DirInfo}" ItemsSource="{Binding Converter={StaticResource GetFileSysemInformationConverter}}">
+                    <StackPanel Orientation="Horizontal">
+                        <Image
+                            Width="20"
+                            Height="20"
+                            Source="{x:Static content:Images.New}"
+                            Stretch="Fill" />
+                        <TextBlock Margin="5,0,0,0" Text="{Binding Path=Name}" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </Grid>
+</UserControl>

@@ -14,6 +14,7 @@
     using Squalr.Source.ProjectExplorer;
     using Squalr.Source.PropertyViewer;
     using Squalr.Source.Scanning;
+    using Squalr.Source.SolutionExplorer;
     using System;
     using System.Collections.Generic;
     using System.Windows;
@@ -107,7 +108,7 @@
         /// <summary>
         /// The template for the Project Explorer.
         /// </summary>
-        private DataTemplate projectExplorerViewTemplate;
+        private DataTemplate solutionExplorerViewTemplate;
 
         /// <summary>
         /// The template for the Settings.
@@ -453,19 +454,19 @@
         }
 
         /// <summary>
-        /// Gets or sets the template for the Project Explorer.
+        /// Gets or sets the template for the Solution Explorer.
         /// </summary>
-        public DataTemplate ProjectExplorerViewTemplate
+        public DataTemplate SolutionExplorerViewTemplate
         {
             get
             {
-                return this.projectExplorerViewTemplate;
+                return this.solutionExplorerViewTemplate;
             }
 
             set
             {
-                this.projectExplorerViewTemplate = value;
-                this.DataTemplates[typeof(ProjectExplorerViewModel)] = value;
+                this.solutionExplorerViewTemplate = value;
+                this.DataTemplates[typeof(SolutionExplorerViewModel)] = value;
             }
         }
 

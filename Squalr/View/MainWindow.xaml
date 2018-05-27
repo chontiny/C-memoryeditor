@@ -94,7 +94,7 @@
                         DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                         Foreground="{StaticResource SqualrColorWhite}"
                         Text="* "
-                        Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding SolutionExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <shell:TextBlock
                         Grid.Column="2"
                         VerticalAlignment="Center"
@@ -110,7 +110,7 @@
                         VerticalAlignment="Center"
                         DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                         Foreground="{StaticResource SqualrColorWhite}"
-                        Text="{Binding ProjectExplorerViewModel.ProjectFilePath}" />
+                        Text="{Binding SolutionExplorerViewModel.SolutionFilePath}" />
                 </shell:Grid>
                 <shell:Menu
                     Grid.Column="1"
@@ -171,22 +171,22 @@
                         Header="File">
                         <shell:MenuItem
                             BorderThickness="0"
-                            Command="{Binding ProjectExplorerViewModel.OpenProjectCommand}"
+                            Command="{Binding SolutionExplorerViewModel.OpenProjectCommand}"
                             Header="Open"
                             Style="{Binding}" />
                         <shell:MenuItem
                             BorderThickness="0"
-                            Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}"
+                            Command="{Binding SolutionExplorerViewModel.SaveProjectCommand}"
                             Header="Save"
                             Style="{Binding}" />
                         <shell:MenuItem
                             BorderThickness="0"
-                            Command="{Binding ProjectExplorerViewModel.ImportProjectCommand}"
+                            Command="{Binding SolutionExplorerViewModel.ImportProjectCommand}"
                             Header="Import Project"
                             Style="{Binding}" />
                         <shell:MenuItem
                             BorderThickness="0"
-                            Command="{Binding ProjectExplorerViewModel.ExportProjectCommand}"
+                            Command="{Binding SolutionExplorerViewModel.ExportProjectCommand}"
                             Header="Export Project"
                             Style="{Binding}" />
                         <shell:MenuItem
@@ -223,9 +223,9 @@
                             IsChecked="{Binding ProcessSelectorViewModel.IsVisible, Mode=TwoWay}"
                             Style="{Binding}" />
                         <shell:MenuItem
-                            Header="Project Explorer"
+                            Header="Solution Explorer"
                             IsCheckable="True"
-                            IsChecked="{Binding ProjectExplorerViewModel.IsVisible, Mode=TwoWay}"
+                            IsChecked="{Binding SolutionExplorerViewModel.IsVisible, Mode=TwoWay}"
                             Style="{Binding}" />
                         <shell:MenuItem
                             Header="Property Viewer"
@@ -322,7 +322,7 @@
                         </shell:MenuItem.Header>
                     </shell:MenuItem>
                     <shell:Separator Style="{DynamicResource VerticalSeparator}" />
-                    <shell:MenuItem Command="{Binding ProjectExplorerViewModel.OpenProjectCommand}" ToolTip="Open Project">
+                    <shell:MenuItem Command="{Binding SolutionExplorerViewModel.OpenProjectCommand}" ToolTip="Open Project">
                         <shell:MenuItem.Header>
                             <shell:Image
                                 Width="16"
@@ -330,7 +330,7 @@
                                 Source="{x:Static content:Images.Open}" />
                         </shell:MenuItem.Header>
                     </shell:MenuItem>
-                    <shell:MenuItem Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}" ToolTip="Save Project">
+                    <shell:MenuItem Command="{Binding SolutionExplorerViewModel.SaveProjectCommand}" ToolTip="Save Project">
                         <shell:MenuItem.Header>
                             <shell:Image
                                 Width="16"
@@ -389,12 +389,12 @@
                                 <view:DataTemplateError />
                             </shell:DataTemplate>
                         </view:ViewTemplateSelector.DataTemplateErrorViewTemplate>
-                        <!--  Project Explorer  -->
-                        <view:ViewTemplateSelector.ProjectExplorerViewTemplate>
+                        <!--  Solution Explorer  -->
+                        <view:ViewTemplateSelector.SolutionExplorerViewTemplate>
                             <shell:DataTemplate>
-                                <view:ProjectExplorer />
+                                <view:SolutionExplorer />
                             </shell:DataTemplate>
-                        </view:ViewTemplateSelector.ProjectExplorerViewTemplate>
+                        </view:ViewTemplateSelector.SolutionExplorerViewTemplate>
                         <!--  Change Counter  -->
                         <view:ViewTemplateSelector.ChangeCounterViewTemplate>
                             <shell:DataTemplate>
