@@ -6,7 +6,7 @@
     using System.IO;
 
     /// <summary>
-    /// Enum to hold the Types of different file objects
+    /// Enum to hold the Types of different file objects.
     /// </summary>
     public enum ObjectType
     {
@@ -17,7 +17,7 @@
     }
 
     /// <summary>
-    /// Class for containing the information about a Directory/File
+    /// Class for containing the information about a Directory/File.
     /// </summary>
     public class DirInfo : INotifyPropertyChanged
     {

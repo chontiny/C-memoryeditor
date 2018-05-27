@@ -18,22 +18,132 @@
         <![CDATA[ public SolutionExplorer() { InitializeComponent(); }]]>
     </x:Code>
     <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToHiddenConverter"
+            False="Hidden"
+            True="Visible" />
         <converters:GetFileSysemInformationConverter x:Key="GetFileSysemInformationConverter" />
+        <ContextMenu
+            x:Key="RightClickMenu"
+            Background="{StaticResource SqualrColorGray27}"
+            BorderBrush="{StaticResource SqualrColorWhite}"
+            Foreground="{StaticResource SqualrColorWhite}">
+            <MenuItem Header="Create New...">
+                <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Script" />
+                <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Address" />
+                <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Pointer" />
+                <MenuItem Command="{Binding AddNewInstructionItemCommand}" Header="Instruction" />
+            </MenuItem>
+            <Separator />
+            <MenuItem Command="{Binding PasteSelectionCommand}" Header="Paste" />
+        </ContextMenu>
+        <ContextMenu
+            x:Key="SolutionItemRightClickMenu"
+            Background="{StaticResource SqualrColorGray27}"
+            BorderBrush="{StaticResource SqualrColorWhite}"
+            Foreground="{StaticResource SqualrColorWhite}">
+            <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
+            <Separator Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <MenuItem
+                Command="{Binding PointerScannerViewModel.PointerScanCommand, Source={StaticResource ViewModelLocator}}"
+                Header="Pointer Scan for this Address"
+                Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <Separator Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <MenuItem
+                Command="{Binding CodeTracerViewModel.FindWhatWritesCommand, Source={StaticResource ViewModelLocator}}"
+                CommandParameter="{Binding .}"
+                Header="Find Code that Writes to this Address"
+                Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <MenuItem
+                Command="{Binding CodeTracerViewModel.FindWhatReadsCommand, Source={StaticResource ViewModelLocator}}"
+                CommandParameter="{Binding .}"
+                Header="Find Code that Reads from this Address"
+                Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <MenuItem
+                Command="{Binding CodeTracerViewModel.FindWhatAccessesCommand, Source={StaticResource ViewModelLocator}}"
+                CommandParameter="{Binding .}"
+                Header="Find Code that Reads or Writes to this Address"
+                Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <Separator />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.DeleteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Delete Selection" />
+            <Separator />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.CopySelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Copy" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.PasteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Paste" />
+            <MenuItem Command="{Binding ProjectExplorerViewModel.CutSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Cut" />
+        </ContextMenu>
     </UserControl.Resources>
     <Grid>
-        <TreeView Name="GroupView" ItemsSource="{Binding SystemDirectorySource}">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate DataType="{x:Type se:DirInfo}" ItemsSource="{Binding Converter={StaticResource GetFileSysemInformationConverter}}">
-                    <StackPanel Orientation="Horizontal">
-                        <Image
-                            Width="20"
-                            Height="20"
-                            Source="{x:Static content:Images.New}"
-                            Stretch="Fill" />
-                        <TextBlock Margin="5,0,0,0" Text="{Binding Path=Name}" />
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+        <ScrollViewer
+            Grid.Row="0"
+            HorizontalScrollBarVisibility="Hidden"
+            VerticalScrollBarVisibility="Auto">
+            <TreeView
+                Background="{StaticResource SqualrColorBlack}"
+                ContextMenu="{StaticResource RightClickMenu}"
+                ItemsSource="{Binding SystemDirectorySource}">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="ContextMenu" Value="{StaticResource SolutionItemRightClickMenu}" />
+                        <Setter Property="IsExpanded" Value="True" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Style.Resources>
+                            <Style TargetType="{x:Type Border}">
+                                <Setter Property="Grid.ColumnSpan" Value="2" />
+                            </Style>
+                        </Style.Resources>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <!--  Click and Selection events  -->
+                <intr:Interaction.Triggers>
+                    <intr:EventTrigger EventName="SelectionChanged">
+                        <intr:InvokeCommandAction Command="{Binding SelectProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItems}" />
+                    </intr:EventTrigger>
+                    <intr:EventTrigger EventName="MouseDoubleClick">
+                        <intr:InvokeCommandAction Command="{Binding EditProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItem}" />
+                    </intr:EventTrigger>
+                </intr:Interaction.Triggers>
+                <!--  Keyboard shortcuts  -->
+                <TreeView.InputBindings>
+                    <KeyBinding
+                        Key="C"
+                        Command="{Binding CopySelectionCommand}"
+                        Modifiers="Ctrl" />
+                    <KeyBinding
+                        Key="X"
+                        Command="{Binding CutSelectionCommand}"
+                        Modifiers="Ctrl" />
+                    <KeyBinding
+                        Key="V"
+                        Command="{Binding PasteSelectionCommand}"
+                        Modifiers="Ctrl" />
+                    <KeyBinding Key="Space" Command="{Binding ToggleSelectionActivationCommand}" />
+                    <KeyBinding Key="Delete" Command="{Binding DeleteSelectionCommand}" />
+                </TreeView.InputBindings>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type se:DirInfo}" ItemsSource="{Binding Converter={StaticResource GetFileSysemInformationConverter}}">
+                        <Grid HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Grid.Column="0"
+                                Width="20"
+                                Height="20"
+                                IsHitTestVisible="False"
+                                Source="{x:Static content:Images.New}"
+                                Stretch="Fill" />
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                Foreground="{StaticResource SqualrColorWhite}"
+                                IsHitTestVisible="False"
+                                Text="{Binding Path=Name}" />
+                        </Grid>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
+        </ScrollViewer>
     </Grid>
 </UserControl>

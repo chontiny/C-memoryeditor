@@ -31,6 +31,7 @@
         {
             DirInfo rootNode = new DirInfo("My computer");
             rootNode.Path = "My computer";
+
             this.systemDirectorySource = new FullyObservableCollection<DirInfo> { rootNode };
             this.currentDirectory = rootNode;
 
@@ -49,7 +50,7 @@
         }
 
         /// <summary>
-        /// list of the directories 
+        /// List of the directories.
         /// </summary>
         public FullyObservableCollection<DirInfo> SystemDirectorySource
         {
@@ -65,7 +66,7 @@
         }
 
         /// <summary>
-        /// Current selected item in the tree
+        /// Current selected item in the tree.
         /// </summary>
         public DirInfo CurrentTreeItem
         {
@@ -81,7 +82,7 @@
         }
 
         /// <summary>
-        /// Name of the current directory user is in
+        /// Name of the current directory user is in.
         /// </summary>
         public DirInfo CurrentDirectory
         {
@@ -132,7 +133,7 @@
         }
 
         /// <summary>
-        /// Children of the current directory to show in the right pane
+        /// Children of the current directory to show in the right pane.
         /// </summary>
         public FullyObservableCollection<DirInfo> CurrentItems
         {
@@ -163,27 +164,24 @@
         /// <param name="curDir"></param>
         public void ExpandToCurrentNode(DirInfo curDir)
         {
-            //expand the current selected node in tree 
-            //if this is an ancestor of the directory we want to navigate or "My Computer" current node 
+            // Expand the current selected node in tree if this is an ancestor of the directory we want to navigate or "My Computer" current node 
             if (this.CurrentTreeItem != null && (curDir.Path.Contains(this.CurrentTreeItem.Path) || this.CurrentTreeItem.Path == "My computer"))
             {
-                // expand the current node
-                // If the current node is already expanded then first collapse it n then expand it
+                // Expand the current node If the current node is already expanded then first collapse it n then expand it
                 this.CurrentTreeItem.IsExpanded = false;
                 this.CurrentTreeItem.IsExpanded = true;
             }
         }
 
         /// <summary>
-        /// this method gets the children of current directory and stores them in the CurrentItems Observable collection
+        /// This method gets the children of current directory and stores them in the CurrentItems Observable collection.
         /// </summary>
         protected void RefreshCurrentItems()
         {
-            return;
             IList<DirInfo> childDirList = new List<DirInfo>();
             IList<DirInfo> childFileList = new List<DirInfo>();
 
-            //If current directory is "My computer" then get the all logical drives in the system
+            // If current directory is "My computer" then get the all logical drives in the system
             if (CurrentDirectory.Name.Equals("My computer"))
             {
                 childDirList = (from rd in FileSystemExplorerService.GetRootDirectories()
@@ -191,13 +189,9 @@
             }
             else
             {
-                //Combine all the subdirectories and files of the current directory
-                childDirList = (from dir in FileSystemExplorerService.GetChildDirectories(CurrentDirectory.Path)
-                                select new DirInfo(dir)).ToList();
-
-                childFileList = (from fobj in FileSystemExplorerService.GetChildFiles(CurrentDirectory.Path)
-                                 select new DirInfo(fobj)).ToList();
-
+                // Combine all the subdirectories and files of the current directory
+                childDirList = FileSystemExplorerService.GetChildDirectories(CurrentDirectory.Path).Select(directory => new DirInfo(directory)).ToList();
+                childFileList = FileSystemExplorerService.GetChildFiles(CurrentDirectory.Path).Select(file => new DirInfo(file)).ToList();
                 childDirList = childDirList.Concat(childFileList).ToList();
             }
 

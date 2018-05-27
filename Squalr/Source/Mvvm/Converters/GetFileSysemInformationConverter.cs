@@ -19,16 +19,15 @@
                     return null;
                 }
 
-                //return the subdirectories of the Current Node
+                // return the subdirectories of the Current Node
                 if ((ObjectType)nodeToExpand.DirType == ObjectType.MyComputer)
                 {
-                    return FileSystemExplorerService.GetRootDirectories().Select(sd => new DirInfo(sd)).ToList();
+                    return FileSystemExplorerService.GetRootDirectories().Select(rootDirectory => new DirInfo(rootDirectory)).ToList();
                 }
                 else
                 {
                     return FileSystemExplorerService.GetChildDirectories(nodeToExpand.Path).Select(dirs => new DirInfo(dirs)).ToList();
                 }
-
             }
             catch
             {
@@ -36,7 +35,7 @@
             }
         }
 
-        public Object ConvertBack(Object value, Type targetType, Object parameter, System.Globalization.CultureInfo culture)
+        public Object ConvertBack(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
