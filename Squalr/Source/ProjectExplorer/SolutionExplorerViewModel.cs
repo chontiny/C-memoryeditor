@@ -42,12 +42,6 @@
 
         public SolutionExplorerViewModel() : base("Solution Explorer")
         {
-            DirInfo rootNode = new DirInfo("My computer");
-            rootNode.Path = "My computer";
-
-            this.systemDirectorySource = new FullyObservableCollection<DirInfo> { rootNode };
-            this.currentDirectory = rootNode;
-
             this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());
             this.NewProjectCommand = new RelayCommand(() => this.NewProject());
@@ -173,29 +167,19 @@
             IList<DirInfo> childDirList = new List<DirInfo>();
             IList<DirInfo> childFileList = new List<DirInfo>();
 
-            // If current directory is "My computer" then get the all logical drives in the system
-            if (CurrentDirectory.Name.Equals("My computer"))
-            {
-                childDirList = (from rd in FileSystemExplorerService.GetRootDirectories()
-                                select new DirInfo(rd)).ToList();
-            }
-            else
-            {
-                // Combine all the subdirectories and files of the current directory
-                childDirList = FileSystemExplorerService.GetChildDirectories(CurrentDirectory.Path).Select(directory => new DirInfo(directory)).ToList();
-                childFileList = FileSystemExplorerService.GetChildFiles(CurrentDirectory.Path).Select(file => new DirInfo(file)).ToList();
-                childDirList = childDirList.Concat(childFileList).ToList();
-            }
+            // Combine all the subdirectories and files of the current directory
+            childDirList = FileSystemExplorerService.GetChildDirectories(this.CurrentDirectory.Path).Select(directory => new DirInfo(directory)).ToList();
+            childFileList = FileSystemExplorerService.GetChildFiles(this.CurrentDirectory.Path).Select(file => new DirInfo(file)).ToList();
+            childDirList = childDirList.Concat(childFileList).ToList();
 
-            CurrentItems = new FullyObservableCollection<DirInfo>(childDirList);
+            this.CurrentItems = new FullyObservableCollection<DirInfo>(childDirList);
         }
 
         /// <summary>
-        /// Prompts the user to open a project.
+        /// Prompts the user to set a new project root.
         /// </summary>
         private void SetProjectRoot()
         {
-            // Open the project file
             try
             {
                 using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
@@ -208,6 +192,10 @@
                         {
                             SettingsViewModel.GetInstance().ProjectRoot = folderBrowserDialog.SelectedPath;
                         }
+                    }
+                    else
+                    {
+                        throw new Exception("Folder not found");
                     }
                 }
             }
@@ -223,21 +211,27 @@
         /// </summary>
         private void OpenProject()
         {
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = ProjectExtensionFilter;
-            openFileDialog.Title = "Open Project";
-
-            if (openFileDialog.ShowDialog() == false)
-            {
-                return;
-            }
-
-            // Open the project file
             try
             {
-                if (!File.Exists(openFileDialog.FileName))
+                using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
                 {
-                    throw new Exception("File not found");
+                    folderBrowserDialog.SelectedPath = SettingsViewModel.GetInstance().ProjectRoot;
+
+                    if (folderBrowserDialog.ShowDialog() == DialogResult.OK && !String.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+                    {
+                        if (Directory.Exists(folderBrowserDialog.SelectedPath))
+                        {
+                            DirInfo rootNode = new DirInfo(new DirectoryInfo(folderBrowserDialog.SelectedPath).Name);
+                            rootNode.Path = folderBrowserDialog.SelectedPath;
+
+                            this.SystemDirectorySource = new FullyObservableCollection<DirInfo> { rootNode };
+                            this.CurrentDirectory = rootNode;
+                        }
+                        else
+                        {
+                            throw new Exception("Folder not found");
+                        }
+                    }
                 }
             }
             catch (Exception ex)

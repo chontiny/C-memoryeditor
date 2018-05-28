@@ -21,7 +21,7 @@ namespace Squalr.Source.SolutionExplorer
         {
             try
             {
-                Directory.GetFiles(directory).Select(subdirectories => new FileInfo(subdirectories)).ToList();
+                return Directory.GetFiles(directory).Select(subdirectories => new FileInfo(subdirectories)).ToList();
             }
             catch (Exception e)
             {
@@ -42,7 +42,7 @@ namespace Squalr.Source.SolutionExplorer
         {
             try
             {
-                Directory.GetFiles(directory).Select(subdirectories => new DirectoryInfo(subdirectories)).ToList();
+                return Directory.GetFiles(directory).Select(subdirectories => new DirectoryInfo(subdirectories)).ToList();
             }
             catch (Exception e)
             {
@@ -50,15 +50,6 @@ namespace Squalr.Source.SolutionExplorer
             }
 
             return new List<DirectoryInfo>();
-        }
-
-        /// <summary>
-        /// Gets the root directories of the system.
-        /// </summary>
-        /// <returns>Return the list of root directories.</returns>
-        public static IList<DriveInfo> GetRootDirectories()
-        {
-            return DriveInfo.GetDrives().Select(drive => drive).ToList();
         }
     }
 }

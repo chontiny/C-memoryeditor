@@ -19,15 +19,7 @@
                     return null;
                 }
 
-                // return the subdirectories of the Current Node
-                if ((ObjectType)nodeToExpand.DirType == ObjectType.MyComputer)
-                {
-                    return FileSystemExplorerService.GetRootDirectories().Select(rootDirectory => new DirInfo(rootDirectory)).ToList();
-                }
-                else
-                {
-                    return FileSystemExplorerService.GetChildDirectories(nodeToExpand.Path).Select(dirs => new DirInfo(dirs)).ToList();
-                }
+                return FileSystemExplorerService.GetChildDirectories(nodeToExpand.Path).Select(dirs => new DirInfo(dirs)).ToList();
             }
             catch
             {
