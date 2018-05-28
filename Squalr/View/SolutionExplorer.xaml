@@ -87,7 +87,6 @@
                     <Style TargetType="{x:Type TreeViewItem}">
                         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                         <Setter Property="ContextMenu" Value="{StaticResource SolutionItemRightClickMenu}" />
-                        <Setter Property="IsExpanded" Value="True" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Style.Resources>
                             <Style TargetType="{x:Type Border}">

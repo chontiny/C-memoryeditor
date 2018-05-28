@@ -1,7 +1,10 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
+    using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects;
     using Squalr.Source.SolutionExplorer;
     using System;
+    using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
     using System.Windows.Data;
@@ -19,10 +22,14 @@
                     return null;
                 }
 
-                return FileSystemExplorerService.GetChildDirectories(nodeToExpand.Path).Select(dirs => new DirInfo(dirs)).ToList();
+                IList<DirInfo> directories = FileSystemExplorerService.GetChildDirectories(nodeToExpand.Path).Select(dirs => new DirInfo(dirs)).ToList();
+                IList<DirInfo> files = FileSystemExplorerService.GetChildFiles(nodeToExpand.Path).Select(dirs => new DirInfo(dirs)).ToList();
+
+                return directories.Concat(files).ToList();
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Log(LogLevel.Error, "Error fetching files", ex);
                 return null;
             }
         }

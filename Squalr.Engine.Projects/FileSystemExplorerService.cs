@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-
-namespace Squalr.Source.SolutionExplorer
+﻿namespace Squalr.Engine.Projects
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.Linq;
+
     /// <summary>
     /// Class to get file system information.
     /// </summary>
-    internal class FileSystemExplorerService
+    public class FileSystemExplorerService
     {
         /// <summary>
         /// Gets the list of files in the directory Name passed.
@@ -42,7 +42,7 @@ namespace Squalr.Source.SolutionExplorer
         {
             try
             {
-                return Directory.GetFiles(directory).Select(subdirectories => new DirectoryInfo(subdirectories)).ToList();
+                return Directory.GetDirectories(directory).Select(subdirectories => new DirectoryInfo(subdirectories)).ToList();
             }
             catch (Exception e)
             {

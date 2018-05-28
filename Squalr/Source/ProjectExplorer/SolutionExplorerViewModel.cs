@@ -6,9 +6,7 @@
     using Squalr.Properties;
     using Squalr.Source.Docking;
     using System;
-    using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Threading;
     using System.Windows.Forms;
     using System.Windows.Input;
@@ -90,22 +88,6 @@
         }
 
         /// <summary>
-        /// Current selected item in the tree.
-        /// </summary>
-        public DirInfo CurrentTreeItem
-        {
-            get
-            {
-                return currentTreeItem;
-            }
-            set
-            {
-                currentTreeItem = value;
-                this.CurrentDirectory = currentTreeItem;
-            }
-        }
-
-        /// <summary>
         /// Name of the current directory user is in.
         /// </summary>
         public DirInfo CurrentDirectory
@@ -118,61 +100,8 @@
             set
             {
                 currentDirectory = value;
-                this.RefreshCurrentItems();
                 this.RaisePropertyChanged(nameof(this.CurrentDirectory));
             }
-        }
-
-        /// <summary>
-        /// Children of the current directory to show in the right pane.
-        /// </summary>
-        public FullyObservableCollection<DirInfo> CurrentItems
-        {
-            get
-            {
-                if (currentItems == null)
-                {
-                    currentItems = new FullyObservableCollection<DirInfo>();
-                }
-
-                return currentItems;
-            }
-            set
-            {
-                currentItems = value;
-                this.RaisePropertyChanged(nameof(this.CurrentItems));
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="curDir"></param>
-        public void ExpandToCurrentNode(DirInfo curDir)
-        {
-            // Expand the current selected node in tree if this is an ancestor of the directory we want to navigate or "My Computer" current node 
-            if (this.CurrentTreeItem != null && (curDir.Path.Contains(this.CurrentTreeItem.Path) || this.CurrentTreeItem.Path == "My computer"))
-            {
-                // Expand the current node If the current node is already expanded then first collapse it n then expand it
-                this.CurrentTreeItem.IsExpanded = false;
-                this.CurrentTreeItem.IsExpanded = true;
-            }
-        }
-
-        /// <summary>
-        /// This method gets the children of current directory and stores them in the CurrentItems Observable collection.
-        /// </summary>
-        protected void RefreshCurrentItems()
-        {
-            IList<DirInfo> childDirList = new List<DirInfo>();
-            IList<DirInfo> childFileList = new List<DirInfo>();
-
-            // Combine all the subdirectories and files of the current directory
-            childDirList = FileSystemExplorerService.GetChildDirectories(this.CurrentDirectory.Path).Select(directory => new DirInfo(directory)).ToList();
-            childFileList = FileSystemExplorerService.GetChildFiles(this.CurrentDirectory.Path).Select(file => new DirInfo(file)).ToList();
-            childDirList = childDirList.Concat(childFileList).ToList();
-
-            this.CurrentItems = new FullyObservableCollection<DirInfo>(childDirList);
         }
 
         /// <summary>
