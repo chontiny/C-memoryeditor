@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Properties
 {
-    using Squalr.Engine.Scanning;
+    using Squalr.Engine.Projects.Properties;
+    using Squalr.Engine.Scanning.Properties;
     using Squalr.Source.Docking;
     using System;
     using System.Threading;
@@ -32,12 +33,12 @@
         {
             get
             {
-                return Settings.Default.ProjectRoot;
+                return ProjectSettings.Default.ProjectRoot;
             }
 
             set
             {
-                Settings.Default.ProjectRoot = value;
+                ProjectSettings.Default.ProjectRoot = value;
                 this.RaisePropertyChanged(nameof(this.ProjectRoot));
             }
         }

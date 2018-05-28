@@ -5,6 +5,7 @@
     xmlns:content="clr-namespace:Squalr.Content"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:se="clr-namespace:Squalr.Source.SolutionExplorer"
@@ -84,6 +85,7 @@
                 ItemsSource="{Binding SystemDirectorySource}">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                         <Setter Property="ContextMenu" Value="{StaticResource SolutionItemRightClickMenu}" />
                         <Setter Property="IsExpanded" Value="True" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -131,15 +133,31 @@
                                 Grid.Column="0"
                                 Width="20"
                                 Height="20"
-                                IsHitTestVisible="False"
                                 Source="{x:Static content:Images.New}"
-                                Stretch="Fill" />
+                                Stretch="Fill">
+                                <intr:Interaction.Triggers>
+                                    <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                        <ei:ChangePropertyAction
+                                            PropertyName="IsSelected"
+                                            TargetObject="{Binding}"
+                                            Value="true" />
+                                    </intr:EventTrigger>
+                                </intr:Interaction.Triggers>
+                            </Image>
                             <TextBlock
                                 Grid.Column="1"
                                 Margin="5,0,0,0"
                                 Foreground="{StaticResource SqualrColorWhite}"
-                                IsHitTestVisible="False"
-                                Text="{Binding Path=Name}" />
+                                Text="{Binding Path=Name}">
+                                <intr:Interaction.Triggers>
+                                    <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                        <ei:ChangePropertyAction
+                                            PropertyName="IsSelected"
+                                            TargetObject="{Binding}"
+                                            Value="true" />
+                                    </intr:EventTrigger>
+                                </intr:Interaction.Triggers>
+                            </TextBlock>
                         </Grid>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>

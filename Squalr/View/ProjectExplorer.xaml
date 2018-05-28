@@ -73,7 +73,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
-            <RowDefinition />
         </Grid.RowDefinitions>
         <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray27}">
             <Menu
@@ -157,7 +156,7 @@
             </Menu>
         </WrapPanel>
 
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1">
             <ScrollViewer
                 Grid.Row="0"
                 HorizontalScrollBarVisibility="Hidden"

@@ -4,6 +4,7 @@
     using Squalr.Engine.Input;
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Engine.Input.Keyboard;
+    using Squalr.Engine.Scanning.Properties;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
