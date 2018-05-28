@@ -3,7 +3,6 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Logging;
     using Squalr.Engine.OS;
-    using Squalr.Properties;
     using Squalr.Source.ChangeLog;
     using Squalr.Source.Docking;
     using Squalr.Source.Output;
@@ -86,7 +85,6 @@
                 return;
             }
 
-            SettingsViewModel.GetInstance().Save();
             ProjectExplorerViewModel.GetInstance().DisableAllProjectItems();
 
             base.Close(window);

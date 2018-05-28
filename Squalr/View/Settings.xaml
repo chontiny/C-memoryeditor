@@ -41,14 +41,23 @@
                     Foreground="{StaticResource SqualrColorWhite}"
                     Header="Project Settings">
                     <StackPanel>
-                        <TextBlock VerticalAlignment="Center" Text="Project Root:" />
-                        <Grid Margin="0 4 0 0">
+                        <TextBlock Text="Project Root:" />
+                        <Grid Margin="0,4,0,0" HorizontalAlignment="Left">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="256" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                            <TextBox Grid.Column="0" Text="{Binding ProjectRoot, Mode=OneWay}" />
-                            <Button Margin="4 0 0 0" Grid.Column="1" Width="32">...</Button>
+                            <TextBox
+                                Grid.Column="0"
+                                IsReadOnly="True"
+                                Text="{Binding ProjectRoot, Mode=OneWay}" />
+                            <Button
+                                Grid.Column="1"
+                                Width="32"
+                                Margin="4,0,0,0"
+                                Command="{Binding SolutionExplorerViewModel.SetProjectRootCommand, Source={StaticResource ViewModelLocator}}">
+                                ...
+                            </Button>
                         </Grid>
                     </StackPanel>
                 </GroupBox>

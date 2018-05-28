@@ -1,9 +1,12 @@
 ﻿namespace Squalr.Properties
 {
+    using Squalr.Engine.Logging;
     using Squalr.Engine.Projects.Properties;
     using Squalr.Engine.Scanning.Properties;
     using Squalr.Source.Docking;
     using System;
+    using System.ComponentModel;
+    using System.IO;
     using System.Threading;
 
     /// <summary>
@@ -23,6 +26,8 @@
         /// </summary>
         private SettingsViewModel() : base("Settings")
         {
+            ProjectSettings.Default.PropertyChanged += ProjectSettingsPropertyChanged;
+            ScanSettings.Default.PropertyChanged += ScanSettingsPropertyChanged;
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
@@ -33,11 +38,31 @@
         {
             get
             {
+                String savedPath = ProjectSettings.Default.ProjectRoot;
+
+                if (!Directory.Exists(savedPath))
+                {
+                    savedPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Squalr");
+                    this.ProjectRoot = savedPath;
+                }
+
                 return ProjectSettings.Default.ProjectRoot;
             }
 
             set
             {
+                try
+                {
+                    if (!Directory.Exists(value))
+                    {
+                        Directory.CreateDirectory(value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Unable to set project root", ex);
+                }
+
                 ProjectSettings.Default.ProjectRoot = value;
                 this.RaisePropertyChanged(nameof(this.ProjectRoot));
             }
@@ -394,11 +419,14 @@
             return SettingsViewModel.settingsViewModelInstance.Value;
         }
 
-        /// <summary>
-        /// Saves the current settings.
-        /// </summary>
-        public void Save()
+        private void ProjectSettingsPropertyChanged(Object sender, PropertyChangedEventArgs e)
         {
+            ProjectSettings.Default.Save();
+        }
+
+        private void ScanSettingsPropertyChanged(Object sender, PropertyChangedEventArgs e)
+        {
+            ScanSettings.Default.Save();
         }
     }
     //// End class

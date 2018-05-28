@@ -1,15 +1,16 @@
 ﻿namespace Squalr.Source.SolutionExplorer
 {
     using GalaSoft.MvvmLight.CommandWpf;
-    using Microsoft.Win32;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Properties;
     using Squalr.Source.Docking;
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
     using System.Threading;
+    using System.Windows.Forms;
     using System.Windows.Input;
 
     public class SolutionExplorerViewModel : ToolViewModel
@@ -47,6 +48,7 @@
             this.systemDirectorySource = new FullyObservableCollection<DirInfo> { rootNode };
             this.currentDirectory = rootNode;
 
+            this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());
             this.NewProjectCommand = new RelayCommand(() => this.NewProject());
 
@@ -61,6 +63,11 @@
         {
             return SolutionExplorerViewModel.solutionExplorerViewModelInstance.Value;
         }
+
+        /// <summary>
+        /// Gets the command to set the project root.
+        /// </summary>
+        public ICommand SetProjectRootCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to open a project.
@@ -186,9 +193,37 @@
         /// <summary>
         /// Prompts the user to open a project.
         /// </summary>
+        private void SetProjectRoot()
+        {
+            // Open the project file
+            try
+            {
+                using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+                {
+                    folderBrowserDialog.SelectedPath = SettingsViewModel.GetInstance().ProjectRoot;
+
+                    if (folderBrowserDialog.ShowDialog() == DialogResult.OK && !String.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+                    {
+                        if (Directory.Exists(folderBrowserDialog.SelectedPath))
+                        {
+                            SettingsViewModel.GetInstance().ProjectRoot = folderBrowserDialog.SelectedPath;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Unable to open project", ex.ToString());
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Prompts the user to open a project.
+        /// </summary>
         private void OpenProject()
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = ProjectExtensionFilter;
             openFileDialog.Title = "Open Project";
 
@@ -211,7 +246,6 @@
                 return;
             }
         }
-
 
         /// <summary>
         /// Prompts the user to create a new project.
