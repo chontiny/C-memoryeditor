@@ -26,18 +26,35 @@
         }
 
         /// <summary>
+        /// Gets or sets the root directory for all projects.
+        /// </summary>
+        public String ProjectRoot
+        {
+            get
+            {
+                return Settings.Default.ProjectRoot;
+            }
+
+            set
+            {
+                Settings.Default.ProjectRoot = value;
+                this.RaisePropertyChanged(nameof(this.ProjectRoot));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not 'write' flags are required in retrieved virtual memory pages.
         /// </summary>
         public Boolean RequiredProtectionWrite
         {
             get
             {
-                return Settings.Default.RequiredWrite;
+                return ScanSettings.Default.RequiredWrite;
             }
 
             set
             {
-                Settings.Default.RequiredWrite = value;
+                ScanSettings.Default.RequiredWrite = value;
                 this.RaisePropertyChanged(nameof(this.RequiredProtectionWrite));
             }
         }
@@ -49,12 +66,12 @@
         {
             get
             {
-                return Settings.Default.RequiredExecute;
+                return ScanSettings.Default.RequiredExecute;
             }
 
             set
             {
-                Settings.Default.RequiredExecute = value;
+                ScanSettings.Default.RequiredExecute = value;
                 this.RaisePropertyChanged(nameof(this.RequiredProtectionExecute));
             }
         }
@@ -66,12 +83,12 @@
         {
             get
             {
-                return Settings.Default.RequiredCopyOnWrite;
+                return ScanSettings.Default.RequiredCopyOnWrite;
             }
 
             set
             {
-                Settings.Default.RequiredCopyOnWrite = value;
+                ScanSettings.Default.RequiredCopyOnWrite = value;
                 this.RaisePropertyChanged(nameof(this.RequiredProtectionCopyOnWrite));
             }
         }
@@ -83,12 +100,12 @@
         {
             get
             {
-                return Settings.Default.ExcludedWrite;
+                return ScanSettings.Default.ExcludedWrite;
             }
 
             set
             {
-                Settings.Default.ExcludedWrite = value;
+                ScanSettings.Default.ExcludedWrite = value;
                 this.RaisePropertyChanged(nameof(this.ExcludedProtectionWrite));
             }
         }
@@ -100,12 +117,12 @@
         {
             get
             {
-                return Settings.Default.ExcludedExecute;
+                return ScanSettings.Default.ExcludedExecute;
             }
 
             set
             {
-                Settings.Default.ExcludedExecute = value;
+                ScanSettings.Default.ExcludedExecute = value;
                 this.RaisePropertyChanged(nameof(this.ExcludedProtectionExecute));
             }
         }
@@ -117,12 +134,12 @@
         {
             get
             {
-                return Settings.Default.ExcludedCopyOnWrite;
+                return ScanSettings.Default.ExcludedCopyOnWrite;
             }
 
             set
             {
-                Settings.Default.ExcludedCopyOnWrite = value;
+                ScanSettings.Default.ExcludedCopyOnWrite = value;
                 this.RaisePropertyChanged(nameof(this.ExcludedProtectionCopyOnWrite));
             }
         }
@@ -134,12 +151,12 @@
         {
             get
             {
-                return Settings.Default.MemoryTypeNone;
+                return ScanSettings.Default.MemoryTypeNone;
             }
 
             set
             {
-                Settings.Default.MemoryTypeNone = value;
+                ScanSettings.Default.MemoryTypeNone = value;
                 this.RaisePropertyChanged(nameof(this.MemoryTypeNone));
             }
         }
@@ -151,12 +168,12 @@
         {
             get
             {
-                return Settings.Default.MemoryTypePrivate;
+                return ScanSettings.Default.MemoryTypePrivate;
             }
 
             set
             {
-                Settings.Default.MemoryTypePrivate = value;
+                ScanSettings.Default.MemoryTypePrivate = value;
                 this.RaisePropertyChanged(nameof(this.MemoryTypePrivate));
             }
         }
@@ -168,12 +185,12 @@
         {
             get
             {
-                return Settings.Default.MemoryTypeMapped;
+                return ScanSettings.Default.MemoryTypeMapped;
             }
 
             set
             {
-                Settings.Default.MemoryTypeMapped = value;
+                ScanSettings.Default.MemoryTypeMapped = value;
                 this.RaisePropertyChanged(nameof(this.MemoryTypeMapped));
             }
         }
@@ -185,12 +202,12 @@
         {
             get
             {
-                return Settings.Default.MemoryTypeImage;
+                return ScanSettings.Default.MemoryTypeImage;
             }
 
             set
             {
-                Settings.Default.MemoryTypeImage = value;
+                ScanSettings.Default.MemoryTypeImage = value;
                 this.RaisePropertyChanged(nameof(this.MemoryTypeImage));
             }
         }
@@ -202,12 +219,12 @@
         {
             get
             {
-                return Settings.Default.IsUserMode;
+                return ScanSettings.Default.IsUserMode;
             }
 
             set
             {
-                Settings.Default.IsUserMode = value;
+                ScanSettings.Default.IsUserMode = value;
                 this.RaisePropertyChanged(nameof(this.IsUserMode));
                 this.RaisePropertyChanged(nameof(this.IsNotUserMode));
             }
@@ -220,12 +237,12 @@
         {
             get
             {
-                return !Settings.Default.IsUserMode;
+                return !ScanSettings.Default.IsUserMode;
             }
 
             set
             {
-                Settings.Default.IsUserMode = !value;
+                ScanSettings.Default.IsUserMode = !value;
                 this.RaisePropertyChanged(nameof(this.IsUserMode));
                 this.RaisePropertyChanged(nameof(this.IsNotUserMode));
             }
@@ -238,12 +255,12 @@
         {
             get
             {
-                return Settings.Default.FreezeInterval;
+                return ScanSettings.Default.FreezeInterval;
             }
 
             set
             {
-                Settings.Default.FreezeInterval = value;
+                ScanSettings.Default.FreezeInterval = value;
                 this.RaisePropertyChanged(nameof(this.FreezeInterval));
             }
         }
@@ -255,12 +272,12 @@
         {
             get
             {
-                return Settings.Default.RescanInterval;
+                return ScanSettings.Default.RescanInterval;
             }
 
             set
             {
-                Settings.Default.RescanInterval = value;
+                ScanSettings.Default.RescanInterval = value;
                 this.RaisePropertyChanged(nameof(this.RescanInterval));
             }
         }
@@ -272,12 +289,12 @@
         {
             get
             {
-                return Settings.Default.ResultReadInterval;
+                return ScanSettings.Default.ResultReadInterval;
             }
 
             set
             {
-                Settings.Default.ResultReadInterval = value;
+                ScanSettings.Default.ResultReadInterval = value;
                 this.RaisePropertyChanged(nameof(this.ResultReadInterval));
             }
         }
@@ -289,12 +306,12 @@
         {
             get
             {
-                return Settings.Default.TableReadInterval;
+                return ScanSettings.Default.TableReadInterval;
             }
 
             set
             {
-                Settings.Default.TableReadInterval = value;
+                ScanSettings.Default.TableReadInterval = value;
                 this.RaisePropertyChanged(nameof(this.TableReadInterval));
             }
         }
@@ -306,12 +323,12 @@
         {
             get
             {
-                return Settings.Default.InputCorrelatorTimeOutInterval;
+                return ScanSettings.Default.InputCorrelatorTimeOutInterval;
             }
 
             set
             {
-                Settings.Default.InputCorrelatorTimeOutInterval = value;
+                ScanSettings.Default.InputCorrelatorTimeOutInterval = value;
                 this.RaisePropertyChanged(nameof(this.InputCorrelatorTimeOutInterval));
             }
         }
@@ -323,12 +340,12 @@
         {
             get
             {
-                return Settings.Default.Alignment;
+                return ScanSettings.Default.Alignment;
             }
 
             set
             {
-                Settings.Default.Alignment = value;
+                ScanSettings.Default.Alignment = value;
                 this.RaisePropertyChanged(nameof(this.Alignment));
             }
         }
@@ -340,12 +357,12 @@
         {
             get
             {
-                return Settings.Default.StartAddress;
+                return ScanSettings.Default.StartAddress;
             }
 
             set
             {
-                Settings.Default.StartAddress = value;
+                ScanSettings.Default.StartAddress = value;
                 this.RaisePropertyChanged(nameof(this.StartAddress));
             }
         }
@@ -357,12 +374,12 @@
         {
             get
             {
-                return Settings.Default.EndAddress;
+                return ScanSettings.Default.EndAddress;
             }
 
             set
             {
-                Settings.Default.EndAddress = value;
+                ScanSettings.Default.EndAddress = value;
                 this.RaisePropertyChanged(nameof(this.EndAddress));
             }
         }

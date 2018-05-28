@@ -110,7 +110,7 @@
 
             // Initialize with no correlation
             this.Snapshot.SetElementLabels<Int16>(0);
-            this.TimeOutIntervalMs = Settings.Default.InputCorrelatorTimeOutInterval;
+            this.TimeOutIntervalMs = ScanSettings.Default.InputCorrelatorTimeOutInterval;
         }
 
         /// <summary>

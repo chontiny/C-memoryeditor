@@ -34,15 +34,15 @@ Scanners are JIT compiled into SSE, AVX, or AVX-512 instructions via RyuJIT thro
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Settings.Designer.cs">
-      <DependentUpon>Settings.settings</DependentUpon>
+    <Compile Update="ScanSettings.Designer.cs">
+      <DependentUpon>ScanSettings.settings</DependentUpon>
       <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Settings.settings">
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    <None Update="ScanSettings.settings">
+      <LastGenOutput>ScanSettings.Designer.cs</LastGenOutput>
       <Generator>SettingsSingleFileGenerator</Generator>
     </None>
   </ItemGroup>

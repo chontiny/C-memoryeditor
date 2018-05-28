@@ -330,12 +330,12 @@
                                 Source="{x:Static content:Images.Open}" />
                         </shell:MenuItem.Header>
                     </shell:MenuItem>
-                    <shell:MenuItem Command="{Binding SolutionExplorerViewModel.SaveProjectCommand}" ToolTip="Save Project">
+                    <shell:MenuItem Command="{Binding SolutionExplorerViewModel.NewProjectCommand}" ToolTip="New Project">
                         <shell:MenuItem.Header>
                             <shell:Image
                                 Width="16"
                                 Height="16"
-                                Source="{x:Static content:Images.Save}" />
+                                Source="{x:Static content:Images.New}" />
                         </shell:MenuItem.Header>
                     </shell:MenuItem>
                     <shell:Separator Style="{DynamicResource VerticalSeparator}" />

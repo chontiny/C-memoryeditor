@@ -7,22 +7,21 @@
 //     the code is regenerated.
 // </auto-generated>
 // ------------------------------------------------------------------------------
-namespace Engine.Scripting.Templates
+namespace Squalr.Content
 {
     using System.Linq;
     using System.Text;
     using System.Collections.Generic;
     using Squalr;
-    using Squalr.Engine;
     using System;
     
     /// <summary>
     /// Class to produce the template output
     /// </summary>
     
-    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine.Scripting\Templates\ScriptTemplate.tt"
+    #line 1 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Squalr\Content\Solution.tt"
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "15.0.0.0")]
-    public partial class ScriptTemplate : ScriptTemplateBase
+    public partial class Solution : SolutionBase
     {
 #line hidden
         /// <summary>
@@ -30,69 +29,99 @@ namespace Engine.Scripting.Templates
         /// </summary>
         public virtual string TransformText()
         {
-            this.Write(@"
-using System;
-using Squalr.Engine.Scripting;
-using Squalr.Engine.Scripting.Graphics;
-using Squalr.Engine.Scripting.Hook;
-using Squalr.Engine.Scripting.Input;
-using Squalr.Engine.Scripting.Memory;
-	
-// The using statements, if any, will be inserted here:
-");
+            this.Write("  \r\n");
+            this.Write("Microsoft Visual Studio Solution File, Format Version 12.00\r\n# Visual Studio 15\r\n" +
+                    "VisualStudioVersion = 15.0.27428.2011\r\nMinimumVisualStudioVersion = 10.0.40219.1" +
+                    "\r\nProject(\"{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}\") = \"");
             
-            #line 17 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine.Scripting\Templates\ScriptTemplate.tt"
- this.Write(Squalr.Engine.Scripting.Compiler.ScriptUsingsInsertionIdentifier); 
+            #line 13 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Squalr\Content\Solution.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(this.ProjectName));
             
             #line default
             #line hidden
-            this.Write(@"
-/// <summary>
-/// A script template which includes all necessary engine components by default.
-/// </summary>
-public class Script
-{
-	/// <summary>
-	/// The engine to provide access to memory, graphics, input, etc
-	/// </summary>
-	private readonly ScriptEngine Engine = new ScriptEngine();
-
-	/// <summary>
-	/// Gets the API to access memory in the target process.
-	/// </summary>
-	private IMemoryCore Memory { get { return Engine.MemoryCore; } }
-
-	/// <summary>
-	/// Gets the API to access graphics features (DirectX, OpenGL)
-	/// </summary>
-	private IGraphicsCore Graphics { get { return Engine.GraphicsCore; } }
-
-	/// <summary>
-	/// Gets the API to access process hook features (speed hack, unrandomizer, etc).
-	/// </summary>
-	private IHookCore Hook { get { return Engine.HookCore; } }
-	
-	/// <summary>
-	/// Gets the API to access user input.
-	/// </summary>
-	private IInputCore Input { get { return Engine.InputCore; } }
-	
-	/// <summary>
-	/// Gets or sets a function to deactivate this script. This allows for the script to deactivate itself.
-	/// </summary>
-	public Action Deactivate { get; set; }
-	
-	// The script will be inserted here:
-	");
+            this.Write("\", \"");
             
-            #line 55 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Engine.Scripting\Templates\ScriptTemplate.tt"
- this.Write(Squalr.Engine.Scripting.Compiler.ScriptCodeInsertionIdentifier); 
+            #line 13 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Squalr\Content\Solution.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(this.ProjectName));
             
             #line default
             #line hidden
-            this.Write("}\r\n//// End class");
+            this.Write("\\");
+            
+            #line 13 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Squalr\Content\Solution.tt"
+            this.Write(this.ToStringHelper.ToStringWithCulture(this.ProjectName));
+            
+            #line default
+            #line hidden
+            this.Write(@".csproj"", ""{4E96C37F-8A85-450B-9522-B2579A2979ED}""
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4E96C37F-8A85-450B-9522-B2579A2979ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4E96C37F-8A85-450B-9522-B2579A2979ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4E96C37F-8A85-450B-9522-B2579A2979ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4E96C37F-8A85-450B-9522-B2579A2979ED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0B6F3882-AB9F-4AFC-ABAE-F7AC888CB3E2}
+	EndGlobalSection
+EndGlobal");
             return this.GenerationEnvironment.ToString();
         }
+        
+        #line 1 "F:\Users\Zachary\Documents\Visual Studio 2017\Projects\Squalr\Squalr\Content\Solution.tt"
+
+private string _ProjectNameField;
+
+/// <summary>
+/// Access the ProjectName parameter of the template.
+/// </summary>
+private string ProjectName
+{
+    get
+    {
+        return this._ProjectNameField;
+    }
+}
+
+
+/// <summary>
+/// Initialize the template
+/// </summary>
+public virtual void Initialize()
+{
+    if ((this.Errors.HasErrors == false))
+    {
+bool ProjectNameValueAcquired = false;
+if (this.Session.ContainsKey("ProjectName"))
+{
+    this._ProjectNameField = ((string)(this.Session["ProjectName"]));
+    ProjectNameValueAcquired = true;
+}
+if ((ProjectNameValueAcquired == false))
+{
+    object data = global::System.Runtime.Remoting.Messaging.CallContext.LogicalGetData("ProjectName");
+    if ((data != null))
+    {
+        this._ProjectNameField = ((string)(data));
+    }
+}
+
+
+    }
+}
+
+
+        
+        #line default
+        #line hidden
     }
     
     #line default
@@ -102,7 +131,7 @@ public class Script
     /// Base class for this transformation
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "15.0.0.0")]
-    public class ScriptTemplateBase
+    public class SolutionBase
     {
         #region Fields
         private global::System.Text.StringBuilder generationEnvironmentField;

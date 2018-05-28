@@ -1,14 +1,13 @@
 ﻿namespace Squalr.Engine.Scripting
 {
-    using CSScriptLib;
-    using global::Engine.Scripting.Templates;
+    using Microsoft.CodeAnalysis;
+    using Microsoft.CodeAnalysis.CSharp;
+    using Microsoft.CodeAnalysis.Emit;
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Utils.Extensions;
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
-    using System.Text;
-    using static CSScriptLib.RoslynEvaluator;
 
     /// <summary>
     /// Class for compiling scripts.
@@ -16,125 +15,56 @@
     public static class Compiler
     {
         /// <summary>
-        /// The identifier to look for when inserting a the using statements from a script into the main script template.
+        /// Compiles the given ModScript.
         /// </summary>
-        public const String ScriptUsingsInsertionIdentifier = "{{USINGS}}";
-
-        /// <summary>
-        /// The identifier to look for when inserting a classless script into the main script template.
-        /// </summary>
-        public const String ScriptCodeInsertionIdentifier = "{{CODE}}";
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private static IProxyCompiler CompilerOverride { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="compiler"></param>
-        public static void OverrideCompiler(IProxyCompiler compiler)
-        {
-            Compiler.CompilerOverride = compiler;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="script"></param>
+        /// <param name="filePath"></param>
+        /// <param name="isRelease"></param>
         /// <returns></returns>
-        public static Byte[] CompileScript(String script)
+        public static Assembly CompileScript(String filePath, Boolean isRelease)
         {
             try
             {
-                script = Compiler.PrecompileScript(script);
+                String fileName = Path.GetFileNameWithoutExtension(filePath);
+                String dllPath = Path.Combine(Path.Combine(filePath, isRelease ? "Release" : "Debug"), fileName + ".dll");
+                String pdbPath = Path.Combine(Path.Combine(filePath, isRelease ? "Release" : "Debug"), fileName + ".pdb");
+                String sourceCode = File.ReadAllText(filePath);
 
-                if (Compiler.CompilerOverride != null)
-                {
-                    return Compiler.CompilerOverride.CompileScript(script);
-                }
-                else
-                {
-                    String tempFile = Path.GetTempFileName();
+                CSharpParseOptions cSharpParseOptions = new CSharpParseOptions(kind: SourceCodeKind.Regular, languageVersion: LanguageVersion.Latest);
+                SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(sourceCode, cSharpParseOptions);
 
-                    CompileInfo info = new CompileInfo
+                IReadOnlyCollection<MetadataReference> _references = new[] {
+                        MetadataReference.CreateFromFile(typeof(Binder).GetTypeInfo().Assembly.Location),
+                        MetadataReference.CreateFromFile(typeof(ValueTuple<>).GetTypeInfo().Assembly.Location)
+                };
+
+                CSharpCompilationOptions cSharpCompilationOptions = new CSharpCompilationOptions(
+                    OutputKind.DynamicallyLinkedLibrary,
+                    optimizationLevel: isRelease ? OptimizationLevel.Release : OptimizationLevel.Debug,
+                    allowUnsafe: true);
+
+                CSharpCompilation compilation = CSharpCompilation.Create(fileName, options: cSharpCompilationOptions, references: _references);
+
+                using (FileStream dllStream = new FileStream(dllPath, FileMode.OpenOrCreate))
+                {
+                    using (FileStream pdbStream = new FileStream(pdbPath, FileMode.OpenOrCreate))
                     {
-                        AssemblyFile = Path.GetTempFileName()
-                    };
+                        EmitResult result = compilation.Emit(
+                            peStream: dllStream,
+                            pdbStream: pdbStream);
 
-                    CSScript.RoslynEvaluator.CompileCode(script, info);
-
-                    String compiledScriptFile = File.ReadAllText(tempFile);
-                    Byte[] compressedScript = File.ReadAllBytes(compiledScriptFile);
-
-                    return compressedScript;
+                        if (result.Success)
+                        {
+                            return Assembly.LoadFrom(dllPath);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, "Error compiling script", ex);
-                return null;
-            }
-        }
-
-        public static dynamic LoadCompiledScript(Byte[] assemblyBytes)
-        {
-            if (assemblyBytes.IsNullOrEmpty())
-            {
-                return null;
             }
 
-            Assembly assembly = Assembly.Load(assemblyBytes);
-
-            return assembly.CreateObject("*");
-        }
-
-        /// <summary>
-        /// Takes the classless script written by the user and embeds it in the main script template.
-        /// This gives the script access to the engine classes that it will require.
-        /// </summary>
-        /// <param name="script">The classless script.</param>
-        /// <returns>The complete script.</returns>
-        private static String PrecompileScript(String script)
-        {
-            StringBuilder usings = new StringBuilder(4096);
-            String classlessScript = String.Empty;
-            script = script ?? String.Empty;
-
-            using (StringReader sr = new StringReader(script))
-            {
-                // Collect all using statements from the script
-                String line = null;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    // Ignore comments and whitespace
-                    if (line.StartsWith("//") || line.Trim() == String.Empty)
-                    {
-                        continue;
-                    }
-
-                    if (!line.TrimStart().StartsWith("using "))
-                    {
-                        break;
-                    }
-
-                    // Collect using statement
-                    usings.AppendLine(line);
-                }
-
-                // The remaining portion of the script will be kept as the actual script
-                if (line != null)
-                {
-                    classlessScript = line + sr.ReadToEnd();
-                }
-            }
-
-            // Fill in the script template with the collected information
-            script = new ScriptTemplate().TransformText().Replace(Compiler.ScriptUsingsInsertionIdentifier, usings.ToString());
-            script = script.Replace(Compiler.ScriptCodeInsertionIdentifier, classlessScript);
-
-            return script;
+            return null;
         }
     }
     //// End class

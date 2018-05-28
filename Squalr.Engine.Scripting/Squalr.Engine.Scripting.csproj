@@ -12,15 +12,15 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="CS-Script.Core" Version="1.0.1" />
-    <PackageReference Include="System.CodeDom" Version="4.5.0-preview1-26216-02" />
-  </ItemGroup>
-
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="2.8.2" />
+    <PackageReference Include="System.CodeDom" Version="4.5.0-rc1" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Squalr.Engine.Architecture\Squalr.Engine.Architecture.csproj" />
@@ -41,8 +41,8 @@
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
-    <Compile Update="Templates\ScriptTemplate.cs">
-      <DependentUpon>ScriptTemplate.tt</DependentUpon>
+    <Compile Update="Templates\ModScriptTemplate.cs">
+      <DependentUpon>ModScriptTemplate.tt</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -57,8 +57,8 @@
       <LastGenOutput>GraphicsInjectionTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
-    <None Update="Templates\ScriptTemplate.tt">
-      <LastGenOutput>ScriptTemplate.cs</LastGenOutput>
+    <None Update="Templates\ModScriptTemplate.tt">
+      <LastGenOutput>ModScriptTemplate.cs</LastGenOutput>
       <Generator>TextTemplatingFilePreprocessor</Generator>
     </None>
   </ItemGroup>

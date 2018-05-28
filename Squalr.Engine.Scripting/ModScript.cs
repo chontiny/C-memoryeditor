@@ -9,7 +9,7 @@ namespace Squalr.Engine.Scripting
     /// <summary>
     /// Instance of a single script.
     /// </summary>
-    public class ModScript
+    public abstract class ModScript
     {
         /// <summary>
         /// Gets or sets a cancelation request for the update loop.
@@ -31,13 +31,8 @@ namespace Squalr.Engine.Scripting
         /// </summary>
         private Task Task { get; set; }
 
-        public ModScript() : this(String.Empty)
+        public ModScript()
         {
-        }
-
-        public ModScript(String script)
-        {
-            this.SetScript(script);
         }
 
         public String Text { get; set; }
@@ -52,25 +47,6 @@ namespace Squalr.Engine.Scripting
         /// Gets or sets the compiled assembly object of a script.
         /// </summary>
         private dynamic ScriptObject { get; set; }
-
-        public static ModScript Load(String compiledAssembly)
-        {
-            ModScript modScript = new ModScript();
-            Byte[] compiledAssemblyBytes = Loader.DecompressCompiledScript(compiledAssembly);
-
-            modScript.CompiledAssembly = compiledAssembly;
-            modScript.ScriptObject = Compiler.LoadCompiledScript(compiledAssemblyBytes);
-
-            return modScript;
-        }
-
-        public async void SetScript(String script)
-        {
-            Byte[] compiledAssemblyBytes = await Task.Run(() => Compiler.CompileScript(script));
-
-            this.CompiledAssembly = Loader.CompressCompiledScript(compiledAssemblyBytes);
-            this.ScriptObject = Compiler.LoadCompiledScript(compiledAssemblyBytes);
-        }
 
         /// <summary>
         /// Runs the activation function in the script.

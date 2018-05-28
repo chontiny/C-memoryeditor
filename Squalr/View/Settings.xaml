@@ -33,6 +33,28 @@
                 </Setter>
             </Style>
         </TabControl.Resources>
+        <TabItem Background="Transparent" Header="General">
+            <Grid>
+                <GroupBox
+                    Padding="4"
+                    BorderThickness="1"
+                    Foreground="{StaticResource SqualrColorWhite}"
+                    Header="Project Settings">
+                    <StackPanel>
+                        <TextBlock VerticalAlignment="Center" Text="Project Root:" />
+                        <Grid Margin="0 4 0 0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Text="{Binding ProjectRoot, Mode=OneWay}" />
+                            <Button Margin="4 0 0 0" Grid.Column="1" Width="32">...</Button>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+        </TabItem>
+
         <TabItem Background="Transparent" Header="Memory">
             <Grid>
                 <Grid.RowDefinitions>

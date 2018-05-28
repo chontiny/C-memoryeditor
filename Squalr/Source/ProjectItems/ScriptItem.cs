@@ -46,9 +46,6 @@
         {
             // Initialize script and bypass setters
             this.script = script;
-            this.modScript = new ModScript();
-
-            this.ModScript.SetScript(script);
         }
 
         /// <summary>
@@ -74,7 +71,6 @@
                 }
 
                 this.script = value;
-                this.ModScript?.SetScript(this.Script);
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
@@ -123,7 +119,6 @@
             // Avoid using public Properties to bypass setter/getters
             if (this.modScript == null)
             {
-                this.modScript = new ModScript(this.script);
             }
         }
 

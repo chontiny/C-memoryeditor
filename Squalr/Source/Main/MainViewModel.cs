@@ -1,10 +1,8 @@
 ﻿namespace Squalr.Source.Main
 {
-    using CompilerService;
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Logging;
     using Squalr.Engine.OS;
-    using Squalr.Engine.Scripting;
     using Squalr.Properties;
     using Squalr.Source.ChangeLog;
     using Squalr.Source.Docking;
@@ -49,9 +47,6 @@
 
 
             Logger.Log(LogLevel.Info, "Squalr developer tools started");
-
-            // The Engine is .NET Standard and there are no compiler libraries. Squalr compensates for this here by passing in a functional full framework compiler.
-            Compiler.OverrideCompiler(new CodeDomCompiler());
 
             this.DisplayChangeLogCommand = new RelayCommand(() => ChangeLogViewModel.GetInstance().DisplayChangeLog(new Content.ChangeLog().TransformText()), () => true);
         }
