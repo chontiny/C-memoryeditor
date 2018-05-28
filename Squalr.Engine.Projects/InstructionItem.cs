@@ -1,16 +1,11 @@
-﻿namespace Squalr.Source.ProjectItems
+﻿namespace Squalr.Engine.Projects
 {
-    using Squalr.Content;
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.Memory;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.Extensions;
-    using Squalr.Source.Controls;
-    using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.ComponentModel;
     using System.Runtime.Serialization;
-    using System.Windows.Media.Imaging;
 
     [DataContract]
     public class InstructionItem : AddressItem
@@ -57,9 +52,6 @@
         /// <summary>
         /// Gets or sets the value at this address.
         /// </summary>
-        [Browsable(true)]
-        [TypeConverter(typeof(DynamicConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value"), Description("Value at the calculated address")]
         public override Object AddressValue
         {
             get
@@ -102,10 +94,7 @@
         /// Gets or sets the data type of the value at this address.
         /// </summary>
         [DataMember]
-        [Browsable(true)]
-        [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Instruction Bytes"), Description("The bytes of the instruction")]
-        public Byte[] InstructionBytes
+        public virtual Byte[] InstructionBytes
         {
             get
             {
@@ -129,10 +118,7 @@
         /// Gets or sets the disassembled instruction.
         /// </summary>
         [DataMember]
-        [Browsable(true)]
-        [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Instruction"), Description("The disassembled instruction")]
-        public String Instruction
+        public virtual String Instruction
         {
             get
             {
@@ -150,7 +136,6 @@
         /// Gets or sets a value indicating whether the value at this address should be displayed as hex.
         /// </summary>
         [DataMember]
-        [Browsable(false)]
         public override Boolean IsValueHex
         {
             get
@@ -167,7 +152,6 @@
         /// Gets or sets a value indicating whether the value at this address should be displayed as hex.
         /// </summary>
         [DataMember]
-        [Browsable(false)]
         public override DataType DataType
         {
             get
@@ -181,21 +165,9 @@
         }
 
         /// <summary>
-        /// Gets the image associated with this project item.
-        /// </summary>
-        public override BitmapSource Icon
-        {
-            get
-            {
-                return Images.Cpu;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the data type of the value at this address.
         /// </summary>
         [DataMember]
-        [Browsable(false)]
         public Byte[] FollowingBytes
         {
             get
@@ -219,10 +191,7 @@
         /// Gets or sets the identifier for the base address of this object.
         /// </summary>
         [DataMember]
-        [Browsable(true)]
-        [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Name"), Description("The module to use as a base address")]
-        public String ModuleName
+        public virtual String ModuleName
         {
             get
             {
@@ -246,10 +215,7 @@
         /// Gets or sets the base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
         [DataMember]
-        [RefreshProperties(RefreshProperties.All)]
-        [TypeConverter(typeof(AddressConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Offset"), Description("The offset from the module address. If no module address, then this is the base address.")]
-        public UInt64 ModuleOffset
+        public virtual UInt64 ModuleOffset
         {
             get
             {
@@ -295,7 +261,7 @@
         /// <returns>The base address of this instruction.</returns>
         protected override UInt64 ResolveAddress()
         {
-            return AddressResolver.GetInstance().ResolveModule(this.ModuleName).Add(this.ModuleOffset);
+            return 0; // return AddressResolver.GetInstance().ResolveModule(this.ModuleName).Add(this.ModuleOffset);
         }
     }
     //// End class

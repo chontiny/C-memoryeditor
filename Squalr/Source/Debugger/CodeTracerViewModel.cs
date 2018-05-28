@@ -2,11 +2,11 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Debuggers;
+    using Squalr.Engine.Projects;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.ProjectItems;
     using System;
     using System.Collections;
     using System.Collections.Generic;

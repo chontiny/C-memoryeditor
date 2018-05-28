@@ -1,19 +1,20 @@
-﻿namespace Squalr.Source.ProjectItems
+﻿namespace Squalr.Engine.Projects
 {
-    using Editors.ScriptEditor;
-    using Squalr.Content;
     using Squalr.Engine.Scripting;
-    using Squalr.Source.Controls;
-    using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.ComponentModel;
-    using System.Drawing.Design;
     using System.Runtime.Serialization;
-    using System.Windows.Media.Imaging;
 
     /// <summary>
     /// Defines a script that can be added to the project explorer.
     /// </summary>
+    [KnownType(typeof(ProjectItem))]
+    [KnownType(typeof(ScriptItem))]
+    [KnownType(typeof(AddressItem))]
+    [KnownType(typeof(InstructionItem))]
+    [KnownType(typeof(PointerItem))]
+    [KnownType(typeof(DotNetItem))]
+    [KnownType(typeof(JavaItem))]
     [DataContract]
     public class ScriptItem : ProjectItem
     {
@@ -48,15 +49,16 @@
             this.script = script;
         }
 
+        public static ScriptItem FromFile(String filePath)
+        {
+            return new ScriptItem();
+        }
+
         /// <summary>
         /// Gets or sets the raw script text.
         /// </summary>
         [DataMember]
-        [ReadOnly(false)]
-        [TypeConverter(typeof(ScriptConverter))]
-        [Editor(typeof(ScriptEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Script"), Description("C# script to interface with engine")]
-        public String Script
+        public virtual String Script
         {
             get
             {
@@ -65,14 +67,7 @@
 
             set
             {
-                if (this.script == value)
-                {
-                    return;
-                }
-
                 this.script = value;
-
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
             }
         }
 
@@ -93,17 +88,6 @@
                 this.modScript = value;
 
                 // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-            }
-        }
-
-        /// <summary>
-        /// Gets the image associated with this project item.
-        /// </summary>
-        public override BitmapSource Icon
-        {
-            get
-            {
-                return Images.Script;
             }
         }
 

@@ -1,7 +1,6 @@
-﻿namespace Squalr.Source.Utils
+﻿namespace Squalr.Engine.Utils
 {
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.Utils;
     using System;
     using System.Globalization;
 

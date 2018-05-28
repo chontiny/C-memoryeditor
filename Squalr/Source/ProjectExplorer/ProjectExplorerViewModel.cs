@@ -2,6 +2,8 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects;
+    using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Properties;
@@ -9,9 +11,7 @@
     using Squalr.Source.Docking;
     using Squalr.Source.Editors.ScriptEditor;
     using Squalr.Source.Editors.ValueEditor;
-    using Squalr.Source.ProjectItems;
     using Squalr.Source.PropertyViewer;
-    using Squalr.Source.Utils;
     using System;
     using System.Collections;
     using System.Collections.Generic;

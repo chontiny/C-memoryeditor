@@ -1,31 +1,17 @@
-﻿namespace Squalr.Source.ProjectItems
+﻿namespace Squalr.Engine.Projects
 {
-    using Editors.HotkeyEditor;
-    using Editors.TextEditor;
     using SharpDX.DirectInput;
-    using Squalr.Content;
     using Squalr.Engine.Input.HotKeys;
-    using Squalr.Source.Controls;
-    using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Drawing.Design;
     using System.IO;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
-    using System.Windows.Media.Imaging;
 
     /// <summary>
     /// A base class for all project items that can be added to the project explorer.
     /// </summary>
-    [KnownType(typeof(ProjectItem))]
-    [KnownType(typeof(ScriptItem))]
-    [KnownType(typeof(AddressItem))]
-    [KnownType(typeof(InstructionItem))]
-    [KnownType(typeof(PointerItem))]
-    [KnownType(typeof(DotNetItem))]
-    [KnownType(typeof(JavaItem))]
     [DataContract]
     public abstract class ProjectItem : INotifyPropertyChanged, IDisposable
     {
@@ -88,8 +74,7 @@
         /// Gets or sets the description for this object.
         /// </summary>
         [DataMember]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Name"), Description("The name of this cheat")]
-        public String Name
+        public virtual String Name
         {
             get
             {
@@ -104,9 +89,7 @@
                 }
 
                 this.name = value;
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.Name));
-                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -114,10 +97,7 @@
         /// Gets or sets the description for this object.
         /// </summary>
         [DataMember]
-        [TypeConverter(typeof(TextConverter))]
-        [Editor(typeof(TextEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Description"), Description("The description of this cheat")]
-        public String Description
+        public virtual String Description
         {
             get
             {
@@ -132,9 +112,30 @@
                 }
 
                 this.description = value;
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.Description));
-                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the hotkey for this project item.
+        /// </summary>
+        public virtual Hotkey HotKey
+        {
+            get
+            {
+                return this.hotkey;
+            }
+
+            set
+            {
+                if (this.hotkey == value)
+                {
+                    return;
+                }
+
+                this.hotkey = value;
+                this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
+                this.RaisePropertyChanged(nameof(this.HotKey));
             }
         }
 
@@ -158,37 +159,7 @@
                 }
 
                 this.guid = value;
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.Guid));
-                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the hotkey for this project item.
-        /// </summary>
-        [TypeConverter(typeof(HotkeyConverter))]
-        [Editor(typeof(HotkeyEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Hotkey"), Description("The hotkey for this item")]
-        public Hotkey HotKey
-        {
-            get
-            {
-                return this.hotkey;
-            }
-
-            set
-            {
-                if (this.hotkey == value)
-                {
-                    return;
-                }
-
-                this.hotkey = value;
-                this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
-                this.RaisePropertyChanged(nameof(this.HotKey));
-                // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
             }
         }
 
@@ -224,7 +195,6 @@
                     }
 
                     this.RaisePropertyChanged(nameof(this.IsActivated));
-                    // ProjectExplorerViewModel.GetInstance().OnPropertyUpdate();
                 }
             }
         }
@@ -253,18 +223,6 @@
 
             set
             {
-            }
-        }
-
-        /// <summary>
-        /// Gets the image associated with this project item.
-        /// </summary>
-        [Browsable(false)]
-        public virtual BitmapSource Icon
-        {
-            get
-            {
-                return Images.CollectValues;
             }
         }
 

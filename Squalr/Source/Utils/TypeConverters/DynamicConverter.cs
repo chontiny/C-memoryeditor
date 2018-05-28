@@ -1,9 +1,8 @@
 ﻿namespace Squalr.Source.Utils.TypeConverters
 {
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Projects;
     using Squalr.Engine.Utils;
-    using Squalr.Source.ProjectItems;
-    using Squalr.Source.Utils;
     using System;
     using System.ComponentModel;
     using System.Globalization;

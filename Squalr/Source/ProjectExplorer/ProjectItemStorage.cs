@@ -3,10 +3,10 @@
     using Microsoft.Win32;
     using Squalr.Engine;
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Controls;
-    using Squalr.Source.ProjectItems;
     using System;
     using System.Collections.Generic;
     using System.IO;

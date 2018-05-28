@@ -4,11 +4,11 @@
     using Squalr.Engine.Architecture;
     using Squalr.Engine.Memory;
     using Squalr.Engine.OS;
+    using Squalr.Engine.Projects;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.ProjectItems;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -189,8 +189,8 @@
 
             foreach (Instruction disassembledInstruction in disassembledInstructions)
             {
-                String moduleName;
-                UInt64 address = AddressResolver.GetInstance().AddressToModule(disassembledInstruction.Address, out moduleName);
+                String moduleName = String.Empty;
+                UInt64 address = 0; // AddressResolver.GetInstance().AddressToModule(disassembledInstruction.Address, out moduleName);
 
                 instructions.Add(new InstructionItem(address, moduleName, disassembledInstruction.Mnemonic, disassembledInstruction.Bytes));
             }

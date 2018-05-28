@@ -1,21 +1,15 @@
-﻿namespace Squalr.Source.ProjectItems
+﻿namespace Squalr.Engine.Projects
 {
-    using Editors.OffsetEditor;
-    using Squalr.Content;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
     using Squalr.Engine.OS;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.Extensions;
-    using Squalr.Source.Controls;
-    using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
-    using System.Drawing.Design;
     using System.Linq;
     using System.Runtime.Serialization;
-    using System.Windows.Media.Imaging;
 
     /// <summary>
     /// Defines an address that can be added to the project explorer.
@@ -26,20 +20,17 @@
         /// <summary>
         /// The identifier for the base address of this object.
         /// </summary>
-        [Browsable(false)]
-        private String moduleName;
+        protected String moduleName;
 
         /// <summary>
         /// The base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
-        [Browsable(false)]
-        private UInt64 moduleOffset;
+        protected UInt64 moduleOffset;
 
         /// <summary>
         /// The pointer offsets of this address item.
         /// </summary>
-        [Browsable(false)]
-        private IEnumerable<Int32> pointerOffsets;
+        protected IEnumerable<Int32> pointerOffsets;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressItem" /> class.
@@ -75,13 +66,16 @@
             this.pointerOffsets = pointerOffsets;
         }
 
+        public static PointerItem FromFile(String filePath)
+        {
+            return new PointerItem();
+        }
+
         /// <summary>
         /// Gets or sets the identifier for the base address of this object.
         /// </summary>
         [DataMember]
-        [RefreshProperties(RefreshProperties.All)]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Name"), Description("The module to use as a base address")]
-        public String ModuleName
+        public virtual String ModuleName
         {
             get
             {
@@ -90,17 +84,10 @@
 
             set
             {
-                if (this.moduleName == value)
-                {
-                    return;
-                }
-
                 this.moduleName = value == null ? String.Empty : value;
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.ModuleName));
                 this.RaisePropertyChanged(nameof(this.IsStatic));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
-                this.RaisePropertyChanged(nameof(this.Icon));
             }
         }
 
@@ -108,10 +95,7 @@
         /// Gets or sets the base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
         [DataMember]
-        [RefreshProperties(RefreshProperties.All)]
-        [TypeConverter(typeof(AddressConverter))]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Offset"), Description("The offset from the module address. If no module address, then this is the base address.")]
-        public UInt64 ModuleOffset
+        public virtual UInt64 ModuleOffset
         {
             get
             {
@@ -127,7 +111,6 @@
 
                 this.CalculatedAddress = value;
                 this.moduleOffset = value;
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.ModuleOffset));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
             }
@@ -137,11 +120,7 @@
         /// Gets or sets the pointer offsets of this address item.
         /// </summary>
         [DataMember]
-        [RefreshProperties(RefreshProperties.All)]
-        [TypeConverter(typeof(OffsetConverter))]
-        [Editor(typeof(OffsetEditorModel), typeof(UITypeEditor))]
-        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Pointer Offsets"), Description("The pointer offsets used to calculate the final address")]
-        public IEnumerable<Int32> PointerOffsets
+        public virtual IEnumerable<Int32> PointerOffsets
         {
             get
             {
@@ -156,32 +135,9 @@
                 }
 
                 this.pointerOffsets = value;
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.PointerOffsets));
                 this.RaisePropertyChanged(nameof(this.IsPointer));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
-                this.RaisePropertyChanged(nameof(this.Icon));
-            }
-        }
-
-        /// <summary>
-        /// Gets the image associated with this project item.
-        /// </summary>
-        [Browsable(false)]
-        public override BitmapSource Icon
-        {
-            get
-            {
-                if (this.IsPointer)
-                {
-                    return Images.LetterP;
-                }
-                else if (this.IsStatic)
-                {
-                    return Images.LetterS;
-                }
-
-                return Images.CollectValues;
             }
         }
 
@@ -245,7 +201,7 @@
         /// <returns>The base address of this object.</returns>
         protected override UInt64 ResolveAddress()
         {
-            UInt64 pointer = AddressResolver.GetInstance().ResolveModule(this.ModuleName);
+            UInt64 pointer = 0; // AddressResolver.GetInstance().ResolveModule(this.ModuleName);
             Boolean successReading = true;
 
             pointer = pointer.Add(this.ModuleOffset);

@@ -2,10 +2,12 @@
 {
     using System;
     using System.ComponentModel;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Object that represents a platform agnostic instruction.
     /// </summary>
+    [DataContract]
     public class Instruction : INotifyPropertyChanged
     {
         /// <summary>
@@ -18,10 +20,14 @@
         /// </summary>
         private String mnemonic;
 
+        private Byte[] precedingBytes;
+
         /// <summary>
         /// The instruction bytes.
         /// </summary>
         private Byte[] bytes;
+
+        private Byte[] followingBytes;
 
         /// <summary>
         /// The size of this instruction.
@@ -46,6 +52,7 @@
         /// <summary>
         /// The instruction address.
         /// </summary>
+        [DataMember]
         public UInt64 Address
         {
             get
@@ -63,6 +70,7 @@
         /// <summary>
         /// Gets the string representation of the instruction.
         /// </summary>
+        [DataMember]
         public String Mnemonic
         {
             get
@@ -78,8 +86,27 @@
         }
 
         /// <summary>
+        /// Gets or sets the data type of the value at this address.
+        /// </summary>
+        [DataMember]
+        public Byte[] PrecedingBytes
+        {
+            get
+            {
+                return this.precedingBytes;
+            }
+
+            set
+            {
+                this.precedingBytes = value;
+                this.RaisePropertyChanged(nameof(this.PrecedingBytes));
+            }
+        }
+
+        /// <summary>
         /// Gets the instruction bytes.
         /// </summary>
+        [DataMember]
         public Byte[] Bytes
         {
             get
@@ -95,8 +122,32 @@
         }
 
         /// <summary>
+        /// Gets or sets the data type of the value at this address.
+        /// </summary>
+        [DataMember]
+        public Byte[] FollowingBytes
+        {
+            get
+            {
+                return this.followingBytes;
+            }
+
+            set
+            {
+                if (this.followingBytes == value)
+                {
+                    return;
+                }
+
+                this.followingBytes = value;
+                this.RaisePropertyChanged(nameof(this.FollowingBytes));
+            }
+        }
+
+        /// <summary>
         /// Gets the size of this instruction.
         /// </summary>
+        [DataMember]
         public Int32 Size
         {
             get

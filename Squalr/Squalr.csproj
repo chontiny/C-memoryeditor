@@ -399,9 +399,14 @@
     </Compile>
     <Compile Include="Properties\SettingsViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\ConstraintToIconConverter.cs" />
-    <Compile Include="Source\SolutionExplorer\FileSystemExplorerService.cs" />
-    <Compile Include="Source\SolutionExplorer\DirInfo.cs" />
-    <Compile Include="Source\SolutionExplorer\SolutionExplorerViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\FileSystemExplorerService.cs" />
+    <Compile Include="Source\ProjectExplorer\DirInfo.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\ScriptItemConverter.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\JavaItemDecorator.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\InstructionItemDecorator.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItemDecorator.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItemDecorator.cs" />
+    <Compile Include="Source\ProjectExplorer\SolutionExplorerViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\GetFileSysemInformationConverter.cs" />
     <Compile Include="Source\Tasks\TaskTrackerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
@@ -456,16 +461,8 @@
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\ProcessSelector\ProcessDecorator.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs" />
-    <Compile Include="Source\SolutionExplorer\ProjectExplorerViewModel.cs" />
-    <Compile Include="Source\SolutionExplorer\ProjectItemStorage.cs" />
-    <Compile Include="Source\ProjectItems\AddressItem.cs" />
-    <Compile Include="Source\ProjectItems\DotNetItem.cs" />
-    <Compile Include="Source\ProjectItems\InstructionItem.cs" />
-    <Compile Include="Source\ProjectItems\JavaItem.cs" />
-    <Compile Include="Source\ProjectItems\PointerItem.cs" />
-    <Compile Include="Source\ProjectItems\ProjectItem.cs" />
-    <Compile Include="Source\ProjectItems\ProjectItemHotkey.cs" />
-    <Compile Include="Source\ProjectItems\ScriptItem.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
     <Compile Include="Source\Results\IResultDataTypeObserver.cs" />
@@ -486,7 +483,6 @@
     <Compile Include="Source\Utils\ImageUtils.cs" />
     <Compile Include="Source\Utils\Observables\Unsubscriber.cs" />
     <Compile Include="Source\Utils\Observables\WeakObserver.cs" />
-    <Compile Include="Source\Utils\SyntaxChecker.cs" />
     <Compile Include="Source\Utils\TypeConverters\AddressConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DataTypeConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\DynamicConverter.cs" />
@@ -767,6 +763,10 @@
     <ProjectReference Include="..\Squalr.Engine.Networking\Squalr.Engine.Networking.csproj">
       <Project>{e4bf8497-1d90-47e4-9e8d-4c1a33eb674c}</Project>
       <Name>Squalr.Engine.Networking</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Squalr.Engine.Projects\Squalr.Engine.Projects.csproj">
+      <Project>{3278CCD2-5997-44F9-9237-9F15EF51CB91}</Project>
+      <Name>Squalr.Engine.Projects</Name>
     </ProjectReference>
     <ProjectReference Include="..\Squalr.Engine.Scanning\Squalr.Engine.Scanning.csproj">
       <Project>{47faff79-44f7-4505-91ca-a2be28915ee2}</Project>

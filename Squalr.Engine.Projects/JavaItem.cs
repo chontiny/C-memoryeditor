@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ProjectItems
+﻿namespace Squalr.Engine.Projects
 {
     using System;
     using System.Runtime.Serialization;
@@ -11,9 +11,18 @@
 
         }
 
+        public static JavaItem FromFile(String filePath)
+        {
+            return new JavaItem();
+        }
+
+        public override void Update()
+        {
+        }
+
         protected override UInt64 ResolveAddress()
         {
-            throw new NotImplementedException();
+            return 0;
         }
     }
     //// End class

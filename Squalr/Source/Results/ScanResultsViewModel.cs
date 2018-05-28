@@ -2,7 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.Memory;
+    using Squalr.Engine.Projects;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
@@ -10,7 +10,6 @@
     using Squalr.Properties;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.ProjectItems;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -394,8 +393,8 @@
                     Object currentValue = element.HasCurrentValue() ? element.LoadCurrentValue() : null;
                     Object previousValue = element.HasPreviousValue() ? element.LoadPreviousValue() : null;
 
-                    String moduleName;
-                    UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress, out moduleName);
+                    String moduleName = String.Empty;
+                    UInt64 address = 0; // AddressResolver.GetInstance().AddressToModule(element.BaseAddress, out moduleName);
 
                     PointerItem pointerItem = new PointerItem(baseAddress: address, dataType: this.ActiveType, moduleName: moduleName, value: currentValue);
                     newAddresses.Add(new ScanResult(pointerItem, previousValue, label));
