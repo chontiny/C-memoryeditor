@@ -7,32 +7,38 @@
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Decorates the base project item class with annotations for use in the view.
     /// </summary>
-    internal class ScriptItemConverter : ScriptItem
+    internal class ScriptItemView : ProjectItemView
     {
+        public ScriptItemView(ScriptItem scriptItem)
+        {
+            this.ScriptItem = scriptItem;
+        }
+
+        [Browsable(false)]
+        private ScriptItem ScriptItem { get; set; }
 
         /// <summary>
         /// Gets or sets the raw script text.
         /// </summary>
-        [DataMember]
+        [Browsable(true)]
         [ReadOnly(false)]
         [TypeConverter(typeof(ScriptConverter))]
         [Editor(typeof(ScriptEditorModel), typeof(UITypeEditor))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Script"), Description("C# script to interface with engine")]
-        public override String Script
+        public String Script
         {
             get
             {
-                return base.Script;
+                return this.ScriptItem.Script;
             }
 
             set
             {
-                base.Script = value;
+                this.ScriptItem.Script = value;
             }
         }
     }

@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
     using Squalr.Content;
-    using Squalr.Engine.Projects;
+    using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.Globalization;
     using System.Windows.Data;
@@ -28,9 +28,9 @@
 
             switch (value)
             {
-                case ProjectItem type when type is PointerItem:
+                case ProjectItemView type when type is PointerItemView:
                     return Images.LetterP;
-                case ProjectItem type when type is ScriptItem:
+                case ProjectItemView type when type is ScriptItemView:
                     return Images.Script;
                 default:
                     return Images.CollectValues;

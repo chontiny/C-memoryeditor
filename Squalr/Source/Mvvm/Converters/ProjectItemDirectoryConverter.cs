@@ -1,26 +1,26 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Projects;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.Globalization;
     using System.Windows.Data;
 
-    public class ProjectItemTreeViewConverter : IValueConverter
+    public class ProjectItemDirectoryConverter : IValueConverter
     {
         public Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
             try
             {
-                ProjectItem nodeToExpand = value as ProjectItem;
+                DirectoryItemView directoryItemView = value as DirectoryItemView;
 
-                if (nodeToExpand == null)
+                if (directoryItemView == null)
                 {
                     return null;
                 }
 
-                return ProjectItemReader.GetChildFiles(nodeToExpand.Path);
+                return ProjectItemReader.GetChildFiles(directoryItemView.Path);
             }
             catch (Exception ex)
             {

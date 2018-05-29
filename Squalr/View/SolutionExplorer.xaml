@@ -25,7 +25,7 @@
             False="Hidden"
             True="Visible" />
         <converters:ProjectItemToIconConverter x:Key="ProjectItemToIconConverter" />
-        <converters:ProjectItemTreeViewConverter x:Key="ProjectItemTreeViewConverter" />
+        <converters:ProjectItemDirectoryConverter x:Key="ProjectItemDirectoryConverter" />
         <ContextMenu
             x:Key="RightClickMenu"
             Background="{StaticResource SqualrColorGray27}"
@@ -81,6 +81,7 @@
             HorizontalScrollBarVisibility="Hidden"
             VerticalScrollBarVisibility="Auto">
             <TreeView
+                Name="ProjectExplorerTreeView"
                 Background="{StaticResource SqualrColorBlack}"
                 ContextMenu="{StaticResource RightClickMenu}"
                 ItemsSource="{Binding ProjectItems}">
@@ -98,11 +99,11 @@
                 </TreeView.ItemContainerStyle>
                 <!--  Click and Selection events  -->
                 <intr:Interaction.Triggers>
-                    <intr:EventTrigger EventName="SelectionChanged">
-                        <intr:InvokeCommandAction Command="{Binding SelectProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItems}" />
+                    <intr:EventTrigger EventName="SelectedItemChanged">
+                        <intr:InvokeCommandAction Command="{Binding SelectProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerTreeView, Path=SelectedItem}" />
                     </intr:EventTrigger>
                     <intr:EventTrigger EventName="MouseDoubleClick">
-                        <intr:InvokeCommandAction Command="{Binding EditProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerListView, Path=SelectedItem}" />
+                        <intr:InvokeCommandAction Command="{Binding EditProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerTreeView, Path=SelectedItem}" />
                     </intr:EventTrigger>
                 </intr:Interaction.Triggers>
                 <!--  Keyboard shortcuts  -->
@@ -123,7 +124,7 @@
                     <KeyBinding Key="Delete" Command="{Binding DeleteSelectionCommand}" />
                 </TreeView.InputBindings>
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type se:DirInfo}" ItemsSource="{Binding Converter={StaticResource ProjectItemTreeViewConverter}}">
+                    <HierarchicalDataTemplate DataType="{x:Type se:DirInfo}" ItemsSource="{Binding Converter={StaticResource ProjectItemDirectoryConverter}}">
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />

@@ -6,13 +6,15 @@
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
     using Squalr.Source.Docking;
+    using Squalr.Source.ProjectExplorer.ProjectItems;
+    using Squalr.Source.PropertyViewer;
     using System;
     using System.IO;
     using System.Threading;
     using System.Windows.Forms;
     using System.Windows.Input;
 
-    public class SolutionExplorerViewModel : ToolViewModel
+    internal class SolutionExplorerViewModel : ToolViewModel
     {
         /// <summary>
         /// The filter to use for saving and loading project filters.
@@ -31,13 +33,19 @@
                 () => { return new SolutionExplorerViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
-        private FullyObservableCollection<ProjectItem> projectItems;
+        private FullyObservableCollection<ProjectItemView> projectItems;
+
+        /// <summary>
+        /// The selected project item.
+        /// </summary>
+        private ProjectItemView selectedProjectItem;
 
         public SolutionExplorerViewModel() : base("Solution Explorer")
         {
             this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());
             this.NewProjectCommand = new RelayCommand(() => this.NewProject());
+            this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItem) => this.SelectedProjectItem = selectedItem as ProjectItemView, (selectedItem) => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -67,9 +75,14 @@
         public ICommand NewProjectCommand { get; private set; }
 
         /// <summary>
+        /// Gets the command to select a project item.
+        /// </summary>
+        public ICommand SelectProjectItemCommand { get; private set; }
+
+        /// <summary>
         /// List of the directories.
         /// </summary>
-        public FullyObservableCollection<ProjectItem> ProjectItems
+        public FullyObservableCollection<ProjectItemView> ProjectItems
         {
             get
             {
@@ -79,6 +92,23 @@
             {
                 projectItems = value;
                 RaisePropertyChanged(nameof(this.ProjectItems));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the selected project items.
+        /// </summary>
+        public ProjectItemView SelectedProjectItem
+        {
+            get
+            {
+                return this.selectedProjectItem;
+            }
+
+            set
+            {
+                this.selectedProjectItem = value;
+                PropertyViewerViewModel.GetInstance().SetTargetObjects(value);
             }
         }
 
@@ -128,7 +158,7 @@
                     {
                         if (Directory.Exists(folderBrowserDialog.SelectedPath))
                         {
-                            this.ProjectItems = new FullyObservableCollection<ProjectItem> { new DirectoryItem(folderBrowserDialog.SelectedPath) };
+                            this.ProjectItems = new FullyObservableCollection<ProjectItemView> { new DirectoryItemView(new DirectoryItem(folderBrowserDialog.SelectedPath)) };
                         }
                         else
                         {

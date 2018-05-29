@@ -6,147 +6,149 @@
     using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.ComponentModel;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Decorates the base project item class with annotations for use in the view.
     /// </summary>
-    internal class InstructionItemDecorator : InstructionItem
+    internal class InstructionItemView : ProjectItemView
     {
+        public InstructionItemView(InstructionItem instructionItem)
+        {
+            this.InstructionItem = instructionItem;
+        }
+
+        [Browsable(false)]
+        private InstructionItem InstructionItem { get; set; }
+
         /// <summary>
         /// Gets or sets the value at this address.
         /// </summary>
         [Browsable(true)]
         [TypeConverter(typeof(DynamicConverter))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value"), Description("Value at the calculated address")]
-        public override Object AddressValue
+        public Object AddressValue
         {
             get
             {
-                return base.AddressValue;
+                return this.InstructionItem.AddressValue;
             }
 
             set
             {
-                base.AddressValue = value;
+                this.InstructionItem.AddressValue = value;
             }
         }
 
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Instruction Bytes"), Description("The bytes of the instruction")]
-        public override Byte[] InstructionBytes
+        public Byte[] InstructionBytes
         {
             get
             {
-                return base.InstructionBytes;
+                return this.InstructionItem.InstructionBytes;
             }
 
             set
             {
-                base.InstructionBytes = value;
+                this.InstructionItem.InstructionBytes = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the disassembled instruction.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Instruction"), Description("The disassembled instruction")]
-        public override String Instruction
+        public String Instruction
         {
             get
             {
-                return base.Instruction;
+                return this.InstructionItem.Instruction;
             }
 
             set
             {
-                base.Instruction = value;
+                this.InstructionItem.Instruction = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the identifier for the base address of this object.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Name"), Description("The module to use as a base address")]
-        public override String ModuleName
+        public String ModuleName
         {
             get
             {
-                return base.ModuleName;
+                return this.InstructionItem.ModuleName;
             }
 
             set
             {
-                base.ModuleName = value;
+                this.InstructionItem.ModuleName = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
-        [DataMember]
+        [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(AddressConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Offset"), Description("The offset from the module address. If no module address, then this is the base address.")]
-        public override UInt64 ModuleOffset
+        public UInt64 ModuleOffset
         {
             get
             {
-                return base.ModuleOffset;
+                return this.InstructionItem.ModuleOffset;
             }
 
             set
             {
-                this.ModuleOffset = value;
+                this.InstructionItem.ModuleOffset = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the data type of the value at this address.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(DataTypeConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Data Type"), Description("Data type of the calculated address")]
-        public override DataType DataType
+        public DataType DataType
         {
             get
             {
-                return base.DataType;
+                return this.InstructionItem.DataType;
             }
 
             set
             {
-                base.DataType = value;
+                this.InstructionItem.DataType = value;
             }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether the value at this address should be displayed as hex.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether the value is displayed as hexedecimal")]
-        public override Boolean IsValueHex
+        public Boolean IsValueHex
         {
             get
             {
-                return base.IsValueHex;
+                return this.InstructionItem.IsValueHex;
             }
 
             set
             {
-                base.IsValueHex = value;
+                this.InstructionItem.IsValueHex = value;
             }
         }
 
@@ -156,16 +158,11 @@
         [ReadOnly(true)]
         [TypeConverter(typeof(AddressConverter))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Calculated Address"), Description("The final computed address of this variable")]
-        public override UInt64 CalculatedAddress
+        public UInt64 CalculatedAddress
         {
             get
             {
-                return base.CalculatedAddress;
-            }
-
-            protected set
-            {
-                base.CalculatedAddress = value;
+                return this.InstructionItem.CalculatedAddress;
             }
         }
     }

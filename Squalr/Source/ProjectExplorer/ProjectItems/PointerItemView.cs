@@ -8,73 +8,77 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.Drawing.Design;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Decorates the base project item class with annotations for use in the view.
     /// </summary>
-    internal class PointerItemDecorator : PointerItem
+    internal class PointerItemView : ProjectItemView
     {
+        public PointerItemView(PointerItem pointerItem)
+        {
+            this.PointerItem = pointerItem;
+        }
+
+        [Browsable(false)]
+        private PointerItem PointerItem { get; set; }
+
         /// <summary>
         /// Gets or sets the identifier for the base address of this object.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Name"), Description("The module to use as a base address")]
-        public override String ModuleName
+        public String ModuleName
         {
             get
             {
-                return base.ModuleName;
+                return this.PointerItem.ModuleName;
             }
 
             set
             {
-                base.ModuleName = value;
+                this.PointerItem.ModuleName = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(AddressConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Module Offset"), Description("The offset from the module address. If no module address, then this is the base address.")]
-        public override UInt64 ModuleOffset
+        public UInt64 ModuleOffset
         {
             get
             {
-                return base.ModuleOffset;
+                return this.PointerItem.ModuleOffset;
             }
 
             set
             {
-                base.ModuleOffset = value;
+                this.PointerItem.ModuleOffset = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the pointer offsets of this address item.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(OffsetConverter))]
         [Editor(typeof(OffsetEditorModel), typeof(UITypeEditor))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Pointer Offsets"), Description("The pointer offsets used to calculate the final address")]
-        public override IEnumerable<Int32> PointerOffsets
+        public IEnumerable<Int32> PointerOffsets
         {
             get
             {
-                return base.PointerOffsets;
+                return this.PointerItem.PointerOffsets;
             }
 
             set
             {
-                base.PointerOffsets = value;
+                this.PointerItem.PointerOffsets = value;
             }
         }
     }

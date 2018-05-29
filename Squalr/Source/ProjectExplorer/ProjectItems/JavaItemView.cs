@@ -6,31 +6,37 @@
     using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.ComponentModel;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Decorates the base project item class with annotations for use in the view.
     /// </summary>
-    internal class JavaItemDecorator : JavaItem
+    internal class JavaItemView : ProjectItemView
     {
+        public JavaItemView(JavaItem javaItem)
+        {
+            this.JavaItem = javaItem;
+        }
+
+        [Browsable(false)]
+        private JavaItem JavaItem { get; set; }
+
         /// <summary>
         /// Gets or sets the data type of the value at this address.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(DataTypeConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Data Type"), Description("Data type of the calculated address")]
-        public override DataType DataType
+        public DataType DataType
         {
             get
             {
-                return base.DataType;
+                return this.JavaItem.DataType;
             }
 
             set
             {
-                base.DataType = value;
+                this.JavaItem.DataType = value;
             }
         }
 
@@ -40,36 +46,35 @@
         [Browsable(true)]
         [TypeConverter(typeof(DynamicConverter))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value"), Description("Value at the calculated address")]
-        public override Object AddressValue
+        public Object AddressValue
         {
             get
             {
-                return base.AddressValue;
+                return this.JavaItem.AddressValue;
             }
 
             set
             {
-                base.AddressValue = value;
+                this.JavaItem.AddressValue = value;
             }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether the value at this address should be displayed as hex.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether the value is displayed as hexedecimal")]
-        public override Boolean IsValueHex
+        public Boolean IsValueHex
         {
             get
             {
-                return base.IsValueHex;
+                return this.JavaItem.IsValueHex;
             }
 
             set
             {
-                base.IsValueHex = value;
+                this.JavaItem.IsValueHex = value;
             }
         }
 
@@ -79,16 +84,11 @@
         [ReadOnly(true)]
         [TypeConverter(typeof(AddressConverter))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Calculated Address"), Description("The final computed address of this variable")]
-        public override UInt64 CalculatedAddress
+        public UInt64 CalculatedAddress
         {
             get
             {
-                return base.CalculatedAddress;
-            }
-
-            protected set
-            {
-                base.CalculatedAddress = value;
+                return this.JavaItem.CalculatedAddress;
             }
         }
     }

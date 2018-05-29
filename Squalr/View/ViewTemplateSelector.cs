@@ -11,7 +11,6 @@
     using Squalr.Source.Editors.TextEditor;
     using Squalr.Source.Output;
     using Squalr.Source.ProcessSelector;
-    using Squalr.Source.ProjectExplorer;
     using Squalr.Source.PropertyViewer;
     using Squalr.Source.Scanning;
     using Squalr.Source.SolutionExplorer;

@@ -11,7 +11,7 @@
     /// <summary>
     /// Class to get file system information.
     /// </summary>
-    public class ProjectItemReader
+    internal class ProjectItemReader
     {
         /// <summary>
         /// Gets the list of files in the directory Name passed.
@@ -19,9 +19,9 @@
         /// <param name="directory">The Directory to get the files from.</param>
         /// <returns>Returns the List of File info for this directory.
         /// Return null if an exception is raised.</returns>
-        public static IEnumerable<ProjectItem> GetChildFiles(String directory)
+        public static IEnumerable<ProjectItemView> GetChildFiles(String directory)
         {
-            IList<ProjectItem> projectItems = new List<ProjectItem>();
+            IList<ProjectItemView> projectItems = new List<ProjectItemView>();
 
             try
             {
@@ -31,7 +31,7 @@
                 {
                     if (file.Extension == ".address")
                     {
-                        projectItems.Add(PointerItemDecorator.FromFile(file.FullName));
+                        projectItems.Add(new PointerItemView(PointerItem.FromFile(file.FullName)));
                     }
                 }
             }
@@ -46,7 +46,7 @@
 
                 foreach (DirectoryInfo subdirectory in subdirectories)
                 {
-                    projectItems.Add(new DirectoryItem(subdirectory.FullName));
+                    projectItems.Add(new DirectoryItemView(new DirectoryItem(subdirectory.FullName)));
                 }
             }
             catch (Exception ex)

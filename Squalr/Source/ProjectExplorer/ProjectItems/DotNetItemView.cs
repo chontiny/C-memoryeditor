@@ -10,48 +10,53 @@
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
-    using System.Runtime.Serialization;
 
     /// <summary>
     /// Decorates the base project item class with annotations for use in the view.
     /// </summary>
-    internal class DotNetItemDecorator : DotNetItem
+    internal class DotNetItemView : ProjectItemView
     {
-        [DataMember]
+        public DotNetItemView(DotNetItem dotNetItem)
+        {
+            this.DotNetItem = dotNetItem;
+        }
+
+        [Browsable(false)]
+        private DotNetItem DotNetItem { get; set; }
+
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Identifier"), Description("The full namespace identifier for this item")]
-        public override String Identifier
+        public String Identifier
         {
             get
             {
-                return base.Identifier;
+                return this.DotNetItem.Identifier;
             }
 
             set
             {
-                base.Identifier = value;
+                this.DotNetItem.Identifier = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the data type of the value at this address.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [TypeConverter(typeof(DataTypeConverter))]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Data Type"), Description("Data type of the calculated address")]
-        public override DataType DataType
+        public DataType DataType
         {
             get
             {
-                return base.DataType;
+                return this.DotNetItem.DataType;
             }
 
             set
             {
-                base.DataType = value;
+                this.DotNetItem.DataType = value;
             }
         }
 
@@ -61,112 +66,107 @@
         [Browsable(true)]
         [TypeConverter(typeof(DynamicConverter))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Value"), Description("Value at the calculated address")]
-        public override Object AddressValue
+        public Object AddressValue
         {
             get
             {
-                return base.AddressValue;
+                return this.DotNetItem.AddressValue;
             }
 
             set
             {
-                base.AddressValue = value;
+                this.DotNetItem.AddressValue = value;
             }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether the value at this address should be displayed as hex.
         /// </summary>
-        [DataMember]
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]
         [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Value as Hex"), Description("Whether the value is displayed as hexedecimal")]
-        public override Boolean IsValueHex
+        public Boolean IsValueHex
         {
             get
             {
-                return base.IsValueHex;
+                return this.DotNetItem.IsValueHex;
             }
 
             set
             {
-                base.IsValueHex = value;
+                this.DotNetItem.IsValueHex = value;
             }
         }
 
         /// <summary>
         /// Gets the effective address after tracing all pointer offsets.
         /// </summary>
+        [Browsable(true)]
         [ReadOnly(true)]
         [TypeConverter(typeof(AddressConverter))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Calculated Address"), Description("The final computed address of this variable")]
-        public override UInt64 CalculatedAddress
+        public UInt64 CalculatedAddress
         {
             get
             {
-                return base.CalculatedAddress;
-            }
-
-            protected set
-            {
-                base.CalculatedAddress = value;
+                return this.DotNetItem.CalculatedAddress;
             }
         }
 
         /// <summary>
         /// Gets or sets the description for this object.
         /// </summary>
-        [DataMember]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Name"), Description("The name of this cheat")]
-        public override String Name
+        public String Name
         {
             get
             {
-                return base.Name;
+                return this.DotNetItem.Name;
             }
 
             set
             {
-                base.Name = value;
+                this.DotNetItem.Name = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the description for this object.
         /// </summary>
-        [DataMember]
+        [Browsable(true)]
         [TypeConverter(typeof(TextConverter))]
         [Editor(typeof(TextEditorModel), typeof(UITypeEditor))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Description"), Description("The description of this cheat")]
-        public override String Description
+        public String Description
         {
             get
             {
-                return base.Description;
+                return this.DotNetItem.Description;
             }
 
             set
             {
-                base.Description = value;
+                this.DotNetItem.Description = value;
             }
         }
 
         /// <summary>
         /// Gets or sets the hotkey for this project item.
         /// </summary>
+        [Browsable(true)]
         [TypeConverter(typeof(HotkeyConverter))]
         [Editor(typeof(HotkeyEditorModel), typeof(UITypeEditor))]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Hotkey"), Description("The hotkey for this item")]
-        public override Hotkey HotKey
+        public Hotkey HotKey
         {
             get
             {
-                return base.HotKey;
+                return this.DotNetItem.HotKey;
             }
 
             set
             {
-                base.HotKey = value;
+                this.DotNetItem.HotKey = value;
             }
         }
     }
