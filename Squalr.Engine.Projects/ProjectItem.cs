@@ -48,7 +48,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectItem" /> class.
         /// </summary>
-        public ProjectItem() : this(String.Empty)
+        public ProjectItem(String path) : this(path, String.Empty)
         {
         }
 
@@ -56,7 +56,7 @@
         /// Initializes a new instance of the <see cref="ProjectItem" /> class.
         /// </summary>
         /// <param name="description">The description of the project item.</param>
-        public ProjectItem(String description)
+        public ProjectItem(String path, String description)
         {
             // Bypass setters/getters to avoid triggering any view updates in constructor
             this.name = description == null ? String.Empty : description;
@@ -69,6 +69,8 @@
         /// Occurs after a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public String Path { get; set; }
 
         /// <summary>
         /// Gets or sets the description for this object.

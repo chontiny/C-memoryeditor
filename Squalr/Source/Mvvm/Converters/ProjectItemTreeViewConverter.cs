@@ -2,30 +2,25 @@
 {
     using Squalr.Engine.Logging;
     using Squalr.Engine.Projects;
-    using Squalr.Source.SolutionExplorer;
+    using Squalr.Source.ProjectExplorer;
     using System;
-    using System.Collections.Generic;
     using System.Globalization;
-    using System.Linq;
     using System.Windows.Data;
 
-    public class GetFileSysemInformationConverter : IValueConverter
+    public class ProjectItemTreeViewConverter : IValueConverter
     {
         public Object Convert(Object value, Type targetType, Object parameter, CultureInfo culture)
         {
             try
             {
-                DirInfo nodeToExpand = value as DirInfo;
+                ProjectItem nodeToExpand = value as ProjectItem;
 
                 if (nodeToExpand == null)
                 {
                     return null;
                 }
 
-                IList<DirInfo> directories = FileSystemExplorerService.GetChildDirectories(nodeToExpand.Path).Select(dirs => new DirInfo(dirs)).ToList();
-                IList<DirInfo> files = FileSystemExplorerService.GetChildFiles(nodeToExpand.Path).Select(dirs => new DirInfo(dirs)).ToList();
-
-                return directories.Concat(files).ToList();
+                return ProjectItemReader.GetChildFiles(nodeToExpand.Path);
             }
             catch (Exception ex)
             {

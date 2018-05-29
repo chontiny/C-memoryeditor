@@ -2,6 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
     using Squalr.Source.Docking;
@@ -30,13 +31,7 @@
                 () => { return new SolutionExplorerViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
-        private DirInfo currentTreeItem;
-
-        private DirInfo currentDirectory;
-
-        private FullyObservableCollection<DirInfo> systemDirectorySource;
-
-        private FullyObservableCollection<DirInfo> currentItems;
+        private FullyObservableCollection<ProjectItem> projectItems;
 
         public SolutionExplorerViewModel() : base("Solution Explorer")
         {
@@ -74,33 +69,16 @@
         /// <summary>
         /// List of the directories.
         /// </summary>
-        public FullyObservableCollection<DirInfo> SystemDirectorySource
+        public FullyObservableCollection<ProjectItem> ProjectItems
         {
             get
             {
-                return systemDirectorySource;
+                return projectItems;
             }
             set
             {
-                systemDirectorySource = value;
-                RaisePropertyChanged(nameof(this.SystemDirectorySource));
-            }
-        }
-
-        /// <summary>
-        /// Name of the current directory user is in.
-        /// </summary>
-        public DirInfo CurrentDirectory
-        {
-            get
-            {
-                return currentDirectory;
-            }
-
-            set
-            {
-                currentDirectory = value;
-                this.RaisePropertyChanged(nameof(this.CurrentDirectory));
+                projectItems = value;
+                RaisePropertyChanged(nameof(this.ProjectItems));
             }
         }
 
@@ -150,11 +128,7 @@
                     {
                         if (Directory.Exists(folderBrowserDialog.SelectedPath))
                         {
-                            DirInfo rootNode = new DirInfo(new DirectoryInfo(folderBrowserDialog.SelectedPath).Name);
-                            rootNode.Path = folderBrowserDialog.SelectedPath;
-
-                            this.SystemDirectorySource = new FullyObservableCollection<DirInfo> { rootNode };
-                            this.CurrentDirectory = rootNode;
+                            this.ProjectItems = new FullyObservableCollection<ProjectItem> { new DirectoryItem(folderBrowserDialog.SelectedPath) };
                         }
                         else
                         {
