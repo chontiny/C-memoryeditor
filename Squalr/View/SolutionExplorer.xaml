@@ -8,6 +8,7 @@
     xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
     xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:proj="clr-namespace:Squalr.Source.ProjectExplorer.ProjectItems"
     xmlns:se="clr-namespace:Squalr.Source.SolutionExplorer"
     x:Name="SqualrSolutionExplorer"
     d:DesignHeight="256"
@@ -24,6 +25,7 @@
             x:Key="BooleanToHiddenConverter"
             False="Hidden"
             True="Visible" />
+        <converters:ProjectItemViewConverter x:Key="ProjectItemViewConverter" />
         <converters:ProjectItemToIconConverter x:Key="ProjectItemToIconConverter" />
         <converters:ProjectItemDirectoryConverter x:Key="ProjectItemDirectoryConverter" />
         <ContextMenu
@@ -84,7 +86,7 @@
                 Name="ProjectExplorerTreeView"
                 Background="{StaticResource SqualrColorBlack}"
                 ContextMenu="{StaticResource RightClickMenu}"
-                ItemsSource="{Binding ProjectItems}">
+                ItemsSource="{Binding ProjectRoot}">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
@@ -124,7 +126,7 @@
                     <KeyBinding Key="Delete" Command="{Binding DeleteSelectionCommand}" />
                 </TreeView.InputBindings>
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type se:DirInfo}" ItemsSource="{Binding Converter={StaticResource ProjectItemDirectoryConverter}}">
+                    <HierarchicalDataTemplate DataType="{x:Type proj:ProjectItemView}" ItemsSource="{Binding Converter={StaticResource ProjectItemDirectoryConverter}}">
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -134,30 +136,12 @@
                                 Grid.Column="0"
                                 Width="20"
                                 Height="20"
-                                Source="{Binding Converter={StaticResource ProjectItemToIconConverter}}">
-                                <intr:Interaction.Triggers>
-                                    <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
-                                        <ei:ChangePropertyAction
-                                            PropertyName="IsSelected"
-                                            TargetObject="{Binding}"
-                                            Value="true" />
-                                    </intr:EventTrigger>
-                                </intr:Interaction.Triggers>
-                            </Image>
+                                Source="{Binding Converter={StaticResource ProjectItemToIconConverter}}" />
                             <TextBlock
                                 Grid.Column="1"
                                 Margin="5,0,0,0"
                                 Foreground="{StaticResource SqualrColorWhite}"
-                                Text="{Binding Path=Name}">
-                                <intr:Interaction.Triggers>
-                                    <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
-                                        <ei:ChangePropertyAction
-                                            PropertyName="IsSelected"
-                                            TargetObject="{Binding}"
-                                            Value="true" />
-                                    </intr:EventTrigger>
-                                </intr:Interaction.Triggers>
-                            </TextBlock>
+                                Text="{Binding Path=Name}" />
                         </Grid>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>

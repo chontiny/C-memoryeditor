@@ -29,9 +29,36 @@
 
                 foreach (FileInfo file in files)
                 {
-                    if (file.Extension == ".address")
+                    try
                     {
-                        projectItems.Add(new PointerItemView(PointerItem.FromFile(file.FullName)));
+                        ProjectItem projectItem = ProjectItem.FromFile(file.FullName);
+
+                        switch (projectItem)
+                        {
+                            case ProjectItem _ when projectItem is PointerItem:
+                                projectItems.Add(new PointerItemView(projectItem as PointerItem));
+                                break;
+                            case ProjectItem _ when projectItem is ScriptItem:
+                                projectItems.Add(new ScriptItemView(projectItem as ScriptItem));
+                                break;
+                            case ProjectItem _ when projectItem is InstructionItem:
+                                projectItems.Add(new InstructionItemView(projectItem as InstructionItem));
+                                break;
+                            case ProjectItem _ when projectItem is DotNetItem:
+                                projectItems.Add(new DotNetItemView(projectItem as DotNetItem));
+                                break;
+                            case ProjectItem _ when projectItem is JavaItem:
+                                projectItems.Add(new JavaItemView(projectItem as JavaItem));
+                                break;
+                            default:
+                                Logger.Log(LogLevel.Error, "Unknown project item type");
+                                break;
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Error, "Error reading project item", ex);
                     }
                 }
             }
@@ -46,7 +73,14 @@
 
                 foreach (DirectoryInfo subdirectory in subdirectories)
                 {
-                    projectItems.Add(new DirectoryItemView(new DirectoryItem(subdirectory.FullName)));
+                    try
+                    {
+                        projectItems.Add(new DirectoryItemView(DirectoryItem.FromDirectory(subdirectory.FullName)));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Error, "Error loading directory", ex);
+                    }
                 }
             }
             catch (Exception ex)

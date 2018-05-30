@@ -47,6 +47,8 @@
             this.ModuleName = moduleName;
             this.Instruction = instruction;
             this.InstructionBytes = instructionBytes;
+
+            ProjectItem.Save<InstructionItem>(this);
         }
 
         /// <summary>

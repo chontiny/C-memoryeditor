@@ -47,11 +47,8 @@
         {
             // Initialize script and bypass setters
             this.script = script;
-        }
 
-        public static ScriptItem FromFile(String filePath)
-        {
-            return new ScriptItem();
+            ProjectItem.Save<ScriptItem>(this);
         }
 
         /// <summary>

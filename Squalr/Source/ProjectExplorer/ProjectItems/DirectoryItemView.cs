@@ -2,6 +2,7 @@
 {
     using Squalr.Engine.Projects;
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
 
     /// <summary>
@@ -14,21 +15,34 @@
             this.DirectoryItem = directoryItem;
         }
 
-        public String Path
+        public String FilePath
         {
             get
             {
-                return this.DirectoryItem.Path;
+                return this.DirectoryItem.FilePath;
             }
 
             set
             {
-                this.DirectoryItem.Path = value;
+                this.DirectoryItem.FilePath = value;
+            }
+        }
+
+        public IEnumerable<ProjectItem> ChildItems
+        {
+            get
+            {
+                return this.DirectoryItem.ChildItems;
             }
         }
 
         [Browsable(false)]
         private DirectoryItem DirectoryItem { get; set; }
+
+        public void AddChild(ProjectItem projectItem)
+        {
+            this.DirectoryItem.AddChild(projectItem);
+        }
     }
     //// End class
 }

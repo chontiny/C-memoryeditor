@@ -63,14 +63,13 @@
         private ProjectExplorerViewModel() : base("Project Explorer")
         {
             this.ObserverLock = new Object();
-            this.ProjectItemStorage = new ProjectItemStorage();
 
             // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
-            this.OpenProjectCommand = new RelayCommand(() => this.ProjectItemStorage.OpenProject(), () => true);
-            this.ImportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ImportProject(), () => true);
-            this.ExportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ExportProject(), () => true);
-            this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ProjectItemStorage.ImportProject(false, filename), (filename) => true);
-            this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
+            ////  this.OpenProjectCommand = new RelayCommand(() => this.ProjectItemStorage.OpenProject(), () => true);
+            ////  this.ImportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ImportProject(), () => true);
+            //// this.ExportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ExportProject(), () => true);
+            //// this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ProjectItemStorage.ImportProject(false, filename), (filename) => true);
+            ////  this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
             this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItems) => this.SelectedProjectItems = (selectedItems as IList)?.Cast<ProjectItem>(), (selectedItems) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
@@ -161,11 +160,6 @@
         /// Gets the command to cut the selection to the clipboard.
         /// </summary>
         public ICommand CutSelectionCommand { get; private set; }
-
-        /// <summary>
-        /// Gets an object that allows accesses to saving and loading project items.
-        /// </summary>
-        public ProjectItemStorage ProjectItemStorage { get; private set; }
 
         /// <summary>
         /// Gets the root that contains all project items.
@@ -296,13 +290,13 @@
             switch (projectItemType)
             {
                 case Type _ when projectItemType == typeof(PointerItem):
-                    this.AddNewProjectItems(true, new PointerItem());
+                    //// this.AddNewProjectItems(true, new PointerItem());
                     break;
                 case Type _ when projectItemType == typeof(ScriptItem):
-                    this.AddNewProjectItems(true, new ScriptItem());
+                    ////   this.AddNewProjectItems(true, new ScriptItem());
                     break;
                 case Type _ when projectItemType == typeof(InstructionItem):
-                    this.AddNewProjectItems(true, new InstructionItem());
+                    ////   this.AddNewProjectItems(true, new InstructionItem());
                     break;
                 default:
                     Logger.Log(LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());

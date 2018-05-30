@@ -397,8 +397,8 @@
     <Compile Include="Content\Images.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\ConstraintToIconConverter.cs" />
+    <Compile Include="Source\Mvvm\Converters\ProjectItemViewConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemToIconConverter.cs" />
-    <Compile Include="Source\ProjectExplorer\DirInfo.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemReader.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DirectoryItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemView.cs" />
@@ -463,7 +463,6 @@
     <Compile Include="Source\ProcessSelector\ProcessDecorator.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItemStorage.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
     <Compile Include="Source\Results\IResultDataTypeObserver.cs" />

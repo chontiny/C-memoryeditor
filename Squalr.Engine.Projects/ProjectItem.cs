@@ -2,6 +2,8 @@
 {
     using SharpDX.DirectInput;
     using Squalr.Engine.Input.HotKeys;
+    using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects.Properties;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -48,7 +50,7 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectItem" /> class.
         /// </summary>
-        public ProjectItem(String path) : this(path, String.Empty)
+        internal ProjectItem(String path) : this(path, String.Empty)
         {
         }
 
@@ -56,7 +58,7 @@
         /// Initializes a new instance of the <see cref="ProjectItem" /> class.
         /// </summary>
         /// <param name="description">The description of the project item.</param>
-        public ProjectItem(String path, String description)
+        internal ProjectItem(String path, String description)
         {
             // Bypass setters/getters to avoid triggering any view updates in constructor
             this.name = description == null ? String.Empty : description;
@@ -65,12 +67,56 @@
             this.ActivationLock = new Object();
         }
 
+        public static ProjectItem FromFile(String filePath)
+        {
+            try
+            {
+                if (!File.Exists(filePath))
+                {
+                    throw new Exception("File does not exist: " + filePath);
+                }
+
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem));
+                    return serializer.ReadObject(fileStream) as ProjectItem;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Error loading file", ex);
+                throw ex;
+            }
+        }
+
+        protected static void Save<T>(T projectItem, String filePath = null) where T : class
+        {
+            if (String.IsNullOrWhiteSpace(filePath))
+            {
+                filePath = Path.Combine(ProjectSettings.Default.ProjectRoot, (projectItem as ProjectItem)?.Name);
+            }
+
+            try
+            {
+                using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                {
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+                    serializer.WriteObject(fileStream, projectItem);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Error saving file", ex);
+                throw ex;
+            }
+        }
+
         /// <summary>
         /// Occurs after a property value changes.
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public String Path { get; set; }
+        public String FilePath { get; set; }
 
         /// <summary>
         /// Gets or sets the description for this object.

@@ -80,11 +80,6 @@
         /// <param name="window">The window to close.</param>
         protected override void Close(Window window)
         {
-            if (!ProjectExplorerViewModel.GetInstance().ProjectItemStorage.PromptSave())
-            {
-                return;
-            }
-
             ProjectExplorerViewModel.GetInstance().DisableAllProjectItems();
 
             base.Close(window);

@@ -11,11 +11,6 @@
 
         }
 
-        public static JavaItem FromFile(String filePath)
-        {
-            return new JavaItem();
-        }
-
         public override void Update()
         {
         }

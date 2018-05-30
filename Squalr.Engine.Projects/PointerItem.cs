@@ -64,11 +64,8 @@
             this.moduleOffset = baseAddress;
             this.moduleName = moduleName;
             this.pointerOffsets = pointerOffsets;
-        }
 
-        public static PointerItem FromFile(String filePath)
-        {
-            return new PointerItem();
+            ProjectItem.Save<PointerItem>(this);
         }
 
         /// <summary>

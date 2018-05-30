@@ -16,11 +16,6 @@
             this.Identifier = identifier;
         }
 
-        public static DotNetItem FromFile(String filePath)
-        {
-            return new DotNetItem();
-        }
-
         /// <summary>
         /// Gets or sets the identifier for this .NET object.
         /// </summary>
