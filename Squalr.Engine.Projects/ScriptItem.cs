@@ -47,8 +47,6 @@
         {
             // Initialize script and bypass setters
             this.script = script;
-
-            ProjectItem.Save<ScriptItem>(this);
         }
 
         /// <summary>

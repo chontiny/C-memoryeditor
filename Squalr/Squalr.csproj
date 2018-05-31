@@ -397,7 +397,6 @@
     <Compile Include="Content\Images.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\ConstraintToIconConverter.cs" />
-    <Compile Include="Source\Mvvm\Converters\ProjectItemViewConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemToIconConverter.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemReader.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DirectoryItemView.cs" />

@@ -25,7 +25,6 @@
             x:Key="BooleanToHiddenConverter"
             False="Hidden"
             True="Visible" />
-        <converters:ProjectItemViewConverter x:Key="ProjectItemViewConverter" />
         <converters:ProjectItemToIconConverter x:Key="ProjectItemToIconConverter" />
         <converters:ProjectItemDirectoryConverter x:Key="ProjectItemDirectoryConverter" />
         <ContextMenu
@@ -89,7 +88,7 @@
                 ItemsSource="{Binding ProjectRoot}">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                         <Setter Property="ContextMenu" Value="{StaticResource SolutionItemRightClickMenu}" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                         <Style.Resources>
@@ -126,7 +125,7 @@
                     <KeyBinding Key="Delete" Command="{Binding DeleteSelectionCommand}" />
                 </TreeView.InputBindings>
                 <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type proj:ProjectItemView}" ItemsSource="{Binding Converter={StaticResource ProjectItemDirectoryConverter}}">
+                    <HierarchicalDataTemplate DataType="{x:Type proj:ProjectItemView}" ItemsSource="{Binding Path=ChildItems, Converter={StaticResource ProjectItemDirectoryConverter}}">
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />

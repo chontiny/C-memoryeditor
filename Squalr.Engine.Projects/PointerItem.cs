@@ -64,8 +64,6 @@
             this.moduleOffset = baseAddress;
             this.moduleName = moduleName;
             this.pointerOffsets = pointerOffsets;
-
-            ProjectItem.Save<PointerItem>(this);
         }
 
         /// <summary>

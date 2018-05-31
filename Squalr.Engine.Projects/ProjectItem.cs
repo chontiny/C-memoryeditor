@@ -14,8 +14,15 @@
     /// <summary>
     /// A base class for all project items that can be added to the project explorer.
     /// </summary>
+    [KnownType(typeof(ProjectItem))]
+    [KnownType(typeof(ScriptItem))]
+    [KnownType(typeof(AddressItem))]
+    [KnownType(typeof(InstructionItem))]
+    [KnownType(typeof(PointerItem))]
+    [KnownType(typeof(DotNetItem))]
+    [KnownType(typeof(JavaItem))]
     [DataContract]
-    public abstract class ProjectItem : INotifyPropertyChanged, IDisposable
+    public class ProjectItem : INotifyPropertyChanged, IDisposable
     {
         /// <summary>
         /// The name of this project item.
@@ -67,6 +74,17 @@
             this.ActivationLock = new Object();
         }
 
+        private static readonly Type[] KnownTypes =
+        {
+            typeof(ProjectItem),
+            typeof(ScriptItem),
+            typeof(AddressItem),
+            typeof(InstructionItem),
+            typeof(PointerItem),
+            typeof(DotNetItem),
+            typeof(JavaItem),
+        };
+
         public static ProjectItem FromFile(String filePath)
         {
             try
@@ -78,7 +96,31 @@
 
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(ProjectItem));
+                    Type type = null;
+
+                    switch ((new FileInfo(filePath).Extension).ToLower())
+                    {
+                        case ".cs":
+                            type = typeof(ScriptItem);
+                            break;
+                        case ".ptr":
+                            type = typeof(PointerItem);
+                            break;
+                        case ".ins":
+                            type = typeof(InstructionItem);
+                            break;
+                        case ".clr":
+                            type = typeof(DotNetItem);
+                            break;
+                        case ".jvm":
+                            type = typeof(JavaItem);
+                            break;
+                        default:
+                            return null;
+                    }
+
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(type);
+
                     return serializer.ReadObject(fileStream) as ProjectItem;
                 }
             }
@@ -89,18 +131,47 @@
             }
         }
 
-        protected static void Save<T>(T projectItem, String filePath = null) where T : class
+        protected static void Save(ProjectItem projectItem, String directoryPath = null)
         {
-            if (String.IsNullOrWhiteSpace(filePath))
+            String filePath = String.Empty;
+            String name = projectItem.Name;
+
+            if (String.IsNullOrWhiteSpace(directoryPath))
             {
-                filePath = Path.Combine(ProjectSettings.Default.ProjectRoot, (projectItem as ProjectItem)?.Name);
+                directoryPath = ProjectSettings.Default.ProjectRoot;
+            }
+
+            if (String.IsNullOrWhiteSpace(projectItem.Name))
+            {
+                name = projectItem.Guid.ToString();
+            }
+
+            filePath = Path.Combine(directoryPath, name);
+
+            switch (projectItem?.GetType())
+            {
+                case Type type when projectItem is PointerItem:
+                    filePath += ".ptr";
+                    break;
+                case Type type when projectItem is ScriptItem:
+                    filePath += ".cs";
+                    break;
+                case Type type when projectItem is InstructionItem:
+                    filePath += ".ins";
+                    break;
+                case Type type when projectItem is JavaItem:
+                    filePath += ".jvm";
+                    break;
+                case Type type when projectItem is DotNetItem:
+                    filePath += ".clr";
+                    break;
             }
 
             try
             {
                 using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(projectItem.GetType());
                     serializer.WriteObject(fileStream, projectItem);
                 }
             }
@@ -116,7 +187,7 @@
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public String FilePath { get; set; }
+        public String DirectoryPath { get; set; }
 
         /// <summary>
         /// Gets or sets the description for this object.
@@ -297,7 +368,9 @@
         /// <summary>
         /// Updates event for this project item.
         /// </summary>
-        public abstract void Update();
+        public virtual void Update()
+        {
+        }
 
         /// <summary>
         /// Clones the project item.

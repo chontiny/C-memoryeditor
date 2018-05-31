@@ -1,8 +1,8 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
     using Squalr.Engine.Projects;
+    using Squalr.Engine.Utils.DataStructures;
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
 
     /// <summary>
@@ -10,6 +10,8 @@
     /// </summary>
     internal class DirectoryItemView : ProjectItemView
     {
+        private Boolean isExpanded;
+
         public DirectoryItemView(DirectoryItem directoryItem)
         {
             this.DirectoryItem = directoryItem;
@@ -19,16 +21,30 @@
         {
             get
             {
-                return this.DirectoryItem.FilePath;
+                return this.DirectoryItem.DirectoryPath;
             }
 
             set
             {
-                this.DirectoryItem.FilePath = value;
+                this.DirectoryItem.DirectoryPath = value;
             }
         }
 
-        public IEnumerable<ProjectItem> ChildItems
+        public Boolean IsExpanded
+        {
+            get
+            {
+                return this.isExpanded;
+            }
+
+            set
+            {
+                this.isExpanded = value;
+                this.RaisePropertyChanged(nameof(this.IsExpanded));
+            }
+        }
+
+        public FullyObservableCollection<ProjectItem> ChildItems
         {
             get
             {
@@ -42,6 +58,7 @@
         public void AddChild(ProjectItem projectItem)
         {
             this.DirectoryItem.AddChild(projectItem);
+            this.RaisePropertyChanged(nameof(this.ChildItems));
         }
     }
     //// End class

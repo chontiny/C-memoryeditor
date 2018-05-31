@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Projects
 {
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -11,14 +12,14 @@
     /// </summary>
     public class DirectoryItem : ProjectItem
     {
-        private IEnumerable<ProjectItem> childItems;
+        private FullyObservableCollection<ProjectItem> childItems;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DirectoryItem" /> class.
         /// </summary>
         public DirectoryItem(String filePath) : base(filePath)
         {
-            this.FilePath = filePath;
+            this.DirectoryPath = filePath;
 
             this.ChildItems = this.GetChildProjectItems();
             this.WatchForUpdates();
@@ -42,7 +43,7 @@
             }
         }
 
-        public IEnumerable<ProjectItem> ChildItems
+        public FullyObservableCollection<ProjectItem> ChildItems
         {
             get
             {
@@ -64,7 +65,15 @@
 
         public void AddChild(ProjectItem projectItem)
         {
-
+            try
+            {
+                ProjectItem.Save(projectItem, this.DirectoryPath);
+                this.ChildItems.Add(projectItem);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Unable to add project item due to error while saving", ex);
+            }
         }
 
         /// <summary>
@@ -72,13 +81,13 @@
         /// </summary>
         /// <returns>Returns the List of File info for this directory.
         /// Return null if an exception is raised.</returns>
-        public IEnumerable<ProjectItem> GetChildProjectItems()
+        public FullyObservableCollection<ProjectItem> GetChildProjectItems()
         {
-            IList<ProjectItem> projectItems = new List<ProjectItem>();
+            FullyObservableCollection<ProjectItem> projectItems = new FullyObservableCollection<ProjectItem>();
 
             try
             {
-                foreach (FileInfo file in Directory.GetFiles(this.FilePath).Select(directoryFile => new FileInfo(directoryFile)))
+                foreach (FileInfo file in Directory.GetFiles(this.DirectoryPath).Select(directoryFile => new FileInfo(directoryFile)))
                 {
                     try
                     {
@@ -102,7 +111,7 @@
 
             try
             {
-                IEnumerable<DirectoryInfo> subdirectories = Directory.GetDirectories(this.FilePath).Select(subdirectory => new DirectoryInfo(subdirectory));
+                IEnumerable<DirectoryInfo> subdirectories = Directory.GetDirectories(this.DirectoryPath).Select(subdirectory => new DirectoryInfo(subdirectory));
 
                 foreach (DirectoryInfo subdirectory in subdirectories)
                 {
@@ -126,7 +135,7 @@
 
         private void WatchForUpdates()
         {
-            this.FileSystemWatcher = new FileSystemWatcher(this.FilePath, "*.*");
+            this.FileSystemWatcher = new FileSystemWatcher(this.DirectoryPath, "*.*");
             this.FileSystemWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             this.FileSystemWatcher.Changed += new FileSystemEventHandler(OnFilesOrDirectoriesChanged);
             this.FileSystemWatcher.EnableRaisingEvents = true;
