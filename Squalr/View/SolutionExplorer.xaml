@@ -26,6 +26,14 @@
             False="Hidden"
             True="Visible" />
         <converters:ProjectItemToIconConverter x:Key="ProjectItemToIconConverter" />
+        <converters:ValueConverterGroup x:Key="DirectoryItemVisibilityConverter">
+            <converters:IsDirectoryItemConverter />
+            <converters:BooleanToVisibilityConverter />
+        </converters:ValueConverterGroup>
+        <converters:ValueConverterGroup x:Key="AddressItemVisibilityConverter">
+            <converters:IsAddressItemConverter />
+            <converters:BooleanToVisibilityConverter />
+        </converters:ValueConverterGroup>
         <converters:ProjectItemDirectoryConverter x:Key="ProjectItemDirectoryConverter" />
         <ContextMenu
             x:Key="RightClickMenu"
@@ -39,38 +47,58 @@
             Background="{StaticResource SqualrColorGray27}"
             BorderBrush="{StaticResource SqualrColorWhite}"
             Foreground="{StaticResource SqualrColorWhite}">
-            <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
-            <MenuItem Command="{Binding SolutionExplorerViewModel.AddNewAddressItemCommand, Source={StaticResource ViewModelLocator}}" Header="Add New Address" />
-            <MenuItem Command="{Binding SolutionExplorerViewModel.AddNewAddressItemCommand, Source={StaticResource ViewModelLocator}}" Header="Add New Pointer" />
-            <MenuItem Command="{Binding SolutionExplorerViewModel.AddNewInstructionItemCommand, Source={StaticResource ViewModelLocator}}" Header="Add New Instruction" />
-            <MenuItem Command="{Binding SolutionExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
-            <Separator Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <MenuItem
+                Command="{Binding SolutionExplorerViewModel.AddNewScriptItemCommand, Source={StaticResource ViewModelLocator}}"
+                Header="Add New Script"
+                Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource DirectoryItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <MenuItem
+                Command="{Binding SolutionExplorerViewModel.AddNewAddressItemCommand, Source={StaticResource ViewModelLocator}}"
+                Header="Add New Address"
+                Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource DirectoryItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <MenuItem
+                Command="{Binding SolutionExplorerViewModel.AddNewAddressItemCommand, Source={StaticResource ViewModelLocator}}"
+                Header="Add New Pointer"
+                Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource DirectoryItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <MenuItem
+                Command="{Binding SolutionExplorerViewModel.AddNewInstructionItemCommand, Source={StaticResource ViewModelLocator}}"
+                Header="Add New Instruction"
+                Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource DirectoryItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <MenuItem
+                Command="{Binding SolutionExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}"
+                Header="Toggle Selection"
+                Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource AddressItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+            <Separator Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource AddressItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <MenuItem
                 Command="{Binding PointerScannerViewModel.PointerScanCommand, Source={StaticResource ViewModelLocator}}"
                 Header="Pointer Scan for this Address"
-                Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+                Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource AddressItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <Separator Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <MenuItem
                 Command="{Binding CodeTracerViewModel.FindWhatWritesCommand, Source={StaticResource ViewModelLocator}}"
                 CommandParameter="{Binding .}"
                 Header="Find Code that Writes to this Address"
-                Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+                Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource AddressItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <MenuItem
                 Command="{Binding CodeTracerViewModel.FindWhatReadsCommand, Source={StaticResource ViewModelLocator}}"
                 CommandParameter="{Binding .}"
                 Header="Find Code that Reads from this Address"
-                Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+                Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource AddressItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <MenuItem
                 Command="{Binding CodeTracerViewModel.FindWhatAccessesCommand, Source={StaticResource ViewModelLocator}}"
                 CommandParameter="{Binding .}"
                 Header="Find Code that Reads or Writes to this Address"
-                Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
+                Visibility="{Binding SolutionExplorerViewModel.SelectedProjectItem, Converter={StaticResource AddressItemVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <Separator />
             <MenuItem Command="{Binding ProjectExplorerViewModel.DeleteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Delete Selection" />
             <Separator />
             <MenuItem Command="{Binding ProjectExplorerViewModel.CopySelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Copy" />
             <MenuItem Command="{Binding ProjectExplorerViewModel.PasteSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Paste" />
             <MenuItem Command="{Binding ProjectExplorerViewModel.CutSelectionCommand, Source={StaticResource ViewModelLocator}}" Header="Cut" />
+            <Separator />
+            <MenuItem
+                Command="{Binding SolutionExplorerViewModel.OpenFileExplorerCommand, Source={StaticResource ViewModelLocator}}"
+                CommandParameter="{Binding .}"
+                Header="Open in File Explorer" />
         </ContextMenu>
     </UserControl.Resources>
     <Grid>

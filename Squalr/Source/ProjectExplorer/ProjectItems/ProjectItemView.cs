@@ -1,11 +1,14 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
+    using Squalr.Engine.Projects;
     using System;
     using System.ComponentModel;
 
     internal class ProjectItemView : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private ProjectItem projectItem;
 
         private Boolean isSelected;
 
@@ -29,6 +32,32 @@
             {
                 this.isSelected = value;
                 this.RaisePropertyChanged(nameof(this.IsSelected));
+            }
+        }
+
+        public virtual Boolean IsExpanded
+        {
+            get
+            {
+                return false;
+            }
+
+            set
+            {
+            }
+        }
+
+        public ProjectItem ProjectItem
+        {
+            get
+            {
+                return this.projectItem;
+            }
+
+            set
+            {
+                this.projectItem = value;
+                this.RaisePropertyChanged(nameof(this.ProjectItem));
             }
         }
     }

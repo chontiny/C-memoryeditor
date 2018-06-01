@@ -13,6 +13,8 @@
     {
         private Boolean isExpanded;
 
+        private DirectoryItem directoryItem;
+
         public DirectoryItemView(DirectoryItem directoryItem)
         {
             this.DirectoryItem = directoryItem;
@@ -43,7 +45,7 @@
             }
         }
 
-        public Boolean IsExpanded
+        public override Boolean IsExpanded
         {
             get
             {
@@ -66,7 +68,20 @@
         }
 
         [Browsable(false)]
-        private DirectoryItem DirectoryItem { get; set; }
+        private DirectoryItem DirectoryItem
+        {
+            get
+            {
+                return this.directoryItem;
+            }
+
+            set
+            {
+                this.directoryItem = value;
+                this.ProjectItem = value;
+                this.RaisePropertyChanged(nameof(this.DirectoryItem));
+            }
+        }
 
         public void AddChild(ProjectItem projectItem)
         {

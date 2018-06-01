@@ -16,13 +16,28 @@
     /// </summary>
     internal class DotNetItemView : ProjectItemView
     {
+        private DotNetItem dotNetItem;
+
         public DotNetItemView(DotNetItem dotNetItem)
         {
             this.DotNetItem = dotNetItem;
         }
 
         [Browsable(false)]
-        private DotNetItem DotNetItem { get; set; }
+        private DotNetItem DotNetItem
+        {
+            get
+            {
+                return this.dotNetItem;
+            }
+
+            set
+            {
+                this.dotNetItem = value;
+                this.ProjectItem = value;
+                this.RaisePropertyChanged(nameof(this.DotNetItem));
+            }
+        }
 
         [Browsable(true)]
         [RefreshProperties(RefreshProperties.All)]

@@ -121,7 +121,14 @@
 
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(type);
 
-                    return serializer.ReadObject(fileStream) as ProjectItem;
+                    ProjectItem projectItem = serializer.ReadObject(fileStream) as ProjectItem;
+
+                    if (projectItem != null)
+                    {
+                        projectItem.DirectoryPath = Path.GetDirectoryName(filePath);
+                    }
+
+                    return projectItem;
                 }
             }
             catch (Exception ex)

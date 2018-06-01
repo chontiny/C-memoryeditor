@@ -14,13 +14,40 @@
     /// </summary>
     internal class PointerItemView : ProjectItemView
     {
+        private PointerItem pointerItem;
+
         public PointerItemView(PointerItem pointerItem)
         {
             this.PointerItem = pointerItem;
         }
 
         [Browsable(false)]
-        private PointerItem PointerItem { get; set; }
+        private PointerItem PointerItem
+        {
+            get
+            {
+                return this.pointerItem;
+            }
+
+            set
+            {
+                this.pointerItem = value;
+                this.ProjectItem = value;
+                this.RaisePropertyChanged(nameof(this.PointerItem));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the description for this object.
+        /// </summary>
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Name"), Description("The name of this pointer")]
+        public String Name
+        {
+            get
+            {
+                return this.PointerItem.Name;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the identifier for the base address of this object.

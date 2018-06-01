@@ -12,6 +12,7 @@
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using Squalr.Source.PropertyViewer;
     using System;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -54,6 +55,7 @@
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(ScriptItem)), () => true);
             this.AddNewInstructionItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(InstructionItem)), () => true);
+            this.OpenFileExplorerCommand = new RelayCommand<ProjectItemView>((projectItem) => this.OpenFileExplorer(projectItem), (projectItem) => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
@@ -133,6 +135,11 @@
         public ICommand CutSelectionCommand { get; private set; }
 
         /// <summary>
+        /// Gets a command to view a file or directory in the native file explorer.
+        /// </summary>
+        public ICommand OpenFileExplorerCommand { get; private set; }
+
+        /// <summary>
         /// The project root tree of the current project.
         /// </summary>
         public FullyObservableCollection<DirectoryItemView> ProjectRoot
@@ -161,6 +168,7 @@
             set
             {
                 this.selectedProjectItem = value;
+                this.RaisePropertyChanged(nameof(this.SelectedProjectItem));
                 PropertyViewerViewModel.GetInstance().SetTargetObjects(value);
             }
         }
@@ -368,6 +376,27 @@
         {
             //  this.ClipBoard = this.SelectedProjectItems?.SoftClone();
             // this.DeleteSelection(promptUser: false);
+        }
+
+        private void OpenFileExplorer(ProjectItemView projectItemView)
+        {
+            String directory = projectItemView.ProjectItem.DirectoryPath;
+
+            if (Directory.Exists(directory))
+            {
+                try
+                {
+                    Process.Start(directory);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Error opening file explorer", ex);
+                }
+            }
+            else
+            {
+                Logger.Log(LogLevel.Error, "Unable to open file explorer. Directory does not exist");
+            }
         }
     }
     //// End class

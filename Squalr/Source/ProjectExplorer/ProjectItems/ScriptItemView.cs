@@ -13,13 +13,28 @@
     /// </summary>
     internal class ScriptItemView : ProjectItemView
     {
+        private ScriptItem scriptItem;
+
         public ScriptItemView(ScriptItem scriptItem)
         {
             this.ScriptItem = scriptItem;
         }
 
         [Browsable(false)]
-        private ScriptItem ScriptItem { get; set; }
+        private ScriptItem ScriptItem
+        {
+            get
+            {
+                return this.scriptItem;
+            }
+
+            set
+            {
+                this.scriptItem = value;
+                this.ProjectItem = value;
+                this.RaisePropertyChanged(nameof(this.ScriptItem));
+            }
+        }
 
         /// <summary>
         /// Gets or sets the raw script text.

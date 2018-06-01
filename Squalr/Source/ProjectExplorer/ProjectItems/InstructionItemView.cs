@@ -12,13 +12,28 @@
     /// </summary>
     internal class InstructionItemView : ProjectItemView
     {
+        private InstructionItem instructionItem;
+
         public InstructionItemView(InstructionItem instructionItem)
         {
             this.InstructionItem = instructionItem;
         }
 
         [Browsable(false)]
-        private InstructionItem InstructionItem { get; set; }
+        private InstructionItem InstructionItem
+        {
+            get
+            {
+                return this.instructionItem;
+            }
+
+            set
+            {
+                this.instructionItem = value;
+                this.ProjectItem = value;
+                this.RaisePropertyChanged(nameof(this.InstructionItem));
+            }
+        }
 
         /// <summary>
         /// Gets or sets the value at this address.
