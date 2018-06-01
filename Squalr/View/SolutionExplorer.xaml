@@ -32,13 +32,6 @@
             Background="{StaticResource SqualrColorGray27}"
             BorderBrush="{StaticResource SqualrColorWhite}"
             Foreground="{StaticResource SqualrColorWhite}">
-            <MenuItem Header="Create New...">
-                <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Script" />
-                <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Address" />
-                <MenuItem Command="{Binding AddNewAddressItemCommand}" Header="Pointer" />
-                <MenuItem Command="{Binding AddNewInstructionItemCommand}" Header="Instruction" />
-            </MenuItem>
-            <Separator />
             <MenuItem Command="{Binding PasteSelectionCommand}" Header="Paste" />
         </ContextMenu>
         <ContextMenu
@@ -46,7 +39,11 @@
             Background="{StaticResource SqualrColorGray27}"
             BorderBrush="{StaticResource SqualrColorWhite}"
             Foreground="{StaticResource SqualrColorWhite}">
-            <MenuItem Command="{Binding ProjectExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
+            <MenuItem Command="{Binding AddNewScriptItemCommand}" Header="Add New Script" />
+            <MenuItem Command="{Binding SolutionExplorerViewModel.AddNewAddressItemCommand, Source={StaticResource ViewModelLocator}}" Header="Add New Address" />
+            <MenuItem Command="{Binding SolutionExplorerViewModel.AddNewAddressItemCommand, Source={StaticResource ViewModelLocator}}" Header="Add New Pointer" />
+            <MenuItem Command="{Binding SolutionExplorerViewModel.AddNewInstructionItemCommand, Source={StaticResource ViewModelLocator}}" Header="Add New Instruction" />
+            <MenuItem Command="{Binding SolutionExplorerViewModel.ToggleSelectionActivationCommand, Source={StaticResource ViewModelLocator}}" Header="Toggle Selection" />
             <Separator Visibility="{Binding ProjectExplorerViewModel.IsSelectionAddress, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource ViewModelLocator}}" />
             <MenuItem
                 Command="{Binding PointerScannerViewModel.PointerScanCommand, Source={StaticResource ViewModelLocator}}"
@@ -77,74 +74,89 @@
         </ContextMenu>
     </UserControl.Resources>
     <Grid>
-        <ScrollViewer
-            Grid.Row="0"
-            HorizontalScrollBarVisibility="Hidden"
-            VerticalScrollBarVisibility="Auto">
-            <TreeView
-                Name="ProjectExplorerTreeView"
-                Background="{StaticResource SqualrColorBlack}"
-                ContextMenu="{StaticResource RightClickMenu}"
-                ItemsSource="{Binding ProjectRoot}">
-                <TreeView.ItemContainerStyle>
-                    <Style TargetType="{x:Type TreeViewItem}">
-                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                        <Setter Property="ContextMenu" Value="{StaticResource SolutionItemRightClickMenu}" />
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Style.Resources>
-                            <Style TargetType="{x:Type Border}">
-                                <Setter Property="Grid.ColumnSpan" Value="2" />
-                            </Style>
-                        </Style.Resources>
-                    </Style>
-                </TreeView.ItemContainerStyle>
-                <!--  Click and Selection events  -->
-                <intr:Interaction.Triggers>
-                    <intr:EventTrigger EventName="SelectedItemChanged">
-                        <intr:InvokeCommandAction Command="{Binding SelectProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerTreeView, Path=SelectedItem}" />
-                    </intr:EventTrigger>
-                    <intr:EventTrigger EventName="MouseDoubleClick">
-                        <intr:InvokeCommandAction Command="{Binding EditProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerTreeView, Path=SelectedItem}" />
-                    </intr:EventTrigger>
-                </intr:Interaction.Triggers>
-                <!--  Keyboard shortcuts  -->
-                <TreeView.InputBindings>
-                    <KeyBinding
-                        Key="C"
-                        Command="{Binding CopySelectionCommand}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="X"
-                        Command="{Binding CutSelectionCommand}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="V"
-                        Command="{Binding PasteSelectionCommand}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding Key="Space" Command="{Binding ToggleSelectionActivationCommand}" />
-                    <KeyBinding Key="Delete" Command="{Binding DeleteSelectionCommand}" />
-                </TreeView.InputBindings>
-                <TreeView.ItemTemplate>
-                    <HierarchicalDataTemplate DataType="{x:Type proj:ProjectItemView}" ItemsSource="{Binding Path=ChildItems, Converter={StaticResource ProjectItemDirectoryConverter}}">
-                        <Grid HorizontalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Image
-                                Grid.Column="0"
-                                Width="20"
-                                Height="20"
-                                Source="{Binding Converter={StaticResource ProjectItemToIconConverter}}" />
-                            <TextBlock
-                                Grid.Column="1"
-                                Margin="5,0,0,0"
-                                Foreground="{StaticResource SqualrColorWhite}"
-                                Text="{Binding Path=Name}" />
-                        </Grid>
-                    </HierarchicalDataTemplate>
-                </TreeView.ItemTemplate>
-            </TreeView>
-        </ScrollViewer>
+        <TreeView
+            Name="ProjectExplorerTreeView"
+            Background="{StaticResource SqualrColorBlack}"
+            BorderBrush="White"
+            ContextMenu="{StaticResource RightClickMenu}"
+            ItemsSource="{Binding ProjectRoot}">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="ContextMenu" Value="{StaticResource SolutionItemRightClickMenu}" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Style.Resources>
+                        <Style TargetType="{x:Type Border}">
+                            <Setter Property="Grid.ColumnSpan" Value="2" />
+                        </Style>
+                    </Style.Resources>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <!--  Click and Selection events  -->
+            <intr:Interaction.Triggers>
+                <intr:EventTrigger EventName="SelectedItemChanged">
+                    <intr:InvokeCommandAction Command="{Binding SelectProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerTreeView, Path=SelectedItem}" />
+                </intr:EventTrigger>
+                <intr:EventTrigger EventName="MouseDoubleClick">
+                    <intr:InvokeCommandAction Command="{Binding EditProjectItemCommand}" CommandParameter="{Binding ElementName=ProjectExplorerTreeView, Path=SelectedItem}" />
+                </intr:EventTrigger>
+            </intr:Interaction.Triggers>
+            <!--  Keyboard shortcuts  -->
+            <TreeView.InputBindings>
+                <KeyBinding
+                    Key="C"
+                    Command="{Binding CopySelectionCommand}"
+                    Modifiers="Ctrl" />
+                <KeyBinding
+                    Key="X"
+                    Command="{Binding CutSelectionCommand}"
+                    Modifiers="Ctrl" />
+                <KeyBinding
+                    Key="V"
+                    Command="{Binding PasteSelectionCommand}"
+                    Modifiers="Ctrl" />
+                <KeyBinding Key="Space" Command="{Binding ToggleSelectionActivationCommand}" />
+                <KeyBinding Key="Delete" Command="{Binding DeleteSelectionCommand}" />
+            </TreeView.InputBindings>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="{x:Type proj:ProjectItemView}" ItemsSource="{Binding Path=ChildItems, Converter={StaticResource ProjectItemDirectoryConverter}}">
+                    <Grid HorizontalAlignment="Stretch" Background="Transparent">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Image
+                            Grid.Column="0"
+                            Width="20"
+                            Height="20"
+                            Source="{Binding Converter={StaticResource ProjectItemToIconConverter}}">
+                            <intr:Interaction.Triggers>
+                                <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                    <ei:ChangePropertyAction
+                                        PropertyName="IsSelected"
+                                        TargetObject="{Binding}"
+                                        Value="true" />
+                                </intr:EventTrigger>
+                            </intr:Interaction.Triggers>
+                        </Image>
+                        <TextBlock
+                            Grid.Column="1"
+                            Margin="5,0,0,0"
+                            Foreground="{StaticResource SqualrColorWhite}"
+                            Text="{Binding Path=Name}">
+                            <intr:Interaction.Triggers>
+                                <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                    <ei:ChangePropertyAction
+                                        PropertyName="IsSelected"
+                                        TargetObject="{Binding}"
+                                        Value="true" />
+                                </intr:EventTrigger>
+                            </intr:Interaction.Triggers>
+                        </TextBlock>
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
     </Grid>
 </UserControl>

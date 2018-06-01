@@ -7,6 +7,8 @@
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private Boolean isSelected;
+
         /// <summary>
         /// Indicates that a given property in this project item has changed.
         /// </summary>
@@ -14,6 +16,20 @@
         protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public Boolean IsSelected
+        {
+            get
+            {
+                return this.isSelected;
+            }
+
+            set
+            {
+                this.isSelected = value;
+                this.RaisePropertyChanged(nameof(this.IsSelected));
+            }
         }
     }
     //// End class

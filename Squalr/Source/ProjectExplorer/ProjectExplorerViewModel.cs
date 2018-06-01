@@ -290,13 +290,13 @@
             switch (projectItemType)
             {
                 case Type _ when projectItemType == typeof(PointerItem):
-                    //// this.AddNewProjectItems(true, new PointerItem());
+                    this.AddNewProjectItems(true, new PointerItem());
                     break;
                 case Type _ when projectItemType == typeof(ScriptItem):
-                    ////   this.AddNewProjectItems(true, new ScriptItem());
+                    this.AddNewProjectItems(true, new ScriptItem());
                     break;
                 case Type _ when projectItemType == typeof(InstructionItem):
-                    ////   this.AddNewProjectItems(true, new InstructionItem());
+                    this.AddNewProjectItems(true, new InstructionItem());
                     break;
                 default:
                     Logger.Log(LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());

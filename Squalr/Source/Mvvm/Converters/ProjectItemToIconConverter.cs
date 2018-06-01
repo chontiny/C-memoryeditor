@@ -28,6 +28,8 @@
 
             switch (value)
             {
+                case DirectoryItemView type when type is DirectoryItemView:
+                    return Images.Open;
                 case ProjectItemView type when type is PointerItemView:
                     return Images.LetterP;
                 case ProjectItemView type when type is ScriptItemView:

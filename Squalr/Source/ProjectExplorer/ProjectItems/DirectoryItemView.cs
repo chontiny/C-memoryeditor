@@ -2,6 +2,7 @@
 {
     using Squalr.Engine.Projects;
     using Squalr.Engine.Utils.DataStructures;
+    using Squalr.Source.Controls;
     using System;
     using System.ComponentModel;
 
@@ -15,6 +16,18 @@
         public DirectoryItemView(DirectoryItem directoryItem)
         {
             this.DirectoryItem = directoryItem;
+        }
+
+        /// <summary>
+        /// Gets or sets the description for this object.
+        /// </summary>
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Name"), Description("The name of this folder")]
+        public String Name
+        {
+            get
+            {
+                return this.DirectoryItem.Name;
+            }
         }
 
         public String FilePath

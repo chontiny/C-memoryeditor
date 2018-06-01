@@ -240,16 +240,18 @@
         /// </summary>
         private void AddNewProjectItem(Type projectItemType)
         {
+            DirectoryItemView directoryItemView = this.SelectedProjectItem as DirectoryItemView ?? this.ProjectRoot.FirstOrDefault();
+
             switch (projectItemType)
             {
                 case Type _ when projectItemType == typeof(PointerItem):
-                    this.ProjectRoot.FirstOrDefault()?.AddChild(new PointerItem());
+                    directoryItemView?.AddChild(new PointerItem());
                     break;
                 case Type _ when projectItemType == typeof(ScriptItem):
-                    this.ProjectRoot.FirstOrDefault()?.AddChild(new ScriptItem());
+                    directoryItemView?.AddChild(new ScriptItem());
                     break;
                 case Type _ when projectItemType == typeof(InstructionItem):
-                    this.ProjectRoot.FirstOrDefault()?.AddChild(new InstructionItem());
+                    directoryItemView?.AddChild(new InstructionItem());
                     break;
                 default:
                     Logger.Log(LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
