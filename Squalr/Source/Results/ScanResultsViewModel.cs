@@ -10,7 +10,7 @@
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Properties;
     using Squalr.Source.Docking;
-    using Squalr.Source.SolutionExplorer;
+    using Squalr.Source.ProjectExplorer;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -455,7 +455,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddScanResult(ScanResult scanResult)
         {
-            SolutionExplorerViewModel.GetInstance().AddProjectItems(scanResult?.PointerItem);
+            ProjectExplorerViewModel.GetInstance().AddProjectItems(scanResult?.PointerItem);
         }
 
         /// <summary>
@@ -471,7 +471,7 @@
 
             IEnumerable<PointerItem> projectItems = scanResults.Select(scanResult => scanResult.PointerItem);
 
-            SolutionExplorerViewModel.GetInstance().AddProjectItems(projectItems.ToArray());
+            ProjectExplorerViewModel.GetInstance().AddProjectItems(projectItems.ToArray());
         }
 
         /// <summary>

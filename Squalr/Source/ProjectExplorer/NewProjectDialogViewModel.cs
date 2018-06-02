@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.SolutionExplorer
+﻿namespace Squalr.Source.ProjectExplorer
 {
     using GalaSoft.MvvmLight;
     using GalaSoft.MvvmLight.CommandWpf;

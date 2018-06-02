@@ -6,7 +6,7 @@
     using Squalr.Engine.Memory.Clr;
     using Squalr.Engine.Projects;
     using Squalr.Source.Docking;
-    using Squalr.Source.SolutionExplorer;
+    using Squalr.Source.ProjectExplorer;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -106,7 +106,7 @@
                 dotNetObject.ElementType == DataType.Boolean ? DataType.Byte : dotNetObject.ElementType,
                 dotNetObject.GetFullName());
 
-            SolutionExplorerViewModel.GetInstance().AddProjectItems(dotnetItem);
+            ProjectExplorerViewModel.GetInstance().AddProjectItems(dotnetItem);
         }
     }
     //// End class

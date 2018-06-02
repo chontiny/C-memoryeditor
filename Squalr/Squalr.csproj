@@ -411,7 +411,7 @@
     <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItemView.cs" />
     <Compile Include="Source\ProjectExplorer\NewProjectDialogViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\SolutionExplorerViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemDirectoryConverter.cs" />
     <Compile Include="Source\Tasks\TaskTrackerViewModel.cs" />
     <Compile Include="Source\Analytics\AnalyticsService.cs" />
@@ -721,10 +721,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\ProjectExplorer.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="View\PropertyViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -741,7 +737,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\SolutionExplorer.xaml">
+    <Page Include="View\ProjectExplorer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

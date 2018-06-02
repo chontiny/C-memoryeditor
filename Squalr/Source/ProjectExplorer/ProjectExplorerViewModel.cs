@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.SolutionExplorer
+﻿namespace Squalr.Source.ProjectExplorer
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Logging;
@@ -19,23 +19,13 @@
     using System.Windows.Forms;
     using System.Windows.Input;
 
-    internal class SolutionExplorerViewModel : ToolViewModel
+    internal class ProjectExplorerViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The filter to use for saving and loading project filters.
-        /// </summary>
-        public const String ProjectExtensionFilter = "Solution File (*.sln)|*.sln|";
-
-        /// <summary>
-        /// The file extension for project items.
-        /// </summary>
-        private const String ProjectFileExtension = ".sln";
-
         /// <summary>
         /// Singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
         /// </summary>
-        private static Lazy<SolutionExplorerViewModel> solutionExplorerViewModelInstance = new Lazy<SolutionExplorerViewModel>(
-                () => { return new SolutionExplorerViewModel(); },
+        private static Lazy<ProjectExplorerViewModel> projectExplorerViewModelInstance = new Lazy<ProjectExplorerViewModel>(
+                () => { return new ProjectExplorerViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         private FullyObservableCollection<DirectoryItemView> projectRoot;
@@ -45,7 +35,7 @@
         /// </summary>
         private ProjectItemView selectedProjectItem;
 
-        public SolutionExplorerViewModel() : base("Solution Explorer")
+        public ProjectExplorerViewModel() : base("Project Explorer")
         {
             this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());
@@ -61,12 +51,12 @@
         }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="SolutionExplorerViewModel" /> class.
+        /// Gets a singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
-        public static SolutionExplorerViewModel GetInstance()
+        public static ProjectExplorerViewModel GetInstance()
         {
-            return SolutionExplorerViewModel.solutionExplorerViewModelInstance.Value;
+            return ProjectExplorerViewModel.projectExplorerViewModelInstance.Value;
         }
 
         /// <summary>
