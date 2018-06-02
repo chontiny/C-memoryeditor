@@ -40,12 +40,19 @@
         /// <summary>
         /// Gets or sets the description for this object.
         /// </summary>
+        [Browsable(true)]
         [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Name"), Description("The name of this pointer")]
         public String Name
         {
             get
             {
                 return this.PointerItem.Name;
+            }
+
+            set
+            {
+                this.PointerItem.Name = value;
+                this.RaisePropertyChanged(nameof(this.Name));
             }
         }
 
@@ -65,6 +72,7 @@
             set
             {
                 this.PointerItem.ModuleName = value;
+                this.RaisePropertyChanged(nameof(this.ModuleName));
             }
         }
 
@@ -85,6 +93,7 @@
             set
             {
                 this.PointerItem.ModuleOffset = value;
+                this.RaisePropertyChanged(nameof(this.ModuleOffset));
             }
         }
 
@@ -106,6 +115,7 @@
             set
             {
                 this.PointerItem.PointerOffsets = value;
+                this.RaisePropertyChanged(nameof(this.PointerOffsets));
             }
         }
     }

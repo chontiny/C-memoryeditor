@@ -6,7 +6,6 @@
     using Squalr.Source.ChangeLog;
     using Squalr.Source.Docking;
     using Squalr.Source.Output;
-    using Squalr.Source.ProjectExplorer;
     using System;
     using System.Threading;
     using System.Windows;
@@ -80,7 +79,7 @@
         /// <param name="window">The window to close.</param>
         protected override void Close(Window window)
         {
-            ProjectExplorerViewModel.GetInstance().DisableAllProjectItems();
+            // SolutionExplorerViewModel.GetInstance().DisableAllProjectItems();
 
             base.Close(window);
         }

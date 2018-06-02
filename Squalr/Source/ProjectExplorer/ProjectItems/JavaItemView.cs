@@ -52,6 +52,7 @@
             set
             {
                 this.JavaItem.DataType = value;
+                this.RaisePropertyChanged(nameof(this.DataType));
             }
         }
 
@@ -71,6 +72,7 @@
             set
             {
                 this.JavaItem.AddressValue = value;
+                this.RaisePropertyChanged(nameof(this.AddressValue));
             }
         }
 
@@ -90,6 +92,7 @@
             set
             {
                 this.JavaItem.IsValueHex = value;
+                this.RaisePropertyChanged(nameof(this.IsValueHex));
             }
         }
 

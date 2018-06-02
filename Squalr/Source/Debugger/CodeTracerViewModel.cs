@@ -6,7 +6,7 @@
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
-    using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.SolutionExplorer;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -158,7 +158,7 @@
         {
             InstructionItem instructionItem = new InstructionItem(codeTraceResult.Address, "", "nop", new Byte[] { 0x90 });
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: instructionItem);
+            SolutionExplorerViewModel.GetInstance().AddProjectItems(instructionItem);
         }
 
         /// <summary>
@@ -175,7 +175,7 @@
             IEnumerable<InstructionItem> projectItems = codeTraceResults.Select(
                 codeTraceEvent => new InstructionItem(codeTraceEvent.Address, "", "nop", new Byte[] { 0x90 }));
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: projectItems);
+            SolutionExplorerViewModel.GetInstance().AddProjectItems(projectItems.ToArray());
         }
 
         private void FindWhatWrites(ProjectItem projectItem)

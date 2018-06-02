@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
     using Squalr.Engine.Projects;
+    using Squalr.Engine.Utils.DataStructures;
     using System;
     using System.ComponentModel;
 
@@ -21,6 +22,15 @@
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public virtual FullyObservableCollection<ProjectItem> ChildItems
+        {
+            get
+            {
+                return null;
+            }
+        }
+
+        [Browsable(false)]
         public Boolean IsSelected
         {
             get
@@ -35,6 +45,7 @@
             }
         }
 
+        [Browsable(false)]
         public virtual Boolean IsExpanded
         {
             get
@@ -47,6 +58,7 @@
             }
         }
 
+        [Browsable(false)]
         public ProjectItem ProjectItem
         {
             get

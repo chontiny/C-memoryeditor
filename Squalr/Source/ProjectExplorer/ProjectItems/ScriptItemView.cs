@@ -37,6 +37,25 @@
         }
 
         /// <summary>
+        /// Gets or sets the description for this object.
+        /// </summary>
+        [Browsable(true)]
+        [SortedCategory(SortedCategory.CategoryType.Common), DisplayName("Name"), Description("The name of this script")]
+        public String Name
+        {
+            get
+            {
+                return this.ScriptItem.Name;
+            }
+
+            set
+            {
+                this.ScriptItem.Name = value;
+                this.RaisePropertyChanged(nameof(this.Name));
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the raw script text.
         /// </summary>
         [Browsable(true)]
@@ -54,6 +73,7 @@
             set
             {
                 this.ScriptItem.Script = value;
+                this.RaisePropertyChanged(nameof(this.Script));
             }
         }
     }

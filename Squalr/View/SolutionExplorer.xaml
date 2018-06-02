@@ -108,8 +108,17 @@
             BorderBrush="White"
             ContextMenu="{StaticResource RightClickMenu}"
             ItemsSource="{Binding ProjectRoot}">
+            <TreeView.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color, Source={StaticResource SqualrColorHighlight}}" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color, Source={StaticResource SqualrColorHighlight}}" />
+            </TreeView.Resources>
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorHighlightBorder}" />
+                        </Trigger>
+                    </Style.Triggers>
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                     <Setter Property="ContextMenu" Value="{StaticResource SolutionItemRightClickMenu}" />
@@ -149,40 +158,45 @@
             </TreeView.InputBindings>
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate DataType="{x:Type proj:ProjectItemView}" ItemsSource="{Binding Path=ChildItems, Converter={StaticResource ProjectItemDirectoryConverter}}">
-                    <Grid HorizontalAlignment="Stretch" Background="Transparent">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Image
-                            Grid.Column="0"
-                            Width="20"
-                            Height="20"
-                            Source="{Binding Converter={StaticResource ProjectItemToIconConverter}}">
-                            <intr:Interaction.Triggers>
-                                <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
-                                    <ei:ChangePropertyAction
-                                        PropertyName="IsSelected"
-                                        TargetObject="{Binding}"
-                                        Value="true" />
-                                </intr:EventTrigger>
-                            </intr:Interaction.Triggers>
-                        </Image>
-                        <TextBlock
-                            Grid.Column="1"
-                            Margin="5,0,0,0"
-                            Foreground="{StaticResource SqualrColorWhite}"
-                            Text="{Binding Path=Name}">
-                            <intr:Interaction.Triggers>
-                                <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
-                                    <ei:ChangePropertyAction
-                                        PropertyName="IsSelected"
-                                        TargetObject="{Binding}"
-                                        Value="true" />
-                                </intr:EventTrigger>
-                            </intr:Interaction.Triggers>
-                        </TextBlock>
-                    </Grid>
+                    <Border
+                        Background="{Binding Background, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
+                        BorderBrush="{Binding BorderBrush, RelativeSource={RelativeSource AncestorType=TreeViewItem}}"
+                        BorderThickness="1">
+                        <Grid HorizontalAlignment="Stretch" Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Image
+                                Grid.Column="0"
+                                Width="20"
+                                Height="20"
+                                Source="{Binding Converter={StaticResource ProjectItemToIconConverter}}">
+                                <intr:Interaction.Triggers>
+                                    <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                        <ei:ChangePropertyAction
+                                            PropertyName="IsSelected"
+                                            TargetObject="{Binding}"
+                                            Value="true" />
+                                    </intr:EventTrigger>
+                                </intr:Interaction.Triggers>
+                            </Image>
+                            <TextBlock
+                                Grid.Column="1"
+                                Margin="5,0,0,0"
+                                Foreground="{StaticResource SqualrColorWhite}"
+                                Text="{Binding Path=Name}">
+                                <intr:Interaction.Triggers>
+                                    <intr:EventTrigger EventName="PreviewMouseRightButtonDown">
+                                        <ei:ChangePropertyAction
+                                            PropertyName="IsSelected"
+                                            TargetObject="{Binding}"
+                                            Value="true" />
+                                    </intr:EventTrigger>
+                                </intr:Interaction.Triggers>
+                            </TextBlock>
+                        </Grid>
+                    </Border>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

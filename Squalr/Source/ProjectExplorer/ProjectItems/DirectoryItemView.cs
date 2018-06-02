@@ -59,7 +59,7 @@
             }
         }
 
-        public FullyObservableCollection<ProjectItem> ChildItems
+        public override FullyObservableCollection<ProjectItem> ChildItems
         {
             get
             {

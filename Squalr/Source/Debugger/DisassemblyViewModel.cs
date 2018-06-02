@@ -8,7 +8,7 @@
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
-    using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.SolutionExplorer;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -152,7 +152,7 @@
         /// <param name="instruction">The instruction to add to the project explorer.</param>
         private void AddInstruction(InstructionItem instruction)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: instruction);
+            SolutionExplorerViewModel.GetInstance().AddProjectItems(instruction);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@
                 return;
             }
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: instructions);
+            SolutionExplorerViewModel.GetInstance().AddProjectItems(instructions.ToArray());
         }
 
         /// <summary>

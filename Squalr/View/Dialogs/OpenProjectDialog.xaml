@@ -69,10 +69,10 @@
         <shell:Grid shell:Grid.Row="2">
             <shell:ListView
                 Name="ProjectsListView"
-                MouseDoubleClick="ProjectsListViewMouseDoubleClick"
                 Background="{StaticResource SqualrColorBlack}"
                 Foreground="{StaticResource SqualrColorWhite}"
-                ItemsSource="{Binding Projects}">
+                ItemsSource="{Binding FilteredProjects}"
+                MouseDoubleClick="ProjectsListViewMouseDoubleClick">
                 <!--  Click and Selection events  -->
                 <intr:Interaction.Triggers>
                     <intr:EventTrigger EventName="SelectionChanged">

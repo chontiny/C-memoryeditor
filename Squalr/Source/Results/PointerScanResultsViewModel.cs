@@ -7,7 +7,7 @@
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
-    using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.SolutionExplorer;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -270,7 +270,7 @@
             if (pointer != null)
             {
                 PointerItem pointerItem = new PointerItem(pointer.BaseAddress, this.ActiveType, "New Pointer", null, pointer.Offsets);
-                ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: pointerItem);
+                SolutionExplorerViewModel.GetInstance().AddProjectItems(pointerItem);
             }
         }
 

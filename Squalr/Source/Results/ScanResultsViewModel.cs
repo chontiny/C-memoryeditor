@@ -2,6 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
+    using Squalr.Engine.Memory;
     using Squalr.Engine.Projects;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils;
@@ -9,7 +10,7 @@
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Properties;
     using Squalr.Source.Docking;
-    using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.SolutionExplorer;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -394,7 +395,7 @@
                     Object previousValue = element.HasPreviousValue() ? element.LoadPreviousValue() : null;
 
                     String moduleName = String.Empty;
-                    UInt64 address = 0; // AddressResolver.GetInstance().AddressToModule(element.BaseAddress, out moduleName);
+                    UInt64 address = Query.Default.AddressToModule(element.BaseAddress, out moduleName);
 
                     PointerItem pointerItem = new PointerItem(baseAddress: address, dataType: this.ActiveType, moduleName: moduleName, value: currentValue);
                     newAddresses.Add(new ScanResult(pointerItem, previousValue, label));
@@ -475,7 +476,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddScanResult(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult?.PointerItem);
+            SolutionExplorerViewModel.GetInstance().AddProjectItems(scanResult?.PointerItem);
         }
 
         /// <summary>
@@ -491,7 +492,7 @@
 
             IEnumerable<PointerItem> projectItems = scanResults.Select(scanResult => scanResult.PointerItem);
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: projectItems);
+            SolutionExplorerViewModel.GetInstance().AddProjectItems(projectItems.ToArray());
         }
 
         /// <summary>

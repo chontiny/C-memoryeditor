@@ -8,6 +8,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Linq;
     using System.Text;
     using Utils;
     using Utils.Extensions;
@@ -272,6 +273,47 @@
             }
 
             return modules;
+        }
+
+        /// <summary>
+        /// Converts an address to a module and an address offset.
+        /// </summary>
+        /// <param name="address">The original address.</param>
+        /// <param name="moduleName">The module name containing this address, if there is one. Otherwise, empty string.</param>
+        /// <returns>The module name and address offset. If not contained by a module, the original address is returned.</returns>
+        public UInt64 AddressToModule(UInt64 address, out String moduleName)
+        {
+            NormalizedModule containingModule = Query.Default.GetModules()
+                .Select(module => module)
+                .Where(module => module.ContainsAddress(address))
+                .FirstOrDefault();
+
+            moduleName = containingModule?.Name ?? String.Empty;
+
+            return containingModule == null ? address : address - containingModule.BaseAddress;
+        }
+
+        /// <summary>
+        /// Determines the base address of a module given a module name.
+        /// </summary>
+        /// <param name="identifier">The module identifier, or name.</param>
+        /// <returns>The base address of the module.</returns>
+        public UInt64 ResolveModule(String identifier)
+        {
+            UInt64 result = 0;
+
+            identifier = identifier?.RemoveSuffixes(true, ".exe", ".dll");
+            IEnumerable<NormalizedModule> modules = Query.Default.GetModules()
+                ?.ToList()
+                ?.Select(module => module)
+                ?.Where(module => module.Name.RemoveSuffixes(true, ".exe", ".dll").Equals(identifier, StringComparison.OrdinalIgnoreCase));
+
+            if (modules.Count() > 0)
+            {
+                result = modules.First().BaseAddress;
+            }
+
+            return result;
         }
     }
     //// End class

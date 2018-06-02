@@ -99,7 +99,6 @@
                 // Clear our current address value
                 this.addressValue = null;
 
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.DataType));
             }
         }
@@ -153,7 +152,6 @@
                 }
 
                 this.isValueHex = value;
-                // ProjectExplorerViewModel.GetInstance().ProjectItemStorage.HasUnsavedChanges = true;
                 this.RaisePropertyChanged(nameof(this.IsValueHex));
             }
         }

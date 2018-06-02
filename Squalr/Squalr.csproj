@@ -466,7 +466,6 @@
     <Compile Include="Source\PacketEditor\PacketEditorViewModel.cs" />
     <Compile Include="Source\ProcessSelector\ProcessDecorator.cs" />
     <Compile Include="Source\ProcessSelector\ProcessSelectorViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\PropertyViewer\IPropertyViewerObserver.cs" />
     <Compile Include="Source\PropertyViewer\PropertyViewerViewModel.cs" />
     <Compile Include="Source\Results\IResultDataTypeObserver.cs" />

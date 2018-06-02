@@ -257,6 +257,21 @@
             this.ProjectRoot = new FullyObservableCollection<DirectoryItemView> { projectRootFolder };
         }
 
+        public void AddProjectItems(params ProjectItem[] projectItems)
+        {
+            if (projectItems == null)
+            {
+                return;
+            }
+
+            DirectoryItemView directoryItemView = this.SelectedProjectItem as DirectoryItemView ?? this.ProjectRoot?.FirstOrDefault();
+
+            foreach (ProjectItem projectItem in projectItems)
+            {
+                directoryItemView?.AddChild(projectItem);
+            }
+        }
+
         /// <summary>
         /// Adds a new address to the project items.
         /// </summary>

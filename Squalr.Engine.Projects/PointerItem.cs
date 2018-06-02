@@ -79,7 +79,7 @@
 
             set
             {
-                this.moduleName = value == null ? String.Empty : value;
+                this.moduleName = value ?? String.Empty;
                 this.RaisePropertyChanged(nameof(this.ModuleName));
                 this.RaisePropertyChanged(nameof(this.IsStatic));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
@@ -196,7 +196,7 @@
         /// <returns>The base address of this object.</returns>
         protected override UInt64 ResolveAddress()
         {
-            UInt64 pointer = 0; // AddressResolver.GetInstance().ResolveModule(this.ModuleName);
+            UInt64 pointer = Query.Default.ResolveModule(this.ModuleName);
             Boolean successReading = true;
 
             pointer = pointer.Add(this.ModuleOffset);

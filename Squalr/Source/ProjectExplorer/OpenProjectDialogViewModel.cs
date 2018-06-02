@@ -14,6 +14,10 @@
 
     internal class OpenProjectDialogViewModel : ViewModelBase
     {
+        private String searchTerm;
+
+        private String selectedProject;
+
         /// <summary>
         /// Singleton instance of the <see cref="OpenProjectDialogViewModel" /> class.
         /// </summary>
@@ -34,7 +38,42 @@
             }
         }
 
-        public String SelectedProject { get; set; }
+        public IEnumerable<String> FilteredProjects
+        {
+            get
+            {
+                return this.ProjectSearchTerm == null ? this.Projects : this.Projects.Select(project => project).Where(project => project.ToLower().Contains(this.ProjectSearchTerm.ToLower()));
+            }
+        }
+
+        public String ProjectSearchTerm
+        {
+            get
+            {
+                return this.searchTerm;
+            }
+
+            set
+            {
+                this.searchTerm = value;
+                this.RaisePropertyChanged(nameof(this.ProjectSearchTerm));
+                this.RaisePropertyChanged(nameof(this.FilteredProjects));
+            }
+        }
+
+        public String SelectedProject
+        {
+            get
+            {
+                return this.selectedProject;
+            }
+
+            set
+            {
+                this.selectedProject = value;
+                this.RaisePropertyChanged(nameof(this.SelectedProject));
+            }
+        }
 
         /// <summary>
         /// Gets a singleton instance of the <see cref="OpenProjectDialogViewModel" /> class.
