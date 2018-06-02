@@ -27,6 +27,7 @@
                 False="Hidden"
                 True="Visible" />
             <converters:DataTypeToIconConverter x:Key="DataTypeToIconConverter" />
+            <converters:ProjectItemToIconConverter x:Key="ProjectItemToIconConverter" />
         </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -369,7 +370,7 @@
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Image Source="{Binding Path=Icon}" />
+                            <Image Source="{Binding Path=PointerItem, Converter={StaticResource ProjectItemToIconConverter}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

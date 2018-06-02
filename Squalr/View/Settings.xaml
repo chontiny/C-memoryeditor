@@ -49,6 +49,8 @@
                             </Grid.ColumnDefinitions>
                             <TextBox
                                 Grid.Column="0"
+                                Background="{StaticResource SqualrColorBlack}"
+                                Foreground="{StaticResource SqualrColorWhite}"
                                 IsReadOnly="True"
                                 Text="{Binding ProjectRoot, Mode=OneWay}" />
                             <Button
