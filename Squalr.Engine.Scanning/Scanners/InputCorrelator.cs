@@ -4,6 +4,7 @@
     using Squalr.Engine.Input;
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Engine.Input.Keyboard;
+    using Squalr.Engine.Scanning.Properties;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
@@ -110,7 +111,7 @@
 
             // Initialize with no correlation
             this.Snapshot.SetElementLabels<Int16>(0);
-            this.TimeOutIntervalMs = Settings.Default.InputCorrelatorTimeOutInterval;
+            this.TimeOutIntervalMs = ScanSettings.Default.InputCorrelatorTimeOutInterval;
         }
 
         /// <summary>

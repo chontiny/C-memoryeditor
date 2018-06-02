@@ -321,6 +321,11 @@
         public static readonly BitmapImage Script = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Script.png"));
 
         /// <summary>
+        /// Image for search.
+        /// </summary>
+        public static readonly BitmapImage Search = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "Search.png"));
+
+        /// <summary>
         /// Image for process selection.
         /// </summary>
         public static readonly BitmapImage SelectProcess = ImageUtils.LoadImage(Path.Combine(Images.ImageBasePath, "SelectProcess.png"));

@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Editors.ValueEditor
 {
-    using Squalr.Source.ProjectItems;
+    using Squalr.Engine.Projects;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;

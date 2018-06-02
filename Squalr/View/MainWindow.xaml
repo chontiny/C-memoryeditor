@@ -89,28 +89,10 @@
                         Margin="4"
                         Source="{x:Static content:Images.SqualrDev}" />
                     <shell:TextBlock
-                        Grid.Column="1"
-                        VerticalAlignment="Center"
-                        DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                        Foreground="{StaticResource SqualrColorWhite}"
-                        Text="* "
-                        Visibility="{Binding ProjectExplorerViewModel.HasUnsavedChanges, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <shell:TextBlock
                         Grid.Column="2"
                         VerticalAlignment="Center"
                         Foreground="{StaticResource SqualrColorWhite}"
                         Text="Squalr" />
-                    <shell:TextBlock
-                        Grid.Column="3"
-                        VerticalAlignment="Center"
-                        Foreground="{StaticResource SqualrColorWhite}"
-                        Text=" - " />
-                    <shell:TextBlock
-                        Grid.Column="4"
-                        VerticalAlignment="Center"
-                        DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                        Foreground="{StaticResource SqualrColorWhite}"
-                        Text="{Binding ProjectExplorerViewModel.ProjectFilePath}" />
                 </shell:Grid>
                 <shell:Menu
                     Grid.Column="1"
@@ -173,21 +155,6 @@
                             BorderThickness="0"
                             Command="{Binding ProjectExplorerViewModel.OpenProjectCommand}"
                             Header="Open"
-                            Style="{Binding}" />
-                        <shell:MenuItem
-                            BorderThickness="0"
-                            Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}"
-                            Header="Save"
-                            Style="{Binding}" />
-                        <shell:MenuItem
-                            BorderThickness="0"
-                            Command="{Binding ProjectExplorerViewModel.ImportProjectCommand}"
-                            Header="Import Project"
-                            Style="{Binding}" />
-                        <shell:MenuItem
-                            BorderThickness="0"
-                            Command="{Binding ProjectExplorerViewModel.ExportProjectCommand}"
-                            Header="Export Project"
                             Style="{Binding}" />
                         <shell:MenuItem
                             BorderThickness="0"
@@ -330,12 +297,12 @@
                                 Source="{x:Static content:Images.Open}" />
                         </shell:MenuItem.Header>
                     </shell:MenuItem>
-                    <shell:MenuItem Command="{Binding ProjectExplorerViewModel.SaveProjectCommand}" ToolTip="Save Project">
+                    <shell:MenuItem Command="{Binding ProjectExplorerViewModel.NewProjectCommand}" ToolTip="New Project">
                         <shell:MenuItem.Header>
                             <shell:Image
                                 Width="16"
                                 Height="16"
-                                Source="{x:Static content:Images.Save}" />
+                                Source="{x:Static content:Images.New}" />
                         </shell:MenuItem.Header>
                     </shell:MenuItem>
                     <shell:Separator Style="{DynamicResource VerticalSeparator}" />

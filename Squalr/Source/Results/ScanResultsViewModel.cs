@@ -3,6 +3,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
+    using Squalr.Engine.Projects;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
@@ -10,7 +11,6 @@
     using Squalr.Properties;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.ProjectItems;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -88,8 +88,6 @@
 
             SnapshotManager.Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
-
-            this.UpdateScanResults();
         }
 
         /// <summary>
@@ -394,8 +392,8 @@
                     Object currentValue = element.HasCurrentValue() ? element.LoadCurrentValue() : null;
                     Object previousValue = element.HasPreviousValue() ? element.LoadPreviousValue() : null;
 
-                    String moduleName;
-                    UInt64 address = AddressResolver.GetInstance().AddressToModule(element.BaseAddress, out moduleName);
+                    String moduleName = String.Empty;
+                    UInt64 address = Query.Default.AddressToModule(element.BaseAddress, out moduleName);
 
                     PointerItem pointerItem = new PointerItem(baseAddress: address, dataType: this.ActiveType, moduleName: moduleName, value: currentValue);
                     newAddresses.Add(new ScanResult(pointerItem, previousValue, label));
@@ -408,25 +406,6 @@
             this.IsVisible = true;
             this.IsSelected = true;
             this.IsActive = true;
-        }
-
-        /// <summary>
-        /// Updates the values for the current scan results.
-        /// </summary>
-        private void UpdateScanResults()
-        {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    foreach (ScanResult address in this.Addresses.ToArray())
-                    {
-                        address.PointerItem.Update();
-                    }
-
-                    Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);
-                }
-            });
         }
 
         /// <summary>
@@ -476,7 +455,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddScanResult(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: scanResult?.PointerItem);
+            ProjectExplorerViewModel.GetInstance().AddProjectItems(scanResult?.PointerItem);
         }
 
         /// <summary>
@@ -492,7 +471,7 @@
 
             IEnumerable<PointerItem> projectItems = scanResults.Select(scanResult => scanResult.PointerItem);
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: true, projectItems: projectItems);
+            ProjectExplorerViewModel.GetInstance().AddProjectItems(projectItems.ToArray());
         }
 
         /// <summary>

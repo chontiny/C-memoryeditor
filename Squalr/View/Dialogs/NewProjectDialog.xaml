@@ -1,0 +1,98 @@
+﻿<shell:Window
+    x:Class="Squalr.View.Dialogs.NewProjectDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Name="SqualrNewProjectDialog"
+    Title="Value Editor"
+    Width="320"
+    Height="144"
+    d:DesignHeight="320"
+    d:DesignWidth="144"
+    BorderBrush="{StaticResource SqualrColorWhite}"
+    BorderThickness="2"
+    DataContext="{Binding NewProjectDialogViewModel, Source={StaticResource ViewModelLocator}}"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
+    </shell:WindowChrome.WindowChrome>
+
+    <shell:Grid Background="{StaticResource SqualrColorBlack}">
+        <shell:Grid.RowDefinitions>
+            <shell:RowDefinition Height="Auto" />
+            <shell:RowDefinition Height="Auto" />
+            <shell:RowDefinition Height="Auto" />
+            <shell:RowDefinition />
+        </shell:Grid.RowDefinitions>
+
+        <shell:Grid
+            x:Name="titlebar"
+            Grid.Row="0"
+            Height="24"
+            Background="{StaticResource SqualrColorGray20}">
+            <shell:WrapPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                <shell:TextBlock
+                    Foreground="{StaticResource SqualrColorWhite}"
+                    Text="* "
+                    Visibility="Collapsed" />
+                <shell:TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Create New Project" />
+            </shell:WrapPanel>
+        </shell:Grid>
+
+        <shell:Grid Margin="4" shell:Grid.Row="1">
+            <shell:StackPanel>
+                <shell:TextBlock
+                    Margin="0,0,0,4"
+                    Background="{StaticResource SqualrColorBlack}"
+                    Foreground="{StaticResource SqualrColorWhite}">
+                    Project Name:
+                </shell:TextBlock>
+                <shell:TextBox
+                    Background="{StaticResource SqualrColorBlack}"
+                    Foreground="{StaticResource SqualrColorWhite}"
+                    Text="{Binding NewProjectDialogViewModel.NewProjectName, Source={StaticResource ViewModelLocator}, UpdateSourceTrigger=PropertyChanged}" />
+            </shell:StackPanel>
+        </shell:Grid>
+
+        <shell:Grid Margin="4" shell:Grid.Row="2">
+            <shell:Grid.ColumnDefinitions>
+                <shell:ColumnDefinition Width="59*" />
+                <shell:ColumnDefinition Width="16*" />
+            </shell:Grid.ColumnDefinitions>
+            <shell:TextBlock
+                shell:Grid.ColumnSpan="2"
+                Background="{StaticResource SqualrColorBlack}"
+                Foreground="{StaticResource SqualrColorGray74}"
+                Text="{Binding NewProjectDialogViewModel.NewProjectNameStatus, Source={StaticResource ViewModelLocator}, UpdateSourceTrigger=PropertyChanged}" />
+        </shell:Grid>
+
+        <shell:Grid Grid.Row="3" Margin="8">
+            <shell:Button
+                Width="96"
+                Height="20"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Click="CancelButtonClick"
+                IsCancel="True">
+                <shell:TextBlock Text="Cancel" />
+            </shell:Button>
+            <shell:Button
+                Name="AcceptButton"
+                Width="96"
+                Height="20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                shell:Grid.Column="1"
+                Click="AcceptButtonClick"
+                Command=""
+                IsDefault="True"
+                IsEnabled="{Binding NewProjectDialogViewModel.IsProjectNameValid, Source={StaticResource ViewModelLocator}, UpdateSourceTrigger=PropertyChanged}">
+                <shell:TextBlock Text="Accept" />
+            </shell:Button>
+        </shell:Grid>
+    </shell:Grid>
+</shell:Window>

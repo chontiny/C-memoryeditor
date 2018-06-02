@@ -3,6 +3,7 @@
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Memory;
+    using Squalr.Engine.Scanning.Properties;
     using Squalr.Source.Prefilters;
     using System;
     using System.Collections.Generic;
@@ -121,7 +122,7 @@
                 if (SnapshotManager.Snapshots.Count == 0 || SnapshotManager.Snapshots.Peek() == null || SnapshotManager.Snapshots.Peek().ElementCount == 0)
                 {
                     Snapshot snapshot = Prefilter.GetInstance().GetPrefilteredSnapshot(dataType);
-                    snapshot.Alignment = Settings.Default.Alignment;
+                    snapshot.Alignment = ScanSettings.Default.Alignment;
                     return snapshot;
                 }
 
@@ -172,7 +173,7 @@
 
             foreach (NormalizedRegion virtualPage in virtualPages)
             {
-                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize, dataType, Settings.Default.Alignment));
+                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize, dataType, ScanSettings.Default.Alignment));
             }
 
             return new Snapshot(null, memoryRegions);
@@ -191,15 +192,15 @@
             UInt64 startAddress;
             UInt64 endAddress;
 
-            if (Settings.Default.IsUserMode)
+            if (ScanSettings.Default.IsUserMode)
             {
                 startAddress = 0;
                 endAddress = Query.Default.GetMaxUsermodeAddress();
             }
             else
             {
-                startAddress = Settings.Default.StartAddress;
-                endAddress = Settings.Default.EndAddress;
+                startAddress = ScanSettings.Default.StartAddress;
+                endAddress = ScanSettings.Default.EndAddress;
             }
 
             List<ReadGroup> memoryRegions = new List<ReadGroup>();
@@ -213,7 +214,7 @@
             // Convert each virtual page to a snapshot region
             foreach (NormalizedRegion virtualPage in virtualPages)
             {
-                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize, dataType, Settings.Default.Alignment));
+                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize, dataType, ScanSettings.Default.Alignment));
             }
 
             return new Snapshot(null, memoryRegions);
@@ -225,7 +226,7 @@
         /// <returns>The created snapshot.</returns>
         private static Snapshot CreateSnapshotFromModules(DataType dataType)
         {
-            IList<ReadGroup> moduleGroups = Query.Default.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize, dataType, Settings.Default.Alignment)).ToList();
+            IList<ReadGroup> moduleGroups = Query.Default.GetModules().Select(region => new ReadGroup(region.BaseAddress, region.RegionSize, dataType, ScanSettings.Default.Alignment)).ToList();
             Snapshot moduleSnapshot = new Snapshot(null, moduleGroups);
 
             return moduleSnapshot;
@@ -263,7 +264,7 @@
                     continue;
                 }
 
-                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize, dataType, Settings.Default.Alignment));
+                memoryRegions.Add(new ReadGroup(virtualPage.BaseAddress, virtualPage.RegionSize, dataType, ScanSettings.Default.Alignment));
             }
 
             return new Snapshot(null, memoryRegions);
@@ -375,22 +376,22 @@
         {
             MemoryTypeEnum result = 0;
 
-            if (Settings.Default.MemoryTypeNone)
+            if (ScanSettings.Default.MemoryTypeNone)
             {
                 result |= MemoryTypeEnum.None;
             }
 
-            if (Settings.Default.MemoryTypePrivate)
+            if (ScanSettings.Default.MemoryTypePrivate)
             {
                 result |= MemoryTypeEnum.Private;
             }
 
-            if (Settings.Default.MemoryTypeImage)
+            if (ScanSettings.Default.MemoryTypeImage)
             {
                 result |= MemoryTypeEnum.Image;
             }
 
-            if (Settings.Default.MemoryTypeMapped)
+            if (ScanSettings.Default.MemoryTypeMapped)
             {
                 result |= MemoryTypeEnum.Mapped;
             }
@@ -406,17 +407,17 @@
         {
             MemoryProtectionEnum result = 0;
 
-            if (Settings.Default.RequiredWrite)
+            if (ScanSettings.Default.RequiredWrite)
             {
                 result |= MemoryProtectionEnum.Write;
             }
 
-            if (Settings.Default.RequiredExecute)
+            if (ScanSettings.Default.RequiredExecute)
             {
                 result |= MemoryProtectionEnum.Execute;
             }
 
-            if (Settings.Default.RequiredCopyOnWrite)
+            if (ScanSettings.Default.RequiredCopyOnWrite)
             {
                 result |= MemoryProtectionEnum.CopyOnWrite;
             }
@@ -432,17 +433,17 @@
         {
             MemoryProtectionEnum result = 0;
 
-            if (Settings.Default.ExcludedWrite)
+            if (ScanSettings.Default.ExcludedWrite)
             {
                 result |= MemoryProtectionEnum.Write;
             }
 
-            if (Settings.Default.ExcludedExecute)
+            if (ScanSettings.Default.ExcludedExecute)
             {
                 result |= MemoryProtectionEnum.Execute;
             }
 
-            if (Settings.Default.ExcludedCopyOnWrite)
+            if (ScanSettings.Default.ExcludedCopyOnWrite)
             {
                 result |= MemoryProtectionEnum.CopyOnWrite;
             }

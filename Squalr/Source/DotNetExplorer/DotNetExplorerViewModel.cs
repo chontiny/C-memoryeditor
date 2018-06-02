@@ -4,9 +4,9 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory.Clr;
+    using Squalr.Engine.Projects;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.ProjectItems;
     using System;
     using System.Collections.Generic;
     using System.Collections.ObjectModel;
@@ -106,7 +106,7 @@
                 dotNetObject.ElementType == DataType.Boolean ? DataType.Byte : dotNetObject.ElementType,
                 dotNetObject.GetFullName());
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, dotnetItem);
+            ProjectExplorerViewModel.GetInstance().AddProjectItems(dotnetItem);
         }
     }
     //// End class

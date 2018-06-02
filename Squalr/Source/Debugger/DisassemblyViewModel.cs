@@ -4,11 +4,11 @@
     using Squalr.Engine.Architecture;
     using Squalr.Engine.Memory;
     using Squalr.Engine.OS;
+    using Squalr.Engine.Projects;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
-    using Squalr.Source.ProjectItems;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -152,7 +152,7 @@
         /// <param name="instruction">The instruction to add to the project explorer.</param>
         private void AddInstruction(InstructionItem instruction)
         {
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: instruction);
+            ProjectExplorerViewModel.GetInstance().AddProjectItems(instruction);
         }
 
         /// <summary>
@@ -166,7 +166,7 @@
                 return;
             }
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(addToSelected: false, projectItems: instructions);
+            ProjectExplorerViewModel.GetInstance().AddProjectItems(instructions.ToArray());
         }
 
         /// <summary>
@@ -174,6 +174,7 @@
         /// </summary>
         private void LoadInstructions()
         {
+            return;
             Byte[] bytes = Reader.Default.ReadBytes(this.BaseAddress, 200, out _);
 
             if (bytes.IsNullOrEmpty())
@@ -189,8 +190,8 @@
 
             foreach (Instruction disassembledInstruction in disassembledInstructions)
             {
-                String moduleName;
-                UInt64 address = AddressResolver.GetInstance().AddressToModule(disassembledInstruction.Address, out moduleName);
+                String moduleName = String.Empty;
+                UInt64 address = Query.Default.AddressToModule(disassembledInstruction.Address, out moduleName);
 
                 instructions.Add(new InstructionItem(address, moduleName, disassembledInstruction.Mnemonic, disassembledInstruction.Bytes));
             }

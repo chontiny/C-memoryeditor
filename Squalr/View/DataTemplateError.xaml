@@ -18,9 +18,11 @@
             TextWrapping="Wrap">
             Error loading data template!
             <LineBreak />
-            To display a new panel, be sure to update the following files in either Squalr or SqualrStream:
+            To display a new panel, be sure to update the following files in Squalr:
             <LineBreak />
             Create a new ViewModel class that extends ToolViewModel
+            <LineBreak />
+            Register the ViewModel in the constructor with DockingViewModel.GetInstance().RegisterViewModel(this);
             <LineBreak />
             Update ViewModelLocator.cs to return the singleton instance of the class
             <LineBreak />

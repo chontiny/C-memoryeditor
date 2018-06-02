@@ -1,9 +1,8 @@
 ﻿namespace Squalr.Source.Results
 {
-    using Squalr.Source.ProjectItems;
+    using Squalr.Engine.Projects;
     using System;
     using System.ComponentModel;
-    using System.Windows.Media.Imaging;
 
     /// <summary>
     /// A scan result object that can be displayed to the user and added to the project explorer.
@@ -42,18 +41,6 @@
         /// Gets the pointer item this scan result contains.
         /// </summary>
         public PointerItem PointerItem { get; private set; }
-
-        /// <summary>
-        /// Gets or sets the display value of the scan result.
-        /// </summary>
-        [Browsable(false)]
-        public BitmapSource Icon
-        {
-            get
-            {
-                return this.PointerItem.Icon;
-            }
-        }
 
         /// <summary>
         /// Gets or sets the display value of the scan result.
@@ -134,7 +121,6 @@
         {
             this.RaisePropertyChanged(nameof(this.DisplayValue));
             this.RaisePropertyChanged(nameof(this.AddressSpecifier));
-            this.RaisePropertyChanged(nameof(this.Icon));
         }
 
         /// <summary>
