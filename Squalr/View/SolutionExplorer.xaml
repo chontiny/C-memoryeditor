@@ -165,10 +165,17 @@
                         <Grid HorizontalAlignment="Stretch" Background="Transparent">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Image
+                            <CheckBox
                                 Grid.Column="0"
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,4,0"
+                                IsChecked="{Binding Path=IsActivated}" />
+                            <Image
+                                Grid.Column="1"
                                 Width="20"
                                 Height="20"
                                 Source="{Binding Converter={StaticResource ProjectItemToIconConverter}}">
@@ -182,7 +189,7 @@
                                 </intr:Interaction.Triggers>
                             </Image>
                             <TextBlock
-                                Grid.Column="1"
+                                Grid.Column="2"
                                 Margin="5,0,0,0"
                                 Foreground="{StaticResource SqualrColorWhite}"
                                 Text="{Binding Path=Name}">

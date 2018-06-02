@@ -174,6 +174,7 @@
         /// </summary>
         private void LoadInstructions()
         {
+            return;
             Byte[] bytes = Reader.Default.ReadBytes(this.BaseAddress, 200, out _);
 
             if (bytes.IsNullOrEmpty())
@@ -190,7 +191,7 @@
             foreach (Instruction disassembledInstruction in disassembledInstructions)
             {
                 String moduleName = String.Empty;
-                UInt64 address = 0; // AddressResolver.GetInstance().AddressToModule(disassembledInstruction.Address, out moduleName);
+                UInt64 address = Query.Default.AddressToModule(disassembledInstruction.Address, out moduleName);
 
                 instructions.Add(new InstructionItem(address, moduleName, disassembledInstruction.Mnemonic, disassembledInstruction.Bytes));
             }

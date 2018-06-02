@@ -88,8 +88,6 @@
 
             SnapshotManager.Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
-
-            this.UpdateScanResults();
         }
 
         /// <summary>
@@ -408,25 +406,6 @@
             this.IsVisible = true;
             this.IsSelected = true;
             this.IsActive = true;
-        }
-
-        /// <summary>
-        /// Updates the values for the current scan results.
-        /// </summary>
-        private void UpdateScanResults()
-        {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    foreach (ScanResult address in this.Addresses.ToArray())
-                    {
-                        address.PointerItem.Update();
-                    }
-
-                    Thread.Sleep(SettingsViewModel.GetInstance().ResultReadInterval);
-                }
-            });
         }
 
         /// <summary>

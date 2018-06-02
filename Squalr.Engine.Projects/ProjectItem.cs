@@ -10,6 +10,8 @@
     using System.IO;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
+    using System.Threading;
+    using System.Threading.Tasks;
 
     /// <summary>
     /// A base class for all project items that can be added to the project explorer.
@@ -68,10 +70,12 @@
         internal ProjectItem(String path, String description)
         {
             // Bypass setters/getters to avoid triggering any view updates in constructor
-            this.name = description == null ? String.Empty : description;
+            this.name = description ?? String.Empty;
             this.isActivated = false;
             this.guid = Guid.NewGuid();
             this.ActivationLock = new Object();
+
+            this.RunUpdateLoop();
         }
 
         private static readonly Type[] KnownTypes =
@@ -370,6 +374,7 @@
             }
 
             this.ActivationLock = new Object();
+            this.RunUpdateLoop();
         }
 
         /// <summary>
@@ -497,6 +502,22 @@
         protected virtual Boolean IsActivatable()
         {
             return true;
+        }
+
+        /// <summary>
+        /// Updates the project item continuously.
+        /// </summary>
+        private void RunUpdateLoop()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    this.Update();
+
+                    Thread.Sleep(50);
+                }
+            });
         }
     }
     //// End class

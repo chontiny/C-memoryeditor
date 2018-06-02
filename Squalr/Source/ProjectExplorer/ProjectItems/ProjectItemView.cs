@@ -30,6 +30,24 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets the value at this address.
+        /// </summary>
+        [Browsable(false)]
+        public Boolean IsActivated
+        {
+            get
+            {
+                return this.ProjectItem.IsActivated;
+            }
+
+            set
+            {
+                this.ProjectItem.IsActivated = value;
+                this.RaisePropertyChanged(nameof(this.IsActivated));
+            }
+        }
+
         [Browsable(false)]
         public Boolean IsSelected
         {
