@@ -401,6 +401,7 @@
     <Compile Include="Source\Mvvm\Converters\IsDirectoryItemConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueConverterGroup.cs" />
+    <Compile Include="Source\ProjectExplorer\OpenProjectDialogViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemReader.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DirectoryItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemView.cs" />
@@ -409,6 +410,7 @@
     <Compile Include="Source\ProjectExplorer\ProjectItems\InstructionItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItemView.cs" />
+    <Compile Include="Source\ProjectExplorer\NewProjectDialogViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\SolutionExplorerViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemDirectoryConverter.cs" />
     <Compile Include="Source\Tasks\TaskTrackerViewModel.cs" />
@@ -492,6 +494,12 @@
     <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\TextConverter.cs" />
+    <Compile Include="View\Dialogs\NewProjectDialog.xaml.cs">
+      <DependentUpon>NewProjectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\OpenProjectDialog.xaml.cs">
+      <DependentUpon>OpenProjectDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
     </Compile>
@@ -545,6 +553,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Content\Images\Search.png" />
     <Content Include="Content\Solution.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>Solution.cs</LastGenOutput>
@@ -642,6 +651,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\CodeTracer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\NewProjectDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\OpenProjectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

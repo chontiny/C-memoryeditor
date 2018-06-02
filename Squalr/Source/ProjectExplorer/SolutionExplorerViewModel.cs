@@ -199,8 +199,27 @@
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Unable to open project", ex.ToString());
+                Logger.Log(LogLevel.Error, "Unable to open project", ex);
                 return;
+            }
+        }
+
+        /// <summary>
+        /// Prompts the user to create a new project.
+        /// </summary>
+        private void NewProject()
+        {
+            try
+            {
+                NewProjectDialogViewModel.GetInstance().ShowDialog((newProjectPath) =>
+                {
+                    Directory.CreateDirectory(newProjectPath);
+                    this.DoOpenProject(newProjectPath);
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Unable to create new project", ex);
             }
         }
 
@@ -211,36 +230,31 @@
         {
             try
             {
-                using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+                OpenProjectDialogViewModel.GetInstance().ShowDialog((projectPath) =>
                 {
-                    folderBrowserDialog.SelectedPath = SettingsViewModel.GetInstance().ProjectRoot;
-
-                    if (folderBrowserDialog.ShowDialog() == DialogResult.OK && !String.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
-                    {
-                        if (Directory.Exists(folderBrowserDialog.SelectedPath))
-                        {
-                            this.ProjectRoot = new FullyObservableCollection<DirectoryItemView> { new DirectoryItemView(new DirectoryItem(folderBrowserDialog.SelectedPath)) };
-                        }
-                        else
-                        {
-                            throw new Exception("Folder not found");
-                        }
-                    }
-                }
+                    this.DoOpenProject(projectPath);
+                });
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Unable to open project", ex.ToString());
-                return;
+                Logger.Log(LogLevel.Error, "Unable to open project", ex);
             }
         }
 
-        /// <summary>
-        /// Prompts the user to create a new project.
-        /// </summary>
-        private void NewProject()
+        private void DoOpenProject(String projectPath)
         {
+            if (!Directory.Exists(projectPath))
+            {
+                throw new Exception("Folder not found");
+            }
 
+            // Create project root folder (initialize expanded for better UX)
+            DirectoryItemView projectRootFolder = new DirectoryItemView(new DirectoryItem(projectPath))
+            {
+                IsExpanded = true
+            };
+
+            this.ProjectRoot = new FullyObservableCollection<DirectoryItemView> { projectRootFolder };
         }
 
         /// <summary>

@@ -86,6 +86,13 @@
         public void AddChild(ProjectItem projectItem)
         {
             this.DirectoryItem.AddChild(projectItem);
+            this.IsExpanded = true;
+            this.RaisePropertyChanged(nameof(this.ChildItems));
+        }
+
+        public void RemoveChild(ProjectItem projectItem)
+        {
+            this.DirectoryItem.RemoveChild(projectItem);
             this.RaisePropertyChanged(nameof(this.ChildItems));
         }
     }

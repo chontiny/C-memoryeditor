@@ -77,6 +77,23 @@
             }
         }
 
+        public void RemoveChild(ProjectItem projectItem)
+        {
+            try
+            {
+                if (this.ChildItems.Contains(projectItem))
+                {
+                    this.ChildItems.Remove(projectItem);
+
+                    // TODO: Delete
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Unable to add project item due to error while saving", ex);
+            }
+        }
+
         /// <summary>
         /// Gets the list of files in the directory Name passed.
         /// </summary>
@@ -85,6 +102,27 @@
         public FullyObservableCollection<ProjectItem> GetChildProjectItems()
         {
             FullyObservableCollection<ProjectItem> projectItems = new FullyObservableCollection<ProjectItem>();
+
+            try
+            {
+                IEnumerable<DirectoryInfo> subdirectories = Directory.GetDirectories(this.DirectoryPath).Select(subdirectory => new DirectoryInfo(subdirectory));
+
+                foreach (DirectoryInfo subdirectory in subdirectories)
+                {
+                    try
+                    {
+                        projectItems.Add(DirectoryItem.FromDirectory(subdirectory.FullName));
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log(LogLevel.Error, "Error loading directory", ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Error fetching directories", ex);
+            }
 
             try
             {
@@ -108,27 +146,6 @@
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, "Error fetching files", ex);
-            }
-
-            try
-            {
-                IEnumerable<DirectoryInfo> subdirectories = Directory.GetDirectories(this.DirectoryPath).Select(subdirectory => new DirectoryInfo(subdirectory));
-
-                foreach (DirectoryInfo subdirectory in subdirectories)
-                {
-                    try
-                    {
-                        projectItems.Add(DirectoryItem.FromDirectory(subdirectory.FullName));
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Log(LogLevel.Error, "Error loading directory", ex);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(LogLevel.Error, "Error fetching directories", ex);
             }
 
             return projectItems;

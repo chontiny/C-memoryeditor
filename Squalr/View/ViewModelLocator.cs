@@ -329,6 +329,28 @@
                 return CodeTracerViewModel.GetInstance();
             }
         }
+
+        /// <summary>
+        /// Gets the New Project Dialog view model.
+        /// </summary>
+        public NewProjectDialogViewModel NewProjectDialogViewModel
+        {
+            get
+            {
+                return NewProjectDialogViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Open Project Dialog view model.
+        /// </summary>
+        public OpenProjectDialogViewModel OpenProjectDialogViewModel
+        {
+            get
+            {
+                return OpenProjectDialogViewModel.GetInstance();
+            }
+        }
     }
     //// End class
 }
