@@ -24,7 +24,7 @@ Scanners are JIT compiled into SSE, AVX, or AVX-512 instructions via RyuJIT thro
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.0-rc1" />
+    <PackageReference Include="System.Memory" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
