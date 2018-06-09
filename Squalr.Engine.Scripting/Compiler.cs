@@ -57,21 +57,16 @@
                 {
                     using (FileStream pdbStream = new FileStream(pdbPath, FileMode.OpenOrCreate))
                     {
-                        EmitResult result = compilation.Emit(
-                            peStream: dllStream,
-                            pdbStream: pdbStream);
+                        EmitResult result = compilation.Emit(peStream: dllStream, pdbStream: pdbStream);
 
-                        if (result.Success)
-                        {
-                            dllStream.Dispose();
-                            return Assembly.LoadFrom(dllPath);
-                        }
-                        else
+                        if (!result.Success)
                         {
                             throw new Exception(result.Diagnostics.ToString());
                         }
                     }
                 }
+
+                return Assembly.LoadFrom(dllPath);
             }
             catch (Exception ex)
             {

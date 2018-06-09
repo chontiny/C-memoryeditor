@@ -34,6 +34,8 @@
                 ReleaseEntry result = manager.UpdateApp().Result;
             }*/
 
+            Squalr.Engine.Projects.Compiler.Compile(true);
+
             // Attach our view model to the engine's output
             Logger.Subscribe(OutputViewModel.GetInstance());
 

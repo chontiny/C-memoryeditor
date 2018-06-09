@@ -474,6 +474,7 @@
         protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ProjectItem.Save(this, this.DirectoryPath);
         }
 
         /// <summary>
