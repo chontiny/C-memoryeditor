@@ -13,8 +13,13 @@
         {
             try
             {
-                String solutionPath = @"F:\Users\Zachary\Documents\Visual Studio 2017\Projects\ConsoleApp2\ConsoleApp2.sln";
-                ConsoleLogger logger = new ConsoleLogger(LoggerVerbosity.Detailed);
+                Environment.SetEnvironmentVariable("MSBuildSdksPath", @"C:\Program Files\dotnet\sdk\2.1.201\Sdks");
+                String solutionPath = @"F:\Users\Zachary\Documents\Visual Studio 2017\Projects\CompileTest\CompileTest.sln";
+                FileLogger logger = new FileLogger
+                {
+                    Verbosity = LoggerVerbosity.Diagnostic
+                };
+
                 ProjectCollection projectCollection = new ProjectCollection();
                 BuildParameters buildParamters = new BuildParameters(projectCollection)
                 {
