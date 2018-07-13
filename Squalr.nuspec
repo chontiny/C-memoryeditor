@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Squalr</id>
+    <version>2.3.1</version>
+    <authors>Zachary Canann</authors>
+    <owners>Zachary Canann</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Package description</description>
+    <releaseNotes>Summary of changes made in this release of the package.</releaseNotes>
+    <copyright>Copyright 2018</copyright>
+    <tags>Squalr memory editor game hacking</tags>
+    <dependencies>
+    </dependencies>
+  </metadata>
+	<files>
+		<file src="Squalr/bin/Release/**" />
+	</files>
+</package>

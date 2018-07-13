@@ -33,6 +33,39 @@
                 </Setter>
             </Style>
         </TabControl.Resources>
+        <TabItem Background="Transparent" Header="General">
+            <Grid>
+                <GroupBox
+                    Padding="4"
+                    BorderThickness="1"
+                    Foreground="{StaticResource SqualrColorWhite}"
+                    Header="Project Settings">
+                    <StackPanel>
+                        <TextBlock Text="Project Root:" />
+                        <Grid Margin="0,4,0,0" HorizontalAlignment="Left">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="256" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox
+                                Grid.Column="0"
+                                Background="{StaticResource SqualrColorBlack}"
+                                Foreground="{StaticResource SqualrColorWhite}"
+                                IsReadOnly="True"
+                                Text="{Binding ProjectRoot, Mode=OneWay}" />
+                            <Button
+                                Grid.Column="1"
+                                Width="32"
+                                Margin="4,0,0,0"
+                                Command="{Binding SolutionExplorerViewModel.SetProjectRootCommand, Source={StaticResource ViewModelLocator}}">
+                                ...
+                            </Button>
+                        </Grid>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+        </TabItem>
+
         <TabItem Background="Transparent" Header="Memory">
             <Grid>
                 <Grid.RowDefinitions>

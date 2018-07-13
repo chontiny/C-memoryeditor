@@ -1,10 +1,13 @@
 ﻿namespace Squalr.Properties
 {
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Engine.VirtualMemory;
+    using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects.Properties;
+    using Squalr.Engine.Scanning.Properties;
+    using Squalr.Source.Docking;
     using System;
+    using System.ComponentModel;
+    using System.IO;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// View model for the Settings.
@@ -19,115 +22,49 @@
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         /// <summary>
-        /// Settings that control the degree of parallelism for multithreaded tasks.
-        /// </summary>
-        private static Lazy<ParallelOptions> parallelSettingsFullCpu = new Lazy<ParallelOptions>(
-                () =>
-                {
-                    ParallelOptions parallelOptions = new ParallelOptions()
-                    {
-                        // Full throttle; all processors used
-                        MaxDegreeOfParallelism = Environment.ProcessorCount
-                    };
-                    return parallelOptions;
-                },
-                LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
-        /// Settings that control the degree of parallelism for multithreaded tasks.
-        /// </summary>
-        private static Lazy<ParallelOptions> parallelSettingsFast = new Lazy<ParallelOptions>(
-                () =>
-                {
-                    ParallelOptions parallelOptions = new ParallelOptions()
-                    {
-                        // Only use 75% of available processing power, as not to interfere with other programs
-                        MaxDegreeOfParallelism = (Environment.ProcessorCount * 3) / 4
-                    };
-                    return parallelOptions;
-                },
-                LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
-        /// Settings that control the degree of parallelism for multithreaded tasks.
-        /// </summary>
-        private static Lazy<ParallelOptions> parallelSettingsMedium = new Lazy<ParallelOptions>(
-                () =>
-                {
-                    ParallelOptions parallelOptions = new ParallelOptions()
-                    {
-                        // Only use 25% of available processing power
-                        MaxDegreeOfParallelism = (Environment.ProcessorCount * 1) / 4
-                    };
-                    return parallelOptions;
-                },
-                LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
-        /// Settings that control the degree of parallelism for multithreaded tasks.
-        /// </summary>
-        private static Lazy<ParallelOptions> parallelSettingsNone = new Lazy<ParallelOptions>(
-                () =>
-                {
-                    ParallelOptions parallelOptions = new ParallelOptions()
-                    {
-                        // Only use 1 CPU
-                        MaxDegreeOfParallelism = 1
-                    };
-                    return parallelOptions;
-                },
-                LazyThreadSafetyMode.ExecutionAndPublication);
-
-        /// <summary>
         /// Prevents a default instance of the <see cref="SettingsViewModel"/> class from being created.
         /// </summary>
         private SettingsViewModel() : base("Settings")
         {
-            // Subscribe async to avoid a deadlock situation
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            ProjectSettings.Default.PropertyChanged += ProjectSettingsPropertyChanged;
+            ScanSettings.Default.PropertyChanged += ScanSettingsPropertyChanged;
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
-        /// Gets the parallelism settings which use all CPUs available.
+        /// Gets or sets the root directory for all projects.
         /// </summary>
-        public ParallelOptions ParallelSettingsFastest
+        public String ProjectRoot
         {
             get
             {
-                return parallelSettingsFullCpu.Value;
+                String savedPath = ProjectSettings.Default.ProjectRoot;
+
+                if (!Directory.Exists(savedPath))
+                {
+                    savedPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Squalr");
+                    this.ProjectRoot = savedPath;
+                }
+
+                return ProjectSettings.Default.ProjectRoot;
             }
-        }
 
-        /// <summary>
-        /// Gets the parallelism settings which use most of the CPUs available.
-        /// </summary>
-        public ParallelOptions ParallelSettingsFast
-        {
-            get
+            set
             {
-                return parallelSettingsFast.Value;
-            }
-        }
+                try
+                {
+                    if (!Directory.Exists(value))
+                    {
+                        Directory.CreateDirectory(value);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Unable to set project root", ex);
+                }
 
-        /// <summary>
-        /// Gets the parallelism settings which use some of the CPUs available.
-        /// </summary>
-        public ParallelOptions ParallelSettingsMedium
-        {
-            get
-            {
-                return parallelSettingsMedium.Value;
-            }
-        }
-
-        /// <summary>
-        /// Gets the parallelism settings which use only one CPU. This should only be used for debugging.
-        /// </summary>
-        public ParallelOptions ParallelSettingsNone
-        {
-            get
-            {
-                return parallelSettingsNone.Value;
+                ProjectSettings.Default.ProjectRoot = value;
+                this.RaisePropertyChanged(nameof(this.ProjectRoot));
             }
         }
 
@@ -138,12 +75,12 @@
         {
             get
             {
-                return Settings.Default.RequiredWrite;
+                return ScanSettings.Default.RequiredWrite;
             }
 
             set
             {
-                Settings.Default.RequiredWrite = value;
+                ScanSettings.Default.RequiredWrite = value;
                 this.RaisePropertyChanged(nameof(this.RequiredProtectionWrite));
             }
         }
@@ -155,12 +92,12 @@
         {
             get
             {
-                return Settings.Default.RequiredExecute;
+                return ScanSettings.Default.RequiredExecute;
             }
 
             set
             {
-                Settings.Default.RequiredExecute = value;
+                ScanSettings.Default.RequiredExecute = value;
                 this.RaisePropertyChanged(nameof(this.RequiredProtectionExecute));
             }
         }
@@ -172,12 +109,12 @@
         {
             get
             {
-                return Settings.Default.RequiredCopyOnWrite;
+                return ScanSettings.Default.RequiredCopyOnWrite;
             }
 
             set
             {
-                Settings.Default.RequiredCopyOnWrite = value;
+                ScanSettings.Default.RequiredCopyOnWrite = value;
                 this.RaisePropertyChanged(nameof(this.RequiredProtectionCopyOnWrite));
             }
         }
@@ -189,12 +126,12 @@
         {
             get
             {
-                return Settings.Default.ExcludedWrite;
+                return ScanSettings.Default.ExcludedWrite;
             }
 
             set
             {
-                Settings.Default.ExcludedWrite = value;
+                ScanSettings.Default.ExcludedWrite = value;
                 this.RaisePropertyChanged(nameof(this.ExcludedProtectionWrite));
             }
         }
@@ -206,12 +143,12 @@
         {
             get
             {
-                return Settings.Default.ExcludedExecute;
+                return ScanSettings.Default.ExcludedExecute;
             }
 
             set
             {
-                Settings.Default.ExcludedExecute = value;
+                ScanSettings.Default.ExcludedExecute = value;
                 this.RaisePropertyChanged(nameof(this.ExcludedProtectionExecute));
             }
         }
@@ -223,12 +160,12 @@
         {
             get
             {
-                return Settings.Default.ExcludedCopyOnWrite;
+                return ScanSettings.Default.ExcludedCopyOnWrite;
             }
 
             set
             {
-                Settings.Default.ExcludedCopyOnWrite = value;
+                ScanSettings.Default.ExcludedCopyOnWrite = value;
                 this.RaisePropertyChanged(nameof(this.ExcludedProtectionCopyOnWrite));
             }
         }
@@ -240,12 +177,12 @@
         {
             get
             {
-                return Settings.Default.MemoryTypeNone;
+                return ScanSettings.Default.MemoryTypeNone;
             }
 
             set
             {
-                Settings.Default.MemoryTypeNone = value;
+                ScanSettings.Default.MemoryTypeNone = value;
                 this.RaisePropertyChanged(nameof(this.MemoryTypeNone));
             }
         }
@@ -257,12 +194,12 @@
         {
             get
             {
-                return Settings.Default.MemoryTypePrivate;
+                return ScanSettings.Default.MemoryTypePrivate;
             }
 
             set
             {
-                Settings.Default.MemoryTypePrivate = value;
+                ScanSettings.Default.MemoryTypePrivate = value;
                 this.RaisePropertyChanged(nameof(this.MemoryTypePrivate));
             }
         }
@@ -274,12 +211,12 @@
         {
             get
             {
-                return Settings.Default.MemoryTypeMapped;
+                return ScanSettings.Default.MemoryTypeMapped;
             }
 
             set
             {
-                Settings.Default.MemoryTypeMapped = value;
+                ScanSettings.Default.MemoryTypeMapped = value;
                 this.RaisePropertyChanged(nameof(this.MemoryTypeMapped));
             }
         }
@@ -291,12 +228,12 @@
         {
             get
             {
-                return Settings.Default.MemoryTypeImage;
+                return ScanSettings.Default.MemoryTypeImage;
             }
 
             set
             {
-                Settings.Default.MemoryTypeImage = value;
+                ScanSettings.Default.MemoryTypeImage = value;
                 this.RaisePropertyChanged(nameof(this.MemoryTypeImage));
             }
         }
@@ -308,12 +245,12 @@
         {
             get
             {
-                return Settings.Default.IsUserMode;
+                return ScanSettings.Default.IsUserMode;
             }
 
             set
             {
-                Settings.Default.IsUserMode = value;
+                ScanSettings.Default.IsUserMode = value;
                 this.RaisePropertyChanged(nameof(this.IsUserMode));
                 this.RaisePropertyChanged(nameof(this.IsNotUserMode));
             }
@@ -326,12 +263,12 @@
         {
             get
             {
-                return !Settings.Default.IsUserMode;
+                return !ScanSettings.Default.IsUserMode;
             }
 
             set
             {
-                Settings.Default.IsUserMode = !value;
+                ScanSettings.Default.IsUserMode = !value;
                 this.RaisePropertyChanged(nameof(this.IsUserMode));
                 this.RaisePropertyChanged(nameof(this.IsNotUserMode));
             }
@@ -344,12 +281,12 @@
         {
             get
             {
-                return Settings.Default.FreezeInterval;
+                return ScanSettings.Default.FreezeInterval;
             }
 
             set
             {
-                Settings.Default.FreezeInterval = value;
+                ScanSettings.Default.FreezeInterval = value;
                 this.RaisePropertyChanged(nameof(this.FreezeInterval));
             }
         }
@@ -361,12 +298,12 @@
         {
             get
             {
-                return Settings.Default.RescanInterval;
+                return ScanSettings.Default.RescanInterval;
             }
 
             set
             {
-                Settings.Default.RescanInterval = value;
+                ScanSettings.Default.RescanInterval = value;
                 this.RaisePropertyChanged(nameof(this.RescanInterval));
             }
         }
@@ -378,12 +315,12 @@
         {
             get
             {
-                return Settings.Default.ResultReadInterval;
+                return ScanSettings.Default.ResultReadInterval;
             }
 
             set
             {
-                Settings.Default.ResultReadInterval = value;
+                ScanSettings.Default.ResultReadInterval = value;
                 this.RaisePropertyChanged(nameof(this.ResultReadInterval));
             }
         }
@@ -395,12 +332,12 @@
         {
             get
             {
-                return Settings.Default.TableReadInterval;
+                return ScanSettings.Default.TableReadInterval;
             }
 
             set
             {
-                Settings.Default.TableReadInterval = value;
+                ScanSettings.Default.TableReadInterval = value;
                 this.RaisePropertyChanged(nameof(this.TableReadInterval));
             }
         }
@@ -412,12 +349,12 @@
         {
             get
             {
-                return Settings.Default.InputCorrelatorTimeOutInterval;
+                return ScanSettings.Default.InputCorrelatorTimeOutInterval;
             }
 
             set
             {
-                Settings.Default.InputCorrelatorTimeOutInterval = value;
+                ScanSettings.Default.InputCorrelatorTimeOutInterval = value;
                 this.RaisePropertyChanged(nameof(this.InputCorrelatorTimeOutInterval));
             }
         }
@@ -429,12 +366,12 @@
         {
             get
             {
-                return Settings.Default.Alignment;
+                return ScanSettings.Default.Alignment;
             }
 
             set
             {
-                Settings.Default.Alignment = value;
+                ScanSettings.Default.Alignment = value;
                 this.RaisePropertyChanged(nameof(this.Alignment));
             }
         }
@@ -446,12 +383,12 @@
         {
             get
             {
-                return Settings.Default.StartAddress;
+                return ScanSettings.Default.StartAddress;
             }
 
             set
             {
-                Settings.Default.StartAddress = value;
+                ScanSettings.Default.StartAddress = value;
                 this.RaisePropertyChanged(nameof(this.StartAddress));
             }
         }
@@ -463,12 +400,12 @@
         {
             get
             {
-                return Settings.Default.EndAddress;
+                return ScanSettings.Default.EndAddress;
             }
 
             set
             {
-                Settings.Default.EndAddress = value;
+                ScanSettings.Default.EndAddress = value;
                 this.RaisePropertyChanged(nameof(this.EndAddress));
             }
         }
@@ -482,95 +419,14 @@
             return SettingsViewModel.settingsViewModelInstance.Value;
         }
 
-        /// <summary>
-        /// Gets the allowed type settings for virtual memory queries based on the set type flags.
-        /// </summary>
-        /// <returns>The flags of the allowed types for virtual memory queries.</returns>
-        public MemoryTypeEnum GetAllowedTypeSettings()
+        private void ProjectSettingsPropertyChanged(Object sender, PropertyChangedEventArgs e)
         {
-            MemoryTypeEnum result = 0;
-
-            if (Settings.Default.MemoryTypeNone)
-            {
-                result |= MemoryTypeEnum.None;
-            }
-
-            if (Settings.Default.MemoryTypePrivate)
-            {
-                result |= MemoryTypeEnum.Private;
-            }
-
-            if (Settings.Default.MemoryTypeImage)
-            {
-                result |= MemoryTypeEnum.Image;
-            }
-
-            if (Settings.Default.MemoryTypeMapped)
-            {
-                result |= MemoryTypeEnum.Mapped;
-            }
-
-            return result;
+            ProjectSettings.Default.Save();
         }
 
-        /// <summary>
-        /// Gets the required protection settings for virtual memory queries based on the set type flags.
-        /// </summary>
-        /// <returns>The flags of the required protections for virtual memory queries.</returns>
-        public MemoryProtectionEnum GetRequiredProtectionSettings()
+        private void ScanSettingsPropertyChanged(Object sender, PropertyChangedEventArgs e)
         {
-            MemoryProtectionEnum result = 0;
-
-            if (Settings.Default.RequiredWrite)
-            {
-                result |= MemoryProtectionEnum.Write;
-            }
-
-            if (Settings.Default.RequiredExecute)
-            {
-                result |= MemoryProtectionEnum.Execute;
-            }
-
-            if (Settings.Default.RequiredCopyOnWrite)
-            {
-                result |= MemoryProtectionEnum.CopyOnWrite;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Gets the excluded protection settings for virtual memory queries based on the set type flags.
-        /// </summary>
-        /// <returns>The flags of the excluded protections for virtual memory queries.</returns>
-        public MemoryProtectionEnum GetExcludedProtectionSettings()
-        {
-            MemoryProtectionEnum result = 0;
-
-            if (Settings.Default.ExcludedWrite)
-            {
-                result |= MemoryProtectionEnum.Write;
-            }
-
-            if (Settings.Default.ExcludedExecute)
-            {
-                result |= MemoryProtectionEnum.Execute;
-            }
-
-            if (Settings.Default.ExcludedCopyOnWrite)
-            {
-                result |= MemoryProtectionEnum.CopyOnWrite;
-            }
-
-            return result;
-        }
-
-        /// <summary>
-        /// Saves the current settings.
-        /// </summary>
-        public void Save()
-        {
-            Settings.Default.Save();
+            ScanSettings.Default.Save();
         }
     }
     //// End class

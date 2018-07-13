@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <LangVersion>7.2</LangVersion>
+    <RootNamespace>Squalr.Engine</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Authors>Zachary Canann</Authors>
+    <Company>Anathena Inc.</Company>
+    <Description>Core assembly for all Squalr assemblies. For specific functionality (scripting, scanning, debugging, etc), be sure to include the relevant package.</Description>
+    <Copyright></Copyright>
+    <PackageTags></PackageTags>
+    <NeutralLanguage />
+    <Version>2.3.1</Version>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Architecture\**" />
+    <Compile Remove="Debugger\**" />
+    <Compile Remove="Input\**" />
+    <Compile Remove="Scripting\**" />
+    <Compile Remove="VirtualMemory\**" />
+    <EmbeddedResource Remove="Architecture\**" />
+    <EmbeddedResource Remove="Debugger\**" />
+    <EmbeddedResource Remove="Input\**" />
+    <EmbeddedResource Remove="Scripting\**" />
+    <EmbeddedResource Remove="VirtualMemory\**" />
+    <None Remove="Architecture\**" />
+    <None Remove="Debugger\**" />
+    <None Remove="Input\**" />
+    <None Remove="Scripting\**" />
+    <None Remove="VirtualMemory\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.5.0" />
+    <PackageReference Include="System.Drawing.Common" Version="4.5.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+</Project>

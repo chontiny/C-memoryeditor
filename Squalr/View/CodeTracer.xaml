@@ -1,0 +1,136 @@
+﻿<UserControl
+    x:Class="Squalr.View.CodeTracer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:Squalr.Source.Mvvm.AttachedBehaviors"
+    xmlns:content="clr-namespace:Squalr.Content"
+    xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    x:Name="SqualrCodeTracer"
+    d:DesignHeight="256"
+    d:DesignWidth="256"
+    x:ClassModifier="internal"
+    DataContext="{Binding CodeTracerViewModel, Source={StaticResource ViewModelLocator}}"
+    mc:Ignorable="d">
+    <x:Code>
+        <![CDATA[ public CodeTracer() { InitializeComponent(); }]]>
+    </x:Code>
+    <UserControl.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToHiddenConverter"
+            False="Hidden"
+            True="Visible" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <!--  Menu bar  -->
+        <Grid Grid.Row="0" Margin="0,4,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <WrapPanel Background="{StaticResource SqualrColorGray27}">
+                <MenuItem
+                    Grid.Column="1"
+                    HorizontalAlignment="Right"
+                    Background="{StaticResource SqualrColorGray27}"
+                    Command="{Binding StopTraceCommand}"
+                    ToolTip="Stop Trace">
+                    <MenuItem.Header>
+                        <Image
+                            Width="16"
+                            Height="16"
+                            IsEnabled="{Binding IsTracing}"
+                            Source="{x:Static content:Images.Cancel}" />
+                    </MenuItem.Header>
+                </MenuItem>
+            </WrapPanel>
+        </Grid>
+
+        <DataGrid
+            Name="codeTracerDataGrid"
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            Background="{StaticResource SqualrColorBlack}"
+            CanUserAddRows="False"
+            ColumnWidth="*"
+            HeadersVisibility="Column"
+            ItemsSource="{Binding Path=Results}"
+            RowHeaderWidth="0"
+            RowHeight="20"
+            SelectionMode="Extended"
+            SelectionUnit="FullRow">
+            <!--  Click and Selection events  -->
+            <intr:Interaction.Triggers>
+                <intr:EventTrigger EventName="SelectionChanged">
+                    <intr:InvokeCommandAction Command="{Binding SelectInstructionCommand}" CommandParameter="{Binding ElementName=codeTracerDataGrid, Path=SelectedItems}" />
+                </intr:EventTrigger>
+                <intr:EventTrigger EventName="MouseDoubleClick">
+                    <intr:InvokeCommandAction Command="{Binding AddInstructionCommand}" CommandParameter="{Binding ElementName=codeTracerDataGrid, Path=SelectedItem}" />
+                </intr:EventTrigger>
+            </intr:Interaction.Triggers>
+            <DataGrid.Resources>
+                <converters:IntToHexConverter x:Key="IntToHexConverter" />
+                <Style x:Key="NoFocus" TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                        </Trigger>
+                    </Style.Triggers>
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray24}" />
+                    <Setter Property="IsManipulationEnabled" Value="False" />
+                    <Setter Property="IsTabStop" Value="False" />
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.ColumnHeaderStyle>
+                <Style TargetType="{x:Type DataGridColumnHeader}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
+            <DataGrid.Style>
+                <Style TargetType="{x:Type DataGrid}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                </Style>
+            </DataGrid.Style>
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="Auto"
+                    MinWidth="48"
+                    Binding="{Binding Path=Count}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Count"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Width="Auto"
+                    MinWidth="64"
+                    Binding="{Binding Path=Address, Converter={StaticResource IntToHexConverter}}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Address"
+                    IsReadOnly="True" />
+                <DataGridTextColumn
+                    Binding="{Binding Path=Instruction}"
+                    CellStyle="{StaticResource NoFocus}"
+                    Header="Instruction"
+                    IsReadOnly="True" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

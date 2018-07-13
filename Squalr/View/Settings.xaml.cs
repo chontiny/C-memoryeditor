@@ -1,8 +1,8 @@
 ﻿namespace Squalr.View
 {
+    using Squalr.Engine.DataTypes;
     using Squalr.Properties;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Engine.Types;
+    using Squalr.Source.Controls;
     using System;
     using System.Windows.Controls;
 
@@ -19,45 +19,45 @@
             this.InitializeComponent();
 
             // Windows Forms hosting -- TODO: Phase this out
-            this.AlignmentHexDecBox = new HexDecTextBox(DataTypes.Int32);
+            this.AlignmentHexDecBox = new HexDecTextBox(DataType.Int32);
             this.AlignmentHexDecBox.TextChanged += this.AlignmentUpdated;
             this.AlignmentHexDecBox.IsHex = true;
             this.AlignmentHexDecBox.SetValue(this.SettingsViewModel.Alignment);
             this.alignment.Children.Add(WinformsHostingHelper.CreateHostedControl(this.AlignmentHexDecBox));
 
-            this.ScanRangeStartHexDecBox = new HexDecTextBox(DataTypes.UInt64);
+            this.ScanRangeStartHexDecBox = new HexDecTextBox(DataType.UInt64);
             this.ScanRangeStartHexDecBox.TextChanged += this.StartRangeUpdated;
             this.ScanRangeStartHexDecBox.IsHex = true;
             this.ScanRangeStartHexDecBox.SetValue(this.SettingsViewModel.StartAddress);
             this.scanRangeStart.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ScanRangeStartHexDecBox));
 
-            this.ScanRangeEndHexDecBox = new HexDecTextBox(DataTypes.UInt64);
+            this.ScanRangeEndHexDecBox = new HexDecTextBox(DataType.UInt64);
             this.ScanRangeEndHexDecBox.TextChanged += this.EndRangeUpdated;
             this.ScanRangeEndHexDecBox.IsHex = true;
             this.ScanRangeEndHexDecBox.SetValue(this.SettingsViewModel.EndAddress);
             this.scanRangeEnd.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ScanRangeEndHexDecBox));
 
-            this.FreezeIntervalHexDecBox = new HexDecTextBox(DataTypes.Int32);
+            this.FreezeIntervalHexDecBox = new HexDecTextBox(DataType.Int32);
             this.FreezeIntervalHexDecBox.TextChanged += this.FreezeIntervalUpdated;
             this.FreezeIntervalHexDecBox.SetValue(this.SettingsViewModel.FreezeInterval);
             this.freezeInterval.Children.Add(WinformsHostingHelper.CreateHostedControl(this.FreezeIntervalHexDecBox));
 
-            this.RescanIntervalHexDecBox = new HexDecTextBox(DataTypes.Int32);
+            this.RescanIntervalHexDecBox = new HexDecTextBox(DataType.Int32);
             this.RescanIntervalHexDecBox.TextChanged += this.RescanIntervalUpdated;
             this.RescanIntervalHexDecBox.SetValue(this.SettingsViewModel.RescanInterval);
             this.rescanInterval.Children.Add(WinformsHostingHelper.CreateHostedControl(this.RescanIntervalHexDecBox));
 
-            this.TableReadIntervalHexDecBox = new HexDecTextBox(DataTypes.Int32);
+            this.TableReadIntervalHexDecBox = new HexDecTextBox(DataType.Int32);
             this.TableReadIntervalHexDecBox.TextChanged += this.TableReadIntervalUpdated;
             this.TableReadIntervalHexDecBox.SetValue(this.SettingsViewModel.TableReadInterval);
             this.tableReadInterval.Children.Add(WinformsHostingHelper.CreateHostedControl(this.TableReadIntervalHexDecBox));
 
-            this.ResultReadIntervalHexDecBox = new HexDecTextBox(DataTypes.Int32);
+            this.ResultReadIntervalHexDecBox = new HexDecTextBox(DataType.Int32);
             this.ResultReadIntervalHexDecBox.TextChanged += this.ResultReadIntervalUpdated;
             this.ResultReadIntervalHexDecBox.SetValue(this.SettingsViewModel.ResultReadInterval);
             this.resultReadInterval.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ResultReadIntervalHexDecBox));
 
-            this.InputCorrelatorTimeoutHexDecBox = new HexDecTextBox(DataTypes.Int32);
+            this.InputCorrelatorTimeoutHexDecBox = new HexDecTextBox(DataType.Int32);
             this.InputCorrelatorTimeoutHexDecBox.TextChanged += this.InputCorrelatorTimeoutUpdated;
             this.InputCorrelatorTimeoutHexDecBox.SetValue(this.SettingsViewModel.InputCorrelatorTimeOutInterval);
             this.inputCorrelatorTimeout.Children.Add(WinformsHostingHelper.CreateHostedControl(this.InputCorrelatorTimeoutHexDecBox));

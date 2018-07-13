@@ -3,29 +3,155 @@
     using Source.DotNetExplorer;
     using Source.Main;
     using Source.Results;
-    using Source.Scanners.ChangeCounter;
-    using Source.Scanners.InputCorrelator;
-    using Source.Scanners.LabelThresholder;
-    using Source.Scanners.ManualScanner;
-    using Source.Scanners.Pointers;
-    using Source.Scanners.ValueCollector;
     using Source.Snapshots;
     using Squalr.Properties;
+    using Squalr.Source.ChangeLog;
     using Squalr.Source.Debugger;
-    using Squalr.Source.Debugger.Disassembly;
+    using Squalr.Source.Docking;
+    using Squalr.Source.Editors.HotkeyEditor;
+    using Squalr.Source.Editors.OffsetEditor;
+    using Squalr.Source.Editors.ScriptEditor;
+    using Squalr.Source.Editors.TextEditor;
+    using Squalr.Source.Editors.ValueEditor;
+    using Squalr.Source.Output;
+    using Squalr.Source.ProcessSelector;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.PropertyViewer;
+    using Squalr.Source.Scanning;
+    using Squalr.Source.Tasks;
 
     /// <summary>
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
     /// </summary>
-    internal class ViewModelLocator : SqualrCore.View.ViewModelLocator
+    internal class ViewModelLocator
     {
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
         public ViewModelLocator()
         {
+        }
+
+        /// <summary>
+        /// Gets the Docking view model.
+        /// </summary>
+        public DockingViewModel DockingViewModel
+        {
+            get
+            {
+                return DockingViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Action Scheduler view model.
+        /// </summary>
+        public TaskTrackerViewModel TaskTrackerViewModel
+        {
+            get
+            {
+                return TaskTrackerViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Process Selector view model.
+        /// </summary>
+        public ProcessSelectorViewModel ProcessSelectorViewModel
+        {
+            get
+            {
+                return ProcessSelectorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Property Viewer view model.
+        /// </summary>
+        public PropertyViewerViewModel PropertyViewerViewModel
+        {
+            get
+            {
+                return PropertyViewerViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets a Output view model.
+        /// </summary>
+        public OutputViewModel OutputViewModel
+        {
+            get
+            {
+                return OutputViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets a Change Log view model. Note: Not a singleton, will create a new object.
+        /// </summary>
+        public ChangeLogViewModel ChangeLogViewModel
+        {
+            get
+            {
+                return ChangeLogViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Script Editor view model.
+        /// </summary>
+        public ScriptEditorViewModel ScriptEditorViewModel
+        {
+            get
+            {
+                return ScriptEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Text Editor view model.
+        /// </summary>
+        public TextEditorViewModel TextEditorViewModel
+        {
+            get
+            {
+                return TextEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Value Editor view model.
+        /// </summary>
+        public ValueEditorViewModel ValueEditorViewModel
+        {
+            get
+            {
+                return ValueEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets a Offset Editor view model.
+        /// </summary>
+        public OffsetEditorViewModel OffsetEditorViewModel
+        {
+            get
+            {
+                return OffsetEditorViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets a Hotkey Editor view model.
+        /// </summary>
+        public HotkeyEditorViewModel HotkeyEditorViewModel
+        {
+            get
+            {
+                return HotkeyEditorViewModel.GetInstance();
+            }
         }
 
         /// <summary>
@@ -190,6 +316,39 @@
             get
             {
                 return DisassemblyViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Debugger view model.
+        /// </summary>
+        public CodeTracerViewModel CodeTracerViewModel
+        {
+            get
+            {
+                return CodeTracerViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the New Project Dialog view model.
+        /// </summary>
+        public NewProjectDialogViewModel NewProjectDialogViewModel
+        {
+            get
+            {
+                return NewProjectDialogViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Open Project Dialog view model.
+        /// </summary>
+        public OpenProjectDialogViewModel OpenProjectDialogViewModel
+        {
+            get
+            {
+                return OpenProjectDialogViewModel.GetInstance();
             }
         }
     }

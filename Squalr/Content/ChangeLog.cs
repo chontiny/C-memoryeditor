@@ -12,7 +12,7 @@ namespace Squalr.Content
     using System.Linq;
     using System.Text;
     using System.Collections.Generic;
-    using SqualrCore;
+    using Squalr;
     using System;
     
     /// <summary>

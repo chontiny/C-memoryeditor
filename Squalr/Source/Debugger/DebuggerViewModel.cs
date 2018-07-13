@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Debugger
 {
-    using SqualrCore.Source.Docking;
+    using Squalr.Source.Docking;
     using System;
     using System.Threading;
     using System.Windows.Input;

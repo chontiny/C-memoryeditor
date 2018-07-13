@@ -1,45 +1,26 @@
 ﻿namespace Squalr.Source.ProjectExplorer
 {
     using GalaSoft.MvvmLight.CommandWpf;
+    using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects;
+    using Squalr.Engine.Utils;
+    using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;
-    using SqualrCore.Source.Controls;
-    using SqualrCore.Source.Docking;
-    using SqualrCore.Source.Editors.ScriptEditor;
-    using SqualrCore.Source.Editors.ValueEditor;
-    using SqualrCore.Source.Output;
-    using SqualrCore.Source.ProjectItems;
-    using SqualrCore.Source.PropertyViewer;
-    using SqualrCore.Source.Utils;
-    using SqualrCore.Source.Utils.DataStructures;
-    using SqualrCore.Source.Utils.Extensions;
+    using Squalr.Source.Docking;
+    using Squalr.Source.Editors.ScriptEditor;
+    using Squalr.Source.Editors.ValueEditor;
+    using Squalr.Source.ProjectExplorer.ProjectItems;
+    using Squalr.Source.PropertyViewer;
     using System;
-    using System.Collections;
-    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Threading;
-    using System.Threading.Tasks;
+    using System.Windows.Forms;
     using System.Windows.Input;
 
-    /// <summary>
-    /// View model for the Project Explorer.
-    /// </summary>
-    public class ProjectExplorerViewModel : ToolViewModel
+    internal class ProjectExplorerViewModel : ToolViewModel
     {
-        /// <summary>
-        /// The filter to use for saving and loading project filters.
-        /// </summary>
-        public const String ProjectExtensionFilter = "Cheat File (*.Hax)|*.hax|All files (*.*)|*.*";
-
-        /// <summary>
-        /// The file extension for project items.
-        /// </summary>
-        private const String ProjectFileExtension = ".hax";
-
-        /// <summary>
-        /// The file extension for hotkeys.
-        /// </summary>
-        private const String HotkeyFileExtension = ".hotkeys";
-
         /// <summary>
         /// Singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
         /// </summary>
@@ -47,70 +28,56 @@
                 () => { return new ProjectExplorerViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
-        /// <summary>
-        /// The project root which contains all project items.
-        /// </summary>
-        private FullyObservableCollection<ProjectItem> projectItems;
+        private FullyObservableCollection<DirectoryItemView> projectRoot;
 
         /// <summary>
         /// The selected project item.
         /// </summary>
-        private IEnumerable<ProjectItem> selectedProjectItems;
+        private ProjectItemView selectedProjectItem;
 
-        /// <summary>
-        /// Prevents a default instance of the <see cref="ProjectExplorerViewModel" /> class from being created.
-        /// </summary>
-        private ProjectExplorerViewModel() : base("Project Explorer")
+        public ProjectExplorerViewModel() : base("Project Explorer")
         {
-            this.ObserverLock = new Object();
-            this.ProjectItemStorage = new ProjectItemStorage();
-
-            // Commands to manipulate project items may not be async due to multi-threading issues when modifying collections
-            this.OpenProjectCommand = new RelayCommand(() => this.ProjectItemStorage.OpenProject(), () => true);
-            this.ImportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ImportProject(), () => true);
-            this.ExportProjectCommand = new RelayCommand(() => this.ProjectItemStorage.ExportProject(), () => true);
-            this.ImportSpecificProjectCommand = new RelayCommand<String>((filename) => this.ProjectItemStorage.ImportProject(false, filename), (filename) => true);
-            this.SaveProjectCommand = new RelayCommand(() => this.ProjectItemStorage.SaveProject(), () => true);
-            this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItems) => this.SelectedProjectItems = (selectedItems as IList)?.Cast<ProjectItem>(), (selectedItems) => true);
+            this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
+            this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());
+            this.NewProjectCommand = new RelayCommand(() => this.NewProject());
+            this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItem) => this.SelectedProjectItem = selectedItem as ProjectItemView, (selectedItem) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(ScriptItem)), () => true);
             this.AddNewInstructionItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(InstructionItem)), () => true);
-            this.ToggleSelectionActivationCommand = new RelayCommand(() => this.ToggleSelectionActivation(), () => true);
-            this.DeleteSelectionCommand = new RelayCommand(() => this.DeleteSelection(), () => true);
-            this.CopySelectionCommand = new RelayCommand(() => this.CopySelection(), () => true);
-            this.PasteSelectionCommand = new RelayCommand(() => this.PasteSelection(), () => true);
-            this.CutSelectionCommand = new RelayCommand(() => this.CutSelection(), () => true);
-            this.ProjectItems = new FullyObservableCollection<ProjectItem>();
-            this.Update();
+            this.OpenFileExplorerCommand = new RelayCommand<ProjectItemView>((projectItem) => this.OpenFileExplorer(projectItem), (projectItem) => true);
 
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
-        /// Gets the command to open a project from disk.
+        /// Gets a singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
+        /// </summary>
+        /// <returns>A singleton instance of the class.</returns>
+        public static ProjectExplorerViewModel GetInstance()
+        {
+            return ProjectExplorerViewModel.projectExplorerViewModelInstance.Value;
+        }
+
+        /// <summary>
+        /// Gets the command to set the project root.
+        /// </summary>
+        public ICommand SetProjectRootCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to open a project.
         /// </summary>
         public ICommand OpenProjectCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to import another project from disk.
+        /// Gets the command to create a new project.
         /// </summary>
-        public ICommand ImportProjectCommand { get; private set; }
+        public ICommand NewProjectCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to export a project to separate files.
+        /// Gets the command to select a project item.
         /// </summary>
-        public ICommand ExportProjectCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to open a specific project from disk, used for loading downloaded web projects.
-        /// </summary>
-        public ICommand ImportSpecificProjectCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to open a project from disk.
-        /// </summary>
-        public ICommand SaveProjectCommand { get; private set; }
+        public ICommand SelectProjectItemCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to add a new address.
@@ -126,11 +93,6 @@
         /// Gets the command to add a new script.
         /// </summary>
         public ICommand AddNewScriptItemCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to select a project item.
-        /// </summary>
-        public ICommand SelectProjectItemCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to edit a project item.
@@ -163,107 +125,141 @@
         public ICommand CutSelectionCommand { get; private set; }
 
         /// <summary>
-        /// Gets an object that allows accesses to saving and loading project items.
+        /// Gets a command to view a file or directory in the native file explorer.
         /// </summary>
-        public ProjectItemStorage ProjectItemStorage { get; private set; }
+        public ICommand OpenFileExplorerCommand { get; private set; }
 
         /// <summary>
-        /// Gets the root that contains all project items.
+        /// The project root tree of the current project.
         /// </summary>
-        public FullyObservableCollection<ProjectItem> ProjectItems
+        public FullyObservableCollection<DirectoryItemView> ProjectRoot
         {
             get
             {
-                return this.projectItems;
+                return projectRoot;
             }
-
             set
             {
-                this.projectItems = value;
-                this.RaisePropertyChanged(nameof(this.ProjectItems));
+                projectRoot = value;
+                RaisePropertyChanged(nameof(this.ProjectRoot));
             }
         }
 
         /// <summary>
         /// Gets or sets the selected project items.
         /// </summary>
-        public IEnumerable<ProjectItem> SelectedProjectItems
+        public ProjectItemView SelectedProjectItem
         {
             get
             {
-                return this.selectedProjectItems;
+                return this.selectedProjectItem;
             }
 
             set
             {
-                this.selectedProjectItems = value;
-                PropertyViewerViewModel.GetInstance().SetTargetObjects(this.SelectedProjectItems?.ToArray());
+                this.selectedProjectItem = value;
+                this.RaisePropertyChanged(nameof(this.SelectedProjectItem));
+                PropertyViewerViewModel.GetInstance().SetTargetObjects(value);
             }
         }
 
         /// <summary>
-        /// The current project items copied to the clip board.
+        /// Prompts the user to set a new project root.
         /// </summary>
-        private IEnumerable<ProjectItem> ClipBoard { get; set; }
-
-        /// <summary>
-        /// Gets or sets a lock that controls access to observing classes.
-        /// </summary>
-        private Object ObserverLock { get; set; }
-
-        /// <summary>
-        /// Gets a singleton instance of the <see cref="ProjectExplorerViewModel" /> class.
-        /// </summary>
-        /// <returns>A singleton instance of the class.</returns>
-        public static ProjectExplorerViewModel GetInstance()
+        private void SetProjectRoot()
         {
-            return ProjectExplorerViewModel.projectExplorerViewModelInstance.Value;
+            try
+            {
+                using (FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog())
+                {
+                    folderBrowserDialog.SelectedPath = SettingsViewModel.GetInstance().ProjectRoot;
+
+                    if (folderBrowserDialog.ShowDialog() == DialogResult.OK && !String.IsNullOrWhiteSpace(folderBrowserDialog.SelectedPath))
+                    {
+                        if (Directory.Exists(folderBrowserDialog.SelectedPath))
+                        {
+                            SettingsViewModel.GetInstance().ProjectRoot = folderBrowserDialog.SelectedPath;
+                        }
+                    }
+                    else
+                    {
+                        throw new Exception("Folder not found");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Unable to open project", ex);
+                return;
+            }
         }
 
         /// <summary>
-        /// Disables all active project items.
+        /// Prompts the user to create a new project.
         /// </summary>
-        public void DisableAllProjectItems()
+        private void NewProject()
         {
-            this.ProjectItems?.ForEach(item => item.IsActivated = false);
+            try
+            {
+                NewProjectDialogViewModel.GetInstance().ShowDialog((newProjectPath) =>
+                {
+                    Directory.CreateDirectory(newProjectPath);
+                    this.DoOpenProject(newProjectPath);
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Unable to create new project", ex);
+            }
         }
 
         /// <summary>
-        /// Adds the new project item to the project item collection.
+        /// Prompts the user to open a project.
         /// </summary>
-        /// <param name="addToSelected">Whether or not the items should be added under the selected item.</param>
-        /// <param name="projectItems">The project item to add.</param>
-        public void AddNewProjectItems(Boolean addToSelected = true, IEnumerable<ProjectItem> projectItems = null)
+        private void OpenProject()
         {
-            if (projectItems.IsNullOrEmpty() || projectItems.Contains(null))
+            try
+            {
+                OpenProjectDialogViewModel.GetInstance().ShowDialog((projectPath) =>
+                {
+                    this.DoOpenProject(projectPath);
+                });
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Unable to open project", ex);
+            }
+        }
+
+        private void DoOpenProject(String projectPath)
+        {
+            if (!Directory.Exists(projectPath))
+            {
+                throw new Exception("Folder not found");
+            }
+
+            // Create project root folder (initialize expanded for better UX)
+            DirectoryItemView projectRootFolder = new DirectoryItemView(new DirectoryItem(projectPath))
+            {
+                IsExpanded = true
+            };
+
+            this.ProjectRoot = new FullyObservableCollection<DirectoryItemView> { projectRootFolder };
+        }
+
+        public void AddProjectItems(params ProjectItem[] projectItems)
+        {
+            if (projectItems == null)
             {
                 return;
             }
 
-            // Clone each project item, as we do not want to reference the same object that was passed to this function
-            IEnumerable<ProjectItem> newProjectItems = projectItems.Select(projectItem => projectItem.Clone());
+            DirectoryItemView directoryItemView = this.SelectedProjectItem as DirectoryItemView ?? this.ProjectRoot?.FirstOrDefault();
 
-            this.ProjectItems = new FullyObservableCollection<ProjectItem>(this.ProjectItems.Concat(newProjectItems));
-
-            this.RaisePropertyChanged(nameof(this.ProjectItems));
-        }
-
-        /// <summary>
-        /// Adds the new project item to the project item collection.
-        /// </summary>
-        /// <param name="addToSelected">Whether or not the items should be added under the selected item.</param>
-        /// <param name="projectItems">The project item to add.</param>
-        public void AddNewProjectItems(Boolean addToSelected = true, params ProjectItem[] projectItems)
-        {
-            this.AddNewProjectItems(addToSelected, (IEnumerable<ProjectItem>)projectItems);
-        }
-
-        /// <summary>
-        /// Called when a property is updated in any of the contained project items.
-        /// </summary>
-        public void OnPropertyUpdate()
-        {
-            this.RaisePropertyChanged(nameof(this.ProjectItems));
+            foreach (ProjectItem projectItem in projectItems)
+            {
+                directoryItemView?.AddChild(projectItem);
+            }
         }
 
         /// <summary>
@@ -271,19 +267,21 @@
         /// </summary>
         private void AddNewProjectItem(Type projectItemType)
         {
+            DirectoryItemView directoryItemView = this.SelectedProjectItem as DirectoryItemView ?? this.ProjectRoot.FirstOrDefault();
+
             switch (projectItemType)
             {
                 case Type _ when projectItemType == typeof(PointerItem):
-                    this.AddNewProjectItems(true, new PointerItem());
+                    directoryItemView?.AddChild(new PointerItem());
                     break;
                 case Type _ when projectItemType == typeof(ScriptItem):
-                    this.AddNewProjectItems(true, new ScriptItem());
+                    directoryItemView?.AddChild(new ScriptItem());
                     break;
                 case Type _ when projectItemType == typeof(InstructionItem):
-                    this.AddNewProjectItems(true, new InstructionItem());
+                    directoryItemView?.AddChild(new InstructionItem());
                     break;
                 default:
-                    OutputViewModel.GetInstance().Log(OutputViewModel.LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
+                    Logger.Log(LogLevel.Error, "Unknown project item type - " + projectItemType.ToString());
                     break;
             }
         }
@@ -318,6 +316,7 @@
         /// </summary>
         private void ToggleSelectionActivation()
         {
+            /*
             if (this.SelectedProjectItems == null)
             {
                 return;
@@ -330,6 +329,7 @@
                     projectItem.IsActivated = !projectItem.IsActivated;
                 }
             }
+            */
         }
 
         /// <summary>
@@ -337,6 +337,7 @@
         /// </summary>
         private void DeleteSelection(Boolean promptUser = true)
         {
+            /*
             if (this.SelectedProjectItems.IsNullOrEmpty())
             {
                 return;
@@ -363,6 +364,7 @@
             }
 
             this.SelectedProjectItems = null;
+            */
         }
 
         /// <summary>
@@ -370,7 +372,7 @@
         /// </summary>
         private void CopySelection()
         {
-            this.ClipBoard = this.SelectedProjectItems?.SoftClone();
+            // this.ClipBoard = this.SelectedProjectItems?.SoftClone();
         }
 
         /// <summary>
@@ -378,12 +380,12 @@
         /// </summary>
         private void PasteSelection()
         {
-            if (this.ClipBoard == null || this.ClipBoard.Count() <= 0)
-            {
-                return;
-            }
+            // if (this.ClipBoard == null || this.ClipBoard.Count() <= 0)
+            // {
+            //     return;
+            // }
 
-            ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, this.ClipBoard);
+            // ProjectExplorerViewModel.GetInstance().AddNewProjectItems(true, this.ClipBoard);
         }
 
         /// <summary>
@@ -391,27 +393,29 @@
         /// </summary>
         private void CutSelection()
         {
-            this.ClipBoard = this.SelectedProjectItems?.SoftClone();
-            this.DeleteSelection(promptUser: false);
+            //  this.ClipBoard = this.SelectedProjectItems?.SoftClone();
+            // this.DeleteSelection(promptUser: false);
         }
 
-        /// <summary>
-        /// Continously updates the project explorer items.
-        /// </summary>
-        private void Update()
+        private void OpenFileExplorer(ProjectItemView projectItemView)
         {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    foreach (ProjectItem projectItem in this.ProjectItems.ToArray())
-                    {
-                        projectItem.Update();
-                    }
+            String directory = projectItemView.ProjectItem.DirectoryPath;
 
-                    Thread.Sleep(SettingsViewModel.GetInstance().TableReadInterval);
+            if (Directory.Exists(directory))
+            {
+                try
+                {
+                    Process.Start(directory);
                 }
-            });
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Error opening file explorer", ex);
+                }
+            }
+            else
+            {
+                Logger.Log(LogLevel.Error, "Unable to open file explorer. Directory does not exist");
+            }
         }
     }
     //// End class

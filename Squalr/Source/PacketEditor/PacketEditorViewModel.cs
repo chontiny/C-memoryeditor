@@ -1,9 +1,8 @@
 ﻿namespace Squalr.Source.PacketEditor
 {
-    using SqualrCore.Source.Docking;
+    using Squalr.Source.Docking;
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// View model for the Packet Editor.
@@ -22,7 +21,7 @@
         /// </summary>
         private PacketEditorViewModel() : base("Packet Editor")
         {
-            Task.Run(() => DockingViewModel.GetInstance().RegisterViewModel(this));
+            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
