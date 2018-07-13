@@ -22,6 +22,7 @@
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        [Browsable(false)]
         public virtual FullyObservableCollection<ProjectItem> ChildItems
         {
             get

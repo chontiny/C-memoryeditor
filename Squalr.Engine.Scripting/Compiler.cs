@@ -4,6 +4,7 @@
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.Emit;
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -17,24 +18,32 @@
         /// <summary>
         /// Compiles the given ModScript.
         /// </summary>
-        /// <param name="filePath"></param>
+        /// <param name="scriptPath"></param>
         /// <param name="isRelease"></param>
         /// <returns></returns>
-        public static Assembly CompileScript(String filePath, Boolean isRelease)
+        public static Assembly Compile(this ScriptItem script, Boolean isRelease)
         {
             try
             {
-                String fileName = Path.GetFileNameWithoutExtension(filePath);
-                String dllPath = Path.Combine(Path.Combine(filePath, isRelease ? "Release" : "Debug"), fileName + ".dll");
-                String pdbPath = Path.Combine(Path.Combine(filePath, isRelease ? "Release" : "Debug"), fileName + ".pdb");
-                String sourceCode = File.ReadAllText(filePath);
+                String buildPath = Path.Combine(script.DirectoryPath, isRelease ? "Release" : "Debug");
+
+                if (!Directory.Exists(buildPath))
+                {
+                    Directory.CreateDirectory(buildPath);
+                }
+
+                String fileName = script.Name; // Path.GetFileNameWithoutExtension(script.DirectoryPath);
+                String dllPath = Path.Combine(buildPath, fileName + ".dll");
+                String pdbPath = Path.Combine(buildPath, fileName + ".pdb");
+                String sourceCode = script.Script;
 
                 CSharpParseOptions cSharpParseOptions = new CSharpParseOptions(kind: SourceCodeKind.Regular, languageVersion: LanguageVersion.Latest);
                 SyntaxTree syntaxTree = CSharpSyntaxTree.ParseText(sourceCode, cSharpParseOptions);
 
-                IReadOnlyCollection<MetadataReference> _references = new[] {
+                IReadOnlyCollection<MetadataReference> references = new[] {
                         MetadataReference.CreateFromFile(typeof(Binder).GetTypeInfo().Assembly.Location),
-                        MetadataReference.CreateFromFile(typeof(ValueTuple<>).GetTypeInfo().Assembly.Location)
+                        MetadataReference.CreateFromFile(typeof(ValueTuple<>).GetTypeInfo().Assembly.Location),
+                        MetadataReference.CreateFromFile(typeof(ModScript).GetTypeInfo().Assembly.Location)
                 };
 
                 CSharpCompilationOptions cSharpCompilationOptions = new CSharpCompilationOptions(
@@ -42,22 +51,22 @@
                     optimizationLevel: isRelease ? OptimizationLevel.Release : OptimizationLevel.Debug,
                     allowUnsafe: true);
 
-                CSharpCompilation compilation = CSharpCompilation.Create(fileName, options: cSharpCompilationOptions, references: _references);
+                CSharpCompilation compilation = CSharpCompilation.Create(fileName, options: cSharpCompilationOptions, references: references);
 
                 using (FileStream dllStream = new FileStream(dllPath, FileMode.OpenOrCreate))
                 {
                     using (FileStream pdbStream = new FileStream(pdbPath, FileMode.OpenOrCreate))
                     {
-                        EmitResult result = compilation.Emit(
-                            peStream: dllStream,
-                            pdbStream: pdbStream);
+                        EmitResult result = compilation.Emit(peStream: dllStream, pdbStream: pdbStream);
 
-                        if (result.Success)
+                        if (!result.Success)
                         {
-                            return Assembly.LoadFrom(dllPath);
+                            throw new Exception(result.Diagnostics.ToString());
                         }
                     }
                 }
+
+                return Assembly.LoadFrom(dllPath);
             }
             catch (Exception ex)
             {

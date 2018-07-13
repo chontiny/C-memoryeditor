@@ -20,9 +20,9 @@
         public DirectoryItem(String filePath) : base(filePath)
         {
             this.DirectoryPath = filePath;
-            this.Name = Path.GetFileName(filePath);
+            this.name = Path.GetFileName(filePath);
 
-            this.ChildItems = this.GetChildProjectItems();
+            this.childItems = this.GetChildProjectItems();
             this.WatchForUpdates();
         }
 

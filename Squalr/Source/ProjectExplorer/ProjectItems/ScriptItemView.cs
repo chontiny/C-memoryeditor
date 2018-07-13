@@ -1,12 +1,14 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
     using Squalr.Engine.Projects;
+    using Squalr.Engine.Scripting;
     using Squalr.Source.Controls;
     using Squalr.Source.Editors.ScriptEditor;
     using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.ComponentModel;
     using System.Drawing.Design;
+    using System.Reflection;
 
     /// <summary>
     /// Decorates the base project item class with annotations for use in the view.
@@ -74,7 +76,14 @@
             {
                 this.ScriptItem.Script = value;
                 this.RaisePropertyChanged(nameof(this.Script));
+                this.CompileTest();
             }
+        }
+
+        private void CompileTest()
+        {
+            Assembly assembly = this.ScriptItem.Compile(false);
+            ModScript modScript = ModScript.FromAssembly(assembly);
         }
     }
     //// End class

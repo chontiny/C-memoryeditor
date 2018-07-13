@@ -59,6 +59,7 @@
             }
         }
 
+        [Browsable(false)]
         public override FullyObservableCollection<ProjectItem> ChildItems
         {
             get

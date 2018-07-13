@@ -104,7 +104,7 @@
 
                     switch ((new FileInfo(filePath).Extension).ToLower())
                     {
-                        case ".cs":
+                        case ".mod":
                             type = typeof(ScriptItem);
                             break;
                         case ".ptr":
@@ -165,7 +165,7 @@
                     filePath += ".ptr";
                     break;
                 case Type type when projectItem is ScriptItem:
-                    filePath += ".cs";
+                    filePath += ".mod";
                     break;
                 case Type type when projectItem is InstructionItem:
                     filePath += ".ins";
@@ -474,6 +474,7 @@
         protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ProjectItem.Save(this, this.DirectoryPath);
         }
 
         /// <summary>

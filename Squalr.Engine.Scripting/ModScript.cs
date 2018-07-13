@@ -1,5 +1,6 @@
 ﻿using Squalr.Engine.Logging;
 using System;
+using System.Reflection;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,8 +32,15 @@ namespace Squalr.Engine.Scripting
         /// </summary>
         private Task Task { get; set; }
 
-        public ModScript()
+        protected ModScript()
         {
+        }
+
+        public static ModScript FromAssembly(Assembly assembly)
+        {
+            dynamic modScript = assembly?.CreateInstance("Squalr.Engine.Scripting.ModScript");
+
+            return modScript;
         }
 
         public String Text { get; set; }
