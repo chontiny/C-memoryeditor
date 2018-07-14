@@ -165,7 +165,7 @@
 
             if (task.Status == TaskStatus.Created)
             {
-                Task<T>.Run(() => task.RunSynchronously());
+                task.Start();
             }
 
             this.AwaitCompletion();

@@ -34,7 +34,7 @@
         /// </summary>
         private ManualScannerViewModel() : base("Manual Scanner")
         {
-            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
+            this.StartScanCommand = new RelayCommand(() => this.StartScan(), () => true);
 
             // Note: Not async to avoid updates slower than the perception threshold
             this.UpdateActiveValueCommand = new RelayCommand<Object>((newValue) => this.UpdateActiveValue(newValue), (newValue) => true);

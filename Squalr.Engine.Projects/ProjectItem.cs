@@ -220,6 +220,7 @@
 
                 this.name = value;
                 this.RaisePropertyChanged(nameof(this.Name));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -243,6 +244,7 @@
 
                 this.description = value;
                 this.RaisePropertyChanged(nameof(this.Description));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -266,6 +268,7 @@
                 this.hotkey = value;
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
                 this.RaisePropertyChanged(nameof(this.HotKey));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -290,6 +293,7 @@
 
                 this.guid = value;
                 this.RaisePropertyChanged(nameof(this.Guid));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -474,7 +478,6 @@
         protected void RaisePropertyChanged(String propertyName)
         {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            ProjectItem.Save(this, this.DirectoryPath);
         }
 
         /// <summary>
