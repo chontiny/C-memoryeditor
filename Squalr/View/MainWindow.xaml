@@ -327,14 +327,14 @@
                         <shell:ColumnDefinition Width="Auto" />
                     </shell:Grid.ColumnDefinitions>
                     <shell:Border
-                        Background="{StaticResource SqualrColorGray27}"
+                        Background="Transparent"
                         BorderBrush="{StaticResource SqualrColorWhite}"
-                        BorderThickness="1">
+                        BorderThickness="0">
                         <shell:WrapPanel>
                             <shell:Menu
                                 Grid.Column="0"
                                 Padding="4"
-                                Background="{StaticResource SqualrColorGray27}"
+                                Background="Transparent"
                                 BorderBrush="{StaticResource SqualrColorWhite}"
                                 DataContext="{Binding ScanResultsViewModel, Source={StaticResource ViewModelLocator}}"
                                 Foreground="{StaticResource SqualrColorWhite}">
@@ -576,7 +576,7 @@
                             </shell:Menu>
                             <shell:Menu
                                 VerticalAlignment="Center"
-                                Background="{StaticResource SqualrColorGray27}"
+                                Background="Transparent"
                                 BorderBrush="{StaticResource SqualrColorWhite}"
                                 DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
                                 Foreground="{StaticResource SqualrColorWhite}">
@@ -811,7 +811,7 @@
                                 Height="20"
                                 Margin="0,2,0,2"
                                 VerticalAlignment="Center"
-                                Background="{StaticResource SqualrColorGray20}"
+                                Background="{StaticResource SqualrColorGray27}"
                                 BorderBrush="{StaticResource SqualrColorGray35}"
                                 BorderThickness="1"
                                 DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"

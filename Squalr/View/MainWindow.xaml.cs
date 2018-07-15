@@ -22,6 +22,7 @@
 
             // Windows Forms hosting -- TODO: Phase this out
             this.ValueHexDecBox = new HexDecTextBox();
+            this.ValueHexDecBox.BackColor = DarkBrushes.SqualrColorGray24;
             this.ValueHexDecBox.TextChanged += this.ValueUpdated;
             this.valueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
 
