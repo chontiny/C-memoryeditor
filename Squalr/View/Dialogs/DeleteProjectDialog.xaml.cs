@@ -4,14 +4,14 @@
     using System.Windows;
 
     /// <summary>
-    /// Interaction logic for NewProjectDialog.xaml.
+    /// Interaction logic for DeleteProjectDialog.xaml.
     /// </summary>
-    public partial class NewProjectDialog : Window
+    public partial class DeleteProjectDialog : Window
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="NewProjectDialog" /> class.
+        /// Initializes a new instance of the <see cref="DeleteProjectDialog" /> class.
         /// </summary>
-        public NewProjectDialog()
+        public DeleteProjectDialog()
         {
             this.InitializeComponent();
         }

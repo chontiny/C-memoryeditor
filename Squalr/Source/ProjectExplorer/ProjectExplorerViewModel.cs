@@ -39,7 +39,6 @@
         {
             this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());
-            this.NewProjectCommand = new RelayCommand(() => this.NewProject());
             this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItem) => this.SelectedProjectItem = selectedItem as ProjectItemView, (selectedItem) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
@@ -68,11 +67,6 @@
         /// Gets the command to open a project.
         /// </summary>
         public ICommand OpenProjectCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to create a new project.
-        /// </summary>
-        public ICommand NewProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to select a project item.
@@ -138,6 +132,7 @@
             {
                 return projectRoot;
             }
+
             set
             {
                 projectRoot = value;
@@ -195,32 +190,13 @@
         }
 
         /// <summary>
-        /// Prompts the user to create a new project.
-        /// </summary>
-        private void NewProject()
-        {
-            try
-            {
-                NewProjectDialogViewModel.GetInstance().ShowDialog((newProjectPath) =>
-                {
-                    Directory.CreateDirectory(newProjectPath);
-                    this.DoOpenProject(newProjectPath);
-                });
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(LogLevel.Error, "Unable to create new project", ex);
-            }
-        }
-
-        /// <summary>
         /// Prompts the user to open a project.
         /// </summary>
         private void OpenProject()
         {
             try
             {
-                OpenProjectDialogViewModel.GetInstance().ShowDialog((projectPath) =>
+                SelectProjectDialogViewModel.GetInstance().ShowDialog((projectPath) =>
                 {
                     this.DoOpenProject(projectPath);
                 });

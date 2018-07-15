@@ -60,6 +60,7 @@
             CanUserAddRows="False"
             ColumnWidth="*"
             HeadersVisibility="Column"
+            IsReadOnly="True"
             ItemsSource="{Binding Path=Addresses}"
             RowHeaderWidth="0"
             SelectionMode="Extended"
@@ -73,20 +74,6 @@
                     <intr:InvokeCommandAction Command="{Binding AddScanResultCommand}" CommandParameter="{Binding ElementName=ScanResultsDataGrid, Path=SelectedItem}" />
                 </intr:EventTrigger>
             </intr:Interaction.Triggers>
-            <DataGrid.Resources>
-                <Style x:Key="NoFocus" TargetType="{x:Type DataGridCell}">
-                    <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
-                        </Trigger>
-                    </Style.Triggers>
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
-                    <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
-                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray24}" />
-                    <Setter Property="IsManipulationEnabled" Value="False" />
-                    <Setter Property="IsTabStop" Value="False" />
-                </Style>
-            </DataGrid.Resources>
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
@@ -116,7 +103,6 @@
                 <DataGridTemplateColumn
                     MinWidth="16"
                     MaxWidth="16"
-                    CellStyle="{StaticResource NoFocus}"
                     IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -125,28 +111,34 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn
-                    Width="SizeToCells"
-                    MinWidth="64"
                     Binding="{Binding Path=AddressSpecifier}"
-                    CellStyle="{StaticResource NoFocus}"
                     Header="Address"
                     IsReadOnly="True" />
+                <DataGridTemplateColumn Width="Auto" Header="Value">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <Button
+                                    Margin="0,0,4,0"
+                                    Background="Transparent"
+                                    Command="{Binding EditValueCommand}"
+                                    ToolTip="Edit Value">
+                                    <Image
+                                        Width="16"
+                                        Height="16"
+                                        Source="{x:Static content:Images.Edit}" />
+                                </Button>
+                                <TextBlock Text="{Binding Path=DisplayValue}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn
-                    MinWidth="96"
-                    Binding="{Binding Path=DisplayValue}"
-                    Header="Value" />
-                <DataGridTextColumn
-                    Width="SizeToCells"
-                    MinWidth="96"
                     Binding="{Binding Path=PreviousValue}"
-                    CellStyle="{StaticResource NoFocus}"
                     Header="Previous Value"
                     IsReadOnly="True" />
                 <DataGridTextColumn
-                    Width="SizeToCells"
-                    MinWidth="64"
                     Binding="{Binding Path=Label}"
-                    CellStyle="{StaticResource NoFocus}"
                     Header="Label"
                     IsReadOnly="True" />
             </DataGrid.Columns>
