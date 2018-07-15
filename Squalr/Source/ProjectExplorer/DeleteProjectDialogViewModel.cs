@@ -8,12 +8,15 @@
     using System.IO;
     using System.Threading;
 
+    /// <summary>
+    /// The view model for the project deletion dialog.
+    /// </summary>
     internal class DeleteProjectDialogViewModel : ViewModelBase
     {
         /// <summary>
         /// Singleton instance of the <see cref="DeleteProjectDialogViewModel" /> class.
         /// </summary>
-        private static Lazy<DeleteProjectDialogViewModel> newProjectDialogViewModelInstance = new Lazy<DeleteProjectDialogViewModel>(
+        private static Lazy<DeleteProjectDialogViewModel> deleteProjectDialogViewModelInstance = new Lazy<DeleteProjectDialogViewModel>(
                 () => { return new DeleteProjectDialogViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
@@ -21,7 +24,7 @@
 
         private String projectName;
 
-        public DeleteProjectDialogViewModel() : base()
+        private DeleteProjectDialogViewModel() : base()
         {
         }
 
@@ -31,7 +34,7 @@
         /// <returns>A singleton instance of the class.</returns>
         public static DeleteProjectDialogViewModel GetInstance()
         {
-            return DeleteProjectDialogViewModel.newProjectDialogViewModelInstance.Value;
+            return DeleteProjectDialogViewModel.deleteProjectDialogViewModelInstance.Value;
         }
 
         public String ConfirmProjectName
@@ -81,7 +84,7 @@
 
             DeleteProjectDialog deleteProjectDialog = new DeleteProjectDialog();
 
-            if (deleteProjectDialog.ShowDialog() == true && IsConfirmationMatching)
+            if (deleteProjectDialog.ShowDialog() == true && this.IsConfirmationMatching)
             {
                 String projectPath = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, projectName);
 

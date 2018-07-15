@@ -29,10 +29,11 @@
 
         private String newProjectName;
 
-        public SelectProjectDialogViewModel() : base()
+        private SelectProjectDialogViewModel() : base()
         {
             this.UpdateSelectedProjectCommand = new RelayCommand<Object>((selectedItems) => this.SelectedProject = (selectedItems as IList)?.Cast<String>()?.FirstOrDefault());
             this.OpenSelectedProjectCommand = new RelayCommand<String>((selectedProject) => this.OpenSelectedProject(selectedProject));
+            this.RenameSelectedProjectCommand = new RelayCommand<String>((selectedProject) => this.RenameSelectedProject(selectedProject));
             this.NewProjectCommand = new RelayCommand(() => this.CreateNewProject());
             this.DeleteProjectCommand = new RelayCommand(() => this.DeleteProject());
         }
@@ -46,6 +47,11 @@
         /// Gets the command to open the selected project.
         /// </summary>
         public ICommand OpenSelectedProjectCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to rename the selected project.
+        /// </summary>
+        public ICommand RenameSelectedProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to create a new project.
@@ -188,6 +194,17 @@
         private void OpenSelectedProject(String selectedProject)
         {
             //// ProjectExplorerViewModel.GetInstance().OpenProjectCommand()
+        }
+
+        private void RenameSelectedProject(String selectedProject)
+        {
+            RenameProjectDialogViewModel renameProjectDialog = RenameProjectDialogViewModel.GetInstance();
+
+            if (renameProjectDialog.ShowDialog(selectedProject) == true)
+            {
+                this.RaisePropertyChanged(nameof(this.Projects));
+                this.RaisePropertyChanged(nameof(this.FilteredProjects));
+            }
         }
 
         private void CreateNewProject()

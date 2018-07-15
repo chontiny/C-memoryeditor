@@ -35,7 +35,7 @@
         /// </summary>
         private ProjectItemView selectedProjectItem;
 
-        public ProjectExplorerViewModel() : base("Project Explorer")
+        private ProjectExplorerViewModel() : base("Project Explorer")
         {
             this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
             this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());

@@ -139,26 +139,26 @@
                     </shell:Style>
                 </shell:DataGrid.CellStyle>
                 <shell:DataGrid.Columns>
-                    <shell:DataGridTemplateColumn Width="Auto">
+                    <shell:DataGridTemplateColumn Header="Projects">
                         <shell:DataGridTemplateColumn.CellTemplate>
                             <shell:DataTemplate>
-                                <shell:Menu Background="Transparent">
-                                    <shell:MenuItem Command="{Binding NewProjectCommand}" ToolTip="Create New Project">
-                                        <shell:MenuItem.Header>
-                                            <shell:Image
-                                                Width="16"
-                                                Height="16"
-                                                Source="{x:Static content:Images.Edit}" />
-                                        </shell:MenuItem.Header>
-                                    </shell:MenuItem>
-                                </shell:Menu>
+                                <shell:StackPanel Orientation="Horizontal">
+                                    <shell:Button
+                                        Margin="0,0,4,0"
+                                        Background="Transparent"
+                                        Command="{Binding SelectProjectDialogViewModel.RenameSelectedProjectCommand, Source={StaticResource ViewModelLocator}}"
+                                        CommandParameter="{Binding Path=.}"
+                                        ToolTip="Edit Value">
+                                        <shell:Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.Edit}" />
+                                    </shell:Button>
+                                    <shell:TextBlock Text="{Binding Path=.}" />
+                                </shell:StackPanel>
                             </shell:DataTemplate>
                         </shell:DataGridTemplateColumn.CellTemplate>
                     </shell:DataGridTemplateColumn>
-                    <shell:DataGridTextColumn
-                        Binding="{Binding Path=.}"
-                        Header="Project Name"
-                        IsReadOnly="True" />
                 </shell:DataGrid.Columns>
                 <shell:DataGrid.ItemTemplate>
                     <shell:DataTemplate>
