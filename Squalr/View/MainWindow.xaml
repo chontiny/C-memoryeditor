@@ -284,7 +284,7 @@
                         </shell:MenuItem.Header>
                     </shell:MenuItem>
                     <shell:Separator Style="{DynamicResource VerticalSeparator}" />
-                    <shell:MenuItem Command="{Binding ProjectExplorerViewModel.OpenProjectCommand}" ToolTip="Open Project">
+                    <shell:MenuItem Command="{Binding ProjectExplorerViewModel.SelectProjectCommand}" ToolTip="Select Project">
                         <shell:MenuItem.Header>
                             <shell:Image
                                 Width="16"

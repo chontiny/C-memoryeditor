@@ -38,7 +38,7 @@
         private ProjectExplorerViewModel() : base("Project Explorer")
         {
             this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
-            this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());
+            this.SelectProjectCommand = new RelayCommand(() => this.SelectProject());
             this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItem) => this.SelectedProjectItem = selectedItem as ProjectItemView, (selectedItem) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
@@ -66,7 +66,7 @@
         /// <summary>
         /// Gets the command to open a project.
         /// </summary>
-        public ICommand OpenProjectCommand { get; private set; }
+        public ICommand SelectProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to select a project item.
@@ -137,6 +137,7 @@
             {
                 projectRoot = value;
                 RaisePropertyChanged(nameof(this.ProjectRoot));
+                RaisePropertyChanged(nameof(this.HasProjectRoot));
             }
         }
 
@@ -155,6 +156,14 @@
                 this.selectedProjectItem = value;
                 this.RaisePropertyChanged(nameof(this.SelectedProjectItem));
                 PropertyViewerViewModel.GetInstance().SetTargetObjects(value);
+            }
+        }
+
+        public Boolean HasProjectRoot
+        {
+            get
+            {
+                return (this.ProjectRoot != null && (this.ProjectRoot?.Count ?? 0) > 0) ? true : false;
             }
         }
 
@@ -192,7 +201,7 @@
         /// <summary>
         /// Prompts the user to open a project.
         /// </summary>
-        private void OpenProject()
+        private void SelectProject()
         {
             try
             {
