@@ -7,6 +7,7 @@
     using System;
     using System.IO;
     using System.Threading;
+    using System.Windows;
 
     /// <summary>
     /// The view model for the project renaming dialog.
@@ -105,11 +106,11 @@
         /// Shows the Rename project dialog, deleting the project if the dialog result was true.
         /// </summary>
         /// <param name="projectName">The project name to potentially Rename.</param>
-        public Boolean ShowDialog(String projectName)
+        public Boolean ShowDialog(Window owner, String projectName)
         {
             this.ProjectName = projectName;
 
-            RenameProjectDialog renameProjectDialog = new RenameProjectDialog();
+            RenameProjectDialog renameProjectDialog = new RenameProjectDialog() { Owner = owner };
 
             if (renameProjectDialog.ShowDialog() == true && this.IsProjectNameValid)
             {

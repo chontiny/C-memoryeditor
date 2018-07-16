@@ -196,7 +196,7 @@
         {
             try
             {
-                SelectProjectDialogViewModel.GetInstance().ShowDialog((projectPath) =>
+                SelectProjectDialogViewModel.GetInstance().ShowDialog(System.Windows.Application.Current.MainWindow, (projectPath) =>
                 {
                     this.DoOpenProject(projectPath);
                 });

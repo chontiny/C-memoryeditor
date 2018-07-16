@@ -116,7 +116,7 @@
                 <shell:DataGrid.ColumnHeaderStyle>
                     <shell:Style TargetType="{x:Type DataGridColumnHeader}">
                         <shell:Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
-                        <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorGray74}" />
+                        <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                         <shell:Setter Property="HorizontalAlignment" Value="Stretch" />
                     </shell:Style>
                 </shell:DataGrid.ColumnHeaderStyle>
@@ -148,7 +148,7 @@
                                         Background="Transparent"
                                         Command="{Binding SelectProjectDialogViewModel.RenameSelectedProjectCommand, Source={StaticResource ViewModelLocator}}"
                                         CommandParameter="{Binding Path=.}"
-                                        ToolTip="Edit Value">
+                                        ToolTip="Rename Project">
                                         <shell:Image
                                             Width="16"
                                             Height="16"

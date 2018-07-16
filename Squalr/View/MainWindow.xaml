@@ -334,7 +334,7 @@
                             <shell:Menu
                                 Grid.Column="0"
                                 Padding="4"
-                                Background="Transparent"
+                                Background="{StaticResource SqualrColorGray20}"
                                 BorderBrush="{StaticResource SqualrColorWhite}"
                                 DataContext="{Binding ScanResultsViewModel, Source={StaticResource ViewModelLocator}}"
                                 Foreground="{StaticResource SqualrColorWhite}">
@@ -576,7 +576,7 @@
                             </shell:Menu>
                             <shell:Menu
                                 VerticalAlignment="Center"
-                                Background="Transparent"
+                                Background="{StaticResource SqualrColorGray20}"
                                 BorderBrush="{StaticResource SqualrColorWhite}"
                                 DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
                                 Foreground="{StaticResource SqualrColorWhite}">

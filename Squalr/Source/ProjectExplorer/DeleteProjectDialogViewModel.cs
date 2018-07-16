@@ -7,6 +7,7 @@
     using System;
     using System.IO;
     using System.Threading;
+    using System.Windows;
 
     /// <summary>
     /// The view model for the project deletion dialog.
@@ -78,11 +79,11 @@
         /// Shows the delete project dialog, deleting the project if the dialog result was true.
         /// </summary>
         /// <param name="projectName">The project name to potentially delete.</param>
-        public Boolean ShowDialog(String projectName)
+        public Boolean ShowDialog(Window owner, String projectName)
         {
             this.ProjectName = projectName;
 
-            DeleteProjectDialog deleteProjectDialog = new DeleteProjectDialog();
+            DeleteProjectDialog deleteProjectDialog = new DeleteProjectDialog() { Owner = owner };
 
             if (deleteProjectDialog.ShowDialog() == true && this.IsConfirmationMatching)
             {

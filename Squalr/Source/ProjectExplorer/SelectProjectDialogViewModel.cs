@@ -12,6 +12,7 @@
     using System.IO;
     using System.Linq;
     using System.Threading;
+    using System.Windows;
     using System.Windows.Input;
 
     internal class SelectProjectDialogViewModel : ViewModelBase
@@ -170,6 +171,8 @@
             }
         }
 
+        private SelectProjectDialog SelectProjectDialog { get; set; }
+
         /// <summary>
         /// Gets a singleton instance of the <see cref="SelectProjectDialogViewModel" /> class.
         /// </summary>
@@ -179,11 +182,11 @@
             return SelectProjectDialogViewModel.selectProjectDialogViewModelInstance.Value;
         }
 
-        public void ShowDialog(Action<String> projectPathCallback)
+        public void ShowDialog(Window owner, Action<String> projectPathCallback)
         {
-            SelectProjectDialog openProjectDialog = new SelectProjectDialog();
+            this.SelectProjectDialog = new SelectProjectDialog() { Owner = owner };
 
-            if (openProjectDialog.ShowDialog() == true)
+            if (this.SelectProjectDialog.ShowDialog() == true)
             {
                 String projectPath = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, this.SelectedProject);
 
@@ -200,7 +203,7 @@
         {
             RenameProjectDialogViewModel renameProjectDialog = RenameProjectDialogViewModel.GetInstance();
 
-            if (renameProjectDialog.ShowDialog(selectedProject) == true)
+            if (renameProjectDialog.ShowDialog(this.SelectProjectDialog, selectedProject) == true)
             {
                 this.RaisePropertyChanged(nameof(this.Projects));
                 this.RaisePropertyChanged(nameof(this.FilteredProjects));
@@ -250,7 +253,7 @@
                 return;
             }
 
-            if (DeleteProjectDialogViewModel.GetInstance().ShowDialog(this.SelectedProject))
+            if (DeleteProjectDialogViewModel.GetInstance().ShowDialog(this.SelectProjectDialog, this.SelectedProject))
             {
                 this.RaisePropertyChanged(nameof(this.Projects));
                 this.RaisePropertyChanged(nameof(this.FilteredProjects));

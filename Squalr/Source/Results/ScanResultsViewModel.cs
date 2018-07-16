@@ -9,6 +9,7 @@
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;
+    using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.ProjectExplorer;
     using System;
     using System.Collections;
@@ -72,6 +73,7 @@
         {
             this.ObserverLock = new Object();
 
+            this.EditValueCommand = new RelayCommand<ScanResult>((scanResult) => this.EditValue(scanResult), (scanResult) => true);
             this.ChangeTypeCommand = new RelayCommand<DataType>((type) => this.ChangeType(type), (type) => true);
             this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<ScanResult>(), (selectedItems) => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
@@ -88,6 +90,11 @@
             SnapshotManager.Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
         }
+
+        /// <summary>
+        /// Gets the command to edit the specified address item.
+        /// </summary>
+        public ICommand EditValueCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to change the active data type.
@@ -368,6 +375,14 @@
             this.ResultCount = snapshot == null ? 0 : snapshot.ElementCount;
             this.ByteCount = snapshot == null ? 0 : snapshot.ByteCount;
             this.CurrentPage = 0;
+        }
+
+        /// <summary>
+        /// Promts the user to edit the value of the specified result.
+        /// </summary>
+        private void EditValue(ScanResult scanResult)
+        {
+            ValueEditorViewModel.GetInstance().ShowDialog(scanResult?.PointerItem);
         }
 
         /// <summary>

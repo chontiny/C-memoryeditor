@@ -1,13 +1,15 @@
 ﻿namespace Squalr.Source.Editors.ValueEditor
 {
-    using Squalr.Source.Docking;
+    using GalaSoft.MvvmLight;
+    using Squalr.Engine.Projects;
     using System;
     using System.Threading;
+    using System.Windows;
 
     /// <summary>
     /// View model for the Value Editor.
     /// </summary>
-    public class ValueEditorViewModel : ToolViewModel
+    public class ValueEditorViewModel : ViewModelBase
     {
         /// <summary>
         /// Singleton instance of the <see cref="ValueEditorViewModel" /> class.
@@ -19,9 +21,8 @@
         /// <summary>
         /// Prevents a default instance of the <see cref="ValueEditorViewModel" /> class.
         /// </summary>
-        public ValueEditorViewModel() : base("Value Editor")
+        public ValueEditorViewModel()
         {
-            DockingViewModel.GetInstance().RegisterViewModel(this);
         }
 
         /// <summary>
@@ -36,6 +37,16 @@
         public static ValueEditorViewModel GetInstance()
         {
             return ValueEditorViewModel.valueEditorViewModelInstance.Value;
+        }
+
+        public void ShowDialog(AddressItem addressItem)
+        {
+            View.Editors.ValueEditor valueEditor = new View.Editors.ValueEditor(addressItem) { Owner = Application.Current.MainWindow };
+
+            if (valueEditor.ShowDialog() == true && addressItem != null)
+            {
+                addressItem.AddressValue = this.Value;
+            }
         }
     }
     //// End class

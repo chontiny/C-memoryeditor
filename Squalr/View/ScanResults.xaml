@@ -121,7 +121,8 @@
                                 <Button
                                     Margin="0,0,4,0"
                                     Background="Transparent"
-                                    Command="{Binding EditValueCommand}"
+                                    Command="{Binding ScanResultsViewModel.EditValueCommand, Source={StaticResource ViewModelLocator}}"
+                                    CommandParameter="{Binding Path=.}"
                                     ToolTip="Edit Value">
                                     <Image
                                         Width="16"

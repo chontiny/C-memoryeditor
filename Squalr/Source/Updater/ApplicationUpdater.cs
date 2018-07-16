@@ -5,7 +5,9 @@
     using Squalr.Source.Tasks;
     using Squirrel;
     using System;
+    using System.IO;
     using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using static Squalr.Engine.TrackableTask;
@@ -25,6 +27,12 @@
         /// </summary>
         public static void UpdateApp()
         {
+            if (!ApplicationUpdater.IsSquirrelInstalled())
+            {
+                Logger.Log(LogLevel.Info, "Updater not found, Squalr will not check for automatic updates.");
+                return;
+            }
+
             Task.Run(async () =>
             {
                 try
@@ -122,6 +130,27 @@
                     Logger.Log(LogLevel.Error, "Error updating Squalr.", ex);
                 }
             });
+        }
+
+        /// <summary>
+        /// Determines if the current application was installed via Squirrel.
+        /// </summary>
+        /// <returns>A value indicating if the current application was installed via Squirrel.</returns>
+        private static Boolean IsSquirrelInstalled()
+        {
+            try
+            {
+                Assembly assembly = Assembly.GetEntryAssembly();
+                String updateDotExe = Path.Combine(new DirectoryInfo(Path.GetDirectoryName(assembly.Location)).Parent.FullName, "Update.exe");
+                Boolean isInstalled = File.Exists(updateDotExe);
+
+                return isInstalled;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Error determing if app was installed by the installer.", ex);
+                return false;
+            }
         }
     }
     //// End class
