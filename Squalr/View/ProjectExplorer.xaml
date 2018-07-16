@@ -25,6 +25,10 @@
             x:Key="BooleanToHiddenConverter"
             False="Hidden"
             True="Visible" />
+        <converters:BooleanToVisibilityConverter
+            x:Key="BooleanToNotHiddenConverter"
+            False="Visible"
+            True="Hidden" />
         <converters:ProjectItemToIconConverter x:Key="ProjectItemToIconConverter" />
         <converters:ValueConverterGroup x:Key="DirectoryItemVisibilityConverter">
             <converters:IsDirectoryItemConverter />
@@ -102,12 +106,32 @@
         </ContextMenu>
     </UserControl.Resources>
     <Grid>
+        <DockPanel Visibility="{Binding Path=HasProjectRoot, Converter={StaticResource BooleanToNotHiddenConverter}}">
+            <Menu Background="Transparent" DataContext="{Binding Source={StaticResource ViewModelLocator}}">
+                <MenuItem
+                    Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"
+                    Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"
+                    Command="{Binding ProjectExplorerViewModel.SelectProjectCommand}">
+                    <MenuItem.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,4,0"
+                                Source="{x:Static content:Images.Open}" />
+                            <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Open or create a project" />
+                        </StackPanel>
+                    </MenuItem.Header>
+                </MenuItem>
+            </Menu>
+        </DockPanel>
         <TreeView
             Name="ProjectExplorerTreeView"
             Background="{StaticResource SqualrColorBlack}"
             BorderBrush="White"
             ContextMenu="{StaticResource RightClickMenu}"
-            ItemsSource="{Binding ProjectRoot}">
+            ItemsSource="{Binding ProjectRoot}"
+            Visibility="{Binding Path=HasProjectRoot, Converter={StaticResource BooleanToHiddenConverter}}">
             <TreeView.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="{Binding Color, Source={StaticResource SqualrColorHighlight}}" />
                 <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}" Color="{Binding Color, Source={StaticResource SqualrColorHighlight}}" />

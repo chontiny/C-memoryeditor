@@ -331,24 +331,35 @@
         }
 
         /// <summary>
-        /// Gets the New Project Dialog view model.
+        /// Gets the Delete Project Dialog view model.
         /// </summary>
-        public NewProjectDialogViewModel NewProjectDialogViewModel
+        public DeleteProjectDialogViewModel DeleteProjectDialogViewModel
         {
             get
             {
-                return NewProjectDialogViewModel.GetInstance();
+                return DeleteProjectDialogViewModel.GetInstance();
             }
         }
 
         /// <summary>
-        /// Gets the Open Project Dialog view model.
+        /// Gets the Rename Project Dialog view model.
         /// </summary>
-        public OpenProjectDialogViewModel OpenProjectDialogViewModel
+        public RenameProjectDialogViewModel RenameProjectDialogViewModel
         {
             get
             {
-                return OpenProjectDialogViewModel.GetInstance();
+                return RenameProjectDialogViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the Select Project Dialog view model.
+        /// </summary>
+        public SelectProjectDialogViewModel SelectProjectDialogViewModel
+        {
+            get
+            {
+                return SelectProjectDialogViewModel.GetInstance();
             }
         }
     }

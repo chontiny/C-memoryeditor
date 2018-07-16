@@ -83,6 +83,7 @@
                 this.RaisePropertyChanged(nameof(this.ModuleName));
                 this.RaisePropertyChanged(nameof(this.IsStatic));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -108,6 +109,7 @@
                 this.moduleOffset = value;
                 this.RaisePropertyChanged(nameof(this.ModuleOffset));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -133,6 +135,7 @@
                 this.RaisePropertyChanged(nameof(this.PointerOffsets));
                 this.RaisePropertyChanged(nameof(this.IsPointer));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 

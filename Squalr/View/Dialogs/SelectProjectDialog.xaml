@@ -1,0 +1,196 @@
+﻿<shell:Window
+    x:Class="Squalr.View.Dialogs.SelectProjectDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="clr-namespace:Squalr.Source.Mvvm.AttachedBehaviors"
+    xmlns:content="clr-namespace:Squalr.Content"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:intr="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    x:Name="SqualrSelectProjectDialog"
+    Title="Value Editor"
+    Width="320"
+    Height="320"
+    d:DesignHeight="320"
+    d:DesignWidth="320"
+    BorderBrush="{StaticResource SqualrColorWhite}"
+    BorderThickness="2"
+    DataContext="{Binding SelectProjectDialogViewModel, Source={StaticResource ViewModelLocator}}"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="None"
+    mc:Ignorable="d">
+    <shell:WindowChrome.WindowChrome>
+        <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
+    </shell:WindowChrome.WindowChrome>
+    <shell:Window.Resources>
+        <shell:ContextMenu
+            x:Key="RightClickMenu"
+            Background="{StaticResource SqualrColorGray27}"
+            BorderBrush="{StaticResource SqualrColorWhite}"
+            Foreground="{StaticResource SqualrColorWhite}">
+            <shell:MenuItem Command="{Binding RenameProjectCommand}" Header="Rename Project" />
+            <shell:MenuItem Command="{Binding DeleteProjectCommand}" Header="Delete Project" />
+        </shell:ContextMenu>
+    </shell:Window.Resources>
+    <shell:Grid Background="{StaticResource SqualrColorBlack}">
+        <shell:Grid.RowDefinitions>
+            <shell:RowDefinition Height="Auto" />
+            <shell:RowDefinition Height="Auto" />
+            <shell:RowDefinition />
+            <shell:RowDefinition Height="Auto" />
+        </shell:Grid.RowDefinitions>
+
+        <shell:Grid
+            x:Name="titlebar"
+            Grid.Row="0"
+            Height="24"
+            Background="{StaticResource SqualrColorGray20}">
+            <shell:WrapPanel Margin="8,0,0,0" VerticalAlignment="Center">
+                <shell:TextBlock
+                    Foreground="{StaticResource SqualrColorWhite}"
+                    Text="* "
+                    Visibility="Collapsed" />
+                <shell:TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Select Project" />
+            </shell:WrapPanel>
+        </shell:Grid>
+
+        <shell:Grid Margin="4" shell:Grid.Row="1">
+            <shell:Grid>
+                <shell:Grid.ColumnDefinitions>
+                    <shell:ColumnDefinition Width="Auto" />
+                    <shell:ColumnDefinition />
+                    <shell:ColumnDefinition Width="Auto" />
+                </shell:Grid.ColumnDefinitions>
+                <shell:Menu Background="Transparent">
+                    <shell:MenuItem
+                        Grid.Column="0"
+                        Command="{Binding NewProjectCommand}"
+                        ToolTip="Create New Project">
+                        <shell:MenuItem.Header>
+                            <shell:Image
+                                Width="16"
+                                Height="16"
+                                Source="{x:Static content:Images.New}" />
+                        </shell:MenuItem.Header>
+                    </shell:MenuItem>
+                </shell:Menu>
+                <shell:TextBox
+                    Grid.Column="1"
+                    Margin="4,0,4,0"
+                    Background="{StaticResource SqualrColorBlack}"
+                    Foreground="{StaticResource SqualrColorWhite}"
+                    Text="{Binding ProjectSearchTerm, UpdateSourceTrigger=PropertyChanged}" />
+                <shell:Image
+                    Grid.Column="2"
+                    Width="16"
+                    Height="16"
+                    Source="{x:Static content:Images.Search}"
+                    ToolTip="Project Search" />
+            </shell:Grid>
+        </shell:Grid>
+
+        <shell:Grid shell:Grid.Row="2">
+            <shell:DataGrid
+                Name="ProjectSelectionDataGrid"
+                behaviors:ScrollToTopBehavior.ScrollToTop="True"
+                AutoGenerateColumns="False"
+                Background="{StaticResource SqualrColorBlack}"
+                CanUserAddRows="False"
+                ColumnWidth="*"
+                ContextMenu="{StaticResource RightClickMenu}"
+                HeadersVisibility="Column"
+                ItemsSource="{Binding FilteredProjects}"
+                RowHeaderWidth="0"
+                SelectionMode="Extended"
+                SelectionUnit="FullRow">
+                <!--  Click and Selection events  -->
+                <intr:Interaction.Triggers>
+                    <intr:EventTrigger EventName="SelectionChanged">
+                        <intr:InvokeCommandAction Command="{Binding UpdateSelectedProjectCommand}" CommandParameter="{Binding ElementName=ProjectSelectionDataGrid, Path=SelectedItems}" />
+                    </intr:EventTrigger>
+                    <intr:EventTrigger EventName="MouseDoubleClick">
+                        <intr:InvokeCommandAction Command="{Binding OpenSelectedProjectCommand}" CommandParameter="{Binding ElementName=ProjectSelectionDataGrid, Path=SelectedItem}" />
+                    </intr:EventTrigger>
+                </intr:Interaction.Triggers>
+                <shell:DataGrid.ColumnHeaderStyle>
+                    <shell:Style TargetType="{x:Type DataGridColumnHeader}">
+                        <shell:Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                        <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                        <shell:Setter Property="HorizontalAlignment" Value="Stretch" />
+                    </shell:Style>
+                </shell:DataGrid.ColumnHeaderStyle>
+                <shell:DataGrid.Style>
+                    <shell:Style TargetType="{x:Type DataGrid}">
+                        <shell:Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                        <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    </shell:Style>
+                </shell:DataGrid.Style>
+                <shell:DataGrid.CellStyle>
+                    <shell:Style TargetType="{x:Type DataGridCell}">
+                        <shell:Style.Triggers>
+                            <shell:Trigger Property="IsSelected" Value="True">
+                                <shell:Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
+                            </shell:Trigger>
+                        </shell:Style.Triggers>
+                        <shell:Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                        <shell:Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                        <shell:Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlack}" />
+                    </shell:Style>
+                </shell:DataGrid.CellStyle>
+                <shell:DataGrid.Columns>
+                    <shell:DataGridTemplateColumn Header="Projects">
+                        <shell:DataGridTemplateColumn.CellTemplate>
+                            <shell:DataTemplate>
+                                <shell:StackPanel Orientation="Horizontal">
+                                    <shell:Button
+                                        Margin="0,0,4,0"
+                                        Background="Transparent"
+                                        Command="{Binding SelectProjectDialogViewModel.RenameSelectedProjectCommand, Source={StaticResource ViewModelLocator}}"
+                                        CommandParameter="{Binding Path=.}"
+                                        ToolTip="Rename Project">
+                                        <shell:Image
+                                            Width="16"
+                                            Height="16"
+                                            Source="{x:Static content:Images.Edit}" />
+                                    </shell:Button>
+                                    <shell:TextBlock Text="{Binding Path=.}" />
+                                </shell:StackPanel>
+                            </shell:DataTemplate>
+                        </shell:DataGridTemplateColumn.CellTemplate>
+                    </shell:DataGridTemplateColumn>
+                </shell:DataGrid.Columns>
+                <shell:DataGrid.ItemTemplate>
+                    <shell:DataTemplate>
+                        <shell:ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <shell:ItemsPresenter />
+                        </shell:ScrollViewer>
+                    </shell:DataTemplate>
+                </shell:DataGrid.ItemTemplate>
+            </shell:DataGrid>
+        </shell:Grid>
+
+        <shell:Grid Grid.Row="3" Margin="8">
+            <shell:Button
+                Width="96"
+                Height="20"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Click="CancelButtonClick"
+                IsCancel="True">
+                <shell:TextBlock Text="Cancel" />
+            </shell:Button>
+            <shell:Button
+                Width="96"
+                Height="20"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                shell:Grid.Column="1"
+                Click="AcceptButtonClick"
+                Command=""
+                IsDefault="True">
+                <shell:TextBlock Text="Accept" />
+            </shell:Button>
+        </shell:Grid>
+    </shell:Grid>
+</shell:Window>

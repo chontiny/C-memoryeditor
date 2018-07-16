@@ -43,14 +43,13 @@
             </shell:WrapPanel>
         </shell:Grid>
 
-
-        <shell:Grid shell:Grid.Row="1">
-            <shell:Grid
-                x:Name="ValueEditorTextEditorContainer"
-                Height="20"
-                Margin="4"
-                VerticalAlignment="Center" />
-        </shell:Grid>
+        <shell:Grid
+            x:Name="ValueEditorTextEditorContainer"
+            Height="20"
+            Margin="4"
+            VerticalAlignment="Center"
+            shell:Grid.Row="1"
+            Background="{StaticResource SqualrColorGray20}" />
 
         <shell:Grid Grid.Row="2" Margin="8">
             <shell:Button

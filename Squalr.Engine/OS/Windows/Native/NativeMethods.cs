@@ -8,10 +8,10 @@
     /// </summary>
     internal static class NativeMethods
     {
-        public delegate Int32 EnumWindowsProc(IntPtr hwnd, Int32 lParam);
+        public delegate Boolean EnumWindowsProc(IntPtr hwnd, Int32 lParam);
 
         [DllImport("user32")]
-        public static extern Int32 EnumWindows(EnumWindowsProc x, Int32 y);
+        public static extern Boolean EnumWindows(EnumWindowsProc x, Int32 y);
 
         [DllImport("user32")]
         public static extern Int32 GetWindowThreadProcessId(IntPtr handle, out Int32 processId);

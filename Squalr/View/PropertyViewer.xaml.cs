@@ -33,29 +33,29 @@
             // Use reflection to set all propertygrid colors to dark, since some are otherwise not publically accessible
             PropertyInfo[] allProperties = this.propertyGrid.GetType().GetProperties();
             IEnumerable<PropertyInfo> colorProperties = allProperties.Select(x => x).Where(x => x.PropertyType == typeof(Color));
-            colorProperties.ForEach(x => x.SetValue(this.propertyGrid, DarkBrushes.BaseColor3, null));
+            colorProperties.ForEach(x => x.SetValue(this.propertyGrid, DarkBrushes.SqualrColorBlack, null));
 
-            this.propertyGrid.BackColor = DarkBrushes.BaseColor3;
-            this.propertyGrid.CommandsBackColor = DarkBrushes.BaseColor3;
-            this.propertyGrid.HelpBackColor = DarkBrushes.BaseColor3;
-            this.propertyGrid.SelectedItemWithFocusBackColor = DarkBrushes.BaseColor3;
-            this.propertyGrid.ViewBackColor = DarkBrushes.BaseColor3;
+            this.propertyGrid.BackColor = DarkBrushes.SqualrColorBlack;
+            this.propertyGrid.CommandsBackColor = DarkBrushes.SqualrColorBlack;
+            this.propertyGrid.HelpBackColor = DarkBrushes.SqualrColorBlack;
+            this.propertyGrid.SelectedItemWithFocusBackColor = DarkBrushes.SqualrColorBlack;
+            this.propertyGrid.ViewBackColor = DarkBrushes.SqualrColorBlack;
 
-            this.propertyGrid.CommandsActiveLinkColor = DarkBrushes.BaseColor3;
-            this.propertyGrid.CommandsDisabledLinkColor = DarkBrushes.BaseColor3;
+            this.propertyGrid.CommandsActiveLinkColor = DarkBrushes.SqualrColorBlack;
+            this.propertyGrid.CommandsDisabledLinkColor = DarkBrushes.SqualrColorBlack;
 
-            this.propertyGrid.CategorySplitterColor = DarkBrushes.BaseColor2;
+            this.propertyGrid.CategorySplitterColor = DarkBrushes.SqualrColorWhite;
 
-            this.propertyGrid.CommandsBorderColor = DarkBrushes.BaseColor4;
-            this.propertyGrid.HelpBorderColor = DarkBrushes.BaseColor4;
-            this.propertyGrid.ViewBorderColor = DarkBrushes.BaseColor4;
+            this.propertyGrid.CommandsBorderColor = DarkBrushes.SqualrColorGray20;
+            this.propertyGrid.HelpBorderColor = DarkBrushes.SqualrColorGray20;
+            this.propertyGrid.ViewBorderColor = DarkBrushes.SqualrColorGray20;
 
-            this.propertyGrid.CategoryForeColor = DarkBrushes.BaseColor2;
-            this.propertyGrid.CommandsForeColor = DarkBrushes.BaseColor2;
-            this.propertyGrid.DisabledItemForeColor = DarkBrushes.BaseColor2;
-            this.propertyGrid.HelpForeColor = DarkBrushes.BaseColor2;
-            this.propertyGrid.SelectedItemWithFocusForeColor = DarkBrushes.BaseColor2;
-            this.propertyGrid.ViewForeColor = DarkBrushes.BaseColor2;
+            this.propertyGrid.CategoryForeColor = DarkBrushes.SqualrColorWhite;
+            this.propertyGrid.CommandsForeColor = DarkBrushes.SqualrColorWhite;
+            this.propertyGrid.DisabledItemForeColor = DarkBrushes.SqualrColorWhite;
+            this.propertyGrid.HelpForeColor = DarkBrushes.SqualrColorWhite;
+            this.propertyGrid.SelectedItemWithFocusForeColor = DarkBrushes.SqualrColorWhite;
+            this.propertyGrid.ViewForeColor = DarkBrushes.SqualrColorWhite;
 
             PropertyViewerViewModel.GetInstance().Subscribe(this);
 

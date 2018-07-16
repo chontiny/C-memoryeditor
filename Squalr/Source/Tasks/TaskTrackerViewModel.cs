@@ -2,7 +2,6 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine;
-    using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
     using System;

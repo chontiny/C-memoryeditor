@@ -4,31 +4,16 @@
     using System.Windows;
 
     /// <summary>
-    /// Interaction logic for OpenProjectDialog.xaml.
+    /// Interaction logic for DeleteProjectDialog.xaml.
     /// </summary>
-    public partial class OpenProjectDialog : Window
+    public partial class DeleteProjectDialog : Window
     {
-        private String projectPath;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="OpenProjectDialog" /> class.
+        /// Initializes a new instance of the <see cref="DeleteProjectDialog" /> class.
         /// </summary>
-        public OpenProjectDialog()
+        public DeleteProjectDialog()
         {
             this.InitializeComponent();
-        }
-
-        public String ProjectName
-        {
-            get
-            {
-                return this.projectPath;
-            }
-
-            set
-            {
-                this.projectPath = value;
-            }
         }
 
         /// <summary>
@@ -48,12 +33,6 @@
         /// <param name="sender">Sending object.</param>
         /// <param name="e">Event args.</param>
         private void AcceptButtonClick(Object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-            this.Close();
-        }
-
-        private void ProjectsListViewMouseDoubleClick(Object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.DialogResult = true;
             this.Close();

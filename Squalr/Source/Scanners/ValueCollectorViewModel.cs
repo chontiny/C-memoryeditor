@@ -10,7 +10,6 @@
     using Squalr.Source.Tasks;
     using System;
     using System.Threading;
-    using System.Threading.Tasks;
     using System.Windows.Input;
 
     /// <summary>
@@ -30,7 +29,7 @@
         /// </summary>
         public ValueCollectorViewModel()
         {
-            this.CollectValuesCommand = new RelayCommand(() => Task.Run(() => this.CollectValues()), () => true);
+            this.CollectValuesCommand = new RelayCommand(() => this.CollectValues(), () => true);
         }
 
         /// <summary>

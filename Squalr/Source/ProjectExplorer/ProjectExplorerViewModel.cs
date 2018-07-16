@@ -35,11 +35,10 @@
         /// </summary>
         private ProjectItemView selectedProjectItem;
 
-        public ProjectExplorerViewModel() : base("Project Explorer")
+        private ProjectExplorerViewModel() : base("Project Explorer")
         {
             this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
-            this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());
-            this.NewProjectCommand = new RelayCommand(() => this.NewProject());
+            this.SelectProjectCommand = new RelayCommand(() => this.SelectProject());
             this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItem) => this.SelectedProjectItem = selectedItem as ProjectItemView, (selectedItem) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
@@ -67,12 +66,7 @@
         /// <summary>
         /// Gets the command to open a project.
         /// </summary>
-        public ICommand OpenProjectCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to create a new project.
-        /// </summary>
-        public ICommand NewProjectCommand { get; private set; }
+        public ICommand SelectProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to select a project item.
@@ -138,10 +132,12 @@
             {
                 return projectRoot;
             }
+
             set
             {
                 projectRoot = value;
                 RaisePropertyChanged(nameof(this.ProjectRoot));
+                RaisePropertyChanged(nameof(this.HasProjectRoot));
             }
         }
 
@@ -160,6 +156,14 @@
                 this.selectedProjectItem = value;
                 this.RaisePropertyChanged(nameof(this.SelectedProjectItem));
                 PropertyViewerViewModel.GetInstance().SetTargetObjects(value);
+            }
+        }
+
+        public Boolean HasProjectRoot
+        {
+            get
+            {
+                return (this.ProjectRoot != null && (this.ProjectRoot?.Count ?? 0) > 0) ? true : false;
             }
         }
 
@@ -195,32 +199,13 @@
         }
 
         /// <summary>
-        /// Prompts the user to create a new project.
-        /// </summary>
-        private void NewProject()
-        {
-            try
-            {
-                NewProjectDialogViewModel.GetInstance().ShowDialog((newProjectPath) =>
-                {
-                    Directory.CreateDirectory(newProjectPath);
-                    this.DoOpenProject(newProjectPath);
-                });
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(LogLevel.Error, "Unable to create new project", ex);
-            }
-        }
-
-        /// <summary>
         /// Prompts the user to open a project.
         /// </summary>
-        private void OpenProject()
+        private void SelectProject()
         {
             try
             {
-                OpenProjectDialogViewModel.GetInstance().ShowDialog((projectPath) =>
+                SelectProjectDialogViewModel.GetInstance().ShowDialog(System.Windows.Application.Current.MainWindow, (projectPath) =>
                 {
                     this.DoOpenProject(projectPath);
                 });

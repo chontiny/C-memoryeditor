@@ -29,6 +29,11 @@
 
         protected static Random Random = new Random();
 
+        public void Invalidate()
+        {
+            this.cache.Clear();
+        }
+
         public void Add(V value)
         {
             if (this.RandomTimeToLiveOffset != null)
@@ -142,10 +147,9 @@
 
         public Boolean TryGetValue(K key, out V value)
         {
-            Tuple<V, DateTime> result;
             value = null;
 
-            if (this.cache.TryGetValue(key, out result))
+            if (this.cache.TryGetValue(key, out Tuple<V, DateTime> result))
             {
                 if (DateTime.Now <= result.Item2 || result.Item2 == DateTime.MaxValue)
                 {
