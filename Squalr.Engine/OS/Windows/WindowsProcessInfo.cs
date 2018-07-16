@@ -234,18 +234,21 @@
             // Window handle was not set, so to be certain we must enumerate the process threads, looking for window threads
             foreach (ProcessThread threadInfo in process.Threads)
             {
-                IntPtr[] windows = WindowsProcessInfo.GetWindowHandlesForThread(threadInfo.Id);
-
-                if (windows != null)
-                {
-                    foreach (IntPtr handle in windows)
+                if (NativeMethods.EnumWindows((IntPtr hWnd, Int32 lParam) =>
                     {
-                        if (NativeMethods.IsWindowVisible(handle))
+                        if (NativeMethods.GetWindowThreadProcessId(hWnd, out _) == lParam)
                         {
-                            WindowsProcessInfo.WindowedProcessCache.Add(process.Id);
-                            return true;
+                            if (NativeMethods.IsWindowVisible(hWnd))
+                            {
+                                WindowsProcessInfo.WindowedProcessCache.Add(process.Id);
+                                return true;
+                            }
                         }
-                    }
+
+                        return false;
+                    }, threadInfo.Id))
+                {
+                    return true;
                 }
             }
 
@@ -256,16 +259,6 @@
         private static IntPtr[] GetWindowHandlesForThread(Int32 threadHandle)
         {
             List<IntPtr> results = new List<IntPtr>();
-
-            NativeMethods.EnumWindows((IntPtr hWnd, Int32 lParam) =>
-            {
-                if (NativeMethods.GetWindowThreadProcessId(hWnd, out _) == lParam)
-                {
-                    results.Add(hWnd);
-                }
-
-                return 1;
-            }, threadHandle);
 
             return results.ToArray();
         }

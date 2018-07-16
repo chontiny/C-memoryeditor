@@ -107,10 +107,7 @@
     </UserControl.Resources>
     <Grid>
         <DockPanel Visibility="{Binding Path=HasProjectRoot, Converter={StaticResource BooleanToNotHiddenConverter}}">
-            <Menu
-                Background="Transparent"
-                DataContext="{Binding Source={StaticResource ViewModelLocator}}"
-                ToolTip="Select Project">
+            <Menu Background="Transparent" DataContext="{Binding Source={StaticResource ViewModelLocator}}">
                 <MenuItem
                     Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"
                     Height="{Binding ActualHeight, RelativeSource={RelativeSource AncestorType={x:Type Menu}}}"

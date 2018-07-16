@@ -580,7 +580,7 @@
                                 BorderBrush="{StaticResource SqualrColorWhite}"
                                 DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
                                 Foreground="{StaticResource SqualrColorWhite}">
-                                <shell:MenuItem ToolTip="Scan Constraints">
+                                <shell:MenuItem ToolTip="Scan Constraint">
                                     <shell:MenuItem.Header>
                                         <shell:StackPanel Orientation="Horizontal">
                                             <shell:Image

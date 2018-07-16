@@ -5,6 +5,7 @@
     using Squalr.Engine.Logging;
     using Squalr.Engine.Memory.Windows.PEB;
     using Squalr.Engine.OS;
+    using Squalr.Engine.Utils.DataStructures;
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
@@ -30,6 +31,8 @@
         /// </summary>
         public WindowsMemoryQuery()
         {
+            this.ModuleCache = new TtlCache<Int32, List<NormalizedModule>>(TimeSpan.FromSeconds(10.0));
+
             // Subscribe to process events
             Processes.Default.Subscribe(this);
         }
@@ -40,6 +43,11 @@
         public Process ExternalProcess { get; set; }
 
         /// <summary>
+        /// Gets or sets the module cache of process modules.
+        /// </summary>
+        private TtlCache<Int32, List<NormalizedModule>> ModuleCache { get; set; }
+
+        /// <summary>
         /// Recieves a process update. This is an optimization over grabbing the process from the <see cref="IProcessInfo"/> component
         /// of the <see cref="EngineCore"/> every time we need it, which would be cumbersome when doing hundreds of thousands of memory read/writes.
         /// </summary>
@@ -47,6 +55,7 @@
         public void Update(Process process)
         {
             this.ExternalProcess = process;
+            this.ModuleCache.Invalidate();
         }
 
         /// <summary>
@@ -226,19 +235,26 @@
             // Query all modules in the target process
             IntPtr[] modulePointers = new IntPtr[0];
             Int32 bytesNeeded = 0;
-
-            List<NormalizedModule> modules = new List<NormalizedModule>();
+            List<NormalizedModule> modules;
 
             if (this.ExternalProcess == null)
             {
+                return new List<NormalizedModule>();
+            }
+
+            if (this.ModuleCache.Contains(this.ExternalProcess.Id) && this.ModuleCache.TryGetValue(this.ExternalProcess.Id, out modules))
+            {
                 return modules;
             }
+
+            modules = new List<NormalizedModule>();
 
             try
             {
                 // Determine number of modules
                 if (!NativeMethods.EnumProcessModulesEx(this.ExternalProcess.Handle, modulePointers, 0, out bytesNeeded, (UInt32)Enumerations.ModuleFilter.ListModulesAll))
                 {
+                    // Failure, return our current empty list
                     return modules;
                 }
 
@@ -271,6 +287,8 @@
             {
                 Logger.Log(LogLevel.Error, "Unable to fetch modules from selected process", ex);
             }
+
+            this.ModuleCache.Add(this.ExternalProcess.Id, modules);
 
             return modules;
         }
