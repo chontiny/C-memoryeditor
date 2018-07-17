@@ -33,7 +33,7 @@
         {
             TrackableTask<PointerBag> pointerScanTask = TrackableTask<PointerBag>.Create(PointerRetargetScan.Name, out UpdateProgress updateProgress, out CancellationToken cancellationToken);
 
-            return pointerScanTask.With(Task.Factory.StartNew<PointerBag>(() =>
+            return pointerScanTask.With(Task<PointerBag>.Run(() =>
             {
                 try
                 {

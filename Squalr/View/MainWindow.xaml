@@ -153,8 +153,8 @@
                         Header="File">
                         <shell:MenuItem
                             BorderThickness="0"
-                            Command="{Binding ProjectExplorerViewModel.OpenProjectCommand}"
-                            Header="Open"
+                            Command="{Binding ProjectExplorerViewModel.SelectProjectCommand}"
+                            Header="Select Project"
                             Style="{Binding}" />
                         <shell:MenuItem
                             BorderThickness="0"
