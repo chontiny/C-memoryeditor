@@ -10,8 +10,6 @@
     using System.IO;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
-    using System.Threading;
-    using System.Threading.Tasks;
 
     /// <summary>
     /// A base class for all project items that can be added to the project explorer.
@@ -74,20 +72,7 @@
             this.isActivated = false;
             this.guid = Guid.NewGuid();
             this.ActivationLock = new Object();
-
-            this.RunUpdateLoop();
         }
-
-        private static readonly Type[] KnownTypes =
-        {
-            typeof(ProjectItem),
-            typeof(ScriptItem),
-            typeof(AddressItem),
-            typeof(InstructionItem),
-            typeof(PointerItem),
-            typeof(DotNetItem),
-            typeof(JavaItem),
-        };
 
         public static ProjectItem FromFile(String filePath)
         {
@@ -361,7 +346,7 @@
         }
 
         /// <summary>
-        /// Controls access to activating project items.
+        /// Gets or sets a lock for activating project items.
         /// </summary>
         private Object ActivationLock { get; set; }
 
@@ -378,7 +363,6 @@
             }
 
             this.ActivationLock = new Object();
-            this.RunUpdateLoop();
         }
 
         /// <summary>
@@ -506,22 +490,6 @@
         protected virtual Boolean IsActivatable()
         {
             return true;
-        }
-
-        /// <summary>
-        /// Updates the project item continuously.
-        /// </summary>
-        private void RunUpdateLoop()
-        {
-            Task.Run(() =>
-            {
-                while (true)
-                {
-                    this.Update();
-
-                    Thread.Sleep(50);
-                }
-            });
         }
     }
     //// End class

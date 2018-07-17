@@ -16,6 +16,7 @@
     using System.IO;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
     using System.Windows.Input;
 
@@ -47,6 +48,7 @@
             this.OpenFileExplorerCommand = new RelayCommand<ProjectItemView>((projectItem) => this.OpenFileExplorer(projectItem), (projectItem) => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
+            this.Update();
         }
 
         /// <summary>
@@ -165,6 +167,24 @@
             {
                 return (this.ProjectRoot != null && (this.ProjectRoot?.Count ?? 0) > 0) ? true : false;
             }
+        }
+
+        /// <summary>
+        /// Runs the update loop, updating all scan results.
+        /// </summary>
+        public void Update()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    ProjectItem projectRoot = this.ProjectRoot?.FirstOrDefault()?.ProjectItem;
+
+                    projectRoot?.Update();
+
+                    Thread.Sleep(50);
+                }
+            });
         }
 
         /// <summary>

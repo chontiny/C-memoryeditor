@@ -22,7 +22,7 @@
         {
             return TrackableTask<Snapshot>
                 .Create(ValueCollector.Name, out UpdateProgress updateProgress, out CancellationToken cancellationToken)
-                .With(Task.Factory.StartNew<Snapshot>(() =>
+                .With(Task<Snapshot>.Run(() =>
                 {
                     try
                     {

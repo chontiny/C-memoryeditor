@@ -95,7 +95,7 @@
         private static TtlCache<Int32> NoWindowProcessCache = new TtlCache<Int32>(TimeSpan.FromSeconds(15), TimeSpan.FromSeconds(5));
 
         /// <summary>
-        /// Represents an empty icon;
+        /// Represents an empty icon.
         /// </summary>
         private const Icon NoIcon = null;
 

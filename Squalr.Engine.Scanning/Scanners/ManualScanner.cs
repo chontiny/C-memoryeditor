@@ -35,7 +35,7 @@
         {
             return TrackableTask<Snapshot>
                 .Create(ManualScanner.Name, out UpdateProgress updateProgress, out CancellationToken cancellationToken)
-                .With(Task.Factory.StartNew<Snapshot>(() =>
+                .With(Task<Snapshot>.Run(() =>
                 {
                     Snapshot result = null;
 

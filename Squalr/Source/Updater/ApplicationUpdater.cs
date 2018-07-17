@@ -52,7 +52,7 @@
 
                         TrackableTask<Boolean> downloadTask = TrackableTask<Boolean>
                             .Create("Downloading Updates", out UpdateProgress updateProgress, out CancellationToken cancellationToken)
-                            .With(Task.Factory.StartNew<Boolean>(() =>
+                            .With(Task<Boolean>.Run(() =>
                             {
                                 try
                                 {
@@ -76,7 +76,7 @@
 
                         TrackableTask<Boolean> applyReleasesTask = TrackableTask<Boolean>
                             .Create("Applying Releases", out updateProgress, out cancellationToken)
-                            .With(Task.Factory.StartNew<Boolean>(() =>
+                            .With(Task<Boolean>.Run(() =>
                             {
                                 try
                                 {
@@ -100,7 +100,7 @@
 
                         TrackableTask<Boolean> updateTask = TrackableTask<Boolean>
                             .Create("Updating", out updateProgress, out cancellationToken)
-                            .With(Task.Factory.StartNew<Boolean>(() =>
+                            .With(Task<Boolean>.Run(() =>
                             {
                                 try
                                 {

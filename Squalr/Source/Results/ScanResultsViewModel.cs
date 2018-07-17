@@ -89,6 +89,7 @@
 
             SnapshotManager.Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
+            this.Update();
         }
 
         /// <summary>
@@ -375,6 +376,30 @@
             this.ResultCount = snapshot == null ? 0 : snapshot.ElementCount;
             this.ByteCount = snapshot == null ? 0 : snapshot.ByteCount;
             this.CurrentPage = 0;
+        }
+
+        /// <summary>
+        /// Runs the update loop, updating all scan results.
+        /// </summary>
+        public void Update()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    IList<ScanResult> scanResults = this.Addresses?.ToList();
+
+                    if (scanResults != null)
+                    {
+                        foreach (ScanResult result in scanResults)
+                        {
+                            result?.PointerItem.Update();
+                        }
+                    }
+
+                    Thread.Sleep(50);
+                }
+            });
         }
 
         /// <summary>
