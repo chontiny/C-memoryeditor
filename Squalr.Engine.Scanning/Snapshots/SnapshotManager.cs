@@ -13,9 +13,9 @@
     public static class SnapshotManager
     {
         /// <summary>
-        /// The size limit for snapshots to be saved in the snapshot history (1GB). TODO: Make this a setting.
+        /// The size limit for snapshots to be saved in the snapshot history (256MB). TODO: Make this a setting.
         /// </summary>
-        private const UInt64 SizeLimit = 1UL << 30;
+        private const UInt64 SizeLimit = 1UL << 28;
 
         static SnapshotManager()
         {
