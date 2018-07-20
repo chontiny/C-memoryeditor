@@ -173,23 +173,26 @@
         <shell:Grid Grid.Row="3" Margin="8">
             <shell:Button
                 Width="96"
-                Height="20"
+                Height="24"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
+                Background="{StaticResource SqualrColorGray27}"
                 Click="CancelButtonClick"
+                Foreground="{StaticResource SqualrColorWhite}"
                 IsCancel="True">
                 <shell:TextBlock Text="Cancel" />
             </shell:Button>
             <shell:Button
                 Width="96"
-                Height="20"
+                Height="24"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Bottom"
                 shell:Grid.Column="1"
+                Background="{StaticResource SqualrColorGray27}"
                 Click="AcceptButtonClick"
-                Command=""
+                Foreground="{StaticResource SqualrColorWhite}"
                 IsDefault="True">
-                <shell:TextBlock Text="Accept" />
+                <shell:TextBlock VerticalAlignment="Center" Text="Accept" />
             </shell:Button>
         </shell:Grid>
     </shell:Grid>

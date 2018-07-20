@@ -108,25 +108,16 @@
     <Grid>
         <Grid Visibility="{Binding Path=HasProjectRoot, Converter={StaticResource BooleanToNotHiddenConverter}}">
             <Button
-                Background="{StaticResource SqualrColorGray35}"
+                Background="{StaticResource SqualrColorBlack}"
                 BorderThickness="1"
                 Command="{Binding SelectProjectCommand}">
-                <StackPanel
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal">
                     <Image
                         Width="16"
                         Height="16"
                         Margin="0,0,4,0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
                         Source="{x:Static content:Images.Open}" />
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="{StaticResource SqualrColorWhite}"
-                        Text="Open or create a project" />
+                    <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="Open or create a project" />
                 </StackPanel>
             </Button>
         </Grid>
