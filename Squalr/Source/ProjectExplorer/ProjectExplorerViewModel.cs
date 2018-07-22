@@ -316,6 +316,34 @@
             }
         }
 
+        private void CreateUntitledProject()
+        {
+            /*
+            try
+            {
+                String newProjectDirectory = String.Empty;
+                IEnumerable<String> projects = this.Projects;
+
+                for (Int32 appendedNumber = 0; appendedNumber < Int32.MaxValue; appendedNumber++)
+                {
+                    String suffix = (appendedNumber == 0 ? String.Empty : " " + appendedNumber.ToString());
+                    newProjectDirectory = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, "New Project" + suffix);
+
+                    if (!Directory.Exists(newProjectDirectory))
+                    {
+                        Directory.CreateDirectory(newProjectDirectory);
+                        this.RaisePropertyChanged(nameof(this.Projects));
+                        this.RaisePropertyChanged(nameof(this.FilteredProjects));
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Error creating new project directory", ex);
+            }*/
+        }
+
         /// <summary>
         /// Toggles the activation the selected project explorer items.
         /// </summary>

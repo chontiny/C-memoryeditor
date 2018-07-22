@@ -212,28 +212,12 @@
 
         private void CreateNewProject()
         {
-            try
-            {
-                String newProjectDirectory = String.Empty;
-                IEnumerable<String> projects = this.Projects;
+            CreateProjectDialogViewModel createProjectDialog = CreateProjectDialogViewModel.GetInstance();
 
-                for (Int32 appendedNumber = 0; appendedNumber < Int32.MaxValue; appendedNumber++)
-                {
-                    String suffix = (appendedNumber == 0 ? String.Empty : " " + appendedNumber.ToString());
-                    newProjectDirectory = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, "New Project" + suffix);
-
-                    if (!Directory.Exists(newProjectDirectory))
-                    {
-                        Directory.CreateDirectory(newProjectDirectory);
-                        this.RaisePropertyChanged(nameof(this.Projects));
-                        this.RaisePropertyChanged(nameof(this.FilteredProjects));
-                        break;
-                    }
-                }
-            }
-            catch (Exception ex)
+            if (createProjectDialog.ShowDialog(this.SelectProjectDialog) == true)
             {
-                Logger.Log(LogLevel.Error, "Error creating new project directory", ex);
+                this.SelectedProject = createProjectDialog.NewProjectName;
+                this.SelectProjectDialog.SelectProject(createProjectDialog.NewProjectName);
             }
         }
 

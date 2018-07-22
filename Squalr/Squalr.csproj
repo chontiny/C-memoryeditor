@@ -395,6 +395,7 @@
     </Compile>
     <Compile Include="Content\Images.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\CreateProjectDialogViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\RenameProjectDialogViewModel.cs" />
     <Compile Include="Source\Updater\ApplicationUpdater.cs" />
     <Compile Include="Source\Mvvm\Converters\ConstraintToIconConverter.cs" />
@@ -494,6 +495,9 @@
     <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\TextConverter.cs" />
+    <Compile Include="View\Dialogs\CreateProjectDialog.xaml.cs">
+      <DependentUpon>CreateProjectDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Dialogs\RenameProjectDialog.xaml.cs">
       <DependentUpon>RenameProjectDialog.xaml</DependentUpon>
     </Compile>
@@ -657,6 +661,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\CodeTracer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\CreateProjectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
