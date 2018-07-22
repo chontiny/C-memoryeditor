@@ -16,19 +16,12 @@
             Padding="8"
             Foreground="Red"
             TextWrapping="Wrap">
-            Error loading data template!
-            <LineBreak />
-            To display a new panel, be sure to update the following files in Squalr:
-            <LineBreak />
-            Create a new ViewModel class that extends ToolViewModel
-            <LineBreak />
-            Register the ViewModel in the constructor with DockingViewModel.GetInstance().RegisterViewModel(this);
-            <LineBreak />
-            Update ViewModelLocator.cs to return the singleton instance of the class
-            <LineBreak />
-            Update ViewTemplateSelector.cs to bind the viewmodel to a data template
-            <LineBreak />
-            Update MainWindow.xaml and add the view template under &lt;view:ViewTemplateSelector&gt;
-        </TextBlock>
+            Error loading data template!<LineBreak />
+            To display a new panel, be sure to update the following files in Squalr:<LineBreak />
+            Create a new ViewModel class that extends ToolViewModel<LineBreak />
+            Register the ViewModel in the constructor with DockingViewModel.GetInstance().RegisterViewModel(this);<LineBreak />
+            Update ViewModelLocator.cs to return the singleton instance of the class<LineBreak />
+            Update ViewTemplateSelector.cs to bind the viewmodel to a data template<LineBreak />
+            Update MainWindow.xaml and add the view template under &lt;view:ViewTemplateSelector&gt;</TextBlock>
     </Grid>
 </UserControl>

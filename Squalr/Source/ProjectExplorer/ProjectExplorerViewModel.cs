@@ -12,10 +12,12 @@
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using Squalr.Source.PropertyViewer;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Threading;
+    using System.Threading.Tasks;
     using System.Windows.Forms;
     using System.Windows.Input;
 
@@ -35,11 +37,10 @@
         /// </summary>
         private ProjectItemView selectedProjectItem;
 
-        public ProjectExplorerViewModel() : base("Project Explorer")
+        private ProjectExplorerViewModel() : base("Project Explorer")
         {
             this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
-            this.OpenProjectCommand = new RelayCommand(() => this.OpenProject());
-            this.NewProjectCommand = new RelayCommand(() => this.NewProject());
+            this.SelectProjectCommand = new RelayCommand(() => this.SelectProject());
             this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItem) => this.SelectedProjectItem = selectedItem as ProjectItemView, (selectedItem) => true);
             this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
@@ -48,6 +49,7 @@
             this.OpenFileExplorerCommand = new RelayCommand<ProjectItemView>((projectItem) => this.OpenFileExplorer(projectItem), (projectItem) => true);
 
             DockingViewModel.GetInstance().RegisterViewModel(this);
+            this.Update();
         }
 
         /// <summary>
@@ -67,12 +69,7 @@
         /// <summary>
         /// Gets the command to open a project.
         /// </summary>
-        public ICommand OpenProjectCommand { get; private set; }
-
-        /// <summary>
-        /// Gets the command to create a new project.
-        /// </summary>
-        public ICommand NewProjectCommand { get; private set; }
+        public ICommand SelectProjectCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to select a project item.
@@ -138,10 +135,23 @@
             {
                 return projectRoot;
             }
+
             set
             {
                 projectRoot = value;
                 RaisePropertyChanged(nameof(this.ProjectRoot));
+                RaisePropertyChanged(nameof(this.HasProjectRoot));
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of projects in the project root.
+        /// </summary>
+        public List<String> Projects
+        {
+            get
+            {
+                return Directory.EnumerateDirectories(SettingsViewModel.GetInstance().ProjectRoot).Select(path => new DirectoryInfo(path).Name).ToList();
             }
         }
 
@@ -161,6 +171,32 @@
                 this.RaisePropertyChanged(nameof(this.SelectedProjectItem));
                 PropertyViewerViewModel.GetInstance().SetTargetObjects(value);
             }
+        }
+
+        public Boolean HasProjectRoot
+        {
+            get
+            {
+                return (this.ProjectRoot != null && (this.ProjectRoot?.Count ?? 0) > 0) ? true : false;
+            }
+        }
+
+        /// <summary>
+        /// Runs the update loop, updating all scan results.
+        /// </summary>
+        public void Update()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    ProjectItem projectRoot = this.ProjectRoot?.FirstOrDefault()?.ProjectItem;
+
+                    projectRoot?.Update();
+
+                    Thread.Sleep(50);
+                }
+            });
         }
 
         /// <summary>
@@ -195,35 +231,21 @@
         }
 
         /// <summary>
-        /// Prompts the user to create a new project.
-        /// </summary>
-        private void NewProject()
-        {
-            try
-            {
-                NewProjectDialogViewModel.GetInstance().ShowDialog((newProjectPath) =>
-                {
-                    Directory.CreateDirectory(newProjectPath);
-                    this.DoOpenProject(newProjectPath);
-                });
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(LogLevel.Error, "Unable to create new project", ex);
-            }
-        }
-
-        /// <summary>
         /// Prompts the user to open a project.
         /// </summary>
-        private void OpenProject()
+        private void SelectProject()
         {
             try
             {
-                OpenProjectDialogViewModel.GetInstance().ShowDialog((projectPath) =>
+                SelectProjectDialogViewModel.GetInstance().ShowDialog(System.Windows.Application.Current.MainWindow, (projectPath) =>
                 {
                     this.DoOpenProject(projectPath);
                 });
+
+                if (!Directory.Exists(this.ProjectRoot.FirstOrDefault()?.FilePath))
+                {
+                    this.ProjectRoot = null;
+                }
             }
             catch (Exception ex)
             {
@@ -254,6 +276,8 @@
                 return;
             }
 
+            this.CreateProjectIfNone();
+
             DirectoryItemView directoryItemView = this.SelectedProjectItem as DirectoryItemView ?? this.ProjectRoot?.FirstOrDefault();
 
             foreach (ProjectItem projectItem in projectItems)
@@ -267,6 +291,8 @@
         /// </summary>
         private void AddNewProjectItem(Type projectItemType)
         {
+            this.CreateProjectIfNone();
+
             DirectoryItemView directoryItemView = this.SelectedProjectItem as DirectoryItemView ?? this.ProjectRoot.FirstOrDefault();
 
             switch (projectItemType)
@@ -308,6 +334,36 @@
                 ScriptEditorModel scriptEditor = new ScriptEditorModel();
                 ScriptItem scriptItem = projectItem as ScriptItem;
                 scriptItem.Script = scriptEditor.EditValue(null, null, scriptItem.Script) as String;
+            }
+        }
+
+        private void CreateProjectIfNone()
+        {
+            if (this.ProjectRoot == null)
+            {
+                try
+                {
+                    String newProjectDirectory = String.Empty;
+                    IEnumerable<String> projects = this.Projects;
+
+                    for (Int32 appendedNumber = 0; appendedNumber < Int32.MaxValue; appendedNumber++)
+                    {
+                        String suffix = (appendedNumber == 0 ? String.Empty : " " + appendedNumber.ToString());
+                        newProjectDirectory = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, "New Project" + suffix);
+
+                        if (!Directory.Exists(newProjectDirectory))
+                        {
+                            Directory.CreateDirectory(newProjectDirectory);
+                            this.RaisePropertyChanged(nameof(this.Projects));
+                            this.DoOpenProject(newProjectDirectory);
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Error creating new project directory", ex);
+                }
             }
         }
 
@@ -393,7 +449,7 @@
         /// </summary>
         private void CutSelection()
         {
-            //  this.ClipBoard = this.SelectedProjectItems?.SoftClone();
+            // this.ClipBoard = this.SelectedProjectItems?.SoftClone();
             // this.DeleteSelection(promptUser: false);
         }
 

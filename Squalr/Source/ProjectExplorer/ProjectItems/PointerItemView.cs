@@ -3,6 +3,7 @@
     using Squalr.Engine.Projects;
     using Squalr.Source.Controls;
     using Squalr.Source.Editors.OffsetEditor;
+    using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.Utils.TypeConverters;
     using System;
     using System.Collections.Generic;
@@ -19,6 +20,25 @@
         public PointerItemView(PointerItem pointerItem)
         {
             this.PointerItem = pointerItem;
+            this.PointerItem.PropertyChanged += PointerItemPropertyChanged;
+        }
+
+        ~PointerItemView()
+        {
+            this.PointerItem.PropertyChanged -= PointerItemPropertyChanged;
+        }
+
+        private void PointerItemPropertyChanged(Object sender, PropertyChangedEventArgs args)
+        {
+            switch (args.PropertyName)
+            {
+                case nameof(PointerItem.AddressValue):
+                    this.RaisePropertyChanged(nameof(this.DisplayValue));
+                    break;
+                case nameof(PointerItem.IsStatic):
+                    this.RaisePropertyChanged(nameof(this.IsStatic));
+                    break;
+            }
         }
 
         [Browsable(false)]
@@ -116,6 +136,33 @@
             {
                 this.PointerItem.PointerOffsets = value;
                 this.RaisePropertyChanged(nameof(this.PointerOffsets));
+            }
+        }
+
+        [Browsable(true)]
+        [RefreshProperties(RefreshProperties.All)]
+        [Editor(typeof(ValueEditorModel), typeof(UITypeEditor))]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Address Value"), Description("The value at the resolved address")]
+        public override Object DisplayValue
+        {
+            get
+            {
+                return this.PointerItem.AddressValue;
+            }
+
+            set
+            {
+                this.PointerItem.AddressValue = value;
+                this.RaisePropertyChanged(nameof(this.DisplayValue));
+            }
+        }
+
+        [Browsable(true)]
+        public Boolean IsStatic
+        {
+            get
+            {
+                return this.PointerItem.IsStatic;
             }
         }
     }

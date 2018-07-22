@@ -8,8 +8,8 @@
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
-    using Squalr.Properties;
     using Squalr.Source.Docking;
+    using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.ProjectExplorer;
     using System;
     using System.Collections;
@@ -73,14 +73,15 @@
         {
             this.ObserverLock = new Object();
 
-            this.ChangeTypeCommand = new RelayCommand<DataType>((type) => Task.Run(() => this.ChangeType(type)), (type) => true);
+            this.EditValueCommand = new RelayCommand<ScanResult>((scanResult) => this.EditValue(scanResult), (scanResult) => true);
+            this.ChangeTypeCommand = new RelayCommand<DataType>((type) => this.ChangeType(type), (type) => true);
             this.SelectScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.SelectedScanResults = (selectedItems as IList)?.Cast<ScanResult>(), (selectedItems) => true);
             this.FirstPageCommand = new RelayCommand(() => Task.Run(() => this.FirstPage()), () => true);
             this.LastPageCommand = new RelayCommand(() => Task.Run(() => this.LastPage()), () => true);
             this.PreviousPageCommand = new RelayCommand(() => Task.Run(() => this.PreviousPage()), () => true);
             this.NextPageCommand = new RelayCommand(() => Task.Run(() => this.NextPage()), () => true);
-            this.AddScanResultCommand = new RelayCommand<ScanResult>((scanResult) => Task.Run(() => this.AddScanResult(scanResult)), (scanResult) => true);
-            this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => Task.Run(() => this.AddScanResults(this.SelectedScanResults)), (selectedItems) => true);
+            this.AddScanResultCommand = new RelayCommand<ScanResult>((scanResult) => this.AddScanResult(scanResult), (scanResult) => true);
+            this.AddScanResultsCommand = new RelayCommand<Object>((selectedItems) => this.AddScanResults(this.SelectedScanResults), (selectedItems) => true);
 
             this.ScanResultsObservers = new List<IResultDataTypeObserver>();
             this.ActiveType = DataType.Int32;
@@ -88,7 +89,13 @@
 
             SnapshotManager.Subscribe(this);
             DockingViewModel.GetInstance().RegisterViewModel(this);
+            this.Update();
         }
+
+        /// <summary>
+        /// Gets the command to edit the specified address item.
+        /// </summary>
+        public ICommand EditValueCommand { get; private set; }
 
         /// <summary>
         /// Gets the command to change the active data type.
@@ -369,6 +376,38 @@
             this.ResultCount = snapshot == null ? 0 : snapshot.ElementCount;
             this.ByteCount = snapshot == null ? 0 : snapshot.ByteCount;
             this.CurrentPage = 0;
+        }
+
+        /// <summary>
+        /// Runs the update loop, updating all scan results.
+        /// </summary>
+        public void Update()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    IList<ScanResult> scanResults = this.Addresses?.ToList();
+
+                    if (scanResults != null)
+                    {
+                        foreach (ScanResult result in scanResults)
+                        {
+                            result?.PointerItem.Update();
+                        }
+                    }
+
+                    Thread.Sleep(50);
+                }
+            });
+        }
+
+        /// <summary>
+        /// Promts the user to edit the value of the specified result.
+        /// </summary>
+        private void EditValue(ScanResult scanResult)
+        {
+            ValueEditorViewModel.GetInstance().ShowDialog(scanResult?.PointerItem);
         }
 
         /// <summary>

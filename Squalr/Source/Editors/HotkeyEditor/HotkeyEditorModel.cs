@@ -38,8 +38,7 @@
         public override Object EditValue(ITypeDescriptorContext context, IServiceProvider provider, Object value)
         {
             Hotkey hotkey = value as Hotkey;
-            View.Editors.HotkeyEditor hotkeyEditor = new View.Editors.HotkeyEditor(hotkey);
-            hotkeyEditor.Owner = Application.Current.MainWindow;
+            View.Editors.HotkeyEditor hotkeyEditor = new View.Editors.HotkeyEditor(hotkey) { Owner = Application.Current.MainWindow };
 
             if (hotkeyEditor.ShowDialog() == true)
             {

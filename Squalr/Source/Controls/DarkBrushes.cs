@@ -8,74 +8,63 @@
     public static class DarkBrushes
     {
         /// <summary>
-        /// Base color 1.
+        /// White theme color.
         /// </summary>
-        public static readonly Color BaseColor1 = Color.FromArgb(0x44, 0x44, 0x44);
+        public static readonly Color SqualrColorWhite = Color.White;
 
         /// <summary>
-        /// Base color 2.
+        /// Black theme color.
         /// </summary>
-        public static readonly Color BaseColor2 = Color.White;
+        public static readonly Color SqualrColorBlack = Color.Black;
 
         /// <summary>
-        /// Base color 3.
+        /// Gray 20 theme color.
         /// </summary>
-        public static readonly Color BaseColor3 = Color.Black;
+        public static readonly Color SqualrColorGray20 = Color.FromArgb(0x33, 0x33, 0x33);
 
         /// <summary>
-        /// Base color 4.
+        /// Gray 24 theme color.
         /// </summary>
-        public static readonly Color BaseColor4 = Color.FromArgb(0x33, 0x33, 0x33);
+        public static readonly Color SqualrColorGray24 = Color.FromArgb(0x3D, 0x3D, 0x3D);
+        /// <summary>
+        /// Gray 27 theme color.
+        /// </summary>
+        public static readonly Color SqualrColorGray27 = Color.FromArgb(0x44, 0x44, 0x44);
 
         /// <summary>
-        /// Base color 5.
+        /// Gray 29 theme color.
         /// </summary>
-        public static readonly Color BaseColor5 = Color.FromArgb(0x3D, 0x3D, 0x3D);
+        public static readonly Color SqualrColorGray29 = Color.FromArgb(0x4A, 0x4A, 0x4A);
 
         /// <summary>
-        /// Base color 8.
+        /// Gray 35 theme color.
         /// </summary>
-        public static readonly Color BaseColor8 = Color.FromArgb(0x59, 0x59, 0x59);
+        public static readonly Color SqualrColorGray35 = Color.FromArgb(0x59, 0x59, 0x59);
 
         /// <summary>
-        /// Base color 9.
+        /// Gray 40 theme color.
         /// </summary>
-        public static readonly Color BaseColor9 = Color.FromArgb(0x4A, 0x4A, 0x4A);
+        public static readonly Color SqualrColorGray40 = Color.FromArgb(0x66, 0x66, 0x66);
 
         /// <summary>
-        /// Base color 10.
+        /// Gray 74 theme color.
         /// </summary>
-        public static readonly Color BaseColor10 = Color.FromArgb(0x59, 0x59, 0x59);
+        public static readonly Color SqualrColorGray74 = Color.FromArgb(0xBD, 0xBD, 0xBD);
 
         /// <summary>
-        /// Base color 11.
+        /// Blue theme color.
         /// </summary>
-        public static readonly Color BaseColor11 = Color.FromArgb(0xBD, 0xBD, 0xBD);
+        public static readonly Color SqualrColorBlue = Color.FromArgb(0x00, 0x7A, 0xCC);
 
         /// <summary>
-        /// Base color 12.
+        /// Red theme color.
         /// </summary>
-        public static readonly Color BaseColor12 = Color.White;
+        public static readonly Color SqualrColorRed = Color.FromArgb(0xFF, 0xBB, 0x00);
 
         /// <summary>
-        /// Base color 13.
+        /// Orange theme color.
         /// </summary>
-        public static readonly Color BaseColor13 = Color.FromArgb(0x66, 0x66, 0x66);
-
-        /// <summary>
-        /// Base color 14.
-        /// </summary>
-        public static readonly Color BaseColor14 = Color.FromArgb(0xFF, 0xED, 0xBA);
-
-        /// <summary>
-        /// Base color 15.
-        /// </summary>
-        public static readonly Color BaseColor15 = Color.FromArgb(0x4D, 0x60, 0x82);
-
-        /// <summary>
-        /// Base color 16.
-        /// </summary>
-        public static readonly Color BaseColor16 = Color.FromArgb(0xFF, 0xFF, 0x00);
+        public static readonly Color SqualrColorOrange = Color.FromArgb(0xCA, 0x51, 0x00);
     }
     //// End class
 }

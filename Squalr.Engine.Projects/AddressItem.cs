@@ -100,6 +100,7 @@
                 this.addressValue = null;
 
                 this.RaisePropertyChanged(nameof(this.DataType));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -153,6 +154,7 @@
 
                 this.isValueHex = value;
                 this.RaisePropertyChanged(nameof(this.IsValueHex));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 

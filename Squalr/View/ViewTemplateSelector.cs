@@ -75,11 +75,6 @@
         private DataTemplate labelThresholderViewTemplate;
 
         /// <summary>
-        /// The template for the Manual Scanner.
-        /// </summary>
-        private DataTemplate manualScannerViewTemplate;
-
-        /// <summary>
         /// The template for the Pointer Scanner.
         /// </summary>
         private DataTemplate pointerScannerViewTemplate;
@@ -347,23 +342,6 @@
             {
                 this.labelThresholderViewTemplate = value;
                 this.DataTemplates[typeof(LabelThresholderViewModel)] = value;
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets the template for the Manual Scanner.
-        /// </summary>
-        public DataTemplate ManualScannerViewTemplate
-        {
-            get
-            {
-                return this.manualScannerViewTemplate;
-            }
-
-            set
-            {
-                this.manualScannerViewTemplate = value;
-                this.DataTemplates[typeof(ManualScannerViewModel)] = value;
             }
         }
 

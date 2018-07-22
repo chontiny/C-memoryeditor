@@ -36,9 +36,8 @@
         /// <returns>The updated values.</returns>
         public override Object EditValue(ITypeDescriptorContext context, IServiceProvider provider, Object value)
         {
-            View.Editors.TextEditor textEditor = new View.Editors.TextEditor(value as String);
+            View.Editors.TextEditor textEditor = new View.Editors.TextEditor(value as String) { Owner = Application.Current.MainWindow };
 
-            textEditor.Owner = Application.Current.MainWindow;
             if (textEditor.ShowDialog() == true)
             {
                 return textEditor.TextEditorViewModel.Text ?? String.Empty;

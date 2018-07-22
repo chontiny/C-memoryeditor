@@ -122,8 +122,9 @@ DocProject/Help/*.hhp
 DocProject/Help/Html2
 DocProject/Help/html
 
-# Click-Once directory
-publish/
+# Squirrel / Published NuGet Packages
+*.nupkg
+lib/
 
 # Publish Web Output
 *.[Pp]ublish.xml

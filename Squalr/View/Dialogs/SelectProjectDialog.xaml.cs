@@ -4,16 +4,16 @@
     using System.Windows;
 
     /// <summary>
-    /// Interaction logic for OpenProjectDialog.xaml.
+    /// Interaction logic for SelectProjectDialog.xaml.
     /// </summary>
-    public partial class OpenProjectDialog : Window
+    public partial class SelectProjectDialog : Window
     {
-        private String projectPath;
+        private String projectName;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="OpenProjectDialog" /> class.
+        /// Initializes a new instance of the <see cref="SelectProjectDialog" /> class.
         /// </summary>
-        public OpenProjectDialog()
+        public SelectProjectDialog()
         {
             this.InitializeComponent();
         }
@@ -22,13 +22,20 @@
         {
             get
             {
-                return this.projectPath;
+                return this.projectName;
             }
 
             set
             {
-                this.projectPath = value;
+                this.projectName = value;
             }
+        }
+
+        public void SelectProject(String projectName)
+        {
+            this.ProjectName = projectName;
+            this.DialogResult = true;
+            this.Close();
         }
 
         /// <summary>

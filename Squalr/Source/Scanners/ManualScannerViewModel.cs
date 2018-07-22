@@ -34,7 +34,7 @@
         /// </summary>
         private ManualScannerViewModel() : base("Manual Scanner")
         {
-            this.StartScanCommand = new RelayCommand(() => Task.Run(() => this.StartScan()), () => true);
+            this.StartScanCommand = new RelayCommand(() => this.StartScan(), () => true);
 
             // Note: Not async to avoid updates slower than the perception threshold
             this.UpdateActiveValueCommand = new RelayCommand<Object>((newValue) => this.UpdateActiveValue(newValue), (newValue) => true);
@@ -93,62 +93,62 @@
         public ICommand ClearConstraintsCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.Changed"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.Changed"/> constraint.
         /// </summary>
         public ICommand SelectChangedCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.Decreased"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.Decreased"/> constraint.
         /// </summary>
         public ICommand SelectDecreasedCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.DecreasedByX"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.DecreasedByX"/> constraint.
         /// </summary>
         public ICommand SelectDecreasedByXCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.Equal"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.Equal"/> constraint.
         /// </summary>
         public ICommand SelectEqualCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.GreaterThan"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.GreaterThan"/> constraint.
         /// </summary>
         public ICommand SelectGreaterThanCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.GreaterThanOrEqual"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.GreaterThanOrEqual"/> constraint.
         /// </summary>
         public ICommand SelectGreaterThanOrEqualCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.Increased"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.Increased"/> constraint.
         /// </summary>
         public ICommand SelectIncreasedCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.IncreasedByX"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.IncreasedByX"/> constraint.
         /// </summary>
         public ICommand SelectIncreasedByXCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.LessThan"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.LessThan"/> constraint.
         /// </summary>
         public ICommand SelectLessThanCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.LessThanOrEqual"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.LessThanOrEqual"/> constraint.
         /// </summary>
         public ICommand SelectLessThanOrEqualCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.NotEqual"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.NotEqual"/> constraint.
         /// </summary>
         public ICommand SelectNotEqualCommand { get; private set; }
 
         /// <summary>
-        /// Gets the command to select the <see cref="ConstraintType.Unchanged"/> constraint.
+        /// Gets the command to select the <see cref="ScanConstraint.ConstraintType.Unchanged"/> constraint.
         /// </summary>
         public ICommand SelectUnchangedCommand { get; private set; }
 

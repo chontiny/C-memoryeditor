@@ -12,9 +12,6 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,18 +22,10 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>https://www.squalr.com/release/developer/</InstallUrl>
-    <SupportUrl>https://www.squalr.com/</SupportUrl>
-    <ErrorReportUrl>https://www.squalr.com/</ErrorReportUrl>
-    <ProductName>Squalr Developer Tools</ProductName>
-    <PublisherName>Squalr Developer Tools</PublisherName>
-    <MinimumRequiredVersion>2.2.0.0</MinimumRequiredVersion>
-    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.3.4.%2a</ApplicationVersion>
+    <ApplicationVersion>2.3.5.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
-    <CreateDesktopShortcut>true</CreateDesktopShortcut>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -62,13 +51,15 @@
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
-  <PropertyGroup />
   <PropertyGroup>
     <StartupObject>Squalr.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.3.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
@@ -404,12 +395,15 @@
     </Compile>
     <Compile Include="Content\Images.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\CreateProjectDialogViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\RenameProjectDialogViewModel.cs" />
+    <Compile Include="Source\Updater\ApplicationUpdater.cs" />
     <Compile Include="Source\Mvvm\Converters\ConstraintToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IsAddressItemConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IsDirectoryItemConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueConverterGroup.cs" />
-    <Compile Include="Source\ProjectExplorer\OpenProjectDialogViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\SelectProjectDialogViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItemReader.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DirectoryItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemView.cs" />
@@ -418,7 +412,7 @@
     <Compile Include="Source\ProjectExplorer\ProjectItems\InstructionItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItemView.cs" />
-    <Compile Include="Source\ProjectExplorer\NewProjectDialogViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\DeleteProjectDialogViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemDirectoryConverter.cs" />
     <Compile Include="Source\Tasks\TaskTrackerViewModel.cs" />
@@ -501,11 +495,17 @@
     <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\TextConverter.cs" />
-    <Compile Include="View\Dialogs\NewProjectDialog.xaml.cs">
-      <DependentUpon>NewProjectDialog.xaml</DependentUpon>
+    <Compile Include="View\Dialogs\CreateProjectDialog.xaml.cs">
+      <DependentUpon>CreateProjectDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\Dialogs\OpenProjectDialog.xaml.cs">
-      <DependentUpon>OpenProjectDialog.xaml</DependentUpon>
+    <Compile Include="View\Dialogs\RenameProjectDialog.xaml.cs">
+      <DependentUpon>RenameProjectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\DeleteProjectDialog.xaml.cs">
+      <DependentUpon>DeleteProjectDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Dialogs\SelectProjectDialog.xaml.cs">
+      <DependentUpon>SelectProjectDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Editors\HotkeyEditor.xaml.cs">
       <DependentUpon>HotkeyEditor.xaml</DependentUpon>
@@ -524,10 +524,7 @@
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
       <SubType>Code</SubType>
-      <Generator>XamlIntelliSenseFileGenerator</Generator>
-    </Compile>
-    <Compile Include="View\ManualScanner.xaml.cs">
-      <DependentUpon>ManualScanner.xaml</DependentUpon>
+      <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Output.xaml.cs">
       <DependentUpon>Output.xaml</DependentUpon>
@@ -565,6 +562,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Content\Images\Search.png" />
+    <Resource Include="Content\Images\Edit.png" />
+    <Resource Include="Content\Images\Properties.png" />
     <Content Include="Content\Solution.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>Solution.cs</LastGenOutput>
@@ -665,11 +664,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Dialogs\NewProjectDialog.xaml">
+    <Page Include="View\Dialogs\CreateProjectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\Dialogs\OpenProjectDialog.xaml">
+    <Page Include="View\Dialogs\RenameProjectDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\DeleteProjectDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Dialogs\SelectProjectDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -712,10 +719,6 @@
     <Page Include="View\MainWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>XamlIntelliSenseFileGenerator</Generator>
-    </Page>
-    <Page Include="View\ManualScanner.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Output.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -841,4 +844,8 @@
     <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\netstandard2.0\NETStandard.Library.targets'))" />
   </Target>
   <Import Project="..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0-preview2-25401-01\build\netstandard2.0\NETStandard.Library.targets')" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

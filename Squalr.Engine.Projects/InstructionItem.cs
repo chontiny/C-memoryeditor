@@ -87,6 +87,7 @@
 
                 this.precedingBytes = value;
                 this.RaisePropertyChanged(nameof(this.PrecedingBytes));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -111,6 +112,7 @@
                 this.instructionBytes = value;
 
                 this.RaisePropertyChanged(nameof(this.InstructionBytes));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -129,6 +131,7 @@
             {
                 this.instruction = value;
                 this.RaisePropertyChanged(nameof(this.Instruction));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -184,6 +187,7 @@
 
                 this.followingBytes = value;
                 this.RaisePropertyChanged(nameof(this.FollowingBytes));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -205,9 +209,10 @@
                     return;
                 }
 
-                this.moduleName = value == null ? String.Empty : value;
+                this.moduleName = value ?? String.Empty;
 
                 this.RaisePropertyChanged(nameof(this.ModuleName));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 
@@ -233,6 +238,7 @@
                 this.moduleOffset = value;
                 this.RaisePropertyChanged(nameof(this.ModuleOffset));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
+                ProjectItem.Save(this, this.DirectoryPath);
             }
         }
 

@@ -90,19 +90,6 @@
 
             return projectItems;
         }
-
-
-        /// <summary>
-        /// Gets the list of directories.
-        /// </summary>
-        /// <param name="directory">The Directory to get the files from.</param>
-        /// <returns>Returns the List of directories info for this directory.
-        /// Return null if an exception is raised.</returns>
-        public static IList<DirectoryInfo> GetChildDirectories(String directory)
-        {
-
-            return new List<DirectoryInfo>();
-        }
     }
     //// End class
 }

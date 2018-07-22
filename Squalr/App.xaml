@@ -12,6 +12,7 @@
             <viewModel:ViewModelLocator x:Key="ViewModelLocator" d:IsDataSource="True" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/DarkBrushes.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/Button.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/ComboBox.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/ContextMenu.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/Squalr.Theme;component/Styles/MenuItem.xaml" />
