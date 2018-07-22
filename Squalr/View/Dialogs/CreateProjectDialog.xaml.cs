@@ -4,38 +4,16 @@
     using System.Windows;
 
     /// <summary>
-    /// Interaction logic for SelectProjectDialog.xaml.
+    /// Interaction logic for CreateProjectDialog.xaml.
     /// </summary>
-    public partial class SelectProjectDialog : Window
+    public partial class CreateProjectDialog : Window
     {
-        private String projectName;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="SelectProjectDialog" /> class.
+        /// Initializes a new instance of the <see cref="CreateProjectDialog" /> class.
         /// </summary>
-        public SelectProjectDialog()
+        public CreateProjectDialog()
         {
             this.InitializeComponent();
-        }
-
-        public String ProjectName
-        {
-            get
-            {
-                return this.projectName;
-            }
-
-            set
-            {
-                this.projectName = value;
-            }
-        }
-
-        public void SelectProject(String projectName)
-        {
-            this.ProjectName = projectName;
-            this.DialogResult = true;
-            this.Close();
         }
 
         /// <summary>
@@ -55,12 +33,6 @@
         /// <param name="sender">Sending object.</param>
         /// <param name="e">Event args.</param>
         private void AcceptButtonClick(Object sender, RoutedEventArgs e)
-        {
-            this.DialogResult = true;
-            this.Close();
-        }
-
-        private void ProjectsListViewMouseDoubleClick(Object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             this.DialogResult = true;
             this.Close();

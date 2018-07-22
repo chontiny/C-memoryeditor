@@ -62,6 +62,15 @@
 
         public override void Update()
         {
+            IEnumerable<ProjectItem> children = this.ChildItems?.ToArray();
+
+            if (children != null)
+            {
+                foreach (ProjectItem child in children)
+                {
+                    child.Update();
+                }
+            }
         }
 
         public void AddChild(ProjectItem projectItem)

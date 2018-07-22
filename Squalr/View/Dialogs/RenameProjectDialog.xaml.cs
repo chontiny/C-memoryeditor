@@ -4,12 +4,12 @@
     using System.Windows;
 
     /// <summary>
-    /// Interaction logic for DeleteProjectDialog.xaml.
+    /// Interaction logic for RenameProjectDialog.xaml.
     /// </summary>
     public partial class RenameProjectDialog : Window
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeleteProjectDialog" /> class.
+        /// Initializes a new instance of the <see cref="RenameProjectDialog" /> class.
         /// </summary>
         public RenameProjectDialog()
         {

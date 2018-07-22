@@ -10,32 +10,32 @@
     using System.Windows;
 
     /// <summary>
-    /// The view model for the project renaming dialog.
+    /// The view model for the project create dialog.
     /// </summary>
-    internal class RenameProjectDialogViewModel : ViewModelBase
+    internal class CreateProjectDialogViewModel : ViewModelBase
     {
         /// <summary>
-        /// Singleton instance of the <see cref="RenameProjectDialogViewModel" /> class.
+        /// Singleton instance of the <see cref="CreateProjectDialogViewModel" /> class.
         /// </summary>
-        private static Lazy<RenameProjectDialogViewModel> renameProjectDialogViewModelInstance = new Lazy<RenameProjectDialogViewModel>(
-                () => { return new RenameProjectDialogViewModel(); },
+        private static Lazy<CreateProjectDialogViewModel> createProjectDialogViewModelInstance = new Lazy<CreateProjectDialogViewModel>(
+                () => { return new CreateProjectDialogViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         private String newProjectName;
 
         private String projectName;
 
-        private RenameProjectDialogViewModel() : base()
+        private CreateProjectDialogViewModel() : base()
         {
         }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="RenameProjectDialogViewModel" /> class.
+        /// Gets a singleton instance of the <see cref="CreateProjectDialogViewModel" /> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
-        public static RenameProjectDialogViewModel GetInstance()
+        public static CreateProjectDialogViewModel GetInstance()
         {
-            return RenameProjectDialogViewModel.renameProjectDialogViewModelInstance.Value;
+            return CreateProjectDialogViewModel.createProjectDialogViewModelInstance.Value;
         }
 
         public String NewProjectName
@@ -103,29 +103,26 @@
         }
 
         /// <summary>
-        /// Shows the rename project dialog, deleting the project if the dialog result was true.
+        /// Shows the create project dialog, deleting the project if the dialog result was true.
         /// </summary>
-        /// <param name="projectName">The project name to potentially rename.</param>
-        public Boolean ShowDialog(Window owner, String projectName)
+        /// <param name="projectName">The project name to potentially create.</param>
+        public Boolean ShowDialog(Window owner)
         {
-            this.NewProjectName = String.Empty;
-            this.ProjectName = projectName;
+            CreateProjectDialog createProjectDialog = new CreateProjectDialog() { Owner = owner };
+            this.ProjectName = String.Empty;
 
-            RenameProjectDialog renameProjectDialog = new RenameProjectDialog() { Owner = owner };
-
-            if (renameProjectDialog.ShowDialog() == true && this.IsProjectNameValid)
+            if (createProjectDialog.ShowDialog() == true && this.IsProjectNameValid)
             {
                 try
                 {
-                    String projectPath = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, projectName);
                     String newProjectPath = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, this.NewProjectName);
-                    Directory.Move(projectPath, newProjectPath);
+                    Directory.CreateDirectory(newProjectPath);
 
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Error, "Error renaming project folder", ex);
+                    Logger.Log(LogLevel.Error, "Error creating project folder", ex);
                 }
             }
 

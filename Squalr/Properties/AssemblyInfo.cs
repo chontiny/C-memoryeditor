@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 using System.Windows;
 
 [assembly: AssemblyTitle("Squalr")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Software to mod video games")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Anathena Inc.")]
 [assembly: AssemblyProduct("Squalr")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
+[assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -18,15 +18,5 @@ using System.Windows;
 // Allows unit tests to test internal classes
 [assembly: InternalsVisibleTo("SqualrTests")]
 
-// Version information for an assembly consists of the following four values:
-//
-//      Major Version
-//      Minor Version 
-//      Build Number
-//      Revision
-//
-// You can specify all the values or you can default the Build and Revision Numbers 
-// by using the '*' as shown below:
-// [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("2.3.5")]
 [assembly: AssemblyFileVersion("2.3.5")]

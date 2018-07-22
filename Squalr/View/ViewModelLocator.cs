@@ -342,7 +342,18 @@
         }
 
         /// <summary>
-        /// Gets the Rename Project Dialog view model.
+        /// Gets the create Project Dialog view model.
+        /// </summary>
+        public CreateProjectDialogViewModel CreateProjectDialogViewModel
+        {
+            get
+            {
+                return CreateProjectDialogViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets the rename Project Dialog view model.
         /// </summary>
         public RenameProjectDialogViewModel RenameProjectDialogViewModel
         {

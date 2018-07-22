@@ -12,6 +12,7 @@
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using Squalr.Source.PropertyViewer;
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Linq;
@@ -144,6 +145,17 @@
         }
 
         /// <summary>
+        /// Gets a list of projects in the project root.
+        /// </summary>
+        public List<String> Projects
+        {
+            get
+            {
+                return Directory.EnumerateDirectories(SettingsViewModel.GetInstance().ProjectRoot).Select(path => new DirectoryInfo(path).Name).ToList();
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the selected project items.
         /// </summary>
         public ProjectItemView SelectedProjectItem
@@ -229,6 +241,11 @@
                 {
                     this.DoOpenProject(projectPath);
                 });
+
+                if (!Directory.Exists(this.ProjectRoot.FirstOrDefault()?.FilePath))
+                {
+                    this.ProjectRoot = null;
+                }
             }
             catch (Exception ex)
             {
@@ -259,6 +276,8 @@
                 return;
             }
 
+            this.CreateProjectIfNone();
+
             DirectoryItemView directoryItemView = this.SelectedProjectItem as DirectoryItemView ?? this.ProjectRoot?.FirstOrDefault();
 
             foreach (ProjectItem projectItem in projectItems)
@@ -272,6 +291,8 @@
         /// </summary>
         private void AddNewProjectItem(Type projectItemType)
         {
+            this.CreateProjectIfNone();
+
             DirectoryItemView directoryItemView = this.SelectedProjectItem as DirectoryItemView ?? this.ProjectRoot.FirstOrDefault();
 
             switch (projectItemType)
@@ -313,6 +334,36 @@
                 ScriptEditorModel scriptEditor = new ScriptEditorModel();
                 ScriptItem scriptItem = projectItem as ScriptItem;
                 scriptItem.Script = scriptEditor.EditValue(null, null, scriptItem.Script) as String;
+            }
+        }
+
+        private void CreateProjectIfNone()
+        {
+            if (this.ProjectRoot == null)
+            {
+                try
+                {
+                    String newProjectDirectory = String.Empty;
+                    IEnumerable<String> projects = this.Projects;
+
+                    for (Int32 appendedNumber = 0; appendedNumber < Int32.MaxValue; appendedNumber++)
+                    {
+                        String suffix = (appendedNumber == 0 ? String.Empty : " " + appendedNumber.ToString());
+                        newProjectDirectory = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, "New Project" + suffix);
+
+                        if (!Directory.Exists(newProjectDirectory))
+                        {
+                            Directory.CreateDirectory(newProjectDirectory);
+                            this.RaisePropertyChanged(nameof(this.Projects));
+                            this.DoOpenProject(newProjectDirectory);
+                            break;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Error creating new project directory", ex);
+                }
             }
         }
 
@@ -398,7 +449,7 @@
         /// </summary>
         private void CutSelection()
         {
-            //  this.ClipBoard = this.SelectedProjectItems?.SoftClone();
+            // this.ClipBoard = this.SelectedProjectItems?.SoftClone();
             // this.DeleteSelection(promptUser: false);
         }
 
