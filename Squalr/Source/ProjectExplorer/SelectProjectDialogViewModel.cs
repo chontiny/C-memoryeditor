@@ -196,7 +196,8 @@
 
         private void OpenSelectedProject(String selectedProject)
         {
-            //// ProjectExplorerViewModel.GetInstance().OpenProjectCommand()
+            this.SelectedProject = selectedProject;
+            this.SelectProjectDialog.SelectProject(this.SelectedProject);
         }
 
         private void RenameSelectedProject(String selectedProject)
@@ -216,8 +217,7 @@
 
             if (createProjectDialog.ShowDialog(this.SelectProjectDialog) == true)
             {
-                this.SelectedProject = createProjectDialog.NewProjectName;
-                this.SelectProjectDialog.SelectProject(createProjectDialog.NewProjectName);
+                this.OpenSelectedProject(createProjectDialog.NewProjectName);
             }
         }
 
