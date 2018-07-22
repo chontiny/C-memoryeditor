@@ -29,7 +29,7 @@
         {
             if (!ApplicationUpdater.IsSquirrelInstalled())
             {
-                Logger.Log(LogLevel.Info, "Updater not found, Squalr will not check for automatic updates.");
+                Logger.Log(LogLevel.Warn, "Updater not found, Squalr will not check for automatic updates.");
                 return;
             }
 

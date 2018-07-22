@@ -29,8 +29,8 @@
             Background="{StaticResource SqualrColorGray27}"
             BorderBrush="{StaticResource SqualrColorWhite}"
             Foreground="{StaticResource SqualrColorWhite}">
-            <shell:MenuItem Command="{Binding RenameProjectCommand}" Header="Rename Project" />
-            <shell:MenuItem Command="{Binding DeleteProjectCommand}" Header="Delete Project" />
+            <shell:MenuItem Command="{Binding RenameSelectedProjectCommand}" Header="Rename Project" />
+            <shell:MenuItem Command="{Binding DeleteSelectedProjectCommand}" Header="Delete Project" />
         </shell:ContextMenu>
     </shell:Window.Resources>
     <shell:Grid Background="{StaticResource SqualrColorBlack}">
@@ -110,7 +110,7 @@
                         <intr:InvokeCommandAction Command="{Binding UpdateSelectedProjectCommand}" CommandParameter="{Binding ElementName=ProjectSelectionDataGrid, Path=SelectedItems}" />
                     </intr:EventTrigger>
                     <intr:EventTrigger EventName="MouseDoubleClick">
-                        <intr:InvokeCommandAction Command="{Binding OpenSelectedProjectCommand}" CommandParameter="{Binding ElementName=ProjectSelectionDataGrid, Path=SelectedItem}" />
+                        <intr:InvokeCommandAction Command="{Binding OpenProjectCommand}" CommandParameter="{Binding ElementName=ProjectSelectionDataGrid, Path=SelectedItem}" />
                     </intr:EventTrigger>
                 </intr:Interaction.Triggers>
                 <shell:DataGrid.ColumnHeaderStyle>
@@ -146,7 +146,7 @@
                                     <shell:Button
                                         Margin="0,0,4,0"
                                         Background="Transparent"
-                                        Command="{Binding SelectProjectDialogViewModel.RenameSelectedProjectCommand, Source={StaticResource ViewModelLocator}}"
+                                        Command="{Binding SelectProjectDialogViewModel.RenameProjectCommand, Source={StaticResource ViewModelLocator}}"
                                         CommandParameter="{Binding Path=.}"
                                         ToolTip="Rename Project">
                                         <shell:Image

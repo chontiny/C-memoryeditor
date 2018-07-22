@@ -449,7 +449,7 @@
         /// </summary>
         private void CutSelection()
         {
-            //  this.ClipBoard = this.SelectedProjectItems?.SoftClone();
+            // this.ClipBoard = this.SelectedProjectItems?.SoftClone();
             // this.DeleteSelection(promptUser: false);
         }
 

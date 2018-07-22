@@ -91,6 +91,18 @@
                 this.RaisePropertyChanged(nameof(this.ProjectItem));
             }
         }
+
+        public virtual Object DisplayValue
+        {
+            get
+            {
+                return String.Empty;
+            }
+
+            set
+            {
+            }
+        }
     }
     //// End class
 }

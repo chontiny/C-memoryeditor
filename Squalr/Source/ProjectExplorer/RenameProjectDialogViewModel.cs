@@ -108,6 +108,7 @@
         /// <param name="projectName">The project name to potentially rename.</param>
         public Boolean ShowDialog(Window owner, String projectName)
         {
+            this.NewProjectName = String.Empty;
             this.ProjectName = projectName;
 
             RenameProjectDialog renameProjectDialog = new RenameProjectDialog() { Owner = owner };

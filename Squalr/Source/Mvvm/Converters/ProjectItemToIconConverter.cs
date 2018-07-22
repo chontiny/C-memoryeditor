@@ -4,6 +4,7 @@
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.Globalization;
+    using System.Linq;
     using System.Windows.Data;
 
     /// <summary>
@@ -30,8 +31,19 @@
             {
                 case DirectoryItemView type when type is DirectoryItemView:
                     return Images.Open;
-                case ProjectItemView type when type is PointerItemView:
-                    return Images.LetterP;
+                case PointerItemView type when type is PointerItemView:
+                    if (type.IsStatic)
+                    {
+                        return Images.LetterS;
+                    }
+                    else if ((type.PointerOffsets?.Count() ?? 0) > 0)
+                    {
+                        return Images.LetterP;
+                    }
+                    else
+                    {
+                        return Images.CollectValues;
+                    }
                 case ProjectItemView type when type is ScriptItemView:
                     return Images.Script;
                 default:

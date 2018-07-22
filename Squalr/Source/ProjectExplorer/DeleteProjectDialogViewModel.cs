@@ -81,6 +81,7 @@
         /// <param name="projectName">The project name to potentially delete.</param>
         public Boolean ShowDialog(Window owner, String projectName)
         {
+            this.ConfirmProjectName = String.Empty;
             this.ProjectName = projectName;
 
             DeleteProjectDialog deleteProjectDialog = new DeleteProjectDialog() { Owner = owner };
