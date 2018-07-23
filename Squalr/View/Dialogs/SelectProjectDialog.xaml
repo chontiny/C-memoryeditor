@@ -102,7 +102,7 @@
                 HeadersVisibility="Column"
                 ItemsSource="{Binding FilteredProjects}"
                 RowHeaderWidth="0"
-                SelectionMode="Extended"
+                SelectionMode="Single"
                 SelectionUnit="FullRow">
                 <!--  Click and Selection events  -->
                 <intr:Interaction.Triggers>
