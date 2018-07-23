@@ -4,7 +4,7 @@
     using Squalr.Engine.Architecture;
     using Squalr.Engine.Memory;
     using Squalr.Engine.OS;
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Engine.Utils.Extensions;
     using Squalr.Source.Docking;

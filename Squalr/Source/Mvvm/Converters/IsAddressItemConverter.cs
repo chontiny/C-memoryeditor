@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.Mvvm.Converters
 {
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.Globalization;

@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Projects
+﻿namespace Squalr.Engine.Projects.Items
 {
     using System;
     using System.ComponentModel;
@@ -22,7 +22,7 @@
         /// </summary>
         [Browsable(false)]
         private String script;
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ScriptItem" /> class.
         /// </summary>
