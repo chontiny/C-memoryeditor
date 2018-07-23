@@ -9,6 +9,7 @@
     using Squalr.Source.Docking;
     using Squalr.Source.Editors.ScriptEditor;
     using Squalr.Source.Editors.ValueEditor;
+    using Squalr.Source.ProjectExplorer.Dialogs;
     using Squalr.Source.ProjectExplorer.ProjectItems;
     using Squalr.Source.PropertyViewer;
     using System;
@@ -42,7 +43,7 @@
             this.SetProjectRootCommand = new RelayCommand(() => this.SetProjectRoot());
             this.SelectProjectCommand = new RelayCommand(() => this.SelectProject());
             this.SelectProjectItemCommand = new RelayCommand<Object>((selectedItem) => this.SelectedProjectItem = selectedItem as ProjectItemView, (selectedItem) => true);
-            this.EditProjectItemCommand = new RelayCommand<ProjectItem>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
+            this.EditProjectItemCommand = new RelayCommand<ProjectItemView>((projectItem) => this.EditProjectItem(projectItem), (projectItem) => true);
             this.AddNewAddressItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(PointerItem)), () => true);
             this.AddNewScriptItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(ScriptItem)), () => true);
             this.AddNewInstructionItemCommand = new RelayCommand(() => this.AddNewProjectItem(typeof(InstructionItem)), () => true);
@@ -242,7 +243,7 @@
                     this.DoOpenProject(projectPath);
                 });
 
-                if (!Directory.Exists(this.ProjectRoot.FirstOrDefault()?.FilePath))
+                if (!Directory.Exists(this.ProjectRoot?.FirstOrDefault()?.FilePath))
                 {
                     this.ProjectRoot = null;
                 }
@@ -315,9 +316,11 @@
         /// <summary>
         /// Edits a project item based on the project item type.
         /// </summary>
-        /// <param name="projectItem">The project item to edit.</param>
-        private void EditProjectItem(ProjectItem projectItem)
+        /// <param name="projectItemView">The project item to edit.</param>
+        private void EditProjectItem(ProjectItemView projectItemView)
         {
+            ProjectItem projectItem = projectItemView?.ProjectItem;
+
             if (projectItem is AddressItem)
             {
                 ValueEditorModel valueEditor = new ValueEditorModel();
