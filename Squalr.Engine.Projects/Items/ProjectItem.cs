@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Projects
+﻿namespace Squalr.Engine.Projects.Items
 {
     using SharpDX.DirectInput;
     using Squalr.Engine.Input.HotKeys;

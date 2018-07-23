@@ -2,7 +2,7 @@
 {
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.Logging;
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Properties;

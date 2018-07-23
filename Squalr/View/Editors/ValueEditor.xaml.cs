@@ -1,7 +1,7 @@
 ﻿namespace Squalr.View.Editors
 {
     using Source.Controls;
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using Squalr.Source.Editors.ValueEditor;
     using System;
     using System.Windows;

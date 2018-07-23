@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
     using Squalr.Engine.DataTypes;
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using Squalr.Source.Controls;
     using Squalr.Source.Utils.TypeConverters;
     using System;

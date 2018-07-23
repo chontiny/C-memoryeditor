@@ -1,35 +1,45 @@
-$assemblyInfo = [IO.File]::ReadAllText("./Squalr/Squalr/Properties/AssemblyInfo.cs")
-
+# Parse assembly info from the project
+$assemblyInfoPath = "Squalr/Squalr/Properties/AssemblyInfo.cs"
+$assemblyInfo = [IO.File]::ReadAllText($assemblyInfoPath)
 $title = $assemblyInfo | Select-String -Pattern 'AssemblyTitle\(".+"\)' -AllMatches | % { $_.Matches } | % { $_.Value } | %{$_.split('"')[1]}
-
 $version = $assemblyInfo | Select-String -Pattern 'AssemblyVersion\(".+"\)' -AllMatches | % { $_.Matches } | % { $_.Value } | %{$_.split('"')[1]}
-
 $description = $assemblyInfo | Select-String -Pattern 'AssemblyDescription\(".+"\)' -AllMatches | % { $_.Matches } | % { $_.Value } | %{$_.split('"')[1]}
 
-$nuspec = [IO.File]::ReadAllText("Squalr/Squalr.nuspec")
+# Variables and paths
+$releasesRoot = "Releases"
+$sourceRoot = "Squalr/bin/Release/*"
+$destinationRoot = "lib/net45"
+$exclude = @('*.pdb')
+$nugetFile = "Squalr.nuspec"
+$nugetFilePath = "Squalr/$nugetFile"
+$compiledNugetFile = "SqualrCompiled.nuspec"
+$compiledNugetFilePath = "Squalr/$compiledNugetFile"
+$package = "Squalr.$version.nupkg"
+$squirrel= "packages\squirrel.windows.1.8.0\tools\Squirrel.exe"
 
+# Delete old releases
+Remove-Item $releasesRoot -Force -Recurse -ErrorAction Ignore
+
+# Compile new nuspec file using variables from assembly info
+$nuspec = [IO.File]::ReadAllText($nugetFilePath)
 $nuspec = $nuspec.Replace('$id$', $title)
 $nuspec = $nuspec.Replace('$title$', $title)
 $nuspec = $nuspec.Replace('$version$', $version)
 $nuspec = $nuspec.Replace('$description$', $description)
+[IO.File]::WriteAllText($compiledNugetFilePath, $nuspec)
 
-[IO.File]::WriteAllText("Squalr/SqualrTmp.nuspec", $nuspec)
-
-$sourceRoot = "Squalr/bin/Release/*"
-$destinationRoot = "lib/net45"
-$exclude = @('*.pdb')
-
-Remove-Item $destinationRoot -Force -Recurse
+# Remove old files, copy new files to a location in preparation for Squirrel
+Remove-Item $destinationRoot -Force -Recurse -ErrorAction Ignore
 New-Item -ItemType Directory -Force -Path $destinationRoot
 Copy-Item -Path $sourceRoot -Recurse -Destination $destinationRoot -Container -Force -Exclude $exclude
 
-$nugetFile= "SqualrTmp.nuspec"
+# Build nuget package
+Invoke-Expression "nuget pack $($compiledNugetFile) -Properties Configuration=Release"
 
-Invoke-Expression "nuget pack $($nugetFile) -Properties Configuration=Release"
+# Releasify with Squirrel
+$args = "--releasify $package -n /a /f SqualrCert.pfx /fd sha256 /tr http://timestamp.digicert.com /td sha256"
+Start-Process "$squirrel" -ArgumentList $args -Wait
 
-$squirrel= "packages\squirrel.windows.1.8.0\tools\Squirrel.exe"
-$package = "Squalr.2.3.5.nupkg"
-
-Invoke-Expression "$squirrel --releasify $package -n /a /f SqualrCert.pfx /fd sha256 /tr http://timestamp.digicert.com /td sha256"
-
-Remove-Item $nugetFile -Force
+# Remove temporary files
+Remove-Item $compiledNugetFile -Force -ErrorAction Ignore
+Remove-Item $package -Force -ErrorAction Ignore

@@ -1,6 +1,6 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using Squalr.Engine.Scripting;
     using Squalr.Source.Controls;
     using Squalr.Source.Editors.ScriptEditor;

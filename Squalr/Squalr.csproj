@@ -23,7 +23,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>2.3.5.%2a</ApplicationVersion>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -60,6 +60,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.3.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
@@ -404,7 +407,6 @@
     <Compile Include="Source\Mvvm\Converters\ProjectItemToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueConverterGroup.cs" />
     <Compile Include="Source\ProjectExplorer\SelectProjectDialogViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\ProjectItemReader.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DirectoryItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ScriptItemView.cs" />
@@ -564,6 +566,7 @@
     <Resource Include="Content\Images\Search.png" />
     <Resource Include="Content\Images\Edit.png" />
     <Resource Include="Content\Images\Properties.png" />
+    <Resource Include="AppIcon.ico" />
     <Content Include="Content\Solution.tt">
       <Generator>TextTemplatingFilePreprocessor</Generator>
       <LastGenOutput>Solution.cs</LastGenOutput>

@@ -2,7 +2,7 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Input.HotKeys;
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using Squalr.Source.Controls;
     using Squalr.Source.Editors.HotkeyEditor;
     using Squalr.Source.Editors.TextEditor;
