@@ -1,22 +1,24 @@
 ﻿namespace Squalr.Engine.Projects
 {
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects.Properties;
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
 
     public class ProjectManager
     {
-        private ProjectManager(String projectPath)
+        private ProjectManager()
         {
 
         }
 
-        public static IEnumerable<String> Projects
+        public static IEnumerable<Project> Projects
         {
             get
             {
-                return null;
+                return Directory.EnumerateDirectories(ProjectSettings.Default.ProjectRoot).Select(path => new Project(new DirectoryInfo(path).Name)).ToList();
             }
         }
 

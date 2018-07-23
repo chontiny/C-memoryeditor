@@ -398,15 +398,15 @@
     </Compile>
     <Compile Include="Content\Images.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\CreateProjectDialogViewModel.cs" />
-    <Compile Include="Source\ProjectExplorer\RenameProjectDialogViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\Dialogs\CreateProjectDialogViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\Dialogs\RenameProjectDialogViewModel.cs" />
     <Compile Include="Source\Updater\ApplicationUpdater.cs" />
     <Compile Include="Source\Mvvm\Converters\ConstraintToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IsAddressItemConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\IsDirectoryItemConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemToIconConverter.cs" />
     <Compile Include="Source\Mvvm\Converters\ValueConverterGroup.cs" />
-    <Compile Include="Source\ProjectExplorer\SelectProjectDialogViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\Dialogs\SelectProjectDialogViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DirectoryItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ProjectItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\ScriptItemView.cs" />
@@ -414,7 +414,7 @@
     <Compile Include="Source\ProjectExplorer\ProjectItems\InstructionItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\DotNetItemView.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectItems\PointerItemView.cs" />
-    <Compile Include="Source\ProjectExplorer\DeleteProjectDialogViewModel.cs" />
+    <Compile Include="Source\ProjectExplorer\Dialogs\DeleteProjectDialogViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\ProjectExplorerViewModel.cs" />
     <Compile Include="Source\Mvvm\Converters\ProjectItemDirectoryConverter.cs" />
     <Compile Include="Source\Tasks\TaskTrackerViewModel.cs" />

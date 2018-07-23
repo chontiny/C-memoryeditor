@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Engine.Projects
 {
+    using Squalr.Engine.Logging;
     using System;
     using System.IO;
 
@@ -11,6 +12,20 @@
         }
 
         private FileSystemWatcher FileSystemWatcher { get; set; }
+
+        public static Project Create(String projectFilePath)
+        {
+            try
+            {
+                Directory.CreateDirectory(projectFilePath);
+                return new Project(projectFilePath);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Error creating project", ex);
+                return null;
+            }
+        }
 
         public void Rename(String newProjectName)
         {

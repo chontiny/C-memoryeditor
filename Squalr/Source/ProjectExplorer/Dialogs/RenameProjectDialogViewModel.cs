@@ -1,7 +1,8 @@
-﻿namespace Squalr.Source.ProjectExplorer
+﻿namespace Squalr.Source.ProjectExplorer.Dialogs
 {
     using GalaSoft.MvvmLight;
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects;
     using Squalr.Properties;
     using Squalr.View.Dialogs;
     using System;
@@ -10,32 +11,32 @@
     using System.Windows;
 
     /// <summary>
-    /// The view model for the project create dialog.
+    /// The view model for the project renaming dialog.
     /// </summary>
-    internal class CreateProjectDialogViewModel : ViewModelBase
+    internal class RenameProjectDialogViewModel : ViewModelBase
     {
         /// <summary>
-        /// Singleton instance of the <see cref="CreateProjectDialogViewModel" /> class.
+        /// Singleton instance of the <see cref="RenameProjectDialogViewModel" /> class.
         /// </summary>
-        private static Lazy<CreateProjectDialogViewModel> createProjectDialogViewModelInstance = new Lazy<CreateProjectDialogViewModel>(
-                () => { return new CreateProjectDialogViewModel(); },
+        private static Lazy<RenameProjectDialogViewModel> renameProjectDialogViewModelInstance = new Lazy<RenameProjectDialogViewModel>(
+                () => { return new RenameProjectDialogViewModel(); },
                 LazyThreadSafetyMode.ExecutionAndPublication);
 
         private String newProjectName;
 
         private String projectName;
 
-        private CreateProjectDialogViewModel() : base()
+        private RenameProjectDialogViewModel() : base()
         {
         }
 
         /// <summary>
-        /// Gets a singleton instance of the <see cref="CreateProjectDialogViewModel" /> class.
+        /// Gets a singleton instance of the <see cref="RenameProjectDialogViewModel" /> class.
         /// </summary>
         /// <returns>A singleton instance of the class.</returns>
-        public static CreateProjectDialogViewModel GetInstance()
+        public static RenameProjectDialogViewModel GetInstance()
         {
-            return CreateProjectDialogViewModel.createProjectDialogViewModelInstance.Value;
+            return RenameProjectDialogViewModel.renameProjectDialogViewModelInstance.Value;
         }
 
         public String NewProjectName
@@ -103,26 +104,29 @@
         }
 
         /// <summary>
-        /// Shows the create project dialog, deleting the project if the dialog result was true.
+        /// Shows the rename project dialog, deleting the project if the dialog result was true.
         /// </summary>
-        /// <param name="projectName">The project name to potentially create.</param>
-        public Boolean ShowDialog(Window owner)
+        /// <param name="projectName">The project name to potentially rename.</param>
+        public Boolean ShowDialog(Window owner, String projectName)
         {
-            CreateProjectDialog createProjectDialog = new CreateProjectDialog() { Owner = owner };
-            this.ProjectName = String.Empty;
+            this.NewProjectName = String.Empty;
+            this.ProjectName = projectName;
 
-            if (createProjectDialog.ShowDialog() == true && this.IsProjectNameValid)
+            RenameProjectDialog renameProjectDialog = new RenameProjectDialog() { Owner = owner };
+
+            if (renameProjectDialog.ShowDialog() == true && this.IsProjectNameValid)
             {
                 try
                 {
+                    String projectPath = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, projectName);
                     String newProjectPath = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, this.NewProjectName);
-                    Directory.CreateDirectory(newProjectPath);
+                    ProjectManager.RenameProject(projectPath, newProjectPath);
 
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Error, "Error creating project folder", ex);
+                    Logger.Log(LogLevel.Error, "Error renaming project folder", ex);
                 }
             }
 

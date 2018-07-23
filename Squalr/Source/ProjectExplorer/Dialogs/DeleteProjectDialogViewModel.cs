@@ -1,4 +1,4 @@
-﻿namespace Squalr.Source.ProjectExplorer
+﻿namespace Squalr.Source.ProjectExplorer.Dialogs
 {
     using GalaSoft.MvvmLight;
     using Squalr.Engine.Logging;
