@@ -1,7 +1,7 @@
 ﻿namespace Squalr.Source.Editors.ValueEditor
 {
     using GalaSoft.MvvmLight;
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using System;
     using System.Threading;
     using System.Windows;

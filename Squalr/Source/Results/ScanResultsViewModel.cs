@@ -3,7 +3,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory;
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using Squalr.Engine.Scanning.Snapshots;
     using Squalr.Engine.Utils;
     using Squalr.Engine.Utils.DataStructures;

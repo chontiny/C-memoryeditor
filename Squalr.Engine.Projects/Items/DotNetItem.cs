@@ -1,4 +1,4 @@
-﻿namespace Squalr.Engine.Projects
+﻿namespace Squalr.Engine.Projects.Items
 {
     using Squalr.Engine.Memory;
     using System;

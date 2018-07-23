@@ -4,7 +4,7 @@
     using GalaSoft.MvvmLight.CommandWpf;
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Memory.Clr;
-    using Squalr.Engine.Projects;
+    using Squalr.Engine.Projects.Items;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
     using System;

@@ -2,6 +2,7 @@
 {
     using GalaSoft.MvvmLight;
     using Squalr.Engine.Logging;
+    using Squalr.Engine.Projects;
     using Squalr.Properties;
     using Squalr.View.Dialogs;
     using System;
@@ -119,7 +120,7 @@
                 {
                     String projectPath = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, projectName);
                     String newProjectPath = Path.Combine(SettingsViewModel.GetInstance().ProjectRoot, this.NewProjectName);
-                    Directory.Move(projectPath, newProjectPath);
+                    ProjectManager.RenameProject(projectPath, newProjectPath);
 
                     return true;
                 }
