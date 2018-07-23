@@ -18,5 +18,5 @@ using System.Windows;
 // Allows unit tests to test internal classes
 [assembly: InternalsVisibleTo("SqualrTests")]
 
-[assembly: AssemblyVersion("2.3.7")]
-[assembly: AssemblyFileVersion("2.3.7")]
+[assembly: AssemblyVersion("2.3.8")]
+[assembly: AssemblyFileVersion("2.3.8")]

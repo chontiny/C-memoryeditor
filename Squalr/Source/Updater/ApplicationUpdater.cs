@@ -56,7 +56,7 @@
                             {
                                 try
                                 {
-                                    manager.DownloadReleases(new[] { lastVersion }, (progress) => updateProgress(progress)).RunSynchronously();
+                                    manager.DownloadReleases(new[] { lastVersion }, (progress) => updateProgress(progress)).Wait();
                                 }
                                 catch (Exception ex)
                                 {
@@ -80,7 +80,7 @@
                             {
                                 try
                                 {
-                                    manager.ApplyReleases(updates, (progress) => updateProgress(progress)).RunSynchronously();
+                                    manager.ApplyReleases(updates, (progress) => updateProgress(progress)).Wait();
                                 }
                                 catch (Exception ex)
                                 {
@@ -104,7 +104,7 @@
                             {
                                 try
                                 {
-                                    manager.UpdateApp((progress) => updateProgress(progress)).RunSynchronously();
+                                    manager.UpdateApp((progress) => updateProgress(progress)).Wait();
                                 }
                                 catch (Exception ex)
                                 {
