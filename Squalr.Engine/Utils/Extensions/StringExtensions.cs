@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Engine.Utils.Extensions
 {
     using System;
+    using System.IO;
     using System.Text;
 
     /// <summary>
@@ -8,6 +9,16 @@
     /// </summary>
     public static class StringExtensions
     {
+        /// <summary>
+        /// Determines if an arbitrary string is a valid filename.
+        /// </summary>
+        /// <param name="str">The provided string.</param>
+        /// <returns>True if the string is a valid filename, otherwise false.</returns>
+        public static Boolean IsValidFileName(this String str)
+        {
+            return str != null && str.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0;
+        }
+
         /// <summary>
         /// Removes the provided subjects from the given string. Will remove the first match only.
         /// </summary>

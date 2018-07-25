@@ -17,12 +17,12 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="DirectoryItem" /> class.
         /// </summary>
-        public DirectoryItem(String filePath) : base(filePath)
+        public DirectoryItem(String directoryPath) : base(directoryPath)
         {
-            this.DirectoryPath = filePath;
-            this.name = Path.GetFileName(filePath);
+            // Bypass setters to avoid re-saving
+            this.name = (new DirectoryInfo(directoryPath)).Name;
 
-            this.childItems = this.GetChildProjectItems();
+            this.childItems = this.BuildChildren();
             this.WatchForUpdates();
         }
 
@@ -66,7 +66,7 @@
 
             if (children != null)
             {
-                foreach (ProjectItem child in children)
+                foreach (ProjectItem child in this.ChildItems)
                 {
                     child.Update();
                 }
@@ -77,12 +77,13 @@
         {
             try
             {
-                ProjectItem.Save(projectItem, this.DirectoryPath);
+                projectItem.Parent = this;
                 this.ChildItems.Add(projectItem);
+                projectItem.Save();
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Unable to add project item due to error while saving", ex);
+                Logger.Log(LogLevel.Error, "Unable to add project item", ex);
             }
         }
 
@@ -92,14 +93,23 @@
             {
                 if (this.ChildItems.Contains(projectItem))
                 {
+                    projectItem.Parent = null;
                     this.ChildItems.Remove(projectItem);
-
-                    // TODO: Delete
+                    
+                    if (projectItem is DirectoryItem)
+                    {
+                        Directory.Delete(projectItem.FullPath, recursive: true);
+                    }
+                    else
+                    {
+                        File.Delete(projectItem.FullPath);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Unable to add project item due to error while saving", ex);
+                Logger.Log(LogLevel.Error, "Unable to delete project item", ex);
+                // TODO: Probably do a full refresh at this point due to possible de-synchronization
             }
         }
 
@@ -108,13 +118,13 @@
         /// </summary>
         /// <returns>Returns the List of File info for this directory.
         /// Return null if an exception is raised.</returns>
-        public FullyObservableCollection<ProjectItem> GetChildProjectItems()
+        public FullyObservableCollection<ProjectItem> BuildChildren()
         {
             FullyObservableCollection<ProjectItem> projectItems = new FullyObservableCollection<ProjectItem>();
 
             try
             {
-                IEnumerable<DirectoryInfo> subdirectories = Directory.GetDirectories(this.DirectoryPath).Select(subdirectory => new DirectoryInfo(subdirectory));
+                IEnumerable<DirectoryInfo> subdirectories = Directory.GetDirectories(this.FullPath).Select(subdirectory => new DirectoryInfo(subdirectory));
 
                 foreach (DirectoryInfo subdirectory in subdirectories)
                 {
@@ -135,11 +145,11 @@
 
             try
             {
-                foreach (FileInfo file in Directory.GetFiles(this.DirectoryPath).Select(directoryFile => new FileInfo(directoryFile)))
+                foreach (FileInfo file in Directory.GetFiles(this.FullPath).Select(directoryFile => new FileInfo(directoryFile)))
                 {
                     try
                     {
-                        ProjectItem projectItem = ProjectItem.FromFile(file.FullName);
+                        ProjectItem projectItem = ProjectItem.FromFile(file.FullName, this);
 
                         if (projectItem != null)
                         {
@@ -160,9 +170,24 @@
             return projectItems;
         }
 
+        public override void Save()
+        {
+            try
+            {
+                if (!Directory.Exists(this.FullPath))
+                {
+                    Directory.CreateDirectory(this.FullPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Error creating directory within project.", ex);
+            }
+        }
+
         private void WatchForUpdates()
         {
-            this.FileSystemWatcher = new FileSystemWatcher(this.DirectoryPath, "*.*");
+            this.FileSystemWatcher = new FileSystemWatcher(this.FullPath, "*.*");
             this.FileSystemWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
             this.FileSystemWatcher.Changed += new FileSystemEventHandler(OnFilesOrDirectoriesChanged);
             this.FileSystemWatcher.EnableRaisingEvents = true;

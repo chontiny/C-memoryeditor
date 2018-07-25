@@ -4,6 +4,7 @@
     using Squalr.Engine.Input.HotKeys;
     using Squalr.Engine.Logging;
     using Squalr.Engine.Projects.Properties;
+    using Squalr.Engine.Utils.Extensions;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
@@ -28,18 +29,21 @@
         /// The name of this project item.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         protected String name;
 
         /// <summary>
         /// The description of this project item.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         protected String description;
 
         /// <summary>
         /// The unique identifier of this project item.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         protected Guid guid;
 
         /// <summary>
@@ -57,24 +61,24 @@
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectItem" /> class.
         /// </summary>
-        internal ProjectItem(String path) : this(path, String.Empty)
+        internal ProjectItem() : this( String.Empty)
         {
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProjectItem" /> class.
         /// </summary>
-        /// <param name="description">The description of the project item.</param>
-        internal ProjectItem(String path, String description)
+        /// <param name="name">The name of the project item.</param>
+        internal ProjectItem(String name)
         {
             // Bypass setters/getters to avoid triggering any view updates in constructor
-            this.name = description ?? String.Empty;
+            this.name = name ?? String.Empty;
             this.isActivated = false;
             this.guid = Guid.NewGuid();
             this.ActivationLock = new Object();
         }
 
-        public static ProjectItem FromFile(String filePath)
+        public static ProjectItem FromFile(String filePath, DirectoryItem parent)
         {
             try
             {
@@ -89,19 +93,19 @@
 
                     switch ((new FileInfo(filePath).Extension).ToLower())
                     {
-                        case ".mod":
+                        case ScriptItem.Extension:
                             type = typeof(ScriptItem);
                             break;
-                        case ".ptr":
+                        case PointerItem.Extension:
                             type = typeof(PointerItem);
                             break;
-                        case ".ins":
+                        case InstructionItem.Extension:
                             type = typeof(InstructionItem);
                             break;
-                        case ".clr":
+                        case DotNetItem.Extension:
                             type = typeof(DotNetItem);
                             break;
-                        case ".jvm":
+                        case JavaItem.Extension:
                             type = typeof(JavaItem);
                             break;
                         default:
@@ -111,11 +115,8 @@
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(type);
 
                     ProjectItem projectItem = serializer.ReadObject(fileStream) as ProjectItem;
-
-                    if (projectItem != null)
-                    {
-                        projectItem.DirectoryPath = Path.GetDirectoryName(filePath);
-                    }
+                    projectItem.name = Path.GetFileNameWithoutExtension(filePath);
+                    projectItem.Parent = parent;
 
                     return projectItem;
                 }
@@ -127,48 +128,14 @@
             }
         }
 
-        protected static void Save(ProjectItem projectItem, String directoryPath = null)
+        public virtual void Save()
         {
-            String filePath = String.Empty;
-            String name = projectItem.Name;
-
-            if (String.IsNullOrWhiteSpace(directoryPath))
-            {
-                directoryPath = ProjectSettings.Default.ProjectRoot;
-            }
-
-            if (String.IsNullOrWhiteSpace(projectItem.Name))
-            {
-                name = projectItem.Guid.ToString();
-            }
-
-            filePath = Path.Combine(directoryPath, name);
-
-            switch (projectItem?.GetType())
-            {
-                case Type type when projectItem is PointerItem:
-                    filePath += ".ptr";
-                    break;
-                case Type type when projectItem is ScriptItem:
-                    filePath += ".mod";
-                    break;
-                case Type type when projectItem is InstructionItem:
-                    filePath += ".ins";
-                    break;
-                case Type type when projectItem is JavaItem:
-                    filePath += ".jvm";
-                    break;
-                case Type type when projectItem is DotNetItem:
-                    filePath += ".clr";
-                    break;
-            }
-
             try
             {
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Create, FileAccess.Write))
+                using (FileStream fileStream = new FileStream(this.FullPath, FileMode.Create, FileAccess.Write))
                 {
-                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(projectItem.GetType());
-                    serializer.WriteObject(fileStream, projectItem);
+                    DataContractJsonSerializer serializer = new DataContractJsonSerializer(this.GetType());
+                    serializer.WriteObject(fileStream, this);
                 }
             }
             catch (Exception ex)
@@ -183,12 +150,11 @@
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public String DirectoryPath { get; set; }
+        public DirectoryItem Parent { get; set; }
 
         /// <summary>
         /// Gets or sets the description for this object.
         /// </summary>
-        [DataMember]
         public virtual String Name
         {
             get
@@ -203,16 +169,18 @@
                     return;
                 }
 
-                this.name = value;
-                this.RaisePropertyChanged(nameof(this.Name));
-                ProjectItem.Save(this, this.DirectoryPath);
+                if (this.Name.IsValidFileName())
+                {
+                    this.name = value;
+                    this.RaisePropertyChanged(nameof(this.Name));
+                    this.Save();
+                }
             }
         }
 
         /// <summary>
         /// Gets or sets the description for this object.
         /// </summary>
-        [DataMember]
         public virtual String Description
         {
             get
@@ -229,7 +197,7 @@
 
                 this.description = value;
                 this.RaisePropertyChanged(nameof(this.Description));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
@@ -253,14 +221,13 @@
                 this.hotkey = value;
                 this.HotKey?.SetCallBackFunction(() => this.IsActivated = !this.IsActivated);
                 this.RaisePropertyChanged(nameof(this.HotKey));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
         /// <summary>
         /// Gets or sets the unique identifier of this project item.
         /// </summary>
-        [DataMember]
         [Browsable(false)]
         public Guid Guid
         {
@@ -278,7 +245,7 @@
 
                 this.guid = value;
                 this.RaisePropertyChanged(nameof(this.Guid));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
@@ -343,6 +310,26 @@
             set
             {
             }
+        }
+
+        /// <summary>
+        /// Gets the full path for this project item.
+        /// </summary>
+        [Browsable(false)]
+        public String FullPath
+        {
+            get
+            {
+                return Path.Combine((this.Parent?.FullPath ?? ProjectSettings.Default.ProjectRoot), this.Name + this.GetExtension());
+            }
+        }
+
+        /// <summary>
+        /// Gets the extension for this project item.
+        /// </summary>
+        public virtual String GetExtension()
+        {
+            return String.Empty;
         }
 
         /// <summary>

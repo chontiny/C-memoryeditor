@@ -11,30 +11,41 @@
     public class InstructionItem : AddressItem
     {
         /// <summary>
+        /// The extension for this project item type.
+        /// </summary>
+        public new const String Extension = ".ins";
+
+        /// <summary>
         /// The disassembled instruction.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         public String instruction;
 
         /// <summary>
         /// The identifier for the base address of this object.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         private String moduleName;
 
         /// <summary>
         /// The base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         private UInt64 moduleOffset;
 
         [Browsable(false)]
+        [DataMember]
         private Byte[] precedingBytes;
 
         [Browsable(false)]
+        [DataMember]
         private Byte[] instructionBytes;
 
         [Browsable(false)]
+        [DataMember]
         private Byte[] followingBytes;
 
         public InstructionItem() : this(0, null, null, null)
@@ -69,7 +80,6 @@
         /// <summary>
         /// Gets or sets the data type of the value at this address.
         /// </summary>
-        [DataMember]
         [Browsable(false)]
         public Byte[] PrecedingBytes
         {
@@ -87,14 +97,13 @@
 
                 this.precedingBytes = value;
                 this.RaisePropertyChanged(nameof(this.PrecedingBytes));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
         /// <summary>
         /// Gets or sets the data type of the value at this address.
         /// </summary>
-        [DataMember]
         public virtual Byte[] InstructionBytes
         {
             get
@@ -112,14 +121,13 @@
                 this.instructionBytes = value;
 
                 this.RaisePropertyChanged(nameof(this.InstructionBytes));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
         /// <summary>
         /// Gets or sets the disassembled instruction.
         /// </summary>
-        [DataMember]
         public virtual String Instruction
         {
             get
@@ -131,14 +139,13 @@
             {
                 this.instruction = value;
                 this.RaisePropertyChanged(nameof(this.Instruction));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
         /// <summary>
         /// Gets or sets a value indicating whether the value at this address should be displayed as hex.
         /// </summary>
-        [DataMember]
         public override Boolean IsValueHex
         {
             get
@@ -154,7 +161,6 @@
         /// <summary>
         /// Gets or sets a value indicating whether the value at this address should be displayed as hex.
         /// </summary>
-        [DataMember]
         public override DataType DataType
         {
             get
@@ -170,7 +176,6 @@
         /// <summary>
         /// Gets or sets the data type of the value at this address.
         /// </summary>
-        [DataMember]
         public Byte[] FollowingBytes
         {
             get
@@ -187,14 +192,13 @@
 
                 this.followingBytes = value;
                 this.RaisePropertyChanged(nameof(this.FollowingBytes));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
         /// <summary>
         /// Gets or sets the identifier for the base address of this object.
         /// </summary>
-        [DataMember]
         public virtual String ModuleName
         {
             get
@@ -212,14 +216,13 @@
                 this.moduleName = value ?? String.Empty;
 
                 this.RaisePropertyChanged(nameof(this.ModuleName));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
         /// <summary>
         /// Gets or sets the base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
-        [DataMember]
         public virtual UInt64 ModuleOffset
         {
             get
@@ -238,7 +241,7 @@
                 this.moduleOffset = value;
                 this.RaisePropertyChanged(nameof(this.ModuleOffset));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
@@ -259,6 +262,14 @@
                     return Conversions.ToHex(this.ModuleOffset, formatAsAddress: true);
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the extension for this project item.
+        /// </summary>
+        public override String GetExtension()
+        {
+            return InstructionItem.Extension;
         }
 
         /// <summary>

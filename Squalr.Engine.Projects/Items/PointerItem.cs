@@ -18,18 +18,26 @@
     public class PointerItem : AddressItem
     {
         /// <summary>
+        /// The extension for this project item type.
+        /// </summary>
+        public new const String Extension = ".ptr";
+
+        /// <summary>
         /// The identifier for the base address of this object.
         /// </summary>
+        [DataMember]
         protected String moduleName;
 
         /// <summary>
         /// The base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
+        [DataMember]
         protected UInt64 moduleOffset;
 
         /// <summary>
         /// The pointer offsets of this address item.
         /// </summary>
+        [DataMember]
         protected IEnumerable<Int32> pointerOffsets;
 
         /// <summary>
@@ -69,7 +77,6 @@
         /// <summary>
         /// Gets or sets the identifier for the base address of this object.
         /// </summary>
-        [DataMember]
         public virtual String ModuleName
         {
             get
@@ -83,14 +90,13 @@
                 this.RaisePropertyChanged(nameof(this.ModuleName));
                 this.RaisePropertyChanged(nameof(this.IsStatic));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
         /// <summary>
         /// Gets or sets the base address of this object. This will be added as an offset from the resolved base identifier.
         /// </summary>
-        [DataMember]
         public virtual UInt64 ModuleOffset
         {
             get
@@ -109,14 +115,13 @@
                 this.moduleOffset = value;
                 this.RaisePropertyChanged(nameof(this.ModuleOffset));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
         /// <summary>
         /// Gets or sets the pointer offsets of this address item.
         /// </summary>
-        [DataMember]
         public virtual IEnumerable<Int32> PointerOffsets
         {
             get
@@ -135,7 +140,7 @@
                 this.RaisePropertyChanged(nameof(this.PointerOffsets));
                 this.RaisePropertyChanged(nameof(this.IsPointer));
                 this.RaisePropertyChanged(nameof(this.AddressSpecifier));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
@@ -191,6 +196,14 @@
             {
                 return !this.PointerOffsets.IsNullOrEmpty();
             }
+        }
+
+        /// <summary>
+        /// Gets the extension for this project item.
+        /// </summary>
+        public override String GetExtension()
+        {
+            return PointerItem.Extension;
         }
 
         /// <summary>

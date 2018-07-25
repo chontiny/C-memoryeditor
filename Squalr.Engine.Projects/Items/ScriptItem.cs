@@ -18,9 +18,15 @@
     public class ScriptItem : ProjectItem
     {
         /// <summary>
+        /// The extension for this project item type.
+        /// </summary>
+        public const String Extension = ".mod";
+
+        /// <summary>
         /// The raw script text.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         private String script;
 
         /// <summary>
@@ -45,7 +51,6 @@
         /// <summary>
         /// Gets or sets the raw script text.
         /// </summary>
-        [DataMember]
         public virtual String Script
         {
             get
@@ -57,6 +62,14 @@
             {
                 this.script = value;
             }
+        }
+
+        /// <summary>
+        /// Gets the extension for this project item.
+        /// </summary>
+        public override String GetExtension()
+        {
+            return ScriptItem.Extension;
         }
 
         /// <summary>

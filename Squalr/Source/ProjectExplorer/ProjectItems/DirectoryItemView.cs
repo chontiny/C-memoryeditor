@@ -36,12 +36,7 @@
         {
             get
             {
-                return this.DirectoryItem.DirectoryPath;
-            }
-
-            set
-            {
-                this.DirectoryItem.DirectoryPath = value;
+                return this.DirectoryItem.FullPath;
             }
         }
 
