@@ -12,6 +12,9 @@
     /// </summary>
     public class DirectoryItem : ProjectItem
     {
+        /// <summary>
+        /// The child project items under this directory.
+        /// </summary>
         private FullyObservableCollection<ProjectItem> childItems;
 
         /// <summary>
@@ -26,6 +29,11 @@
             this.WatchForUpdates();
         }
 
+        /// <summary>
+        /// Creates a directory item from the specified project directory path, instantiating all children.
+        /// </summary>
+        /// <param name="directoryPath">The path to the project directory or subdirectory.</param>
+        /// <returns>The instantiated directory item.</returns>
         public static DirectoryItem FromDirectory(String directoryPath)
         {
             try
@@ -44,6 +52,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the child project items under this directory.
+        /// </summary>
         public FullyObservableCollection<ProjectItem> ChildItems
         {
             get
@@ -58,21 +69,31 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets an object to watch for file system changes under this directory.
+        /// </summary>
         private FileSystemWatcher FileSystemWatcher { get; set; }
 
+        /// <summary>
+        /// Updates all project items under this directory.
+        /// </summary>
         public override void Update()
         {
             IEnumerable<ProjectItem> children = this.ChildItems?.ToArray();
 
             if (children != null)
             {
-                foreach (ProjectItem child in this.ChildItems)
+                foreach (ProjectItem child in children)
                 {
                     child.Update();
                 }
             }
         }
 
+        /// <summary>
+        /// Adds the specified project item to this directory.
+        /// </summary>
+        /// <param name="projectItem">The project item to add.</param>
         public void AddChild(ProjectItem projectItem)
         {
             try
@@ -87,6 +108,10 @@
             }
         }
 
+        /// <summary>
+        /// Removes the specified project item from this directory.
+        /// </summary>
+        /// <param name="projectItem">The project item to remove.</param>
         public void RemoveChild(ProjectItem projectItem)
         {
             try
@@ -170,6 +195,9 @@
             return projectItems;
         }
 
+        /// <summary>
+        /// Saves this directory to disk.
+        /// </summary>
         public override void Save()
         {
             try
@@ -185,14 +213,25 @@
             }
         }
 
+        /// <summary>
+        /// Initializes the filesystem watcher to listen for filesystem changes.
+        /// </summary>
         private void WatchForUpdates()
         {
-            this.FileSystemWatcher = new FileSystemWatcher(this.FullPath, "*.*");
-            this.FileSystemWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+            this.FileSystemWatcher = new FileSystemWatcher(this.FullPath, "*.*")
+            {
+                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                EnableRaisingEvents = true,
+            };
+
             this.FileSystemWatcher.Changed += new FileSystemEventHandler(OnFilesOrDirectoriesChanged);
-            this.FileSystemWatcher.EnableRaisingEvents = true;
         }
 
+        /// <summary>
+        /// Method invoked when files or directories change under the project root.
+        /// </summary>
+        /// <param name="source">The source object.</param>
+        /// <param name="args">The filesystem change event args.</param>
         private void OnFilesOrDirectoriesChanged(Object source, FileSystemEventArgs args)
         {
             switch (args.ChangeType)

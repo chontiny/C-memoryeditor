@@ -7,6 +7,7 @@
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Docking;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -45,9 +46,9 @@
 
             this.Results = new FullyObservableCollection<CodeTraceResult>();
 
-            this.FindWhatWritesCommand = new RelayCommand<ProjectItem>((projectItem) => this.FindWhatWrites(projectItem));
-            this.FindWhatReadsCommand = new RelayCommand<ProjectItem>((projectItem) => this.FindWhatReads(projectItem));
-            this.FindWhatAccessesCommand = new RelayCommand<ProjectItem>((projectItem) => this.FindWhatAccesses(projectItem));
+            this.FindWhatWritesCommand = new RelayCommand<ProjectItemView>((projectItem) => this.FindWhatWrites(projectItem));
+            this.FindWhatReadsCommand = new RelayCommand<ProjectItemView>((projectItem) => this.FindWhatReads(projectItem));
+            this.FindWhatAccessesCommand = new RelayCommand<ProjectItemView>((projectItem) => this.FindWhatAccesses(projectItem));
             this.StopTraceCommand = new RelayCommand(() => this.CancelTrace());
             this.SelectInstructionCommand = new RelayCommand<Object>((selectedItems) => this.SelectedCodeTraceResults = (selectedItems as IList)?.Cast<CodeTraceResult>(), (selectedItems) => true);
             this.AddInstructionCommand = new RelayCommand<CodeTraceResult>((codeTraceResult) => this.AddCodeTraceResult(codeTraceResult));
@@ -178,8 +179,10 @@
             ProjectExplorerViewModel.GetInstance().AddProjectItems(projectItems.ToArray());
         }
 
-        private void FindWhatWrites(ProjectItem projectItem)
+        private void FindWhatWrites(ProjectItemView projectItemView)
         {
+            ProjectItem projectItem = projectItemView?.ProjectItem;
+
             if (projectItem is AddressItem)
             {
                 this.CancelTrace();
@@ -192,8 +195,10 @@
             }
         }
 
-        private void FindWhatReads(ProjectItem projectItem)
+        private void FindWhatReads(ProjectItemView projectItemView)
         {
+            ProjectItem projectItem = projectItemView?.ProjectItem;
+
             if (projectItem is AddressItem)
             {
                 this.CancelTrace();
@@ -206,8 +211,10 @@
             }
         }
 
-        private void FindWhatAccesses(ProjectItem projectItem)
+        private void FindWhatAccesses(ProjectItemView projectItemView)
         {
+            ProjectItem projectItem = projectItemView?.ProjectItem;
+
             if (projectItem is AddressItem)
             {
                 this.CancelTrace();

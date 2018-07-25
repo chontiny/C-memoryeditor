@@ -20,7 +20,7 @@
         /// <summary>
         /// The extension for this project item type.
         /// </summary>
-        public const String Extension = ".mod";
+        public const String Extension = ".cs";
 
         /// <summary>
         /// The raw script text.
@@ -80,13 +80,6 @@
         public new void OnDeserialized(StreamingContext streamingContext)
         {
             base.OnDeserialized(streamingContext);
-        }
-
-        /// <summary>
-        /// Update event for this project item.
-        /// </summary>
-        public override void Update()
-        {
         }
     }
     //// End class

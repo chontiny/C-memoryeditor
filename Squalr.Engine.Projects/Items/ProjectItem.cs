@@ -9,6 +9,7 @@
     using System.Collections.Generic;
     using System.ComponentModel;
     using System.IO;
+    using System.Linq;
     using System.Runtime.Serialization;
     using System.Runtime.Serialization.Json;
 
@@ -76,6 +77,7 @@
             this.isActivated = false;
             this.guid = Guid.NewGuid();
             this.ActivationLock = new Object();
+            this.IsFileAssociated = false;
         }
 
         public static ProjectItem FromFile(String filePath, DirectoryItem parent)
@@ -117,6 +119,7 @@
                     ProjectItem projectItem = serializer.ReadObject(fileStream) as ProjectItem;
                     projectItem.name = Path.GetFileNameWithoutExtension(filePath);
                     projectItem.Parent = parent;
+                    projectItem.IsFileAssociated = true;
 
                     return projectItem;
                 }
@@ -128,6 +131,9 @@
             }
         }
 
+        /// <summary>
+        /// Saves this project item by serializing it to disk.
+        /// </summary>
         public virtual void Save()
         {
             try
@@ -136,6 +142,8 @@
                 {
                     DataContractJsonSerializer serializer = new DataContractJsonSerializer(this.GetType());
                     serializer.WriteObject(fileStream, this);
+
+                    this.IsFileAssociated = true;
                 }
             }
             catch (Exception ex)
@@ -150,6 +158,9 @@
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        /// <summary>
+        /// Gets or sets the parent of this project item.
+        /// </summary>
         public DirectoryItem Parent { get; set; }
 
         /// <summary>
@@ -164,17 +175,14 @@
 
             set
             {
-                if (this.name == value)
+                if (this.Name == value || !this.Name.IsValidFileName())
                 {
                     return;
                 }
 
-                if (this.Name.IsValidFileName())
-                {
-                    this.name = value;
-                    this.RaisePropertyChanged(nameof(this.Name));
-                    this.Save();
-                }
+                this.name = this.ResolvePotentialNameConflict(this.Name, value);
+                this.RaisePropertyChanged(nameof(this.Name));
+                this.Save();
             }
         }
 
@@ -320,7 +328,7 @@
         {
             get
             {
-                return Path.Combine((this.Parent?.FullPath ?? ProjectSettings.Default.ProjectRoot), this.Name + this.GetExtension());
+                return this.GetFilePathForName(this.Name);
             }
         }
 
@@ -331,6 +339,11 @@
         {
             return String.Empty;
         }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether a file on disk is associated with this project item.
+        /// </summary>
+        private Boolean IsFileAssociated { get; set; }
 
         /// <summary>
         /// Gets or sets a lock for activating project items.
@@ -353,7 +366,7 @@
         }
 
         /// <summary>
-        /// Updates event for this project item.
+        /// Updates this project item. Resolves addresses and values.
         /// </summary>
         public virtual void Update()
         {
@@ -477,6 +490,54 @@
         protected virtual Boolean IsActivatable()
         {
             return true;
+        }
+
+        /// <summary>
+        /// Resolves the name conflict for this unassociated project item.
+        /// </summary>
+        /// <returns></returns>
+        private String ResolvePotentialNameConflict(String previousName, String newName)
+        {
+            if (this.IsFileAssociated && previousName == newName)
+            {
+                return newName;
+            }
+
+            String previousFilePath = this.GetFilePathForName(previousName);
+            String newFilePath = this.GetFilePathForName(newName);
+
+            if (File.Exists(newFilePath))
+            {
+                try
+                {
+                    String[] neighboringFiles = Directory.GetFiles(Path.GetDirectoryName(newFilePath));
+
+                    for (Int32 appendedNumber = 0; appendedNumber < Int32.MaxValue; appendedNumber++)
+                    {
+                        String suffix = (appendedNumber == 0 ? String.Empty : " " + appendedNumber.ToString());
+                        String resolvedName = Path.Combine(ProjectSettings.Default.ProjectRoot, newName + suffix);
+
+                        if (neighboringFiles.Contains(resolvedName))
+                        {
+                            continue;
+                        }
+
+                        // Rename name to resolved name
+                        newName = resolvedName;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, "Error resolving conflicting project name.", ex);
+                }
+            }
+
+            return newName;
+        }
+
+        private String GetFilePathForName(String fileName)
+        {
+            return Path.Combine((this.Parent?.FullPath ?? ProjectSettings.Default.ProjectRoot), this.Name + this.GetExtension());
         }
     }
     //// End class

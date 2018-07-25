@@ -211,7 +211,7 @@
         }
 
         /// <summary>
-        /// Update event for this project item. Resolves addresses and values.
+        /// Updates this project item. Resolves addresses and values.
         /// </summary>
         public override void Update()
         {
