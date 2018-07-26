@@ -1,5 +1,7 @@
+[Environment]::CurrentDirectory = Get-Location -PSProvider FileSystem
+
 # Parse assembly info from the project
-$assemblyInfoPath = "Squalr/Squalr/Properties/AssemblyInfo.cs"
+$assemblyInfoPath = "./Squalr/Properties/AssemblyInfo.cs"
 $assemblyInfo = [IO.File]::ReadAllText($assemblyInfoPath)
 $title = $assemblyInfo | Select-String -Pattern 'AssemblyTitle\(".+"\)' -AllMatches | % { $_.Matches } | % { $_.Value } | %{$_.split('"')[1]}
 $version = $assemblyInfo | Select-String -Pattern 'AssemblyVersion\(".+"\)' -AllMatches | % { $_.Matches } | % { $_.Value } | %{$_.split('"')[1]}
@@ -11,11 +13,11 @@ $sourceRoot = "Squalr/bin/Release/*"
 $destinationRoot = "lib/net45"
 $exclude = @('*.pdb')
 $nugetFile = "Squalr.nuspec"
-$nugetFilePath = "Squalr/$nugetFile"
+$nugetFilePath = "./$nugetFile"
 $compiledNugetFile = "SqualrCompiled.nuspec"
-$compiledNugetFilePath = "Squalr/$compiledNugetFile"
+$compiledNugetFilePath = "./$compiledNugetFile"
 $package = "Squalr.$version.nupkg"
-$squirrel= "packages\squirrel.windows.1.8.0\tools\Squirrel.exe"
+$squirrel= "packages/squirrel.windows.1.8.0/tools/Squirrel.exe"
 
 # Delete old releases
 Remove-Item $releasesRoot -Force -Recurse -ErrorAction Ignore
