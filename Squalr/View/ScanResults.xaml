@@ -17,7 +17,7 @@
     <x:Code>
         <![CDATA[ public ScanResults() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource SqualrColorBlack}">
+    <Grid Background="{StaticResource SqualrColorPanel}">
         <Grid.Resources>
             <converters:UInt64ToAddressConverter x:Key="IntPtrToAddressConverter" />
             <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
@@ -33,11 +33,11 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Border Grid.Row="0" Background="{StaticResource SqualrColorGray27}">
+        <Border Grid.Row="0" Background="{StaticResource SqualrColorFrame}">
             <Menu
                 Grid.Column="1"
                 Padding="4"
-                Background="{StaticResource SqualrColorGray27}"
+                Background="{StaticResource SqualrColorFrame}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 Foreground="{StaticResource SqualrColorWhite}">
                 <MenuItem VerticalAlignment="Center" Command="{Binding AddScanResultsCommand}">
@@ -56,7 +56,7 @@
             Grid.Row="1"
             behaviors:ScrollToTopBehavior.ScrollToTop="True"
             AutoGenerateColumns="False"
-            Background="{StaticResource SqualrColorBlack}"
+            Background="Transparent"
             CanUserAddRows="False"
             ColumnWidth="*"
             HeadersVisibility="Column"
@@ -76,14 +76,14 @@
             </intr:Interaction.Triggers>
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Style>
                 <Style TargetType="{x:Type DataGrid}">
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                 </Style>
             </DataGrid.Style>
@@ -94,7 +94,7 @@
                             <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
                         </Trigger>
                     </Style.Triggers>
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                     <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray74}" />
                 </Style>
@@ -151,7 +151,7 @@
                 </DataTemplate>
             </DataGrid.ItemTemplate>
         </DataGrid>
-        <Border Grid.Row="2" Background="{StaticResource SqualrColorGray27}">
+        <Border Grid.Row="2" Background="{StaticResource SqualrColorFrame}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition />
@@ -224,7 +224,7 @@
                 </Menu>
             </Grid>
         </Border>
-        <Border Grid.Row="3" Background="{StaticResource SqualrColorGray27}">
+        <Border Grid.Row="3" Background="{StaticResource SqualrColorFrame}">
             <WrapPanel HorizontalAlignment="Center">
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text="{Binding ByteCount, Converter={StaticResource ValueToMetricSize}}" />
                 <TextBlock Foreground="{StaticResource SqualrColorWhite}" Text=" - (Count: " />

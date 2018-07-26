@@ -11,12 +11,12 @@
     d:DesignWidth="256"
     DataContext="{Binding OutputViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
-    <Grid Background="{StaticResource SqualrColorBlack}">
+    <Grid Background="{StaticResource SqualrColorPanel}">
         <ScrollViewer Name="outputScrollViewer" ScrollChanged="OutputScrollViewerScrollChanged">
             <RichTextBox
                 Name="outputTextBox"
                 controlsLocal:RichTextBoxHelper.DocumentRTF="{Binding LogText, Mode=OneWay}"
-                Background="{StaticResource SqualrColorBlack}"
+                Background="Transparent"
                 IsDocumentEnabled="True"
                 IsReadOnly="True" />
         </ScrollViewer>
@@ -31,7 +31,7 @@
             <Border BorderBrush="{StaticResource SqualrColorWhite}" BorderThickness="1">
                 <ScrollViewer>
                     <TextBox
-                        Background="{StaticResource SqualrColorGray20}"
+                        Background="{StaticResource SqualrColorFrame}"
                         Foreground="{StaticResource SqualrColorWhite}"
                         IsReadOnly="True"
                         Text="{Binding InnerMessageText}"

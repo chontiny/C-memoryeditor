@@ -36,11 +36,11 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <WrapPanel Background="{StaticResource SqualrColorGray27}">
+            <WrapPanel Background="{StaticResource SqualrColorFrame}">
                 <MenuItem
                     Grid.Column="1"
                     HorizontalAlignment="Right"
-                    Background="{StaticResource SqualrColorGray27}"
+                    Background="{StaticResource SqualrColorFrame}"
                     Command="{Binding StopTraceCommand}"
                     ToolTip="Stop Trace">
                     <MenuItem.Header>
@@ -58,7 +58,7 @@
             Name="codeTracerDataGrid"
             Grid.Row="1"
             AutoGenerateColumns="False"
-            Background="{StaticResource SqualrColorBlack}"
+            Background="{StaticResource SqualrColorPanel}"
             CanUserAddRows="False"
             ColumnWidth="*"
             HeadersVisibility="Column"
@@ -84,7 +84,7 @@
                             <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
                         </Trigger>
                     </Style.Triggers>
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                     <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray24}" />
                     <Setter Property="IsManipulationEnabled" Value="False" />
@@ -93,20 +93,20 @@
             </DataGrid.Resources>
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Style>
                 <Style TargetType="{x:Type DataGrid}">
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                 </Style>
             </DataGrid.Style>
             <DataGrid.CellStyle>
                 <Style TargetType="{x:Type DataGridCell}">
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                 </Style>
             </DataGrid.CellStyle>

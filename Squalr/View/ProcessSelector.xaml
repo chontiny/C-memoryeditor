@@ -22,7 +22,7 @@
         </Grid.RowDefinitions>
         <ListView
             Grid.Row="0"
-            Background="{StaticResource SqualrColorBlack}"
+            Background="{StaticResource SqualrColorPanel}"
             BorderThickness="0"
             ItemsSource="{Binding ProcessList}">
             <ListView.ItemContainerStyle>

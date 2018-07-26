@@ -33,22 +33,22 @@
             // Use reflection to set all propertygrid colors to dark, since some are otherwise not publically accessible
             PropertyInfo[] allProperties = this.propertyGrid.GetType().GetProperties();
             IEnumerable<PropertyInfo> colorProperties = allProperties.Select(x => x).Where(x => x.PropertyType == typeof(Color));
-            colorProperties.ForEach(x => x.SetValue(this.propertyGrid, DarkBrushes.SqualrColorBlack, null));
+            colorProperties.ForEach(x => x.SetValue(this.propertyGrid, DarkBrushes.SqualrColorPanel, null));
 
-            this.propertyGrid.BackColor = DarkBrushes.SqualrColorBlack;
-            this.propertyGrid.CommandsBackColor = DarkBrushes.SqualrColorBlack;
-            this.propertyGrid.HelpBackColor = DarkBrushes.SqualrColorBlack;
-            this.propertyGrid.SelectedItemWithFocusBackColor = DarkBrushes.SqualrColorBlack;
-            this.propertyGrid.ViewBackColor = DarkBrushes.SqualrColorBlack;
+            this.propertyGrid.BackColor = DarkBrushes.SqualrColorPanel;
+            this.propertyGrid.CommandsBackColor = DarkBrushes.SqualrColorPanel;
+            this.propertyGrid.HelpBackColor = DarkBrushes.SqualrColorPanel;
+            this.propertyGrid.SelectedItemWithFocusBackColor = DarkBrushes.SqualrColorPanel;
+            this.propertyGrid.ViewBackColor = DarkBrushes.SqualrColorPanel;
 
-            this.propertyGrid.CommandsActiveLinkColor = DarkBrushes.SqualrColorBlack;
-            this.propertyGrid.CommandsDisabledLinkColor = DarkBrushes.SqualrColorBlack;
+            this.propertyGrid.CommandsActiveLinkColor = DarkBrushes.SqualrColorPanel;
+            this.propertyGrid.CommandsDisabledLinkColor = DarkBrushes.SqualrColorPanel;
 
             this.propertyGrid.CategorySplitterColor = DarkBrushes.SqualrColorWhite;
 
-            this.propertyGrid.CommandsBorderColor = DarkBrushes.SqualrColorGray20;
-            this.propertyGrid.HelpBorderColor = DarkBrushes.SqualrColorGray20;
-            this.propertyGrid.ViewBorderColor = DarkBrushes.SqualrColorGray20;
+            this.propertyGrid.CommandsBorderColor = DarkBrushes.SqualrColorFrame;
+            this.propertyGrid.HelpBorderColor = DarkBrushes.SqualrColorFrame;
+            this.propertyGrid.ViewBorderColor = DarkBrushes.SqualrColorFrame;
 
             this.propertyGrid.CategoryForeColor = DarkBrushes.SqualrColorWhite;
             this.propertyGrid.CommandsForeColor = DarkBrushes.SqualrColorWhite;

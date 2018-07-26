@@ -108,7 +108,7 @@
     <Grid>
         <Grid Visibility="{Binding Path=HasProjectRoot, Converter={StaticResource BooleanToNotHiddenConverter}}">
             <Button
-                Background="{StaticResource SqualrColorBlack}"
+                Background="{StaticResource SqualrColorPanel}"
                 BorderThickness="1"
                 Command="{Binding SelectProjectCommand}">
                 <StackPanel Orientation="Horizontal">
@@ -123,7 +123,7 @@
         </Grid>
         <TreeView
             Name="ProjectExplorerTreeView"
-            Background="{StaticResource SqualrColorBlack}"
+            Background="{StaticResource SqualrColorPanel}"
             BorderBrush="White"
             ContextMenu="{StaticResource RightClickMenu}"
             ItemsSource="{Binding ProjectRoot}"

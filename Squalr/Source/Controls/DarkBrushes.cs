@@ -26,6 +26,7 @@
         /// Gray 24 theme color.
         /// </summary>
         public static readonly Color SqualrColorGray24 = Color.FromArgb(0x3D, 0x3D, 0x3D);
+
         /// <summary>
         /// Gray 27 theme color.
         /// </summary>
@@ -50,6 +51,16 @@
         /// Gray 74 theme color.
         /// </summary>
         public static readonly Color SqualrColorGray74 = Color.FromArgb(0xBD, 0xBD, 0xBD);
+        
+        /// <summary>
+        /// Theme color for the frames.
+        /// </summary>
+        public static readonly Color SqualrColorFrame = Color.FromArgb(0x33, 0x33, 0x33);
+
+        /// <summary>
+        /// Theme color for panels.
+        /// </summary>
+        public static readonly Color SqualrColorPanel = Color.FromArgb(0x20, 0x20, 0x20);
 
         /// <summary>
         /// Blue theme color.
