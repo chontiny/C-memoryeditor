@@ -196,7 +196,7 @@
             }
         }
 
-        [Browsable(true)]
+        [Browsable(false)]
         public Boolean IsStatic
         {
             get
