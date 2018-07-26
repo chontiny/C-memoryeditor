@@ -458,7 +458,7 @@
 
         private void OpenFileExplorer(ProjectItemView projectItemView)
         {
-            String directory = projectItemView.ProjectItem.DirectoryPath;
+            String directory = (projectItemView.ProjectItem is DirectoryItem ? projectItemView.ProjectItem.FullPath : Path.GetDirectoryName(projectItemView.ProjectItem.FullPath));
 
             if (Directory.Exists(directory))
             {

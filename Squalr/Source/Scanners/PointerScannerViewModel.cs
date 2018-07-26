@@ -18,6 +18,11 @@
     internal class PointerScannerViewModel : ToolViewModel
     {
         /// <summary>
+        /// An identifier to ensure only one pointer scan runs at a time.
+        /// </summary>
+        public static readonly String PointerScanTaskIdentifier = Guid.NewGuid().ToString();
+
+        /// <summary>
         /// Gets the default pointer scan depth.
         /// </summary>
         public const Int32 DefaultPointerScanDepth = 3;
@@ -205,9 +210,15 @@
         /// </summary>
         private void StartScan()
         {
-            TrackableTask<PointerBag> pointerScanTask = PointerScan.Scan(this.TargetAddress, (UInt32)this.PointerRadius, this.PointerDepth, 4);
-            TaskTrackerViewModel.GetInstance().TrackTask(pointerScanTask);
-            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = pointerScanTask.Result;
+            try
+            {
+                TrackableTask<PointerBag> pointerScanTask = PointerScan.Scan(this.TargetAddress, (UInt32)this.PointerRadius, this.PointerDepth, 4, PointerScannerViewModel.PointerScanTaskIdentifier);
+                TaskTrackerViewModel.GetInstance().TrackTask(pointerScanTask);
+                PointerScanResultsViewModel.GetInstance().DiscoveredPointers = pointerScanTask.Result;
+            }
+            catch (TaskConflictException)
+            {
+            }
         }
 
         /// <summary>
@@ -215,9 +226,15 @@
         /// </summary>
         private void StartPointerRebase()
         {
-            TrackableTask<PointerBag> pointerRebaseTask = PointerRebase.Scan(PointerScanResultsViewModel.GetInstance().DiscoveredPointers, readMemory: true, performUnchangedScan: true);
-            TaskTrackerViewModel.GetInstance().TrackTask(pointerRebaseTask);
-            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = pointerRebaseTask.Result;
+            try
+            {
+                TrackableTask<PointerBag> pointerRebaseTask = PointerRebase.Scan(PointerScanResultsViewModel.GetInstance().DiscoveredPointers, readMemory: true, performUnchangedScan: true, taskIdentifier: PointerScannerViewModel.PointerScanTaskIdentifier);
+                TaskTrackerViewModel.GetInstance().TrackTask(pointerRebaseTask);
+                PointerScanResultsViewModel.GetInstance().DiscoveredPointers = pointerRebaseTask.Result;
+            }
+            catch (TaskConflictException)
+            {
+            }
         }
 
         /// <summary>
@@ -225,9 +242,15 @@
         /// </summary>
         private void StartPointerRetargetScan()
         {
-            TrackableTask<PointerBag> pointerRetargetScanTask = PointerRetargetScan.Scan(this.RetargetAddress, 4, PointerScanResultsViewModel.GetInstance().DiscoveredPointers);
-            TaskTrackerViewModel.GetInstance().TrackTask(pointerRetargetScanTask);
-            PointerScanResultsViewModel.GetInstance().DiscoveredPointers = pointerRetargetScanTask.Result;
+            try
+            {
+                TrackableTask<PointerBag> pointerRetargetScanTask = PointerRetargetScan.Scan(this.RetargetAddress, 4, PointerScanResultsViewModel.GetInstance().DiscoveredPointers, PointerScannerViewModel.PointerScanTaskIdentifier);
+                TaskTrackerViewModel.GetInstance().TrackTask(pointerRetargetScanTask);
+                PointerScanResultsViewModel.GetInstance().DiscoveredPointers = pointerRetargetScanTask.Result;
+            }
+            catch (TaskConflictException)
+            {
+            }
         }
     }
     //// End class

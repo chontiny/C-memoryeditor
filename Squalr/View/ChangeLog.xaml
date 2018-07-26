@@ -24,7 +24,7 @@
     <shell:WindowChrome.WindowChrome>
         <shell:WindowChrome CaptionHeight="{Binding ActualHeight, ElementName=titlebar}" />
     </shell:WindowChrome.WindowChrome>
-    <shell:Grid Background="{StaticResource SqualrColorBlack}">
+    <shell:Grid Background="{StaticResource SqualrColorPanel}">
         <shell:Grid.RowDefinitions>
             <shell:RowDefinition Height="Auto" />
             <shell:RowDefinition />
@@ -34,7 +34,7 @@
             x:Name="titlebar"
             Grid.Row="0"
             Height="24"
-            Background="{StaticResource SqualrColorGray20}">
+            Background="{StaticResource SqualrColorFrame}">
             <shell:TextBlock
                 Padding="4"
                 Foreground="{StaticResource SqualrColorWhite}"

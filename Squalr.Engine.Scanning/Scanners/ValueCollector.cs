@@ -18,57 +18,65 @@
         /// </summary>
         private const String Name = "Value Collector";
 
-        public static TrackableTask<Snapshot> CollectValues(Snapshot snapshot)
+        public static TrackableTask<Snapshot> CollectValues(Snapshot snapshot, String taskIdentifier = null)
         {
-            return TrackableTask<Snapshot>
-                .Create(ValueCollector.Name, out UpdateProgress updateProgress, out CancellationToken cancellationToken)
-                .With(Task<Snapshot>.Run(() =>
-                {
-                    try
+            try
+            {
+                return TrackableTask<Snapshot>
+                    .Create(ValueCollector.Name, taskIdentifier, out UpdateProgress updateProgress, out CancellationToken cancellationToken)
+                    .With(Task<Snapshot>.Run(() =>
                     {
-                        Int32 processedRegions = 0;
+                        try
+                        {
+                            Int32 processedRegions = 0;
 
-                        Stopwatch stopwatch = new Stopwatch();
-                        stopwatch.Start();
+                            Stopwatch stopwatch = new Stopwatch();
+                            stopwatch.Start();
 
-                        ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
-                        options.CancellationToken = cancellationToken;
+                            ParallelOptions options = ParallelSettings.ParallelSettingsFastest.Clone();
+                            options.CancellationToken = cancellationToken;
 
-                        // Read memory to get current values for each region
-                        Parallel.ForEach(
-                            snapshot.OptimizedReadGroups,
-                            options,
-                            (readGroup) =>
-                            {
-                                // Check for canceled scan
-                                cancellationToken.ThrowIfCancellationRequested();
+                            // Read memory to get current values for each region
+                            Parallel.ForEach(
+                                    snapshot.OptimizedReadGroups,
+                                    options,
+                                    (readGroup) =>
+                                    {
+                                        // Check for canceled scan
+                                        cancellationToken.ThrowIfCancellationRequested();
 
-                                // Read the memory for this region
-                                readGroup.ReadAllMemory();
+                                        // Read the memory for this region
+                                        readGroup.ReadAllMemory();
 
-                                // Update progress every N regions
-                                if (Interlocked.Increment(ref processedRegions) % 32 == 0)
-                                {
-                                    updateProgress((float)processedRegions / (float)snapshot.RegionCount * 100.0f);
-                                }
-                            });
+                                        // Update progress every N regions
+                                        if (Interlocked.Increment(ref processedRegions) % 32 == 0)
+                                        {
+                                            updateProgress((float)processedRegions / (float)snapshot.RegionCount * 100.0f);
+                                        }
+                                    });
 
-                        cancellationToken.ThrowIfCancellationRequested();
-                        stopwatch.Stop();
-                        Logger.Log(LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
-                        return snapshot;
-                    }
-                    catch (OperationCanceledException ex)
-                    {
-                        Logger.Log(LogLevel.Warn, "Scan canceled", ex);
-                        return null;
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Log(LogLevel.Error, "Error performing scan", ex);
-                        return null;
-                    }
-                }, cancellationToken));
+                            cancellationToken.ThrowIfCancellationRequested();
+                            stopwatch.Stop();
+                            Logger.Log(LogLevel.Info, "Values collected in: " + stopwatch.Elapsed);
+                            return snapshot;
+                        }
+                        catch (OperationCanceledException ex)
+                        {
+                            Logger.Log(LogLevel.Warn, "Scan canceled", ex);
+                            return null;
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Log(LogLevel.Error, "Error performing scan", ex);
+                            return null;
+                        }
+                    }, cancellationToken));
+            }
+            catch (TaskConflictException ex)
+            {
+                Logger.Log(LogLevel.Warn, "Unable to start scan. Scan is already queued.");
+                throw ex;
+            }
         }
     }
     //// End class

@@ -25,7 +25,7 @@
         {
             try
             {
-                String buildPath = Path.Combine(script.DirectoryPath, isRelease ? "Release" : "Debug");
+                String buildPath = Path.Combine(Path.GetDirectoryName(script.FullPath), isRelease ? "Release" : "Debug");
 
                 if (!Directory.Exists(buildPath))
                 {

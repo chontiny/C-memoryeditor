@@ -15,7 +15,7 @@
     <x:Code>
         <![CDATA[ public SnapshotManager() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource SqualrColorBlack}">
+    <Grid Background="{StaticResource SqualrColorPanel}">
         <Grid>
             <Grid.Resources>
                 <converters:ValueToMetricSize x:Key="ValueToMetricSize" />
@@ -28,7 +28,7 @@
             <Menu
                 Grid.Row="0"
                 Padding="4"
-                Background="{StaticResource SqualrColorGray27}"
+                Background="{StaticResource SqualrColorFrame}"
                 BorderBrush="{StaticResource SqualrColorWhite}"
                 DataContext="{Binding Source={StaticResource ViewModelLocator}}"
                 Foreground="{StaticResource SqualrColorWhite}">
@@ -120,7 +120,7 @@
                                         <Style TargetType="Border">
                                             <Setter Property="BorderThickness" Value="0" />
                                             <Setter Property="Padding" Value="8,4,8,4" />
-                                            <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
+                                            <Setter Property="Background" Value="{StaticResource SqualrColorFrame}" />
                                         </Style>
                                     </Grid.Resources>
                                     <Border Grid.Column="0">
@@ -188,7 +188,7 @@
                                         <Style TargetType="Border">
                                             <Setter Property="BorderThickness" Value="0" />
                                             <Setter Property="Padding" Value="8,4,8,4" />
-                                            <Setter Property="Background" Value="{StaticResource SqualrColorGray20}" />
+                                            <Setter Property="Background" Value="{StaticResource SqualrColorFrame}" />
                                         </Style>
                                     </Grid.Resources>
                                 </Grid>

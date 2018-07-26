@@ -9,7 +9,7 @@
     d:DesignWidth="256"
     DataContext="{Binding PropertyViewerViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
-    <Grid Background="{StaticResource SqualrColorBlack}">
+    <Grid Background="{StaticResource SqualrColorPanel}">
         <Grid.RowDefinitions>
             <RowDefinition />
         </Grid.RowDefinitions>

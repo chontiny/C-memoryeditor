@@ -10,7 +10,7 @@
     x:ClassModifier="internal"
     DataContext="{Binding SettingsViewModel, Source={StaticResource ViewModelLocator}}"
     mc:Ignorable="d">
-    <TabControl Background="{StaticResource SqualrColorBlack}">
+    <TabControl Background="{StaticResource SqualrColorPanel}">
         <TabControl.Resources>
             <Style TargetType="{x:Type TabItem}">
                 <Setter Property="BorderThickness" Value="0" />
@@ -37,7 +37,8 @@
             <Grid>
                 <GroupBox
                     Padding="4"
-                    BorderThickness="1"
+                    BorderThickness="2"
+                    BorderBrush="{StaticResource SqualrColorGray74}"
                     Foreground="{StaticResource SqualrColorWhite}"
                     Header="Project Settings">
                     <StackPanel>
@@ -49,7 +50,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBox
                                 Grid.Column="0"
-                                Background="{StaticResource SqualrColorBlack}"
+                                Background="{StaticResource SqualrColorPanel}"
                                 Foreground="{StaticResource SqualrColorWhite}"
                                 IsReadOnly="True"
                                 Text="{Binding ProjectRoot, Mode=OneWay}" />
@@ -82,7 +83,8 @@
                     Margin="2">
                     <GroupBox
                         Padding="4"
-                        BorderThickness="1"
+                        BorderThickness="2"
+                        BorderBrush="{StaticResource SqualrColorGray74}"
                         Foreground="{StaticResource SqualrColorWhite}"
                         Header="Required Protection Flags">
                         <StackPanel>
@@ -107,7 +109,8 @@
                     Margin="2">
                     <GroupBox
                         Padding="4"
-                        BorderThickness="1"
+                        BorderThickness="2"
+                        BorderBrush="{StaticResource SqualrColorGray74}"
                         Foreground="{StaticResource SqualrColorWhite}"
                         Header="Excluded Protection Flags">
                         <StackPanel>
@@ -132,7 +135,8 @@
                     Margin="2">
                     <GroupBox
                         Padding="4"
-                        BorderThickness="1"
+                        BorderThickness="2"
+                        BorderBrush="{StaticResource SqualrColorGray74}"
                         Foreground="{StaticResource SqualrColorWhite}"
                         Header="Memory Type">
                         <StackPanel>
@@ -161,7 +165,8 @@
                     Margin="2">
                     <GroupBox
                         Padding="4"
-                        BorderThickness="1"
+                        BorderThickness="2"
+                        BorderBrush="{StaticResource SqualrColorGray74}"
                         Foreground="{StaticResource SqualrColorWhite}"
                         Header="General">
                         <StackPanel>

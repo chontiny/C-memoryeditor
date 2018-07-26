@@ -65,7 +65,7 @@
             <shell:Grid
                 x:Name="titlebar"
                 Grid.Row="0"
-                Background="{StaticResource SqualrColorGray20}">
+                Background="{StaticResource SqualrColorFrame}">
                 <shell:Grid.ColumnDefinitions>
                     <!--  Title Text Column  -->
                     <shell:ColumnDefinition />
@@ -96,7 +96,7 @@
                 </shell:Grid>
                 <shell:Menu
                     Grid.Column="1"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Stretch"
                     Background="Transparent">
                     <shell:MenuItem
                         Height="24"
@@ -143,7 +143,7 @@
             <!--  Menu Bar  -->
             <shell:Grid Grid.Row="1">
                 <shell:Menu
-                    Background="{StaticResource SqualrColorGray20}"
+                    Background="{StaticResource SqualrColorFrame}"
                     BorderBrush="{StaticResource SqualrColorWhite}"
                     Foreground="{StaticResource SqualrColorWhite}">
                     <!--  File Header  -->
@@ -270,7 +270,7 @@
             </shell:Grid>
 
             <!--  Button Menu Bar  -->
-            <shell:WrapPanel Grid.Row="2" Background="{StaticResource SqualrColorGray20}">
+            <shell:WrapPanel Grid.Row="2" Background="{StaticResource SqualrColorFrame}">
                 <shell:Menu
                     Padding="4"
                     Background="Transparent"
@@ -297,7 +297,7 @@
                 <shell:ComboBox
                     Width="196"
                     Height="24"
-                    Background="{StaticResource SqualrColorGray20}"
+                    Background="{StaticResource SqualrColorFrame}"
                     ItemsSource="{Binding ProcessSelectorViewModel.WindowedProcessList, Source={StaticResource ViewModelLocator}}"
                     SelectedItem="{Binding ProcessSelectorViewModel.SelectedProcess, Source={StaticResource ViewModelLocator}, Mode=TwoWay}">
                     <shell:ComboBox.ItemTemplate>
@@ -334,7 +334,7 @@
                             <shell:Menu
                                 Grid.Column="0"
                                 Padding="4"
-                                Background="{StaticResource SqualrColorGray20}"
+                                Background="{StaticResource SqualrColorFrame}"
                                 BorderBrush="{StaticResource SqualrColorWhite}"
                                 DataContext="{Binding ScanResultsViewModel, Source={StaticResource ViewModelLocator}}"
                                 Foreground="{StaticResource SqualrColorWhite}">
@@ -576,7 +576,7 @@
                             </shell:Menu>
                             <shell:Menu
                                 VerticalAlignment="Center"
-                                Background="{StaticResource SqualrColorGray20}"
+                                Background="{StaticResource SqualrColorFrame}"
                                 BorderBrush="{StaticResource SqualrColorWhite}"
                                 DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
                                 Foreground="{StaticResource SqualrColorWhite}">
@@ -842,7 +842,7 @@
                 x:Name="dockManager"
                 Grid.Row="3"
                 AnchorablesSource="{Binding DockingViewModel.Tools, Source={StaticResource ViewModelLocator}}"
-                Background="{StaticResource SqualrColorGray20}">
+                Background="{StaticResource SqualrColorFrame}">
                 <!--  Theme  -->
                 <avalonDock:DockingManager.ThemeBase>
                     <theme:DarkTheme />
