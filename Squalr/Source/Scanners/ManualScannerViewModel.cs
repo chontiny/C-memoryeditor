@@ -220,23 +220,31 @@
 
             DataType dataType = ScanResultsViewModel.GetInstance().ActiveType;
 
-            // Collect values
-            TrackableTask<Snapshot> valueCollectorTask = ValueCollector.CollectValues(
-                SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType));
-
-            TaskTrackerViewModel.GetInstance().TrackTask(valueCollectorTask);
-
-            // Perform manual scan on value collection complete
-            valueCollectorTask.OnCompletedEvent += ((completedValueCollection) =>
+            try
             {
-                Snapshot snapshot = valueCollectorTask.Result;
-                TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
-                    snapshot,
-                    scanConstraints);
+                // Collect values
+                TrackableTask<Snapshot> valueCollectorTask = ValueCollector.CollectValues(
+                SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType),
+                TrackableTask.UniversalIdentifier);
 
-                TaskTrackerViewModel.GetInstance().TrackTask(scanTask);
-                SnapshotManager.SaveSnapshot(scanTask.Result);
-            });
+                TaskTrackerViewModel.GetInstance().TrackTask(valueCollectorTask);
+
+                // Perform manual scan on value collection complete
+                valueCollectorTask.OnCompletedEvent += ((completedValueCollectionTask) =>
+                {
+                    Snapshot snapshot = valueCollectorTask.Result;
+                    TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
+                    snapshot,
+                    scanConstraints,
+                    TrackableTask.UniversalIdentifier);
+
+                    TaskTrackerViewModel.GetInstance().TrackTask(scanTask);
+                    SnapshotManager.SaveSnapshot(scanTask.Result);
+                });
+            }
+            catch (TaskConflictException)
+            {
+            }
         }
 
         /// <summary>

@@ -15,7 +15,7 @@
     <x:Code>
         <![CDATA[ public DotNetExplorer() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource SqualrColorBlack}">
+    <Grid Background="{StaticResource SqualrColorPanel}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition />
@@ -23,7 +23,7 @@
         <Border
             Grid.Row="0"
             Padding="8,4,8,4"
-            Background="{StaticResource SqualrColorGray20}">
+            Background="{StaticResource SqualrColorFrame}">
             <WrapPanel>
                 <Menu Background="Transparent">
                     <MenuItem Command="{Binding RefreshObjectsCommand}">
@@ -42,7 +42,7 @@
             Name="dotNetExplorerTreeView"
             Grid.Row="1"
             AllowDrop="True"
-            Background="{StaticResource SqualrColorBlack}"
+            Background="Transparent"
             BorderThickness="0"
             ItemsSource="{Binding DotNetObjects, Mode=OneWay}">
             <TreeView.ItemContainerStyle>

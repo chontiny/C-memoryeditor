@@ -11,6 +11,7 @@
     using Squalr.Source.Docking;
     using Squalr.Source.Editors.ValueEditor;
     using Squalr.Source.ProjectExplorer;
+    using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.Collections;
     using System.Collections.Generic;
@@ -393,7 +394,7 @@
                     {
                         foreach (ScanResult result in scanResults)
                         {
-                            result?.PointerItem.Update();
+                            result?.PointerItem?.ProjectItem.Update();
                         }
                     }
 
@@ -407,7 +408,7 @@
         /// </summary>
         private void EditValue(ScanResult scanResult)
         {
-            ValueEditorViewModel.GetInstance().ShowDialog(scanResult?.PointerItem);
+            ValueEditorViewModel.GetInstance().ShowDialog(scanResult?.PointerItem?.ProjectItem as PointerItem);
         }
 
         /// <summary>
@@ -435,7 +436,7 @@
                     UInt64 address = Query.Default.AddressToModule(element.BaseAddress, out moduleName);
 
                     PointerItem pointerItem = new PointerItem(baseAddress: address, dataType: this.ActiveType, moduleName: moduleName, value: currentValue);
-                    newAddresses.Add(new ScanResult(pointerItem, previousValue, label));
+                    newAddresses.Add(new ScanResult(new PointerItemView(pointerItem), previousValue, label));
                 }
             }
 
@@ -494,7 +495,7 @@
         /// <param name="scanResult">The scan result to add to the project explorer.</param>
         private void AddScanResult(ScanResult scanResult)
         {
-            ProjectExplorerViewModel.GetInstance().AddProjectItems(scanResult?.PointerItem);
+            ProjectExplorerViewModel.GetInstance().AddProjectItems(scanResult?.PointerItem?.ProjectItem);
         }
 
         /// <summary>
@@ -508,7 +509,7 @@
                 return;
             }
 
-            IEnumerable<PointerItem> projectItems = scanResults.Select(scanResult => scanResult.PointerItem);
+            IEnumerable<PointerItem> projectItems = scanResults.Select(scanResult => scanResult.PointerItem?.ProjectItem as PointerItem);
 
             ProjectExplorerViewModel.GetInstance().AddProjectItems(projectItems.ToArray());
         }

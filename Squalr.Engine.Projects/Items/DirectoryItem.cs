@@ -12,20 +12,28 @@
     /// </summary>
     public class DirectoryItem : ProjectItem
     {
+        /// <summary>
+        /// The child project items under this directory.
+        /// </summary>
         private FullyObservableCollection<ProjectItem> childItems;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DirectoryItem" /> class.
         /// </summary>
-        public DirectoryItem(String filePath) : base(filePath)
+        public DirectoryItem(String directoryPath) : base(directoryPath)
         {
-            this.DirectoryPath = filePath;
-            this.name = Path.GetFileName(filePath);
+            // Bypass setters to avoid re-saving
+            this.name = (new DirectoryInfo(directoryPath)).Name;
 
-            this.childItems = this.GetChildProjectItems();
+            this.childItems = this.BuildChildren();
             this.WatchForUpdates();
         }
 
+        /// <summary>
+        /// Creates a directory item from the specified project directory path, instantiating all children.
+        /// </summary>
+        /// <param name="directoryPath">The path to the project directory or subdirectory.</param>
+        /// <returns>The instantiated directory item.</returns>
         public static DirectoryItem FromDirectory(String directoryPath)
         {
             try
@@ -44,6 +52,9 @@
             }
         }
 
+        /// <summary>
+        /// Gets the child project items under this directory.
+        /// </summary>
         public FullyObservableCollection<ProjectItem> ChildItems
         {
             get
@@ -58,8 +69,14 @@
             }
         }
 
+        /// <summary>
+        /// Gets or sets an object to watch for file system changes under this directory.
+        /// </summary>
         private FileSystemWatcher FileSystemWatcher { get; set; }
 
+        /// <summary>
+        /// Updates all project items under this directory.
+        /// </summary>
         public override void Update()
         {
             IEnumerable<ProjectItem> children = this.ChildItems?.ToArray();
@@ -73,33 +90,51 @@
             }
         }
 
+        /// <summary>
+        /// Adds the specified project item to this directory.
+        /// </summary>
+        /// <param name="projectItem">The project item to add.</param>
         public void AddChild(ProjectItem projectItem)
         {
             try
             {
-                ProjectItem.Save(projectItem, this.DirectoryPath);
+                projectItem.Parent = this;
                 this.ChildItems.Add(projectItem);
+                projectItem.Save();
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Unable to add project item due to error while saving", ex);
+                Logger.Log(LogLevel.Error, "Unable to add project item", ex);
             }
         }
 
+        /// <summary>
+        /// Removes the specified project item from this directory.
+        /// </summary>
+        /// <param name="projectItem">The project item to remove.</param>
         public void RemoveChild(ProjectItem projectItem)
         {
             try
             {
                 if (this.ChildItems.Contains(projectItem))
                 {
+                    projectItem.Parent = null;
                     this.ChildItems.Remove(projectItem);
-
-                    // TODO: Delete
+                    
+                    if (projectItem is DirectoryItem)
+                    {
+                        Directory.Delete(projectItem.FullPath, recursive: true);
+                    }
+                    else
+                    {
+                        File.Delete(projectItem.FullPath);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, "Unable to add project item due to error while saving", ex);
+                Logger.Log(LogLevel.Error, "Unable to delete project item", ex);
+                // TODO: Probably do a full refresh at this point due to possible de-synchronization
             }
         }
 
@@ -108,13 +143,13 @@
         /// </summary>
         /// <returns>Returns the List of File info for this directory.
         /// Return null if an exception is raised.</returns>
-        public FullyObservableCollection<ProjectItem> GetChildProjectItems()
+        public FullyObservableCollection<ProjectItem> BuildChildren()
         {
             FullyObservableCollection<ProjectItem> projectItems = new FullyObservableCollection<ProjectItem>();
 
             try
             {
-                IEnumerable<DirectoryInfo> subdirectories = Directory.GetDirectories(this.DirectoryPath).Select(subdirectory => new DirectoryInfo(subdirectory));
+                IEnumerable<DirectoryInfo> subdirectories = Directory.GetDirectories(this.FullPath).Select(subdirectory => new DirectoryInfo(subdirectory));
 
                 foreach (DirectoryInfo subdirectory in subdirectories)
                 {
@@ -135,11 +170,11 @@
 
             try
             {
-                foreach (FileInfo file in Directory.GetFiles(this.DirectoryPath).Select(directoryFile => new FileInfo(directoryFile)))
+                foreach (FileInfo file in Directory.GetFiles(this.FullPath).Select(directoryFile => new FileInfo(directoryFile)))
                 {
                     try
                     {
-                        ProjectItem projectItem = ProjectItem.FromFile(file.FullName);
+                        ProjectItem projectItem = ProjectItem.FromFile(file.FullName, this);
 
                         if (projectItem != null)
                         {
@@ -160,14 +195,43 @@
             return projectItems;
         }
 
-        private void WatchForUpdates()
+        /// <summary>
+        /// Saves this directory to disk.
+        /// </summary>
+        public override void Save()
         {
-            this.FileSystemWatcher = new FileSystemWatcher(this.DirectoryPath, "*.*");
-            this.FileSystemWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-            this.FileSystemWatcher.Changed += new FileSystemEventHandler(OnFilesOrDirectoriesChanged);
-            this.FileSystemWatcher.EnableRaisingEvents = true;
+            try
+            {
+                if (!Directory.Exists(this.FullPath))
+                {
+                    Directory.CreateDirectory(this.FullPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, "Error creating directory within project.", ex);
+            }
         }
 
+        /// <summary>
+        /// Initializes the filesystem watcher to listen for filesystem changes.
+        /// </summary>
+        private void WatchForUpdates()
+        {
+            this.FileSystemWatcher = new FileSystemWatcher(this.FullPath, "*.*")
+            {
+                NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                EnableRaisingEvents = true,
+            };
+
+            this.FileSystemWatcher.Changed += new FileSystemEventHandler(OnFilesOrDirectoriesChanged);
+        }
+
+        /// <summary>
+        /// Method invoked when files or directories change under the project root.
+        /// </summary>
+        /// <param name="source">The source object.</param>
+        /// <param name="args">The filesystem change event args.</param>
         private void OnFilesOrDirectoriesChanged(Object source, FileSystemEventArgs args)
         {
             switch (args.ChangeType)

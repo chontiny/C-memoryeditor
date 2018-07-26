@@ -108,6 +108,7 @@
     <Compile Include="Controls\Shell\WindowChromeWorker.cs" />
     <Compile Include="Converters\ActivateCommandLayoutItemFromLayoutModelConverter.cs" />
     <Compile Include="Converters\AutoHideCommandLayoutItemFromLayoutModelConverter.cs" />
+    <Compile Include="Converters\BorderGapMaskConverter.cs" />
     <Compile Include="Converters\HideCommandLayoutItemFromLayoutModelConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\LayoutItemFromLayoutModelConverter.cs" />
@@ -323,6 +324,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Loaders\SpinnerCogs.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Styles\GroupBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

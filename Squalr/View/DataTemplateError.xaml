@@ -11,7 +11,7 @@
     <x:Code>
         <![CDATA[ public DataTemplateError() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid>
+    <Grid Background="{StaticResource SqualrColorPanel}">
         <TextBlock
             Padding="8"
             Foreground="Red"

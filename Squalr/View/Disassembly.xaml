@@ -62,7 +62,7 @@
             Grid.Row="1"
             behaviors:ScrollToCenterBehavior.ScrollToCenter="True"
             AutoGenerateColumns="False"
-            Background="{StaticResource SqualrColorBlack}"
+            Background="{StaticResource SqualrColorPanel}"
             CanUserAddRows="False"
             ColumnWidth="*"
             EnableRowVirtualization="True"
@@ -87,7 +87,7 @@
                             <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
                         </Trigger>
                     </Style.Triggers>
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                     <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray24}" />
                     <Setter Property="IsManipulationEnabled" Value="False" />
@@ -96,14 +96,14 @@
             </DataGrid.Resources>
             <DataGrid.ColumnHeaderStyle>
                 <Style TargetType="{x:Type DataGridColumnHeader}">
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Style>
                 <Style TargetType="{x:Type DataGrid}">
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                 </Style>
             </DataGrid.Style>
@@ -114,7 +114,7 @@
                             <Setter Property="BorderBrush" Value="{StaticResource SqualrColorBlue}" />
                         </Trigger>
                     </Style.Triggers>
-                    <Setter Property="Background" Value="{StaticResource SqualrColorBlack}" />
+                    <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
                     <Setter Property="BorderBrush" Value="{StaticResource SqualrColorGray74}" />
                 </Style>

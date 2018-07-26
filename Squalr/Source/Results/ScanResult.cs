@@ -1,6 +1,7 @@
 ﻿namespace Squalr.Source.Results
 {
     using Squalr.Engine.Projects.Items;
+    using Squalr.Source.ProjectExplorer.ProjectItems;
     using System;
     using System.ComponentModel;
 
@@ -27,7 +28,7 @@
         /// <param name="value">The initial value of this result.</param>
         /// <param name="previousValue">The previous scan value.</param>
         /// <param name="label">The label of this result.</param>
-        public ScanResult(PointerItem pointerItem, Object previousValue, String label)
+        public ScanResult(PointerItemView pointerItem, Object previousValue, String label)
         {
             this.PointerItem = pointerItem;
             this.PreviousValue = previousValue;
@@ -40,13 +41,13 @@
         /// <summary>
         /// Gets the pointer item this scan result contains.
         /// </summary>
-        public PointerItem PointerItem { get; private set; }
+        public PointerItemView PointerItem { get; private set; }
 
         /// <summary>
         /// Gets or sets the display value of the scan result.
         /// </summary>
         [Browsable(false)]
-        public String DisplayValue
+        public Object DisplayValue
         {
             get
             {

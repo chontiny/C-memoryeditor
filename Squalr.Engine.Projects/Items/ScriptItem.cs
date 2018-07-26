@@ -18,9 +18,15 @@
     public class ScriptItem : ProjectItem
     {
         /// <summary>
+        /// The extension for this project item type.
+        /// </summary>
+        public const String Extension = ".cs";
+
+        /// <summary>
         /// The raw script text.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         private String script;
 
         /// <summary>
@@ -45,7 +51,6 @@
         /// <summary>
         /// Gets or sets the raw script text.
         /// </summary>
-        [DataMember]
         public virtual String Script
         {
             get
@@ -60,6 +65,14 @@
         }
 
         /// <summary>
+        /// Gets the extension for this project item.
+        /// </summary>
+        public override String GetExtension()
+        {
+            return ScriptItem.Extension;
+        }
+
+        /// <summary>
         /// Invoked when this object is deserialized.
         /// </summary>
         /// <param name="streamingContext">Streaming context.</param>
@@ -67,13 +80,6 @@
         public new void OnDeserialized(StreamingContext streamingContext)
         {
             base.OnDeserialized(streamingContext);
-        }
-
-        /// <summary>
-        /// Update event for this project item.
-        /// </summary>
-        public override void Update()
-        {
         }
     }
     //// End class

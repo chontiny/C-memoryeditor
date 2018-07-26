@@ -7,7 +7,6 @@
           <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Project Explorer" IsSelected="True" ContentId="ProjectExplorerViewModel" FloatingLeft="-61" FloatingTop="476" FloatingWidth="1270" FloatingHeight="726" LastActivationTimeStamp="06/02/2018 13:07:03" />
         </LayoutAnchorablePane>
         <LayoutAnchorablePane Id="9e24467d-d273-4039-b9f6-0170695cb8ff" DockWidth="1.61790914482819*" DockHeight="1.16110216099106*">
-          <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Manual Scanner" IsSelected="True" ContentId="ManualScannerViewModel" LastActivationTimeStamp="06/02/2018 13:06:36" />
           <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Pointer Scanner" ContentId="PointerScannerViewModel" LastActivationTimeStamp="06/02/2018 13:06:36" />
           <LayoutAnchorable IsVisible="True" AutoHideMinWidth="100" AutoHideMinHeight="100" Title="Settings" ContentId="SettingsViewModel" LastActivationTimeStamp="06/02/2018 13:06:36" />
         </LayoutAnchorablePane>

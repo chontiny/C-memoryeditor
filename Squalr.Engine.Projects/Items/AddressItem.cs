@@ -15,9 +15,15 @@
     public abstract class AddressItem : ProjectItem
     {
         /// <summary>
+        /// The extension for this project item type.
+        /// </summary>
+        public const String Extension = ".adr";
+
+        /// <summary>
         /// The data type at this address.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         protected DataType dataType;
 
         /// <summary>
@@ -30,6 +36,7 @@
         /// A value indicating whether the value at this address should be displayed as hex.
         /// </summary>
         [Browsable(false)]
+        [DataMember]
         protected Boolean isValueHex;
 
         /// <summary>
@@ -79,7 +86,6 @@
         /// <summary>
         /// Gets or sets the data type of the value at this address.
         /// </summary>
-        [DataMember]
         public virtual DataType DataType
         {
             get
@@ -100,7 +106,7 @@
                 this.addressValue = null;
 
                 this.RaisePropertyChanged(nameof(this.DataType));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
@@ -137,7 +143,6 @@
         /// <summary>
         /// Gets or sets a value indicating whether the value at this address should be displayed as hex.
         /// </summary>
-        [DataMember]
         public virtual Boolean IsValueHex
         {
             get
@@ -154,7 +159,7 @@
 
                 this.isValueHex = value;
                 this.RaisePropertyChanged(nameof(this.IsValueHex));
-                ProjectItem.Save(this, this.DirectoryPath);
+                this.Save();
             }
         }
 
@@ -198,7 +203,15 @@
         }
 
         /// <summary>
-        /// Update event for this project item. Resolves addresses and values.
+        /// Gets the extension for this project item.
+        /// </summary>
+        public override String GetExtension()
+        {
+            return AddressItem.Extension;
+        }
+
+        /// <summary>
+        /// Updates this project item. Resolves addresses and values.
         /// </summary>
         public override void Update()
         {

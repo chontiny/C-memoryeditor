@@ -7,6 +7,14 @@
     [DataContract]
     public class DotNetItem : AddressItem
     {
+        /// <summary>
+        /// The extension for this project item type.
+        /// </summary>
+        public new const String Extension = ".clr";
+
+        [DataMember]
+        private String identifier;
+
         public DotNetItem()
         {
         }
@@ -19,8 +27,27 @@
         /// <summary>
         /// Gets or sets the identifier for this .NET object.
         /// </summary>
-        [DataMember]
-        public virtual String Identifier { get; set; }
+        public virtual String Identifier
+        {
+            get
+            {
+                return this.identifier;
+            }
+
+            set
+            {
+                this.identifier = value;
+                this.RaisePropertyChanged(nameof(this.Identifier));
+            }
+        }
+
+        /// <summary>
+        /// Gets the extension for this project item.
+        /// </summary>
+        public override String GetExtension()
+        {
+            return DotNetItem.Extension;
+        }
 
         /// <summary>
         /// Resolves the address of this object.

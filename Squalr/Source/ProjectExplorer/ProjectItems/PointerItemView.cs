@@ -1,5 +1,6 @@
 ﻿namespace Squalr.Source.ProjectExplorer.ProjectItems
 {
+    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Projects.Items;
     using Squalr.Source.Controls;
     using Squalr.Source.Editors.OffsetEditor;
@@ -38,6 +39,12 @@
                 case nameof(PointerItem.IsStatic):
                     this.RaisePropertyChanged(nameof(this.IsStatic));
                     break;
+                case nameof(PointerItem.ModuleOffset):
+                    this.RaisePropertyChanged(nameof(this.ModuleOffset));
+                    break;
+                case nameof(PointerItem.DataType):
+                    this.RaisePropertyChanged(nameof(this.DataType));
+                    break;
             }
         }
 
@@ -54,6 +61,18 @@
                 this.pointerItem = value;
                 this.ProjectItem = value;
                 this.RaisePropertyChanged(nameof(this.PointerItem));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the description for this object.
+        /// </summary>
+        [Browsable(false)]
+        public String AddressSpecifier
+        {
+            get
+            {
+                return this.PointerItem.AddressSpecifier;
             }
         }
 
@@ -93,6 +112,26 @@
             {
                 this.PointerItem.ModuleName = value;
                 this.RaisePropertyChanged(nameof(this.ModuleName));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the identifier for the base address of this object.
+        /// </summary>
+        [Browsable(true)]
+        [RefreshProperties(RefreshProperties.All)]
+        [SortedCategory(SortedCategory.CategoryType.Advanced), DisplayName("Data Type"), Description("The data type of this address")]
+        public DataType DataType
+        {
+            get
+            {
+                return this.PointerItem.DataType;
+            }
+
+            set
+            {
+                this.PointerItem.DataType = value;
+                this.RaisePropertyChanged(nameof(this.DataType));
             }
         }
 
@@ -157,7 +196,7 @@
             }
         }
 
-        [Browsable(true)]
+        [Browsable(false)]
         public Boolean IsStatic
         {
             get

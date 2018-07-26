@@ -14,13 +14,13 @@
     <x:Code>
         <![CDATA[ public ChangeCounter() { InitializeComponent(); }]]>
     </x:Code>
-    <Grid Background="{StaticResource SqualrColorBlack}">
+    <Grid Background="{StaticResource SqualrColorPanel}">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
-            <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorGray20}">
+            <WrapPanel Grid.Row="0" Background="{StaticResource SqualrColorFrame}">
                 <Menu Padding="4" Background="Transparent">
                     <MenuItem Command="{Binding StartScanCommand}">
                         <MenuItem.Header>
