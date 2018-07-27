@@ -2,7 +2,6 @@
 {
     using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils;
-    using Squalr.Source.Utils;
     using System;
     using System.Drawing;
     using System.Windows.Forms;
@@ -63,8 +62,30 @@
             // Allows for shortcuts to be used (ie ctrl + A)
             Application.EnableVisualStyles();
             this.ShortcutsEnabled = true;
+            this.LostFocus += this.HexDecTextBoxLostFocus;
+            this.MouseLeave += this.HexDecTextBoxMouseLeave;
+            this.MouseCaptureChanged += this.HexDecTextBoxMouseLeave;
 
             this.ElementType = elementType;
+        }
+
+        /// <summary>
+        /// Gets or sets a flag that prevents some situations that result in unnecessary focus loss.
+        /// </summary>
+        private Boolean DefocusPrevention { get; set; }
+
+        private void HexDecTextBoxMouseLeave(Object sender, EventArgs e)
+        {
+            this.DefocusPrevention = true;
+        }
+
+        private void HexDecTextBoxLostFocus(Object sender, EventArgs e)
+        {
+            if (this.DefocusPrevention)
+            {
+                this.DefocusPrevention = false;
+                this.Focus();
+            }
         }
 
         /// <summary>
