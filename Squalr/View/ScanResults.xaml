@@ -58,6 +58,7 @@
             AutoGenerateColumns="False"
             Background="Transparent"
             CanUserAddRows="False"
+            CanUserResizeColumns="true"
             ColumnWidth="*"
             HeadersVisibility="Column"
             IsReadOnly="True"
@@ -78,7 +79,10 @@
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderThickness" Value="1" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="4,0,4,0" />
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Style>
@@ -110,14 +114,20 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn
-                    Binding="{Binding Path=AddressSpecifier}"
+                <DataGridTemplateColumn
+                    Width="Auto"
                     Header="Address"
-                    IsReadOnly="True" />
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="4,0,4,0" Text="{Binding Path=AddressSpecifier}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn Width="Auto" Header="Value">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="4,0,4,0" Orientation="Horizontal">
                                 <Button
                                     Margin="0,0,4,0"
                                     Background="Transparent"
@@ -134,14 +144,23 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn
-                    Binding="{Binding Path=PreviousValue}"
+                <DataGridTemplateColumn
+                    Width="Auto"
                     Header="Previous Value"
-                    IsReadOnly="True" />
-                <DataGridTextColumn
-                    Binding="{Binding Path=Label}"
-                    Header="Label"
-                    IsReadOnly="True" />
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="4,0,4,0" Text="{Binding Path=PreviousValue}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Label" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="4,0,4,0" Text="{Binding Path=Label}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
             <DataGrid.ItemTemplate>
                 <DataTemplate>

@@ -279,6 +279,7 @@
             AutoGenerateColumns="False"
             Background="{StaticResource SqualrColorPanel}"
             CanUserAddRows="False"
+            CanUserResizeColumns="True"
             ColumnWidth="*"
             EnableRowVirtualization="False"
             HeadersVisibility="Column"
@@ -304,7 +305,10 @@
                 <Style TargetType="{x:Type DataGridColumnHeader}">
                     <Setter Property="Background" Value="{StaticResource SqualrColorPanel}" />
                     <Setter Property="Foreground" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderBrush" Value="{StaticResource SqualrColorWhite}" />
+                    <Setter Property="BorderThickness" Value="1" />
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Padding" Value="4,0,4,0" />
                 </Style>
             </DataGrid.ColumnHeaderStyle>
             <DataGrid.Style>
@@ -326,31 +330,40 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn
-                    Width="SizeToCells"
-                    MinWidth="64"
-                    Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridCell}}, Converter={StaticResource DataGridIndexConverter}, Mode=OneWay}"
+                <DataGridTemplateColumn
+                    Width="Auto"
                     CellStyle="{StaticResource NoFocus}"
-                    Header="Depth" />
-                <DataGridTextColumn
-                    Width="*"
-                    MinWidth="96"
-                    Binding="{Binding Path=BaseCount}"
+                    Header="Depth"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="4,0,4,0" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGridCell}}, Converter={StaticResource DataGridIndexConverter}, Mode=OneWay}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn
+                    Width="Auto"
                     CellStyle="{StaticResource NoFocus}"
                     Header="Base Count"
-                    IsReadOnly="True" />
-                <DataGridTextColumn
-                    Width="*"
-                    MinWidth="96"
-                    Binding="{Binding Path=PointerCount}"
+                    IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="4,0,4,0" Text="{Binding Path=BaseCount}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn
+                    Width="Auto"
                     CellStyle="{StaticResource NoFocus}"
                     Header="Min Pointer Count"
-                    IsReadOnly="True" />
-                <DataGridTemplateColumn
-                    Width="SizeToCells"
-                    MinWidth="128"
-                    Header="Extract Random Pointer"
                     IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Margin="4,0,4,0" Text="{Binding Path=PointerCount}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Extract Random Pointer" IsReadOnly="True">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <MenuItem

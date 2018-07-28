@@ -44,7 +44,7 @@
                 case DataType type when type == DataType.Int32:
                     return Images.BlueBlocks4;
                 case DataType type when type == DataType.Int64:
-                    return Images.BlueBlocks4;
+                    return Images.BlueBlocks8;
                 case DataType type when type == DataType.UInt16:
                     return Images.PurpleBlocks2;
                 case DataType type when type == DataType.UInt32:

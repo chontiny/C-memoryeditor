@@ -224,8 +224,8 @@
             {
                 // Collect values
                 TrackableTask<Snapshot> valueCollectorTask = ValueCollector.CollectValues(
-                SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType),
-                TrackableTask.UniversalIdentifier);
+                    SnapshotManager.GetSnapshot(Snapshot.SnapshotRetrievalMode.FromActiveSnapshotOrPrefilter, dataType),
+                    TrackableTask.UniversalIdentifier);
 
                 TaskTrackerViewModel.GetInstance().TrackTask(valueCollectorTask);
 
@@ -234,9 +234,9 @@
                 {
                     Snapshot snapshot = valueCollectorTask.Result;
                     TrackableTask<Snapshot> scanTask = ManualScanner.Scan(
-                    snapshot,
-                    scanConstraints,
-                    TrackableTask.UniversalIdentifier);
+                        snapshot,
+                        scanConstraints,
+                        TrackableTask.UniversalIdentifier);
 
                     TaskTrackerViewModel.GetInstance().TrackTask(scanTask);
                     SnapshotManager.SaveSnapshot(scanTask.Result);
