@@ -123,7 +123,11 @@
 
                     this.isCanceled = value;
                     this.RaisePropertyChanged(nameof(this.IsCanceled));
-                    this.OnCanceledEvent?.Invoke(this);
+
+                    Task.Run(() =>
+                    {
+                        this.OnCanceledEvent?.Invoke(this);
+                    });
                 }
             }
         }
@@ -151,7 +155,11 @@
 
                     this.isCompleted = value;
                     this.RaisePropertyChanged(nameof(this.IsCompleted));
-                    this.OnCompletedEvent?.Invoke(this);
+
+                    Task.Run(() =>
+                    {
+                        this.OnCompletedEvent?.Invoke(this);
+                    });
                 }
             }
         }

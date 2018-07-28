@@ -820,11 +820,17 @@
                                     x:Name="valueHexDecBox"
                                     Width="196"
                                     Height="16" />
+                                <shell:Border.InputBindings>
+                                    <shell:KeyBinding Command="{Binding StartScanCommand}" Gesture="Enter" />
+                                </shell:Border.InputBindings>
                             </shell:Border>
                             <shell:MenuItem
                                 Command="{Binding StartScanCommand}"
                                 DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
                                 ToolTip="Start Scan">
+                                <shell:MenuItem.InputBindings>
+                                    <shell:KeyBinding Command="{Binding StartScanCommand}" Gesture="Enter" />
+                                </shell:MenuItem.InputBindings>
                                 <shell:MenuItem.Header>
                                     <shell:Image
                                         Width="16"

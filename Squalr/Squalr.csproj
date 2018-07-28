@@ -648,7 +648,6 @@
     <Resource Include="Content\Images\Union.png" />
     <Resource Include="Content\Images\UnknownValue.png" />
     <Resource Include="Content\Images\X.png" />
-    <Resource Include="Layout.xml" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="View\ChangeCounter.xaml">

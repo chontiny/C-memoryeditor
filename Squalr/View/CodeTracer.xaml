@@ -48,7 +48,7 @@
                             Width="16"
                             Height="16"
                             IsEnabled="{Binding IsTracing}"
-                            Source="{x:Static content:Images.Cancel}" />
+                            Source="{x:Static content:Images.Stop}" />
                     </MenuItem.Header>
                 </MenuItem>
             </WrapPanel>
