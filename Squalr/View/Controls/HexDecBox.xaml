@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Squalr.View.Controls.HexDecBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Squalr.View.Controls"
+             xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
+             mc:Ignorable="d" 
+             d:DesignHeight="20" d:DesignWidth="196" 
+    DataContext="{Binding HexDecBoxViewModel, Source={StaticResource ViewModelLocator}}">
+    <UserControl.Resources>
+        <converters:HexDecBoxColorConverter x:Key="HexDecBoxColorConverter" />
+        <ContextMenu
+            x:Key="HexDecBoxRightClickMenu"
+            Background="{StaticResource SqualrColorFrame}"
+            BorderBrush="{StaticResource SqualrColorWhite}"
+            Foreground="{StaticResource SqualrColorWhite}">
+            <MenuItem
+                Command="{Binding SwitchDecCommand}"
+                Header="Dec" />
+            <MenuItem
+                Command="{Binding SwitchHexCommand}"
+                Header="Hex" />
+            <MenuItem
+                Command="{Binding ConvertDecCommand}"
+                Header="Convert to Hex" />
+            <MenuItem
+                Command="{Binding ConvertHexCommand}"
+                Header="Convert to Dec" />
+        </ContextMenu>
+    </UserControl.Resources>
+    <TextBox Text="{Binding ActiveText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{StaticResource SqualrColorGray27}" BorderBrush="{StaticResource SqualrColorWhite}" Foreground="{Binding ., Converter={StaticResource HexDecBoxColorConverter}}" ContextMenu="{StaticResource HexDecBoxRightClickMenu}"/>
+</UserControl>
