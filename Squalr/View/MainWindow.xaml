@@ -821,7 +821,7 @@
                                     Width="196"
                                     Height="16" />
                                 <shell:Border.InputBindings>
-                                    <KeyBinding Gesture="Enter" Command ="{Binding StartScanCommand}"/>
+                                    <shell:KeyBinding Command="{Binding StartScanCommand}" Gesture="Enter" />
                                 </shell:Border.InputBindings>
                             </shell:Border>
                             <shell:MenuItem
@@ -829,7 +829,7 @@
                                 DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
                                 ToolTip="Start Scan">
                                 <shell:MenuItem.InputBindings>
-                                    <KeyBinding Gesture="Enter" Command ="{Binding StartScanCommand}"/>
+                                    <shell:KeyBinding Command="{Binding StartScanCommand}" Gesture="Enter" />
                                 </shell:MenuItem.InputBindings>
                                 <shell:MenuItem.Header>
                                     <shell:Image
