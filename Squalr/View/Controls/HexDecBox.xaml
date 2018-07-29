@@ -46,7 +46,6 @@
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
-                            Padding="4,0,0,0"
                             VerticalAlignment="Center"
                             Foreground="{StaticResource SqualrColorWhite}"
                             Text="Convert to Hex" />
@@ -57,7 +56,6 @@
                 <MenuItem.Header>
                     <StackPanel Orientation="Horizontal">
                         <TextBlock
-                            Padding="4,0,0,0"
                             VerticalAlignment="Center"
                             Foreground="{StaticResource SqualrColorWhite}"
                             Text="Convert to Dec" />

@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <SolidColorBrush x:Key="SqualrColorWhite" Color="White" />
     <SolidColorBrush x:Key="SqualrColorBlack" Color="Black" />
+    <SolidColorBrush x:Key="SqualrColorIconBlue" Color="#00A4FF" />
     <SolidColorBrush x:Key="SqualrColorGray20" Color="#333333" />
     <SolidColorBrush x:Key="SqualrColorGray24" Color="#3D3D3D" />
     <SolidColorBrush x:Key="SqualrColorGray27" Color="#444444" />
@@ -17,6 +18,8 @@
 
     <SolidColorBrush x:Key="SqualrColorHighlight" Color="#3D26A0DA" />
     <SolidColorBrush x:Key="SqualrColorHighlightBorder" Color="#FF26A0DA" />
+    <SolidColorBrush x:Key="SqualrColorHighlightFocus" Color="#3D15506C" />
+    <SolidColorBrush x:Key="SqualrColorHighlightBorderFocus" Color="#FF26A0DA" />
 
     <SolidColorBrush x:Key="SqualrColorFrame" Color="#333333" />
     <SolidColorBrush x:Key="SqualrColorPanel" Color="#202020" />
