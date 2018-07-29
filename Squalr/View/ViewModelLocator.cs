@@ -6,6 +6,7 @@
     using Source.Snapshots;
     using Squalr.Properties;
     using Squalr.Source.ChangeLog;
+    using Squalr.Source.Controls;
     using Squalr.Source.Debugger;
     using Squalr.Source.Docking;
     using Squalr.Source.Editors.HotkeyEditor;
@@ -372,6 +373,17 @@
             get
             {
                 return SelectProjectDialogViewModel.GetInstance();
+            }
+        }
+
+        /// <summary>
+        /// Gets a HexDec box view model.
+        /// </summary>
+        public HexDecBoxViewModel HexDecBoxViewModel
+        {
+            get
+            {
+                return new HexDecBoxViewModel();
             }
         }
     }

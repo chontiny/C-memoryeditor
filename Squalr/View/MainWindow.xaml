@@ -2,6 +2,7 @@
     x:Class="Squalr.View.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:Squalr.View.Controls"
     xmlns:avalonDock="clr-namespace:Squalr.Theme;assembly=Squalr.Theme"
     xmlns:content="clr-namespace:Squalr.Content"
     xmlns:converters="clr-namespace:Squalr.Source.Mvvm.Converters"
@@ -808,7 +809,6 @@
                                 </shell:MenuItem>
                             </shell:Menu>
                             <shell:Border
-                                Height="20"
                                 Margin="0,2,0,2"
                                 VerticalAlignment="Center"
                                 Background="{StaticResource SqualrColorGray27}"
@@ -816,10 +816,12 @@
                                 BorderThickness="1"
                                 DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
                                 Visibility="{Binding IsActiveScanConstraintValued, Converter={StaticResource BooleanToHiddenConverter}}">
-                                <shell:Grid
-                                    x:Name="valueHexDecBox"
+                                <Controls:HexDecBox
+                                    x:Name="ValueHexDecBox"
                                     Width="196"
-                                    Height="16" />
+                                    Height="20"
+                                    Background="{StaticResource SqualrColorGray27}"
+                                    BorderBrush="{StaticResource SqualrColorGray35}" />
                                 <shell:Border.InputBindings>
                                     <shell:KeyBinding Command="{Binding StartScanCommand}" Gesture="Enter" />
                                 </shell:Border.InputBindings>
