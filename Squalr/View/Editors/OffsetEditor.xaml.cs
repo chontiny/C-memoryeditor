@@ -1,6 +1,5 @@
 ﻿namespace Squalr.View.Editors
 {
-    using Squalr.Engine.DataTypes;
     using Squalr.Engine.Utils.DataStructures;
     using Squalr.Source.Controls;
     using Squalr.Source.Editors.OffsetEditor;
@@ -23,12 +22,10 @@
         {
             this.InitializeComponent();
 
-            // Windows Forms hosting -- TODO: Phase this out
-            this.OffsetHexDecBox = new HexDecTextBox(DataType.Int32);
-            this.OffsetHexDecBox.IsHex = true;
-            this.OffsetHexDecBox.TextChanged += this.ValueUpdated;
-            this.offsetHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.OffsetHexDecBox));
-            this.OffsetEditorViewModel.Offsets = offsets == null ? null : new FullyObservableCollection<PrimitiveBinding<Int32>>(offsets.Select(x => new PrimitiveBinding<Int32>(x)));
+            this.OffsetHexDecBoxViewModel = this.OffsetHexDecBox.DataContext as HexDecBoxViewModel;
+            this.OffsetHexDecBoxViewModel.PropertyChanged += HexDecBoxViewModelPropertyChanged;
+
+            this.OffsetEditorViewModel.Offsets = offsets == null ? null : new FullyObservableCollection<PrimitiveBinding<Int32>>(offsets.Select(offset => new PrimitiveBinding<Int32>(offset)));
         }
 
         /// <summary>
@@ -43,9 +40,9 @@
         }
 
         /// <summary>
-        /// Gets or sets the offset hex dec box used to display the edited hotkey.
+        /// Gets or sets the view model for the offset hex dec box.
         /// </summary>
-        private HexDecTextBox OffsetHexDecBox { get; set; }
+        private HexDecBoxViewModel OffsetHexDecBoxViewModel { get; set; }
 
         /// <summary>
         /// Invoked when the added offsets are canceled. Closes the view.
@@ -69,14 +66,12 @@
             this.Close();
         }
 
-        /// <summary>
-        /// Invoked when the current offset is changed, and informs the viewmodel.
-        /// </summary>
-        /// <param name="sender">Sending object.</param>
-        /// <param name="e">Event args.</param>
-        private void ValueUpdated(Object sender, EventArgs e)
+        private void HexDecBoxViewModelPropertyChanged(Object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            this.OffsetEditorViewModel.UpdateActiveValueCommand.Execute(this.OffsetHexDecBox.GetValue());
+            if (e.PropertyName == nameof(OffsetHexDecBoxViewModel.Text))
+            {
+                this.OffsetEditorViewModel.UpdateActiveValueCommand.Execute(this.OffsetHexDecBoxViewModel.GetValue());
+            }
         }
 
         /// <summary>

@@ -2,6 +2,7 @@
     x:Class="Squalr.View.PointerScanner"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Controls="clr-namespace:Squalr.View.Controls"
     xmlns:content="clr-namespace:Squalr.Content"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -41,15 +42,12 @@
                             VerticalAlignment="Center"
                             Foreground="{StaticResource SqualrColorWhite}"
                             Text="Address" />
-                        <Border
+                        <Controls:HexDecBox
+                            x:Name="PointerScanAddressHexDecBox"
+                            Width="196"
                             Height="20"
                             Background="{StaticResource SqualrColorGray20}"
-                            BorderThickness="0">
-                            <Grid
-                                x:Name="pointerScanAddressHexDecBox"
-                                Width="196"
-                                Height="16" />
-                        </Border>
+                            BorderThickness="0" />
                         <Menu Padding="4" Background="Transparent">
                             <MenuItem Command="{Binding StartScanCommand}" ToolTip="Start Pointer Scan">
                                 <MenuItem.Header>
@@ -62,30 +60,26 @@
                         </Menu>
                     </WrapPanel>
                     <WrapPanel Grid.Row="1" Margin="8">
-                        <Border
+                        <Controls:HexDecBox
+                            x:Name="DepthHexDecBox"
+                            Width="64"
+                            Height="20"
                             Margin="0,0,8,0"
                             BorderBrush="White"
-                            BorderThickness="1">
-                            <Grid
-                                x:Name="depthHexDecBox"
-                                Width="64"
-                                Height="16" />
-                        </Border>
+                            BorderThickness="1" />
                         <TextBlock
                             Padding="0,0,4,0"
                             Foreground="{StaticResource SqualrColorWhite}"
                             Text="Depth" />
                     </WrapPanel>
                     <WrapPanel Grid.Row="2" Margin="8">
-                        <Border
+                        <Controls:HexDecBox
+                            x:Name="PointerRadiusHexDecBox"
+                            Width="64"
+                            Height="20"
                             Margin="0,0,8,0"
                             BorderBrush="White"
-                            BorderThickness="1">
-                            <Grid
-                                x:Name="pointerRadiusHexDecBox"
-                                Width="64"
-                                Height="16" />
-                        </Border>
+                            BorderThickness="1" />
                         <TextBlock
                             Padding="0,0,4,0"
                             Foreground="{StaticResource SqualrColorWhite}"
@@ -95,9 +89,9 @@
             </GroupBox>
             <GroupBox
                 Grid.Row="1"
-                BorderThickness="2"
                 Padding="4"
                 BorderBrush="{StaticResource SqualrColorGray74}"
+                BorderThickness="2"
                 Foreground="{StaticResource SqualrColorWhite}"
                 Header="Same Process Validation">
                 <Grid>
@@ -137,9 +131,9 @@
             </GroupBox>
             <GroupBox
                 Grid.Row="2"
+                Padding="4"
                 BorderBrush="{StaticResource SqualrColorGray74}"
                 BorderThickness="2"
-                Padding="4"
                 Foreground="{StaticResource SqualrColorWhite}"
                 Header="New Process Validation">
                 <Grid>
@@ -163,18 +157,15 @@
                         VerticalAlignment="Center"
                         Foreground="{StaticResource SqualrColorWhite}"
                         Text="New Address" />
-                    <Border
+                    <Controls:HexDecBox
+                        x:Name="PointerRetargetAddressHexDecBox"
                         Grid.Row="0"
                         Grid.Column="1"
+                        Width="180"
                         Height="20"
                         Margin="0,4"
                         Background="{StaticResource SqualrColorFrame}"
-                        BorderThickness="0">
-                        <Grid
-                            x:Name="pointerRetargetAddressHexDecBox"
-                            Width="180"
-                            Height="16" />
-                    </Border>
+                        BorderThickness="0" />
                     <Menu
                         Grid.Column="2"
                         Padding="4"

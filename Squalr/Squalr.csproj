@@ -398,6 +398,8 @@
     </Compile>
     <Compile Include="Content\Images.cs" />
     <Compile Include="Properties\SettingsViewModel.cs" />
+    <Compile Include="Source\Controls\HexDecBoxViewModel.cs" />
+    <Compile Include="Source\Mvvm\Converters\HexDecBoxColorConverter.cs" />
     <Compile Include="Source\ProjectExplorer\Dialogs\CreateProjectDialogViewModel.cs" />
     <Compile Include="Source\ProjectExplorer\Dialogs\RenameProjectDialogViewModel.cs" />
     <Compile Include="Source\Updater\ApplicationUpdater.cs" />
@@ -423,9 +425,6 @@
     <Compile Include="Source\Controls\CenteredDialogBox.cs" />
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
     <Compile Include="Source\Controls\DarkBrushes.cs" />
-    <Compile Include="Source\Controls\HexDecTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Source\Controls\RichTextBoxHelper.cs" />
     <Compile Include="Source\Controls\SortedCategory.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />
@@ -497,6 +496,9 @@
     <Compile Include="Source\Utils\TypeConverters\OffsetConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\ScriptConverter.cs" />
     <Compile Include="Source\Utils\TypeConverters\TextConverter.cs" />
+    <Compile Include="View\Controls\HexDecBox.xaml.cs">
+      <DependentUpon>HexDecBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Dialogs\CreateProjectDialog.xaml.cs">
       <DependentUpon>CreateProjectDialog.xaml</DependentUpon>
     </Compile>
@@ -657,6 +659,10 @@
     <Page Include="View\ChangeLog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Controls\HexDecBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\DataTemplateError.xaml">
       <Generator>MSBuild:Compile</Generator>

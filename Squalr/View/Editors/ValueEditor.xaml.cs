@@ -4,6 +4,7 @@
     using Squalr.Engine.Projects.Items;
     using Squalr.Source.Editors.ValueEditor;
     using System;
+    using System.ComponentModel;
     using System.Windows;
 
     /// <summary>
@@ -19,11 +20,9 @@
         {
             this.InitializeComponent();
 
-            this.ValueHexDecBox = new HexDecTextBox(addressItem.DataType);
-            this.ValueHexDecBox.TextChanged += this.ValueHexDecBoxTextChanged;
-            this.ValueHexDecBox.IsHex = addressItem.IsValueHex;
-            this.ValueHexDecBox.SetValue(addressItem.AddressValue);
-            this.ValueEditorTextEditorContainer.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
+            this.ValueHexDecBoxViewModel = this.ValueHexDecBox.DataContext as HexDecBoxViewModel;
+            this.ValueHexDecBoxViewModel.PropertyChanged += HexDecBoxViewModelPropertyChanged;
+            this.ValueHexDecBoxViewModel.DataType = addressItem.DataType;
         }
 
         /// <summary>
@@ -38,33 +37,24 @@
         }
 
         /// <summary>
-        /// Gets or sets the hex dec box for the value.
+        /// Gets or sets the view model for the hex dec box for the value.
         /// </summary>
-        private HexDecTextBox ValueHexDecBox { get; set; }
+        private HexDecBoxViewModel ValueHexDecBoxViewModel { get; set; }
 
-        /// <summary>
-        /// Text changed event for the value HexDec box.
-        /// </summary>
-        /// <param name="sender">Sending object.</param>
-        /// <param name="e">Event args.</param>
-        private void ValueHexDecBoxTextChanged(Object sender, EventArgs e)
+        private void HexDecBoxViewModelPropertyChanged(Object sender, PropertyChangedEventArgs args)
         {
-            Object value = this.ValueHexDecBox.GetValue();
-
-            if (value == null)
+            if (args.PropertyName == nameof(HexDecBoxViewModel.Text))
             {
-                return;
+                this.ValueEditorViewModel.Value = this.ValueHexDecBoxViewModel.GetValue();
             }
-
-            this.ValueEditorViewModel.Value = value;
         }
 
         /// <summary>
         /// Invoked when the added offsets are canceled. Closes the view.
         /// </summary>
         /// <param name="sender">Sending object.</param>
-        /// <param name="e">Event args.</param>
-        private void CancelButtonClick(Object sender, RoutedEventArgs e)
+        /// <param name="args">Event args.</param>
+        private void CancelButtonClick(Object sender, RoutedEventArgs args)
         {
             this.DialogResult = false;
             this.Close();
@@ -74,8 +64,8 @@
         /// Invoked when the added offsets are accepted. Closes the view.
         /// </summary>
         /// <param name="sender">Sending object.</param>
-        /// <param name="e">Event args.</param>
-        private void AcceptButtonClick(Object sender, RoutedEventArgs e)
+        /// <param name="args">Event args.</param>
+        private void AcceptButtonClick(Object sender, RoutedEventArgs args)
         {
             this.DialogResult = true;
             this.Close();
@@ -85,21 +75,20 @@
         /// Invoked when the exit file menu event executes. Closes the view.
         /// </summary>
         /// <param name="sender">Sending object.</param>
-        /// <param name="e">Event args.</param>
-        private void ExitFileMenuItemClick(Object sender, RoutedEventArgs e)
+        /// <param name="args">Event args.</param>
+        private void ExitFileMenuItemClick(Object sender, RoutedEventArgs args)
         {
             this.Close();
         }
 
         /// <summary>
-        /// Event when all view content has been rendered.
+        /// Event when this window has been loaded.
         /// </summary>
         /// <param name="sender">Sending object.</param>
-        /// <param name="e">Event args.</param>
-        private void SqualrValueEditorContentRendered(Object sender, EventArgs e)
+        /// <param name="args">Event args.</param>
+        private void SqualrValueEditorLoaded(Object sender, RoutedEventArgs args)
         {
-            this.ValueHexDecBox.Focus();
-            this.ValueHexDecBox.SelectAll();
+            this.ValueHexDecBox.InnerTextBox.Focus();
         }
     }
     //// End class
