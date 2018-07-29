@@ -816,7 +816,8 @@
                                 BorderThickness="1"
                                 DataContext="{Binding ManualScannerViewModel, Source={StaticResource ViewModelLocator}}"
                                 Visibility="{Binding IsActiveScanConstraintValued, Converter={StaticResource BooleanToHiddenConverter}}">
-                                <Controls:HexDecBox 
+                                <Controls:HexDecBox
+                                x:Name="ValueHexDecBox"
                                 Width="196"
                                 Height="20"
                                 Margin="0,2,0,2"

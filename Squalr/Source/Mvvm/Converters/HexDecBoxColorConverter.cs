@@ -11,7 +11,7 @@
     /// </summary>
     public class HexDecBoxColorConverter : IValueConverter
     {
-        private static readonly Brush DecBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0, 0xFF, 0));
+        private static readonly Brush DecBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0xFF, 0xFF));
 
         private static readonly Brush HexBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x22, 0x8B, 0x22));
 

@@ -28,11 +28,6 @@
         private Boolean isHex;
 
         /// <summary>
-        /// A value indicating whether the current value is valid for the current data type.
-        /// </summary>
-        private Boolean isValid;
-
-        /// <summary>
         /// 
         /// </summary>
         public HexDecBoxViewModel()
@@ -66,9 +61,20 @@
         public ICommand ConvertHexCommand { get; private set; }
 
         /// <summary>
+        /// Gets this instance. Allows for binding to the entire view model w/ property change events (useful for converters).
+        /// </summary>
+        public HexDecBoxViewModel Self
+        {
+            get
+            {
+                return this;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the active text.
         /// </summary>
-        public String ActiveText
+        public String Text
         {
             get
             {
@@ -78,7 +84,9 @@
             set
             {
                 this.text = value;
-                this.RaisePropertyChanged(nameof(this.ActiveText));
+                this.RaisePropertyChanged(nameof(this.Text));
+                this.RaisePropertyChanged(nameof(this.IsValid));
+                this.RaisePropertyChanged(nameof(this.Self));
             }
         }
 
@@ -96,6 +104,8 @@
             {
                 this.isHex = value;
                 this.RaisePropertyChanged(nameof(this.IsHex));
+                this.RaisePropertyChanged(nameof(this.IsValid));
+                this.RaisePropertyChanged(nameof(this.Self));
             }
         }
 
@@ -113,23 +123,30 @@
             {
                 this.elementType = value;
                 this.RaisePropertyChanged(nameof(this.ElementType));
+                this.RaisePropertyChanged(nameof(this.IsValid));
+                this.RaisePropertyChanged(nameof(this.Self));
             }
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the current value is valid for the current data type.
+        /// Gets a value indicating whether the current value is valid for the current data type.
         /// </summary>
         public Boolean IsValid
         {
             get
             {
-                return this.isValid;
-            }
-
-            set
-            {
-                this.isValid = value;
-                this.RaisePropertyChanged(nameof(this.IsValid));
+                if (this.IsHex && SyntaxChecker.CanParseHex(this.ElementType, this.Text))
+                {
+                    return true;
+                }
+                else if (SyntaxChecker.CanParseValue(this.ElementType, this.Text))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 
@@ -146,11 +163,11 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParseHexStringAsPrimitiveString(this.ElementType, this.ActiveText);
+                return Conversions.ParseHexStringAsPrimitiveString(this.ElementType, this.Text);
             }
             else
             {
-                return this.ActiveText;
+                return this.Text;
             }
         }
 
@@ -167,11 +184,11 @@
 
             if (this.IsHex)
             {
-                return this.ActiveText;
+                return this.Text;
             }
             else
             {
-                return Conversions.ParsePrimitiveStringAsHexString(this.ElementType, this.ActiveText);
+                return Conversions.ParsePrimitiveStringAsHexString(this.ElementType, this.Text);
             }
         }
 
@@ -188,11 +205,11 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParseHexStringAsPrimitive(this.ElementType, this.ActiveText);
+                return Conversions.ParseHexStringAsPrimitive(this.ElementType, this.Text);
             }
             else
             {
-                return Conversions.ParsePrimitiveStringAsPrimitive(this.ElementType, this.ActiveText);
+                return Conversions.ParsePrimitiveStringAsPrimitive(this.ElementType, this.Text);
             }
         }
 
@@ -211,11 +228,11 @@
 
             if (this.IsHex)
             {
-                this.ActiveText = Conversions.ParsePrimitiveStringAsHexString(this.ElementType, valueString);
+                this.Text = Conversions.ParsePrimitiveStringAsHexString(this.ElementType, valueString);
             }
             else
             {
-                this.ActiveText = valueString;
+                this.Text = valueString;
             }
         }
 
@@ -240,9 +257,9 @@
         /// </summary>
         private void ConvertDec()
         {
-            if (SyntaxChecker.CanParseHex(this.ElementType, this.ActiveText))
+            if (SyntaxChecker.CanParseHex(this.ElementType, this.Text))
             {
-                this.ActiveText = Conversions.ParseHexStringAsPrimitiveString(this.ElementType, this.ActiveText);
+                this.Text = Conversions.ParseHexStringAsPrimitiveString(this.ElementType, this.Text);
             }
 
             this.SwitchDec();
@@ -253,9 +270,9 @@
         /// </summary>
         private void ConvertHex()
         {
-            if (SyntaxChecker.CanParseValue(this.ElementType, this.ActiveText))
+            if (SyntaxChecker.CanParseValue(this.ElementType, this.Text))
             {
-                this.ActiveText = Conversions.ParsePrimitiveStringAsHexString(this.ElementType, this.ActiveText);
+                this.Text = Conversions.ParsePrimitiveStringAsHexString(this.ElementType, this.Text);
             }
 
             this.SwitchHex();

@@ -22,12 +22,12 @@
                 Command="{Binding SwitchHexCommand}"
                 Header="Hex" />
             <MenuItem
-                Command="{Binding ConvertDecCommand}"
+                Command="{Binding ConvertHexCommand}"
                 Header="Convert to Hex" />
             <MenuItem
-                Command="{Binding ConvertHexCommand}"
+                Command="{Binding ConvertDecCommand}"
                 Header="Convert to Dec" />
         </ContextMenu>
     </UserControl.Resources>
-    <TextBox Text="{Binding ActiveText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{StaticResource SqualrColorGray27}" BorderBrush="{StaticResource SqualrColorWhite}" Foreground="{Binding ., Converter={StaticResource HexDecBoxColorConverter}}" ContextMenu="{StaticResource HexDecBoxRightClickMenu}"/>
+    <TextBox Text="{Binding Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{StaticResource SqualrColorGray27}" BorderBrush="{StaticResource SqualrColorWhite}" Foreground="{Binding Self, Converter={StaticResource HexDecBoxColorConverter}}" ContextMenu="{StaticResource HexDecBoxRightClickMenu}"/>
 </UserControl>

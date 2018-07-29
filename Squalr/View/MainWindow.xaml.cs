@@ -20,19 +20,13 @@
         {
             this.InitializeComponent();
 
-            // Windows Forms hosting -- TODO: Phase this out
-            this.ValueHexDecBox = new HexDecTextBox();
-            this.ValueHexDecBox.BackColor = DarkBrushes.SqualrColorGray24;
-            this.ValueHexDecBox.TextChanged += this.ValueUpdated;
-            //this.valueHexDecBox.Children.Add(WinformsHostingHelper.CreateHostedControl(this.ValueHexDecBox));
+            this.HexDecBoxViewModel = this.ValueHexDecBox.DataContext as HexDecBoxViewModel;
+            this.HexDecBoxViewModel.PropertyChanged += HexDecBoxViewModelPropertyChanged;
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
         }
 
-        /// <summary>
-        /// Gets or sets the value hex dec box used to display the current value being edited.
-        /// </summary>
-        private HexDecTextBox ValueHexDecBox { get; set; }
+        private HexDecBoxViewModel HexDecBoxViewModel { get; set; }
 
         /// <summary>
         /// Updates the active type.
@@ -40,17 +34,15 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(DataType activeType)
         {
-            this.ValueHexDecBox.ElementType = activeType;
+            this.HexDecBoxViewModel.ElementType = activeType;
         }
 
-        /// <summary>
-        /// Invoked when the current value is changed, and informs the viewmodel.
-        /// </summary>
-        /// <param name="sender">Sending object.</param>
-        /// <param name="e">Event args.</param>
-        private void ValueUpdated(Object sender, EventArgs e)
+        private void HexDecBoxViewModelPropertyChanged(Object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            ManualScannerViewModel.GetInstance().UpdateActiveValueCommand.Execute(this.ValueHexDecBox.GetValue());
+            if (e.PropertyName == nameof(HexDecBoxViewModel.Text))
+            {
+                ManualScannerViewModel.GetInstance().UpdateActiveValueCommand.Execute(this.HexDecBoxViewModel.GetValue());
+            }
         }
     }
     //// End class
