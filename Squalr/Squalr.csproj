@@ -425,9 +425,6 @@
     <Compile Include="Source\Controls\CenteredDialogBox.cs" />
     <Compile Include="Source\Controls\ControlThreadingHelper.cs" />
     <Compile Include="Source\Controls\DarkBrushes.cs" />
-    <Compile Include="Source\Controls\HexDecTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Source\Controls\RichTextBoxHelper.cs" />
     <Compile Include="Source\Controls\SortedCategory.cs" />
     <Compile Include="Source\Controls\TreeViewItemViewModel.cs" />

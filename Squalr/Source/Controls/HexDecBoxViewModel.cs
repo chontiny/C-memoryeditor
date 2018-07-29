@@ -32,7 +32,7 @@
         /// </summary>
         public HexDecBoxViewModel()
         {
-            this.ElementType = DataType.Int32;
+            this.DataType = DataType.Int32;
 
             this.ConvertDecCommand = new RelayCommand(() => this.ConvertDec());
             this.ConvertHexCommand = new RelayCommand(() => this.ConvertHex());
@@ -83,6 +83,11 @@
 
             set
             {
+                if (this.text == value)
+                {
+                    return;
+                }
+
                 this.text = value;
                 this.RaisePropertyChanged(nameof(this.Text));
                 this.RaisePropertyChanged(nameof(this.IsValid));
@@ -104,6 +109,27 @@
             {
                 this.isHex = value;
                 this.RaisePropertyChanged(nameof(this.IsHex));
+                this.RaisePropertyChanged(nameof(this.IsDec));
+                this.RaisePropertyChanged(nameof(this.IsValid));
+                this.RaisePropertyChanged(nameof(this.Self));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the value is displayed as dec.
+        /// </summary>
+        public Boolean IsDec
+        {
+            get
+            {
+                return !this.isHex;
+            }
+
+            set
+            {
+                this.isHex = !value;
+                this.RaisePropertyChanged(nameof(this.IsHex));
+                this.RaisePropertyChanged(nameof(this.IsDec));
                 this.RaisePropertyChanged(nameof(this.IsValid));
                 this.RaisePropertyChanged(nameof(this.Self));
             }
@@ -112,7 +138,7 @@
         /// <summary>
         /// Gets or sets the data type being represented.
         /// </summary>
-        public DataType ElementType
+        public DataType DataType
         {
             get
             {
@@ -122,7 +148,7 @@
             set
             {
                 this.elementType = value;
-                this.RaisePropertyChanged(nameof(this.ElementType));
+                this.RaisePropertyChanged(nameof(this.DataType));
                 this.RaisePropertyChanged(nameof(this.IsValid));
                 this.RaisePropertyChanged(nameof(this.Self));
             }
@@ -135,11 +161,11 @@
         {
             get
             {
-                if (this.IsHex && SyntaxChecker.CanParseHex(this.ElementType, this.Text))
+                if (this.IsHex && SyntaxChecker.CanParseHex(this.DataType, this.Text))
                 {
                     return true;
                 }
-                else if (SyntaxChecker.CanParseValue(this.ElementType, this.Text))
+                else if (SyntaxChecker.CanParseValue(this.DataType, this.Text))
                 {
                     return true;
                 }
@@ -163,7 +189,7 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParseHexStringAsPrimitiveString(this.ElementType, this.Text);
+                return Conversions.ParseHexStringAsPrimitiveString(this.DataType, this.Text);
             }
             else
             {
@@ -188,7 +214,7 @@
             }
             else
             {
-                return Conversions.ParsePrimitiveStringAsHexString(this.ElementType, this.Text);
+                return Conversions.ParsePrimitiveStringAsHexString(this.DataType, this.Text);
             }
         }
 
@@ -205,11 +231,11 @@
 
             if (this.IsHex)
             {
-                return Conversions.ParseHexStringAsPrimitive(this.ElementType, this.Text);
+                return Conversions.ParseHexStringAsPrimitive(this.DataType, this.Text);
             }
             else
             {
-                return Conversions.ParsePrimitiveStringAsPrimitive(this.ElementType, this.Text);
+                return Conversions.ParsePrimitiveStringAsPrimitive(this.DataType, this.Text);
             }
         }
 
@@ -221,14 +247,14 @@
         {
             String valueString = value?.ToString();
 
-            if (!SyntaxChecker.CanParseValue(this.ElementType, valueString))
+            if (!SyntaxChecker.CanParseValue(this.DataType, valueString))
             {
                 return;
             }
 
             if (this.IsHex)
             {
-                this.Text = Conversions.ParsePrimitiveStringAsHexString(this.ElementType, valueString);
+                this.Text = Conversions.ParsePrimitiveStringAsHexString(this.DataType, valueString);
             }
             else
             {
@@ -257,9 +283,9 @@
         /// </summary>
         private void ConvertDec()
         {
-            if (SyntaxChecker.CanParseHex(this.ElementType, this.Text))
+            if (SyntaxChecker.CanParseHex(this.DataType, this.Text))
             {
-                this.Text = Conversions.ParseHexStringAsPrimitiveString(this.ElementType, this.Text);
+                this.Text = Conversions.ParseHexStringAsPrimitiveString(this.DataType, this.Text);
             }
 
             this.SwitchDec();
@@ -270,9 +296,9 @@
         /// </summary>
         private void ConvertHex()
         {
-            if (SyntaxChecker.CanParseValue(this.ElementType, this.Text))
+            if (SyntaxChecker.CanParseValue(this.DataType, this.Text))
             {
-                this.Text = Conversions.ParsePrimitiveStringAsHexString(this.ElementType, this.Text);
+                this.Text = Conversions.ParsePrimitiveStringAsHexString(this.DataType, this.Text);
             }
 
             this.SwitchHex();

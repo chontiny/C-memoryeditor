@@ -20,13 +20,13 @@
         {
             this.InitializeComponent();
 
-            this.HexDecBoxViewModel = this.ValueHexDecBox.DataContext as HexDecBoxViewModel;
-            this.HexDecBoxViewModel.PropertyChanged += HexDecBoxViewModelPropertyChanged;
+            this.ValueHexDecBoxViewModel = this.ValueHexDecBox.DataContext as HexDecBoxViewModel;
+            this.ValueHexDecBoxViewModel.PropertyChanged += HexDecBoxViewModelPropertyChanged;
 
             Task.Run(() => ScanResultsViewModel.GetInstance().Subscribe(this));
         }
 
-        private HexDecBoxViewModel HexDecBoxViewModel { get; set; }
+        private HexDecBoxViewModel ValueHexDecBoxViewModel { get; set; }
 
         /// <summary>
         /// Updates the active type.
@@ -34,14 +34,14 @@
         /// <param name="activeType">The new active type.</param>
         public void Update(DataType activeType)
         {
-            this.HexDecBoxViewModel.ElementType = activeType;
+            this.ValueHexDecBoxViewModel.DataType = activeType;
         }
 
         private void HexDecBoxViewModelPropertyChanged(Object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(HexDecBoxViewModel.Text))
+            if (e.PropertyName == nameof(ValueHexDecBoxViewModel.Text))
             {
-                ManualScannerViewModel.GetInstance().UpdateActiveValueCommand.Execute(this.HexDecBoxViewModel.GetValue());
+                ManualScannerViewModel.GetInstance().UpdateActiveValueCommand.Execute(this.ValueHexDecBoxViewModel.GetValue());
             }
         }
     }
