@@ -18,6 +18,8 @@ $compiledNugetFile = "SqualrCompiled.nuspec"
 $compiledNugetFilePath = "./$compiledNugetFile"
 $package = "Squalr.$version.nupkg"
 $squirrel= "packages/squirrel.windows.1.8.0/tools/Squirrel.exe"
+$cert = [Environment]::GetEnvironmentVariables("User")["SQUALR_CODE_SIGN_CERT"]
+$pass = [Environment]::GetEnvironmentVariables("User")["SQUALR_CODE_SIGN_PASS"]
 
 # Delete old releases
 Remove-Item $releasesRoot -Force -Recurse -ErrorAction Ignore
@@ -39,7 +41,7 @@ Copy-Item -Path $sourceRoot -Recurse -Destination $destinationRoot -Container -F
 Invoke-Expression "nuget pack $($compiledNugetFile) -Properties Configuration=Release"
 
 # Releasify with Squirrel
-$args = "--releasify $package -n /a /f SqualrCert.pfx /fd sha256 /tr http://timestamp.digicert.com /td sha256"
+$args = "--releasify $package -n /a /f $cert /p $pass /fd sha256 /tr http://timestamp.digicert.com /td sha256"
 Start-Process "$squirrel" -ArgumentList $args -Wait
 
 # Remove temporary files
